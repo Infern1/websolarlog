@@ -1,5 +1,6 @@
 <?php
 define('checkaccess', TRUE);
+define('starttime', microtime(true));
 include("config/config_main.php");
 
 if (!empty ($_POST['user_lang'])) {

@@ -15,3 +15,11 @@
 .menu ul li a {
 	text-decoration: none;
 }
+
+.events {
+	height: 200px;
+	width: 450px;
+	resize: both;
+	border: 1px solid gray;
+	overflow: auto;
+}

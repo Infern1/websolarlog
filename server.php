@@ -50,13 +50,20 @@ switch ($method) {
     case 'getMenu':
         // TODO :: Move to json file or something???
         $menu = array();
-        $menu[] = array( url => "index.php", title => $lgMINDEX);
-        $menu[] = array( url => "indexdetailed.php", title => $lgMDETAILED);
-        $menu[] = array( url => "indexproduction.php", title => $lgMPRODUCTION);
-        $menu[] = array( url => "indexcomparison.php", title => $lgMCOMPARISON);
-        $menu[] = array( url => "indexinfo.php", title => $lgMINFO);
+        $menu[] = array( "url" => "index.php", "title" => $lgMINDEX);
+        $menu[] = array( "url" => "indexdetailed.php", "title" => $lgMDETAILED);
+        $menu[] = array( "url" => "indexproduction.php", "title" => $lgMPRODUCTION);
+        $menu[] = array( "url" => "indexcomparison.php", "title" => $lgMCOMPARISON);
+        $menu[] = array( "url" => "indexinfo.php", "title" => $lgMINFO);
 
         $data['menu'] = $menu;
+    case 'getEvents':
+        $invtnum = $_GET['invtnum'];
+        $filename="data/invt$invtnum/infos/events.txt";
+        $handle = fopen($filename, "r");
+        $contents = explode("\n", fread($handle, filesize($filename)));
+        fclose($handle);
+        $data['events'] = $contents;
     default:
         break;
 }

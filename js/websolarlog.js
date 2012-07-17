@@ -11,6 +11,22 @@ Handlebars.registerHelper('ifCond', function(v1, v2, options)
 // WSL class
 var WSL = {
     api : {},
+    init_events : function(invtnum, divId) {
+            // Retrieve the error events 
+            WSL.api.getEvents(invtnum, function(data)
+            {
+                $.ajax({
+                    url : 'js/templates/events.hb',
+                    success : function(source)
+                    {
+                        var template = Handlebars.compile(source);
+                        var html = template({ 'data' : data });
+                        $(divId).html(html);
+                    },
+                    dataType : 'text'
+                });
+            });
+        },  
     init_menu : function(divId) {
         WSL.api.getMenu(function(data)
         {
@@ -50,6 +66,10 @@ var WSL = {
 // api class
 WSL.api.programdayfeed = function(invtnum, success) {
     $.getJSON("programs/programdayfeed.php", {invtnum : invtnum}, success);
+};
+
+WSL.api.getEvents = function(invtnum, success) {
+    $.getJSON("server.php", { method : 'getEvents', 'invtnum' : invtnum, }, success);
 };
 
 WSL.api.getLanguages = function(success) {
