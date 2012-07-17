@@ -36,7 +36,7 @@
 	
 	<target name="clean" description="Clean the deploy dir">
 		 <delete includeemptydirs="true">
-		    <fileset dir="${deploy.dir}" includes="**/*" excludes="${deploy.dir}"/>
+		    <fileset dir="${deploy.dir}" includes="**/*" excludes="${deploy.dir}" />
 		  </delete>
 	</target>
 </project>

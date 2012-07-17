@@ -1,0 +1,17 @@
+.title {
+	font-weight: bold;
+}
+
+.subTitle {
+	font-size: -1;
+}
+
+.menu ul li {
+	margin-left: -10px;
+	margin-bottom: 10px;
+	list-style-image: url("/styles/default/images/sqe.gif"); /* overrule in custom style */
+}
+
+.menu ul li a {
+	text-decoration: none;
+}

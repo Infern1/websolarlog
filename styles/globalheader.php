@@ -2,23 +2,23 @@
 define('checkaccess', TRUE);
 include("config/config_main.php");
 
-if (!empty ($_POST['user_lang'])) { 
+if (!empty ($_POST['user_lang'])) {
   setcookie('user_lang',$_POST['user_lang'],strtotime('+5 year'));
   $user_lang=$_POST['user_lang'];
 } elseif (isset($_COOKIE['user_lang'])){
 $user_lang=$_COOKIE['user_lang'];
 } else {
-$user_lang="English";  
+$user_lang="English";
 }
 include("languages/".$user_lang.".php");
 
-if (!empty ($_POST['user_style'])) { 
+if (!empty ($_POST['user_style'])) {
   setcookie('user_style',$_POST['user_style'],strtotime('+5 year'));
   $user_style=$_POST['user_style'];
 } elseif (isset($_COOKIE['user_style'])){
 $user_style=$_COOKIE['user_style'];
 } else {
-$user_style="default";  
+$user_style="default";
 }
 
 function tricsv($var){return !is_dir($var)&& preg_match('/.*\.csv/', $var);}
@@ -26,23 +26,26 @@ function tricsv($var){return !is_dir($var)&& preg_match('/.*\.csv/', $var);}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
 <title><?php echo "$TITLE";?></title>
-<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
-<link href="favicon.ico" rel="icon" type="image/x-icon">
+<link href="favicon.ico" rel="icon" type="image/x-icon" />
+<link rel="stylesheet" href="js/jqueryuicss/jquery-ui.css" type="text/css" />
+<link rel="stylesheet" href="js/jgauge/css/jgauge.css" type="text/css" />
+<link rel="stylesheet" href="css/main.css" type="text/css" />
+<link rel="stylesheet" href="styles/<?php echo $user_style;?>/css/style.css" type="text/css" />
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="js/jqueryuicss/jquery-ui.css" type="text/css">
 <script type="text/javascript" src="js/highcharts.js"></script>
 <script type="text/javascript" src="js/modules/exporting.js"></script>
-<link rel="stylesheet" href="js/jgauge/css/jgauge.css" type="text/css">
 <!--[if IE]><script type="text/javascript" language="javascript" src="js/jgauge/js/excanvas.min.js"></script><![endif]-->
 <script language="javascript" type="text/javascript" src="js/jgauge/js/jQueryRotate.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jgauge/js/jgauge-0.3.0.a3.js"></script>
-  <link rel="stylesheet" href="styles/<?php echo $user_style;?>/css/style.css" type="text/css">
+<script language="javascript" type="text/javascript" src="js/handlebars.js"></script>
+<script language="javascript" type="text/javascript" src="js/websolarlog.js"></script>
 <?php include("styles/yourheader.php");?>
 </head>
-<?php 
+<?php
   if ($NUMINV==1) {
   include("styles/".$user_style."/header.php");
   } else {

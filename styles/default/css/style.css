@@ -41,26 +41,26 @@ background-color: #CCCC66;
 .cadretopright { border: solid; border-width: 1px 1px 1px 0px; border-color: #666633 #666633 #666633 #FFFFFF}
 .cadrenews { border: #666633 solid; border-width: 0px 1px 1px}
 
-div.menu a {
+.menu a {
   text-decoration: none;
   color: #000000;
   }
-div.menu a:hover {
+.menu a:hover {
   background-color: #EDEDA8;
   color: #000000;
   text-decoration: none;
   } 
-div.menu a:active {
+.menu a:active {
   background-color: #EDEDA8;
   color: #000000;
   text-decoration: none;
   }
-div.menu a:visited {
+.menu a:visited {
   text-decoration: none;
   color: #000000;
   } 
 
-div.menu a:link {
+.menu a:link {
   text-decoration: none;
   color: #000000;
   } 
