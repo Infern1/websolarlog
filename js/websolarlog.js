@@ -12,21 +12,37 @@ Handlebars.registerHelper('ifCond', function(v1, v2, options)
 var WSL = {
     api : {},
     init_events : function(invtnum, divId) {
-            // Retrieve the error events 
-            WSL.api.getEvents(invtnum, function(data)
-            {
-                $.ajax({
-                    url : 'js/templates/events.hb',
-                    success : function(source)
-                    {
-                        var template = Handlebars.compile(source);
-                        var html = template({ 'data' : data });
-                        $(divId).html(html);
-                    },
-                    dataType : 'text'
-                });
+        // Retrieve the error events 
+        WSL.api.getEvents(invtnum, function(data)
+        {
+            $.ajax({
+                url : 'js/templates/events.hb',
+                success : function(source)
+                {
+                    var template = Handlebars.compile(source);
+                    var html = template({ 'data' : data });
+                    $(divId).html(html);
+                },
+                dataType : 'text'
             });
-        },  
+        });
+    },
+    init_liveData : function(invtnum, divId) {
+        // Retrieve the error events 
+        WSL.api.getLiveData(invtnum, function(data)
+        {
+            $.ajax({
+                url : 'js/templates/livedata.hb',
+                success : function(source)
+                {
+                    var template = Handlebars.compile(source);
+                    var html = template({ 'data' : data });
+                    $(divId).html(html);
+                },
+                dataType : 'text'
+            });
+        });
+    },
     init_menu : function(divId) {
         WSL.api.getMenu(function(data)
         {
@@ -70,6 +86,10 @@ WSL.api.programdayfeed = function(invtnum, success) {
 
 WSL.api.getEvents = function(invtnum, success) {
     $.getJSON("server.php", { method : 'getEvents', 'invtnum' : invtnum, }, success);
+};
+
+WSL.api.getLiveData = function(invtnum, success) {
+    $.getJSON("server.php", { method : 'getLiveData', 'invtnum' : invtnum, }, success);
 };
 
 WSL.api.getLanguages = function(success) {

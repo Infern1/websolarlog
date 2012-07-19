@@ -307,17 +307,19 @@ Mychart3 = new Highcharts.Chart(options);
    });
 </script>
 <script type="text/javascript">
-  function updateGauge() {
-  var invtnum = <?php echo $invtnum; ?>;
-  $.getJSON('programs/programlive.php', { invtnum: invtnum }, function(data){
-  json = eval(data);
-  myGauge.setValue(json[0].GP);
-  document.getElementById('PMAXOTD').innerHTML = json[0].PMAXOTD;
-  document.getElementById('PMAXOTDTIME').innerHTML = json[0].PMAXOTDTIME;
-  })
-  }
-updateGauge();
-setInterval(updateGauge, 500);
+
+//
+//function updateGauge() {
+ // var invtnum = <?php echo $invtnum; ?>;
+  //$.getJSON('programs/programlive.php', { invtnum: invtnum }, function(data){
+  //json = eval(data);
+  //myGauge.setValue(json[0].GP);
+  //document.getElementById('PMAXOTD').innerHTML = json[0].PMAXOTD;
+  //document.getElementById('PMAXOTDTIME').innerHTML = json[0].PMAXOTDTIME;
+  //})
+ // }
+//updateGauge();
+//setInterval(updateGauge, 500);
 </script>
 <?php
 if ($NUMINV>1) {
@@ -330,7 +332,8 @@ if (!empty($INVNAME)) {
 <table width="100%" border=0 align=center cellpadding="0">
 	<tr>
 		<td width="90%"><div id="container1" style="height: 300px"></div></td>
-		<td width="200"><div id="jGauge" class="jgauge" align="center" valign="MIDDLE"></div> <?php
+		<td width="200"><div id="jGauge" class="jgauge" align="center" valign="MIDDLE"></div>
+		 <?php
 		function using_ie()
 		{
 		    $u_agent = $_SERVER['HTTP_USER_AGENT'];
@@ -349,6 +352,13 @@ if (!empty($INVNAME)) {
 			</div> <?php
 		}
 		?>
+		<div style="clear:both;"></div>
+			<div id="livedata"></div>
+		    <script type="text/javascript">
+              WSL.init_liveData(<?php echo($invtnum); ?>, "#livedata"); // Initial load fast
+              window.setInterval(function(){WSL.init_liveData(<?php echo($invtnum); ?>, "#livedata");}, 1000); // every 1 seconds
+              </script>
+             
 			<p align="center">
 				<font size="-2"><?php echo "$lgPMAX";?><br> <b id='PMAXOTD'>--</b> W @ <b id='PMAXOTDTIME'>--</b> <br> <?php
 				echo "<a href='dashboard.php?invtnum=$invtnum'>$lgDASHBOARD</a>";

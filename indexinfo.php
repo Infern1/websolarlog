@@ -135,8 +135,8 @@ if ($NUMINV>1) {
 		    <hr align=left size=1 width="90%" />
 			<div id="events" class="events"></div>
             <script type="text/javascript">
-              WSL.init_events(<?php echo($invtnum) ?>, "#events"); // Initial load fast
-              window.setInterval(function(){WSL.init_events(<?php echo($invtnum) ?>, "#events");}, 10000); // every 10 seconds
+              WSL.init_events(<?php echo($invtnum); ?>, "#events"); // Initial load fast
+              window.setInterval(function(){WSL.init_events(<?php echo($invtnum); ?>, "#events");}, 10000); // every 10 seconds
             </script>
 		</td>
 		<td><?php
