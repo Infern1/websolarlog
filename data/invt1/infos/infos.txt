@@ -1,0 +1,14 @@
+
+Part Number: -3G96-
+
+Serial Number: 887618
+
+Firmware: C.0.3.2
+
+Manufacturing Date: Year 12 Week 18
+
+Inverter Version: -- PVI-3.0-OUTD (new) --
+unknown -- Transformerless Version -- Photovoltaic Version -- 
+
+System operating with both strings.
+
