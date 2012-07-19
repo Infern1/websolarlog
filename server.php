@@ -72,14 +72,15 @@ switch ($method) {
         $handle = fopen($filename, "r");
         $contents = explode("\n", fread($handle, filesize($filename)));
         fclose($handle);
-        
+
         //$config_invt="config/config_invt".$invtnum.".php";
         //include("$config_invt");
         //$dir = '../data/invt'.$invtnum.'/infos';
         //$livedash=file($dir."/live.txt");
         //echo $livedash;
-        $array = preg_split("/;/",$livedash[0]);
-        
+        //$array = preg_split("/;/",$livedash[0]); // Live dash isn't filled!
+        $array = explode(";", $contents[0]);
+
         /*
          * Remove the vars and place the substr() directly in the strtotime() ???
          */
@@ -89,9 +90,9 @@ switch ($method) {
         $hour = substr($array[0], 9, 2);
         $minute = substr($array[0], 12, 2);
         $seconde = substr($array[0], 15, 2);
-        
+
         $UTCdate = strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$seconde);
-        
+
         /*
          * create routine for str_replace ???
          */
@@ -108,7 +109,7 @@ switch ($method) {
         $array[11]= str_replace(",", ".",$array[11]); //EFF
         $array[12]= str_replace(",", ".",$array[12]);
         $array[13]= str_replace(",", ".",$array[13]);
-         
+
         $COEF=($array[11]/100)*$CORRECTFACTOR;
         if ($COEF>1) {
         	$COEF=1;
@@ -119,14 +120,14 @@ switch ($method) {
         } else {
         	$array[9]= round($array[9],2);
         }
-         
+
         $pmaxotd=file($dir."/pmaxotd.txt");
         $parray = preg_split("/;/",$pmaxotd[0]);
         $pmax=round($parray[1],0);
         $hour = substr($parray[0], 9, 2);
         $minute = substr($parray[0], 12, 2);
-        
-        
+
+
         $liveData = array();
         $liveData[] = array( "title" => "SDTE", "value" => UTCdate*1000);
         $liveData[] = array( "title" => "I1V",  "value" => floatval(round($array[1],2)));
@@ -145,7 +146,7 @@ switch ($method) {
         $liveData[] = array( "title" => "KHWT", "value" => floatval($array[14]));
         $liveData[] = array( "title" => "PMAXOTD", "value" => floatval($pmax));
         $liveData[] = array( "title" => "PMAXOTDTIME", "value" => ($hour.":".$minute));
-        
+
         $data['liveData'] = $liveData;
         break;
     default:
