@@ -72,7 +72,6 @@ switch ($method) {
         $handle = fopen($filename, "r");
         $contents = explode("\n", fread($handle, filesize($filename)));
         fclose($handle);
-        var_dump($contents);
         
         //$config_invt="config/config_invt".$invtnum.".php";
         //include("$config_invt");
