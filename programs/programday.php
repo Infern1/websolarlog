@@ -51,6 +51,8 @@ $diffUTCdate = strtotime ($pastyear."-".$pastmonth."-".$pastday." ".$pasthour.":
 $diffTime=$UTCdate-$diffUTCdate;
 
 if ($diffTime!=0) {
+	//AveragePOWer = ((KiloWattHourTime[currentline] - KiloWattHourTime[last add line](give timediff in sec) *3600 (to hour) / $difftime) * 1000 (watt??)), round by 1 decimal)
+	// ^averagepower over a given time.
 $AvgPOW=round((((($KWHT[$line_num]-$KWHT[$pastline_num])*3600)/$diffTime)*1000),1);
 } else {
 $AvgPOW=0;
