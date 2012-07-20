@@ -26,19 +26,45 @@
 }
 
 .table {
- width: 100%;
- border: 1px solid #f00;
+	width: 100%;
+	border: 1px solid #f00;
 }
+
 .table .th {
- background-color: #f00;
- color: #fff;
- font-weight: bold;
- border-bottom: 1px dotted #f00;
+	background-color: #f00;
+	color: #fff;
+	font-weight: bold;
+	border-bottom: 1px dotted #f00;
 }
+
 .table .tr:nth-child(odd) {
- background-color: #eee;
+	background-color: #eee;
 }
+
 .table .td {
- float: left;
- padding-left: 2%;
+	float: left;
+	padding-left: 2%;
+}
+
+#left {
+	position: relative;
+	width: 49%;
+}
+
+#right {
+	float: right;
+	position: relative;
+	width: 49%;
+}
+
+.icon{
+	width:16px;
+	height:16px;
+	border:0;
+}
+
+.hr_info{
+	text-align:left;
+	size:1;
+	width:97%;
 }
