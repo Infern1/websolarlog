@@ -12,16 +12,16 @@ $diskuse = $disktotal - $diskfree;
 $meminfo = getSystemMemInfo();
 
 $arr= array(
-        'uptime' => trim($uptime),
-        'cpuuse' => getCpuInfo(),
-        'memtot' => $meminfo["MemTotal"],
-        'memuse' => ($meminfo["MemTotal"] - $meminfo["MemFree"]),
-        'memfree' => $meminfo["MemFree"],
-        'memperc' => round(($meminfo["MemTotal"] - $meminfo["MemFree"]) / $meminfo["MemTotal"] * 100),
-        'diskuse' => HumanSize($diskuse),
-        'diskfree' => HumanSize($diskfree),
-        'disktotal' => HumanSize($disktotal),
-        'diskperc' => round($diskuse / $disktotal * 100)
+		'uptime' => trim($uptime),
+		'cpuuse' => getCpuInfo(),
+		'memtot' => $meminfo["MemTotal"],
+		'memuse' => ($meminfo["MemTotal"] - $meminfo["MemFree"]),
+		'memfree' => $meminfo["MemFree"],
+		'memperc' => round(($meminfo["MemTotal"] - $meminfo["MemFree"]) / $meminfo["MemTotal"] * 100),
+		'diskuse' => HumanSize($diskuse),
+		'diskfree' => HumanSize($diskfree),
+		'disktotal' => HumanSize($disktotal),
+		'diskperc' => round($diskuse / $disktotal * 100)
 );
 
 $ret= array($arr);
@@ -32,33 +32,33 @@ echo json_encode($ret);
 
 function getSystemMemInfo()
 {
-    $data = explode("\n", file_get_contents("/proc/meminfo"));
-    $meminfo = array();
-    foreach ($data as $line) {
-        if (trim($line) != "") {
-            list($key, $val) = explode(":", $line);
-            $val = trim(str_replace("kB", "", $val));
-            $meminfo[$key] = round($val / 1024); // convert to mb
-        }
-    }
-    return $meminfo;
+	$data = explode("\n", file_get_contents("/proc/meminfo"));
+	$meminfo = array();
+	foreach ($data as $line) {
+		if (trim($line) != "") {
+			list($key, $val) = explode(":", $line);
+			$val = trim(str_replace("kB", "", $val));
+			$meminfo[$key] = round($val / 1024); // convert to mb
+		}
+	}
+	return $meminfo;
 }
 
 function getCpuInfo()
 {
-    $data = explode(" ", file_get_contents("/proc/loadavg"));
-    return $data[0] * 100;
+	$data = explode(" ", file_get_contents("/proc/loadavg"));
+	return $data[0] * 100;
 }
 
 function HumanSize($Bytes)
 {
-    $Type=array("", "kilo", "mega", "giga", "tera", "peta", "exa", "zetta", "yotta");
-    $Index=0;
-    while($Bytes>=1024)
-    {
-        $Bytes/=1024;
-        $Index++;
-    }
-    return("".round($Bytes,2)." ".$Type[$Index]."bytes");
+	$Type=array("", "kilo", "mega", "giga", "tera", "peta", "exa", "zetta", "yotta");
+	$Index=0;
+	while($Bytes>=1024)
+	{
+		$Bytes/=1024;
+		$Index++;
+	}
+	return("".round($Bytes,2)." ".$Type[$Index]."bytes");
 }
 ?>
