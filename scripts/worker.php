@@ -21,6 +21,7 @@ function tricsv($var){
 
 if ($AUTOMODE == true) {
 	$now	  = strtotime(date("Ymd H:i"));
+	// get sun information based on LAT/LON
 	$sun_info = date_sun_info((strtotime(date("Ymd"))), $LATITUDE, $LONGITUDE);
 	if ($now < ($sun_info['sunrise'] - 300) || $now > ($sun_info['sunset'] + 300)) {
 		for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) {
@@ -88,6 +89,9 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 		if ($COEF > 1) {
 			$COEF = 1;
 		}
+		
+		// GridPower2 = GridPower2 * COrrectedEFeciency, round by 2 decimals
+		// ^ GridPower in Watt
 		$GP2 = round($GP2 * $COEF, 2);
 		if ($GP2 > $array[1]) {
 			$myFile = $DATADIR . "/infos/pmaxotd.txt";
@@ -106,6 +110,8 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 			if ($COEF > 1) {
 				$COEF = 1;
 			}
+			// GridPower2max[inverternumber] = $GridPower2max * COrrectedEFeciency, round by 2 decimals
+			// ^ Max. grid power in Watt
 			$GP2m[$invtnum] = round($GP2m[$invtnum] * $COEF, 2);
 			
 			if (array_sum($GP2m) > $array[1]) {
@@ -372,6 +378,7 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 					} else {
 						$KWHT_strt = str_replace(",", ".", $array[14]);
 						$KWHT_stop = str_replace(",", ".", $array2[14]);
+						// $KiloWattHourDay = ($KiloWattHourTotal_stop - $KiloWattHourTotal_start) * 1000(Watt) * $CORRECTFACTOR), round by 0 decimals) Watthour
 						$KWHD	  = round((($KWHT_stop - $KWHT_strt) * 1000 * $CORRECTFACTOR), 0); //Wh
 						$GP		= round(str_replace(",", ".", $array2[9]), 0);
 					}
