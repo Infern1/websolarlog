@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Credit Louviaux Jean-Marc 2012
 date_default_timezone_set('GMT');
 define('checkaccess', TRUE);
@@ -49,7 +49,7 @@ for ($invtnum=$startinv;$invtnum<=$uptoinv;$invtnum++) {  // Multi
 
 	if (file_exists($dir."energy".$whichyear.".csv")) { // First ever startup
 		for ($line_num=0;$line_num<$contalines;$line_num++) {
-			$array = preg_split("/;/",$thefile[$line_num]);
+			$array = explode(";",$thefile[$line_num]);
 			$year = substr($array[0], 0, 4);
 			$month = substr($array[0], 4, 2);
 			$day = substr($array[0], 6, 2);
@@ -75,9 +75,9 @@ for ($invtnum=$startinv;$invtnum<=$uptoinv;$invtnum++) {  // Multi
 		$cnt=count($output2);
 		$lines=file($dir."/".$output2[$cnt-1]);
 		$contalines = count($lines);
-		$array = preg_split("/;/",$lines[0]);
+		$array = explode(";",$lines[0]);
 		$array[14] = str_replace(",", ".", $array[14]);
-		$array2 = preg_split("/;/",$lines[$contalines-1]);
+		$array2 = explode(";",$lines[$contalines-1]);
 		$array2[14] = str_replace(",", ".", $array2[14]);
 		$year = substr($array[0], 0, 4);
 		$month = substr($array[0], 4, 2);

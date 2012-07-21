@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Credit Louviaux Jean-Marc 2012
 date_default_timezone_set('GMT');
 $invtnum = $_GET['invtnum'];
@@ -27,7 +27,7 @@ while ($day_num<$PRODXDAYS) {
 	$countalines = count($lines);
 
 	// Digging into the array
-	$array = preg_split("/;/",$lines[$countalines-$j-1]);
+	$array = explode(";",$lines[$countalines-$j-1]);
 
 	$year = substr($array[0], 0, 4);
 	$month = substr($array[0], 4, 2);

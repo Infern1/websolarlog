@@ -1,7 +1,8 @@
-<?php 
+<?php
 // Credit Louviaux Jean-Marc 2012
 define('checkaccess', TRUE);
 include('../config/config_main.php');
+include('../classes/Formulas.php');
 date_default_timezone_set('GMT');
 
 function tricsv($var) {
@@ -23,7 +24,7 @@ for ($invtnum=1;$invtnum<=$NUMINV;$invtnum++) { // Multi
 	rsort($filedate);
 	// Loop through the array
 	foreach ($lines as $line_num => $line) {
-		$array = preg_split("/;/",$line);
+		$array = explode(";",$line);
 
 		$SDTE[$line_num]=$array[0];
 		$KWHT[$line_num]=str_replace(",", ".",$array[14]);
@@ -59,7 +60,7 @@ for ($invtnum=1;$invtnum<=$NUMINV;$invtnum++) { // Multi
 		if ($diffTime!=0) {
 			//AveragePOWer = ((KiloWattHourTime[currentline] - KiloWattHourTime[last add line](give timediff in sec) *3600 (to hour) / $difftime) * 1000 (watt??)), round by 1 decimal)
 			// ^averagepower over a given time.
-			$AvgPOW[$invtnum]=round((((($KWHT[$line_num]-$KWHT[$pastline_num])*3600)/$diffTime)*1000),1);
+		    $AvgPOW = Formulas::calcAveragePower($KWHT[$pastline_num], $KWHT[$line_num], $diffTime);
 			if($filedate[$invtnum]>$filedate[0]) { // newer
 				$MaxPow=0;
 				$MaxTime=0;
@@ -75,11 +76,11 @@ for ($invtnum=1;$invtnum<=$NUMINV;$invtnum++) { // Multi
 	} // end of looping
 
 	// Updating title
-	$arrayT = preg_split("/;/",$lines[0]);
+	$arrayT = explode(";",$lines[0]);
 	$arrayT[14] = str_replace(',', '.', $arrayT[14]);
-	$arrayT2 = preg_split("/;/",$lines[$contalines-1]);
+	$arrayT2 = explode(";",$lines[$contalines-1]);
 	$arrayT2[14] = str_replace(',', '.', $arrayT2[14]);
-	$KWHD[$invtnum]=(($arrayT2[14]-$arrayT[14])*$CORRECTFACTOR);
+	$KWHD[$invtnum] = Formulas::calcKiloWattHourDay($arrayT[14], $arrayT2[14], $CORRECTFACTOR);
 } // end of multi
 
 $j=0;

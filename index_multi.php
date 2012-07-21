@@ -84,7 +84,7 @@ $array = preg_split("/;/",$lines[0]);
 $array[14] = str_replace(',', '.', $array[14]);
 $array2 = preg_split("/;/",$lines[$contalines-1]);
 $array2[14] = str_replace(',', '.', $array2[14]);
-$KWHD=(($array2[14]-$array[14])*$CORRECTFACTOR);
+$KWHD = Formulas::calcKiloWattHourDay($array[14], $array2[14], $CORRECTFACTOR, 1);
 $KWHDTOT=$KWHD+$KWHDTOT;
 }
 $KWHDTOT= round($KWHDTOT,1);
@@ -178,7 +178,7 @@ $array = preg_split("/;/",$lines[0]);
 $array[14] = str_replace(',', '.', $array[14]);
 $array2 = preg_split("/;/",$lines[$contalines-1]);
 $array2[14] = str_replace(',', '.', $array2[14]);
-$KWHD=(($array2[14]-$array[14])*$CORRECTFACTOR);
+$KWHD = Formulas::calcKiloWattHourDay($array[14], $array2[14], $CORRECTFACTOR, 1);
 $KWHDTOT=$KWHD+$KWHDTOT;
 }
 $KWHDTOT= round($KWHDTOT,1);

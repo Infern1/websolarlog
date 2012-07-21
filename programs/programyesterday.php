@@ -1,7 +1,9 @@
-<?php 
+<?php
 // Credit Louviaux Jean-Marc 2012
 date_default_timezone_set('GMT');
 $invtnum = $_GET['invtnum'];
+
+include_once("../classes/Formulas.php");
 
 $dir = '../data/invt'.$invtnum.'/csv';
 $output = scandir($dir);
@@ -16,7 +18,7 @@ function tricsv($var){
 $lines=file($dir."/".$output[$cnt-2]);
 
 foreach ($lines as $line_num => $line) {
-	$array = preg_split("/;/",$line);
+	$array = explode(";",$line);
 
 	$SDTE[$line_num]=$array[0];
 	$KWHT[$line_num]=str_replace(",", ".",$array[14]);
@@ -50,9 +52,7 @@ foreach ($lines as $line_num => $line) {
 	$diffTime=$UTCdate-$diffUTCdate;
 
 	if ($diffTime!=0) {
-		//AveragePOWer = ((KiloWattHourTime[currentline] - KiloWattHourTime[last add line](give timediff in sec) *3600 (to hour) / $difftime) * 1000 (watt??)), round by 1 decimal)
-		// ^averagepower over a given time.
-		$AvgPOW=round((((($KWHT[$line_num]-$KWHT[$pastline_num])*3600)/$diffTime)*1000),1);
+	    $AvgPOW = Formulas::calcAveragePower($KWHT[$pastline_num], $KWHT[$line_num], $diffTime);
 	} else {
 		$AvgPOW=0;
 	}

@@ -1,5 +1,6 @@
 <?php
 include("styles/globalheader.php");
+include_once("classes/Formulas.php");
 if(!empty($_GET['invtnum'])) {
     $invtnum = $_GET['invtnum'];
 } else {$invtnum = 1;
@@ -53,11 +54,11 @@ sort($output);
 $cnt=count($output);
 $lines=file($dir."/".$output[$cnt-1]);
 $contalines = count($lines);
-$array = preg_split("/;/",$lines[0]);
+$array = explode(";",$lines[0]);
 $array[14] = str_replace(",", ".", $array[14]);
-$array2 = preg_split("/;/",$lines[$contalines-1]);
+$array2 = explode(";",$lines[$contalines-1]);
 $array2[14] = str_replace(",", ".", $array2[14]);
-$KWHD=round((($array2[14]-$array[14])*$CORRECTFACTOR),1);
+$KWHD = Formulas::calcKiloWattHourDay($array[14], $array2[14], $CORRECTFACTOR, 1);
 echo "text: '$lgTODAYTITLE ($KWHD kWh)'";
 ?>
 },
@@ -146,7 +147,7 @@ $array = preg_split("/;/",$lines[0]);
 $array[14] = str_replace(",", ".", $array[14]);
 $array2 = preg_split("/;/",$lines[$contalines-1]);
 $array2[14] = str_replace(",", ".", $array2[14]);
-$KWHD=round((($array2[14]-$array[14])*$CORRECTFACTOR),1);
+$KWHD = Formulas::calcKiloWattHourDay($array[14], $array2[14], $CORRECTFACTOR, 1);
 echo "text: '$lgYESTERDAYTITLE ($KWHD kWh)'";
 ?>
 },
@@ -358,7 +359,7 @@ if (!empty($INVNAME)) {
               WSL.init_liveData(<?php echo($invtnum); ?>, "#livedata"); // Initial load fast
               window.setInterval(function(){WSL.init_liveData(<?php echo($invtnum); ?>, "#livedata");}, 1000); // every 1 seconds
               </script>
-             
+
 			<p align="center">
 				<font size="-2"><?php echo "$lgPMAX";?><br> <b id='PMAXOTD'>--</b> W @ <b id='PMAXOTDTIME'>--</b> <br> <?php
 				echo "<a href='dashboard.php?invtnum=$invtnum'>$lgDASHBOARD</a>";

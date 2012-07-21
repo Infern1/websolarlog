@@ -3,14 +3,15 @@
 $lock = touch(dirname(dirname(__FILE__)) . "/data/lock"); // Lock port
 
 define('checkaccess', TRUE);
-include((dirname(dirname(__FILE__)) . "/config/pdo_database.class.php"));
-include((dirname(dirname(__FILE__)) . "/config/config_main.php"));
+include_once dirname(dirname(__FILE__)) . "/config/pdo_database.class.php"; // optional
+require_once dirname(dirname(__FILE__)) . "/config/config_main.php";
+require_once dirname(dirname(__FILE__)) . "classes/Formulas.php";
 
 
 $db = new wArLeY_DBMS("mysql", "127.0.0.1", "solarweblog","user","password","");
 /*
  * There is no DB
- * 
+ *
  * if($db->Cnxn() == false)
  * 		die("Error: Cant connect to database.");
  */
@@ -39,13 +40,13 @@ if ($AUTOMODE == true) {
 for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 	include((dirname(dirname(__FILE__)) . "/config/config_invt$invtnum.php"));
 	$DATADIR = dirname(dirname(__FILE__)) . "/data/invt$invtnum";
-		
+
 	if ($DEBUG != true) {
 		$datareturn = shell_exec('aurora -a' . $ADR . ' -c -T ' . $COMOPTION . ' -d0 -e ' . $PORT);
 	} else {
 		$datareturn = shell_exec('aurora -b -a' . $ADR . ' -c -T ' . $COMOPTION . ' -d0 -e ' . $PORT . ' 2>' . $DATADIR . '/errors/de.err');
 	}
-	
+
 	$array = preg_split("/[[:space:]]+/", $datareturn);
 	if (!empty($array[21])) {
 		$RET = $array[21];
@@ -74,25 +75,23 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 		$msg	 = "";
 		$KWHDtot = 0;
 		$GPtot   = 0;
-		
+
 		$stringData = "$SDTE;$I1V;$I1A;$I1P;$I2V;$I2A;$I2P;$GV;$GA;$GP;$FRQ;$EFF;$INVT;$BOOT;$KWHT";
 		$myFile	 = $DATADIR . "/infos/live.txt"; // Live
 		$fh = fopen($myFile, 'w+') or die("can't open $myFile file");
 		fwrite($fh, $stringData);
 		fclose($fh);
-		
+
 		$pmaxotd = file($DATADIR . "/infos/pmaxotd.txt"); // Max instant power of the day
 		$array   = preg_split("/;/", $pmaxotd[0]);
 		$GP2	 = str_replace(",", ".", $GP);
 		$EFF	 = str_replace(",", ".", $EFF);
 		$COEF	= ($EFF / 100) * $CORRECTFACTOR;
-		if ($COEF > 1) {
-			$COEF = 1;
-		}
-		
+
 		// GridPower2 = GridPower2 * COrrectedEFeciency, round by 2 decimals
 		// ^ GridPower in Watt
-		$GP2 = round($GP2 * $COEF, 2);
+		$GP2 = Formulas::calcPowerEfficency($GP2, $COEF);
+
 		if ($GP2 > $array[1]) {
 			$myFile = $DATADIR . "/infos/pmaxotd.txt";
 			$fh = fopen($myFile, 'w+') or die("can't open $myFile file");
@@ -100,20 +99,17 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 			fwrite($fh, $stringData);
 			fclose($fh);
 		}
-		
+
 		if ($NUMINV > 1) { // Max instant power of the day on multi
 			$pmaxotd		= file((dirname(dirname(__FILE__)) . "/data/pmaxotd.txt"));
 			$array		  = preg_split("/;/", $pmaxotd[0]);
 			$GP2m[$invtnum] = str_replace(",", ".", $GP);
 			$EFF			= str_replace(",", ".", $EFF);
 			$COEF		   = ($EFF / 100) * $CORRECTFACTOR;
-			if ($COEF > 1) {
-				$COEF = 1;
-			}
 			// GridPower2max[inverternumber] = $GridPower2max * COrrectedEFeciency, round by 2 decimals
 			// ^ Max. grid power in Watt
-			$GP2m[$invtnum] = round($GP2m[$invtnum] * $COEF, 2);
-			
+			$GP2m[$invtnum] = Formulas::calcPowerEfficency($GP2m[$invtnum], $COEF);
+
 			if (array_sum($GP2m) > $array[1]) {
 				$GP2multi = array_sum($GP2m);
 				$myFile   = (dirname(dirname(__FILE__)) . "/data/pmaxotd.txt");
@@ -123,27 +119,27 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 				fclose($fh);
 			}
 		}
-		
+
 		$minute  = date("i");
-		
+
 		/*
 		 * Create a 5 min. interval array for PVoutput
-		 */ 
+		 */
 		$count = 00;
 		$interval = 5; // <<< bring this value to admin
-		while($count<=59){ 
+		while($count<=59){
 			if ($count < 10){$countstring = sprintf("%02d",$count);}else{$countstring = (string)$count;}
 			$minpvoutputlist[$count]=$countstring;
 			$count = $count + $interval;
 		}
-		
-		
+
+
 		/*
-		 * Create a X min. interval array for log frequency. 
-		 */ 
+		 * Create a X min. interval array for log frequency.
+		 */
 		$count = 00;
 		$interval = 2; // <<< bring this value to admin, INT not lower than 1 because it will loop.
-		while($count<=59){ 
+		while($count<=59){
 			if ($count < 10){$countstring = sprintf("%02d",$count);}else{$countstring = (string)$count;}
 			$mindatalist[$count]=$countstring;
 			$count = $count + $interval;
@@ -153,7 +149,7 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 			$flagX = touch($DATADIR . '/dataflag'); // Do it once every X min
 			$today = date("Ymd");
 			$now   = date("Ymd-H:i:s"); // Server time
-			
+
 			$stringData = "$now;$I1V;$I1A;$I1P;$I2V;$I2A;$I2P;$GV;$GA;$GP;$FRQ;$EFF;$INVT;$BOOT;$KWHT\n";
 			$myFile	 = $DATADIR . "/csv/" . $today . ".csv";
 			$fh = fopen($myFile, 'a+') or die("can't open $myFile file");
@@ -181,23 +177,23 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 				":azimuth|" . round($azimuth, 2) . "|STR",
 				":altitude|" . round($altitude, 2) . "|STR"
 			);
-			
+
 			$db->query_secure("INSERT INTO `pvlog`.`live` (`datetime`,`mpp1Voltage`, `mpp1Current`, `mpp1Power`, `mpp2Voltage`, `mpp2Current`, `mpp2Power`, `gridVoltage`, `gridCurrent`, `gridPower`, `GridFrequency`, `invEfficiency`, `invTemp`, `BoosTemp`, `kwht`,`azimuth`,`altitude`)  VALUES  (now(),:mpp1Voltage,:mpp1Current,:mpp1Power,:mpp2Voltage,:mpp2Current,:mpp2Power,:gridVoltage,:gridCurrent,:gridPower,:GridFrequency,:invEfficiency,:invTemp,:BoosTemp,:kwht,:azimuth,:altitude);", $params, false, false, "|");
 			/*
 			 *  /db add by Freemann
 			 */
-			
+
 			$lines	  = file($myFile);
 			$contalines = count($lines);
-			
-			// Dawn startup 
+
+			// Dawn startup
 			if ($contalines == 1) {
 				$dir	= $DATADIR . '/csv';
 				$output = scandir($dir);
 				$output = array_filter($output, "tricsv");
 				sort($output);
 				$xdays = count($output);
-				
+
 				if ($xdays > 1) {
 					$yesterdaylog  = $dir . "/" . $output[$xdays - 2]; //yesterday
 					$lines		 = file($yesterdaylog);
@@ -232,12 +228,12 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 			 		*   /db add by Freemann
 			 		*/
 				}
-				
+
 				unlink($DATADIR . "/infos/pmaxotd.txt"); // Remove past pmotd
 				if ($NUMINV > 1) {
 					unlink(dirname(dirname(__FILE__)) . "/data/pmaxotd.txt");
 				}
-				
+
 				$now		= date("Y-m-d H:i");
 				$file	   = $DATADIR . "/infos/events.txt";
 				$new_lignes = "$now\tInverter awake\n\n";
@@ -247,7 +243,7 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 				$fp		  = fopen($file, 'w');
 				$write	   = fwrite($fp, $new_content);
 				fclose($fp);
-				
+
 				// Morning cleanup, purge detailled files
 				if ($KEEPDDAYS != 0) {
 					$output = scandir($dir);
@@ -273,9 +269,9 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 					$file2 = fopen($myFile, 'w');
 					fwrite($file2, implode('', $file));
 					fclose($file2);
-				} // End of morning clean up 
+				} // End of morning clean up
 			} // End of dawn startup
-			
+
 			// Wait 60 min after startup to make sure the inverter is fully awake
 			if ($contalines == 12) {
 				sleep(1);
@@ -290,7 +286,7 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 					$info = shell_exec('aurora -a' . $ADR . ' -L ' . $PORT); //Sync time
 				}
 			}
-			
+
 			// Alarms and warnings
 			sleep(1); // take a nap
 			$alarm  = shell_exec('aurora -a ' . $ADR . ' -A ' . $PORT);
@@ -300,14 +296,14 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 			$stringData = "$now $alarm";
 			fwrite($fh, $stringData);
 			fclose($fh);
-			
+
 			// Test the alarms file
 			$myFile = file($DATADIR . '/errors/latest_alarms.txt');
 			foreach ($myFile as $item) {
 				$match = $match . $item;
 				$msg   = $msg . $item . "\n";
 			}
-			
+
 			// Log alarms in events
 			if (strstr($match, 'E0') || strstr($match, 'W0')) {
 				$file	   = $DATADIR . "/infos/events.txt";
@@ -320,30 +316,30 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 				fclose($fp);
 			}
 			$FILTER = preg_split("/,/", $FILTER);
-			
+
 			foreach ($FILTER as $word) // Email filter
 				$match = str_replace($word, "", $match);
-			
+
 			if ($SENDALARMS == true && strstr($match, 'E0')) {
 				mail("$EMAIL", "123Aurora: Inverter #" . $invtnum . " ERROR", $msg);
 			}
-			
+
 			if ($SENDMSGS == true && strstr($match, 'W0')) {
 				mail("$EMAIL", "123Aurora: Inverter #" . $invtnum . " message", $msg);
 			}
 
 		} // End of X min jobs
-		
-		// als 
+
+		// als
 		if (!in_array($minute, $mindatalist) && file_exists($DATADIR . '/dataflag')) {
 			unlink($DATADIR . '/dataflag');
 		}
-		
+
 		// Set 5 min PVoutput flag
 		if (in_array($minute, $minpvoutputlist) && (!file_exists($DATADIR . '/pvoutputflag'))) { // 5 min jobs
 			$flagX = touch($DATADIR . '/pvoutputflag'); // Do it once every 5 min
 		}
-		
+
 		// start 5 min PVoutput flag
 		if (!in_array($minute, $minpvoutputlist) && file_exists($DATADIR . '/pvoutputflag')) {
 			if ($PVOUTPUT == true && $invtnum == $NUMINV) { // PVoutput
@@ -378,8 +374,7 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 					} else {
 						$KWHT_strt = str_replace(",", ".", $array[14]);
 						$KWHT_stop = str_replace(",", ".", $array2[14]);
-						// $KiloWattHourDay = ($KiloWattHourTotal_stop - $KiloWattHourTotal_start) * 1000(Watt) * $CORRECTFACTOR), round by 0 decimals) Watthour
-						$KWHD	  = round((($KWHT_stop - $KWHT_strt) * 1000 * $CORRECTFACTOR), 0); //Wh
+						$KWHD = Formulas::calcKiloWattHourDay($KWHT_strt, $KWHT_stop, $CORRECTFACTOR);
 						$GP		= round(str_replace(",", ".", $array2[9]), 0);
 					}
 					$KWHDtot	= $KWHDtot + $KWHD;
@@ -391,9 +386,9 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 				$time = date('H:i', mktime(date("H"), date("i") - 1, 0, date("m"), date("d"), date("Y")));
 				$INVT = round(str_replace(",", ".", $INVT), 1);
 				$GV   = round(str_replace(",", ".", $GV), 1);
-				
+
 				$pvoutput = shell_exec('curl -d "d=' . $now . '" -d "t=' . $time . '" -d "c1=0" -d "v1=' . $KWHDtot . '" -d "v2=' . $GPtot . '" -d "v5=' . $INVT . '" -d "v6=' . $GV . '" -H "X-Pvoutput-Apikey: ' . $APIKEY . '" -H "X-Pvoutput-SystemId: ' . $SYSID . '" http://pvoutput.org/service/r2/addstatus.jsp &');
-				
+
 				$stringData = "\nSend : $now $time - $KWHDtot Wh $GPtot W $INVT C $GV V\nPVoutput returned: $pvoutput";
 				fwrite($fh, $stringData);
 				fclose($fh);

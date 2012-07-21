@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Credit Louviaux Jean-Marc 2012
 define('checkaccess', TRUE);
 include('../config/config_main.php');
@@ -42,7 +42,7 @@ for ($invtnum=1;$invtnum<=$NUMINV;$invtnum++) { // Multi
 		$countalines = count($lines);
 
 		// Digging into the array
-		$array = preg_split("/;/",$lines[$countalines-$j-1]);
+		$array = explode(";",$lines[$countalines-$j-1]);
 
 		$year = substr($array[0], 0, 4);
 		$month = substr($array[0], 4, 2);

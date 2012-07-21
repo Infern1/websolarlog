@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Credit Louviaux Jean-Marc 2012
 define('checkaccess', TRUE);
 include('../config/config_main.php');
@@ -11,7 +11,7 @@ for ($invtnum=1;$invtnum<=$NUMINV;$invtnum++) {
 	include('../config/config_invt'.$invtnum.'.php');
 	$dir = '../data/invt'.$invtnum.'/infos';
 	$livedash=file($dir."/live.txt");
-	$array = preg_split("/;/",$livedash[0]);
+	$array = explode(";",$livedash[0]);
 	$array[9]= str_replace(",", ".",$array[9]);
 
 	$COEF=($array[11]/100)*$CORRECTFACTOR;
@@ -29,7 +29,7 @@ if ($GPTOT>1000) {
 }
 
 $pmaxotd=file("../data/pmaxotd.txt");
-$parray = preg_split("/;/",$pmaxotd[0]);
+$parray = explode(";",$pmaxotd[0]);
 $pmax=round($parray[1],0);
 $hour = substr($parray[0], 9, 2);
 $minute = substr($parray[0], 12, 2);

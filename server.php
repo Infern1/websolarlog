@@ -66,6 +66,7 @@ switch ($method) {
 		$data['events'] = $contents;
 		break;
 	case 'getLiveData':
+	    include_once("config/config_invt".$invtnum.".php");
 		$filename="data/invt$invtnum/infos/live.txt";
 		$handle = fopen($filename, "r");
 		$array = explode(";", fread($handle, filesize($filename)));
@@ -129,7 +130,7 @@ switch ($method) {
 				}
 			}
 		}
-			
+
 		$lines=file($path);
 		$contalines = count($lines);
 		$array = explode(";",$lines[$contalines-1]);

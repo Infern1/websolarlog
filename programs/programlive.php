@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Credit Louviaux Jean-Marc 2012
 date_default_timezone_set('GMT');
 $invtnum = $_GET['invtnum'];
@@ -9,7 +9,7 @@ include("$config_invt");
 
 $dir = '../data/invt'.$invtnum.'/infos';
 $livedash=file($dir."/live.txt");
-$array = preg_split("/;/",$livedash[0]);
+$array = explode(";",$livedash[0]);
 
 $year = substr($array[0], 0, 4);
 $month = substr($array[0], 4, 2);
@@ -46,7 +46,7 @@ if ($array[9]>1000) { // Round power > 1000W
 }
 
 $pmaxotd=file($dir."/pmaxotd.txt");
-$parray = preg_split("/;/",$pmaxotd[0]);
+$parray = explode(";",$pmaxotd[0]);
 $pmax=round($parray[1],0);
 $hour = substr($parray[0], 9, 2);
 $minute = substr($parray[0], 12, 2);
