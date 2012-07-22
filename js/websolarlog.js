@@ -31,16 +31,20 @@ var WSL = {
         // Retrieve the error events 
         WSL.api.getLiveData(invtnum, function(data)
         {
-            $.ajax({
-                url : 'js/templates/livedata.hb',
-                success : function(source)
-                {
-                    var template = Handlebars.compile(source);
-                    var html = template({ 'data' : data });
-                    $(divId).html(html);
-                },
-                dataType : 'text'
-            });
+            if (data.liveData.success) {
+                $.ajax({
+                    url : 'js/templates/livedata.hb',
+                    success : function(source)
+                    {
+                        var template = Handlebars.compile(source);
+                        var html = template({ 'data' : data.liveData });
+                        $(divId).html(html);
+                    },
+                    dataType : 'text'
+                });                
+            } else {
+                alert(data.liveData.message);
+            }
         });
     },
     init_plantinfo : function(invtnum, divId) {

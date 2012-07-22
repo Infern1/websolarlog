@@ -7,8 +7,6 @@
  * @category  Classes
  * @package   Results
  * @author    Martin Diphoorn <martin@diphoorn.com>
- * @license   http://www.diphoorn.com/licenses/license.php Commercial License
- * @link      http://www.diphoorn.com/
  */
 
 /**
@@ -17,8 +15,6 @@
  * @category  Classes
  * @package   Results
  * @author    Martin Diphoorn <martin@diphoorn.com>
- * @license   http://www.diphoorn.com/licenses/license.php Commercial License
- * @link      http://www.diphoorn.com/
  * @access    public
  * @since     File available since Release 0.0.0
  */
@@ -36,8 +32,8 @@ class BaseResult
     function __construct()
     {
         $this->resulttype = "BaseResult";
-        $this->target = Common::getValue("target", "");
-        $this->returnAction = Common::getValue("returnAction", "");
+        //$this->target = Common::getValue("target", "");
+        //$this->returnAction = Common::getValue("returnAction", "");
     }
 }
 

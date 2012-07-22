@@ -1,6 +1,8 @@
 <?php
 define('checkaccess', TRUE);
 include("config/config_main.php");
+include_once("classes/BaseResult.php");
+include_once("classes/LiveDataResult.php");
 
 // Retrieve action params
 $method = $_GET['method'];
@@ -96,24 +98,22 @@ switch ($method) {
 		$pMaxOTD=file("data/invt$invtnum/infos/pmaxotd.txt");
 		$pMaxArray = explode(";",$pMaxOTD[0]);
 
-		$liveData = array();
-		$liveData[] = array( "title" => "SDTE", "value" => $UTCdate*1000);
-		$liveData[] = array( "title" => "I1V",  "value" => floatval(round($array[1],2)));
-		$liveData[] = array( "title" => "I1A",  "value" => floatval(round($array[2],2)));
-		$liveData[] = array( "title" => "I1P",  "value" => floatval(round($array[3],2)));
-		$liveData[] = array( "title" => "I2V",  "value" => floatval(round($array[4],2)));
-		$liveData[] = array( "title" => "I2A",  "value" => floatval(round($array[5],2)));
-		$liveData[] = array( "title" => "I2P",  "value" => floatval(round($array[6],2)));
-		$liveData[] = array( "title" => "GV",   "value" => floatval(round($array[7],2)));
-		$liveData[] = array( "title" => "GA",   "value" => floatval(round($array[8],2)));
-		$liveData[] = array( "title" => "GP",   "value" => floatval($array[9]));
-		$liveData[] = array( "title" => "FRQ",  "value" => floatval(round($array[10],2)));
-		$liveData[] = array( "title" => "EFF",  "value" => floatval(round($array[11],2)));
-		$liveData[] = array( "title" => "INVT", "value" => floatval(round($array[12],1)));
-		$liveData[] = array( "title" => "BOOT", "value" => floatval(round($array[13],1)));
-		$liveData[] = array( "title" => "KHWT", "value" => floatval($array[14]));
-		$liveData[] = array( "title" => "PMAXOTD", "value" => floatval(round($pMaxArray[1],0)));
-		$liveData[] = array( "title" => "PMAXOTDTIME", "value" => (substr($pMaxArray[0], 9, 2).":".substr($pMaxArray[0], 12, 2)));
+		$liveData = new LiveDataResult();
+		$liveData->setInverterOne(floatval(round($array[1],2)), floatval(round($array[2],2)), floatval(round($array[3],2)));
+		$liveData->setInverterTwo(floatval(round($array[4],2)), floatval(round($array[5],2)), floatval(round($array[6],2)));
+		$liveData->setGlobal(floatval(round($array[7],2)), floatval(round($array[8],2)), floatval($array[0]));
+
+		$liveData->valueSDTE = $UTCdate*1000;
+		$liveData->valueEFF = floatval(round($array[11],2));
+		$liveData->valueINVT = floatval(round($array[12],1));
+		$liveData->valueBOOT = floatval(round($array[13],1));
+		$liveData->valueKHWT = floatval($array[14]);
+
+		$liveData->valuePMAXOTD = floatval(round($pMaxArray[1],0));
+		$liveData->valuePMAXOTDTIME = (substr($pMaxArray[0], 9, 2).":".substr($pMaxArray[0], 12, 2));
+
+		$liveData->success = true;
+
 		$data['liveData'] = $liveData;
 		break;
 	case 'getPlantInfo':
