@@ -20,30 +20,29 @@
  */
 class LiveDataResult extends BaseResult {
 
-    // Inverter one
+    // MPP/string one
     public $valueI1V; // Spanning in Volt
     public $valueI1A; // Ampere in Ampere
     public $valueI1P; // Vermogen in Watt
 
-    // Inverter two
+    // MPP/string two
     public $valueI2V; // Spanning in Volt
-    public $valueI2A; // Ampere in Ampere
+    public $valueI2A; // Stroom in Ampere
     public $valueI2P; // Vermogen in Watt
 
-    // Global
+    // Grid values
     public $valueGV; // Spanning in Volt
-    public $valueGA; // Ampere in Ampere
+    public $valueGA; // Stroom in Ampere
     public $valueGP; // Vermogen in Watt
+    public $valueFRQ; // Grid Frequency
 
-
-    public $valueSDTE;
-    public $valueFRQ; // Frequency
+    public $valueSDTE; // ?? datetime ??
     public $valueEFF; // Efficiency
-    public $valueINVT;
-    public $valueBOOT;
-    public $valueKHWT;
-    public $valuePMAXOTD;
-    public $valuePMAXOTDTIME;
+    public $valueINVT; // Inverter Temp.
+    public $valueBOOT; //  Booster Temp.
+    public $valueKHWT; // kiloWattHourTotal
+    public $valuePMAXOTD; // Power Max of today
+    public $valuePMAXOTDTIME; // Power Max of today Time
 
     /**
      * Constructor

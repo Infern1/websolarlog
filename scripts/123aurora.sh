@@ -15,6 +15,11 @@ done
 
 case $1 in
 start)
+	type php >/dev/null 2>&1 || { echo >&2 "Php not installed.  Aborting."; exit 1; }
+	type aurora >/dev/null 2>&1 || { echo >&2 "Aurora not installed.  Aborting."; exit 1; }
+	if [ -f $WWWDIR'/data/lock' ]; then
+		rm $WWWDIR'/data/lock'
+	fi
 	if [ ! -f /var/lock/123aurora ]; then
 		touch /var/lock/123aurora
 		looping &
@@ -36,7 +41,11 @@ stop)
 		echo "123aurora was already stopped"
 	fi
 ;;
-admin)
+admin)	
+	clear
+	type shuf >/dev/null 2>&1 || { echo >&2 "NOTICE: shuf not installed."; }
+	type netstat >/dev/null 2>&1 || { echo >&2 "NOTICE: netstat not installed."; }
+
 	shuf -i 10000-9999999 -n 1 > /tmp/123AURORAPASS
 
 	set -e
@@ -52,7 +61,6 @@ admin)
 
 	IP=`netstat -n -t | awk '{print $4}' | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -v "127.0.0.1" | sort -u`
 
-	clear
 	echo "123aurora administration"
 	echo ""
 	echo "Log on to http://$IP/config/index.php"
@@ -66,7 +74,8 @@ clear
 pathtosrv=`pwd`
 echo "Welcome to 123Aurora - Louviaux Jean-Marc
 
-Usage : simply run as root $pathtosrv/123aurora.sh { admin | start | stop }"
+Usage: run as root $pathtosrv/123aurora.sh { admin | start | stop }
+"
 ;;
 esac
 exit 0
