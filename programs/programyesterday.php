@@ -17,6 +17,7 @@ function tricsv($var){
 
 $lines=file($dir."/".$output[$cnt-2]);
 
+$MaxPow = 0;
 foreach ($lines as $line_num => $line) {
 	$array = explode(";",$line);
 
@@ -43,25 +44,22 @@ foreach ($lines as $line_num => $line) {
 	$pastminute = substr($SDTE[$pastline_num], 12, 2);
 	$pastseconde = substr($SDTE[$pastline_num], 15, 2);
 
-	$POW=round(((($I1P+$I2P)*$EFF)/100),1);
-
 	$UTCdate = strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$seconde);
 
 	//calculate average Power between 2 pooling, more precise
 	$diffUTCdate = strtotime ($pastyear."-".$pastmonth."-".$pastday." ".$pasthour.":".$pastminute.":".$pastseconde);
 	$diffTime=$UTCdate-$diffUTCdate;
 
-	if ($diffTime!=0) {
+	$AvgPOW = 0;
+	if ($diffTime !=0 ) {
 	    $AvgPOW = Formulas::calcAveragePower($KWHT[$pastline_num], $KWHT[$line_num], $diffTime);
-	} else {
-		$AvgPOW=0;
 	}
 
 	$UTCdate = $UTCdate *1000;
 	$stack[$line_num] = array ($UTCdate, $AvgPOW);
 
 	if ($AvgPOW>=$MaxPow) { // Maximum
-		$MaxPow=$AvgPOW;
+		$MaxPow = $AvgPOW;
 		$stack2[0] = array ($UTCdate, $MaxPow);
 	}
 

@@ -19,6 +19,7 @@ $lines=file($dir."/".$output[$cnt-1]);
 $contalines = count($lines);
 
 // Loop through the array
+$MaxPow = 0;
 foreach ($lines as $line_num => $line) {
 
 	// remove all whitespaces

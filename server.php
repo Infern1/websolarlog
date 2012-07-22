@@ -37,7 +37,7 @@ header('Content-type: application/json');
 
 // Initialize return array
 $data = array();
-$invtnum = $_GET['invtnum'];
+$invtnum = Common::getValue('invtnum', 0);
 
 switch ($method) {
 	case 'getLanguages':
