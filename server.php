@@ -1,8 +1,10 @@
 <?php
 define('checkaccess', TRUE);
 include("config/config_main.php");
-include_once("classes/BaseResult.php");
-include_once("classes/LiveDataResult.php");
+
+require 'classes/classloader.php';
+//include_once("classes/BaseResult.php");
+//include_once("classes/LiveDataResult.php");
 
 // Retrieve action params
 $method = $_GET['method'];
