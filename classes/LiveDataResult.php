@@ -54,19 +54,19 @@ class LiveDataResult extends BaseResult {
         $this->resulttype = "LiveDataResult";
     }
 
-    public function setInverterOne($v, $a, $p) {
+    public function setMppOne($v, $a, $p) {
         $this->valueI1V = $v;
         $this->valueI1A = $a;
         $this->valueI1P = $p;
     }
 
-    public function setInverterTwo($v, $a, $p) {
+    public function setMppTwo($v, $a, $p) {
         $this->valueI2V = $v;
         $this->valueI2A = $a;
         $this->valueI2P = $p;
     }
 
-    public function setGlobal($v, $a, $p) {
+    public function setGrid($v, $a, $p) {
         $this->valueGV = $v;
         $this->valueGA = $a;
         $this->valueGP = $p;

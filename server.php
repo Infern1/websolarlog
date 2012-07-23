@@ -101,9 +101,9 @@ switch ($method) {
 		$pMaxArray = explode(";",$pMaxOTD[0]);
 
 		$liveData = new LiveDataResult();
-		$liveData->setInverterOne(floatval(round($array[1],2)), floatval(round($array[2],2)), floatval(round($array[3],2)));
-		$liveData->setInverterTwo(floatval(round($array[4],2)), floatval(round($array[5],2)), floatval(round($array[6],2)));
-		$liveData->setGlobal(floatval(round($array[7],2)), floatval(round($array[8],2)), floatval($array[0]));
+		$liveData->setMppOne(floatval(round($array[1],2)), floatval(round($array[2],2)), floatval(round($array[3],2)));
+		$liveData->setMppTwo(floatval(round($array[4],2)), floatval(round($array[5],2)), floatval(round($array[6],2)));
+		$liveData->setGrid(floatval(round($array[7],2)), floatval(round($array[8],2)), floatval($array[0]));
 
 		$liveData->valueSDTE = $UTCdate*1000;
 		$liveData->valueEFF = floatval(round($array[11],2));
