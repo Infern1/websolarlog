@@ -59,7 +59,7 @@ switch ($method) {
 		$menu[] = array( "url" => "indexdetailed.php", "title" => $lgMDETAILED);
 		$menu[] = array( "url" => "indexproduction.php", "title" => $lgMPRODUCTION);
 		$menu[] = array( "url" => "indexcomparison.php", "title" => $lgMCOMPARISON);
-		$menu[] = array( "url" => "indexinfo.php", "title" => $lgMINFO);
+		$menu[] = array( "url" => "plantinfo.php", "title" => $lgMINFO);
 		$data['menu'] = $menu;
 		break;
 	case 'getEvents':
@@ -94,7 +94,7 @@ switch ($method) {
 		if ($array[9]>1000) { // Round power > 1000W
 			$array[9]= round($array[9],0);
 		} else {
-			$array[9]= round($array[9],2);
+			$array[9]= round($array[9],9);
 		}
 
 		$pMaxOTD=file("data/invt$invtnum/infos/pmaxotd.txt");
@@ -103,17 +103,22 @@ switch ($method) {
 		$liveData = new LiveDataResult();
 		$liveData->setMppOne(floatval(round($array[1],2)), floatval(round($array[2],2)), floatval(round($array[3],2)));
 		$liveData->setMppTwo(floatval(round($array[4],2)), floatval(round($array[5],2)), floatval(round($array[6],2)));
-		$liveData->setGrid(floatval(round($array[7],2)), floatval(round($array[8],2)), floatval($array[0]));
+		$liveData->setGrid(floatval(round($array[7],2)), floatval(round($array[8],2)), floatval($array[9]));
 
 		$liveData->valueSDTE = $UTCdate*1000;
+		$liveData->valueFRQ = floatval(round($array[10],2));
 		$liveData->valueEFF = floatval(round($array[11],2));
 		$liveData->valueINVT = floatval(round($array[12],1));
 		$liveData->valueBOOT = floatval(round($array[13],1));
 		$liveData->valueKHWT = floatval($array[14]);
-
+		
 		$liveData->valuePMAXOTD = floatval(round($pMaxArray[1],0));
 		$liveData->valuePMAXOTDTIME = (substr($pMaxArray[0], 9, 2).":".substr($pMaxArray[0], 12, 2));
 
+		$liveData->lgDASHBOARD = $lgDASHBOARD;
+		$liveData->lgPMAX = $lgPMAX;
+		
+		
 		$liveData->success = true;
 
 		$data['liveData'] = $liveData;
@@ -170,26 +175,30 @@ switch ($method) {
 		$handle = fopen($filename, "r");
 		$contents = explode("\n", fread($handle, filesize($filename)));
 		fclose($handle);
+		
+		$plantInfo = new PlantInfoResult();
+		$plantInfo->langEVENTS = $lgEVENTS;
+		$plantInfo->langINVERTERINFO = $lgINVERTERINFO;
+		$plantInfo->langTOTALPROD = $lgTOTALPROD;
+		$plantInfo->langECOLOGICALINFOB = $lgECOLOGICALINFOB;
+		$plantInfo->langPLANTINFO = $lgPLANTINFO;
+		$plantInfo->langLOCATION = $lgLOCATION;
+		$plantInfo->langCOUNTER = $lgCOUNTER;
+		$plantInfo->langPLANTPOWER = $lgPLANTPOWER;
 
-		$data['lang']['lgEVENTS'] = $lgEVENTS;
-		$data['lang']['lgINVERTERINFO'] = $lgINVERTERINFO;
-		$data['lang']['lgTOTALPROD'] = $lgTOTALPROD;
-		$data['lang']['lgECOLOGICALINFOB'] = $lgECOLOGICALINFOB;
-		$data['lang']['lgPLANTINFO'] = $lgPLANTINFO;
-		$data['lang']['lgLOCATION'] = $lgLOCATION;
-		$data['lang']['lgCOUNTER'] = $lgCOUNTER;
-		$data['lang']['lgPLANTPOWER'] = $lgPLANTPOWER;
+		$plantInfo->valueSYSID = $SYSID;
+		$plantInfo->valuePLANT_POWER = $PLANT_POWER;
+		$plantInfo->valueLOCATION = $LOCATION;
+		$plantInfo->valueCO2 = $CO2;
+		$plantInfo->valueCO2v =$CO2v;
+		$plantInfo->valueKWHP = $KWHP;
+		$plantInfo->valueUpdtd = $updtd;
+		$plantInfo->valueEvents = $contents;
+		$plantInfo->valueInverter = $inverter;
+		
+		$plantInfo->success = true;
 
-		$data['SYSID'] = $SYSID;
-		$data['PLANT_POWER'] = $PLANT_POWER;
-		$data['LOCATION'] = $LOCATION;
-		$data['CO2'] = $CO2;
-		$data['CO2v'] =$CO2v;
-		$data['KWHP'] = $KWHP;
-		$data['updtd'] = $updtd;
-		$data['events'] = $contents;
-		$data['inverter'] = $inverter;
-		//var_dump($data);
+		$data['plantInfo'] = $plantInfo;
 		break;
 	default:
 		break;

@@ -359,12 +359,6 @@ if (!empty($INVNAME)) {
               WSL.init_liveData(<?php echo($invtnum); ?>, "#livedata"); // Initial load fast
               window.setInterval(function(){WSL.init_liveData(<?php echo($invtnum); ?>, "#livedata");}, 1000); // every 1 seconds
               </script>
-
-			<p align="center">
-				<font size="-2"><?php echo "$lgPMAX";?><br> <b id='PMAXOTD'>--</b> W @ <b id='PMAXOTDTIME'>--</b> <br> <?php
-				echo "<a href='dashboard.php?invtnum=$invtnum'>$lgDASHBOARD</a>";
-				?> </font>
-			</p>
 		</td>
 	</tr>
 </table>
