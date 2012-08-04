@@ -32,6 +32,7 @@ function tricsv($var){return !is_dir($var)&& preg_match('/.*\.csv/', $var);}
 <title><?php echo "$TITLE";?></title>
 <link href="favicon.ico" rel="icon" type="image/x-icon" />
 <link rel="stylesheet" href="js/jqueryuicss/jquery-ui.css" type="text/css" />
+<link rel="stylesheet" href="css/jquery.jqplot.min.css" type="text/css" />
 <link rel="stylesheet" href="js/jgauge/css/jgauge.css" type="text/css" />
 <link rel="stylesheet" href="css/main.css" type="text/css" />
 <link rel="stylesheet" href="styles/<?php echo $user_style;?>/css/style.css" type="text/css" />
@@ -39,10 +40,19 @@ function tricsv($var){return !is_dir($var)&& preg_match('/.*\.csv/', $var);}
 <script type="text/javascript" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/highcharts.js"></script>
 <script type="text/javascript" src="js/modules/exporting.js"></script>
+<script type="text/javascript" src="js/handlebars.js"></script>
+<script type="text/javascript" src="js/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="js/jqplot_plugins/jqplot.json2.min.js"></script>
+<script type="text/javascript" src="js/jqplot_plugins/jqplot.canvasTextRenderer.min.js"></script>
+<script type="text/javascript" src="js/jqplot_plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+<script type="text/javascript" src="js/jqplot_plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+<script type="text/javascript" src="js/jqplot_plugins/jqplot.dateAxisRenderer.min.js"></script>
+<script type="text/javascript" src="js/jqplot_plugins/jqplot.meterGaugeRenderer.min.js"></script>
+<script type="text/javascript" src="js/jqplot_plugins/jqplot.cursor.min.js"></script>
+<script type="text/javascript" src="js/jqplot_plugins/jqplot.trendline.min.js"></script>
 <!--[if IE]><script type="text/javascript" language="javascript" src="js/jgauge/js/excanvas.min.js"></script><![endif]-->
 <script language="javascript" type="text/javascript" src="js/jgauge/js/jQueryRotate.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jgauge/js/jgauge-0.3.0.a3.js"></script>
-<script language="javascript" type="text/javascript" src="js/handlebars.js"></script>
 <script language="javascript" type="text/javascript" src="js/websolarlog.js"></script>
 <?php include("styles/yourheader.php");?>
 </head>

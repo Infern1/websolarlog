@@ -111,14 +111,14 @@ switch ($method) {
 		$liveData->valueINVT = floatval(round($array[12],1));
 		$liveData->valueBOOT = floatval(round($array[13],1));
 		$liveData->valueKHWT = floatval($array[14]);
-		
+
 		$liveData->valuePMAXOTD = floatval(round($pMaxArray[1],0));
 		$liveData->valuePMAXOTDTIME = (substr($pMaxArray[0], 9, 2).":".substr($pMaxArray[0], 12, 2));
 
 		$liveData->lgDASHBOARD = $lgDASHBOARD;
 		$liveData->lgPMAX = $lgPMAX;
-		
-		
+
+
 		$liveData->success = true;
 
 		$data['liveData'] = $liveData;
@@ -175,7 +175,7 @@ switch ($method) {
 		$handle = fopen($filename, "r");
 		$contents = explode("\n", fread($handle, filesize($filename)));
 		fclose($handle);
-		
+
 		$plantInfo = new PlantInfoResult();
 		$plantInfo->langEVENTS = $lgEVENTS;
 		$plantInfo->langINVERTERINFO = $lgINVERTERINFO;
@@ -195,11 +195,69 @@ switch ($method) {
 		$plantInfo->valueUpdtd = $updtd;
 		$plantInfo->valueEvents = $contents;
 		$plantInfo->valueInverter = $inverter;
-		
+
 		$plantInfo->success = true;
 
 		$data['plantInfo'] = $plantInfo;
 		break;
+	case 'getTodayValues':
+	    $lines=file(FileUtil::getLastChangedFileFromDir("data/invt".$invtnum."/csv"));
+
+	    $points = array();
+
+	    $oldTime = 0;
+	    $oldKWHT = 0;
+
+	    foreach ($lines as $line) {
+	        $line = str_replace("\n", "", $line); // remove line endings
+	        $line = str_replace(",", ".", $line); // Convert comma to dot
+	        $fields = explode(";", $line); // Create an array of fields
+
+	        // 20120623-05:16:00
+	        $rawdatetime = explode('-', $fields[0]);
+	        $year = substr($rawdatetime[0], 0, 4);
+	        $month = substr($rawdatetime[0], 4, 2);
+	        $day = substr($rawdatetime[0], 6, 2);
+	        $hour = substr($rawdatetime[1], 0, 2);
+	        $minute = substr($rawdatetime[1], 3, 2);
+	        $second = substr($rawdatetime[1], 6, 2);
+	        $kwht = $fields[14];
+
+	        // Convert to epoch date
+	        $UTCdate = strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$second);
+
+	        //calculate average Power between 2 pooling, more precise
+	        //$diffUTCdate = strtotime ($pastyear."-".$pastmonth."-".$pastday." ".$pasthour.":".$pastminute.":".$pastseconde);
+	        $diffTime= $UTCdate - $oldTime;
+
+	        if ($diffTime!=0) {
+	            $AvgPOW = Formulas::calcAveragePower($oldKWHT, $kwht, $diffTime);
+	        } else {
+	            $AvgPOW=0;
+	        }
+
+	        // Only add Points if the value changed
+	        if ($kwht - $oldKWHT != 0) {
+	            $points[] = array($year."-".$month."-".$day." ".$hour.":".$minute , $AvgPOW);
+	        }
+
+	        $oldTime = $UTCdate;
+	        $oldKWHT = $kwht;
+
+	    }
+
+	    $points[] = array(0,count($lines));
+
+
+
+
+	    $data = new GraphResult();
+	    $data->label ='Gem. Vermogen (W)';
+	    $data->file = FileUtil::getLastChangedFileFromDir("data/invt".$invtnum."/csv");
+	    $data->data = $points;
+
+
+
 	default:
 		break;
 }
