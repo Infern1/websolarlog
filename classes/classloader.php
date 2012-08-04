@@ -25,7 +25,7 @@ function __autoload($classname)
     }
 
 	// Gather the dirs we need to check
-	$classdirs = Array( "classes" );
+	$classdirs = Array( "classes", "classes/objects" );
 
     foreach ($classdirs as $classdir) {
         // Check the domain model

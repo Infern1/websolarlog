@@ -4,81 +4,18 @@ error_reporting(E_ALL);
 
 define('checkaccess', TRUE);
 define('AURORA', '/share/martin/aurora/aurora-1.8.0/aurora');
-include((dirname(dirname(__FILE__))."/config/config_main.php"));
 
-class Util {
-
-    public static function isSunDown() {
-        $now = strtotime(date("Ymd H:i"));
-        $sun_info = date_sun_info((strtotime(date("Ymd"))), $LATITUDE, $LONGITUDE);
-        return $now<($sun_info['sunrise']-300) || $now>($sun_info['sunset']+300);
-    }
-
-    public static function getDataDir($invtnum) {
-        return dirname(dirname(__FILE__))."/data/invt$invtnum";
-    }
-
-    public static function getLiveTXT($invtnum)  {
-        return self::getDataDir($invtnum) . '/infos/live.txt';
-    }
-
-    public static function getErrorFile($invtnum) {
-        return self::getDataDir($invtnum) . '/errors/de.err';
-    }
-
-    public static function getDataLockFile() {
-        return dirname(dirname(__FILE__))."/data/lock";
-    }
-
-    public static function createLockFile() {
-        return touch(self::getDataLockFile());
-    }
-
-    public static function removeLockFile() {
-        return unlink(self::getDataLockFile());
-    }
-}
-
-Class Aurora {
-    private $ADR;
-    private $PORT;
-    private $INVTNUM;
-    private $COMOPTION;
-    private $DEBUG;
-
-    function __construct($ADR, $PORT, $INVTNUM, $COMOPTION, $DEBUG) {
-        $this->ADR = $ADR;
-        $this->PORT = $PORT;
-        $this->INVTNUM = $INVTNUM;
-        $this->COMOPTION = $COMOPTION;
-        $this->DEBUG = $DEBUG;
-    }
-
-    public function getAlarms() {
-        return $this->execute('-A');
-    }
-
-    public function getData() {
-        if ($this->DEBUG) {
-            return $this->execute('-b -c -T ' . $this->COMOPTION . ' -d0 -e 2>'. Util::getErrorFile($this->INVTNUM));
-        } else {
-            return $this->execute('-c -T ' . $this->COMOPTION . ' -d0 -e');
-        }
-    }
-
-    public function getInfo() {
-        return $this->execute('-p -n -f -g -m -v');
-    }
-
-    public function syncTime() {
-        return $this->execute('-L');
-    }
-
-    private function execute($options) {
-        return shell_exec(AURORA . ' -a' . $this->ADR . ' ' . $options . ' ' . $this->PORT);
-    }
-
-}
+// TODO :: Create autoloader for worker
+$basepath = dirname(dirname(__FILE__));
+include($basepath . "/config/config_main.php");
+include($basepath . "/classes/Util.php");
+include($basepath . "/classes/Aurora.php");
+include($basepath . "/classes/DataAdapter.php");
+include($basepath . "/classes/CsvWriter.php");
+include($basepath . "/classes/CsvDataAdapter.php");
+include($basepath . "/classes/objects/Alarm.php");
+include($basepath . "/classes/objects/Live.php");
+include($basepath . "/classes/objects/MaxPowerToday.php");
 
 function tricsv($var) {
     return !is_dir($var)&& preg_match('/.*\.csv/', $var);
@@ -105,10 +42,18 @@ try {
 
         $aurora = new Aurora($ADR, $PORT, $invtnum, $COMOPTION, $DEBUG);
 
-
         $datareturn = $aurora->getData();
+        if (trim($datareturn) == "") {
+            echo "No response, unit probably down waiting for 60 secs";
+            sleep(60);
+        }
 
+
+        $datareturn = str_replace(".", ",", $datareturn);  // Convert dot to comma;
         $array = preg_split("/[[:space:]]+/",$datareturn);
+
+        $live = new Live();
+
         $RET = false;
         if (!empty ($array[21])) {
             $RET = $array[21];
@@ -116,64 +61,49 @@ try {
 
         if ($RET=="OK") {
             if (!empty ($array[0])) {
-                $SDTE = $array[0];
-            } else { $SDTE=false;
+                $live->SDTE = $array[0];
             }
             if (!empty ($array[1])) {
-                $I1V = str_replace(".", ",",$array[1]);
-            } else { $I1V=false;
+                $live->I1V = $array[1];
             }
             if (!empty ($array[2])) {
-                $I1A = str_replace(".", ",",$array[2]);
-            } else { $I1A=false;
+                $live->I1A = $array[2];
             }
             if (!empty ($array[3])) {
-                $I1P = str_replace(".", ",",$array[3]);
-            } else { $I1P=false;
+                $live->I1P = $array[3];
             }
             if (!empty ($array[4])) {
-                $I2V = str_replace(".", ",",$array[4]);
-            } else { $I2V=false;
+                $live->I2V = $array[4];
             }
             if (!empty ($array[5])) {
-                $I2A = str_replace(".", ",",$array[5]);
-            } else { $I2A=false;
+                $live->I2A = $array[5];
             }
             if (!empty ($array[6])) {
-                $I2P = str_replace(".", ",",$array[6]);
-            } else { $I2P=false;
+                $live->I2P = $array[6];
             }
             if (!empty ($array[7])) {
-                $GV = str_replace(".", ",",$array[7]);
-            } else { $GV=false;
+                $live->GV = $array[7];
             }
             if (!empty ($array[8])) {
-                $GA = str_replace(".", ",",$array[8]);
-            } else { $GA=false;
+                $live->GA = $array[8];
             }
             if (!empty ($array[9])) {
-                $GP = str_replace(".", ",",$array[9]);
-            } else { $GP=false;
+                $live->GP = $array[9];
             }
             if (!empty ($array[10])) {
-                $FRQ = str_replace(".", ",",$array[10]);
-            } else { $FRQ=false;
+                $live->FRQ = $array[10];
             }
             if (!empty ($array[11])) {
-                $EFF = str_replace(".", ",",$array[11]);
-            } else { $EFF=false;
+                $live->EFF = $array[11];
             }
             if (!empty ($array[12])) {
-                $INVT = str_replace(".", ",",$array[12]);
-            } else { $INVT=false;
+                $live->INVT = $array[12];
             }
             if (!empty ($array[13])) {
-                $BOOT = str_replace(".", ",",$array[13]);
-            } else { $BOOT=false;
+                $live->BOOT = $array[13];
             }
             if (!empty ($array[19])) {
-                $KWHT = str_replace(".", ",",$array[19]);
-            } else { $KWHT=false;
+                $live->KWHT = $array[19];
             }
 
             // Initialize variables
@@ -182,34 +112,30 @@ try {
             $KWHDtot=0;
             $GPtot=0;
 
-            $stringData="$SDTE;$I1V;$I1A;$I1P;$I2V;$I2A;$I2P;$GV;$GA;$GP;$FRQ;$EFF;$INVT;$BOOT;$KWHT";
-            $myFile = Util::getLiveTXT($invtnum); // Live
-            $fh = fopen($myFile, 'w+') or die("can't open $myFile file");
-            fwrite($fh, $stringData);
-            fclose($fh);
+            // We only call functions from the interface, so we can easily switch this to mysql or any other adapter
+            $dataAdapter = new CsvDataAdapter();
+            $dataAdapter->writeLiveInfo($invtnum, $live);
 
-            $pmaxotd=file(Util::getDataDir($invtnum)."/infos/pmaxotd.txt"); // Max instant power of the day
-            $array = explode(";",$pmaxotd[0]);
-            $GP2 = str_replace(",", ".", $GP);
-            $EFF = str_replace(",", ".", $EFF);
+            $mpt = $dataAdapter->readMaxPowerToday($invtnum);
+            $GP2 = str_replace(",", ".", $live->GP);
+            $EFF = str_replace(",", ".", $live->EFF);
             $COEF=($EFF/100)*$CORRECTFACTOR;
             if ($COEF>1) {
                 $COEF=1;
             }
             $GP2 = round($GP2*$COEF,2);
-            if ($GP2>$array[1]) {
-                $myFile = Util::getDataDir($invtnum) . "/infos/pmaxotd.txt";
-                $fh = fopen($myFile , 'w+') or die("can't open $myFile file");
-                $stringData="$SDTE;$GP2";
-                fwrite($fh, $stringData);
-                fclose($fh);
+            if ($GP2 > $mpt->GP) {
+                // Found a new max power of today
+                $mpt->SDTE = $live->SDTE;
+                $mpt->GP = $GP2;
+                $dataAdapter->writeMaxPowerToday($invtnum, $mpt);
             }
 
             if ($NUMINV>1) { // Max instant power of the day on multi
                 $pmaxotd=file((dirname(dirname(__FILE__))."/data/pmaxotd.txt"));
                 $array = explode(";",$pmaxotd[0]);
-                $GP2m[$invtnum] = str_replace(",", ".", $GP);
-                $EFF = str_replace(",", ".", $EFF);
+                $GP2m[$invtnum] = str_replace(",", ".", $live->GP);
+                $EFF = str_replace(",", ".", $live->EFF);
                 $COEF=($EFF/100)*$CORRECTFACTOR;
                 if ($COEF>1) {
                     $COEF=1;
@@ -220,31 +146,35 @@ try {
                     $GP2multi=array_sum($GP2m);
                     $myFile=(dirname(dirname(__FILE__))."/data/pmaxotd.txt");
                     $fh = fopen($myFile , 'w+') or die("can't open $myFile file");
-                    $stringData="$SDTE;$GP2multi;";
+                    $stringData=$live->SDTE + ";" + $GP2multi;
                     fwrite($fh, $stringData);
                     fclose($fh);
                 }
             }
+
+            // Check alarms
+            /*
+            $alarmmsg = $aurora->getAlarms();
+            if ($alarmmsg !== false && trim($alarmmsg) != "") {
+                $alarm = new Alarm();
+                $alarm->time = date("Y-m-d H:i");
+                $alarm->alarm = str_replace("\n","<br/>",$alarmmsg);
+                $dataAdapter->addAlarm($invtnum, $alarm);
+            }
+            */
 
             $minute= date("i");
             $minlist = array("00","05","10","15","20","25","30","35","40","45","50","55");
 
             if (in_array($minute, $minlist) && (!file_exists(Util::getDataDir($invtnum).'/5minflag'))) { // 5 min jobs
                 $flag5 = touch(Util::getDataDir($invtnum).'/5minflag'); // Do it once every 5 min
-                $today = date("Ymd");
-                $now = date("Ymd-H:i:s"); // PC time
 
-                $stringData="$now;$I1V;$I1A;$I1P;$I2V;$I2A;$I2P;$GV;$GA;$GP;$FRQ;$EFF;$INVT;$BOOT;$KWHT\n";
-                $myFile = Util::getDataDir($invtnum)."/csv/".$today.".csv";
-                $fh = fopen($myFile, 'a+') or die("can't open $myFile file");
-                fwrite($fh, $stringData);
-                fclose($fh);
-
-                $lines = file($myFile);
-                $contalines = count($lines);
+                $live->SDTE = date("Ymd-H:i:s"); // PC time
+                $dataAdapter->addHistory($invtnum, $live, date("Ymd"));
 
                 // Dawn startup
-                if ($contalines==1) {
+                $contalines = $dataAdapter->getHistoryCount($invtnum, date("Ymd"));
+                if ( $contalines == 1) {
                     $dir = Util::getDataDir($invtnum).'/csv';
                     $output = scandir($dir);
                     $output = array_filter($output, "tricsv");
@@ -264,17 +194,18 @@ try {
                         } else { // passed 100.000kWh
                             $production=round((($prodtoday+100000)-$prodyesterday),3);
                         }
-                        $production = str_replace(".", ",", $production);
+
                         $date1 = substr($output[$xdays-2], 0, 8);
                         $year = substr($output[$xdays-2], 0, 4); // For new year
-                        $stringData="$date1;$production\n";
-                        $myFile = Util::getDataDir($invtnum) . "/production/energy" . $year . ".csv";
-                        $fh = fopen($myFile, 'a+') or die("can't open $myFile file");
-                        fwrite($fh, $stringData);
-                        fclose($fh);
+
+                        $energy = new MaxPowerToday();
+                        $energy->SDTE = $date1;
+                        $energy->GP = $production;
+                        echo("DEBUG::Trying to write energy line: " + $dataAdapter->getMaxPowerTodayCsvString($energy));
+                        $dataAdapter->addEnergy($invtnum, $energy, $year);
                     }
 
-                    unlink(Util::getDataDir($invtnum) . "/infos/pmaxotd.txt"); // Remove past pmotd
+                    $dataAdapter->dropMaxPowerToday($invtnum);
                     if ($NUMINV>1) {
                         unlink(dirname(dirname(__FILE__))."/data/pmaxotd.txt");
                     }
@@ -360,6 +291,7 @@ try {
                     $write = fwrite($fp, $new_content);
                     fclose($fp);
                 }
+
 
                 $FILTER = explode(",",$FILTER);
 
