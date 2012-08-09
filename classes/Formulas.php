@@ -42,7 +42,7 @@ class Formulas
      * @param $COEF
      */
     public static function calcKiloWattHourDay($kiloWattHourStart, $kiloWattHourStop, $COEF, $decimals = 0) {
-        return round( ($kiloWattHourStop - $kiloWattHourStart) * 1000 * $COEF, $decimals);
+        return round( (($kiloWattHourStop - $kiloWattHourStart) * 1000 * $COEF) / 1000, $decimals);
     }
 
     /**
