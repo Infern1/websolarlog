@@ -31,7 +31,7 @@ function __autoload($classname)
         // Check the domain model
         $filename = $classdir . "/" . $classname . ".php";
         if (file_exists($filename)) {
-            require_once("$filename");
+            require_once($filename);
             return;
         }
     }
