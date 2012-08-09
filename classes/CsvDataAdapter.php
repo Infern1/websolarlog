@@ -173,7 +173,30 @@ class CsvDataAdapter extends CsvWriter implements DataAdapter {
         $this->appendCsvData($filename, $this->getAlarmCsvString($alarm) . "\n");
     }
 
+    /**
+     * Read the events file
+     * @param int $invtnum
+     * @return array<Alarm> $alarm
+     */
+    public function readAlarm($invtnum) {
+        $result = array();
+        $filename = Util::getDataDir($invtnum) . "infos/events.txt";
+        $lines = $this->readCsvData($filename);
+        foreach ($lines as $line) {
+            $result[] = $this->parseCsvToAlarm($line);
+        }
+        return $result;
+    }
+
     public function getAlarmCsvString(Alarm $alarm) {
         return "" . $alarm->time . ";" . $alarm->alarm;
+    }
+
+    public function parseCsvToAlarm($csv) {
+        $fields = explode(";", $csv);
+        $alarm = new Alarm();
+        $alarm->time = $fields[0];
+        $alarm->alarm = $fields[1];
+        return $alarm;
     }
 }

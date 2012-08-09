@@ -15,5 +15,6 @@ interface DataAdapter {
     public function addEnergy($invtnum, MaxPowerToday $energy, $year);
 
     public function addAlarm($invtnum, Alarm $alarm);
+    public function readAlarm($invtnum);
 }
 ?>
