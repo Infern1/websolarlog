@@ -1,6 +1,7 @@
 <?php
 include("styles/globalheader.php");
-include_once("classes/Formulas.php");
+require_once 'classes/classloader.php';
+
 if(!empty($_GET['invtnum'])) {
     $invtnum = $_GET['invtnum'];
 } else {$invtnum = 1;
@@ -10,8 +11,7 @@ include("config/config_invt".$invtnum.".php");
 
 <!-- /// Day prod /// -->
 <script type="text/javascript">
-$(document).ready(function()
-{
+$(document).ready(function() {
 Highcharts.setOptions({
 global: {useUTC: true}
 });
@@ -46,6 +46,7 @@ credits: {enabled: false},
 legend: {enabled: false},
 title: {
 <?php
+
 $dir = 'data/invt'.$invtnum.'/csv';
 
 $output = scandir($dir);
@@ -356,8 +357,8 @@ if (!empty($INVNAME)) {
 		<div style="clear:both;"></div>
 			<div id="livedata"></div>
 		    <script type="text/javascript">
-              WSL.init_liveData(<?php echo($invtnum); ?>, "#livedata"); // Initial load fast
-              window.setInterval(function(){WSL.init_liveData(<?php echo($invtnum); ?>, "#livedata");}, 1000); // every 1 seconds
+              //WSL.init_liveData(<?php echo($invtnum); ?>, "#livedata"); // Initial load fast
+              //window.setInterval(function(){WSL.init_liveData(<?php echo($invtnum); ?>, "#livedata");}, 1000); // every 1 seconds
               </script>
 		</td>
 	</tr>
