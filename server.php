@@ -1,10 +1,12 @@
 <?php
+// For debugging only
+//error_reporting(E_ALL);
+//ini_set('display_errors', '1');
+
 define('checkaccess', TRUE);
 include("config/config_main.php");
 
 require 'classes/classloader.php';
-//include_once("classes/BaseResult.php");
-//include_once("classes/LiveDataResult.php");
 
 // Retrieve action params
 $method = $_GET['method'];
@@ -39,6 +41,8 @@ header('Content-type: application/json');
 $data = array();
 $invtnum = Common::getValue('invtnum', 0);
 
+$dataAdapter = new CsvDataAdapter();
+
 switch ($method) {
 	case 'getLanguages':
 		$languages = array();
@@ -60,61 +64,46 @@ switch ($method) {
 		$menu[] = array( "url" => "indexproduction.php", "title" => $lgMPRODUCTION);
 		$menu[] = array( "url" => "indexcomparison.php", "title" => $lgMCOMPARISON);
 		$menu[] = array( "url" => "plantinfo.php", "title" => $lgMINFO);
+		$menu[] = array( "url" => "index_chartstest.php", "title" => "Test page");
 		$data['menu'] = $menu;
 		break;
 	case 'getEvents':
-		$filename="data/invt$invtnum/infos/events.txt";
-		$handle = fopen($filename, "r");
-		$contents = explode("\n", fread($handle, filesize($filename)));
-		fclose($handle);
-		$data['events'] = $contents;
+		$data['events'] = $dataAdapter->readAlarm($invtnum);
 		break;
 	case 'getLiveData':
-	    include_once("config/config_invt".$invtnum.".php");
-		$filename="data/invt$invtnum/infos/live.txt";
-		$handle = fopen($filename, "r");
-		$array = explode(";", fread($handle, filesize($filename)));
-		fclose($handle);
-		$UTCdate = strtotime(substr($array[0], 0, 4)."-".substr($array[0], 4, 2)."-".substr($array[0], 6, 2)." ".substr($array[0], 9, 2).":".substr($array[0], 12, 2).":".substr($array[0], 15, 2));
-
-		// loop through all livedata values to replace "comma" to "dot"
-		foreach ($array as $key => $value){
-			$array[$key]  = str_replace(",", ".", $value);
-		}
+	    $config_invt="config/config_invt".$invtnum.".php";
+	    include("$config_invt");
+	    $live = $dataAdapter->readLiveInfo($invtnum);
+		$UTCdate = strtotime(substr($live->SDTE, 0, 4)."-".substr($live->SDTE, 4, 2)."-".substr($live->SDTE, 6, 2)." ".substr($live->SDTE, 9, 2).":".substr($live->SDTE, 12, 2).":".substr($live->SDTE, 15, 2));
 
 		/*
 		 * $array[11] = by inverter reported efficiency;
 		* $CORRECTFACTOR = var set in int_config for correcting reported efficiency;
 		* $COEF = COrrected EFficiency;
 		*/
-		$COEF=($array[11]/100)*$CORRECTFACTOR;
+		$COEF=($live->EFF/100)*$CORRECTFACTOR;
 		$COEF=($COEF > 1) ? 1 : $COEF;
+		$gp = $live->GP * $COEF;
+		$gp = ($gp > 1000) ? round($gp,0) : $gp= round($gp,9) ;
 
-		$array[9]=$array[9]*$COEF;
-		if ($array[9]>1000) { // Round power > 1000W
-			$array[9]= round($array[9],0);
-		} else {
-			$array[9]= round($array[9],9);
-		}
-
-		$pMaxOTD=file("data/invt$invtnum/infos/pmaxotd.txt");
-		$pMaxArray = explode(";",$pMaxOTD[0]);
-
+		// Fill the live data
 		$liveData = new LiveDataResult();
-		$liveData->setMppOne(floatval(round($array[1],2)), floatval(round($array[2],2)), floatval(round($array[3],2)));
-		$liveData->setMppTwo(floatval(round($array[4],2)), floatval(round($array[5],2)), floatval(round($array[6],2)));
-		$liveData->setGrid(floatval(round($array[7],2)), floatval(round($array[8],2)), floatval($array[9]));
-
+		$liveData->setMppOne(floatval(round($live->I1V,2)), floatval(round($live->I1A,2)), floatval(round($live->I1P,2)));
+		$liveData->setMppTwo(floatval(round($live->I2V,2)), floatval(round($live->I2A,2)), floatval(round($live->I2P,2)));
+		$liveData->setGrid(floatval(round($live->GV,2)), floatval(round($live->GA,2)), floatval($gp));
 		$liveData->valueSDTE = $UTCdate*1000;
-		$liveData->valueFRQ = floatval(round($array[10],2));
-		$liveData->valueEFF = floatval(round($array[11],2));
-		$liveData->valueINVT = floatval(round($array[12],1));
-		$liveData->valueBOOT = floatval(round($array[13],1));
-		$liveData->valueKHWT = floatval($array[14]);
+		$liveData->valueFRQ = floatval(round($live->FRQ,2));
+		$liveData->valueEFF = floatval(round($live->EFF,2));
+		$liveData->valueINVT = floatval(round($live->INVT,1));
+		$liveData->valueBOOT = floatval(round($live->BOOT,1));
+		$liveData->valueKWHT = floatval($live->KWHT);
 
-		$liveData->valuePMAXOTD = floatval(round($pMaxArray[1],0));
-		$liveData->valuePMAXOTDTIME = (substr($pMaxArray[0], 9, 2).":".substr($pMaxArray[0], 12, 2));
+		// Set the Power Max Today
+		$mpt = $dataAdapter->readMaxPowerToday($invtnum);
+		$liveData->valuePMAXOTD = floatval(round($mpt->GP,0));
+		$liveData->valuePMAXOTDTIME = (substr($mpt->SDTE, 9, 2).":".substr($mpt->SDTE, 12, 2));
 
+		// Set some translations
 		$liveData->lgDASHBOARD = $lgDASHBOARD;
 		$liveData->lgPMAX = $lgPMAX;
 
@@ -224,12 +213,10 @@ switch ($method) {
 	        $kwht = $fields[14];
 
 	        // Convert to epoch date
-	        $UTCdate = strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$second);
+	        $UTCdate =  strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$second);
 
-	        //calculate average Power between 2 pooling, more precise
-	        //$diffUTCdate = strtotime ($pastyear."-".$pastmonth."-".$pastday." ".$pasthour.":".$pastminute.":".$pastseconde);
+	        // Check time difference
 	        $diffTime= $UTCdate - $oldTime;
-
 	        if ($diffTime!=0) {
 	            $AvgPOW = Formulas::calcAveragePower($oldKWHT, $kwht, $diffTime);
 	        } else {
@@ -248,11 +235,13 @@ switch ($method) {
 
 	    $points[] = array(0,count($lines));
 
+        // Calculate total kwht
+        $firstFields = explode(';', str_replace(",", ".", $lines[0]));
+        $lastFields = explode(';', str_replace(",", ".", $lines[count($lines) - 1]));
 
-
-
-	    $data = new GraphResult();
+	    $data = new TodayValuesResult();
 	    $data->label ='Gem. Vermogen (W)';
+	    $data->kwht = round($lastFields[14] - $firstFields[14], 2);
 	    $data->file = FileUtil::getLastChangedFileFromDir("data/invt".$invtnum."/csv");
 	    $data->data = $points;
 
@@ -266,5 +255,19 @@ try {
 	echo json_encode($data);
 } catch (Exception $e) {
 	echo "error: <br/>" . $e->getMessage() ;
+}
+
+function getTimeStamp($text) {
+    // 20120623-05:16:00
+    $rawdatetime = explode('-', $text);
+    $year = substr($rawdatetime[0], 0, 4);
+    $month = substr($rawdatetime[0], 4, 2);
+    $day = substr($rawdatetime[0], 6, 2);
+    $hour = substr($rawdatetime[1], 0, 2);
+    $minute = substr($rawdatetime[1], 3, 2);
+    $second = substr($rawdatetime[1], 6, 2);
+
+    // Convert to epoch date
+    return strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$second);
 }
 ?>
