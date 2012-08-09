@@ -40,7 +40,7 @@ class LiveDataResult extends BaseResult {
     public $valueEFF; // Efficiency
     public $valueINVT; // Inverter Temp.
     public $valueBOOT; //  Booster Temp.
-    public $valueKHWT; // kiloWattHourTotal
+    public $valueKWHT; // kiloWattHourTotal
     public $valuePMAXOTD; // Power Max of today
     public $valuePMAXOTDTIME; // Power Max of today Time
 
