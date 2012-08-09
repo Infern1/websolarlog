@@ -78,8 +78,8 @@ $LatestPow = $AvgPOW;  // Latest value
 $LatestTime = $UTCdate;
 
 // Updating title
-$array = preg_split("/;/",$lines[0]);
-$array2 = preg_split("/;/",$lines[$contalines-1]);
+$array = explode(";",$lines[0]);
+$array2 = explode(";",$lines[$contalines-1]);
 $array[14]=str_replace(",", ".",$array[14]);
 $array2[14]=str_replace(",", ".",$array2[14]);
 // corrected KiloWattHourDay
