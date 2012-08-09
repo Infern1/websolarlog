@@ -13,7 +13,7 @@ $LATITUDE='50.61';
 $LONGITUDE='4.635';
 
 // ### WEB PAGE
-$TITLE='123Aurora Solar logger';
+$TITLE='WebSolarLog';
 $SUBTITLE='« The sun is new each day »';
 
 // ### ALARMS AND MESSAGE EMAILS
@@ -21,12 +21,12 @@ $SENDALARMS=false;
 $SENDMSGS=false;
 $FILTER='';
 $EMAIL='no@be.com';
-  
+
 // ### CLEANUP
 $KEEPDDAYS='365';
 $AMOUNTLOG='500';
-  
-// ### PVOUTPUT.org 
+
+// ### PVOUTPUT.org
 $PVOUTPUT=false;
 $APIKEY='abc123';
 $SYSID='';

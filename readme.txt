@@ -1,3 +1,9 @@
+ WebSolarLog Version 0.0.1
+ 
+ Fork off the 123Aurora Web Solar Logger project created by Louviaux Jean-Marc
+ 
+ TODO :: Change readme.txt 
+ 
  ╔═════════════════════════════════════════════════════════════════════════════╗
  ║                                                                             ║
  ║                      - 123Aurora Web Solar Logger -                         ║
