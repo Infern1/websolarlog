@@ -71,9 +71,9 @@ switch ($method) {
 		$data['events'] = $dataAdapter->readAlarm($invtnum);
 		break;
 	case 'getLiveData':
-	    $config_invt="config/config_invt".$invtnum.".php";
-	    include("$config_invt");
-	    $live = $dataAdapter->readLiveInfo($invtnum);
+		$config_invt="config/config_invt".$invtnum.".php";
+		include("$config_invt");
+		$live = $dataAdapter->readLiveInfo($invtnum);
 		$UTCdate = strtotime(substr($live->SDTE, 0, 4)."-".substr($live->SDTE, 4, 2)."-".substr($live->SDTE, 6, 2)." ".substr($live->SDTE, 9, 2).":".substr($live->SDTE, 12, 2).":".substr($live->SDTE, 15, 2));
 
 		/*
@@ -189,62 +189,125 @@ switch ($method) {
 
 		$data['plantInfo'] = $plantInfo;
 		break;
+
 	case 'getTodayValues':
-	    $lines=file(FileUtil::getLastChangedFileFromDir("data/invt".$invtnum."/csv"));
+		// get the date of today.
+		$CSVdate = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
+		// get the CSV of today
+		$lines=file("data/invt".$invtnum."/csv/".$CSVdate.".csv");
 
-	    $points = array();
+		$points = array();
 
-	    $oldTime = 0;
-	    $oldKWHT = 0;
+		$oldTime = 0;
+		$oldKWHT = 0;
 
-	    foreach ($lines as $line) {
-	        $line = str_replace("\n", "", $line); // remove line endings
-	        $line = str_replace(",", ".", $line); // Convert comma to dot
-	        $fields = explode(";", $line); // Create an array of fields
+		foreach ($lines as $line) {
+			$line = str_replace("\n", "", $line); // remove line endings
+			$line = str_replace(",", ".", $line); // Convert comma to dot
+			$fields = explode(";", $line); // Create an array of fields
 
-	        // 20120623-05:16:00
-	        $rawdatetime = explode('-', $fields[0]);
-	        $year = substr($rawdatetime[0], 0, 4);
-	        $month = substr($rawdatetime[0], 4, 2);
-	        $day = substr($rawdatetime[0], 6, 2);
-	        $hour = substr($rawdatetime[1], 0, 2);
-	        $minute = substr($rawdatetime[1], 3, 2);
-	        $second = substr($rawdatetime[1], 6, 2);
-	        $kwht = $fields[14];
+			// 20120623-05:16:00
+			$rawdatetime = explode('-', $fields[0]);
+			$year = substr($rawdatetime[0], 0, 4);
+			$month = substr($rawdatetime[0], 4, 2);
+			$day = substr($rawdatetime[0], 6, 2);
+			$hour = substr($rawdatetime[1], 0, 2);
+			$minute = substr($rawdatetime[1], 3, 2);
+			$second = substr($rawdatetime[1], 6, 2);
+			$kwht = $fields[14];
 
-	        // Convert to epoch date
-	        $UTCdate =  strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$second);
+			// Convert to epoch date
+			$UTCdate =  strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$second);
 
-	        // Check time difference
-	        $diffTime= $UTCdate - $oldTime;
-	        if ($diffTime!=0) {
-	            $AvgPOW = Formulas::calcAveragePower($oldKWHT, $kwht, $diffTime);
-	        } else {
-	            $AvgPOW=0;
-	        }
+			// Check time difference
+			$diffTime= $UTCdate - $oldTime;
+			if ($diffTime!=0) {
+				$AvgPOW = Formulas::calcAveragePower($oldKWHT, $kwht, $diffTime);
+			} else {
+				$AvgPOW=0;
+			}
 
-	        // Only add Points if the value changed
-	        if ($kwht - $oldKWHT != 0) {
-	            $points[] = array($year."-".$month."-".$day." ".$hour.":".$minute , $AvgPOW);
-	        }
+			// Only add Points if the value changed
+			if ($kwht - $oldKWHT != 0) {
+				$points[] = array($year."-".$month."-".$day." ".$hour.":".$minute , $AvgPOW);
+			}
 
-	        $oldTime = $UTCdate;
-	        $oldKWHT = $kwht;
+			$oldTime = $UTCdate;
+			$oldKWHT = $kwht;
 
-	    }
+		}
 
-	    $points[] = array(0,count($lines));
+		$points[] = array(0,count($lines));
 
-        // Calculate total kwht
-        $firstFields = explode(';', str_replace(",", ".", $lines[0]));
-        $lastFields = explode(';', str_replace(",", ".", $lines[count($lines) - 1]));
+		// Calculate total kwht
+		$firstFields = explode(';', str_replace(",", ".", $lines[0]));
+		$lastFields = explode(';', str_replace(",", ".", $lines[count($lines) - 1]));
 
-	    $data = new TodayValuesResult();
-	    $data->label ='Gem. Vermogen (W)';
-	    $data->kwht = round($lastFields[14] - $firstFields[14], 2);
-	    $data->file = FileUtil::getLastChangedFileFromDir("data/invt".$invtnum."/csv");
-	    $data->data = $points;
+		$data = new TodayValuesResult();
+		$data->label ='Gem. Vermogen (W)';
+		$data->kwht = round($lastFields[14] - $firstFields[14], 2);
+		$data->file = "data/invt".$invtnum."/csv".$CSVdate.".csv";
+		$data->data = $points;
+		break;
 
+	case 'getYesterdayValues':
+		// get the date of yesterday.
+		$CSVdate = date("Ymd",mktime(0, 0, 0, date("m")  , date("d")-1, date("Y")));
+		// get the CSV of yesterday
+		$lines=file("data/invt".$invtnum."/csv/".$CSVdate.".csv");
+		
+		$points = array();
+
+		$oldTime = 0;
+		$oldKWHT = 0;
+
+		foreach ($lines as $line) {
+			$line = str_replace("\n", "", $line); // remove line endings
+			$line = str_replace(",", ".", $line); // Convert comma to dot
+			$fields = explode(";", $line); // Create an array of fields
+
+			// 20120623-05:16:00
+			$rawdatetime = explode('-', $fields[0]);
+			$year = substr($rawdatetime[0], 0, 4);
+			$month = substr($rawdatetime[0], 4, 2);
+			$day = substr($rawdatetime[0], 6, 2);
+			$hour = substr($rawdatetime[1], 0, 2);
+			$minute = substr($rawdatetime[1], 3, 2);
+			$second = substr($rawdatetime[1], 6, 2);
+			$kwht = $fields[14];
+
+			// Convert to epoch date
+			$UTCdate =  strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$second);
+
+			// Check time difference
+			$diffTime= $UTCdate - $oldTime;
+			if ($diffTime!=0) {
+				$AvgPOW = Formulas::calcAveragePower($oldKWHT, $kwht, $diffTime);
+			} else {
+				$AvgPOW=0;
+			}
+
+			// Only add Points if the value changed
+			if ($kwht - $oldKWHT != 0) {
+				$points[] = array($year."-".$month."-".$day." ".$hour.":".$minute , $AvgPOW);
+			}
+
+			$oldTime = $UTCdate;
+			$oldKWHT = $kwht;
+
+		}
+
+		$points[] = array(0,count($lines));
+
+		// Calculate total kwht
+		$firstFields = explode(';', str_replace(",", ".", $lines[0]));
+		$lastFields = explode(';', str_replace(",", ".", $lines[count($lines) - 1]));
+
+		$data = new TodayValuesResult();
+		$data->label ='Gem. Vermogen (W)';
+		$data->kwht = round($lastFields[14] - $firstFields[14], 2);
+		$data->file = "data/invt".$invtnum."/csv".$CSVdate.".csv";
+		$data->data = $points;
 
 
 	default:
@@ -258,16 +321,16 @@ try {
 }
 
 function getTimeStamp($text) {
-    // 20120623-05:16:00
-    $rawdatetime = explode('-', $text);
-    $year = substr($rawdatetime[0], 0, 4);
-    $month = substr($rawdatetime[0], 4, 2);
-    $day = substr($rawdatetime[0], 6, 2);
-    $hour = substr($rawdatetime[1], 0, 2);
-    $minute = substr($rawdatetime[1], 3, 2);
-    $second = substr($rawdatetime[1], 6, 2);
+	// 20120623-05:16:00
+	$rawdatetime = explode('-', $text);
+	$year = substr($rawdatetime[0], 0, 4);
+	$month = substr($rawdatetime[0], 4, 2);
+	$day = substr($rawdatetime[0], 6, 2);
+	$hour = substr($rawdatetime[1], 0, 2);
+	$minute = substr($rawdatetime[1], 3, 2);
+	$second = substr($rawdatetime[1], 6, 2);
 
-    // Convert to epoch date
-    return strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$second);
+	// Convert to epoch date
+	return strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$second);
 }
 ?>

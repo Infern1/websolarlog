@@ -51,6 +51,7 @@ function tricsv($var){return !is_dir($var)&& preg_match('/.*\.csv/', $var);}
 <script type="text/javascript" src="js/jqplot_plugins/jqplot.cursor.min.js"></script>
 <script type="text/javascript" src="js/jqplot_plugins/jqplot.trendline.min.js"></script>
 <script type="text/javascript" src="js/jqplot_plugins/jqplot.pointLabels.min.js"></script>
+<script type="text/javascript" src="js/jqplot_plugins/jqplot.highlighter.min.js"></script>
 <!--[if IE]><script type="text/javascript" language="javascript" src="js/jgauge/js/excanvas.min.js"></script><![endif]-->
 <script language="javascript" type="text/javascript" src="js/jgauge/js/jQueryRotate.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jgauge/js/jgauge-0.3.0.a3.js"></script>

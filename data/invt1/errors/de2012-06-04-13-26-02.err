@@ -1,0 +1,408 @@
+
+aurora -b -a2 -c -T -Y3 -d0 -e /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0 
+
+szttyDevice: /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0
+yDelay:     1
+yTimeout    0 mS
+yMaxRunTime ~
+devLCKfile: </var/lock/LCK..usb-1a86_USB2.0-Serial-if00-port0>
+devLCKfileNew: </var/lock/LCK..usb-1a86_USB2.0-Serial-if00-port0.7218>
+Got Params
+
+RunTime 20120604-13:26:01 v1.8.0 
+Endian : Little
+PID : 7218
+
+Attempting to get lock on Serial Port /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0...
+Checking for lock
+
+Checking process 7218 for lock
+rPID: 7218 SubStrPos: aurora command: aurora = me
+Appears we got the lock.
+
+Opening Serial Port /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0...  Serial Port /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0 successfully opened.
+Configuring serial device... Flushing unread data first...  Success!
+Flushing serial device buffer... Success!
+
+Comm Check: Let's see if the Aurora is listening... 
+Elapsed time since last comm 0 us
+Attempt 1
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3a 00 00 00 00 00 00 00 00 
+command: 02 3a 00 00 00 00 00 00 01 b7 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=1 (00) waited/max    10806/1000000  uS 
+Read char #2 RC=1 (06) waited/max       10/1000000  uS 
+Read char #3 RC=1 (31) waited/max        9/1000000  uS 
+Read char #4 RC=1 (42) waited/max        9/1000000  uS 
+Read char #5 RC=1 (4e) waited/max        9/1000000  uS 
+Read char #6 RC=1 (4e) waited/max        9/1000000  uS 
+Read char #7 RC=1 (9c) waited/max        9/1000000  uS 
+Read char #8 RC=1 (58) waited/max        9/1000000  uS 
+answer:  00 06 31 42 4e 4e 9c 58 
+received 8 characters
+CRC receive OK 589c
+Transmission State Check: 0
+Model ID "1" Multipler 0.0970019 -- PVI-3.0-OUTD (new) --
+Comm Check: OK
+
+Elapsed time since last comm 195 us
+Attempt 1
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3b 04 00 00 00 00 00 00 00 
+command: 02 3b 04 00 00 00 00 00 78 38 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=0 (00) waited/max    97758/1000000  uS 
+answer:  Got -1 characters
+
+Elapsed time since last comm 0 us
+Attempt 2
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3b 04 00 00 00 00 00 00 00 
+command: 02 3b 04 00 00 00 00 00 78 38 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=1 (00) waited/max    16810/1000000  uS 
+Read char #2 RC=1 (06) waited/max        9/1000000  uS 
+Read char #3 RC=1 (42) waited/max        9/1000000  uS 
+Read char #4 RC=1 (47) waited/max        9/1000000  uS 
+Read char #5 RC=1 (f0) waited/max        8/1000000  uS 
+Read char #6 RC=1 (a5) waited/max        9/1000000  uS 
+Read char #7 RC=1 (0a) waited/max        9/1000000  uS 
+Read char #8 RC=1 (e7) waited/max        9/1000000  uS 
+answer:  00 06 42 47 f0 a5 0a e7 
+received 8 characters
+CRC receive OK e70a
+Transmission State Check: 0
+szCvrtFloat    49.985004 0x4247f0a5
+value        49.985004
+
+Elapsed time since last comm 81 us
+Attempt 1
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3b 01 00 00 00 00 00 00 00 
+command: 02 3b 01 00 00 00 00 00 ff 2c 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=1 (00) waited/max    18805/1000000  uS 
+Read char #2 RC=1 (06) waited/max        9/1000000  uS 
+Read char #3 RC=1 (43) waited/max        9/1000000  uS 
+Read char #4 RC=1 (61) waited/max        9/1000000  uS 
+Read char #5 RC=1 (db) waited/max        9/1000000  uS 
+Read char #6 RC=1 (6a) waited/max        9/1000000  uS 
+Read char #7 RC=1 (33) waited/max        9/1000000  uS 
+Read char #8 RC=1 (d7) waited/max        9/1000000  uS 
+answer:  00 06 43 61 db 6a 33 d7 
+received 8 characters
+CRC receive OK d733
+Transmission State Check: 0
+szCvrtFloat   225.857086 0x4361db6a
+value       225.857086
+
+Elapsed time since last comm 77 us
+Attempt 1
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3b 02 00 00 00 00 00 00 00 
+command: 02 3b 02 00 00 00 00 00 82 20 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=1 (00) waited/max    10813/1000000  uS 
+Read char #2 RC=1 (06) waited/max        9/1000000  uS 
+Read char #3 RC=1 (40) waited/max        8/1000000  uS 
+Read char #4 RC=1 (32) waited/max        8/1000000  uS 
+Read char #5 RC=1 (33) waited/max        9/1000000  uS 
+Read char #6 RC=1 (9d) waited/max        8/1000000  uS 
+Read char #7 RC=1 (10) waited/max        9/1000000  uS 
+Read char #8 RC=1 (3a) waited/max        9/1000000  uS 
+answer:  00 06 40 32 33 9d 10 3a 
+received 8 characters
+CRC receive OK 3a10
+Transmission State Check: 0
+szCvrtFloat     2.784400 0x4032339d
+value         2.784400
+
+Elapsed time since last comm 63 us
+Attempt 1
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3b 03 00 00 00 00 00 00 00 
+command: 02 3b 03 00 00 00 00 00 a9 24 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=1 (00) waited/max    10814/1000000  uS 
+Read char #2 RC=1 (06) waited/max        9/1000000  uS 
+Read char #3 RC=1 (44) waited/max        9/1000000  uS 
+Read char #4 RC=1 (1c) waited/max        8/1000000  uS 
+Read char #5 RC=1 (45) waited/max        9/1000000  uS 
+Read char #6 RC=1 (34) waited/max        9/1000000  uS 
+Read char #7 RC=1 (03) waited/max        8/1000000  uS 
+Read char #8 RC=1 (c7) waited/max        8/1000000  uS 
+answer:  00 06 44 1c 45 34 03 c7 
+received 8 characters
+CRC receive OK c703
+Transmission State Check: 0
+szCvrtFloat   625.081299 0x441c4534
+value       625.081299
+
+Elapsed time since last comm 73 us
+Attempt 1
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3b 17 00 00 00 00 00 00 00 
+command: 02 3b 17 00 00 00 00 00 b5 76 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=0 (00) waited/max    96786/1000000  uS 
+answer:  Got -1 characters
+
+Elapsed time since last comm 0 us
+Attempt 2
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3b 17 00 00 00 00 00 00 00 
+command: 02 3b 17 00 00 00 00 00 b5 76 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=1 (00) waited/max    10788/1000000  uS 
+Read char #2 RC=1 (06) waited/max       10/1000000  uS 
+Read char #3 RC=1 (43) waited/max        9/1000000  uS 
+Read char #4 RC=1 (b8) waited/max        9/1000000  uS 
+Read char #5 RC=1 (a9) waited/max        9/1000000  uS 
+Read char #6 RC=1 (0e) waited/max        9/1000000  uS 
+Read char #7 RC=1 (74) waited/max        8/1000000  uS 
+Read char #8 RC=1 (22) waited/max        8/1000000  uS 
+answer:  00 06 43 b8 a9 0e 74 22 
+received 8 characters
+CRC receive OK 2274
+Transmission State Check: 0
+szCvrtFloat   369.320740 0x43b8a90e
+value       369.320740
+
+Elapsed time since last comm 79 us
+Attempt 1
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3b 19 00 00 00 00 00 00 00 
+command: 02 3b 19 00 00 00 00 00 17 4f 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=1 (00) waited/max    16813/1000000  uS 
+Read char #2 RC=1 (06) waited/max       10/1000000  uS 
+Read char #3 RC=1 (3f) waited/max        9/1000000  uS 
+Read char #4 RC=1 (7d) waited/max        8/1000000  uS 
+Read char #5 RC=1 (0c) waited/max        9/1000000  uS 
+Read char #6 RC=1 (73) waited/max        9/1000000  uS 
+Read char #7 RC=1 (07) waited/max        9/1000000  uS 
+Read char #8 RC=1 (a5) waited/max        9/1000000  uS 
+answer:  00 06 3f 7d 0c 73 07 a5 
+received 8 characters
+CRC receive OK a507
+Transmission State Check: 0
+szCvrtFloat     0.988471 0x3f7d0c73
+value         0.988471
+
+Elapsed time since last comm 68 us
+Attempt 1
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3b 1a 00 00 00 00 00 00 00 
+command: 02 3b 1a 00 00 00 00 00 6a 43 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=1 (00) waited/max    10818/1000000  uS 
+Read char #2 RC=1 (06) waited/max       10/1000000  uS 
+Read char #3 RC=1 (43) waited/max        9/1000000  uS 
+Read char #4 RC=1 (94) waited/max        9/1000000  uS 
+Read char #5 RC=1 (c7) waited/max        9/1000000  uS 
+Read char #6 RC=1 (b3) waited/max       10/1000000  uS 
+Read char #7 RC=1 (c7) waited/max        9/1000000  uS 
+Read char #8 RC=1 (15) waited/max        9/1000000  uS 
+answer:  00 06 43 94 c7 b3 c7 15 
+received 8 characters
+CRC receive OK 15c7
+Transmission State Check: 0
+szCvrtFloat   297.560150 0x4394c7b3
+value       297.560150
+
+Elapsed time since last comm 72 us
+Attempt 1
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3b 1b 00 00 00 00 00 00 00 
+command: 02 3b 1b 00 00 00 00 00 41 47 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=1 (00) waited/max    10804/1000000  uS 
+Read char #2 RC=1 (06) waited/max        9/1000000  uS 
+Read char #3 RC=1 (3f) waited/max       10/1000000  uS 
+Read char #4 RC=1 (76) waited/max        9/1000000  uS 
+Read char #5 RC=1 (3e) waited/max        9/1000000  uS 
+Read char #6 RC=1 (30) waited/max        9/1000000  uS 
+Read char #7 RC=1 (2c) waited/max        9/1000000  uS 
+Read char #8 RC=1 (79) waited/max        9/1000000  uS 
+answer:  00 06 3f 76 3e 30 2c 79 
+received 8 characters
+CRC receive OK 792c
+Transmission State Check: 0
+szCvrtFloat     0.961886 0x3f763e30
+value         0.961886
+
+Elapsed time since last comm 63 us
+Attempt 1
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3b 15 00 00 00 00 00 00 00 
+command: 02 3b 15 00 00 00 00 00 e3 7e 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=0 (00) waited/max    96771/1000000  uS 
+answer:  Got -1 characters
+
+Elapsed time since last comm 0 us
+Attempt 2
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3b 15 00 00 00 00 00 00 00 
+command: 02 3b 15 00 00 00 00 00 e3 7e 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=1 (00) waited/max    11805/1000000  uS 
+Read char #2 RC=1 (06) waited/max       10/1000000  uS 
+Read char #3 RC=1 (41) waited/max        9/1000000  uS 
+Read char #4 RC=1 (d8) waited/max        9/1000000  uS 
+Read char #5 RC=1 (30) waited/max        8/1000000  uS 
+Read char #6 RC=1 (5e) waited/max        9/1000000  uS 
+Read char #7 RC=1 (8f) waited/max        9/1000000  uS 
+Read char #8 RC=1 (82) waited/max        9/1000000  uS 
+answer:  00 06 41 d8 30 5e 8f 82 
+received 8 characters
+CRC receive OK 828f
+Transmission State Check: 0
+szCvrtFloat    27.023617 0x41d8305e
+value        27.023617
+
+Elapsed time since last comm 78 us
+Attempt 1
+Clearing read buffer Success!
+szSerBufferSave OK! 02 3b 16 00 00 00 00 00 00 00 
+command: 02 3b 16 00 00 00 00 00 9e 72 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=1 (00) waited/max    30811/1000000  uS 
+Read char #2 RC=1 (06) waited/max        9/1000000  uS 
+Read char #3 RC=1 (41) waited/max        9/1000000  uS 
+Read char #4 RC=1 (bb) waited/max        9/1000000  uS 
+Read char #5 RC=1 (a3) waited/max       10/1000000  uS 
+Read char #6 RC=1 (79) waited/max        9/1000000  uS 
+Read char #7 RC=1 (2e) waited/max        9/1000000  uS 
+Read char #8 RC=1 (0e) waited/max        9/1000000  uS 
+answer:  00 06 41 bb a3 79 2e 0e 
+received 8 characters
+CRC receive OK 0e2e
+Transmission State Check: 0
+szCvrtFloat    23.454821 0x41bba379
+value        23.454821
+
+Attempting to get Partial Energy value 
+Elapsed time since last comm 137 us
+Attempt 1
+Clearing read buffer Success!
+szSerBufferSave OK! 02 4e 06 00 00 00 00 00 00 00 
+command: 02 4e 06 00 00 00 00 00 c1 d1 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=1 (00) waited/max    11807/1000000  uS 
+Read char #2 RC=1 (06) waited/max        9/1000000  uS 
+Read char #3 RC=1 (00) waited/max        9/1000000  uS 
+Read char #4 RC=1 (00) waited/max        9/1000000  uS 
+Read char #5 RC=1 (84) waited/max        9/1000000  uS 
+Read char #6 RC=1 (4b) waited/max        9/1000000  uS 
+Read char #7 RC=1 (6c) waited/max        8/1000000  uS 
+Read char #8 RC=1 (db) waited/max        9/1000000  uS 
+answer:  00 06 00 00 84 4b 6c db 
+received 8 characters
+CRC receive OK db6c
+Transmission State Check: 0
+szCvrtLong          33867 0x0000844b
+value               33867
+
+Elapsed time since last comm 51 us
+Attempt 1
+Clearing read buffer Success!
+szSerBufferSave OK! 02 4e 00 00 00 00 00 00 00 00 
+command: 02 4e 00 00 00 00 00 00 3b c9 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=0 (00) waited/max    97753/1000000  uS 
+answer:  Got -1 characters
+
+Elapsed time since last comm 0 us
+Attempt 2
+Clearing read buffer Success!
+szSerBufferSave OK! 02 4e 00 00 00 00 00 00 00 00 
+command: 02 4e 00 00 00 00 00 00 3b c9 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=1 (00) waited/max     1802/1000000  uS 
+Read char #2 RC=1 (06) waited/max        9/1000000  uS 
+Read char #3 RC=1 (00) waited/max        9/1000000  uS 
+Read char #4 RC=1 (00) waited/max        9/1000000  uS 
+Read char #5 RC=1 (04) waited/max        8/1000000  uS 
+Read char #6 RC=1 (f0) waited/max        9/1000000  uS 
+Read char #7 RC=1 (f8) waited/max        9/1000000  uS 
+Read char #8 RC=1 (ff) waited/max        9/1000000  uS 
+answer:  00 06 00 00 04 f0 f8 ff 
+received 8 characters
+
+Elapsed time since last comm 0 us
+Attempt 3
+Clearing read buffer Success!
+szSerBufferSave OK! 02 4e 00 00 00 00 00 00 00 00 
+command: 02 4e 00 00 00 00 00 00 3b c9 
+Flushing serial device buffer... Success!
+Sending command... sent 10 characters
+Draining serial device buffer... Success!
+Cleared data buffer: 00 00 00 00 00 00 00 00 00 00 
+Read char #1 RC=0 (00) waited/max    98747/1000000  uS 
+answer:  Got -1 characters
+
+Restoring Serial Port settings /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0... Success!
+Flushing serial device buffer... Success!
+Closing Serial Port /dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0... Success!
+
+devLCKfile: </var/lock/LCK..usb-1a86_USB2.0-Serial-if00-port0>
+devLCKfileNew: </var/lock/LCK..usb-1a86_USB2.0-Serial-if00-port0.7218>
+Clearing Serial Port Lock (7218)... done.
+
+20120604-13:26:02: aurora: ERROR: Received bad return code (-1 78)
+
+Complete 20120604-13:26:02
+

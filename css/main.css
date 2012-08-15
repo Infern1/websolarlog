@@ -91,8 +91,8 @@
 .topGauge {
 	margin: 0px;
 	padding: 0px;
-	width: 13.56em;
-	height: 11em;
+	width: 153px;
+	height: 135px;
 	display: inline-block;
 }
 
@@ -104,4 +104,8 @@
 
 .my-jqplot-title {
     font-weight: bold;	
+}
+.chartGroup{
+	width:100%;
+	text-align:center;
 }
