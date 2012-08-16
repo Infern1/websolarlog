@@ -303,12 +303,66 @@ switch ($method) {
 		$firstFields = explode(';', str_replace(",", ".", $lines[0]));
 		$lastFields = explode(';', str_replace(",", ".", $lines[count($lines) - 1]));
 
-		$data = new TodayValuesResult();
+		$data = new YesterdayValuesResult();
 		$data->label ='Gem. Vermogen (W)';
 		$data->kwht = round($lastFields[14] - $firstFields[14], 2);
 		$data->file = "data/invt".$invtnum."/csv".$CSVdate.".csv";
 		$data->data = $points;
-
+		break;
+	case 'getLastDaysValues':
+		$config_invt="config/config_invt".$invtnum.".php";
+		include("$config_invt");
+		$dir = 'data/invt'.$invtnum.'/production/';
+		$output = scandir($dir);
+		$output = array_filter($output, "tricsv");
+		sort($output);
+		$cntcsv=count($output);
+		
+		$j=0;
+		$h=1;
+		$day_num=0;
+		
+		while ($day_num<$PRODXDAYS) {
+		
+			$lines=file($dir.$output[$cntcsv-$h]);
+			$countalines = count($lines);
+		
+			// Digging into the array
+			$array = explode(";",$lines[$countalines-$j-1]);
+		
+			$year = substr($array[0], 0, 4);
+			$month = substr($array[0], 4, 2);
+			$day = substr($array[0], 6, 2);
+		
+			//$UTCdate = strtotime ($year."-".$month."-".$day);
+			//$UTCdate = $UTCdate *1000;
+			$UTCdate = $year."-".$month."-".$day;
+			$array[1] = str_replace(",", ".", $array[1]);
+			$production=round(($array[1]*$CORRECTFACTOR),1);
+		
+			$stack[$day_num] = array ($UTCdate, $production);
+		
+			$j++;
+			$day_num++;
+		
+			if ($countalines==$j) {
+				if ($h<$cntcsv) {
+					$h++;
+					$lines=file($dir.$output[$cntcsv-$h]); //Takes older file
+					$countalines = count($lines);
+					$j=0;
+				} else {
+					$PRODXDAYS=$day_num; //Stop
+				}
+			}
+		}
+		
+		$data = new YesterdayValuesResult();
+		$data->label ='Last Days';
+		$data->kwht = $output;
+		//$data->file = 'data/invt'.$invtnum.'/production/';
+		$data->data = $stack;
+		break;
 
 	default:
 		break;
@@ -319,6 +373,11 @@ try {
 } catch (Exception $e) {
 	echo "error: <br/>" . $e->getMessage() ;
 }
+
+function tricsv($var) {
+	return !is_dir($var)&& preg_match('/.*\.csv/', $var);
+}
+
 
 function getTimeStamp($text) {
 	// 20120623-05:16:00

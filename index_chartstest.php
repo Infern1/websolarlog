@@ -35,12 +35,27 @@ include("config/config_invt".$invtnum.".php");
 		<div id="gaugeINVT" class="topGauge"></div>
 	</div>
 </div>
-<div id="left">
+<div id="left">1
+	<div id="titleToday2"></div>
+	<div id="graphToday2"></div>
+	2
 	<div id="titleToday"></div>
 	<div id="graphToday"></div>
+	3
 	<div id="titleYesterday"></div>
 	<div id="graphYesterday"></div>
+	4
+	<div id="titleLastDays"></div>
+	<div id="graphLastDays"></div>	
+	
+	
 </div>
+
+<script type="text/javascript">
+              WSL.createGraphToday(<?php echo($invtnum); ?>, "graphToday2"); // Initial load fast
+              window.setInterval(function(){WSL.createGraphToday(<?php echo($invtnum); ?>, "graphToday2");}, 3000); // every 10 seconds
+            </script>
+
 <script type="text/javascript">
 var $PLANT_POWER = <?php echo($PLANT_POWER); ?>;
 
@@ -51,6 +66,8 @@ $(document).ready(function(){
 	//$.jqplot.config.enablePlugins = true;
         var dataToday = [];
         var dataYesterday = [];
+        var dataLastDays = [];
+        
         var graphOptions = {
                 series:[{showMarker:false, fill: true}],
                 axesDefaults: {
@@ -83,7 +100,87 @@ $(document).ready(function(){
         };
 
 
+	    var graphLastDaysOptions = {
+	        // The "seriesDefaults" option is an options object that will
+	        // be applied to all series in the chart.
+	        seriesDefaults:{
+	            renderer:$.jqplot.BarRenderer,
+	            rendererOptions: {fillToZero: true, barWidth:5},
 
+	          showMarker:false,
+	          pointLabels: { show:true }
+	        
+	        },
+	        // Custom labels for the series are specified with the "label"
+	        // option on the series option.  Here a series option object
+	        // is specified for each series.
+	                        highlighter: {
+                    show: true,
+                    sizeAdjust: 7.5
+                  },
+
+	        //series:[{label:'Hotel'}],
+	        axesDefaults: {
+		        tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+		  
+		        tickOptions: {
+		          angle: -30,
+		          fontSize: '10pt'
+		        }
+		    },
+	        // Show the legend and put it outside the grid, but inside the
+	        // plot container, shrinking the grid to accomodate the legend.
+	        // A value of "outside" would not shrink the grid and allow
+	        // the legend to overflow the container.
+	        legend: {
+	            show: false
+	        },
+	        axes: {
+	            // Use a category axis on the x axis and use our custom ticks.
+	            xaxis: {
+	            	label:'',
+                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                    renderer: $.jqplot.DateAxisRenderer,
+                    angle: -30,
+                    tickOptions : {
+                    	formatString: '%d-%m'
+                    }
+	            },
+	            // Pad the y axis just a little so bars can get close to, but
+	            // not touch, the grid boundaries.  1.2 is the default padding.
+	            yaxis: {
+	                label:'Power(W)',
+	                min: 0,
+	                labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+	            }
+	        }
+	    };
+        
+        var graphLastDays = null;
+        function updateGraphLastDays() {
+            $.ajax({
+                url: "server.php?method=getLastDaysValues&invtnum=" + invtnum,
+                method: 'GET',
+                dataType: 'json',
+                success: function(result) {
+                    for (line in result.data) {
+    				  var object = result.data[line];
+    				  dataLastDays.push([object[0], object[1]]);
+    				}
+                    //graphLastDaysOptions.axes.xaxis.min = result.data[0][0];
+                    if (graphLastDays != null) {
+                    	graphLastDays.destroy();
+                    }
+                    graphLastDays = $.jqplot('graphLastDays', [dataLastDays], graphLastDaysOptions);
+
+                    mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Power per day</div>').insertAfter('#graphLastDays .jqplot-grid-canvas');
+                    //$('#titleToday').html();
+                }
+            });
+        }
+
+
+        
         var graphToday = null;
         function updateGraphToday() {
             $.ajax({
@@ -130,9 +227,13 @@ $(document).ready(function(){
             });
         }
 
-        updateGraphToday(); // init
+
+
+        
+        //updateGraphToday(); // init
         updateGraphYesterday(); // init
-        setInterval(updateGraphToday, 120000); // 2 min refresh = 120000
+        updateGraphLastDays(); // init
+        //setInterval(updateGraphToday, 120000); // 2 min refresh = 120000
 });
 </script>
 <script type="text/javascript">
