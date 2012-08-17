@@ -16,7 +16,7 @@ include("config/config_invt".$invtnum.".php");
 		<div id="gaugeDCP" class="topGauge"></div>
 		<div id="gaugeGP2" class="topGauge"></div>
 		<div id="gaugeEff" class="topGauge"></div>
-		<div id="topInfo">More info</div>
+		<!-- div id="topInfo">More info</div -->
 		<div class="chartGroup">String1</div>
 		<div id="gaugeStr1P" class="topGauge"></div>
 		<div id="gaugeStr1V" class="topGauge"></div>
