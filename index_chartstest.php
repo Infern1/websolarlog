@@ -46,14 +46,14 @@ include("config/config_invt".$invtnum.".php");
 	<div id="graphYesterday"></div>
 	4
 	<div id="titleLastDays"></div>
-	<div id="graphLastDays"></div>	
-	
-	
+	<div id="graphLastDays"></div>
+
+
 </div>
 
 <script type="text/javascript">
               WSL.createGraphToday(<?php echo($invtnum); ?>, "graphToday2"); // Initial load fast
-              window.setInterval(function(){WSL.createGraphToday(<?php echo($invtnum); ?>, "graphToday2");}, 3000); // every 10 seconds
+              //window.setInterval(function(){WSL.createGraphToday(<?php echo($invtnum); ?>, "graphToday2");}, 3000); // every 10 seconds
             </script>
 
 <script type="text/javascript">
@@ -67,7 +67,7 @@ $(document).ready(function(){
         var dataToday = [];
         var dataYesterday = [];
         var dataLastDays = [];
-        
+
         var graphOptions = {
                 series:[{showMarker:false, fill: true}],
                 axesDefaults: {
@@ -109,7 +109,7 @@ $(document).ready(function(){
 
 	          showMarker:false,
 	          pointLabels: { show:true }
-	        
+
 	        },
 	        // Custom labels for the series are specified with the "label"
 	        // option on the series option.  Here a series option object
@@ -122,7 +122,7 @@ $(document).ready(function(){
 	        //series:[{label:'Hotel'}],
 	        axesDefaults: {
 		        tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
-		  
+
 		        tickOptions: {
 		          angle: -30,
 		          fontSize: '10pt'
@@ -155,7 +155,7 @@ $(document).ready(function(){
 	            }
 	        }
 	    };
-        
+
         var graphLastDays = null;
         function updateGraphLastDays() {
             $.ajax({
@@ -179,8 +179,6 @@ $(document).ready(function(){
             });
         }
 
-
-        
         var graphToday = null;
         function updateGraphToday() {
             $.ajax({
@@ -203,6 +201,7 @@ $(document).ready(function(){
                 }
             });
         }
+
 
         var graphYesterday = null;
         function updateGraphYesterday() {
@@ -227,10 +226,7 @@ $(document).ready(function(){
             });
         }
 
-
-
-        
-        //updateGraphToday(); // init
+        updateGraphToday(); // init
         updateGraphYesterday(); // init
         updateGraphLastDays(); // init
         //setInterval(updateGraphToday, 120000); // 2 min refresh = 120000
@@ -255,10 +251,10 @@ var INVT = 70 / 10;
 var gaugeToday;
 $(document).ready(function(){
     var invtnum = <?php echo($invtnum); ?>;
-    
+
     var gaugeStrPOptions = {
         title: 'DC Power', grid: { background: '#D3DAE2' },
-        
+
         seriesDefaults: {
             renderer: $.jqplot.MeterGaugeRenderer,
             rendererOptions: {
@@ -292,7 +288,7 @@ $(document).ready(function(){
                 intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
             }
         }
-    }; 
+    };
    var gaugeGPOptions = {
             title: 'AC Power', grid: { background: '#D3DAE2' },
             seriesDefaults: {
@@ -304,8 +300,8 @@ $(document).ready(function(){
                 }
             }
         };
-        
-        
+
+
     var gaugeGVOptions = {
             title: 'Volt', grid: { background: '#D3DAE2' },
             seriesDefaults: {
@@ -317,8 +313,8 @@ $(document).ready(function(){
                 }
             }
         };
-        
-    
+
+
     var gaugeGAOptions = {
         title: 'Amp', grid: { background: '#D3DAE2' },
         seriesDefaults: {
@@ -329,8 +325,8 @@ $(document).ready(function(){
                 intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
             }
         }
-    }; 
-    
+    };
+
     var gaugeEffOptions = {
             title: 'Eff', grid: { background: '#D3DAE2' },
             seriesDefaults: {
@@ -342,7 +338,7 @@ $(document).ready(function(){
                 }
             }
         };
-    
+
     var gaugeFRQOptions = {
             title: 'FRQ', grid: { background: '#D3DAE2' },
             seriesDefaults: {
@@ -354,7 +350,7 @@ $(document).ready(function(){
                 }
             }
         };
-    
+
     var gaugeBOOTOptions = {
             title: 'BOOT', grid: { background: '#D3DAE2' },
             seriesDefaults: {
@@ -366,20 +362,20 @@ $(document).ready(function(){
                 }
             }
         };
-    
+
     var gaugeINVTOptions = {
             title: 'INVT', grid: { background: '#D3DAE2' },labelPosition: 'bottom',
             seriesDefaults: {
                 renderer: $.jqplot.MeterGaugeRenderer,
                 rendererOptions: {
                     label: '%', min: 0, max: INVT*10, padding: 0,
-                    
+
                     intervals:[INVT, INVT * 2, INVT * 3, INVT *4, INVT * 5, INVT * 6, INVT * 7, INVT * 8, INVT * 9, INVT * 10],
                     intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
                 }
             }
         };
-    
+
 
     // Init gauges
     var gaugeGP2 = $.jqplot('gaugeGP2',[[0.1]], gaugeStrPOptions);
@@ -402,7 +398,7 @@ $(document).ready(function(){
     var gaugeFRQ = $.jqplot('gaugeFRQ',[[0.1]], gaugeFRQOptions);
     var gaugeBOOT = $.jqplot('gaugeBOOT',[[0.1]], gaugeBOOTOptions);
     var gaugeINVT = $.jqplot('gaugeINVT',[[0.1]], gaugeINVTOptions);
-   
+
     setInterval(function(){
         $.ajax({
             url: "server.php?method=getLiveData&invtnum=" + invtnum,
@@ -461,11 +457,11 @@ $(document).ready(function(){
                 gaugeFRQ.series[0].label = Math.round(result.liveData.valueFRQ) + ' Hz';
                 gaugeFRQ.replot();
 
-                gaugeBOOT.series[0].data = [['°C', result.liveData.valueBOOT]];
+                gaugeBOOT.series[0].data = [['ï¿½C', result.liveData.valueBOOT]];
                 gaugeBOOT.series[0].label = Math.round(result.liveData.valueBOOT * 10) / 10 + ' C';
                 gaugeBOOT.replot();
 
-                gaugeINVT.series[0].data = [['°C', result.liveData.valueINVT]];
+                gaugeINVT.series[0].data = [['ï¿½C', result.liveData.valueINVT]];
                 gaugeINVT.series[0].label = Math.round(result.liveData.valueINVT) + ' C';
                 gaugeINVT.replot();
             }

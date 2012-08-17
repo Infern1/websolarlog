@@ -111,60 +111,57 @@ var WSL = {
 		});
 	},
 	createGraphToday : function(invtnum, divId) {
-		var url = "server.php?method=getTodayValues&invtnum=" + invtnum;
-		var result = [];
-		var ret = [];
-		var ajaxDataRenderer = function(url, plot, options) { // This function is used to fetch json calls when ploting fron external data sources.
-		    $.ajax({
-		      // have to use synchronous here, else the function
-		      // will return before the data is fetched
-		      async: false,
-		      url: url,
-		      dataType:"json",
-		      success: function(data) {
-                  for (line in data.data) {
-    				  var object = data.data[line];
-    				  ret.push([object[0], object[1]]);
-    				}
-		      }
-		    });
-		    return ret;
-		};
+	    var graphOptions = {
+                series:[{showMarker:false, fill: true}],
+                axesDefaults: {
+                    tickRenderer: $.jqplot.CanvasAxisTickRenderer
+                },
+                axes:{
+                  xaxis:{
+                    label:'',
+                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                    renderer: $.jqplot.DateAxisRenderer,
+                    tickInterval: '3600', // 1 hour
+                    tickOptions : {
+                        angle: -30,
+                        formatString: '%H:%M'
+                        }
+                  },
+                  yaxis:{
+                    label:'Avg. Power(W)',
+                    min: 0,
+                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+                  }
+                },
+                highlighter: {
+                    show: true,
+                    sizeAdjust: 7.5
+                  },
+                  cursor: {
+                    show: false
+                  }
+        };
+	    
+	    var graphToday = null;
+	    $.ajax({
+            url: "server.php?method=getTodayValues&invtnum=" + invtnum,
+            method: 'GET',
+            dataType: 'json',
+            success: function(result) {
+                for (line in result.data) {
+                  var object = result.data[line];
+                  dataToday.push([object[0], object[1]]);
+                }
+                graphOptions.axes.xaxis.min = result.data[0][0];
+                if (graphToday != null) {
+                    graphToday.destroy();
+                }
+                graphToday = $.jqplot(divId, [dataToday], graphOptions);
 
-		// find the URL in the link right next to us
-
-		$.jqplot('graphToday', // Div id for chart
-		url, // Dataset
-		{ // jqPlot options to configure and render chart. See full documentation at http://www.jqplot.com/docs/files/usage-txt.html
-			dataRenderer : ajaxDataRenderer, // This where the all the data is pulled and preped for plot  when an outside data source is being leveraged
-
-			axesDefaults : {
-				tickRenderer : $.jqplot.CanvasAxisTickRenderer
-			},
-			axes : {
-				xaxis : {
-					label : '',
-					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-					renderer : $.jqplot.DateAxisRenderer,
-					tickOptions : {
-						angle : -30,
-						formatString : '%H:%M'
-					}
-				},
-				yaxis : {
-					label : 'Avg. Power(W)',
-					min : 0,
-					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
-				}
-			},
-			highlighter : {
-				show : true,
-				sizeAdjust : 7.5
-			},
-			cursor : {
-				show : false
-			}
-		}).replot();
+                mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy today: ' + result.kwht + ' kWh</div>').insertAfter('#graphToday .jqplot-grid-canvas');
+                //$('#titleToday').html();
+            }
+        });
 
 		// mytitle = $('<div class="my-jqplot-title"
 		// style="position:absolute;text-align:center;padding-top:
