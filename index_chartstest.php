@@ -254,12 +254,10 @@ $(document).ready(function(){
 
     var gaugeStrPOptions = {
         title: 'DC Power', grid: { background: '#D3DAE2' },
-
         seriesDefaults: {
             renderer: $.jqplot.MeterGaugeRenderer,
             rendererOptions: {
-
-                label: 'W', min: 0, max: PLANT_POWER, padding: 0,
+                min: 0, max: PLANT_POWER, padding: 0,
                 intervals:[strP, strP * 2, strP * 3, strP *4, strP * 5, strP * 6, strP * 7, strP * 8, strP * 9, strP * 10],
                 intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
             }
@@ -271,7 +269,7 @@ $(document).ready(function(){
         seriesDefaults: {
             renderer: $.jqplot.MeterGaugeRenderer,
             rendererOptions: {
-                label: 'V', min: 0, max: strV*10, padding: 0,
+                min: 0, max: strV*10, padding: 0,
                 intervals:[strV, strV * 2, strV * 3, strV *4, strV * 5, strV * 6, strV * 7, strV * 8, strV * 9, strV * 10],
                 intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
             }
@@ -283,7 +281,7 @@ $(document).ready(function(){
         seriesDefaults: {
             renderer: $.jqplot.MeterGaugeRenderer,
             rendererOptions: {
-                label: 'A', min: 0, max: strA*10, padding: 0,
+                min: 0, max: strA*10, padding: 0,
                 intervals:[strA, strA * 2, strA * 3, strA *4, strA * 5, strA * 6, strA * 7, strA * 8, strA * 9, strA * 10],
                 intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
             }
@@ -294,7 +292,7 @@ $(document).ready(function(){
             seriesDefaults: {
                 renderer: $.jqplot.MeterGaugeRenderer,
                 rendererOptions: {
-                    label: 'P', min: 0, max: GP*10, padding: 0,
+                    min: 0, max: GP*10, padding: 0,
                     intervals:[GP, GP * 2, GP * 3, GP *4, GP * 5, GP * 6, GP * 7, GP * 8, GP * 9, GP * 10],
                     intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
                 }
@@ -307,7 +305,7 @@ $(document).ready(function(){
             seriesDefaults: {
                 renderer: $.jqplot.MeterGaugeRenderer,
                 rendererOptions: {
-                    label: 'V', min: 0, max: GV*10, padding: 0,
+                    min: 0, max: GV*10, padding: 0,
                     intervals:[GV, GV * 2, GV * 3, GV *4, GV * 5, GV * 6, GV * 7, GV * 8, GV * 9, GV * 10],
                     intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
                 }
@@ -320,7 +318,7 @@ $(document).ready(function(){
         seriesDefaults: {
             renderer: $.jqplot.MeterGaugeRenderer,
             rendererOptions: {
-                label: 'A', min: 0, max: GA*10, padding: 0,
+                min: 0, max: GA*10, padding: 0,
                 intervals:[GA, GA * 2, GA * 3, GA *4, GA * 5, GA * 6, GA * 7, GA * 8, GA * 9, GA * 10],
                 intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
             }
@@ -332,7 +330,7 @@ $(document).ready(function(){
             seriesDefaults: {
                 renderer: $.jqplot.MeterGaugeRenderer,
                 rendererOptions: {
-                    label: '%', min: 0, max: Eff*10, padding: 0,
+                    min: 0, max: Eff*10, padding: 0,
                     intervals:[Eff, Eff * 2, Eff * 3, Eff *4, Eff * 5, Eff * 6, Eff * 7, Eff * 8, Eff * 9, Eff * 10],
                     intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
                 }
@@ -344,7 +342,7 @@ $(document).ready(function(){
             seriesDefaults: {
                 renderer: $.jqplot.MeterGaugeRenderer,
                 rendererOptions: {
-                    label: '%', min: FRQ-1, max: FRQ+1, padding: 0,
+                    min: FRQ-1, max: FRQ+1, padding: 0,
                     intervals:[FRQ-1, FRQ, FRQ+1],
                     intervalColors:['#F9FFFB', '#8BFEA8', '#01F33E']
                 }
@@ -356,7 +354,7 @@ $(document).ready(function(){
             seriesDefaults: {
                 renderer: $.jqplot.MeterGaugeRenderer,
                 rendererOptions: {
-                    label: '%', min: 0, max: BOOT*10, padding: 0,
+                    min: 0, max: BOOT*10, padding: 0,
                     intervals:[BOOT, BOOT * 2, BOOT * 3, BOOT *4, BOOT * 5, BOOT * 6, BOOT * 7, BOOT * 8, BOOT * 9, BOOT * 10],
                     intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
                 }
@@ -368,7 +366,7 @@ $(document).ready(function(){
             seriesDefaults: {
                 renderer: $.jqplot.MeterGaugeRenderer,
                 rendererOptions: {
-                    label: '%', min: 0, max: INVT*10, padding: 0,
+                    min: 0, max: INVT*10, padding: 0,
 
                     intervals:[INVT, INVT * 2, INVT * 3, INVT *4, INVT * 5, INVT * 6, INVT * 7, INVT * 8, INVT * 9, INVT * 10],
                     intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
@@ -457,12 +455,12 @@ $(document).ready(function(){
                 gaugeFRQ.series[0].label = Math.round(result.liveData.valueFRQ) + ' Hz';
                 gaugeFRQ.replot();
 
-                gaugeBOOT.series[0].data = [['�C', result.liveData.valueBOOT]];
-                gaugeBOOT.series[0].label = Math.round(result.liveData.valueBOOT * 10) / 10 + ' C';
+                gaugeBOOT.series[0].data = [['C', result.liveData.valueBOOT]];
+                gaugeBOOT.series[0].label = Math.round(result.liveData.valueBOOT * 10) / 10 + '&deg;C';
                 gaugeBOOT.replot();
 
-                gaugeINVT.series[0].data = [['�C', result.liveData.valueINVT]];
-                gaugeINVT.series[0].label = Math.round(result.liveData.valueINVT) + ' C';
+                gaugeINVT.series[0].data = [['C', result.liveData.valueINVT]];
+                gaugeINVT.series[0].label = Math.round(result.liveData.valueINVT) + '&deg;C';
                 gaugeINVT.replot();
             }
         });
