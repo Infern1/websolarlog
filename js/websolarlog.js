@@ -15,7 +15,8 @@ function pageLoadingTime() {
 	secondes = (afterLoad - beforeLoad) / 1000;
 	document.getElementById("JSloadingtime").innerHTML = secondes;
 }
-var dataToday = [];
+var graphDay = null;
+var dataDay = [];
 var dataYesterday = [];
 var dataLastDays = [];
 var alreadyFetched = [];
@@ -110,58 +111,153 @@ var WSL = {
 			});
 		});
 	},
-	createGraphToday : function(invtnum, divId) {
-	    var graphOptions = {
-                series:[{showMarker:false, fill: true}],
-                axesDefaults: {
-                    tickRenderer: $.jqplot.CanvasAxisTickRenderer
-                },
-                axes:{
-                  xaxis:{
-                    label:'',
-                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
-                    renderer: $.jqplot.DateAxisRenderer,
-                    tickInterval: '3600', // 1 hour
-                    tickOptions : {
-                        angle: -30,
-                        formatString: '%H:%M'
-                        }
-                  },
-                  yaxis:{
-                    label:'Avg. Power(W)',
-                    min: 0,
-                    labelRenderer: $.jqplot.CanvasAxisLabelRenderer
-                  }
-                },
-                highlighter: {
-                    show: true,
-                    sizeAdjust: 7.5
-                  },
-                  cursor: {
-                    show: false
-                  }
-        };
-	    
-	    var graphToday = null;
-	    $.ajax({
-            url: "server.php?method=getTodayValues&invtnum=" + invtnum,
-            method: 'GET',
-            dataType: 'json',
-            success: function(result) {
-                for (line in result.data) {
-                  var object = result.data[line];
-                  dataToday.push([object[0], object[1]]);
-                }
-                graphOptions.axes.xaxis.min = result.data[0][0];
-                if (graphToday != null) {
-                    graphToday.destroy();
-                }
-                graphToday = $.jqplot(divId, [dataToday], graphOptions);
+	createDayGraph : function(invtnum, divId, getDay) {
+		var graphOptions = {
+			series : [ {
+				showMarker : false,
+				fill : true
+			} ],
+			axesDefaults : {
+				tickRenderer : $.jqplot.CanvasAxisTickRenderer
+			},
+			axes : {
+				xaxis : {
+					label : '',
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+					renderer : $.jqplot.DateAxisRenderer,
+					tickInterval : '3600', // 1 hour
+					tickOptions : {
+						angle : -30,
+						formatString : '%H:%M'
+					}
+				},
+				yaxis : {
+					label : 'Avg. Power(W)',
+					min : 0,
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
+				}
+			},
+			highlighter : {
+				show : true,
+				sizeAdjust : 7.5
+			},
+			cursor : {
+				show : false
+			}
+		};
 
-                mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy today: ' + result.kwht + ' kWh</div>').insertAfter('#graphToday .jqplot-grid-canvas');
-                //$('#titleToday').html();
-            }
-        });
+		$.ajax({
+			url : "server.php?method=get" + getDay + "Values&invtnum=" + invtnum + "&r=" + Math.floor(Math.random() * 111111),
+			method : 'GET',
+			dataType : 'json',
+			async : false,
+			success : function(result) {
+				var dataDay = [];
+				for (line in result.dayData.data) {
+					// alert(line);
+					var object = result.dayData.data[line];
+					// alert(object[1]);
+					dataDay.push([ object[0], object[1] ]);
+				}
+				
+				
+				graphOptions.axes.xaxis.min = result.dayData.data[0][0];
+				$.jqplot(divId, [ dataDay ], graphOptions).destroy();
+					// alert('destroy');
+					$('.graph' + getDay + 'Content').remove();
+					$('.graph' + getDay).append('<div id="graph' + getDay + 'Content"></div>');
+					
+				
+				$.jqplot(divId, [ dataDay ], graphOptions);
+				mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
+			}
+		});
+	},
+
+	createGraphLastDays : function(invtnum, divId) {
+		var graphLastDaysOptions = {
+			// The "seriesDefaults" option is an options object that will
+			// be applied to all series in the chart.
+			seriesDefaults : {
+				renderer : $.jqplot.BarRenderer,
+				rendererOptions : {
+					fillToZero : true,
+					barWidth : 5
+				},
+				showMarker : false,
+				pointLabels : {
+					show : true
+				}
+			},
+			// Custom labels for the series are specified with the "label"
+			// option on the series option. Here a series option object
+			// is specified for each series.
+			highlighter : {
+				show : true,
+				sizeAdjust : 7.5
+			},
+
+			// series:[{label:'Hotel'}],
+			axesDefaults : {
+				tickRenderer : $.jqplot.CanvasAxisTickRenderer,
+				tickOptions : {
+					angle : -30,
+					fontSize : '10pt'
+				}
+			},
+			// Show the legend and put it outside the grid, but inside the
+			// plot container, shrinking the grid to accomodate the legend.
+			// A value of "outside" would not shrink the grid and allow
+			// the legend to overflow the container.
+			legend : {
+				show : false
+			},
+			axes : {
+				// Use a category axis on the x axis and use our custom ticks.
+				xaxis : {
+					label : '',
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+					renderer : $.jqplot.DateAxisRenderer,
+					angle : -30,
+					tickOptions : {
+						formatString : '%d-%m'
+					}
+				},
+				// Pad the y axis just a little so bars can get close to, but
+				// not touch, the grid boundaries. 1.2 is the default padding.
+				yaxis : {
+					label : 'Power(W)',
+					min : 0,
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
+				}
+			}
+		};
+
+		$.ajax({
+			url : "server.php?method=getLastDaysValues&invtnum="+ invtnum + "&r=" + Math.floor(Math.random() * 111111),
+			method : 'GET',
+			dataType : 'json',
+			async : false,
+			success : function(result) {
+				var lastDaysData = [];
+				for (line in result.lastDaysData.data) {
+					// alert(line);
+					var object = result.lastDaysData.data[line];
+					// alert(object[1]);
+					lastDaysData.push([ object[0], object[1] ]);
+				}
+				
+				graphLastDaysOptions.axes.xaxis.min = result.lastDaysData.data[0][0];
+				//$.jqplot(divId, [ lastDaysData ], graphLastDaysOptions).destroy();
+				// alert('destroy');
+				//$('.graphLastDaysContent').remove();
+				//$('.graphLastDays').append('<div id="graphLastDaysContent"></div>');
+					
+				$.jqplot(divId, [ lastDaysData ], graphLastDaysOptions);
+				//mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
+			}
+		});
+	
 
 		// mytitle = $('<div class="my-jqplot-title"
 		// style="position:absolute;text-align:center;padding-top:
