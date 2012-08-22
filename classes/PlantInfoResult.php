@@ -1,6 +1,6 @@
 <?php
 /**
- * IndexInfoResult class file
+ * PlantInfoResult class file
  *
  * PHP Version 5.2
  *
@@ -10,7 +10,7 @@
  */
 
 /**
- * IndexInfoResult
+ * PlantInfoResult
  *
  * @category  Classes
  * @package   Results

@@ -8,13 +8,23 @@ class Util {
     }
 
     public static function getDataDir($invtnum) {
-        return dirname(dirname(__FILE__))."/data/invt$invtnum";
+    	$path = dirname(dirname(__FILE__));
+    	//$path = "/home/marco/www/pvlog";
+        return $path."/data/invt$invtnum";
     }
-
+    
     public static function getLiveTXT($invtnum)  {
-        return self::getDataDir($invtnum) . '/infos/live.txt';
+    	return self::getDataDir($invtnum) . '/infos/live.txt';
     }
-
+    
+    public static function getDailyDataCSV($date,$invtnum)  {
+    	return self::getDataDir($invtnum) . '/csv/'.$date.'.csv';
+    }
+    
+    public static function getLastDaysCSV($year,$invtnum)  {
+    	return self::getDataDir($invtnum) . '/production/energy'.$year.'.csv';
+    }
+    
     public static function getErrorFile($invtnum) {
         return self::getDataDir($invtnum) . '/errors/de.err';
     }
