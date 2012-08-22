@@ -191,179 +191,45 @@ switch ($method) {
 		break;
 
 	case 'getTodayValues':
+		$config_invt="config/config_invt".$invtnum.".php";
+		include("$config_invt");
 		// get the date of today.
 		$CSVdate = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-		// get the CSV of today
-		$lines=file("data/invt".$invtnum."/csv/".$CSVdate.".csv");
+		$lines = $dataAdapter->readDailyData($CSVdate,$invtnum);
 
-		$points = array();
+		$dayData = new DayDataResult();
+		$dayData->data = $lines->points;
+		$dayData->valueKWHT = $lines->KWHT;
+		$dayData->success = true;
 
-		$oldTime = 0;
-		$oldKWHT = 0;
-
-		foreach ($lines as $line) {
-			$line = str_replace("\n", "", $line); // remove line endings
-			$line = str_replace(",", ".", $line); // Convert comma to dot
-			$fields = explode(";", $line); // Create an array of fields
-
-			// 20120623-05:16:00
-			$rawdatetime = explode('-', $fields[0]);
-			$year = substr($rawdatetime[0], 0, 4);
-			$month = substr($rawdatetime[0], 4, 2);
-			$day = substr($rawdatetime[0], 6, 2);
-			$hour = substr($rawdatetime[1], 0, 2);
-			$minute = substr($rawdatetime[1], 3, 2);
-			$second = substr($rawdatetime[1], 6, 2);
-			$kwht = $fields[14];
-
-			// Convert to epoch date
-			$UTCdate =  strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$second);
-
-			// Check time difference
-			$diffTime= $UTCdate - $oldTime;
-			if ($diffTime!=0) {
-				$AvgPOW = Formulas::calcAveragePower($oldKWHT, $kwht, $diffTime);
-			} else {
-				$AvgPOW=0;
-			}
-
-			// Only add Points if the value changed
-			if ($kwht - $oldKWHT != 0) {
-				$points[] = array($year."-".$month."-".$day." ".$hour.":".$minute , $AvgPOW);
-			}
-
-			$oldTime = $UTCdate;
-			$oldKWHT = $kwht;
-
-		}
-
-		$points[] = array(0,count($lines));
-
-		// Calculate total kwht
-		$firstFields = explode(';', str_replace(",", ".", $lines[0]));
-		$lastFields = explode(';', str_replace(",", ".", $lines[count($lines) - 1]));
-
-		$data = new TodayValuesResult();
-		$data->label ='Gem. Vermogen (W)';
-		$data->kwht = round($lastFields[14] - $firstFields[14], 2);
-		$data->file = "data/invt".$invtnum."/csv".$CSVdate.".csv";
-		$data->data = $points;
+		$data['dayData'] = $dayData;
 		break;
-
 	case 'getYesterdayValues':
-		// get the date of yesterday.
+		$config_invt="config/config_invt".$invtnum.".php";
+		include("$config_invt");
+		// get the date of today.
 		$CSVdate = date("Ymd",mktime(0, 0, 0, date("m")  , date("d")-1, date("Y")));
-		// get the CSV of yesterday
-		$lines=file("data/invt".$invtnum."/csv/".$CSVdate.".csv");
-		
-		$points = array();
+		$lines = $dataAdapter->readDailyData($CSVdate,$invtnum);
 
-		$oldTime = 0;
-		$oldKWHT = 0;
+		$dayData = new DayDataResult();
+		$dayData->data = $lines->points;
+		$dayData->valueKWHT = $lines->KWHT;
+		$dayData->success = true;
 
-		foreach ($lines as $line) {
-			$line = str_replace("\n", "", $line); // remove line endings
-			$line = str_replace(",", ".", $line); // Convert comma to dot
-			$fields = explode(";", $line); // Create an array of fields
-
-			// 20120623-05:16:00
-			$rawdatetime = explode('-', $fields[0]);
-			$year = substr($rawdatetime[0], 0, 4);
-			$month = substr($rawdatetime[0], 4, 2);
-			$day = substr($rawdatetime[0], 6, 2);
-			$hour = substr($rawdatetime[1], 0, 2);
-			$minute = substr($rawdatetime[1], 3, 2);
-			$second = substr($rawdatetime[1], 6, 2);
-			$kwht = $fields[14];
-
-			// Convert to epoch date
-			$UTCdate =  strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$second);
-
-			// Check time difference
-			$diffTime= $UTCdate - $oldTime;
-			if ($diffTime!=0) {
-				$AvgPOW = Formulas::calcAveragePower($oldKWHT, $kwht, $diffTime);
-			} else {
-				$AvgPOW=0;
-			}
-
-			// Only add Points if the value changed
-			if ($kwht - $oldKWHT != 0) {
-				$points[] = array($year."-".$month."-".$day." ".$hour.":".$minute , $AvgPOW);
-			}
-
-			$oldTime = $UTCdate;
-			$oldKWHT = $kwht;
-
-		}
-
-		$points[] = array(0,count($lines));
-
-		// Calculate total kwht
-		$firstFields = explode(';', str_replace(",", ".", $lines[0]));
-		$lastFields = explode(';', str_replace(",", ".", $lines[count($lines) - 1]));
-
-		$data = new YesterdayValuesResult();
-		$data->label ='Gem. Vermogen (W)';
-		$data->kwht = round($lastFields[14] - $firstFields[14], 2);
-		$data->file = "data/invt".$invtnum."/csv".$CSVdate.".csv";
-		$data->data = $points;
+		$data['dayData'] = $dayData;
 		break;
+		
 	case 'getLastDaysValues':
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
-		$dir = 'data/invt'.$invtnum.'/production/';
-		$output = scandir($dir);
-		$output = array_filter($output, "tricsv");
-		sort($output);
-		$cntcsv=count($output);
 		
-		$j=0;
-		$h=1;
-		$day_num=0;
+		$CSVdate = date("Y",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
+		$lines = $dataAdapter->readLastDaysData($CSVdate,$invtnum);
 		
-		while ($day_num<$PRODXDAYS) {
-		
-			$lines=file($dir.$output[$cntcsv-$h]);
-			$countalines = count($lines);
-		
-			// Digging into the array
-			$array = explode(";",$lines[$countalines-$j-1]);
-		
-			$year = substr($array[0], 0, 4);
-			$month = substr($array[0], 4, 2);
-			$day = substr($array[0], 6, 2);
-		
-			//$UTCdate = strtotime ($year."-".$month."-".$day);
-			//$UTCdate = $UTCdate *1000;
-			$UTCdate = $year."-".$month."-".$day;
-			$array[1] = str_replace(",", ".", $array[1]);
-			$production=round(($array[1]*$CORRECTFACTOR),1);
-		
-			$stack[$day_num] = array ($UTCdate, $production);
-		
-			$j++;
-			$day_num++;
-		
-			if ($countalines==$j) {
-				if ($h<$cntcsv) {
-					$h++;
-					$lines=file($dir.$output[$cntcsv-$h]); //Takes older file
-					$countalines = count($lines);
-					$j=0;
-				} else {
-					$PRODXDAYS=$day_num; //Stop
-				}
-			}
-		}
-		
-		$data = new YesterdayValuesResult();
-		$data->label ='Last Days';
-		$data->kwht = $output;
-		//$data->file = 'data/invt'.$invtnum.'/production/';
-		$data->data = $stack;
+		$lastDaysData = new LastDaysValuesResult();
+		$lastDaysData->data = $lines->points;
+		$data['lastDaysData'] = $lastDaysData;
 		break;
-
 	default:
 		break;
 }
