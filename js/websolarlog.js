@@ -163,11 +163,8 @@ var WSL = {
 				
 				graphOptions.axes.xaxis.min = result.dayData.data[0][0];
 				$.jqplot(divId, [ dataDay ], graphOptions).destroy();
-					// alert('destroy');
-					$('.graph' + getDay + 'Content').remove();
-					$('.graph' + getDay).append('<div id="graph' + getDay + 'Content"></div>');
-					
-				
+				$('.graph' + getDay + 'Content').remove();
+				$('.graph' + getDay).append('<div id="graph' + getDay + 'Content"></div>');
 				$.jqplot(divId, [ dataDay ], graphOptions);
 				mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
 			}
@@ -248,7 +245,7 @@ var WSL = {
 				}
 				
 				graphLastDaysOptions.axes.xaxis.min = result.lastDaysData.data[0][0];
-				//$.jqplot(divId, [ lastDaysData ], graphLastDaysOptions).destroy();
+				$.jqplot(divId, [ lastDaysData ], graphLastDaysOptions).destroy();
 				// alert('destroy');
 				//$('.graphLastDaysContent').remove();
 				//$('.graphLastDays').append('<div id="graphLastDaysContent"></div>');
