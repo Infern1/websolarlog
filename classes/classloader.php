@@ -9,6 +9,7 @@
  * @author    Martin Diphoorn <martin@diphoorn.com>
  */
 
+
 /**
  * Try to load the class
  *
@@ -16,7 +17,7 @@
  *
  * @return void
  */
-function __autoload($classname)
+function wsl_autoloader($classname)
 {
     global $current_module;
 
@@ -36,14 +37,18 @@ function __autoload($classname)
         }
     }
 
-    // plugins example
-    /*
-    if ($classname == "TCPDF") {
-        require_once "plugins/tcpdf/tcpdf.php";
+    // plugins
+    if ($classname === "R" || substr($classname, 0, strlen("RedBean")) === "RedBean") {
+        require_once "classes/redbean.php";
         return;
     }
-    */
+    if (substr($classname, 0, strlen("Model")) === "Model") {
+		// We don't handle Model classes, let RedBean do that
+        return;
+    }
 
     exit("Could not autoload: " . $classname);
 }
+
+spl_autoload_register('wsl_autoloader');
 ?>

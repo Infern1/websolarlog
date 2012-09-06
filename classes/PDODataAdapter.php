@@ -1,5 +1,12 @@
 <?php
 class PDODataAdapter implements DataAdapter {
+    function __construct() {
+        R::setup();
+    }
+
+    function __destruct() {
+        //print "Destroying " . $this->name . "\n";
+    }
 
     /**
      * write the live info to the file
@@ -7,7 +14,17 @@ class PDODataAdapter implements DataAdapter {
      * @param Live $live
      */
     public function writeLiveInfo($invtnum, Live $live) {
+        //Ready. Now insert a bean!
+        $bean = R::dispense('Live');
+        $bean->inverter = $invtnum;
+        $bean->GA = $live->GA;
+        $bean->GP = $live->GP;
+        $bean->GV = $live->GV;
 
+        //Store the bean
+        $id = R::store($bean);
+
+        return $id;
     }
 
     /**
@@ -16,7 +33,14 @@ class PDODataAdapter implements DataAdapter {
      * @return Live
      */
     public function readLiveInfo($invtnum) {
+        $bean = R::load('Live',1 );
 
+        $live = new Live();
+        $live->GA = $bean->GA;
+        $live->GP = $bean->GP;
+        $live->GV = $bean->GV;
+
+        return $live;
     }
 
     /**
@@ -107,6 +131,26 @@ class PDODataAdapter implements DataAdapter {
      * @return array<Alarm> $alarm
      */
     public function readAlarm($invtnum) {
+
+    }
+
+    public function writeDailyData($invtnum,Day $day) {
+
+    }
+    public function readDailyData($date, $invtnum) {
+
+    }
+    public function dropDailyData($invtnum) {
+
+    }
+
+    public function writeLastDaysData($invtnum,Day $day) {
+
+    }
+    public function readLastDaysData($date, $invtnum) {
+
+    }
+    public function dropLastDaysData($invtnum) {
 
     }
 }

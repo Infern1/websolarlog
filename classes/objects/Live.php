@@ -20,6 +20,4 @@ class Live {
     public $KWHT;
 }
 
-
 ?>
-

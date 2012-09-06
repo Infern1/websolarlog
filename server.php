@@ -102,6 +102,7 @@ switch ($method) {
 		$mpt = $dataAdapter->readMaxPowerToday($invtnum);
 		$liveData->valuePMAXOTD = floatval(round($mpt->GP,0));
 		$liveData->valuePMAXOTDTIME = (substr($mpt->SDTE, 9, 2).":".substr($mpt->SDTE, 12, 2));
+		$liveData->valueMPSDTE = $mpt->SDTE; // TODO :: ^ above code is wrong if i check the containing data
 
 		// Set some translations
 		$liveData->lgDASHBOARD = $lgDASHBOARD;
@@ -218,18 +219,36 @@ switch ($method) {
 
 		$data['dayData'] = $dayData;
 		break;
-		
+
 	case 'getLastDaysValues':
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
-		
+
 		$CSVdate = date("Y",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
 		$lines = $dataAdapter->readLastDaysData($CSVdate,$invtnum);
-		
+
 		$lastDaysData = new LastDaysValuesResult();
 		$lastDaysData->data = $lines->points;
 		$data['lastDaysData'] = $lastDaysData;
 		break;
+	case 'testWritePDO':
+	    $live = new Live();
+	    $live->GA = 1;
+	    $live->GP = 1;
+	    $live->GV = 1;
+
+	    $PDO = new PDODataAdapter();
+	    $id = $PDO->writeLiveInfo(1, $live);
+
+	    $data['result'] = $id;
+	    break;
+	case 'testReadPDO':
+	    $id = Common::getValue('id', 0);
+	    $PDO = new PDODataAdapter();
+	    $live = $PDO->readLiveInfo($id);
+
+	    $data['result'] = $live;
+	    break;
 	default:
 		break;
 }
