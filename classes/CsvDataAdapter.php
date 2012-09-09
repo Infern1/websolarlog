@@ -208,10 +208,10 @@ class CsvDataAdapter extends CsvWriter implements DataAdapter {
 	}
 	
 	public function parseCsvToLastDaysData($lines) {
-		$config = Config::getConfig();
+		$config = new Config;
 
 		$points = array();
-	
+
 		$j=0;
 		$h=1;
 		$day_num=0;
@@ -329,8 +329,10 @@ class CsvDataAdapter extends CsvWriter implements DataAdapter {
 	 * Read the history file
 	 * @param int $invtnum
 	 * @param string $date
-	 * @return array<Live> $live
-	 */
+ 	 * @return array<Live> $live (No Live but BEAN object!!)
+     */
+     // TODO :: There's no Live object returned....?!
+    
 	public function readHistory($invtnum, $date) {
 		$result = array();
 		$filename = Util::getDataDir($invtnum)."/csv/" . $date . ".csv";

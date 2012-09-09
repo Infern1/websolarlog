@@ -1,6 +1,6 @@
 <?php
 class Alarm {
-    public $time;
+    public $datetime;
     public $alarm;
 }
 

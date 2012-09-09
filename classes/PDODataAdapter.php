@@ -1,7 +1,9 @@
 <?php
 class PDODataAdapter implements DataAdapter {
     function __construct() {
-        R::setup();
+        $config = new Config;
+    	R::setup('sqlite:'.$config->dbHost );
+    	R::debug(true);
     }
 
     function __destruct() {
@@ -14,16 +16,37 @@ class PDODataAdapter implements DataAdapter {
      * @param Live $live
      */
     public function writeLiveInfo($invtnum, Live $live) {
-        //Ready. Now insert a bean!
-        $bean = R::dispense('Live');
-        $bean->inverter = $invtnum;
+		
+    	$bean =  R::findOne('Live',' INV = :INV ', array(':INV'=>$invtnum));
+		
+        if (!$bean){
+        	$bean = R::dispense('Live');
+        }
+        
+        $bean->SDTE = date("Ymd-H:i:s");
+        $bean->INV = $invtnum;
+        $bean->I1V = $live->I1V;
+        $bean->I1A = $live->I1A;
+        $bean->I1P = $live->I1P;
+        
+        $bean->I2V = $live->I2V;
+        $bean->I2A = $live->I2A;
+        $bean->I2P = $live->I2P;
+        
+        $bean->GV = $live->GV;
         $bean->GA = $live->GA;
         $bean->GP = $live->GP;
-        $bean->GV = $live->GV;
-
+        
+        $bean->FRQ = $live->FRQ;
+        $bean->EFF = $live->EFF;
+        $bean->INVT = $live->INVT;
+        
+        $bean->BOOT = $live->BOOT;
+        $bean->KWHT = $live->KWHT;
+        
+        
         //Store the bean
-        $id = R::store($bean);
-
+        $id = R::store($bean,$bean->id);
         return $id;
     }
 
@@ -33,13 +56,29 @@ class PDODataAdapter implements DataAdapter {
      * @return Live
      */
     public function readLiveInfo($invtnum) {
-        $bean = R::load('Live',1 );
+    	$bean =  R::findOne('Live',' INV = :INV ', array(':INV'=>$invtnum));
 
         $live = new Live();
+        $live->INV = $bean->INV;
+        $live->I1V = $bean->I1V;
+        $live->I1A = $bean->I1A;
+        $live->I1P = $bean->I1P;
+        
+        $live->I2V = $bean->I2V;
+        $live->I2A = $bean->I2A;
+        $live->I2P = $bean->I2P;
+        
         $live->GA = $bean->GA;
         $live->GP = $bean->GP;
         $live->GV = $bean->GV;
-
+        
+        $live->FRQ = $bean->FRQ;
+        $live->EFF = $bean->EFF;
+        $live->INVT = $bean->INVT;
+        
+        $live->BOOT = $bean->BOOT;
+        $live->KWHT = $bean->KWHT;
+       
         return $live;
     }
 
@@ -47,7 +86,12 @@ class PDODataAdapter implements DataAdapter {
      * will remove the live file
      */
     public function dropLiveInfo($invtnum) {
-
+    	$bean =  R::findOne('Live',
+    			' INV = :INV  ',
+    			array(':INV'=>$invtnum
+    			)
+    	);
+    	R::trash( $bean );
     }
 
     /**
@@ -56,7 +100,25 @@ class PDODataAdapter implements DataAdapter {
      * @param MaxPowerToday $mpt
      */
     public function writeMaxPowerToday($invtnum, MaxPowerToday $mpt) {
+    	$bean =  R::findOne('Pmaxotd',
+    				' INV = :INV AND SDTE LIKE :date ', 
+    				array(':INV'=>$invtnum,
+    					':date'=> '%'.date('Ymd').'%'
+    				)
+    			);
+    	
+    	if (!$bean){
+    		$bean = R::dispense('Pmaxotd');
+    	}
+    	
+    	var_dump($bean);
+    	$bean->INV = $invtnum;
+    	$bean->SDTE = $mpt->SDTE;
+    	$bean->GP = $mpt->GP;
 
+    	//Store the bean
+    	$id = R::store($bean,$bean->id);
+    	return $id;	
     }
 
     /**
@@ -65,7 +127,13 @@ class PDODataAdapter implements DataAdapter {
      * @return MaxPowerToday
      */
     public function readMaxPowerToday($invtnum) {
-
+    	$bean =  R::findOne('Pmaxotd',
+    			' INV = :INV AND SDTE LIKE :date ', 
+    			array(':INV'=>$invtnum,
+    					':date'=> '%'.date('Ymd').'%'
+    					)
+    			);
+    	return $bean;
     }
 
     /**
@@ -73,7 +141,13 @@ class PDODataAdapter implements DataAdapter {
      * @param int $invtnum
      */
     public function dropMaxPowerToday($invtnum) {
-
+    	$bean =  R::findOne('Pmaxotd',
+    			' INV = :INV AND SDTE LIKE :date ', 
+    			array(':INV'=>$invtnum,
+    					':date'=> '%'.date('Ymd').'%'
+    					)
+    			);
+    	R::trash( $bean );
     }
 
     /**
@@ -83,17 +157,52 @@ class PDODataAdapter implements DataAdapter {
      * @param string date
      */
     public function addHistory($invtnum, Live $live, $date) {
-
+    	$bean = R::dispense('History');
+    	 
+    	 
+    	$bean->SDTE = $live->SDTE;
+    	$bean->INV = $invtnum;
+    	$bean->I1V = $live->I1V;
+    	$bean->I1A = $live->I1A;
+    	$bean->I1P = $live->I1P;
+    	 
+    	$bean->I2V = $live->I2V;
+    	$bean->I2A = $live->I2A;
+    	$bean->I2P = $live->I2P;
+    	 
+    	$bean->GV = $live->GV;
+    	$bean->GA = $live->GA;
+    	$bean->GP = $live->GP;
+    	 
+    	$bean->FRQ = $live->FRQ;
+    	$bean->EFF = $live->EFF;
+    	$bean->INVT = $live->INVT;
+    	 
+    	$bean->BOOT = $live->BOOT;
+    	$bean->KWHT = $live->KWHT;
+    	 
+    	 
+    	//Store the bean
+    	$id = R::store($bean);
+    	return $id;
+    	
     }
 
     /**
      * Read the history file
      * @param int $invtnum
      * @param string $date
-     * @return array<Live> $live
+     * @return array<Live> $live (No Live but BEAN object!!)
      */
+    // TODO :: There's no Live object returned....?!
+    
     public function readHistory($invtnum, $date) {
-
+    	$bean =  R::find(
+    				'History',
+    				' INV = :INV AND SDTE like :date ', 
+    				array(':INV'=>$invtnum,':date'=>$date)
+    			);
+    	return $bean;
     }
 
     /**
@@ -103,7 +212,13 @@ class PDODataAdapter implements DataAdapter {
      * @return int $count
      */
     public function getHistoryCount($invtnum, $date) {
-
+    	$bean =  R::findOne('History',
+    			' INV = :INV AND SDTE LIKE :date ',
+    			array(':INV'=>$invtnum,
+    					':date'=> '%'.$date.'%'
+    			)
+    	);
+    	return count($bean);
     }
 
     /**
@@ -112,8 +227,15 @@ class PDODataAdapter implements DataAdapter {
      * @param MaxPowerToday $energy
      * @param int $year
      */
-    public function addEnergy($invtnum, MaxPowerToday $energy, $year) {
-
+    public function addEnergy($invtnum, MaxPowerToday $energy, $year = null) {
+    	$bean = R::dispense('Energy');
+    	 
+    	$bean->INV = $invtnum;
+    	$bean->SDTE = $mpt->SDTE;
+    	$bean->KWHT = $mpt->GP;
+    	
+    	//Store the bean
+    	$id = R::store($bean);
     }
 
     /**
@@ -122,35 +244,49 @@ class PDODataAdapter implements DataAdapter {
      * @param Alarm $alarm
      */
     public function addAlarm($invtnum, Alarm $alarm) {
-
+    	$bean = R::dispense('Alarm');
+    	
+    	$bean->INV = $invtnum;
+    	$bean->SDTE = $alarm->datetime;
+    	$bean->Alarm = $alarm->alarm;
+    	 
+    	//Store the bean
+    	$id = R::store($bean);
+    	
     }
 
     /**
      * Read the events file
      * @param int $invtnum
-     * @return array<Alarm> $alarm
+     * @return bean object
      */
-    public function readAlarm($invtnum) {
-
+    public function readAlarm($invtnum,$limit=10) {
+		$bean = R::findAll(
+				'Alarm',
+				' ORDER BY ID LIMIT :limit ',
+				array(':limit'=>$limit)
+				);
+		
+    	return $bean;
     }
 
     public function writeDailyData($invtnum,Day $day) {
-
+		// TODO :: ?? 
     }
     public function readDailyData($date, $invtnum) {
-
+    	// TODO :: ??
     }
     public function dropDailyData($invtnum) {
-
+    	// TODO :: ??
     }
 
     public function writeLastDaysData($invtnum,Day $day) {
-
+    	// TODO :: ??
     }
     public function readLastDaysData($date, $invtnum) {
-
+    	// TODO :: ??
     }
     public function dropLastDaysData($invtnum) {
-
+    	// TODO :: ??
     }
 }

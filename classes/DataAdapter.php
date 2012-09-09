@@ -11,7 +11,7 @@ interface DataAdapter {
     public function writeLastDaysData($invtnum,Day $day);
     public function readLastDaysData($date, $invtnum);
     public function dropLastDaysData($invtnum);
-        
+    
     public function writeMaxPowerToday($invtnum, MaxPowerToday $mpt);
     public function readMaxPowerToday($invtnum);
     public function dropMaxPowerToday($invtnum);

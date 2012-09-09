@@ -1,15 +1,15 @@
 <?php
 class Util {
 
-    public static function isSunDown() {
+    public static function isSunDown($config) {
         $now = strtotime(date("Ymd H:i"));
-        $sun_info = date_sun_info((strtotime(date("Ymd"))), $LATITUDE, $LONGITUDE);
+        $sun_info = date_sun_info((strtotime(date("Ymd"))), $config->LATITUDE, $config->LONGITUDE);
+        var_dump($sun_info);
         return $now<($sun_info['sunrise']-300) || $now>($sun_info['sunset']+300);
     }
 
     public static function getDataDir($invtnum) {
     	$path = dirname(dirname(__FILE__));
-    	//$path = "/home/marco/www/pvlog";
         return $path."/data/invt$invtnum";
     }
     

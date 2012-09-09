@@ -3,16 +3,17 @@
 error_reporting(E_ALL);
 
 define('checkaccess', TRUE);
-define('AURORA', '/share/martin/aurora/aurora-1.8.0/aurora');
+//define('AURORA', '/share/martin/aurora/aurora-1.8.0/aurora');
 
 // TODO :: Create autoloader for worker
 $basepath = dirname(dirname(__FILE__));
 include($basepath . "/config/config_main.php");
 include($basepath . "/classes/Util.php");
+include($basepath . "/classes/Config.php");
 include($basepath . "/classes/Aurora.php");
 include($basepath . "/classes/DataAdapter.php");
-include($basepath . "/classes/CsvWriter.php");
-include($basepath . "/classes/CsvDataAdapter.php");
+include($basepath . "/classes/R.php");
+include($basepath . "/classes/PDODataAdapter.php");
 include($basepath . "/classes/objects/Alarm.php");
 include($basepath . "/classes/objects/Live.php");
 include($basepath . "/classes/objects/MaxPowerToday.php");
@@ -21,18 +22,19 @@ function tricsv($var) {
     return !is_dir($var)&& preg_match('/.*\.csv/', $var);
 }
 
+$config = new Config();
 try {
     $lock = Util::createLockFile(); // Lock port
 
     // Check if we are in automode and if the sun is down
-    if ($AUTOMODE==true && Util::isSunDown()) {
+    if ($AUTOMODE==true && Util::isSunDown($config)) {
         // Remove live files for all inverters
         for ($invtnum=1;$invtnum<=$NUMINV;$invtnum++) {
             if (file_exists(Util::getLiveTXT($invtnum))) {
                 unlink(Util::getLiveTXT($invtnum));
             }
         }
-        sleep (60); // he's alive ?
+        //sleep (60); // he's alive ?
         Util::removeLockFile();
         die;
     }
@@ -45,30 +47,30 @@ try {
         $datareturn = $aurora->getData();
         if (trim($datareturn) == "") {
             $tstamp = date("Ymd H:i:s");
-            if (Util::isSunDown()) {
+            if (Util::isSunDown($config)) {
                 /*
                  * instead of continues polling the inverter during the night we give at a 15 minute break
                  * this will greatly reduce the cpu usage and so less power usage
                  */
                 echo $tstamp . " : No response and the sun is probably down. Inverter is probably a sleep, waiting for 15 minutes.";
-                sleep(60 * 15);
+               // sleep(60 * 15);
             } else {
                 echo $tstamp . " : No response. Inverter is probably busy or down, waiting for 1 minute";
-                sleep(60);
+                //sleep(60);
             }
         }
 
 
         $datareturn = str_replace(".", ",", $datareturn);  // Convert dot to comma;
         $array = preg_split("/[[:space:]]+/",$datareturn);
-
+		
         $live = new Live();
 
         $RET = false;
-        if (!empty ($array[21])) {
-            $RET = $array[21];
+        if (!empty ($array[22])) {
+            $RET = $array[22];
         }
-
+        
         if ($RET=="OK") {
             if (!empty ($array[0])) {
                 $live->SDTE = $array[0];
@@ -123,24 +125,31 @@ try {
             $GPtot=0;
 
             // We only call functions from the interface, so we can easily switch this to mysql or any other adapter
-            $dataAdapter = new CsvDataAdapter();
+            $dataAdapter = new PDODataAdapter();
+
             $dataAdapter->writeLiveInfo($invtnum, $live);
 
-            $mpt = $dataAdapter->readMaxPowerToday($invtnum);
+            $currentMPT = $dataAdapter->readMaxPowerToday($invtnum);
+
             $GP2 = str_replace(",", ".", $live->GP);
             $EFF = str_replace(",", ".", $live->EFF);
             $COEF=($EFF/100)*$CORRECTFACTOR;
+
             if ($COEF>1) {
                 $COEF=1;
             }
+
             $GP2 = round($GP2*$COEF,2);
-            if ($GP2 > $mpt->GP) {
+            if ($GP2 > $currentMPT->GP) {
                 // Found a new max power of today
+            	$mpt = new MaxPowerToday();
                 $mpt->SDTE = $live->SDTE;
                 $mpt->GP = $GP2;
                 $dataAdapter->writeMaxPowerToday($invtnum, $mpt);
             }
 
+            
+            // TODO :: 2 :: Code below could be removed because we now safe every inverter seperated and not as a SUM of all inverters 
             if ($NUMINV>1) { // Max instant power of the day on multi
                 $pmaxotd=file((dirname(dirname(__FILE__))."/data/pmaxotd.txt"));
                 $array = explode(";",$pmaxotd[0]);
@@ -154,6 +163,12 @@ try {
 
                 if (array_sum($GP2m)>$array[1]) {
                     $GP2multi=array_sum($GP2m);
+                    
+                    $mpt = new MaxPowerToday();
+                    $mpt->SDTE = $live->SDTE;
+                    $mpt->GP = $GP2multi;
+                    $dataAdapter->writeMaxPowerToday($invtnum, $mpt);
+                    
                     $myFile=(dirname(dirname(__FILE__))."/data/pmaxotd.txt");
                     $fh = fopen($myFile , 'w+') or die("can't open $myFile file");
                     $stringData=$live->SDTE + ";" + $GP2multi;
@@ -161,6 +176,7 @@ try {
                     fclose($fh);
                 }
             }
+            // TODO :: 2 :: above code could be remove?!
 
             // Check alarms
             /*
@@ -184,6 +200,7 @@ try {
 
                 // Dawn startup
                 $contalines = $dataAdapter->getHistoryCount($invtnum, date("Ymd"));
+                echo "$contalines".$contalines;
                 if ( $contalines == 1) {
                     $dir = Util::getDataDir($invtnum).'/csv';
                     $output = scandir($dir);
@@ -292,6 +309,11 @@ try {
 
                 // Log alarms in events
                 if (strstr($match, 'E0')|| strstr($match, 'W0')) {
+                	$alarm = new Alarm();
+                	$alarm->alarm = $alarm;
+                	$alarm->datetime = $now;
+                	$dataAdapter->addAlarm($invtnum, $alarm);
+                	
                     $file = Util::getDataDir($invtnum) . "/infos/events.txt";
                     $new_lignes = "$now $alarm";
                     $old_lignes = file(Util::getDataDir($invtnum) . "/infos/events.txt");
