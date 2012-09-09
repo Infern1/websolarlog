@@ -22,7 +22,7 @@ $lgTRANSIT="Transit";
 $lgSUNSET="Sunset";
 $lgPMAX="Max. instantaneous power";
 $lgTOTAL="Total";
-  
+
 // ### DASHBOARD
 $lgDASHBOARD="Dashbord";
 $lgINPUT1="Array 1";

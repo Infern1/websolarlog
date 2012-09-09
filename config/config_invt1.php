@@ -1,5 +1,7 @@
 <?php
-if(!defined('checkaccess')){die('Direct access not permitted');}
+if(!defined('checkaccess')){
+	die('Direct access not permitted');
+}
 
 // ### GENERAL FOR INVERTER #1
 $ADR='2';

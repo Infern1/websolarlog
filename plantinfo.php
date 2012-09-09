@@ -46,7 +46,8 @@ if ($NUMINV>1) {
 	}
 	echo "</select></form></td></tr></table>";
 } ?>
-<div id="getplantinfo"	class="getplantinfo"></div>
+<div id="getplantinfo"
+	class="getplantinfo"></div>
 <script type="text/javascript">
               WSL.init_plantInfo(<?php echo($invtnum); ?>, "#getplantinfo"); // Initial load fast
               window.setInterval(function(){WSL.init_plantInfo(<?php echo($invtnum); ?>, "#getplantinfo");}, 30000); // every 10 seconds

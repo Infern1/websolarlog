@@ -1,15 +1,15 @@
 <?php include("styles/globalheader.php");
 for ($i=1;$i<=$NUMINV;$i++) {
-    include ('config/config_invt'.$i.'.php');
-    $PLANTPOWER[$i] = $PLANT_POWER;
-    $PLANT_POWERtot+=$PLANT_POWER;
-    $YMAXtot=$YMAX+$YMAXtot;
-    if ($PRODXDAYS>$PRODXDAYStot) {
-        $PRODXDAYStot= $PRODXDAYS;
-    }
-    if ($YINTERVAL>$YINTERVALtot) {
-        $YINTERVALtot= $YINTERVAL;
-    }
+	include ('config/config_invt'.$i.'.php');
+	$PLANTPOWER[$i] = $PLANT_POWER;
+	$PLANT_POWERtot+=$PLANT_POWER;
+	$YMAXtot=$YMAX+$YMAXtot;
+	if ($PRODXDAYS>$PRODXDAYStot) {
+		$PRODXDAYStot= $PRODXDAYS;
+	}
+	if ($YINTERVAL>$YINTERVALtot) {
+		$YINTERVALtot= $YINTERVAL;
+	}
 }
 $YINTERVALtot*=2;
 ?>
@@ -358,27 +358,31 @@ setInterval(updateGauge, 500);
 	<tr>
 		<td width="90%"><b><?php echo $lgPOWERPLANT ?> </b>
 			<div id="container1" style="height: 300px"></div></td>
-		<td width="200"><div id="jGauge" class="jgauge" align="center" valign="MIDDLE"></div> <?php
-		function using_ie()
-		{
-		    $u_agent = $_SERVER['HTTP_USER_AGENT'];
-		    $ub = False;
-		    echo $ub;
-		    if(preg_match('/MSIE/i',$u_agent)) {
-		        $ub = True;
-		    }
-		    return $ub;
-		}
-		if (using_ie()) {
-		    ?>
+		<td width="200"><div id="jGauge" class="jgauge" align="center"
+				valign="MIDDLE"></div> <?php
+				function using_ie()
+				{
+					$u_agent = $_SERVER['HTTP_USER_AGENT'];
+					$ub = False;
+					echo $ub;
+					if(preg_match('/MSIE/i',$u_agent)) {
+						$ub = True;
+					}
+					return $ub;
+				}
+				if (using_ie()) {
+					?>
 			<div class="iebox">
-				<font size="-2"><br>The gauge won't update with Intenet Explorer. Please use a compliant browser, such as <a href="http://www.google.com/chrome">Chrome</a> or <a href="http://www.firefox.com">Firefox</a>
-				</font>.
+				<font size="-2"><br>The gauge won't update with Intenet Explorer.
+					Please use a compliant browser, such as <a
+					href="http://www.google.com/chrome">Chrome</a> or <a
+					href="http://www.firefox.com">Firefox</a> </font>.
 			</div> <?php
-		}
-		?>
+				}
+				?>
 			<p align="center">
-				<font size="-2"><?php echo "$lgPMAX";?><br> <b id='PMAXOTD'>--</b> W @ <b id='PMAXOTDTIME'>--</b> </font>
+				<font size="-2"><?php echo "$lgPMAX";?><br> <b id='PMAXOTD'>--</b> W
+					@ <b id='PMAXOTDTIME'>--</b> </font>
 			</p>
 		</td>
 	</tr>

@@ -36,11 +36,17 @@ include("config/config_invt".$invtnum.".php");
 </div>
 <div id="left">
 	<div id="titleToday"></div>
-	<div id="graphToday"><div id="graphTodayContent"></div></div>
+	<div id="graphToday">
+		<div id="graphTodayContent"></div>
+	</div>
 	<div id="titleYesterday"></div>
-	<div id="graphYesterday"><div id="graphYesterdayContent"></div></div>
+	<div id="graphYesterday">
+		<div id="graphYesterdayContent"></div>
+	</div>
 	<div id="titleLastDays"></div>
-	<div id="graphLastDays"><div id="graphLastContent"></div></div>
+	<div id="graphLastDays">
+		<div id="graphLastContent"></div>
+	</div>
 </div>
 <script type="text/javascript">
 WSL.createDayGraph(<?php echo($invtnum); ?>, "graphTodayContent","Today"); // Initial load fast

@@ -22,7 +22,7 @@ $lgTRANSIT="Zon";
 $lgSUNSET="Zon onder";
 $lgPMAX="Max. momentele vermogen";
 $lgTOTAL="Totaal";
-  
+
 // ### DASHBOARD
 $lgDASHBOARD="Panel board";
 $lgINPUT1="Rij 1";

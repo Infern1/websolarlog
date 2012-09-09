@@ -22,7 +22,7 @@ $lgTRANSIT="Sonnenhöchststand";
 $lgSUNSET="Sonnenuntergang";
 $lgPMAX="Max. momentane leistung";
 $lgTOTAL="Gesamt";
-  
+
 // ### DASHBOARD
 $lgDASHBOARD="Armaturenbrett";
 $lgINPUT1="Array 1";

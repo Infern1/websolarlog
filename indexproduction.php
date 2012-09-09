@@ -1,30 +1,30 @@
 <?php 
 include("styles/globalheader.php");
 if(!empty($_POST['invtnum'])) {
-    $invtnum=$_POST['invtnum'];
+	$invtnum=$_POST['invtnum'];
 } else {if ($NUMINV>1) {
-    $invtnum=0;
+	$invtnum=0;
 } else {$invtnum=1;
 }
 }
 include("config/config_invt".$invtnum.".php");
 if (!empty ($_POST['whichyear'])) {
-    $whichyear = $_POST['whichyear'];
+	$whichyear = $_POST['whichyear'];
 } else { $whichyear= date("Y");
 }
 if (!empty ($_POST['compare'])) {
-    $compare = $_POST['compare'];
+	$compare = $_POST['compare'];
 } else { $compare="";
 }
 
 if($invtnum==0) {
-    $startinv=1; $uptoinv=$NUMINV;
+	$startinv=1; $uptoinv=$NUMINV;
 } else { $startinv=$invtnum; $uptoinv=$invtnum;
 }
 for ($invt_num=$startinv;$invt_num<=$uptoinv;$invt_num++) {  // Multi
-    $config_invt="config/config_invt".$invt_num.".php";
-    include("$config_invt");
-    $PLANT_POWER2=$PLANT_POWER+$PLANT_POWER2;
+	$config_invt="config/config_invt".$invt_num.".php";
+	include("$config_invt");
+	$PLANT_POWER2=$PLANT_POWER+$PLANT_POWER2;
 } // multi
 ?>
 <table width="95%" border=0 align=center cellpadding="8">
@@ -33,9 +33,9 @@ for ($invt_num=$startinv;$invt_num<=$uptoinv;$invt_num++) {  // Multi
 			<form method="POST" action="indexproduction.php">
 				<?php
 				if ($invtnum==0) {
-				    $dir = 'data/invt1/production/';
+					$dir = 'data/invt1/production/';
 				} else {
-				    $dir = 'data/invt'.$invtnum.'/production/';
+					$dir = 'data/invt'.$invtnum.'/production/';
 				}
 				$output = scandir($dir);
 				$output = array_filter($output, "tricsv");
@@ -43,32 +43,32 @@ for ($invt_num=$startinv;$invt_num<=$uptoinv;$invt_num++) {  // Multi
 				$xyears=count($output);
 
 				if ($NUMINV>1) {
-				    echo "<select name='invtnum' onchange='this.form.submit()'>";
-				    if ($invtnum==0) {
-				        echo "<option SELECTED value=0>$lgALL</option>";
-				    } else {
-				        echo "<option value=0>$lgALL</option>";
-				    }
-				    for ($i=1;$i<=$NUMINV;$i++) {
-				        if ($invtnum==$i) {
-				            echo "<option SELECTED value=$i>";
-				        } else {
-				            echo "<option value=$i>";
-				        }
-				        echo "$lgINVT$i</option>";
-				    }
-				    echo "</select> ";
+					echo "<select name='invtnum' onchange='this.form.submit()'>";
+					if ($invtnum==0) {
+						echo "<option SELECTED value=0>$lgALL</option>";
+					} else {
+						echo "<option value=0>$lgALL</option>";
+					}
+					for ($i=1;$i<=$NUMINV;$i++) {
+						if ($invtnum==$i) {
+							echo "<option SELECTED value=$i>";
+						} else {
+							echo "<option value=$i>";
+						}
+						echo "$lgINVT$i</option>";
+					}
+					echo "</select> ";
 				}
 				echo"$lgCHOOSEDATE :
 				<select name='whichyear' onchange='this.form.submit()'>";
 				for ($i=($xyears-1);$i>=0;$i--){
-				    $option = substr($output[$i],6,4);
-				    if ($whichyear==$option) {
-				        echo "<option SELECTED>";
-				    } else {
-				        echo "<option>";
-				    }
-				    echo "$option</option>";
+					$option = substr($output[$i],6,4);
+					if ($whichyear==$option) {
+						echo "<option SELECTED>";
+					} else {
+						echo "<option>";
+					}
+					echo "$option</option>";
 				}
 				echo "
 				</select>
@@ -77,9 +77,9 @@ for ($invt_num=$startinv;$invt_num<=$uptoinv;$invt_num++) {  // Multi
 				$lgSHOWEXPECTED :
 				";
 				if ($compare=="expected") {
-				    echo "<input type='checkbox' name='compare' value='expected' checked onclick='if(this) this.form.submit();'>";
+					echo "<input type='checkbox' name='compare' value='expected' checked onclick='if(this) this.form.submit();'>";
 				} else {
-				    echo "<input type='checkbox' name='compare' value='expected' onclick='if(this) this.form.submit();'>";
+					echo "<input type='checkbox' name='compare' value='expected' onclick='if(this) this.form.submit();'>";
 				}
 				?>
 			</form>

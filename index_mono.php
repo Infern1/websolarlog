@@ -3,7 +3,7 @@ include("styles/globalheader.php");
 require_once 'classes/classloader.php';
 
 if(!empty($_GET['invtnum'])) {
-    $invtnum = $_GET['invtnum'];
+	$invtnum = $_GET['invtnum'];
 } else {$invtnum = 1;
 }
 include("config/config_invt".$invtnum.".php");
@@ -325,38 +325,39 @@ Mychart3 = new Highcharts.Chart(options);
 </script>
 <?php
 if ($NUMINV>1) {
-    echo "<b>$lgINVT $invtnum -</b>";
+	echo "<b>$lgINVT $invtnum -</b>";
 }
 if (!empty($INVNAME)) {
-    echo "<b> $INVNAME</b>";
+	echo "<b> $INVNAME</b>";
 }
 ?>
 <table width="100%" border=0 align=center cellpadding="0">
 	<tr>
 		<td width="90%"><div id="container1" style="height: 300px"></div></td>
-		<td width="200"><div id="jGauge" class="jgauge" align="center" valign="MIDDLE"></div>
-		 <?php
-		function using_ie()
-		{
-		    $u_agent = $_SERVER['HTTP_USER_AGENT'];
-		    $ub = False;
-		    echo $ub;
-		    if(preg_match('/MSIE/i',$u_agent)) {
-		        $ub = True;
-		    }
-		    return $ub;
-		}
-		if (using_ie()) {
-		    ?>
+		<td width="200"><div id="jGauge" class="jgauge" align="center"
+				valign="MIDDLE"></div> <?php
+				function using_ie()
+				{
+					$u_agent = $_SERVER['HTTP_USER_AGENT'];
+					$ub = False;
+					echo $ub;
+					if(preg_match('/MSIE/i',$u_agent)) {
+						$ub = True;
+					}
+					return $ub;
+				}
+				if (using_ie()) {
+					?>
 			<div class="iebox">
-				<font size="-2"><br>The gauge won't update with Intenet Explorer. Please use a compliant browser, such as <a href="http://www.google.com/chrome">Chrome</a> or <a href="http://www.firefox.com">Firefox</a>
-				</font>.
+				<font size="-2"><br>The gauge won't update with Intenet Explorer.
+					Please use a compliant browser, such as <a
+					href="http://www.google.com/chrome">Chrome</a> or <a
+					href="http://www.firefox.com">Firefox</a> </font>.
 			</div> <?php
-		}
-		?>
-		<div style="clear:both;"></div>
-			<div id="livedata"></div>
-		    <script type="text/javascript">
+				}
+				?>
+			<div style="clear: both;"></div>
+			<div id="livedata"></div> <script type="text/javascript">
               //WSL.init_liveData(<?php echo($invtnum); ?>, "#livedata"); // Initial load fast
               //window.setInterval(function(){WSL.init_liveData(<?php echo($invtnum); ?>, "#livedata");}, 1000); // every 1 seconds
               </script>

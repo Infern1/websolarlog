@@ -26,39 +26,39 @@ $imagetypes = array("image/jpeg", "image/gif", "image/png");
 
 function getImages($dir)
 {
-    global $imagetypes;
+	global $imagetypes;
 
-    $retval = array();
-    if(substr($dir, -1) != "/") $dir .= "/";
-    //$fulldir = "{$_SERVER['DOCUMENT_ROOT']}/$dir";
-    $fulldir = "$dir";
+	$retval = array();
+	if(substr($dir, -1) != "/") $dir .= "/";
+	//$fulldir = "{$_SERVER['DOCUMENT_ROOT']}/$dir";
+	$fulldir = "$dir";
 
-    $d = @dir($fulldir) or die("getImages: Failed opening directory $dir for reading");
-    while(false !== ($entry = $d->read())) {
-        if($entry[0] == ".") continue;
-        $f = escapeshellarg("$fulldir$entry");
-        $mimetype = trim(`file -bi $f`);
-        foreach($imagetypes as $valid_type) {
-            if(preg_match("@^{$valid_type}@", $mimetype)) {
-                $retval[] = array(
-                        'file' => "$dir$entry",
-                        'size' => getimagesize("$fulldir$entry")
-                );
-                break;
-            }
-        }
-    }
-    $d->close();
-    return $retval;
+	$d = @dir($fulldir) or die("getImages: Failed opening directory $dir for reading");
+	while(false !== ($entry = $d->read())) {
+		if($entry[0] == ".") continue;
+		$f = escapeshellarg("$fulldir$entry");
+		$mimetype = trim(`file -bi $f`);
+		foreach($imagetypes as $valid_type) {
+			if(preg_match("@^{$valid_type}@", $mimetype)) {
+				$retval[] = array(
+						'file' => "$dir$entry",
+						'size' => getimagesize("$fulldir$entry")
+				);
+				break;
+			}
+		}
+	}
+	$d->close();
+	return $retval;
 }
 
 $images = getImages("images/installation");
 
 foreach($images as $img) {
-    echo "<div class='photo'>";
-    echo "<img src='{$img['file']}' {$img['size'][3]} alt=''><br>\n";
-    echo "<a href='{$img['file']}'>",basename($img['file']),"</a><br>\n";
-    echo "</div>\n";
+	echo "<div class='photo'>";
+	echo "<img src='{$img['file']}' {$img['size'][3]} alt=''><br>\n";
+	echo "<a href='{$img['file']}'>",basename($img['file']),"</a><br>\n";
+	echo "</div>\n";
 }
 echo "
 </td></tr>

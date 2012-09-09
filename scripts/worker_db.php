@@ -11,10 +11,10 @@ require_once dirname(dirname(__FILE__)) . "classes/Formulas.php";
 $db = new wArLeY_DBMS("mysql", "127.0.0.1", "solarweblog","user","password","");
 /*
  * There is no DB
- *
- * if($db->Cnxn() == false)
- * 		die("Error: Cant connect to database.");
- */
+*
+* if($db->Cnxn() == false)
+	* 		die("Error: Cant connect to database.");
+*/
 
 function tricsv($var){
 	return !is_dir($var) && preg_match('/.*\.csv/', $var);
@@ -54,22 +54,69 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 		$RET = false;
 	}
 	if ($RET == "OK") { //OK (OK, we got a valid response from the inverter)
-		if (!empty($array[0])) {$SDTE = $array[0];} else {$SDTE = false;}
-		if (!empty($array[1])) {$I1V = str_replace(".", ",", $array[1]);} else {$I1V = false;}
-		if (!empty($array[2])) {$I1A = str_replace(".", ",", $array[2]);} else {$I1A = false;}
-		if (!empty($array[3])) {$I1P = str_replace(".", ",", $array[3]);} else {$I1P = false;}
-		if (!empty($array[4])) {$I2V = str_replace(".", ",", $array[4]);} else {$I2V = false;}
-		if (!empty($array[5])) {$I2A = str_replace(".", ",", $array[5]);} else {$I2A = false;}
-		if (!empty($array[6])) {$I2P = str_replace(".", ",", $array[6]);} else {$I2P = false;}
-		if (!empty($array[7])) {$GV = str_replace(".", ",", $array[7]);} else {$GV = false;}
-		if (!empty($array[8])) {$GA = str_replace(".", ",", $array[8]);} else {$GA = false;}
-		if (!empty($array[9])) {$GP = str_replace(".", ",", $array[9]);} else {$GP = false;}
-		if (!empty($array[10])) {$FRQ = str_replace(".", ",", $array[10]);} else {$FRQ = false;}
-		if (!empty($array[11])) {$EFF = str_replace(".", ",", $array[11]);} else {$EFF = false;}
-		if (!empty($array[12])) {$INVT = str_replace(".", ",", $array[12]);} else {$INVT = false;}
-		if (!empty($array[13])) {$BOOT = str_replace(".", ",", $array[13]);} else {$BOOT = false;}
-		if (!empty($array[19])) {$KWHT = str_replace(".", ",", $array[19]);} else {$KWHT = false;}
-		if ($CALCGRIDP == true) {$array[9] = $array[7] * $array[8];}
+		if (!empty($array[0])) {
+			$SDTE = $array[0];
+		} else {$SDTE = false;
+		}
+		if (!empty($array[1])) {
+			$I1V = str_replace(".", ",", $array[1]);
+		} else {$I1V = false;
+		}
+		if (!empty($array[2])) {
+			$I1A = str_replace(".", ",", $array[2]);
+		} else {$I1A = false;
+		}
+		if (!empty($array[3])) {
+			$I1P = str_replace(".", ",", $array[3]);
+		} else {$I1P = false;
+		}
+		if (!empty($array[4])) {
+			$I2V = str_replace(".", ",", $array[4]);
+		} else {$I2V = false;
+		}
+		if (!empty($array[5])) {
+			$I2A = str_replace(".", ",", $array[5]);
+		} else {$I2A = false;
+		}
+		if (!empty($array[6])) {
+			$I2P = str_replace(".", ",", $array[6]);
+		} else {$I2P = false;
+		}
+		if (!empty($array[7])) {
+			$GV = str_replace(".", ",", $array[7]);
+		} else {$GV = false;
+		}
+		if (!empty($array[8])) {
+			$GA = str_replace(".", ",", $array[8]);
+		} else {$GA = false;
+		}
+		if (!empty($array[9])) {
+			$GP = str_replace(".", ",", $array[9]);
+		} else {$GP = false;
+		}
+		if (!empty($array[10])) {
+			$FRQ = str_replace(".", ",", $array[10]);
+		} else {$FRQ = false;
+		}
+		if (!empty($array[11])) {
+			$EFF = str_replace(".", ",", $array[11]);
+		} else {$EFF = false;
+		}
+		if (!empty($array[12])) {
+			$INVT = str_replace(".", ",", $array[12]);
+		} else {$INVT = false;
+		}
+		if (!empty($array[13])) {
+			$BOOT = str_replace(".", ",", $array[13]);
+		} else {$BOOT = false;
+		}
+		if (!empty($array[19])) {
+			$KWHT = str_replace(".", ",", $array[19]);
+		} else {$KWHT = false;
+		}
+		if ($CALCGRIDP == true) {
+			$array[9] = $array[7] * $array[8];
+		}
 		// Initialize variables
 		$match   = "";
 		$msg	 = "";
@@ -124,11 +171,14 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 
 		/*
 		 * Create a 5 min. interval array for PVoutput
-		 */
+		*/
 		$count = 00;
 		$interval = 5; // <<< bring this value to admin
 		while($count<=59){
-			if ($count < 10){$countstring = sprintf("%02d",$count);}else{$countstring = (string)$count;}
+			if ($count < 10){
+				$countstring = sprintf("%02d",$count);
+			}else{$countstring = (string)$count;
+			}
 			$minpvoutputlist[$count]=$countstring;
 			$count = $count + $interval;
 		}
@@ -136,11 +186,14 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 
 		/*
 		 * Create a X min. interval array for log frequency.
-		 */
+		*/
 		$count = 00;
 		$interval = 2; // <<< bring this value to admin, INT not lower than 1 because it will loop.
 		while($count<=59){
-			if ($count < 10){$countstring = sprintf("%02d",$count);}else{$countstring = (string)$count;}
+			if ($count < 10){
+				$countstring = sprintf("%02d",$count);
+			}else{$countstring = (string)$count;
+			}
 			$mindatalist[$count]=$countstring;
 			$count = $count + $interval;
 		}
@@ -158,30 +211,30 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 
 			/*
 			 * db add by Freemann
-			 */
+			*/
 			$params = array(
-				":mpp1Voltage|" . str_replace(",", ".", $I1V) . "|STR",
-				":mpp1Current|" . str_replace(",", ".", $I1A) . "|STR",
-				":mpp1Power|" . str_replace(",", ".", $I1P) . "|STR",
-				":mpp2Voltage|" . str_replace(",", ".", $I2V) . "|STR",
-				":mpp2Current|" . str_replace(",", ".", $I2A) . "|STR",
-				":mpp2Power|" . str_replace(",", ".", $I2P) . "|STR",
-				":gridVoltage|" . str_replace(",", ".", $GV) . "|STR",
-				":gridCurrent|" . str_replace(",", ".", $GA) . "|STR",
-				":gridPower|" . str_replace(",", ".", $GP) . "|INT",
-				":gridFrequency|" . str_replace(",", ".", $FRQ) . "|STR",
-				":invEfficiency|" . str_replace(",", ".", $EFF) . "|STR",
-				":invTemp|" . str_replace(",", ".", $INVT) . "|STR",
-				":boosTemp|" . str_replace(",", ".", $BOOT) . "|STR",
-				":kwht|" . str_replace(",", ".", $KWHT) . "|STR",
-				":azimuth|" . round($azimuth, 2) . "|STR",
-				":altitude|" . round($altitude, 2) . "|STR"
+					":mpp1Voltage|" . str_replace(",", ".", $I1V) . "|STR",
+					":mpp1Current|" . str_replace(",", ".", $I1A) . "|STR",
+					":mpp1Power|" . str_replace(",", ".", $I1P) . "|STR",
+					":mpp2Voltage|" . str_replace(",", ".", $I2V) . "|STR",
+					":mpp2Current|" . str_replace(",", ".", $I2A) . "|STR",
+					":mpp2Power|" . str_replace(",", ".", $I2P) . "|STR",
+					":gridVoltage|" . str_replace(",", ".", $GV) . "|STR",
+					":gridCurrent|" . str_replace(",", ".", $GA) . "|STR",
+					":gridPower|" . str_replace(",", ".", $GP) . "|INT",
+					":gridFrequency|" . str_replace(",", ".", $FRQ) . "|STR",
+					":invEfficiency|" . str_replace(",", ".", $EFF) . "|STR",
+					":invTemp|" . str_replace(",", ".", $INVT) . "|STR",
+					":boosTemp|" . str_replace(",", ".", $BOOT) . "|STR",
+					":kwht|" . str_replace(",", ".", $KWHT) . "|STR",
+					":azimuth|" . round($azimuth, 2) . "|STR",
+					":altitude|" . round($altitude, 2) . "|STR"
 			);
 
 			$db->query_secure("INSERT INTO `pvlog`.`live` (`datetime`,`mpp1Voltage`, `mpp1Current`, `mpp1Power`, `mpp2Voltage`, `mpp2Current`, `mpp2Power`, `gridVoltage`, `gridCurrent`, `gridPower`, `GridFrequency`, `invEfficiency`, `invTemp`, `BoosTemp`, `kwht`,`azimuth`,`altitude`)  VALUES  (now(),:mpp1Voltage,:mpp1Current,:mpp1Power,:mpp2Voltage,:mpp2Current,:mpp2Power,:gridVoltage,:gridCurrent,:gridPower,:GridFrequency,:invEfficiency,:invTemp,:BoosTemp,:kwht,:azimuth,:altitude);", $params, false, false, "|");
 			/*
 			 *  /db add by Freemann
-			 */
+			*/
 
 			$lines	  = file($myFile);
 			$contalines = count($lines);
@@ -218,15 +271,15 @@ for ($invtnum = 1; $invtnum <= $NUMINV; $invtnum++) { //Multi inverters pooling
 
 					/*
 			 		* db add by Freemann
-				 	*/
+					*/
 					$params = array(
-						":kwh|" . str_replace(",", ".", $production) . "|STR",
-						":yesterday|" . $date1 . "|STR",
+							":kwh|" . str_replace(",", ".", $production) . "|STR",
+							":yesterday|" . $date1 . "|STR",
 					);
 					$db->query_secure("INSERT INTO `pvlog`.`production` (`datetime`,`kwh`) VALUES (:yesterday,:kwh);", $params, false, false, "|");
 					/*
 			 		*   /db add by Freemann
-			 		*/
+					*/
 				}
 
 				unlink($DATADIR . "/infos/pmaxotd.txt"); // Remove past pmotd

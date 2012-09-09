@@ -61,7 +61,7 @@ foreach ($lines as $line_num => $line) {
 	if ($diffTime!=0) {
 		//AveragePOWer = ((KiloWattHourTime[currentline] - KiloWattHourTime[last add line](give timediff in sec) *3600 (to hour) / $difftime) * 1000 (watt??)), round by 1 decimal)
 		// ^averagepower over a given time.
-	    $AvgPOW = Formulas::calcAveragePower($KWHT[$pastline_num], $KWHT[$line_num], $diffTime);
+		$AvgPOW = Formulas::calcAveragePower($KWHT[$pastline_num], $KWHT[$line_num], $diffTime);
 	} else {
 		$AvgPOW=0;
 	}

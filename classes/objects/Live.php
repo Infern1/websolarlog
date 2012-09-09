@@ -1,5 +1,6 @@
 <?php
 class Live {
+	public $INV;
     public $I1V;
     public $I1A;
     public $I1P;

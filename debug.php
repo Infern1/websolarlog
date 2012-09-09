@@ -17,7 +17,8 @@ include("config/config.php");
 		<tr>
 			<td><b>Checking hardware :</b><br> <?php
 			$datareturn = shell_exec('lsusb');
-			?> <textarea style="resize: none; background-color: #DCDCDC" cols="100" rows="5">
+			?> <textarea style="resize: none; background-color: #DCDCDC"
+					cols="100" rows="5">
 <?php echo $datareturn; ?>
 </textarea>
 			</td>
@@ -26,7 +27,8 @@ include("config/config.php");
 		<tr>
 			<td><?php
 			$datareturn = shell_exec('lsmod');
-			?> <textarea style="resize: none; background-color: #DCDCDC" cols="100" rows="5">
+			?> <textarea style="resize: none; background-color: #DCDCDC"
+					cols="100" rows="5">
 <?php echo $datareturn; ?>
 </textarea>
 			</td>
@@ -38,15 +40,15 @@ include("config/config.php");
 			$input = '{ "jsontest" : " <br>Json extension loaded" }';
 			$val = json_decode($input, true);
 			if ($val["jsontest"]!="") {
-			    echo $val["jsontest"];
+				echo $val["jsontest"];
 			} else {
-			    echo "<br>Json extension -NOT- loaded";
+				echo "<br>Json extension -NOT- loaded";
 			}
 
 			if (extension_loaded('calendar')) {
-			    echo "<br>Calendar extension loaded";
+				echo "<br>Calendar extension loaded";
 			} else {
-			    echo "<br>Calendar extension -NOT- loaded";
+				echo "<br>Calendar extension -NOT- loaded";
 			}
 
 			?>
@@ -57,17 +59,20 @@ include("config/config.php");
 		<tr>
 			<td><br> <b>Checking Software:</b><br> <?php
 			$datareturn = shell_exec('ps -ef | grep aurora | grep -v grep');
-			?> <textarea style="resize: none; background-color: #DCDCDC" cols="100" rows="5">
+			?> <textarea style="resize: none; background-color: #DCDCDC"
+					cols="100" rows="5">
 <?php echo $datareturn; ?>
 </textarea>
 			</td>
-			<td>Version : <?php echo $VERSION;?> <br>You <b>should</b> see 123aurora.sh start and sometimes aurora -a2 -c -T -d0 -e
+			<td>Version : <?php echo $VERSION;?> <br>You <b>should</b> see
+				123aurora.sh start and sometimes aurora -a2 -c -T -d0 -e
 			</td>
 		</tr>
 		<tr>
 			<td>Locks : <br> <?php
 			$datareturn = shell_exec('ls -l /var/lock/');
-			?> <textarea style="resize: none; background-color: #DCDCDC" cols="100" rows="5">
+			?> <textarea style="resize: none; background-color: #DCDCDC"
+					cols="100" rows="5">
 <?php echo $datareturn; ?>
 </textarea>
 			</td>
@@ -77,20 +82,23 @@ include("config/config.php");
 		<tr>
 			<td>Flags :<br> <?php
 			$datareturn = shell_exec('find data/ -name \*lock\*');
-			?> <textarea style="resize: none; background-color: #DCDCDC" cols="100" rows="3">
+			?> <textarea style="resize: none; background-color: #DCDCDC"
+					cols="100" rows="3">
 <?php echo $datareturn; ?>
 </textarea>
 			</td>
 			<td>You may see a lock file</td>
 		</tr>
 		<tr>
-			<td><b>Checking aurora communication app :</b> <br>Current settings are <?php 
-			if ($DEBUG!=true) {
-			    echo "-a$ADR -c -T $COMOPTION -d0 -e $PORT";
-			} else {
-			    echo "-b -a$ADR -c -T $COMOPTION -d0 -e $PORT 2> data/errors/de.err";
-			}
-			?> <br> <br> <a href="data/invt1/errors/">Aurora communication errors</a> (You have to enable com. debug to get all details) <br>
+			<td><b>Checking aurora communication app :</b> <br>Current settings
+				are <?php 
+				if ($DEBUG!=true) {
+					echo "-a$ADR -c -T $COMOPTION -d0 -e $PORT";
+				} else {
+					echo "-b -a$ADR -c -T $COMOPTION -d0 -e $PORT 2> data/errors/de.err";
+				}
+				?> <br> <br> <a href="data/invt1/errors/">Aurora communication
+					errors</a> (You have to enable com. debug to get all details) <br>
 			</td>
 			<td></td>
 		</tr>

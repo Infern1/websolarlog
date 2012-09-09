@@ -6,71 +6,71 @@ $date2 = $_GET['date2'];
 $invtnum= $_GET['invtnum'];
 
 if (!empty ($date2)) {
-    $ts = strftime("%s", floor($date2/1000));
-    $date1=date('d/m/Y', $ts);
+	$ts = strftime("%s", floor($date2/1000));
+	$date1=date('d/m/Y', $ts);
 }
 
 if (!empty ($_POST['invtnum'])) {
-    $invtnum= $_POST['invtnum'];
+	$invtnum= $_POST['invtnum'];
 }
 if (!empty ($_POST['checkpower'])) {
-    $checkpower = $_POST['checkpower'];
+	$checkpower = $_POST['checkpower'];
 } else { $checkpower=false;
 }
 if (!empty ($_POST['checkavgpower'])) {
-    $checkavgpower = $_POST['checkavgpower'];
+	$checkavgpower = $_POST['checkavgpower'];
 } else { $checkavgpower=false;
 }
 if (!empty ($_POST['checkI1V'])) {
-    $checkI1V = $_POST['checkI1V'];
+	$checkI1V = $_POST['checkI1V'];
 } else { $checkI1V=false;
 }
 if (!empty ($_POST['checkI1A'])) {
-    $checkI1A = $_POST['checkI1A'];
+	$checkI1A = $_POST['checkI1A'];
 } else { $checkI1A=false;
 }
 if (!empty ($_POST['checkI1P'])) {
-    $checkI1P = $_POST['checkI1P'];
+	$checkI1P = $_POST['checkI1P'];
 } else { $checkI1P=false;
 }
 if (!empty ($_POST['checkI2V'])) {
-    $checkI2V = $_POST['checkI2V'];
+	$checkI2V = $_POST['checkI2V'];
 } else { $checkI2V=false;
 }
 if (!empty ($_POST['checkI2A'])) {
-    $checkI2A = $_POST['checkI2A'];
+	$checkI2A = $_POST['checkI2A'];
 } else { $checkI2A=false;
 }
 if (!empty ($_POST['checkI2P'])) {
-    $checkI2P = $_POST['checkI2P'];
+	$checkI2P = $_POST['checkI2P'];
 } else { $checkI2P=false;
 }
 if (!empty ($_POST['checkGV'])) {
-    $checkGV = $_POST['checkGV'];
+	$checkGV = $_POST['checkGV'];
 } else { $checkGV=false;
 }
 if (!empty ($_POST['checkGA'])) {
-    $checkGA = $_POST['checkGA'];
+	$checkGA = $_POST['checkGA'];
 } else { $checkGA=false;
 }
 if (!empty ($_POST['checkGP'])) {
-    $checkGP = $_POST['checkGP'];
+	$checkGP = $_POST['checkGP'];
 } else { $checkGP=false;
 }
 if (!empty ($_POST['checkFRQ'])) {
-    $checkFRQ = $_POST['checkFRQ'];
+	$checkFRQ = $_POST['checkFRQ'];
 } else { $checkFRQ=false;
 }
 if (!empty ($_POST['checkEFF'])) {
-    $checkEFF = $_POST['checkEFF'];
+	$checkEFF = $_POST['checkEFF'];
 } else { $checkEFF=false;
 }
 if (!empty ($_POST['checkINVT'])) {
-    $checkINVT = $_POST['checkINVT'];
+	$checkINVT = $_POST['checkINVT'];
 } else { $checkINVT=false;
 }
 if (!empty ($_POST['checkBOOT'])) {
-    $checkBOOT = $_POST['checkBOOT'];
+	$checkBOOT = $_POST['checkBOOT'];
 } else { $checkBOOT=false;
 }
 
@@ -78,13 +78,13 @@ $config_invt="config/config_invt".$invtnum.".php";
 include("$config_invt");
 
 if (ereg ("([0-9]{2})/([0-9]{2})/([0-9]{4})", $date1)) { // test date1
-    //Nothing selected
-    if ($checkpower==false&&$checkavgpower==false&&$checkI1V==false&&$checkI1A==false&&$checkI1P==false&&$checkI2V==false&&$checkI2A==false&&$checkI2P==false&&$checkGV==false&&$checkGA==false&&$checkGP==false&&$checkFRQ==false&&$checkEFF==false&&$checkINVT==false&&$checkBOOT==false) {
-        $checkavgpower=true;
-    }
-    $titledate = substr($date1,0,10) ;
-    $date1 =(substr($date1,6,4)).(substr($date1,3,2)).(substr($date1,0,2)).".csv";
-    ?>
+	//Nothing selected
+	if ($checkpower==false&&$checkavgpower==false&&$checkI1V==false&&$checkI1A==false&&$checkI1P==false&&$checkI2V==false&&$checkI2A==false&&$checkI2P==false&&$checkGV==false&&$checkGA==false&&$checkGP==false&&$checkFRQ==false&&$checkEFF==false&&$checkINVT==false&&$checkBOOT==false) {
+		$checkavgpower=true;
+	}
+	$titledate = substr($date1,0,10) ;
+	$date1 =(substr($date1,6,4)).(substr($date1,3,2)).(substr($date1,0,2)).".csv";
+	?>
 <script type="text/javascript">
 
 $(document).ready(function()

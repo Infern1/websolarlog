@@ -1,16 +1,16 @@
 <?php
 include("styles/globalheader.php");
 if(!empty($_POST['invtnum'])) {
-    $invtnum=$_POST['invtnum'];
+	$invtnum=$_POST['invtnum'];
 } else {if ($NUMINV>1) {
-    $invtnum=0;
+	$invtnum=0;
 } else {$invtnum=1;
 }
 }
 if ($invtnum==0) {
-    $dir = 'data/invt1/production';
+	$dir = 'data/invt1/production';
 } else {
-    $dir = 'data/invt'.$invtnum.'/production';
+	$dir = 'data/invt'.$invtnum.'/production';
 }
 $output = scandir($dir);
 $output = array_filter($output, "tricsv");
@@ -18,29 +18,29 @@ sort($output);
 $xyears=count($output);
 
 if($invtnum==0) {
-    $startinv=1; $uptoinv=$NUMINV;
+	$startinv=1; $uptoinv=$NUMINV;
 } else { $startinv=$invtnum; $uptoinv=$invtnum;
 }
 for ($invt_num=$startinv;$invt_num<=$uptoinv;$invt_num++) {  // Multi
-    $config_invt="config/config_invt".$invt_num.".php";
-    include("$config_invt");
-    $PLANT_POWERtot+=$PLANT_POWER;
+	$config_invt="config/config_invt".$invt_num.".php";
+	include("$config_invt");
+	$PLANT_POWERtot+=$PLANT_POWER;
 } // multi
 
 if (!empty ($_POST['whichmonth'])) {
-    $whichmonth= $_POST['whichmonth'];
+	$whichmonth= $_POST['whichmonth'];
 } else { $whichmonth= date("n");
 }
 if (!empty ($_POST['whichyear'])) {
-    $whichyear= $_POST['whichyear'];
+	$whichyear= $_POST['whichyear'];
 } else { $whichyear= date("Y");
 }
 if (!empty ($_POST['comparemonth'])) {
-    $comparemonth= $_POST['comparemonth'];
+	$comparemonth= $_POST['comparemonth'];
 } else { $comparemonth= date("n");
 }
 if (!empty ($_POST['compareyear'])) {
-    $compareyear= $_POST['compareyear'];
+	$compareyear= $_POST['compareyear'];
 } else { $compareyear= "expected";
 }
 ?>
@@ -50,75 +50,75 @@ if (!empty ($_POST['compareyear'])) {
 			<form method="POST" action="indexcomparison.php">
 				<?php
 				if ($NUMINV>1) {
-				    echo "<select name='invtnum' onchange='this.form.submit()'>";
-				    if ($invtnum=='all') {
-				        echo "<option SELECTED value=0>$lgALL</option>";
-				    } else {
-				        echo "<option value=0>$lgALL</option>";
-				    }
-				    for ($i=1;$i<=$NUMINV;$i++) {
-				        if ($invtnum==$i) {
-				            echo "<option SELECTED value=$i>";
-				        } else {
-				            echo "<option value=$i>";
-				        }
-				        echo "$lgINVT$i</option>";
-				    }
-				    echo "</select>&nbsp;";
+					echo "<select name='invtnum' onchange='this.form.submit()'>";
+					if ($invtnum=='all') {
+						echo "<option SELECTED value=0>$lgALL</option>";
+					} else {
+						echo "<option value=0>$lgALL</option>";
+					}
+					for ($i=1;$i<=$NUMINV;$i++) {
+						if ($invtnum==$i) {
+							echo "<option SELECTED value=$i>";
+						} else {
+							echo "<option value=$i>";
+						}
+						echo "$lgINVT$i</option>";
+					}
+					echo "</select>&nbsp;";
 				}
 				echo "$lgCHOOSEDATE :
 				<select name='whichmonth' onchange='this.form.submit()'>";
 				for ($i=1;$i<=12;$i++){
-				    if ($whichmonth==$i) {
-				        echo "<option SELECTED value='$i'>";
-				    } else {
-				        echo "<option value='$i'>";
-				    }
-				    echo "$lgMONTH[$i]</option>";
+					if ($whichmonth==$i) {
+						echo "<option SELECTED value='$i'>";
+					} else {
+						echo "<option value='$i'>";
+					}
+					echo "$lgMONTH[$i]</option>";
 				}
 				echo "
 				</select>
 				<select name='whichyear' onchange='this.form.submit()'>";
 				for ($i=($xyears-1);$i>=0;$i--){
-				    $option = substr($output[$i],6,4);
-				    if ($whichyear==$option) {
-				        echo "<option SELECTED>";
-				    } else {
-				        echo "<option>";
-				    }
-				    echo "$option</option>";
+					$option = substr($output[$i],6,4);
+					if ($whichyear==$option) {
+						echo "<option SELECTED>";
+					} else {
+						echo "<option>";
+					}
+					echo "$option</option>";
 				}
 				echo "</select>
 				$lgCOMPAREDWITH
 				<select name='comparemonth' onchange='this.form.submit()'>";
 				for ($i=1;$i<=12;$i++){
-				    if ($comparemonth==$i) {
-				        echo "<option SELECTED value='$i'>";
-				    } else {
-				        echo "<option value='$i'>";
-				    }
-				    echo "$lgMONTH[$i]</option>";
+					if ($comparemonth==$i) {
+						echo "<option SELECTED value='$i'>";
+					} else {
+						echo "<option value='$i'>";
+					}
+					echo "$lgMONTH[$i]</option>";
 				}
 				echo "
 				</select>
 				<select name='compareyear' onchange='this.form.submit()'>";
 				if ($compareyear=='expected') {
-				    echo "<option SELECTED value='expected'>$lgPRODTOOLTIPEXPECTED";
-				    $compareyear2=$lgPRODTOOLTIPEXPECTED;
+					echo "<option SELECTED value='expected'>$lgPRODTOOLTIPEXPECTED";
+					$compareyear2=$lgPRODTOOLTIPEXPECTED;
 				} else {
-				    echo "<option value='expected'>$lgPRODTOOLTIPEXPECTED";
-				    $compareyear2=$compareyear;
+					echo "<option value='expected'>$lgPRODTOOLTIPEXPECTED";
+					$compareyear2=$compareyear;
 				}
 				echo "</option>";
 
 				for ($i=($xyears-1);$i>=0;$i--){
-				    $option = substr($output[$i],6,4);
-				    if ($compareyear==$option) {
-				        echo "<option SELECTED>";
-				    } else {
-				        echo "<option>";
-				    }
-				    echo "$option</option>";
+					$option = substr($output[$i],6,4);
+					if ($compareyear==$option) {
+						echo "<option SELECTED>";
+					} else {
+						echo "<option>";
+					}
+					echo "$option</option>";
 				}
 				echo "
 				</select>

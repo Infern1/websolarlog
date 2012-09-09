@@ -22,7 +22,7 @@ $lgTRANSIT="Zénith";
 $lgSUNSET="Couché";
 $lgPMAX="Puissance max. instantanée";
 $lgTOTAL="Total";
-  
+
 // ### DASHBOARD
 $lgDASHBOARD="Tableau de bord";
 $lgINPUT1="Circuit 1";

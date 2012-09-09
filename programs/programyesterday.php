@@ -52,7 +52,7 @@ foreach ($lines as $line_num => $line) {
 
 	$AvgPOW = 0;
 	if ($diffTime !=0 ) {
-	    $AvgPOW = Formulas::calcAveragePower($KWHT[$pastline_num], $KWHT[$line_num], $diffTime);
+		$AvgPOW = Formulas::calcAveragePower($KWHT[$pastline_num], $KWHT[$line_num], $diffTime);
 	}
 
 	$UTCdate = $UTCdate *1000;

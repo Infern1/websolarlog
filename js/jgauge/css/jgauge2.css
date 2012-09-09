@@ -7,9 +7,7 @@
  * 
  * Date: 28 October 2010
  */
-
-div.jgauge
-{
+div.jgauge {
 	background-repeat: no-repeat;
 	background-position: top center;
 	float: left;
@@ -21,8 +19,7 @@ div.jgauge
 	z-index: 0;
 }
 
-div.jgauge p.tick-label
-{
+div.jgauge p.tick-label {
 	color: #327a9e;
 	display: none;
 	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
@@ -37,8 +34,7 @@ div.jgauge p.tick-label
 	z-index: 3;
 }
 
-div.jgauge img.needle
-{
+div.jgauge img.needle {
 	border: 0;
 	display: none;
 	margin: 0;
@@ -47,13 +43,11 @@ div.jgauge img.needle
 	z-index: 5;
 }
 
-div.jgauge .needle
-{
+div.jgauge .needle {
 	z-index: 5;
 }
 
-div.jgauge p.label
-{
+div.jgauge p.label {
 	color: #144b66;
 	display: none;
 	font-family: Arial, Helvetica, sans-serif;
@@ -69,8 +63,7 @@ div.jgauge p.label
 	z-index: 4;
 }
 
-div.jgauge canvas
-{
+div.jgauge canvas {
 	left: 0;
 	margin: 0;
 	padding: 0;

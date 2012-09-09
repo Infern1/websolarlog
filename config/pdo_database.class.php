@@ -1,11 +1,11 @@
 <?php
 /**
-* PDO Database class
-*
-* @author:    	Evert Ulises German Soto
-* @copyright: 	wArLeY996 2012
-* @version: 	2.1
-*/
+ * PDO Database class
+ *
+ * @author:    	Evert Ulises German Soto
+ * @copyright: 	wArLeY996 2012
+ * @version: 	2.1
+ */
 
 class wArLeY_DBMS{
 
@@ -24,13 +24,13 @@ class wArLeY_DBMS{
 	private $err_msg = "";
 
 	/**
-	* Constructor of class - Initializes class and connects to the database
-	* @param string $database_type the name of the database type
-	* @param string $host the host of the database
-	* @param string $database the name of the database
-	* @param string $user the name of the user for the database
-	* @param string $password the passord of the user for the database
-	*/
+	 * Constructor of class - Initializes class and connects to the database
+	 * @param string $database_type the name of the database type
+	 * @param string $host the host of the database
+	 * @param string $database the name of the database
+	 * @param string $user the name of the user for the database
+	 * @param string $password the passord of the user for the database
+	 */
 
 	//Initialize class and connects to the database
 	public function __construct($database_type,$host,$database,$user,$password,$port){
@@ -116,7 +116,7 @@ class wArLeY_DBMS{
 
 	//Retrieve all drivers capables
 	public function drivers(){
-		print_r(PDO::getAvailableDrivers()); 
+		print_r(PDO::getAvailableDrivers());
 	}
 
 	//Execute the transactional operations
@@ -127,9 +127,9 @@ class wArLeY_DBMS{
 				if($arg=="B")
 					$this->con->beginTransaction();
 				elseif($arg=="C")
-					$this->con->commit();
+				$this->con->commit();
 				elseif($arg=="R")
-					$this->con->rollBack();
+				$this->con->rollBack();
 				else{
 					$this->err_msg = "Error: The passed param is wrong! just allow [B=begin, C=commit or R=rollback]";
 					return false;

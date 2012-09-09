@@ -83,7 +83,7 @@ $invtnum= $_GET['invtnum'];
   }
 updateit();
 setInterval(updateit, 500);
-</script>  
+</script>
 
 <script type="text/javascript">
 
@@ -297,25 +297,36 @@ series: [{
 </script>
 <?php 
 if($NUMINV>1) {
-  echo "<b>$lgDASHBOARD $lgINVT $invtnum</b>"; 
+	echo "<b>$lgDASHBOARD $lgINVT $invtnum</b>";
 }
 ?>
-        <table width="100%" border=0 align=center cellpadding="0">
-          <tr><td><?php echo "$lgINPUT1 :";?><div id="jGauge1" align="center" class="jgauge" valign="MIDDLE"></div></td>
-          <td width="90%"><div id="container1" style="height: 300px"></div></td>
-        </tr>
-        </table>
-    <hr>
-    <table width="100%" border=0 align=center cellpadding="0">
-          <tr><td><?php echo "$lgINPUT2 :";?><div id="jGauge2" class="jgauge" valign="MIDDLE"></div></td>
-          <td width="90%"><div id="container2" style="height: 300px"></div></td>
-        </tr>
-  </table>
-  <hr>
-        <table width="100%" border=0 align=center cellpadding="0">
-          <tr><td><?php echo "$lgGRIDVOLTAGE : ";?><b id='GV'>--</b> V</td><td><?php echo "$lgGRIDCURRENT : ";?><b id='GA'>--</b> A</td><td><?php echo "$lgFREQ : ";?><b id='FRQ'>--</b>Hz</td>
-          </tr>
-          <tr><td><?php echo "$lgEFFICIENCYINVT : ";?><b id='EFF'>--</b> %</td><td><?php echo "$lgBOOSTERTEMP : ";?><b id='BOOT'>--</b>°c</td><td><?php echo "$lgINVERTERTEMP : ";?><b id='INVT'>--</b>°c</td>
-          </tr>
-        </table>
+<table width="100%" border=0 align=center cellpadding="0">
+	<tr>
+		<td><?php echo "$lgINPUT1 :";?>
+			<div id="jGauge1" align="center" class="jgauge" valign="MIDDLE"></div>
+		</td>
+		<td width="90%"><div id="container1" style="height: 300px"></div></td>
+	</tr>
+</table>
+<hr>
+<table width="100%" border=0 align=center cellpadding="0">
+	<tr>
+		<td><?php echo "$lgINPUT2 :";?>
+			<div id="jGauge2" class="jgauge" valign="MIDDLE"></div></td>
+		<td width="90%"><div id="container2" style="height: 300px"></div></td>
+	</tr>
+</table>
+<hr>
+<table width="100%" border=0 align=center cellpadding="0">
+	<tr>
+		<td><?php echo "$lgGRIDVOLTAGE : ";?><b id='GV'>--</b> V</td>
+		<td><?php echo "$lgGRIDCURRENT : ";?><b id='GA'>--</b> A</td>
+		<td><?php echo "$lgFREQ : ";?><b id='FRQ'>--</b>Hz</td>
+	</tr>
+	<tr>
+		<td><?php echo "$lgEFFICIENCYINVT : ";?><b id='EFF'>--</b> %</td>
+		<td><?php echo "$lgBOOSTERTEMP : ";?><b id='BOOT'>--</b>°c</td>
+		<td><?php echo "$lgINVERTERTEMP : ";?><b id='INVT'>--</b>°c</td>
+	</tr>
+</table>
 <?php include("styles/".$user_style."/footer.php"); ?>
