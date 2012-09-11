@@ -14,9 +14,12 @@ include($basepath . "/classes/Aurora.php");
 include($basepath . "/classes/DataAdapter.php");
 include($basepath . "/classes/R.php");
 include($basepath . "/classes/PDODataAdapter.php");
-include($basepath . "/classes/objects/Alarm.php");
+include($basepath . "/classes/objects/Event.php");
 include($basepath . "/classes/objects/Live.php");
 include($basepath . "/classes/objects/MaxPowerToday.php");
+include($basepath . "/classes/objects/InverterInfo.php");
+include($basepath . "/classes/objects/Lock.php");
+
 
 function tricsv($var) {
 	return !is_dir($var)&& preg_match('/.*\.csv/', $var);
@@ -24,6 +27,15 @@ function tricsv($var) {
 
 $config = new Config();
 try {
+	
+	// We only call functions from the interface, so we can easily switch this to mysql or any other adapter
+	$dataAdapter = new PDODataAdapter();
+	
+	$OLock = new Lock();
+	$OLock->SDTE = date('Ymd-H:m:s');
+	$OLock->type = 'LockPort';
+	$dataAdapter->writeLock($OLock);
+	
 	$lock = Util::createLockFile(); // Lock port
 
 	// Check if we are in automode and if the sun is down
@@ -35,6 +47,7 @@ try {
 			}
 		}
 		//sleep (60); // he's alive ?
+		$dataAdapter->dropLock();
 		Util::removeLockFile();
 		die;
 	}
@@ -64,7 +77,7 @@ try {
 		$datareturn = str_replace(".", ",", $datareturn);  // Convert dot to comma;
 		$array = preg_split("/[[:space:]]+/",$datareturn);
 
-		$live = new Live();
+		$Olive = new Live();
 
 		$RET = false;
 		if (!empty ($array[22])) {
@@ -73,49 +86,49 @@ try {
 
 		if ($RET=="OK") {
 			if (!empty ($array[0])) {
-				$live->SDTE = $array[0];
+				$Olive->SDTE = $array[0];
 			}
 			if (!empty ($array[1])) {
-				$live->I1V = $array[1];
+				$Olive->I1V = $array[1];
 			}
 			if (!empty ($array[2])) {
-				$live->I1A = $array[2];
+				$Olive->I1A = $array[2];
 			}
 			if (!empty ($array[3])) {
-				$live->I1P = $array[3];
+				$Olive->I1P = $array[3];
 			}
 			if (!empty ($array[4])) {
-				$live->I2V = $array[4];
+				$Olive->I2V = $array[4];
 			}
 			if (!empty ($array[5])) {
-				$live->I2A = $array[5];
+				$Olive->I2A = $array[5];
 			}
 			if (!empty ($array[6])) {
-				$live->I2P = $array[6];
+				$Olive->I2P = $array[6];
 			}
 			if (!empty ($array[7])) {
-				$live->GV = $array[7];
+				$Olive->GV = $array[7];
 			}
 			if (!empty ($array[8])) {
-				$live->GA = $array[8];
+				$Olive->GA = $array[8];
 			}
 			if (!empty ($array[9])) {
-				$live->GP = $array[9];
+				$Olive->GP = $array[9];
 			}
 			if (!empty ($array[10])) {
-				$live->FRQ = $array[10];
+				$Olive->FRQ = $array[10];
 			}
 			if (!empty ($array[11])) {
-				$live->EFF = $array[11];
+				$Olive->EFF = $array[11];
 			}
 			if (!empty ($array[12])) {
-				$live->INVT = $array[12];
+				$Olive->INVT = $array[12];
 			}
 			if (!empty ($array[13])) {
-				$live->BOOT = $array[13];
+				$Olive->BOOT = $array[13];
 			}
 			if (!empty ($array[19])) {
-				$live->KWHT = $array[19];
+				$Olive->KWHT = $array[19];
 			}
 
 			// Initialize variables
@@ -124,15 +137,12 @@ try {
 			$KWHDtot=0;
 			$GPtot=0;
 
-			// We only call functions from the interface, so we can easily switch this to mysql or any other adapter
-			$dataAdapter = new PDODataAdapter();
-
-			$dataAdapter->writeLiveInfo($invtnum, $live);
+			$dataAdapter->writeLiveInfo($invtnum, $Olive);
 
 			$currentMPT = $dataAdapter->readMaxPowerToday($invtnum);
 
-			$GP2 = str_replace(",", ".", $live->GP);
-			$EFF = str_replace(",", ".", $live->EFF);
+			$GP2 = str_replace(",", ".", $Olive->GP);
+			$EFF = str_replace(",", ".", $Olive->EFF);
 			$COEF=($EFF/100)*$CORRECTFACTOR;
 
 			if ($COEF>1) {
@@ -142,19 +152,19 @@ try {
 			$GP2 = round($GP2*$COEF,2);
 			if ($GP2 > $currentMPT->GP) {
 				// Found a new max power of today
-				$mpt = new MaxPowerToday();
-				$mpt->SDTE = $live->SDTE;
-				$mpt->GP = $GP2;
-				$dataAdapter->writeMaxPowerToday($invtnum, $mpt);
+				$Ompt = new MaxPowerToday();
+				$Ompt->SDTE = $Olive->SDTE;
+				$Ompt->GP = $GP2;
+				$dataAdapter->writeMaxPowerToday($invtnum, $Ompt);
 			}
 
 
-			// TODO :: 2 :: Code below could be removed because we now safe every inverter seperated and not as a SUM of all inverters
+			// TODO :: 2 :: Code below could be removed because we now save every inverter seperated and not as a SUM of all inverters
 			if ($NUMINV>1) { // Max instant power of the day on multi
 				$pmaxotd=file((dirname(dirname(__FILE__))."/data/pmaxotd.txt"));
 				$array = explode(";",$pmaxotd[0]);
-				$GP2m[$invtnum] = str_replace(",", ".", $live->GP);
-				$EFF = str_replace(",", ".", $live->EFF);
+				$GP2m[$invtnum] = str_replace(",", ".", $Olive->GP);
+				$EFF = str_replace(",", ".", $Olive->EFF);
 				$COEF=($EFF/100)*$CORRECTFACTOR;
 				if ($COEF>1) {
 					$COEF=1;
@@ -164,16 +174,16 @@ try {
 				if (array_sum($GP2m)>$array[1]) {
 					$GP2multi=array_sum($GP2m);
 
-					$mpt = new MaxPowerToday();
-					$mpt->SDTE = $live->SDTE;
-					$mpt->GP = $GP2multi;
-					$dataAdapter->writeMaxPowerToday($invtnum, $mpt);
-
 					$myFile=(dirname(dirname(__FILE__))."/data/pmaxotd.txt");
 					$fh = fopen($myFile , 'w+') or die("can't open $myFile file");
-					$stringData=$live->SDTE + ";" + $GP2multi;
+					$stringData=$Olive->SDTE + ";" + $GP2multi;
 					fwrite($fh, $stringData);
 					fclose($fh);
+					
+					$Ompt = new MaxPowerToday();
+					$Ompt->SDTE = $Olive->SDTE;
+					$Ompt->GP = $GP2multi;
+					$dataAdapter->writeMaxPowerToday($invtnum, $Ompt);
 				}
 			}
 			// TODO :: 2 :: above code could be remove?!
@@ -182,32 +192,30 @@ try {
 			/*
 			$alarmmsg = $aurora->getAlarms();
 			if ($alarmmsg !== false && trim($alarmmsg) != "") {
-			$alarm = new Alarm();
-			$alarm->time = date("Y-m-d H:i");
-			$alarm->alarm = str_replace("\n","<br/>",$alarmmsg);
-			$dataAdapter->addAlarm($invtnum, $alarm);
+			$event = new Event();
+			$event->time = date("Y-m-d H:i");
+			$event->alarm = str_replace("\n","<br/>",$alarmmsg);
+			$dataAdapter->addAlarm($invtnum, $event);
 			}
 			*/
-
+						
 			$minute= date("i");
 			$minlist = array("00","05","10","15","20","25","30","35","40","45","50","55");
 
 			if (in_array($minute, $minlist) && (!file_exists(Util::getDataDir($invtnum).'/5minflag'))) { // 5 min jobs
 				$flag5 = touch(Util::getDataDir($invtnum).'/5minflag'); // Do it once every 5 min
 
-				$live->SDTE = date("Ymd-H:i:s"); // PC time
-				$dataAdapter->addHistory($invtnum, $live, date("Ymd"));
-
+				$Olive->SDTE = date("Ymd-H:i:s"); // PC time
+				$dataAdapter->addHistory($invtnum, $Olive, date("Ymd"));
+				
 				// Dawn startup
 				$contalines = $dataAdapter->getHistoryCount($invtnum, date("Ymd"));
-				echo "$contalines".$contalines;
 				if ( $contalines == 1) {
 					$dir = Util::getDataDir($invtnum).'/csv';
 					$output = scandir($dir);
 					$output = array_filter($output, "tricsv");
 					sort($output);
 					$xdays=count($output);
-
 					if ($xdays>1){
 						$yesterdaylog=$dir."/".$output[$xdays-2]; //yesterday
 						$lines=file($yesterdaylog);
@@ -225,11 +233,15 @@ try {
 						$date1 = substr($output[$xdays-2], 0, 8);
 						$year = substr($output[$xdays-2], 0, 4); // For new year
 
-						$energy = new MaxPowerToday();
-						$energy->SDTE = $date1;
-						$energy->GP = $production;
-						echo("DEBUG::Trying to write energy line: " + $dataAdapter->getMaxPowerTodayCsvString($energy));
-						$dataAdapter->addEnergy($invtnum, $energy, $year);
+						$Oenergy = new MaxPowerToday();
+						$Oenergy->SDTE = $date1;
+						$Oenergy->GP = $production;
+						
+						/* 
+						 * $dataAdapter->getMaxPowerTodayCsvString($energy))   Doesn't exist... 
+						 */
+						//echo("DEBUG::Trying to write energy line: " + $dataAdapter->getMaxPowerTodayCsvString($energy));
+						$dataAdapter->addEnergy($invtnum, $Oenergy, $year);
 					}
 
 					$dataAdapter->dropMaxPowerToday($invtnum);
@@ -237,9 +249,15 @@ try {
 						unlink(dirname(dirname(__FILE__))."/data/pmaxotd.txt");
 					}
 
+					/*
+					 * remove the code below, see DB version below
+					*/
+					
+					// log 'Interver awake' to .txt file
 					$now = date("Y-m-d H:i");
 					$file = Util::getDataDir($invtnum) . "/infos/events.txt";
 					$new_lignes = "$now\tInverter awake\n\n";
+					
 					$old_lignes = file(Util::getDataDir($invtnum)."/infos/events.txt");
 					array_unshift($old_lignes,$new_lignes);
 					$new_content = implode('',$old_lignes);
@@ -247,6 +265,19 @@ try {
 					$write = fwrite($fp, $new_content);
 					fclose($fp);
 
+					// log 'Interver awake' to DB					
+					$OEvent = new Event();
+					$OEvent->INV = $invtnum;
+					$OEvent->event = $new_lignes;
+					$OEvent->type = 'Inverter Notice';
+					$OEvent->SDTE = date("Y-m-d H:i");
+					$dataAdapter->addEvent($invtnum, $OEvent);
+					
+					
+					
+					/*
+					 * TODO :: Why delete data? cleanup not necessary when WSL is running in PDO "mode"? 
+					 */
 					// Morning cleanup, purge detailled files
 					if ($KEEPDDAYS!=0 ) {
 						$output = scandir($dir);
@@ -261,6 +292,7 @@ try {
 							}
 						}
 					}
+
 					// Clean up logs
 					if ($AMOUNTLOG!=0 ) {
 						$myFile = Util::getDataDir($invtnum) . "/infos/events.txt";
@@ -273,23 +305,51 @@ try {
 						fwrite($file2, implode('', $file));
 						fclose($file2);
 					} // End of morning clean up
+					
+					/*
+					 * TODO :: Why delete data? cleanup not necessary when WSL is running in PDO "mode"?
+					*/
+					
+					
+					
+					
+					
+					
 				} // End of dawn startup
 
 				// Wait 60 min after startup to make sure the inverter is fully awake
 				if ($contalines==12) {
 					sleep (1);
 					$info = $aurora->getInfo();
+
+					/*
+					 * remove the code below, see DB version below
+					*/
+					
+					// Write InverterInfo (firmware,model,etc) to CSV
 					$myFile = Util::getDataDir($invtnum) . "/infos/infos.txt";
 					$fh = fopen($myFile, 'w+') or die("can't open $myFile file");
 					$stringData="$info";
 					fwrite($fh, $stringData);
 					fclose($fh);
+					
+					// Write InverterInfo (firmware,model,etc) to DB
+					$Oinfo = new InverterInfo();
+					$Oinfo->INV = $invtnum;
+					$Oinfo->SDTE = date("Ymd H:i:s");
+					$Oinfo->info = $info;
+					$dataAdapter->writeInverterInfo($invtnum, $Oinfo);
+					
+					
 					if ($SYNC==true) {
 						sleep (2);
 						$info = $aurora->syncTime();
 					}
 				}
 
+				/*
+				 * remove the code below, see DB version below
+				 */
 				// Alarms and warnings
 				sleep (1); // take a nap
 				$alarm = $aurora->getAlarms();
@@ -298,22 +358,31 @@ try {
 				$fh = fopen($myFile, 'w+') or die("can't open $myFile file");
 				$stringData="$now $alarm";
 				fwrite($fh, $stringData);
-				fclose($fh);
+				fclose($fh);				
+				
+				//Alarms and warnings to DB
+				$OEvent = new Event();
+				$OEvent->INV = $invtnum;
+				$OEvent->event = Util::formatEvent($aurora->getAlarms());
+				$OEvent->SDTE = date("Y-m-d H:i");
+				$OEvent->type = 'Alarm';
+				$dataAdapter->addEvent($invtnum, $OEvent);
 
+				
+				/*
+				 * TODO :: Why log only E(rror) and W(arning) events, if all alarm are logged to the DB??
+				 * 
+				 * REMOVE "Log alarms in events" CODE BELOW ????
+				 */
 				// Test the alarms file
 				$myFile= file(Util::getDataDir($invtnum) . '/errors/latest_alarms.txt');
 				foreach ($myFile as $item) {
 					$match=$match.$item;
 					$msg=$msg.$item."\n";
 				}
-
+				
 				// Log alarms in events
 				if (strstr($match, 'E0')|| strstr($match, 'W0')) {
-					$alarm = new Alarm();
-					$alarm->alarm = $alarm;
-					$alarm->datetime = $now;
-					$dataAdapter->addAlarm($invtnum, $alarm);
-					 
 					$file = Util::getDataDir($invtnum) . "/infos/events.txt";
 					$new_lignes = "$now $alarm";
 					$old_lignes = file(Util::getDataDir($invtnum) . "/infos/events.txt");
@@ -323,8 +392,17 @@ try {
 					$write = fwrite($fp, $new_content);
 					fclose($fp);
 				}
+				/*
+ 				 * REMOVE "Log alarms in events" CODE ABOVE ????
+ 				 */
 
-
+				/*
+				 * TODO ::
+				 * Move the following MAIL code to UTIL !?, ADD a boolean/Integer to event table,
+				 * Let the function check the state of the boolean 
+				 * If the Alarm event was not send, let the function send the event to the config-emailadres
+				 * let the UTIL::function switch the boolean on mail send
+				 */
 				$FILTER = explode(",",$FILTER);
 
 				foreach($FILTER as $word) // Email filter
@@ -337,45 +415,51 @@ try {
 				if ($SENDMSGS==true && strstr($match, 'W0')) {
 					mail("$EMAIL", "123Aurora: Inverter #".$invtnum." message", $msg);
 				}
+				
+				/*
+				 * END TODO ::
+				 */
+				
+				
 			} // End of 5 min jobs
+
 
 			if (!in_array($minute, $minlist) && file_exists(Util::getDataDir($invtnum) . '/5minflag')) {
 				if ($PVOUTPUT==true && $invtnum==$NUMINV) {// PVoutput
-					$myFile=(dirname(dirname(__FILE__)) . "/data/pvoutput_return.txt");
-					$fh = fopen($myFile, 'w+') or die("can't open $myFile file");
+					//$myFile=(dirname(dirname(__FILE__)) . "/data/pvoutput_return.txt");
+					//$fh = fopen($myFile, 'w+') or die("can't open $myFile file");
+					
 					for ($i=1;$i<=$NUMINV;$i++) {
-						$dir = dirname(dirname(__FILE__))."/data/invt$i/csv";
-						$output = scandir($dir);
-						$output = array_filter($output, "tricsv");
-						sort($output);
-						$xdays=count($output);
-						$lines=file($dir."/".$output[$xdays-1]);
-						$array = explode(";",$lines[0]);
-						$contalines = count($lines);
-						if ($contalines==0)  {
-							$array2=$array;
-						} else { $array2 = explode(";",$lines[$contalines-1]);
-						}
-						$SDTE=$array2[0];
-						$year = substr($SDTE, 0, 4);
-						$month = substr($SDTE, 4, 2);
-						$day = substr($SDTE, 6, 2);
-						$hour = substr($SDTE, 9, 2);
-						$minut = substr($SDTE, 12, 2);
-						$seconde = substr($SDTE, 15, 2);
-						$UTCdate = strtotime ($year."-".$month."-".$day." ".$hour.":".$minut.":".$seconde);
+						$historyDay = $dataAdapter->readHistory(1, date('Ymd'));
+						$HDFirstLine = reset($historyDay); // HistoryDayFirstLine
+						$HDLastLine = end($historyDay);    // HistoryDayLastLine
+							
+						// get time of first and last record of date...
+						$HDFirstDateTime = UTIL::getUTCdate($HDFirstLine['SDTE']);
+						$HDLastDateTime = UTIL::getUTCdate($HDLastLine['SDTE']);
+
+						// get current UTC date/time
 						$now = strtotime(date("Ymd H:i"));
-						if ($now-$UTCdate>300){ // too old
+						
+						// check is last line is not older then 300 sec.
+						if ($now-$HDLastDateTime>300){ // too old
+							// set to 0
 							$KWHD=0;
 							$GP=0;
 						} else {
-							$KWHT_strt=str_replace(",", ".",$array[14]);
-							$KWHT_stop=str_replace(",", ".",$array2[14]);
-							$KWHD=round((($KWHT_stop-$KWHT_strt)*1000*$CORRECTFACTOR),0); //Wh
-							$GP=round(str_replace(",", ".",$array2[9]),0);
+							// get KWHT first line
+							$KWHT_strt=str_replace(",", ".",$HDFirstLine['KWHT']);
+							// get KWHT last line line
+							$KWHT_stop=str_replace(",", ".",$HDLastLine['KWHT']);
+							// calculate KWHD (D of Daily?!) kwhStart - kwhStop = Wh today multiplied by 1000 to get kWh, correted and round by 0 decimals 
+							$KWHD=round((($KWHT_stop-$KWHT_strt)*1000*$config->CORRECTFACTOR ),0); //Wh
+							// GridPower = GridPower of last line rounded by 0 decimals
+							$GP=round(str_replace(",", ".",$HDLastLine['GP']),0);
 						}
+						// sum the inverter values
 						$KWHDtot=$KWHDtot+$KWHD;
 						$GPtot=$GPtot+$GP;
+						// get the $stringData
 						$stringData="#$i $KWHD Wh $GP W\n";
 						fwrite($fh, $stringData);
 					} // end of multi
@@ -387,8 +471,16 @@ try {
 					$pvoutput = shell_exec('curl -d "d='.$now.'" -d "t='.$time.'" -d "c1=0" -d "v1='.$KWHDtot.'" -d "v2='.$GPtot.'" -d "v5='.$INVT.'" -d "v6='.$GV.'" -H "X-Pvoutput-Apikey: '.$APIKEY.'" -H "X-Pvoutput-SystemId: '.$SYSID.'" http://pvoutput.org/service/r2/addstatus.jsp &');
 
 					$stringData="\nSend : $now $time - $KWHDtot Wh $GPtot W $INVT C $GV V\nPVoutput returned: $pvoutput";
-					fwrite($fh, $stringData);
-					fclose($fh);
+					//fwrite($fh, $stringData);
+					
+					$OEvent->INV = $INVT;
+					$OEvent->SDTE = date("Ymd-H:m:s");
+					$OEvent->type = 'PVoutput returned';
+					// TODO :: not sure if $new_content is the right thing to save in DB;
+					$OEvent->event = $stringData;
+					$dataAdapter->addEvent($invtnum, $event);
+					
+					//fclose($fh);
 				} // End of once PVoutput feed
 				unlink(Util::getDataDir($invtnum).'/5minflag');
 			}
@@ -396,6 +488,7 @@ try {
 
 			if (file_exists(Util::getDataDir($invtnum).'/infos/live.txt')) {
 				unlink(Util::getDataDir($invtnum).'/infos/live.txt');
+				$dataAdapter->dropLiveInfo($invtnum);
 			}
 
 			if (!empty($datareturn)) {
@@ -409,34 +502,69 @@ try {
 					$fp = fopen($file,'w');
 					$write = fwrite($fp, $new_content);
 					fclose($fp);
+					
+					//Comm error logs TO DB
+					$OEvent->INV = $invtnum;
+					$OEvent->SDTE = date("Ymd-H:m:s");
+					$OEvent->type = 'Comm error';
+					// TODO :: not sure if $new_content is the right thing to save in DB;
+					$OEvent->event = $new_content;
+					$dataAdapter->addEvent($invtnum, $event);
+					
 				}
 				if ($DEBUG==true) {
-					// Comm test errors logs
+					// Comm test errors logs					
 					$time= date ("Y-m-d-H:i:s");
 					$myFile = Util::getDataDir($invtnum)."/errors/de".$time.".dat";
 					$fh = fopen($myFile, 'a+') or die("can't open $myFile file");
 					fwrite($fh, $datareturn);
 					fclose($fh);
+					
+					// Comm TEst error logs TO DB
+					$OEvent->INV = $invtnum;
+					$OEvent->SDTE = date("Ymd-H:m:s");
+					$OEvent->event = $datareturn;
+					$OEvent->type = 'Debug Comm error??';
+					$dataAdapter->addEvent($invtnum, $event);
+					
 					$datareturn = shell_exec('cp '.Util::getDataDir($invtnum).'/errors/de.err '.Util::getDataDir($invtnum).'/errors/de'.$time.'.err');
 				}
 			}  // End of not empty
 		}// End of OK not NOK
 	}// End of Multi inverters pooling
 
+	$dataAdapter->dropLock();
 	Util::removeLockFile();
 
 
 } catch (Exception $e) {
-	echo($e->getFile() . "(" . $e->getLine() . ") " .  + $e->getMessage() + " TRACE: " . $e->getTraceAsString());
-	echo("removing lock!");
+	var_dump($e);
+	$error = $e->getFile() . "(" . $e->getLine() . ") " .  + $e->getMessage() + " TRACE: " . $e->getTraceAsString();
+	$OEvent = new Event();
+	$OEvent->INV = '';
+	$OEvent->event = $error;
+	$OEvent->SDTE = date('Ymd-H:m:s');
+	$OEvent->type = 'Script error';
+	$dataAdapter->addEvent('', $OEvent);
+	
+	$dataAdapter->dropLock();
+	$error = "removing lock!";
+	$OEvent->event = $error;
+	$OEvent->SDTE = date('Ymd-H:m:s');
+	$OEvent->type = 'Lock dropped';
+	$dataAdapter->addEvent('', $OEvent);
+	
 	Util::removeLockFile();
-
+	
+	
+	/*
+	 * TODO :: ^^^^^^^^^^Skip the following code, because its already saved in de DB ^^^^^^^^^
+	 */
 	// Try to write error to file
 	$myFile = Util::getDataDir($invtnum) . "/errors/error.log";
 	$fh = fopen($myFile, 'a+') or die("can't open $myFile file");
 	fwrite($fh, $e->getFile() . "(" . $e->getLine() . ") " .  + $e->getMessage() + " TRACE: " . $e->getTraceAsString());
 	fclose($fh);
-
 
 }
 ?>

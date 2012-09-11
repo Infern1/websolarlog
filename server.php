@@ -107,8 +107,6 @@ switch ($method) {
 		// Set some translations
 		$liveData->lgDASHBOARD = $lgDASHBOARD;
 		$liveData->lgPMAX = $lgPMAX;
-
-
 		$liveData->success = true;
 
 		$data['liveData'] = $liveData;

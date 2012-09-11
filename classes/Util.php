@@ -4,7 +4,6 @@ class Util {
     public static function isSunDown($config) {
         $now = strtotime(date("Ymd H:i"));
         $sun_info = date_sun_info((strtotime(date("Ymd"))), $config->LATITUDE, $config->LONGITUDE);
-        var_dump($sun_info);
         return $now<($sun_info['sunrise']-300) || $now>($sun_info['sunset']+300);
     }
 
@@ -50,5 +49,23 @@ class Util {
         $seconde = substr($text, 15, 2);
         return strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$seconde);
     }
+    
+    public static function formatEvent($event){
+		$find = array("W", "E");
+		$replace = array("Warning ", "Error ");
+		$event = str_ireplace($find, $replace, $event);
+    	return $event;
+    }
+    
+    
+    public static function checkIfModuleLoaded($module) {
+    	if  (in_array  ($module, get_loaded_extensions())) {
+			$status = 'Loaded';
+    	}else{
+    		$status = '-NOT- loaded';
+    	}
+    	return "<br>".$module.": ".$status;
+    }
+    
 }
 ?>

@@ -1,6 +1,7 @@
 <?php include("config/version.php");
 define('checkaccess', TRUE);
 include("config/config.php");
+include("classes/util.php");
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
 <html>
@@ -37,19 +38,22 @@ include("config/config.php");
 		</tr>
 		<tr>
 			<td><br> <b>Checking PHP:</b><br> <?php echo 'PHP version: ' . phpversion();
-			$input = '{ "jsontest" : " <br>Json extension loaded" }';
-			$val = json_decode($input, true);
-			if ($val["jsontest"]!="") {
-				echo $val["jsontest"];
-			} else {
-				echo "<br>Json extension -NOT- loaded";
-			}
 
-			if (extension_loaded('calendar')) {
-				echo "<br>Calendar extension loaded";
-			} else {
-				echo "<br>Calendar extension -NOT- loaded";
-			}
+			$module = 'curl';
+			echo UTIL::checkIfModuleLoaded($module);
+			
+			$module = 'sqlite';
+			echo UTIL::checkIfModuleLoaded($module);
+			
+			$module = 'sqlite3';
+			echo UTIL::checkIfModuleLoaded($module);
+			
+			$module = 'json';
+			echo UTIL::checkIfModuleLoaded($module);
+			
+			$module = 'calendar';
+			echo UTIL::checkIfModuleLoaded($module);
+			
 
 			?>
 			</td>

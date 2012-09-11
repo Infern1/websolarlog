@@ -6,7 +6,7 @@ if(!defined('checkaccess')){
 // ### GENERAL
 $PORT='/dev/ttyUSB0';
 $COMOPTION='-Y3 -l3 -M3';
-$DEBUG=false;
+$DEBUG=TRUE;
 $SYNC=false;
 $NUMINV=1;
 $AUTOMODE=false;

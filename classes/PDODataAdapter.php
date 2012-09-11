@@ -158,30 +158,28 @@ class PDODataAdapter implements DataAdapter {
      */
     public function addHistory($invtnum, Live $live, $date) {
     	$bean = R::dispense('History');
-    	 
-    	 
+
     	$bean->SDTE = $live->SDTE;
     	$bean->INV = $invtnum;
     	$bean->I1V = $live->I1V;
     	$bean->I1A = $live->I1A;
     	$bean->I1P = $live->I1P;
-    	 
+
     	$bean->I2V = $live->I2V;
     	$bean->I2A = $live->I2A;
     	$bean->I2P = $live->I2P;
-    	 
+
     	$bean->GV = $live->GV;
     	$bean->GA = $live->GA;
     	$bean->GP = $live->GP;
-    	 
+
     	$bean->FRQ = $live->FRQ;
     	$bean->EFF = $live->EFF;
     	$bean->INVT = $live->INVT;
-    	 
+
     	$bean->BOOT = $live->BOOT;
     	$bean->KWHT = $live->KWHT;
-    	 
-    	 
+
     	//Store the bean
     	$id = R::store($bean);
     	return $id;
@@ -197,10 +195,12 @@ class PDODataAdapter implements DataAdapter {
     // TODO :: There's no Live object returned....?!
     
     public function readHistory($invtnum, $date) {
-    	$bean =  R::find(
+    	$bean =  R::findAndExport(
     				'History',
     				' INV = :INV AND SDTE like :date ', 
-    				array(':INV'=>$invtnum,':date'=>$date)
+    			array(':INV'=>$invtnum,
+    					':date'=> '%'.date('Ymd').'%'
+    					)
     			);
     	return $bean;
     }
@@ -212,11 +212,11 @@ class PDODataAdapter implements DataAdapter {
      * @return int $count
      */
     public function getHistoryCount($invtnum, $date) {
-    	$bean =  R::findOne('History',
+    	$bean =  R::find('History',
     			' INV = :INV AND SDTE LIKE :date ',
     			array(':INV'=>$invtnum,
-    					':date'=> '%'.$date.'%'
-    			)
+    					':date'=> '%'.date('Ymd').'%'
+    					)
     	);
     	return count($bean);
     }
@@ -234,42 +234,136 @@ class PDODataAdapter implements DataAdapter {
     	$bean->SDTE = $mpt->SDTE;
     	$bean->KWHT = $mpt->GP;
     	
-    	//Store the bean
     	$id = R::store($bean);
     }
 
     /**
-     * add the alarm to the events
+     * add the events to the events
      * @param int $invtnum
-     * @param Alarm $alarm
+     * @param Event $event
      */
-    public function addAlarm($invtnum, Alarm $alarm) {
-    	$bean = R::dispense('Alarm');
+    public function addEvent($invtnum, Event $Oevent) {
+    	$bean = R::dispense('Event');
     	
     	$bean->INV = $invtnum;
-    	$bean->SDTE = $alarm->datetime;
-    	$bean->Alarm = $alarm->alarm;
-    	 
-    	//Store the bean
+    	$bean->SDTE = $event->SDTE;
+    	$bean->Event = $event->event;
+    	$bean->Type = $event->type;
     	$id = R::store($bean);
     	
     }
-
+    
     /**
      * Read the events file
      * @param int $invtnum
      * @return bean object
      */
-    public function readAlarm($invtnum,$limit=10) {
-		$bean = R::findAll(
-				'Alarm',
-				' ORDER BY ID LIMIT :limit ',
-				array(':limit'=>$limit)
-				);
-		
+    public function readEvent($invtnum,$limit=10) {
+    	$bean = R::findAll(
+    			'Event',
+    			' ORDER BY ID LIMIT :limit ',
+    			array(':limit'=>$limit)
+    	);
+    
     	return $bean;
     }
+    
+    /**
+     * will remove Event
+     * @param int $invtnum
+     */
+    public function dropEvent($invtnum) {
+    	$bean =  R::findOne('Event',
+    			' INV = :INV ',
+    			array(':INV'=>$invtnum
+    			)
+    	);
+    	R::trash( $bean );
+    }
+    
+    
+    /**
+     * Write the Inverter Info to DB
+     * @param int $invtnum
+     * @return bean object
+     */
+    public function writeInverterInfo($invtnum, InverterInfo $info) {
+    	$bean = R::dispense('InverterInfo');
+    	 
+    	$bean->INV = $invtnum;
+    	$bean->SDTE = $info->SDTE;
+    	$bean->Info = $info->info;
+    
+    	//Store the bean
+    	$id = R::store($bean);
+    
+    	return $bean;
+    }
+     
+    /**
+     * Read Inverter Info from DB
+     * @param int $invtnum
+     * @return bean object
+     */
+    public function readInverterInfo($invtnum,$limit=10) {
+    	$bean = R::findAll(
+    			'InverterInfo',
+    			' ORDER BY ID LIMIT :limit ',
+    			array(':limit'=>$limit)
+    	);
+    
+    	return $bean;
+    }
+    
+    /**
+     * Drop Inverter Info from DB
+     * @param int $invtnum
+     * @return bean object
+     */
+    public function dropInverterInfo($invtnum) {
+    	$bean =  R::findOne('InverterInfo',
+    			' INV = :INV  ',
+    			array(':INV'=>$invtnum
+    			)
+    	);
+    	R::trash( $bean );
+    }
+    
+    
+    /**
+     * Drop Lock from DB
+     * @param int $invtnum
+     * @return bean object
+     */
+    public function dropLock() {
+    	$bean =  R::find('Lock',
+    			' Type = :type  ',
+    			array(':type'=>'LockPort'
+    			)
+    	);
+    	(count($bean)>0) ? R::trashAll( $bean ) : R::trash( $bean );
+    	
+    }
+    
+    
+    /**
+     * Write the Lock to DB
+     * @param int $invtnum
+     * @return bean object
+     */
+    public function writeLock(Lock $lock) {
+    	$bean = R::dispense('Lock');
 
+    	$bean->SDTE = $lock->SDTE;
+    	$bean->Type = $lock->type;
+    
+    	//Store the bean
+    	$id = R::store($bean);
+    
+    	return $bean;
+    }
+     
+    
     public function writeDailyData($invtnum,Day $day) {
 		// TODO :: ?? 
     }
