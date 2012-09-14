@@ -281,40 +281,7 @@ class PDODataAdapter implements DataAdapter {
     	R::trash( $bean );
     }
     
-    
-    /**
-     * Write the Inverter Info to DB
-     * @param int $invtnum
-     * @return bean object
-     */
-    public function writeInverterInfo($invtnum, InverterInfo $info) {
-    	$bean = R::dispense('InverterInfo');
-    	 
-    	$bean->INV = $invtnum;
-    	$bean->SDTE = $info->SDTE;
-    	$bean->Info = $info->info;
-    
-    	//Store the bean
-    	$id = R::store($bean);
-    
-    	return $bean;
-    }
-     
-    /**
-     * Read Inverter Info from DB
-     * @param int $invtnum
-     * @return bean object
-     */
-    public function readInverterInfo($invtnum,$limit=10) {
-    	$bean = R::findAll(
-    			'InverterInfo',
-    			' ORDER BY ID LIMIT :limit ',
-    			array(':limit'=>$limit)
-    	);
-    
-    	return $bean;
-    }
-    
+
     /**
      * Drop Inverter Info from DB
      * @param int $invtnum

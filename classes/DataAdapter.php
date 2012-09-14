@@ -20,10 +20,6 @@ interface DataAdapter {
     public function readHistory($invtnum, $date);
     public function getHistoryCount($intnum, $date);
     
-    public function writeInverterInfo($invtnum, InverterInfo $Oinfo);
-    public function readInverterInfo($invtnum);
-    public function dropInverterInfo($invtnum);    
-
     public function addEnergy($invtnum, MaxPowerToday $energy, $year);
 
     public function addEvent($invtnum, Event $Oevent);

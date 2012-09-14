@@ -17,7 +17,6 @@ include($basepath . "/classes/PDODataAdapter.php");
 include($basepath . "/classes/objects/Event.php");
 include($basepath . "/classes/objects/Live.php");
 include($basepath . "/classes/objects/MaxPowerToday.php");
-include($basepath . "/classes/objects/InverterInfo.php");
 include($basepath . "/classes/objects/Lock.php");
 
 
@@ -334,11 +333,12 @@ try {
 					fclose($fh);
 					
 					// Write InverterInfo (firmware,model,etc) to DB
-					$Oinfo = new InverterInfo();
-					$Oinfo->INV = $invtnum;
-					$Oinfo->SDTE = date("Ymd H:i:s");
-					$Oinfo->info = $info;
-					$dataAdapter->writeInverterInfo($invtnum, $Oinfo);
+					$OEvent = new Event();
+					$OEvent->INV = $invtnum;
+					$OEvent->SDTE = date("Ymd H:i:s");
+					$OEvent->type = 'InverterInfo';
+					$OEvent->event = $info;
+					$dataAdapter->writeInverterInfo($invtnum, $OEvent);
 					
 					
 					if ($SYNC==true) {
