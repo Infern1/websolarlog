@@ -229,24 +229,6 @@ switch ($method) {
 		$lastDaysData->data = $lines->points;
 		$data['lastDaysData'] = $lastDaysData;
 		break;
-	case 'getLiveDataPDO':
-		$id = Common::getValue('id');
-		$PDO = new PDODataAdapter();
-		$live = $PDO->readLiveInfo($id);
-
-		$data['result'] = $live;
-		break;
-	case 'testWritePDO':
-		$live = new Live();
-		$live->GA = 1;
-		$live->GP = 1;
-		$live->GV = 1;
-
-		$PDO = new PDODataAdapter();
-		$id = $PDO->writeLiveInfo(1, $live);
-
-		$data['result'] = $id;
-		break;
 	default:
 		break;
 }

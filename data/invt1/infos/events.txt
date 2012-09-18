@@ -1,3 +1,5 @@
+2012-09-14 19:35	Inverter awake
+
 2012-09-11 07:53	Inverter awake
 
 2012-09-11 07:40	Inverter awake
@@ -496,5 +498,3 @@ Alarm 4:               Bulk UV W011
 Alarm 1:               Bulk UV W011
 Alarm 2:               Bulk UV W011
 Alarm 3:               Bulk UV W011
-Alarm 4:               Bulk UV W011
-
