@@ -205,7 +205,7 @@ try {
 				$flag5 = touch(Util::getDataDir($invtnum).'/5minflag'); // Do it once every 5 min
 
 				$Olive->SDTE = date("Ymd-H:i:s"); // PC time
-				$dataAdapter->addHistory($invtnum, $Olive, date("Ymd"));
+				$dataAdapter->addHistory($invtnum, $Olive);
 				
 				// Dawn startup
 				$contalines = $dataAdapter->getHistoryCount($invtnum, date("Ymd"));

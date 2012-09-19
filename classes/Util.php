@@ -66,6 +66,5 @@ class Util {
     	}
     	return "<br>".$module.": ".$status;
     }
-    
 }
 ?>

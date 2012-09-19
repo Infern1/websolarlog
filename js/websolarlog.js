@@ -153,10 +153,8 @@ var WSL = {
 			async : false,
 			success : function(result) {
 				var dataDay = [];
-				for (line in result.dayData.data) {
-					// alert(line);
+				for (line in result.dayData.data) {;
 					var object = result.dayData.data[line];
-					// alert(object[1]);
 					dataDay.push([ object[0], object[1] ]);
 				}
 				
@@ -237,10 +235,8 @@ var WSL = {
 			async : false,
 			success : function(result) {
 				var lastDaysData = [];
-				for (line in result.lastDaysData.data) {
-					// alert(line);
+				for (line in result.lastDaysData.data) {;
 					var object = result.lastDaysData.data[line];
-					// alert(object[1]);
 					lastDaysData.push([ object[0], object[1] ]);
 				}
 				

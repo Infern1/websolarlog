@@ -52,8 +52,7 @@ include("classes/util.php");
 			echo UTIL::checkIfModuleLoaded($module);
 			
 			$module = 'calendar';
-			echo UTIL::checkIfModuleLoaded($module);
-			
+			echo UTIL::checkIfModuleLoaded($module);			
 
 			?>
 			</td>

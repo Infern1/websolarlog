@@ -3,7 +3,7 @@ class PDODataAdapter implements DataAdapter {
     function __construct() {
         $config = new Config;
     	R::setup('sqlite:'.$config->dbHost );
-    	R::debug(true);
+    	R::debug(false);
     }
 
     function __destruct() {
@@ -110,8 +110,6 @@ class PDODataAdapter implements DataAdapter {
     	if (!$bean){
     		$bean = R::dispense('Pmaxotd');
     	}
-    	
-    	var_dump($bean);
     	$bean->INV = $invtnum;
     	$bean->SDTE = $mpt->SDTE;
     	$bean->GP = $mpt->GP;
@@ -156,7 +154,7 @@ class PDODataAdapter implements DataAdapter {
      * @param Live $live
      * @param string date
      */
-    public function addHistory($invtnum, Live $live, $date) {
+    public function addHistory($invtnum, Live $live) {
     	$bean = R::dispense('History');
 
     	$bean->SDTE = $live->SDTE;
@@ -231,8 +229,8 @@ class PDODataAdapter implements DataAdapter {
     	$bean = R::dispense('Energy');
     	 
     	$bean->INV = $invtnum;
-    	$bean->SDTE = $mpt->SDTE;
-    	$bean->KWHT = $mpt->GP;
+    	$bean->SDTE = $energy->SDTE;
+    	$bean->KWHT = $energy->GP;
     	
     	$id = R::store($bean);
     }
@@ -334,9 +332,28 @@ class PDODataAdapter implements DataAdapter {
     public function writeDailyData($invtnum,Day $day) {
 		// TODO :: ?? 
     }
+    
+    /**
+     * Read Daily Data
+     * @param string $date
+     * @param int $invtnum
+     * @return bean object
+     */
     public function readDailyData($date, $invtnum) {
-    	// TODO :: ??
+    	$bean =  R::findAndExport(
+    				'History',
+    				' INV = :INV AND SDTE like :date ', 
+    			array(':INV'=>$invtnum,
+    					':date'=> '%'.$date.'%'
+    					)
+    			);
+    	$points = $this->beansToDataArray($bean);
+    	$lastDays = new LastDays();
+    	$lastDays->points=$points[0];
+    	$lastDays->KWHT=$points[1];
+    	return $lastDays;
     }
+    
     public function dropDailyData($invtnum) {
     	// TODO :: ??
     }
@@ -344,10 +361,41 @@ class PDODataAdapter implements DataAdapter {
     public function writeLastDaysData($invtnum,Day $day) {
     	// TODO :: ??
     }
-    public function readLastDaysData($date, $invtnum) {
-    	// TODO :: ??
+    
+    /**
+     * read Last Days Data
+     * @param int $invtnum
+     * @param int $limit
+     * @return bean object
+     */
+    public function readLastDaysData($invtnum, $limit = 60) {
+    	$bean =  R::findAndExport(
+    				'Energy',
+    				' INV = :INV  ', 
+    			array(':INV'=>$invtnum
+    					)
+    			);
+    	$points = $this->beansToDataArray($bean);
+    	$lastDays = new LastDays();
+    	$lastDays->points=$points[0];
+    	return $lastDays;
+
     }
+    
+    
     public function dropLastDaysData($invtnum) {
     	// TODO :: ??
     }
+    
+    
+    public function beansToDataArray($beans){
+    	foreach ($beans as $bean){
+    		$UTCdate = Util::getUTCdate($bean['SDTE']) * 1000;
+    		$KWHT = $bean['KWHT']*1;
+    		$points[] = array ($UTCdate,$KWHT);
+    	}
+    	return array($points,$KWHT);
+    }    
+
+    
 }

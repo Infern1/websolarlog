@@ -43,6 +43,89 @@ $invtnum = Common::getValue('invtnum', 0);
 
 $dataAdapter = new PDODataAdapter();
 
+
+
+////////////////////////////////////////////
+///
+/// Dirty "solution" for dummy data
+/// TODO :: (Re)move code below 
+////////////////////////////////////////////
+
+$today = date("Ymd");
+$yesterday = date("Ymd", strtotime(date('d', strtotime(date('Y-m-d') . " -1 days"))." ".date("M")." ".date("Y")));
+
+$todayCount = $dataAdapter->getHistoryCount(1,$today);
+$yesterdayCount = $dataAdapter->getHistoryCount(1,$yesterday);
+$KWHT = 0;
+if($todayCount==0){
+	$i=0;
+	while($i<50){
+		$Olive = new Live();
+		$Olive->SDTE = date("Ymd-H:i:s", strtotime(date("d")." ".date("M")." ".date("Y"))+($i*300));
+		$Olive->I1V = 200+rand(20,100);
+		$Olive->I1A = 3+rand(1,3);
+		$Olive->I1P = round($Olive->I1V*$Olive->I1A,2);
+		$Olive->I2V = 200+rand(20,100);
+		$Olive->I2A = 3+rand(1,3);
+		$Olive->I2P = round($Olive->I2V*$Olive->I2A,2);
+		$Olive->GV = 220+rand(2,10);
+		$Olive->GP = $Olive->I1P+$Olive->I2P*0.98;
+		$Olive->GA = round($Olive->GP/$Olive->GV,2);
+		$Olive->FRQ = 50;
+		$Olive->EFF = 80+rand(0,15);
+		$Olive->INVT = 20+rand(0,15);
+		$Olive->BOOT = 30+rand(0,15);
+		$KWHT = $KWHT + $Olive->GP/1000;
+		$Olive->KWHT = $KWHT;
+		$dataAdapter->addHistory($invtnum, $Olive);
+		$i++;
+	}
+	$Ompt = new MaxPowerToday();
+	$Ompt->SDTE = $Olive->SDTE;
+	$Ompt->GP = $Olive->GP;
+	$dataAdapter->writeMaxPowerToday($invtnum, $Ompt);
+	
+	$Oenergy = new MaxPowerToday();
+	$Oenergy->SDTE = date("Ymd-H:m:s");
+	$Oenergy->GP = $KWHT;
+
+	$dataAdapter->addEnergy($invtnum, $Oenergy);
+	
+}
+
+if($yesterdayCount==0){
+	$i=0;
+	$KWHT=0;
+	while($i<50){
+		$Olive = new Live();
+		$Olive->SDTE = date("Ymd-H:i:s", strtotime(  date('d', strtotime(date('Y-m-d') . " -1 days"))   ." ".date("M")." ".date("Y"))+($i*300));
+		$Olive->I1V = 200+rand(20,100);
+		$Olive->I1A = 3+rand(1,3);
+		$Olive->I1P = round($Olive->I1V*$Olive->I1A,2);
+		$Olive->I2V = 200+rand(20,100);
+		$Olive->I2A = 3+rand(1,3);
+		$Olive->I2P = round($Olive->I2V*$Olive->I2A,2);
+		$Olive->GV = 220+rand(2,10);
+		$Olive->GP = $Olive->I1P+$Olive->I2P*0.98;
+		$Olive->GA = round($Olive->GP/$Olive->GV,2);
+		$Olive->FRQ = 50;
+		$Olive->EFF = 80+rand(0,15);
+		$Olive->INVT = 20+rand(0,15);
+		$Olive->BOOT = 30+rand(0,15);
+		$KWHT = $KWHT + $Olive->GP/1000;
+		$Olive->KWHT = $KWHT;
+		$dataAdapter->addHistory($invtnum, $Olive);
+		$i++;
+	}
+}
+
+////////////////////////////////////////////
+///
+/// / Dirty "solution" for dummy data
+/// 
+////////////////////////////////////////////
+
+
 switch ($method) {
 	case 'getLanguages':
 		$languages = array();
@@ -103,7 +186,7 @@ switch ($method) {
 		$liveData->valuePMAXOTD = floatval(round($mpt->GP,0));
 		$liveData->valuePMAXOTDTIME = (substr($mpt->SDTE, 9, 2).":".substr($mpt->SDTE, 12, 2));
 		$liveData->valueMPSDTE = $mpt->SDTE; // TODO :: ^ above code is wrong if i check the containing data
-
+		
 		// Set some translations
 		$liveData->lgDASHBOARD = $lgDASHBOARD;
 		$liveData->lgPMAX = $lgPMAX;
@@ -193,9 +276,9 @@ switch ($method) {
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
 		// get the date of today.
-		$CSVdate = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-		$lines = $dataAdapter->readDailyData($CSVdate,$invtnum);
+		$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
 
+		$lines = $dataAdapter->readDailyData($date,$invtnum);
 		$dayData = new DayDataResult();
 		$dayData->data = $lines->points;
 		$dayData->valueKWHT = $lines->KWHT;
@@ -207,9 +290,9 @@ switch ($method) {
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
 		// get the date of today.
-		$CSVdate = date("Ymd",mktime(0, 0, 0, date("m")  , date("d")-1, date("Y")));
-		$lines = $dataAdapter->readDailyData($CSVdate,$invtnum);
+		$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d")-1 , date("Y")));
 
+		$lines = $dataAdapter->readDailyData($date,$invtnum);
 		$dayData = new DayDataResult();
 		$dayData->data = $lines->points;
 		$dayData->valueKWHT = $lines->KWHT;
@@ -217,13 +300,12 @@ switch ($method) {
 
 		$data['dayData'] = $dayData;
 		break;
-
 	case 'getLastDaysValues':
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
 
-		$CSVdate = date("Y",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-		$lines = $dataAdapter->readLastDaysData($CSVdate,$invtnum);
+		$date = date("Y",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
+		$lines = $dataAdapter->readLastDaysData($invtnum);
 
 		$lastDaysData = new LastDaysValuesResult();
 		$lastDaysData->data = $lines->points;
