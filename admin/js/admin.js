@@ -55,7 +55,21 @@ function init_menu()
 }
 
 function init_general() {
-    alert("general");
+    
+    
+    WSL.api.getEvents(invtnum, function(data) {
+        $.ajax({
+            url : 'js/templates/events.hb',
+            success : function(source) {
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : data
+                });
+                $(divId).html(html);
+            },
+            dataType : 'text'
+        });
+    });
 }
 
 function init_inverters() {
@@ -74,8 +88,20 @@ function init_mail() {
 }
 
 function init_testpage() {
-    alert("test page");
-    
+    $.getJSON('admin-server.php?method=getTestResults', function(data) {
+        $.ajax({
+            url : 'js/templates/testpage.hb',
+            success : function(source) {
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : data
+                });
+                $('#mcontent').html(html);
+            },
+            dataType : 'text'
+        });        
+    });
+        
 }
 
 
