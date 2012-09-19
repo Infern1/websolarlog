@@ -10,13 +10,13 @@ class Config
 		// ### DATABASE CONFIG
 		$this->basepath = dirname(dirname(__FILE__));
 		$this->dbType='sqlite';
-		$this->dbHost= $this->basepath.'\database\wsl.sdb';
+		$this->dbHost= $this->basepath.'/database/wsl.sdb';
 		$this->dbDatabase='wsl';
 		$this->dbUser='wsl';
 		$this->dbPassword='wsl';
 		$this->dbPort='0';
 
-		
+
 		// ### GENERAL FOR INVERTER #1
 		$this->ADR='2';
 		$this->LOGCOM=false;
