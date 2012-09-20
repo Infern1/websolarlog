@@ -44,7 +44,7 @@ function init_menu()
     {
         init_grid();
     });
-    $("#btnMail").bind('click', function()
+    $("#btnEmail").bind('click', function()
     {
         init_mail();
     });
@@ -55,26 +55,73 @@ function init_menu()
 }
 
 function init_general() {
-    
-    
-    WSL.api.getEvents(invtnum, function(data) {
+    $('#sidebar').html("");
+    var content = $('#content');
+    content.html('<div id="c_general"></div><div id="c_communication"></div>'); // Clear old data
+    $.getJSON('admin-server.php?s=general', function(data) {
         $.ajax({
-            url : 'js/templates/events.hb',
+            url : 'js/templates/general.hb',
             success : function(source) {
                 var template = Handlebars.compile(source);
                 var html = template({
                     'data' : data
                 });
-                $(divId).html(html);
+                $('#c_general', content).html(html);
             },
             dataType : 'text'
-        });
+        });        
+    });
+    $.getJSON('admin-server.php?s=communication', function(data) {
+        $.ajax({
+            url : 'js/templates/communication.hb',
+            success : function(source) {
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : data
+                });
+                $('#c_communication', content).html(html);
+            },
+            dataType : 'text'
+        });        
     });
 }
 
 function init_inverters() {
-    alert("inverters");
-    
+    $.getJSON('admin-server.php?s=inverters', function(data) {
+        $.ajax({
+            url : 'js/templates/inverter_sb.hb',
+            success : function(source) {
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : data
+                });
+                $('#content').html("<br /><h2>Choose an inverter on the right side --></h2>");
+                $('#sidebar').html(html);
+                
+                $('.inverter_select').each(function(){
+                    var button = $(this);
+                    var inverterId = button.attr('id').split("_")[1];
+                    
+                    button.bind('click', function(){
+                        $.getJSON('admin-server.php?s=inverter&id='+inverterId, function(inv_data) {
+                            $.ajax({
+                                url : 'js/templates/inverter.hb',
+                                success : function(source) {
+                                    var template = Handlebars.compile(source);
+                                    var html = template({
+                                        'data' : inv_data
+                                    });
+                                    $('#content').html(html);
+                                },
+                                dataType : 'text'
+                            });        
+                        });
+                    });
+                });
+            },
+            dataType : 'text'
+        });        
+    });
 }
 
 function init_grid() {
@@ -83,12 +130,27 @@ function init_grid() {
 }
 
 function init_mail() {
-    alert("mail");
-    
+    $('#sidebar').html("");
+    var content = $('#content');
+    content.html('<div id="c_mail"></div><div id="c_smtp"></div>');
+    $.getJSON('admin-server.php?s=email', function(data) {
+        $.ajax({
+            url : 'js/templates/email.hb',
+            success : function(source) {
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : data
+                });
+                $('#c_mail', content).html(html);
+            },
+            dataType : 'text'
+        });        
+    });
 }
 
 function init_testpage() {
-    $.getJSON('admin-server.php?method=getTestResults', function(data) {
+    $('#sidebar').html("");
+    $.getJSON('admin-server.php?s=test', function(data) {
         $.ajax({
             url : 'js/templates/testpage.hb',
             success : function(source) {
@@ -96,7 +158,7 @@ function init_testpage() {
                 var html = template({
                     'data' : data
                 });
-                $('#mcontent').html(html);
+                $('#content').html(html);
             },
             dataType : 'text'
         });        

@@ -1,6 +1,23 @@
 <?php
 class Config
 {
+    public $title;
+    public $subtitle;
+    public $location;
+    public $latitude;
+    public $longitude;
+
+    public $comPort;
+    public $comOptions;
+    public $comDebug;
+
+    public $emailFrom;
+    public $emailTo;
+    public $emailAlarms;
+    public $emailEvents;
+    public $emailReports;
+
+    public $inverters; // Contains an array of inverters
 
 	/**
 	 * Constructor
@@ -16,30 +33,31 @@ class Config
 		$this->dbPassword='wsl';
 		$this->dbPort='0';
 
+		// ### GENERAL
+		$this->title='WebSolarLog';
+		$this->subtitle='--== Sun <-> Energy ==--';
+		$this->location='Home Sweet Home';
+		$this->latitude = '52.061152';
+		$this->longitude = '4.493330';
 
-		// ### GENERAL FOR INVERTER #1
-		$this->ADR='2';
-		$this->LOGCOM=false;
-		$this->PLANT_POWER='4600';
-		$this->CORRECTFACTOR='0.987';
-		$this->INITIALCOUNT='0';
-		$this->INVNAME='East';
+		// ### Communication
+		$this->comPort = "/dev/ttyUSB0";
+		$this->comOptions = "-Y3 -l3 -M3";
+		$this->comDebug = false;
+
+		// ### Create 2 inverter config for testing multi inverter config
+		$this->inverters = array();
+		$this->inverters[] = new ConverterConfig();
+		$inverter2 = new ConverterConfig();
+		$inverter2->id = 2;
+		$inverter2->name = "Inverter2";
+		$inverter2->comAddress = 4;
+		$this->inverters[] = $inverter2;
 
 		// ### FRONT PAGE
 		$this->YMAX='4600';
 		$this->YINTERVAL='1000';
 		$this->PRODXDAYS='20';
-
-		// ### INFO DETAILS
-		$this->LOCATION='Home Sweet Home';
-		$this->LATITUDE = '52.061152';
-		$this->LONGITUDE = '4.493330';
-		$this->PANELS1='10 Aleo S_18 230W';
-		$this->ROOF_ORIENTATION1='100';
-		$this->ROOF_PICTH1='45';
-		$this->PANELS2='10 Aleo S_18 230W';
-		$this->ROOF_ORIENTATION2='100';
-		$this->ROOF_PICTH2='45';
 
 		// ### EXPECTED PRODUCTION
 		$this->EXPECTEDPROD='3400';
@@ -55,6 +73,17 @@ class Config
 		$this->EXPECTOCT='5.9';
 		$this->EXPECTNOV='3';
 		$this->EXPECTDEC='1.9';
+
+		// ### EMAIL
+		$this->emailFrom = "test-from@test.localhost";
+		$this->emailTo = "test-to@test.localhost";
+		$this->emailAlarms = true;
+		$this->emailEvents = true;
+		$this->emailReports = false;
+	}
+
+	function getInverterConfig($inverterId) {
+
 	}
 }
 ?>

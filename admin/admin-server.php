@@ -1,13 +1,45 @@
 <?php
+require_once("classes/classloader.php");
+
+$config = new Config();
 
 // Retrieve action params
 $method = $_GET['method'];
+$settingstype = $_GET['s'];
 
-switch ($method) {
-    case 'getTestResults':
-        $data['sqlite'] = checkSQLite();
+switch ($settingstype) {
+    case 'communication';
+        $data['comPort'] = $config->comPort;
+        $data['comOptions'] = $config->comOptions;
+        $data['comDebug'] = $config->comDebug;
         break;
-    case 'getMenu':
+    case 'email':
+        $data['emailFrom'] = $config->emailFrom;
+        $data['emailTo'] = $config->emailTo;
+        $data['emailAlarms'] = $config->emailAlarms;
+        $data['emailEvents'] = $config->emailEvents;
+        $data['emailReports'] = $config->emailReports;
+        break;
+    case 'general':
+        $data['title'] = $config->title;
+        $data['subtitle'] = $config->subtitle;
+        $data['location'] = $config->location;
+        $data['latitude'] = $config->latitude;
+        $data['longitude'] = $config->longitude;
+        break;
+    case 'inverters':
+        $data['inverters'] = $config->inverters;
+        break;
+    case 'inverter':
+        $inverterId = $_GET['id'];
+        foreach ($config->inverters as $inverter) {
+            if ($inverter->id == $inverterId) {
+                $data['inverter'] = $inverter;
+            }
+        }
+        break;
+    case 'test':
+        $data['sqlite'] = checkSQLite();
         break;
 }
 
