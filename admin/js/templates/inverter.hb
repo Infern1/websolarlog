@@ -1,5 +1,6 @@
 <form>
-  <input type="hidden" name="id" value="data.inverter.id" />
+  <input type="hidden" name="s" value="save-inverter" />
+  <input type="hidden" name="id" value="{{data.inverter.id}}" />
   <fieldset>
     <legend>Inverter: {{data.inverter.name}}</legend>
     <label for="name">name:</label><input type="text" name="name" value="{{data.inverter.name}}" /><br />
@@ -14,19 +15,20 @@
     <button type="button" id="btnInverterSubmit">Save</button>
   </fieldset>
 </form> 
-
 {{#data.inverter.panels}}
-<form>
-  <input type="hidden" name="id" value="{{this.id}}" />
-  <input type="hidden" name="inverterId" value="data.inverter.id" />
-  <fieldset>
-    <legend>Panel: {{this.id}}</legend>
-    <label for="description">description:</label><input type="text" name="pnl1Description" value="{{this.description}}" /><br />
-    <label for="roofOrientation">roof orientation:</label><input type="text" name="pnl1RoofOrientation" value="{{this.roofOrientation}}" /><br />
-    <label for="roofPitch">roof pitch:</label><input type="text" name="pnl1RoofPitch" value="{{this.roofPitch}}" /><br />
-    <button type="button" id="btnPanel1Submit">Save</button>
-  </fieldset>
-</form> 
+    <form>
+      <input type="hidden" name="s" value="save-panel" />
+      <input type="hidden" name="id" value="{{this.id}}" />
+      <input type="hidden" name="inverterId" value="{{this.inverterId}}" />
+      <fieldset>
+        <legend>Panel: {{this.id}}</legend>
+        <label for="description">description:</label><input type="text" name="description" value="{{this.description}}" /><br />
+        <label for="roofOrientation">roof orientation:</label><input type="text" name="roofOrientation" value="{{this.roofOrientation}}" /><br />
+        <label for="roofPitch">roof pitch:</label><input type="text" name="roofPitch" value="{{this.roofPitch}}" /><br />
+        <button type="button" id="btnPanelSubmit{{this.id}}" class="panel_submit">Save</button>
+      </fieldset>
+    </form>
 {{/data.inverter.panels}}
 <br />
-<button type="button" id="btnPanel_-1" class="panel_select">New panel</button><br/>
+<div id="new_panels"></div>
+<button type="button" id="btnNewPanel">New panel</button><br/>

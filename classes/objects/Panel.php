@@ -2,6 +2,7 @@
 class Panel
 {
     public $id;
+    public $inverterId;
     public $description;
     public $roofOrientation;
     public $roofPitch;
@@ -11,9 +12,10 @@ class Panel
      */
     function __construct()
     {
-        $this->id = 1;
-        $this->description='10 Aleo S_18 230W';
-        $this->roofOrientation='100';
-        $this->roofPitch='45';
+        $this->id = -1;
+        $this->inverterId = 0;
+        $this->description='';
+        $this->roofOrientation='';
+        $this->roofPitch='';
     }
 }

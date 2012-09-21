@@ -68,6 +68,11 @@ function init_general() {
                     'data' : data
                 });
                 $('#c_general', content).html(html);
+                
+                $('#btnGeneralSubmit').bind('click', function(){
+                    var data = $(this).parent().parent().serialize();
+                    $.post('admin-server.php', data); 
+                });
             },
             dataType : 'text'
         });        
@@ -81,6 +86,11 @@ function init_general() {
                     'data' : data
                 });
                 $('#c_communication', content).html(html);
+                
+                $('#btnCommunicationSubmit').bind('click', function(){
+                    var data = $(this).parent().parent().serialize();
+                    $.post('admin-server.php', data); 
+                });
             },
             dataType : 'text'
         });        
@@ -113,6 +123,38 @@ function init_inverters() {
                                         'data' : inv_data
                                     });
                                     $('#content').html(html);
+                                    
+                                    $('#btnInverterSubmit').bind('click', function(){
+                                        var data = $(this).parent().parent().serialize();
+                                        $.post('admin-server.php', data); 
+                                    });
+                                    
+                                    $('.panel_submit').bind('click', function(){
+                                        var data = $(this).parent().parent().serialize();
+                                        $.post('admin-server.php', data); 
+                                    });
+                                    
+                                    $('#btnNewPanel').bind('click', function(){
+                                        $.getJSON('admin-server.php?s=panel&id=-1&inverterId='+inverterId, function(data) {
+                                            $.ajax({
+                                                url : 'js/templates/panel.hb',
+                                                success : function(source) {
+                                                    var template = Handlebars.compile(source);
+                                                    var html = template({
+                                                        'data' : data
+                                                    });
+                                                    $('#new_panels').html(html);
+                                                    $('.panel_submit').unbind('click');
+                                                    $('.panel_submit').bind('click', function(){
+                                                        var data = $(this).parent().parent().serialize();
+                                                        $.post('admin-server.php', data); 
+                                                    });
+                                                },
+                                                dataType : 'text'
+                                            }); 
+                                        });
+                                    });
+                                    
                                 },
                                 dataType : 'text'
                             });        
@@ -143,6 +185,11 @@ function init_mail() {
                     'data' : data
                 });
                 $('#c_mail', content).html(html);
+                
+                $('#btnEmailSubmit').bind('click', function(){
+                    var data = $(this).parent().parent().serialize();
+                    $.post('admin-server.php', data); 
+                });
             },
             dataType : 'text'
         });        

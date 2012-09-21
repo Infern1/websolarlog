@@ -1,4 +1,5 @@
 <form>
+  <input type="hidden" name="s" value="save-email" />
   <fieldset>
     <legend>eMail</legend>
     <label for="emailTo">to:</label><input type="text" name="emailTo" value="{{data.emailTo}}" /><br />

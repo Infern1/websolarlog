@@ -1,12 +1,13 @@
 <?php
 require_once("classes/classloader.php");
 
-$config = new Config();
+$adapter = new PDODataAdapter();
+$config = $adapter->readConfig();
 
 // Retrieve action params
-$method = $_GET['method'];
-$settingstype = $_GET['s'];
+$settingstype = Common::getValue("s", null);
 
+$data = array();
 switch ($settingstype) {
     case 'communication';
         $data['comPort'] = $config->comPort;
@@ -37,6 +38,75 @@ switch ($settingstype) {
                 $data['inverter'] = $inverter;
             }
         }
+        if ($inverterId == -1) {
+            $data['inverter'] = new Inverter();
+        }
+        break;
+    case 'panel':
+        $id = $_GET['id'];
+        $inverterId = $_GET['inverterId'];
+        $panel = new Panel();
+        if ($id == -1) {
+            $panel->inverterId = $inverterId;
+        } else {
+            $panel = $adapter->readPanel($id);
+        }
+        $data['panel'] = $panel;
+        break;
+    case 'save-communication':
+        $config->comPort = Common::getValue("comPort");
+        $config->comOptions = Common::getValue("comOptions");
+        $config->comDebug = Common::getValue("comDebug");
+        $adapter->writeConfig($config);
+        break;
+    case 'save-general':
+        $config->title = Common::getValue("title");
+        $config->subtitle = Common::getValue("subtitle");
+        $config->location = Common::getValue("location");
+        $config->latitude = Common::getValue("latitude");
+        $config->longitude = Common::getValue("longitude");
+        $adapter->writeConfig($config);
+        break;
+    case 'save-inverter':
+        $id = Common::getValue("id");
+        $inverter = new Inverter();
+        if ($id > 0) {
+            // get the current data
+            $inverter = $adapter->readInverter($id);
+        }
+        $inverter->name = Common::getValue("name");
+        $inverter->description = Common::getValue("description");
+        $inverter->initialkwh = Common::getValue("initialkwh");
+        $inverter->expectedkwh = Common::getValue("expectedkwh");
+        $inverter->plantpower = Common::getValue("plantpower");
+        $inverter->heading = Common::getValue("heading");
+        $inverter->correctionFactor = Common::getValue("correctionFactor");
+        $inverter->comAddress = Common::getValue("comAddress");
+        $inverter->comLog = Common::getValue("comLog");
+
+        $adapter->writeInverter($inverter);
+        break;
+    case 'save-panel':
+        $id = Common::getValue("id");
+        $panel = new Panel();
+        if ($id > 0) {
+            // get the current data
+            $panel = $adapter->readPanel($id);
+        }
+        $panel->inverterId = Common::getValue("inverterId");
+        $panel->description = Common::getValue("description");
+        $panel->roofOrientation = Common::getValue("roofOrientation");
+        $panel->roofPitch = Common::getValue("roofPitch");
+
+        $adapter->writePanel($panel);
+        break;
+    case 'save-email':
+        $config->emailFrom = Common::getValue("emailFrom");
+        $config->emailTo = Common::getValue("emailTo");
+        $config->emailAlarms = Common::getValue("emailAlarms");
+        $config->emailEvents = Common::getValue("emailEvents");
+        $config->emailReports = Common::getValue("emailReports");
+        $adapter->writeConfig($config);
         break;
     case 'test':
         $data['test'] = checkSQLite();
@@ -82,13 +152,13 @@ function checkSQLite() {
         $result['sqlite_version'] = $conn->getAttribute(constant("PDO::ATTR_SERVER_VERSION"));
         $conn = null; // Close the connection and free resources
     }
-    
+
     // Check if the following extensions are installed/activated
     $checkExtensions = array('curl','sqlite','sqlite3','json','calendar');
     foreach ($checkExtensions as $extension) {
     	$extensions[] = Util::checkIfModuleLoaded($extension);
     }
-    
+
     $result['extensions'] = $extensions;
     return $result;
 }
