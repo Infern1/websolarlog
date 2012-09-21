@@ -6,7 +6,8 @@ class Inverter
     public $name;
     public $description;
     public $initialkwh;
-    public $power;
+    public $expectedkwh;
+    public $plantpower;
     public $heading;
     public $correctionFactor;
     public $comAddress;
@@ -23,7 +24,8 @@ class Inverter
         $this->name = "test";
         $this->description = "blabla ruimte";
         $this->initialkwh = 1200;
-        $this->power = 4800;
+        $this->expectedkwh = 3750;
+        $this->plantpower = 4800;
         $this->heading = "EAST";
         $this->correctionFactor = 0.987;
         $this->comAddress = 2;
