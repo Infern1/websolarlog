@@ -64,7 +64,7 @@ class Util {
     	}else{
     		$status = '-NOT- loaded';
     	}
-    	return "<br>".$module.": ".$status;
+    	return array('name'=>$module,'status'=>$status);
     }
 }
 ?>

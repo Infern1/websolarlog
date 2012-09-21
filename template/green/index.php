@@ -66,25 +66,15 @@
                             	</div>
 							</li>
 							<li>
-								<img src="css/images/slide.jpg" alt="A ladybug standing on some grass" />
-								<div class="caption">
-									<h2>Some <span>Big</span> And <span>Nice</span> Tittle Goes Here</h2>
-									<p><strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Curabitur eget nibh id enim laoreet euismod eget ac orci.<br /> Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; <span><strong>Cras pellentesque euismod.</strong></span></p>
-								</div>
+								<div id="graphYesterday">
+                            		<div id="graphYesterdayContent" style="height: 250px;"></div>
+                            	</div>
 							</li>
 							<li>
-								<img src="css/images/slide.jpg" alt="A ladybug standing on some grass" />
-								<div class="caption">
-									<h2>Some <span>Big</span> And <span>Nice</span> Tittle Goes Here</h2>
-									<p><strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Curabitur eget nibh id enim laoreet euismod eget ac orci.<br /> Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; <span><strong>Cras pellentesque euismod.</strong></span></p>
-								</div>
+
 							</li>
 							<li>
-								<img src="css/images/slide.jpg" alt="A ladybug standing on some grass" />
-								<div class="caption">
-									<h2>Some <span>Big</span> And <span>Nice</span> Tittle Goes Here</h2>
-									<p><strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit.<br /> Curabitur eget nibh id enim laoreet euismod eget ac orci.<br /> Vestibulum ante ipsum primis in faucibus orci luctus et ultrices<br /> posuere cubilia Curae; <span><strong>Cras pellentesque euismod.</strong></span></p>
-								</div>
+
 							</li>
 						</ul>
 						<div id="slider-nav">
@@ -168,14 +158,20 @@
 					<span class="author"><a href="http://css-free-templates.com/">Design by: CSS Free Templates</a></span>
 					<p><a title="Home" href="#">Home</a><span>&#47;</span><a title="Who We Are" href="#">Who We Are</a><span>&#47;</span><a title="Our Projects" href="#">Our Projects</a><span>&#47;</span><a title="What We Do" href="#">What We Do</a><span>&#47;</span><a title="How We Do" href="#">How We Do</a><span>&#47;</span><a title="Get In Touch" href="#">Get In Touch</a></p>
 				</div>
-				<div id="footer-bottom"></div>
+				<div id="footer-bottom">
+				
+				</div>
+				<div id="JSloadingtime"></div>
 			</div>
 			<!-- END Footer -->
 		</div>
 	</div>
 	<script type="text/javascript">
-    	WSL.createDayGraph(1, "graphTodayContent","Today"); // Initial load fast
-    	window.setInterval(function(){WSL.createDayGraph(1, "graphTodayContent","Today");}, 10000); // every 10 seconds
+	WSL.createDayGraph(1, "graphTodayContent","Today"); // Initial load fast
+	window.setInterval(function(){WSL.createDayGraph(1, "graphTodayContent","Today");}, 10000); // every 10 seconds
+
+	WSL.createDayGraph(1, "graphYesterdayContent","Today"); // Initial load fast
+	window.setInterval(function(){WSL.createDayGraph(1, "graphYesterdayContent","Today");}, 10000); // every 10 seconds
 	</script>
 	<!-- END Wrapper -->
 </body>

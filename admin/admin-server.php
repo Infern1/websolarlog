@@ -39,7 +39,7 @@ switch ($settingstype) {
         }
         break;
     case 'test':
-        $data['sqlite'] = checkSQLite();
+        $data['test'] = checkSQLite();
         break;
 }
 
@@ -82,6 +82,14 @@ function checkSQLite() {
         $result['sqlite_version'] = $conn->getAttribute(constant("PDO::ATTR_SERVER_VERSION"));
         $conn = null; // Close the connection and free resources
     }
+    
+    // Check if the following extensions are installed/activated
+    $checkExtensions = array('curl','sqlite','sqlite3','json','calendar');
+    foreach ($checkExtensions as $extension) {
+    	$extensions[] = Util::checkIfModuleLoaded($extension);
+    }
+    
+    $result['extensions'] = $extensions;
     return $result;
 }
 ?>
