@@ -21,7 +21,7 @@
 			<!-- Header -->
 			<div id="header">
 				<!-- Logo -->
-				<h1 id="logo"><a href="#" title="Dashboard">WebSolarLog</a></h1>
+				<h1 id="logo"><a href="../" title="Dashboard">WebSolarLog</a></h1>
 				<div class="socials">
 					<a title="in" class="in" href="#">in</a>
 					<a title="twitter" class="twitter" href="#">twitter</a>
@@ -36,8 +36,8 @@
 				<ul>
 					<li class="nav-start"><a href="#" id="btnGeneral">General</a></li>
 					<li><a href="#" id="btnInverters">Inverters</a></li>
-					<li><a href="#" id="btnGrid">Grid</a></li>
 					<li><a href="#" id="btnEmail">eMail</a></li>
+					<li><a href="#" id="btnAdvanced">Advanced</a></li>
 					<li class="nav-end"><a href="#" id="btnTestPage">Test page</a></li>
 				</ul>
 				<div class="cl"></div>

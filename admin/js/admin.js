@@ -2,6 +2,7 @@ $(function()
 {
     init_menu();
     init_KWHcalc();
+    init_general(); // First admin item
 });
 
 /*

@@ -47,8 +47,8 @@ class Config
 
 		// ### Create 2 inverter config for testing multi inverter config
 		$this->inverters = array();
-		$this->inverters[] = new ConverterConfig();
-		$inverter2 = new ConverterConfig();
+		$this->inverters[] = new Inverter();
+		$inverter2 = new Inverter();
 		$inverter2->id = 2;
 		$inverter2->name = "Inverter2";
 		$inverter2->comAddress = 4;

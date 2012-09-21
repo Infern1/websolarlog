@@ -1,6 +1,6 @@
 <?php
 
-class ConverterConfig
+class Inverter
 {
     public $id;
     public $name;
@@ -12,13 +12,7 @@ class ConverterConfig
     public $comAddress;
     public $comLog;
 
-    public $pnl1Description;
-    public $pnl1RoofOrientation;
-    public $pnl1RoofPitch;
-    public $pnl2Description;
-    public $pnl2RoofOrientation;
-    public $pnl2RoofPitch;
-
+    public $panels;
 
     /**
      * Constructor
@@ -35,13 +29,16 @@ class ConverterConfig
         $this->comAddress = 2;
         $this->comLog = false;
 
-        $this->pnl1Description='10 Aleo S_18 230W';
-        $this->pnl1RoofOrientation='100';
-        $this->pnl1RoofPitch='45';
+        $this->panels = array();
+        $this->panels[] = new Panel();
 
-        $this->pnl2Description='10 Aleo S_18 230W';
-        $this->pnl2RoofOrientation='100';
-        $this->pnl2RoofPitch='45';
+        $panel = new Panel();
+        $panel->id = 2;
+        $panel->description='10 Aleo S_18 230W';
+        $panel->roofOrientation='100';
+        $panel->roofPitch='45';
+
+        $this->panels[] = $panel;
     }
 }
 ?>
