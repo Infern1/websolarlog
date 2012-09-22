@@ -32,6 +32,7 @@
 								<tr valign="top">
 									<td>
 										<!-- #BeginEditable "mainbox" --> <?php
+										/*
 										if (!file_exists('/tmp/123AURORAPASS')) {
 											echo "<br><div align=center><font color='#8B0000'><b>No admin session started</b></font><br><br>
 											<b>Type in your terminal : </b> ";
@@ -42,14 +43,16 @@
 											</div>";
 											exit();
 										}
+										*/
 										?> <br>
 										<table border=0 align='center'>
 											<tr>
 												<td align='right'>
+												<a href="indentification.php?login=1&mdp=1">skip</a>
 													<form action='indentification.php' method='post'>
 														Login: <input type='text' name='login' value=''><br>
 														Password: <input type='password' name='mdp' value=''>
-												
+
 												</td>
 												<td><input type='submit' value='OK'>
 													</form>

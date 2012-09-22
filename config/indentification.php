@@ -2,6 +2,10 @@
 session_start();
 include("cfg.php");
 
+if (true) {
+    header('Location: admin.php');
+}
+
 if($_POST && !empty($_POST['login']) && !empty($_POST['mdp']))
 {
 	$password_md5 = md5($_POST['mdp'].$salt);

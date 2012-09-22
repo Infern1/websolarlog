@@ -5,12 +5,14 @@
 <title>Admin interface</title>
 <meta charset="utf-8">
 <link rel="shortcut icon" href="css/images/favicon.ico" />
+<link rel="stylesheet" href="../css/jquery.pnotify.default.css" type="text/css" />
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 <link rel="stylesheet" href="css/main.css" type="text/css" />
 <script type="text/javascript" src="../js/jquery.min.js"></script>
 <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
-<script type="text/javascript" src="../js/handlebars.js"></script>
 <script type="text/javascript" src="../js/jquery.calculation.min.js"></script>
+<script type="text/javascript" src="../js/jquery.pnotify.min.js"></script>
+<script type="text/javascript" src="../js/handlebars.js"></script>
 <script type="text/javascript" src="../js/websolarlog.js"></script>
 <script type="text/javascript" src="js/admin.js"></script>
 </head>

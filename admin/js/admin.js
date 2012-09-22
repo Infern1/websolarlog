@@ -71,7 +71,12 @@ function init_general() {
                 
                 $('#btnGeneralSubmit').bind('click', function(){
                     var data = $(this).parent().parent().serialize();
-                    $.post('admin-server.php', data); 
+                    $.post('admin-server.php', data, function(){
+                        $.pnotify({
+                            title: 'Saved',
+                            text: 'You\'re changes have been saved.'
+                        });
+                    });
                 });
             },
             dataType : 'text'
@@ -89,7 +94,12 @@ function init_general() {
                 
                 $('#btnCommunicationSubmit').bind('click', function(){
                     var data = $(this).parent().parent().serialize();
-                    $.post('admin-server.php', data); 
+                    $.post('admin-server.php', data, function(){
+                        $.pnotify({
+                            title: 'Saved',
+                            text: 'You\'re changes have been saved.'
+                        });
+                    });
                 });
             },
             dataType : 'text'
@@ -97,7 +107,7 @@ function init_general() {
     });
 }
 
-function init_inverters() {
+function init_inverters(selected_inverterId) {
     $.getJSON('admin-server.php?s=inverters', function(data) {
         $.ajax({
             url : 'js/templates/inverter_sb.hb',
@@ -106,61 +116,81 @@ function init_inverters() {
                 var html = template({
                     'data' : data
                 });
-                $('#content').html("<br /><h2>Choose an inverter on the right side --></h2>");
                 $('#sidebar').html(html);
+                
+                if (selected_inverterId) {
+                    load_inverter(selected_inverterId);
+                } else {
+                    $('#content').html("<br /><h2>Choose or create an inverter on the right side --></h2>");                    
+                }
                 
                 $('.inverter_select').each(function(){
                     var button = $(this);
                     var inverterId = button.attr('id').split("_")[1];
                     
-                    button.bind('click', function(){
-                        $.getJSON('admin-server.php?s=inverter&id='+inverterId, function(inv_data) {
-                            $.ajax({
-                                url : 'js/templates/inverter.hb',
-                                success : function(source) {
-                                    var template = Handlebars.compile(source);
-                                    var html = template({
-                                        'data' : inv_data
-                                    });
-                                    $('#content').html(html);
-                                    
-                                    $('#btnInverterSubmit').bind('click', function(){
-                                        var data = $(this).parent().parent().serialize();
-                                        $.post('admin-server.php', data); 
-                                    });
-                                    
-                                    $('.panel_submit').bind('click', function(){
-                                        var data = $(this).parent().parent().serialize();
-                                        $.post('admin-server.php', data); 
-                                    });
-                                    
-                                    $('#btnNewPanel').bind('click', function(){
-                                        $.getJSON('admin-server.php?s=panel&id=-1&inverterId='+inverterId, function(data) {
-                                            $.ajax({
-                                                url : 'js/templates/panel.hb',
-                                                success : function(source) {
-                                                    var template = Handlebars.compile(source);
-                                                    var html = template({
-                                                        'data' : data
-                                                    });
-                                                    $('#new_panels').html(html);
-                                                    $('.panel_submit').unbind('click');
-                                                    $('.panel_submit').bind('click', function(){
-                                                        var data = $(this).parent().parent().serialize();
-                                                        $.post('admin-server.php', data); 
-                                                    });
-                                                },
-                                                dataType : 'text'
-                                            }); 
-                                        });
-                                    });
-                                    
-                                },
-                                dataType : 'text'
-                            });        
+                    button.bind('click', function() {
+                        load_inverter(inverterId);
+                    }); 
+                });
+            },
+            dataType : 'text'
+        });        
+    });
+}
+
+function load_inverter(inverterId) {
+    $.getJSON('admin-server.php?s=inverter&id='+inverterId, function(inv_data) {
+        $.ajax({
+            url : 'js/templates/inverter.hb',
+            success : function(source) {
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : inv_data
+                });
+                $('#content').html(html);
+                
+                $('#btnInverterSubmit').bind('click', function(){
+                    var data = $(this).parent().parent().serialize();
+                    $.post('admin-server.php', data, function(){
+                        init_inverters(inverterId);                        
+                        $.pnotify({
+                            title: 'Saved',
+                            text: 'You\'re changes have been saved.'
                         });
                     });
                 });
+                
+                var handle_panel_submit = function() {
+                    var data = $(this).parent().parent().serialize();
+                    $.post('admin-server.php', data, function(){
+                        load_inverter(inverterId);
+                        $.pnotify({
+                            title: 'Saved',
+                            text: 'You\'re changes have been saved.'
+                        });
+                    });                                         
+                };
+                
+                $('.panel_submit').bind('click', handle_panel_submit);
+                
+                $('#btnNewPanel').bind('click', function(){
+                    $.getJSON('admin-server.php?s=panel&id=-1&inverterId='+inverterId, function(data) {
+                        $.ajax({
+                            url : 'js/templates/panel.hb',
+                            success : function(source) {
+                                var template = Handlebars.compile(source);
+                                var html = template({
+                                    'data' : data
+                                });
+                                $('#new_panels').html(html);
+                                $('.panel_submit').unbind('click');
+                                $('.panel_submit').bind('click', handle_panel_submit);
+                            },
+                            dataType : 'text'
+                        }); 
+                    });
+                });
+                
             },
             dataType : 'text'
         });        
@@ -188,7 +218,11 @@ function init_mail() {
                 
                 $('#btnEmailSubmit').bind('click', function(){
                     var data = $(this).parent().parent().serialize();
-                    $.post('admin-server.php', data); 
+                    $.post('admin-server.php', data);
+                    $.pnotify({
+                        title: 'Saved',
+                        text: 'You\'re changes have been saved.'
+                    });
                 });
             },
             dataType : 'text'
