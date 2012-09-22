@@ -128,6 +128,12 @@ switch ($settingstype) {
         $mail->From = $config->emailFrom;
         $mail->AddAddress($config->emailTo);
 
+        if ($config->smtpUser && $config->smtpPassword) {
+            $mail->SMTPAuth = true;
+            $mail->Username = $config->smtpUser;
+            $mail->Password = $config->smtpPassword;
+        }
+
         $mail->Subject  = "WSL :: Test message";
         $mail->Body     = "Hello, \n\n This is an test email from your WebSolarLog site.";
         $mail->WordWrap = 50;
