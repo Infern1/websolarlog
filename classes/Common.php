@@ -137,5 +137,59 @@ class Common
         return (substr($haystack, -$length) === $needle);
     }
 
+    /**
+     * Recursively remove a directory
+     * @param $dir
+     */
+    public static function rrmdir($dir) {
+        if (!is_dir($dir)) return; // Only handle dirs that exist
+        foreach(glob($dir . '/*') as $file) {
+            if(is_dir($file)) {
+                self::rrmdir($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($dir);
+    }
+
+    /**
+     * Recursively copy a directory
+     * @param $src
+     * @param $dest
+     */
+    public static function xcopy($src,$dest)
+    {
+        foreach  (scandir($src) as $file) {
+            if (!is_readable($src.'/'.$file) || $file == '.' || $file == '..') continue;
+            if (is_dir($src.'/'.$file)) {
+                mkdir($dest . '/' . $file);
+                self::xcopy($src.'/'.$file, $dest.'/'.$file);
+            } else {
+                copy($src.'/'.$file, $dest.'/'.$file);
+            }
+        }
+    }
+
+
+    /**
+     * Make sure if the give path is available, else try to create
+     *
+     * @param string $path
+     * @return boolean false if the path is invalid
+     */
+    public static function checkPath($path)
+    {
+        // Check if the path is available
+        if (!is_dir($path)) {
+            if (!mkdir($path)) {
+                echo("Could not create: " . $path);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }
 ?>
