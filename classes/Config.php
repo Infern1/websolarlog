@@ -11,6 +11,7 @@ class Config
     public $comOptions;
     public $comDebug;
 
+    public $emailFromName;
     public $emailFrom;
     public $emailTo;
     public $emailAlarms;

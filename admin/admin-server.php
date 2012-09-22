@@ -15,6 +15,7 @@ switch ($settingstype) {
         $data['comDebug'] = $config->comDebug;
         break;
     case 'email':
+        $data['emailFromName'] = $config->emailFromName;
         $data['emailFrom'] = $config->emailFrom;
         $data['emailTo'] = $config->emailTo;
         $data['emailAlarms'] = $config->emailAlarms;
@@ -104,6 +105,7 @@ switch ($settingstype) {
         $adapter->writePanel($panel);
         break;
     case 'save-email':
+        $config->emailFromName = Common::getValue("emailFromName");
         $config->emailFrom = Common::getValue("emailFrom");
         $config->emailTo = Common::getValue("emailTo");
         $config->emailAlarms = Common::getValue("emailAlarms");
@@ -122,7 +124,7 @@ switch ($settingstype) {
 
         $mail->IsSMTP();  // telling the class to use SMTP
         $mail->Host = $config->smtpServer; // SMTP server
-        $mail->FromName = "WebSolarLog";
+        $mail->FromName = $config->emailFromName;
         $mail->From = $config->emailFrom;
         $mail->AddAddress($config->emailTo);
 

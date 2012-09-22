@@ -415,6 +415,7 @@ class PDODataAdapter implements DataAdapter {
         $bean->comOptions = $config->comOptions;
         $bean->comDebug = $config->comDebug;
 
+        $bean->emailFromName = $config->emailFromName;
         $bean->emailFrom = $config->emailFrom;
         $bean->emailTo = $config->emailTo;
         $bean->emailAlarms = $config->emailAlarms;
@@ -445,6 +446,7 @@ class PDODataAdapter implements DataAdapter {
             $config->comOptions = $bean->comOptions;
             $config->comDebug = $bean->comDebug;
 
+            $config->emailFromName = $bean->emailFromName;
             $config->emailFrom = $bean->emailFrom;
             $config->emailTo = $bean->emailTo;
             $config->emailAlarms = $bean->emailAlarms;
