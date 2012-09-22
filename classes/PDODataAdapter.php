@@ -421,6 +421,10 @@ class PDODataAdapter implements DataAdapter {
         $bean->emailEvents = $config->emailEvents;
         $bean->emailReports = $config->emailReports;
 
+        $bean->smtpServer = $config->smtpServer;
+        $bean->smtpUser = $config->smtpUser;
+        $bean->smtpPassword = $config->smtpPassword;
+
         //Store the bean
         R::store($bean);
     }
@@ -446,6 +450,10 @@ class PDODataAdapter implements DataAdapter {
             $config->emailAlarms = $bean->emailAlarms;
             $config->emailEvents = $bean->emailEvents;
             $config->emailReports = $bean->emailReports;
+
+            $config->smtpServer = $bean->smtpServer;
+            $config->smtpUser = $bean->smtpUser;
+            $config->smtpPassword = $bean->smtpPassword;
 
             $config->inverters = $this->readInverters();
         }

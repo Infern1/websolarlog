@@ -218,10 +218,38 @@ function init_mail() {
                 
                 $('#btnEmailSubmit').bind('click', function(){
                     var data = $(this).parent().parent().serialize();
-                    $.post('admin-server.php', data);
-                    $.pnotify({
-                        title: 'Saved',
-                        text: 'You\'re changes have been saved.'
+                    $.post('admin-server.php', data, function(){
+                        $.pnotify({
+                            title: 'Saved',
+                            text: 'You\'re changes have been saved.'
+                        });
+                    });
+                });
+
+                $('#btnSmtpSubmit').bind('click', function(){
+                    var data = $(this).parent().parent().serialize();
+                    $.post('admin-server.php', data, function(){
+                        $.pnotify({
+                            title: 'Saved',
+                            text: 'You\'re changes have been saved.'
+                        });                        
+                    });
+                });
+                
+                $('#btnEmailTest').bind('click', function() {
+                    var senddata = $(this).parent().serialize();
+                    $.post('admin-server.php', senddata, function(data){
+                        if (data.result == true) {
+                            $.pnotify({
+                                title: 'Succes',
+                                text: 'Email was send, check your inbox.'
+                            });                                  
+                        } else {
+                            $.pnotify({
+                                title: 'Error',
+                                text: 'Email was not send, check the settings.<br />' + data.message
+                            });      
+                        }
                     });
                 });
             },

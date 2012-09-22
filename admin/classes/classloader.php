@@ -46,6 +46,11 @@ function wsl_autoloader($classname)
 		// We don't handle Model classes, let RedBean do that
         return;
     }
+    if ($classname === "PHPMailer") {
+        require_once "../classes/phpmailer/class.phpmailer.php";
+        require_once "../classes/phpmailer/class.smtp.php";
+        return;
+    }
 
     exit("Could not autoload: " . $classname);
 }

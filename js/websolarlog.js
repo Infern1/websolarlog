@@ -11,6 +11,7 @@ var dataDay = [];
 var dataYesterday = [];
 var dataLastDays = [];
 var alreadyFetched = [];
+
 // WSL class
 var WSL = {
 	api : {},

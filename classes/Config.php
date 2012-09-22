@@ -17,6 +17,10 @@ class Config
     public $emailEvents;
     public $emailReports;
 
+    public $smtpServer;
+    public $smtpUser;
+    public $smtpPassword;
+
     public $inverters; // Contains an array of inverters
 
 	/**

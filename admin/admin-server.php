@@ -20,6 +20,9 @@ switch ($settingstype) {
         $data['emailAlarms'] = $config->emailAlarms;
         $data['emailEvents'] = $config->emailEvents;
         $data['emailReports'] = $config->emailReports;
+        $data['smtpServer'] = $config->smtpServer;
+        $data['smtpUser'] = $config->smtpUser;
+        $data['smtpPassword'] = $config->smtpPassword;
         break;
     case 'general':
         $data['title'] = $config->title;
@@ -107,6 +110,34 @@ switch ($settingstype) {
         $config->emailEvents = Common::getValue("emailEvents");
         $config->emailReports = Common::getValue("emailReports");
         $adapter->writeConfig($config);
+        break;
+    case 'save-smtp':
+        $config->smtpServer = Common::getValue("smtpServer");
+        $config->smtpUser = Common::getValue("smtpUser");
+        $config->smtpPassword = Common::getValue("smtpPassword");
+        $adapter->writeConfig($config);
+        break;
+    case 'send-testemail':
+        $mail = new PHPMailer();
+
+        $mail->IsSMTP();  // telling the class to use SMTP
+        $mail->Host = $config->smtpServer; // SMTP server
+        $mail->FromName = "WebSolarLog";
+        $mail->From = $config->emailFrom;
+        $mail->AddAddress($config->emailTo);
+
+        $mail->Subject  = "WSL :: Test message";
+        $mail->Body     = "Hello, \n\n This is an test email from your WebSolarLog site.";
+        $mail->WordWrap = 50;
+
+        if(!$mail->Send()) {
+            $data['result'] = false;
+            $data['message'] = $mail->ErrorInfo;
+        } else {
+            $data['result'] = true;
+        }
+
+
         break;
     case 'test':
         $data['test'] = checkSQLite();
