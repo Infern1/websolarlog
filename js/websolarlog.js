@@ -1,12 +1,3 @@
-// Create an handle bar ifCond equals statement
-Handlebars.registerHelper('ifCond', function(v1, v2, options) {
-	if (v1 == v2) {
-		return options.fn(this);
-	} else {
-		return options.inverse(this);
-	}
-});
-
 // calculate the JS parse time //
 beforeLoad = (new Date()).getTime();
 window.onload = pageLoadingTime;

@@ -11,6 +11,7 @@
 	<script src="template/green/js/DD_belatedPNG-min.js" type="text/javascript"></script>
 	<script src="template/green/js/functions.js" type="text/javascript"></script>
 	<script type="text/javascript" src="js/handlebars.js"></script>
+	<script type="text/javascript" src="js/helpers.js"></script>
 	<script type="text/javascript" src="js/jquery.jqplot.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.json2.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.canvasTextRenderer.min.js"></script>
@@ -159,7 +160,7 @@
 					<p><a title="Home" href="#">Home</a><span>&#47;</span><a title="Who We Are" href="#">Who We Are</a><span>&#47;</span><a title="Our Projects" href="#">Our Projects</a><span>&#47;</span><a title="What We Do" href="#">What We Do</a><span>&#47;</span><a title="How We Do" href="#">How We Do</a><span>&#47;</span><a title="Get In Touch" href="#">Get In Touch</a></p>
 				</div>
 				<div id="footer-bottom">
-				
+
 				</div>
 				<div id="JSloadingtime"></div>
 			</div>

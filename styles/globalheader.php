@@ -45,6 +45,7 @@ function tricsv($var){
 <script type="text/javascript" src="js/highcharts.js"></script>
 <script type="text/javascript" src="js/modules/exporting.js"></script>
 <script type="text/javascript" src="js/handlebars.js"></script>
+<script type="text/javascript" src="js/helpers.js"></script>
 <script type="text/javascript" src="js/jquery.jqplot.min.js"></script>
 <script type="text/javascript"
 	src="js/jqplot_plugins/jqplot.json2.min.js"></script>

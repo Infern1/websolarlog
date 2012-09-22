@@ -31,4 +31,8 @@
 {{/data.inverter.panels}}
 <br />
 <div id="new_panels"></div>
-<button type="button" id="btnNewPanel">New panel</button><br/>
+{{#if_gt data.inverter.id compare=0}}
+    <button type="button" id="btnNewPanel">New panel</button><br/>
+{{else}}
+Panels can be added after saving the new inverter
+{{/if_gt}}

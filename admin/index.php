@@ -13,6 +13,7 @@
 <script type="text/javascript" src="../js/jquery.calculation.min.js"></script>
 <script type="text/javascript" src="../js/jquery.pnotify.min.js"></script>
 <script type="text/javascript" src="../js/handlebars.js"></script>
+<script type="text/javascript" src="../js/helpers.js"></script>
 <script type="text/javascript" src="../js/websolarlog.js"></script>
 <script type="text/javascript" src="js/admin.js"></script>
 </head>

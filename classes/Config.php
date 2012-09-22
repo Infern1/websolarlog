@@ -47,12 +47,6 @@ class Config
 
 		// ### Create 2 inverter config for testing multi inverter config
 		$this->inverters = array();
-		$this->inverters[] = new Inverter();
-		$inverter2 = new Inverter();
-		$inverter2->id = 2;
-		$inverter2->name = "Inverter2";
-		$inverter2->comAddress = 4;
-		$this->inverters[] = $inverter2;
 
 		// ### FRONT PAGE
 		$this->YMAX='4600';
