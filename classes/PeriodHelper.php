@@ -12,16 +12,16 @@ class PeriodHelper {
         $minute= date("i");
         if (($minute % $interval == 0)) {
             // Retrieve record
-            $bean = R::findOne('cronjob', ' name = :name', array(':name'=>$jobname));
+            $bean = R::findOne('periodhelper', ' name = :name', array(':name'=>$jobname));
             if (!$bean){
-                $bean = R::dispense('cronjob');
+                $bean = R::dispense('periodhelper');
                 $bean->name = $jobname;
                 $bean->lastrun = 0;
             }
 
             if (($currenttime - $bean->lastrun) > ($interval * 60)) {
-                // it's time do something
-                $bean->lastrun = $currenttime;
+                // Cut the seconds off the currenttime
+                $bean->lastrun = $currenttime - ($currenttime % 60);
                 R::store($bean);
                 return true;
             } else {
