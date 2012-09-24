@@ -191,5 +191,42 @@ class Common
         return true;
     }
 
+    /**
+     * Sends out an email with the given settings
+     * @param string $subject
+     * @param string $body
+     * @return string|boolean
+     */
+    public static function sendMail($subject, $body, $config) {
+        $mail = new PHPMailer();
+        // $mail->SMTPDebug = true; Use this for testing only
+
+        $mail->IsSMTP();  // telling the class to use SMTP
+        $mail->Host = $config->smtpServer;
+        $mail->Port = $config->smtpPort;
+        $mail->FromName = $config->emailFromName;
+        $mail->From = $config->emailFrom;
+        $mail->AddAddress($config->emailTo);
+
+        if ($config->smtpUser && $config->smtpPassword) {
+            $mail->SMTPAuth = true;
+            $mail->Username = $config->smtpUser;
+            $mail->Password = $config->smtpPassword;
+        }
+
+        if (trim($config->smtpSecurity) != "" && trim($config->smtpSecurity != "none")) {
+            $mail->SMTPSecure = $config->smtpSecurity;
+        }
+
+        $mail->Subject  = $subject;
+        $mail->Body     = $body;
+        $mail->WordWrap = 50;
+
+        if(!$mail->Send()) {
+            return $mail->ErrorInfo;
+        } else {
+            return true;
+        }
+    }
 }
 ?>

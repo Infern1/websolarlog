@@ -26,7 +26,7 @@
     </select><br />
     
     <label for="smtpUser">Username:</label><input type="text" name="smtpUser" value="{{data.smtpUser}}" />(optional)<br />
-    <label for="smtpPassword">Password:</label><input type="text" name="smtpPassword" value="{{data.smtpPassword}}" />(optional)<br />
+    <label for="smtpPassword">Password:</label><input type="password" name="smtpPassword" value="{{data.smtpPassword}}" />(optional)<br />
     <button type="button" id="btnSmtpSubmit">Save</button>
   </fieldset>
 </form>

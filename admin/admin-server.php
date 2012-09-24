@@ -124,39 +124,16 @@ switch ($settingstype) {
         $adapter->writeConfig($config);
         break;
     case 'send-testemail':
+        $subject = "WSL :: Test message";
+        $body = "Hello, \n\n This is an test email from your WebSolarLog site.";
 
-        // TODO :: this should go to an service class for sending mail
-        $mail = new PHPMailer();
-        // $mail->SMTPDebug = true; Use this for testing only
-
-        $mail->IsSMTP();  // telling the class to use SMTP
-        $mail->Host = $config->smtpServer;
-        $mail->Port = $config->smtpPort;
-        $mail->FromName = $config->emailFromName;
-        $mail->From = $config->emailFrom;
-        $mail->AddAddress($config->emailTo);
-
-        if ($config->smtpUser && $config->smtpPassword) {
-            $mail->SMTPAuth = true;
-            $mail->Username = $config->smtpUser;
-            $mail->Password = $config->smtpPassword;
-        }
-
-        if (trim($config->smtpSecurity) != "" && trim($config->smtpSecurity != "none")) {
-            $mail->SMTPSecure = $config->smtpSecurity;
-        }
-
-        $mail->Subject  = "WSL :: Test message";
-        $mail->Body     = "Hello, \n\n This is an test email from your WebSolarLog site.";
-        $mail->WordWrap = 50;
-
-        if(!$mail->Send()) {
-            $data['result'] = false;
-            $data['message'] = $mail->ErrorInfo;
-        } else {
+        $result = Common::sendMail($subject, $body, $config);
+        if ( $result === true) {
             $data['result'] = true;
+        } else {
+            $data['result'] = false;
+            $data['message'] = $result;
         }
-
 
         break;
     case 'test':
