@@ -423,6 +423,8 @@ class PDODataAdapter implements DataAdapter {
         $bean->emailReports = $config->emailReports;
 
         $bean->smtpServer = $config->smtpServer;
+        $bean->smtpPort = $config->smtpPort;
+        $bean->smtpSecurity = $config->smtpSecurity;
         $bean->smtpUser = $config->smtpUser;
         $bean->smtpPassword = $config->smtpPassword;
 
@@ -454,6 +456,8 @@ class PDODataAdapter implements DataAdapter {
             $config->emailReports = $bean->emailReports;
 
             $config->smtpServer = $bean->smtpServer;
+            $config->smtpPort = $bean->smtpPort;
+            $config->smtpSecurity = $bean->smtpSecurity;
             $config->smtpUser = $bean->smtpUser;
             $config->smtpPassword = $bean->smtpPassword;
 

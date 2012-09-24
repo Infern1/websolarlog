@@ -22,6 +22,8 @@ switch ($settingstype) {
         $data['emailEvents'] = $config->emailEvents;
         $data['emailReports'] = $config->emailReports;
         $data['smtpServer'] = $config->smtpServer;
+        $data['smtpPort'] = $config->smtpPort;
+        $data['smtpSecurity'] = $config->smtpSecurity;
         $data['smtpUser'] = $config->smtpUser;
         $data['smtpPassword'] = $config->smtpPassword;
         break;
@@ -115,15 +117,21 @@ switch ($settingstype) {
         break;
     case 'save-smtp':
         $config->smtpServer = Common::getValue("smtpServer");
+        $config->smtpPort = Common::getValue("smtpPort");
+        $config->smtpSecurity = Common::getValue("smtpSecurity");
         $config->smtpUser = Common::getValue("smtpUser");
         $config->smtpPassword = Common::getValue("smtpPassword");
         $adapter->writeConfig($config);
         break;
     case 'send-testemail':
+
+        // TODO :: this should go to an service class for sending mail
         $mail = new PHPMailer();
+        // $mail->SMTPDebug = true; Use this for testing only
 
         $mail->IsSMTP();  // telling the class to use SMTP
-        $mail->Host = $config->smtpServer; // SMTP server
+        $mail->Host = $config->smtpServer;
+        $mail->Port = $config->smtpPort;
         $mail->FromName = $config->emailFromName;
         $mail->From = $config->emailFrom;
         $mail->AddAddress($config->emailTo);
@@ -132,6 +140,10 @@ switch ($settingstype) {
             $mail->SMTPAuth = true;
             $mail->Username = $config->smtpUser;
             $mail->Password = $config->smtpPassword;
+        }
+
+        if (trim($config->smtpSecurity) != "" && trim($config->smtpSecurity != "none")) {
+            $mail->SMTPSecure = $config->smtpSecurity;
         }
 
         $mail->Subject  = "WSL :: Test message";

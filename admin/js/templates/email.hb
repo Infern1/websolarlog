@@ -15,7 +15,16 @@
   <input type="hidden" name="s" value="save-smtp" />
   <fieldset>
     <legend>Outgoing mail server</legend>
-    <label for="smtpServer">SMTP server:</label><input type="text" name="smtpServer" value="{{data.smtpServer}}" /><br />
+    <label for="smtpServer">server:</label><input type="text" name="smtpServer" value="{{data.smtpServer}}" /><br />
+    <label for="smtpPort">port:</label><input type="text" name="smtpPort" value="{{data.smtpPort}}" /><br />
+    
+    <label for="smtpSecurity">Security:</label>
+    <select name="smtpSecurity">
+      <option value="none" {{#if_eq data.smtpSecurity compare="none"}}selected=selected{{/if_eq}}>None</option>
+      <option value="ssl" {{#if_eq data.smtpSecurity compare="ssl"}}selected=selected{{/if_eq}}>SSL</option>
+      <option value="tls" {{#if_eq data.smtpSecurity compare="tls"}}selected=selected{{/if_eq}}>TLS</option>
+    </select><br />
+    
     <label for="smtpUser">Username:</label><input type="text" name="smtpUser" value="{{data.smtpUser}}" />(optional)<br />
     <label for="smtpPassword">Password:</label><input type="text" name="smtpPassword" value="{{data.smtpPassword}}" />(optional)<br />
     <button type="button" id="btnSmtpSubmit">Save</button>

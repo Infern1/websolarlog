@@ -19,6 +19,8 @@ class Config
     public $emailReports;
 
     public $smtpServer;
+    public $smtpPort; // 25 (default), 587 (alternative), 465 (ssl)
+    public $smtpSecurity; // none, ssl, tls
     public $smtpUser;
     public $smtpPassword;
 
