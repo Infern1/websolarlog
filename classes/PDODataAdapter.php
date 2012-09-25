@@ -270,7 +270,7 @@ class PDODataAdapter {
      * @param int $invtnum
      * @param Event $event
      */
-    public function addEvent($invtnum, Event $Oevent) {
+    public function addEvent($invtnum, Event $event) {
     	$bean = R::dispense('Event');
 
     	$bean->INV = $invtnum;
@@ -336,8 +336,9 @@ class PDODataAdapter {
     			array(':type'=>'LockPort'
     			)
     	);
-    	(count($bean)>0) ? R::trashAll( $bean ) : R::trash( $bean );
-
+    	if (count($bean)>0) {
+    	    R::trashAll($bean);
+    	}
     }
 
 

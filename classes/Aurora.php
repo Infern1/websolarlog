@@ -2,16 +2,16 @@
 Class Aurora {
     private $ADR;
     private $PORT;
-    private $INVTNUM;
     private $COMOPTION;
     private $DEBUG;
+    private $PATH;
 
-    function __construct($ADR, $PORT, $INVTNUM, $COMOPTION, $DEBUG) {
-        $this->ADR = $ADR;
-        $this->PORT = $PORT;
-        $this->INVTNUM = $INVTNUM;
-        $this->COMOPTION = $COMOPTION;
-        $this->DEBUG = $DEBUG;
+    function __construct($path, $address, $port, $comoption, $debug) {
+        $this->ADR = $address;
+        $this->PORT = $port;
+        $this->COMOPTION = $comoption;
+        $this->DEBUG = $debug;
+        $this->PATH = $path;
     }
 
     public function getAlarms() {
@@ -20,7 +20,7 @@ Class Aurora {
     	} else {
     		return $this->execute('-A');
     	}
-        
+
     }
 
     public function getData() {
@@ -28,7 +28,7 @@ Class Aurora {
             //return $this->execute('-b -c -T ' . $this->COMOPTION . ' -d0 -e 2>'. Util::getErrorFile($this->INVTNUM));
             return date("Ymd")."-11:11:11 233.188904 6.021501 1404.147217 234.981598 5.776632 1357.402222 242.095657 10.767704 2585.816406 59.966419 93.636436 68.472496 41.846001 3.230 8441.378 0.000 8384.237 12519.938 14584.0 84 236.659 OK";
         } else {
-            return $this->execute('-c -T ' . $this->COMOPTION . ' -d0 -e');
+            return trim($this->execute('-c -T ' . $this->COMOPTION . ' -d0 -e'));
         }
     }
 
@@ -51,7 +51,7 @@ Class Aurora {
     }
 
     private function execute($options) {
-        return shell_exec(AURORA . ' -a' . $this->ADR . ' ' . $options . ' ' . $this->PORT);
+        return shell_exec($this->PATH . ' -a' . $this->ADR . ' ' . $options . ' ' . $this->PORT);
     }
 
 }

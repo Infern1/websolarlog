@@ -12,6 +12,7 @@ class Inverter
     public $correctionFactor;
     public $comAddress;
     public $comLog;
+    public $syncTime;
 
     public $panels;
 
@@ -30,6 +31,7 @@ class Inverter
         $this->correctionFactor = 0.987;
         $this->comAddress = 2;
         $this->comLog = false;
+        $this->syncTime = false;
         $this->panels = array();
     }
 }

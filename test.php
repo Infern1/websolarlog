@@ -15,6 +15,7 @@ while (true) {
     if (PeriodHelper::isPeriodJob('5min', 5)) {
         echo ('5minjob: ' . date("H:i:s", time()) ."\n");
     }
+    sleep(10);
 }
 
 

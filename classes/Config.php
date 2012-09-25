@@ -28,6 +28,8 @@ class Config
 
     public $inverters; // Contains an array of inverters
 
+    public $aurorapath; // The path to aurora
+
 	/**
 	 * Constructor
 	 */
@@ -85,6 +87,8 @@ class Config
 		$this->emailReports = false;
 
 		$this->template = 'green'; // Default selected template
+
+		$this->aurorapath = 'aurora'; // If in system path this is enough
 	}
 
 	function getInverterConfig($inverterId) {
