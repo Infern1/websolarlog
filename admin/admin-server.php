@@ -33,6 +33,7 @@ switch ($settingstype) {
         $data['location'] = $config->location;
         $data['latitude'] = $config->latitude;
         $data['longitude'] = $config->longitude;
+        $data['template'] = $config->template;
         break;
     case 'inverters':
         $data['inverters'] = $config->inverters;
@@ -59,6 +60,16 @@ switch ($settingstype) {
         }
         $data['panel'] = $panel;
         break;
+    case 'templates':
+        $path = "../template";
+        $templates = array();
+        foreach (scandir($path) as $file) {
+            if (is_dir($path . "/" . $file) && $file != '.' && $file !== '..') {
+                $templates[] = $file;
+            }
+        }
+        $data['templates'] = $templates;
+        break;
     case 'save-communication':
         $config->comPort = Common::getValue("comPort");
         $config->comOptions = Common::getValue("comOptions");
@@ -71,6 +82,7 @@ switch ($settingstype) {
         $config->location = Common::getValue("location");
         $config->latitude = Common::getValue("latitude");
         $config->longitude = Common::getValue("longitude");
+        $config->template = Common::getValue("template");
         $adapter->writeConfig($config);
         break;
     case 'save-inverter':

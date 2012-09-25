@@ -1,5 +1,5 @@
 <?php
-class PDODataAdapter implements DataAdapter {
+class PDODataAdapter {
     function __construct() {
         $config = new Config;
     	R::setup('sqlite:'.$config->dbHost );
@@ -225,7 +225,7 @@ class PDODataAdapter implements DataAdapter {
      * @param MaxPowerToday $energy
      * @param int $year
      */
-    public function addEnergy($invtnum, MaxPowerToday $energy, $year = null) {
+    public function addEnergyOld($invtnum, MaxPowerToday $energy, $year = null) {
     	$bean = R::dispense('Energy');
 
     	$bean->INV = $invtnum;
@@ -233,6 +233,36 @@ class PDODataAdapter implements DataAdapter {
     	$bean->KWHT = $energy->GP;
 
     	$id = R::store($bean);
+    }
+
+    /**
+     * write the max power today to the file
+     * @param int $invtnum
+     * @param MaxPowerToday $mpt
+     */
+    public function addEnergy($invtnum, MaxPowerToday $energy) {
+        $bean =  R::findOne('Energy',
+                ' INV = :INV AND SDTE LIKE :date ',
+                array(':INV'=>$invtnum,
+                        ':date'=> '%'.date('Ymd').'%'
+                )
+        );
+
+        $oldGP = 0;
+        if (!$bean){
+            $bean = R::dispense('Energy');
+        } else {
+            $oldGP = $bean->GP;
+        }
+        $bean->INV = $invtnum;
+        $bean->SDTE = $mpt->SDTE;
+        $bean->GP = $mpt->GP;
+
+        //Only store the bean when the value
+        if ($mpt->GP > $oldGP) {
+            $id = R::store($bean,$bean->id);
+        }
+        return $id;
     }
 
     /**
@@ -428,6 +458,8 @@ class PDODataAdapter implements DataAdapter {
         $bean->smtpUser = $config->smtpUser;
         $bean->smtpPassword = $config->smtpPassword;
 
+        $bean->template = $config->template;
+
         //Store the bean
         R::store($bean);
     }
@@ -460,6 +492,8 @@ class PDODataAdapter implements DataAdapter {
             $config->smtpSecurity = $bean->smtpSecurity;
             $config->smtpUser = $bean->smtpUser;
             $config->smtpPassword = $bean->smtpPassword;
+
+            $config->template = $bean->template;
 
             $config->inverters = $this->readInverters();
         }

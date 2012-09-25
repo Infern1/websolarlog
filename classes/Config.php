@@ -24,6 +24,8 @@ class Config
     public $smtpUser;
     public $smtpPassword;
 
+    public $template;
+
     public $inverters; // Contains an array of inverters
 
 	/**
@@ -81,6 +83,8 @@ class Config
 		$this->emailAlarms = true;
 		$this->emailEvents = true;
 		$this->emailReports = false;
+
+		$this->template = 'green'; // Default selected template
 	}
 
 	function getInverterConfig($inverterId) {
