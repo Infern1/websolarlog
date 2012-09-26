@@ -255,11 +255,11 @@ class PDODataAdapter {
             $oldGP = $bean->GP;
         }
         $bean->INV = $invtnum;
-        $bean->SDTE = $mpt->SDTE;
-        $bean->GP = $mpt->GP;
+        $bean->SDTE = $energy->SDTE;
+        $bean->GP = $energy->GP;
 
         //Only store the bean when the value
-        if ($mpt->GP > $oldGP) {
+        if ($energy->GP > $oldGP) {
             $id = R::store($bean,$bean->id);
         }
         return $id;
