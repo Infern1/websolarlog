@@ -199,8 +199,8 @@ try {
 
                 // The first hour we dont get much kwh, so wait for at least ten history lines
                 if (count($arHistory) > 10) {
-                    $productionStart = $arHistory[0]->GP;
-                    $productionEnd = $arHistory[count(arHistory)-1]->GP;
+                    $productionStart = reset($arHistory)->GP;
+                    $productionEnd = end($arHistory)->GP;
 
                     // Check if we passed 100.000kWh
                     if ($productionEnd < $productionStart) {
