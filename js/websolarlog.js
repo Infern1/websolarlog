@@ -1,4 +1,5 @@
 // calculate the JS parse time //
+$.ajaxSetup({ cache: false });
 beforeLoad = (new Date()).getTime();
 window.onload = pageLoadingTime;
 function pageLoadingTime() {
@@ -103,6 +104,48 @@ var WSL = {
 			});
 		});
 	},
+	
+	init_sliders : function(page ,divId) {
+		// initialize languages selector on the given div
+		WSL.api.getSliders(page ,function(data) {
+			$.ajax({
+				async: false,
+				url : 'js/templates/slider.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					$(html).prependTo(divId);
+					//jQuery('#mycarousel').jcarousel({start: data.sliderPosition[0].position});
+				},
+				dataType : 'text',
+			});
+		});
+		return true;
+	},	
+	
+	init_PageIndexValues : function(divId) {
+		// initialize languages selector on the given div
+		WSL.api.getPageIndexValues(function(data) {
+			$.ajax({
+				async: false,
+				url : 'js/templates/indexValues.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					$(divId).html(html);
+				},
+				complete : function(source) {
+					return true;
+				},
+				dataType : 'text',
+			});
+		});
+	},
+
 	createDayGraph : function(invtnum, divId, getDay) {
 		var graphOptions = {
 			series : [ {
@@ -142,7 +185,7 @@ var WSL = {
 			url : "server.php?method=get" + getDay + "Values&invtnum=" + invtnum + "&r=" + Math.floor(Math.random() * 111111),
 			method : 'GET',
 			dataType : 'json',
-			async : false,
+			async: false,
 			success : function(result) {
 				var dataDay = [];
 				for (line in result.dayData.data) {;
@@ -256,6 +299,19 @@ var WSL = {
 WSL.api.programdayfeed = function(invtnum, success) {
 	$.getJSON("programs/programdayfeed.php", {
 		invtnum : invtnum
+	}, success);
+};
+
+WSL.api.getSliders = function(page, success) {
+	$.getJSON("server.php", {
+		method : 'getSlider',
+		'page' : page,
+	}, success);
+};
+
+WSL.api.getPageIndexValues = function(success) {
+	$.getJSON("server.php", {
+		method : 'getPageIndexValues',
 	}, success);
 };
 

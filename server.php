@@ -40,6 +40,7 @@ header('Content-type: application/json');
 // Initialize return array
 $data = array();
 $invtnum = Common::getValue('invtnum', 0);
+$page = Common::getValue('page', 0);
 
 $dataAdapter = new PDODataAdapter();
 
@@ -127,6 +128,19 @@ if($yesterdayCount==0){
 
 
 switch ($method) {
+	case 'getSlider':
+		// TODO :: Move to json file or something???
+		$slider = array();
+
+		$slider[] = array( "graphName" => "Today","position" => "1","active" => ($page == "index") ? 'true' : 'false');
+		$slider[] = array( "graphName" => "Yesterday","position" => "2","active" => ($page == "yesterday") ? 'true' : 'false');
+		$slider[] = array( "graphName" => "Month","position" => "3","active" => ($page == "month") ? 'true' : 'false');
+		$slider[] = array( "graphName" => "Year","position" => "4","active" => ($page == "year") ? 'true' : 'false');
+		$slidePosition = Common::searchMultiArray($slider, 'active', 'true');
+		$data['sliderPosition'] = $slidePosition;
+		$data['sliders'] = $slider;
+		
+		break;
 	case 'getLanguages':
 		$languages = array();
 		if ($handle = opendir('languages')) {
@@ -310,6 +324,11 @@ switch ($method) {
 		$lastDaysData = new LastDaysValuesResult();
 		$lastDaysData->data = $lines->points;
 		$data['lastDaysData'] = $lastDaysData;
+		break;
+		
+	case 'getPageIndexValues':
+		$indexValues = $dataAdapter->readPageIndexData();
+		$data['IndexValues'] = $indexValues;
 		break;
 	default:
 		break;
