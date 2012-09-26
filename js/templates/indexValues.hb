@@ -1,18 +1,13 @@
 <div class="post">
 	<a href="" title="Live" class="heading">Live:</a>
 
-{{#data.IndexValues.inverter}}
-
-<!-- the following doens't work -->
-{{#each live}}
-..
-{{/each}}
-
-{{#each data.IndexValues.inverter}}
-..
-{{/each}}
-
-{{/data.IndexValues.inverter}}
+<div style="color:black">
+</h2>Inveters:<h2>
+{{#data.IndexValues}}
+    <p>first print id:{{this.id}}</p>
+    <p>first print id:{{this.live.GP}}</p>
+{{/data.IndexValues}}
+</div>
 
 {{#data.IndexValues.dayINV}}
 	<div class="container" style="width:auto;">

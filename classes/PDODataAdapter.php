@@ -608,16 +608,17 @@ class PDODataAdapter {
 
         return $list;
     }
-    
-    
+
+
     public function readPageIndexData() {
     	// summary live data
     	$list = array();
+    	$madList = array();
     	$beans = R::findAndExport('Inverter');
     	foreach ($beans as $inverter){
-    
+            $oInverter = array();
     		$liveBean =  R::findOne('Live',' INV = :INV ', array(':INV'=>$inverter['id']));
-    			
+
     		$live = new Live();
     		$live->SDTE = date("H:i:s d M Y",Util::getUTCdate($liveBean['SDTE']));
     		$live->INV = $liveBean['INV'];
@@ -626,8 +627,10 @@ class PDODataAdapter {
     		$live->I2P = $liveBean['I2P'];
     		$live->ITP = $liveBean['I1P']+$liveBean['I2P'];
     		$list['inverters'][$liveBean['INV']]['live'] = $live;
-    
-    			
+    		$oInverter["id"] = $liveBean['INV'];
+    		$oInverter["live"] = $live;
+
+
     		// get production
     		$beans = R::getAll("SELECT INV,KWH FROM 'Energy' WHERE INV = :inv ORDER BY SDTE DESC ,INV DESC LIMIT 0,:limit", array(':limit'=>30,':inv'=>$inverter['id']));
     		$i=0;
@@ -645,10 +648,15 @@ class PDODataAdapter {
     			}
     			$i++;
     		}
+    		$oInverter["day"] = $KWHT['dayKWHT'];
+    		$oInverter["week"] = $KWHT['weekKWHT'];
+    		$oInverter["month"] = $KWHT['monthKWHT'];
     		$list['inverters'][$liveBean['INV']]['day'] = $KWHT['dayKWHT'];
     		$list['inverters'][$liveBean['INV']]['week'] = $KWHT['weekKWHT'];
     		$list['inverters'][$liveBean['INV']]['month'] = $KWHT['monthKWHT'];
-    			
+
+
+    		$madList[] = $oInverter;
     		$KWHTD = $KWHTD  + $KWHT['dayKWHT'];
     		$KWHTW = $KWHTW  + $KWHT['weekKWHT'];
     		$KWHTM = $KWHTM  + $KWHT['monthKWHT'];
@@ -656,6 +664,6 @@ class PDODataAdapter {
     	$list['inverters']['dayKWHTS'] = $KWHTD;
     	$list['inverters']['weekKWHTS'] = $KWHTW;
     	$list['inverters']['monthKWHTS'] = $KWHTM;
-    	return $list;
+    	return $madList;
     }
 }

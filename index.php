@@ -13,11 +13,14 @@ include("template/" . $template . "/header.php");
 - Grafiek van vandaag
 - Grafiek van gisteren
 - Grafiek laatste xx dagen
-<?php 
+<?php
 include("template/" . $template . "/index.php");
 
 ?>
 	<script type="text/javascript">
+    // Make sure the page is loaded
+	$(function()
+	        {
 		var sliders = WSL.init_sliders("index","#main-middle");
 
 		if (sliders){
@@ -29,7 +32,7 @@ include("template/" . $template . "/index.php");
 		WSL.init_PageIndexValues("#content"); // Initial load fast
 		window.setInterval(function(){WSL.init_PageIndexValues("todayValues");}, 3000); // every 10 seconds
 		}
-		
+    });
 	</script>
 	<!-- END Wrapper -->
 </body>
