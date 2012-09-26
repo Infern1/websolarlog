@@ -225,12 +225,12 @@ class PDODataAdapter {
      * @param MaxPowerToday $energy
      * @param int $year
      */
-    public function addEnergyOld($invtnum, MaxPowerToday $energy, $year = null) {
+    public function addEnergyOld($invtnum, Energy $energy, $year = null) {
     	$bean = R::dispense('Energy');
 
     	$bean->INV = $invtnum;
     	$bean->SDTE = $energy->SDTE;
-    	$bean->KWHT = $energy->GP;
+    	$bean->KWHT = $energy->KWHT;
 
     	$id = R::store($bean);
     }
@@ -240,7 +240,7 @@ class PDODataAdapter {
      * @param int $invtnum
      * @param MaxPowerToday $mpt
      */
-    public function addEnergy($invtnum, MaxPowerToday $energy) {
+    public function addEnergy($invtnum, Energy $energy) {
         $bean =  R::findOne('Energy',
                 ' INV = :INV AND SDTE LIKE :date ',
                 array(':INV'=>$invtnum,
@@ -248,18 +248,18 @@ class PDODataAdapter {
                 )
         );
 
-        $oldGP = 0;
+        $oldKWHT = 0;
         if (!$bean){
             $bean = R::dispense('Energy');
         } else {
-            $oldGP = $bean->GP;
+            $oldKWHT = $bean->KWHT;
         }
         $bean->INV = $invtnum;
         $bean->SDTE = $energy->SDTE;
-        $bean->GP = $energy->GP;
+        $bean->KWHT = $energy->KWHT;
 
         //Only store the bean when the value
-        if ($energy->GP > $oldGP) {
+        if ($energy->KWHT > $oldKWHT) {
             $id = R::store($bean,$bean->id);
         }
         return $id;

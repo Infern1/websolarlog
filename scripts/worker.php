@@ -22,6 +22,7 @@ include($basepath . "/classes/objects/Event.php");
 include($basepath . "/classes/objects/Inverter.php");
 include($basepath . "/classes/objects/Panel.php");
 include($basepath . "/classes/objects/Live.php");
+include($basepath . "/classes/objects/Energy.php");
 include($basepath . "/classes/objects/MaxPowerToday.php");
 include($basepath . "/classes/objects/Lock.php");
 include($basepath . "/classes/converters/auroraConverter.php");
@@ -202,8 +203,8 @@ try {
                     $first = reset($arHistory);
                     $last = end($arHistory);
 
-                    $productionStart = $first['GP'];
-                    $productionEnd = $last['GP'];
+                    $productionStart = $first['KWHT'];
+                    $productionEnd = $last['KWHT'];
 
                     // Check if we passed 100.000kWh
                     if ($productionEnd < $productionStart) {
@@ -212,10 +213,10 @@ try {
                     $production = round($productionEnd - $productionStart, 3);
 
                     // Set the new values and save it
-                    $energy = new MaxPowerToday();
+                    $energy = new Energy();
                     $energy->SDTE = $first['SDTE'];
                     $energy->INV = $inverter->id;
-                    $energy->GP = $production;
+                    $energy->KWHT = $production;
                     $dataAdapter->addEnergy($inverter->id, $energy);
                 }
 
