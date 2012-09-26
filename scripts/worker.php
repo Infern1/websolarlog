@@ -202,8 +202,8 @@ try {
                     $first = reset($arHistory);
                     $last = end($arHistory);
 
-                    $productionStart = $first->GP;
-                    $productionEnd = $last->GP;
+                    $productionStart = $first['GP'];
+                    $productionEnd = $last['GP'];
 
                     // Check if we passed 100.000kWh
                     if ($productionEnd < $productionStart) {
