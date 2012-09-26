@@ -199,8 +199,11 @@ try {
 
                 // The first hour we dont get much kwh, so wait for at least ten history lines
                 if (count($arHistory) > 10) {
-                    $productionStart = reset($arHistory)->GP;
-                    $productionEnd = end($arHistory)->GP;
+                    $first = reset($arHistory);
+                    $last = end($arHistory);
+
+                    $productionStart = $first->GP;
+                    $productionEnd = $last->GP;
 
                     // Check if we passed 100.000kWh
                     if ($productionEnd < $productionStart) {
@@ -210,7 +213,7 @@ try {
 
                     // Set the new values and save it
                     $energy = new MaxPowerToday();
-                    $energy->SDTE = $arHistory[0]->SDTE;
+                    $energy->SDTE = $first['SDTE'];
                     $energy->INV = $inverter->id;
                     $energy->GP = $production;
                     $dataAdapter->addEnergy($inverter->id, $energy);
@@ -230,7 +233,7 @@ try {
                 $OEvent->SDTE = date("Ymd H:i:s");
                 $OEvent->type = 'Info';
                 $OEvent->event = $info;
-                $dataAdapter->writeInverterInfo($inverter->id, $OEvent);
+                $dataAdapter->addEvent($inverter->id, $OEvent);
             }
 
             // Do we want to synchronize the time off the inverter
