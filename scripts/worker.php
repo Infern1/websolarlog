@@ -81,6 +81,7 @@ function createLock($dataAdapter) {
     $OLock->SDTE = date('Ymd-H:m:s');
     $OLock->type = 'Lock';
     $dataAdapter->writeLock($OLock);
+    Util::createLockFile(); // We need this for the bash script!
 }
 
 /**
@@ -89,10 +90,13 @@ function createLock($dataAdapter) {
  */
 function dropLock($dataAdapter) {
     $dataAdapter->dropLock();
+    /*
     $OEvent->event = "removing lock!";
     $OEvent->SDTE = date('Ymd-H:m:s');
     $OEvent->type = 'Locks';
     $dataAdapter->addEvent('', $OEvent);
+    */
+    util::removeLockFile(); // We need this for the bash script!
 }
 /*
  * Start main script
@@ -147,6 +151,13 @@ try {
         } else {
             $isAlive = true; // The inverter responded
         }
+
+        // TODO :: THIS IS FOR TESTING ONLY, WE DONT WANT TOO LOSE ANY DATA!!!
+        $dumpFile = "dumpdata.csv";
+        $fh = fopen($dumpFile, 'a');
+        fwrite($fh, $datareturn . "\n");
+        fclose($fh);
+        // /TODO
 
         if ($isAlive) {
             // Convert datareturn to
@@ -235,8 +246,7 @@ try {
 
     }
 
-    // Drop the lock the right way
-    $dataAdapter->dropLock();
+    dropLock($dataAdapter);
 
 } catch (Exception $e) {
     $error = $e->getFile() . "(" . $e->getLine() . ") " .  + $e->getMessage() + " TRACE: " . $e->getTraceAsString();

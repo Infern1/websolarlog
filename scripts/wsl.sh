@@ -1,7 +1,8 @@
-#!/opt/bin/bash
-# Louviaux Jean-Marc
-# 123aurora start and stop script
+#!/bin/bash
+# WebSolarLog start and stop script
+BASHDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
 WWWDIR="$( dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd))"
+PHP="php"
 
 looping ()
 { 
@@ -12,7 +13,7 @@ find $WWWDIR"/data/lock" -mmin +2 -delete 2> /dev/null
 
 if [ ! -f $WWWDIR"/data/lock" ] # Port lock
 then
-  /mnt/ext/opt/apache/bin/php $WWWDIR"/scripts/worker.php" 2> worker.log
+  $PHP $WWWDIR"/scripts/worker.php" $BASHDIR/worker.log 2>&1
 fi
 sleep 1
 done
@@ -41,37 +42,12 @@ stop)
         echo "123aurora was already stopped"
     fi
 ;;
-admin)
-    shuf -i 10000-9999999 -n 1 > /tmp/123AURORAPASS
-
-    set -e
-    function cleanup {
-      echo "Session terminated"
-      rm  /tmp/123AURORAPASS
-    }
-
-    function pause(){
-       read -p "$*"
-       trap cleanup EXIT
-    }
-
-    IP=`netstat -n -t | awk '{print $4}' | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -v "127.0.0.1" | sort -u`
-
-    clear
-    echo "123aurora administration"
-    echo ""
-    echo "Log on to http://$IP/config/index.php"
-    echo "User: admin"
-    echo "One-time password :" `more /tmp/123AURORAPASS`
-    echo ""
-    pause 'Press [Enter] key to stop...'
-;;
 *)
 clear
 pathtosrv=`pwd`
-echo "Welcome to 123Aurora - Louviaux Jean-Marc
+echo "Welcome to WebSolarLog
 
-Usage : simply run as root $pathtosrv/123aurora.sh { admin | start | stop }"
+Usage : simply run as root $pathtosrv/wsl.sh { start | stop }"
 ;;
 esac
 exit 0
