@@ -190,7 +190,7 @@ try {
                 $OEvent->event = 'Inverter awake';
                 $OEvent->type = 'Notice';
                 $OEvent->SDTE = date("Y-m-d H:i");
-                $dataAdapter->addEvent($invtnum, $OEvent);
+                $dataAdapter->addEvent($inverter->id, $OEvent);
             }
 
 
