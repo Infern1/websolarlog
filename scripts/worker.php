@@ -129,7 +129,6 @@ try {
     */
 
     foreach ($config->inverters as $inverter) {
-        $inverter = new Inverter();
         // Handle inverter
         $aurora = new Aurora($config->aurorapath, $inverter->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
 
