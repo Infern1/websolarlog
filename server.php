@@ -49,9 +49,9 @@ $dataAdapter = new PDODataAdapter();
 ////////////////////////////////////////////
 ///
 /// Dirty "solution" for dummy data
-/// TODO :: (Re)move code below 
+/// TODO :: (Re)move code below
 ////////////////////////////////////////////
-
+/*
 $today = date("Ymd");
 $yesterday = date("Ymd", strtotime(date('d', strtotime(date('Y-m-d') . " -1 days"))." ".date("M")." ".date("Y")));
 
@@ -85,13 +85,13 @@ if($todayCount==0){
 	$Ompt->SDTE = $Olive->SDTE;
 	$Ompt->GP = $Olive->GP;
 	$dataAdapter->writeMaxPowerToday($invtnum, $Ompt);
-	
+
 	$Oenergy = new MaxPowerToday();
 	$Oenergy->SDTE = date("Ymd-H:m:s");
 	$Oenergy->GP = $KWHT;
 
 	$dataAdapter->addEnergy($invtnum, $Oenergy);
-	
+
 }
 
 if($yesterdayCount==0){
@@ -119,11 +119,12 @@ if($yesterdayCount==0){
 		$i++;
 	}
 }
+*/
 
 ////////////////////////////////////////////
 ///
 /// / Dirty "solution" for dummy data
-/// 
+///
 ////////////////////////////////////////////
 
 
@@ -139,7 +140,7 @@ switch ($method) {
 		$slidePosition = Common::searchMultiArray($slider, 'active', 'true');
 		$data['sliderPosition'] = $slidePosition;
 		$data['sliders'] = $slider;
-		
+
 		break;
 	case 'getLanguages':
 		$languages = array();
@@ -200,7 +201,7 @@ switch ($method) {
 		$liveData->valuePMAXOTD = floatval(round($mpt->GP,0));
 		$liveData->valuePMAXOTDTIME = (substr($mpt->SDTE, 9, 2).":".substr($mpt->SDTE, 12, 2));
 		$liveData->valueMPSDTE = $mpt->SDTE; // TODO :: ^ above code is wrong if i check the containing data
-		
+
 		// Set some translations
 		$liveData->lgDASHBOARD = $lgDASHBOARD;
 		$liveData->lgPMAX = $lgPMAX;
@@ -325,7 +326,7 @@ switch ($method) {
 		$lastDaysData->data = $lines->points;
 		$data['lastDaysData'] = $lastDaysData;
 		break;
-		
+
 	case 'getPageIndexValues':
 		$indexValues = $dataAdapter->readPageIndexData();
 		$data['IndexValues'] = $indexValues;
