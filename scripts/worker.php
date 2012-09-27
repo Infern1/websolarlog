@@ -76,7 +76,7 @@ function isAlarmDetected($event) {
  * @param Inverter $inverter
  * @param PDODataAdapter $dataAdapter
  */
-function checkAlarms($aurora, $inverter, $dataAdapter) {
+function checkAlarms($aurora, $inverter, $dataAdapter, $config) {
     sleep(2);
     $alarm = $aurora->getAlarms();
     if (trim($alarm) != "") {
@@ -86,12 +86,31 @@ function checkAlarms($aurora, $inverter, $dataAdapter) {
         $OEvent->event = Util::formatEvent($alarm);
         $OEvent->SDTE = date("Y-m-d H:i");
         $OEvent->type = 'Alarm';
-        $Oevent->alarmSend = false;
 
         // Only save if there is an real event
         if (isAlarmDetected($OEvent)) {
+            $OEvent->alarmSend = sendMailAlert($OEvent, $config);
             $dataAdapter->addEvent($inverter->id, $OEvent);
         }
+    }
+}
+
+/**
+ *
+ * @param Event $event
+ */
+function sendMailAlert($event, $config) {
+    $subject = "WSL :: Event message";
+    $body = "Hello, \n\n We have detected an error on your inverter.\n\n";
+    $body .= $event->event . "\n\n";
+    $body .= "Please check if everything is alright.\n\n";
+    $body .= "WebSolarLog";
+
+    $result = Common::sendMail($subject, $body, $config);
+    if ( $result === true) {
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -192,7 +211,9 @@ try {
             checkMaxPowerValue($inverter, $live, $dataAdapter);
 
             // Check if there are alarms
-            checkAlarms($aurora, $inverter, $dataAdapter);
+            if (PeriodHelper::isPeriodJob("EventJob", 2)) {
+                checkAlarms($aurora, $inverter, $dataAdapter, $config);
+            }
         }
 
         /*
