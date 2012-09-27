@@ -105,11 +105,10 @@ var WSL = {
 		});
 	},
 	
-	init_sliders : function(page ,divId) {
+	init_sliders : function(page ,divId,success) {
 		// initialize languages selector on the given div
 		WSL.api.getSliders(page ,function(data) {
 			$.ajax({
-				async: false,
 				url : 'js/templates/slider.hb',
 				success : function(source) {
 					var template = Handlebars.compile(source);
@@ -117,7 +116,7 @@ var WSL = {
 						'data' : data
 					});
 					$(html).prependTo(divId);
-					//jQuery('#mycarousel').jcarousel({start: data.sliderPosition[0].position});
+					success.call(); 
 				},
 				dataType : 'text',
 			});
@@ -125,12 +124,24 @@ var WSL = {
 		return true;
 	},	
 	
-	init_PageIndexValues : function(divId) {
+	init_PageIndexValues : function(divId,SideBar) {
 		// initialize languages selector on the given div
 		WSL.api.getPageIndexValues(function(data) {
+			var GP = 3600 / 10;
+			   var gaugeGPOptions = {
+			            title: 'AC Power', grid: { background: '#FFF' },
+			            seriesDefaults: {
+			                renderer: $.jqplot.MeterGaugeRenderer,
+			                rendererOptions: {
+			                    min: 0, max: GP*10, padding: 0,
+			                    intervals:[GP, GP * 2, GP * 3, GP *4, GP * 5, GP * 6, GP * 7, GP * 8, GP * 9, GP * 10],
+			                    intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
+			                }
+			            }
+			        };
+			
 			$.ajax({
-				async: false,
-				url : 'js/templates/indexValues.hb',
+				url : 'js/templates/liveValues.hb',
 				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
@@ -138,14 +149,26 @@ var WSL = {
 					});
 					$(divId).html(html);
 				},
-				complete : function(source) {
-					return true;
+				dataType : 'text',
+			});
+			$.ajax({
+				url : 'js/templates/totalValues.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					$(SideBar).html(html);
+					var gaugeGP = $.jqplot('gaugeGP',[[0.1]], gaugeGPOptions);
+					gaugeGP.series[0].data = [['W', data.IndexValues.inverters[0].live[2].value]];
+	                gaugeGP.series[0].label = Math.round(data.IndexValues.inverters[0].live[2].value) + ' W';
+	                gaugeGP.replot();
 				},
 				dataType : 'text',
 			});
 		});
 	},
-
+	
 	createDayGraph : function(invtnum, divId, getDay) {
 		var graphOptions = {
 			series : [ {

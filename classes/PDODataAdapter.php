@@ -619,26 +619,21 @@ class PDODataAdapter {
     	foreach ($beans as $inverter){
             $oInverter = array();
     		$liveBean =  R::findOne('Live',' INV = :INV ', array(':INV'=>$inverter['id']));
-
-    		$live = new Live();
-    		$live->SDTE = date("H:i:s d M Y",Util::getUTCdate($liveBean['SDTE']));
-    		$live->INV = $liveBean['INV'];
-    		$live->GP = $liveBean['GP'];
-    		$live->I1P = $liveBean['I1P'];
-    		$live->I2P = $liveBean['I2P'];
-    		$live->ITP = $liveBean['I1P']+$liveBean['I2P'];
-    		$list['inverters'][$liveBean['INV']]['live'] = $live;
-    		
-    		$oInverter["id"] = $liveBean['INV'];
-    		$oInverter["live"] = array($live);
-
-
+    		$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
+    		$live = array(
+    				array("field"=>"SDTE", value=>date("H:i:s d M Y",Util::getUTCdate($liveBean['SDTE']))),
+    				array("field"=>"INV", value=>$liveBean['INV']),
+    				array("field"=>"GP", value=>round($liveBean['GP'],2)),
+    				array("field"=>"I1P", value=>round($liveBean['I1P'],2)),
+    				array("field"=>"I2P", value=>round($liveBean['I2P'],2)),
+    				array("field"=>"ITP", value=>$ITP)
+    		);
+    		$oInverter["live"] = $live;
     		// get production
     		$beans = R::getAll("SELECT INV,KWH FROM 'Energy' WHERE INV = :inv ORDER BY SDTE DESC ,INV DESC LIMIT 0,:limit", array(':limit'=>30,':inv'=>$inverter['id']));
     		$i=0;
     		$KWHT = array();
     		foreach ($beans as $bean){
-    			//echo $bean['KWH']."<br>";
     			if ($i<(1)){
     				$KWHT['dayKWHT'] = $KWHT['dayKWHT']+$bean['KWH'];
     			}
@@ -653,25 +648,16 @@ class PDODataAdapter {
     		$oInverter["day"] = $KWHT['dayKWHT'];
     		$oInverter["week"] = $KWHT['weekKWHT'];
     		$oInverter["month"] = $KWHT['monthKWHT'];
-    		
-    		//$list['inverters'][$liveBean['INV']]['day'] = $KWHT['dayKWHT'];
-    		//$list['inverters'][$liveBean['INV']]['week'] = $KWHT['weekKWHT'];
-    		//$list['inverters'][$liveBean['INV']]['month'] = $KWHT['monthKWHT'];
-
-
     		$madList['inverters'][] = $oInverter;
+    		
     		$KWHTD = $KWHTD  + $KWHT['dayKWHT'];
     		$KWHTW = $KWHTW  + $KWHT['weekKWHT'];
     		$KWHTM = $KWHTM  + $KWHT['monthKWHT'];
     	}
-    	//$list['inverters']['dayKWHTS'] = $KWHTD;
-    	//$list['inverters']['weekKWHTS'] = $KWHTW;
-    	//$list['inverters']['monthKWHTS'] = $KWHTM;
     	$oInverter = array();
-    	$oInverter["day"] = $KWHT['dayKWHT'];
-    	$oInverter["week"] = $KWHT['weekKWHT'];
-    	$oInverter["month"] = $KWHT['monthKWHT'];
-    	$madList['totals'][] = $oInverter;
+    	$totals = array("day"=>$KWHTD,"week"=>$KWHTW,"month"=>$KWHTM);
+
+    	$madList['summary'] = $totals;
     	return $madList;
     }
 }

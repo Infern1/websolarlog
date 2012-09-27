@@ -1,4 +1,4 @@
-$(function() {
+function init_carousel() {
 	$('.field, textarea').focus(function() {
         if(this.title==this.value) {
             this.value = '';
@@ -28,7 +28,7 @@ $(function() {
         DD_belatedPNG.fix('#logo a, .socials, .socials a, .middle, .bottom, #navigation a, #footer-middle, #main-top, #footer-bottom, #slider-nav');
     }
 
-});
+};
 
 function mycarousel_initCallback(carousel) {
     $('#slider-nav li').bind('click', function() {      
