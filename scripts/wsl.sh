@@ -13,7 +13,7 @@ find $WWWDIR"/data/lock" -mmin +2 -delete 2> /dev/null
 
 if [ ! -f $WWWDIR"/data/lock" ] # Port lock
 then
-  $PHP $WWWDIR"/scripts/worker.php" $BASHDIR/worker.log 2>&1
+  $PHP $WWWDIR"/scripts/worker.php" >> $BASHDIR/worker.log 2>&1
 fi
 sleep 1
 done
@@ -37,9 +37,9 @@ stop)
         echo "Cleanup port lock"
         rm $WWWDIR'/data/lock'
         fi
-        echo "123aurora stopped"
+        echo "WebSolarLog stopped"
     else
-        echo "123aurora was already stopped"
+        echo "WebSolarLog was already stopped"
     fi
 ;;
 *)
