@@ -70,7 +70,7 @@
 						<div class="col projects">
 							<h3>Latest Projects</h3>
 							<div class="post">
-								<img src="css/images/project1.jpg" alt="Template image" />
+								<img src="" alt="Template image" />
 								<a class="heading" title="Fusce" href="#">Fusce laoreet mattis nisi </a>
 								<p>Quis condimentum orci feugiat et. Quisque pretium purus quis tortor elementum molestie.</p>
 								<div class="cl"></div>
@@ -78,7 +78,7 @@
 							</div>
 							<span class="sep"></span>
 							<div class="post">
-								<img src="css/images/project2.jpg" alt="Template image" />
+								<img src="" alt="Template image" />
 								<a class="heading" title="Vivamus" href="#">Vivamus ante dolor</a>
 								<p>Aenean interdum, ante quis lacinia viverra, sapien mauris posuere dolor.</p>
 								<div class="cl"></div>

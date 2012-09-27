@@ -2,8 +2,8 @@
 require_once("classes/classloader.php");
 
 $template = "green";
+require_once("template/" . $template . "/header.php");
 
-include("template/" . $template . "/header.php");
 ?>
 - kWh van vandaag
 - kWh deze maand
@@ -14,15 +14,13 @@ include("template/" . $template . "/header.php");
 - Grafiek van gisteren
 - Grafiek laatste xx dagen
 <?php
-include("template/" . $template . "/index.php");
-
+require_once("template/" . $template . "/index.php");
 ?>
 	<script type="text/javascript">
     // Make sure the page is loaded
 	$(function()
 	        {
 		var sliders = WSL.init_sliders("index","#main-middle");
-
 		if (sliders){
 		WSL.createDayGraph(1, "graphTodayContent","Today"); // Initial load fast
 		window.setInterval(function(){WSL.createDayGraph(1, "graphTodayContent","Today");}, 10000); // every 10 seconds
