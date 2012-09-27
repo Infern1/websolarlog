@@ -2,9 +2,6 @@
 // Credit Louviaux Jean-Marc 2012
 error_reporting(E_ALL);
 
-// We will use session to track some time dependent functions
-session_start();
-
 define('checkaccess', TRUE);
 //define('AURORA', '/share/martin/aurora/aurora-1.8.0/aurora');
 
@@ -26,7 +23,6 @@ include($basepath . "/classes/objects/Energy.php");
 include($basepath . "/classes/objects/MaxPowerToday.php");
 include($basepath . "/classes/objects/Lock.php");
 include($basepath . "/classes/converters/auroraConverter.php");
-
 
 function tricsv($var) {
     return !is_dir($var)&& preg_match('/.*\.csv/', $var);
@@ -128,7 +124,7 @@ try {
     die;
     }
     */
-
+    R::begin(); // Start a transaction to speed things up
     foreach ($config->inverters as $inverter) {
         // Handle inverter
         $aurora = new Aurora($config->aurorapath, $inverter->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
@@ -140,8 +136,8 @@ try {
             if (Util::isSunDown($config)) {
                 /*
                  * instead of continues polling the inverter during the night we give at a 15 minute break
-                * this will greatly reduce the cpu usage and so less power usage
-                */
+                 * this will greatly reduce the cpu usage and so less power usage
+                 */
                 echo $tstamp . " : No response and the sun is probably down. Inverter is probably a sleep, waiting for 15 minutes.";
                 // sleep(60 * 15);
             } else {
@@ -243,11 +239,11 @@ try {
                 $info = $aurora->syncTime();
             }
         }
-
-
-
-
     }
+    R::commit(); // Commit the transaction
+
+    // Give cpu a little break, this really improves your cpu time
+    sleep(2);
 
     dropLock($dataAdapter);
 
