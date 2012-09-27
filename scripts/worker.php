@@ -183,16 +183,15 @@ try {
                  * instead of continues polling the inverter during the night we give at a 15 minute break
                  * this will greatly reduce the cpu usage and so less power usage
                  */
-                echo $tstamp . " : No response and the sun is probably down. Inverter is probably a sleep, waiting for 15 minutes.";
+                echo $tstamp . ": No response and the sun is probably down. Inverter is probably a sleep, waiting for 15 minutes.";
                 sleep(60 * 15);
             } else {
-                echo $tstamp . " : No response. Inverter is probably busy or down, waiting for 30 seconds";
+                echo $tstamp . ": No response. Inverter is probably busy or down, waiting for 30 seconds";
                 sleep(30);
             }
         } else {
             $isAlive = true; // The inverter responded
         }
-
 
         if ($isAlive) {
             // TODO :: THIS IS FOR TESTING ONLY, WE DONT WANT TOO LOSE ANY DATA!!!
