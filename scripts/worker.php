@@ -193,14 +193,15 @@ try {
             $isAlive = true; // The inverter responded
         }
 
-        // TODO :: THIS IS FOR TESTING ONLY, WE DONT WANT TOO LOSE ANY DATA!!!
-        $dumpFile = "dumpdata.csv";
-        $fh = fopen($dumpFile, 'a');
-        fwrite($fh, $datareturn . "\n");
-        fclose($fh);
-        // /TODO
 
         if ($isAlive) {
+            // TODO :: THIS IS FOR TESTING ONLY, WE DONT WANT TOO LOSE ANY DATA!!!
+            $dumpFile = "dumpdata.csv";
+            $fh = fopen($dumpFile, 'a+');
+            fwrite($fh, $datareturn . "\n");
+            fclose($fh);
+            // /TODO
+
             // Convert datareturn to
             $live = auroraConverter::toLive($datareturn);
 
