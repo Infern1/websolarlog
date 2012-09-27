@@ -169,7 +169,7 @@ var WSL = {
 		});
 	},
 	
-	createDayGraph : function(invtnum, divId, getDay) {
+	createDayGraph : function(invtnum, divId, getDay, fnFinish) {
 		var graphOptions = {
 			series : [ {
 				showMarker : false,
@@ -218,11 +218,13 @@ var WSL = {
 				
 				
 				graphOptions.axes.xaxis.min = result.dayData.data[0][0];
-				$.jqplot(divId, [ dataDay ], graphOptions).destroy();
+				//$.jqplot(divId, [ dataDay ], graphOptions).destroy();
 				$('.graph' + getDay + 'Content').remove();
 				$('.graph' + getDay).append('<div id="graph' + getDay + 'Content"></div>');
-				$.jqplot(divId, [ dataDay ], graphOptions);
+				handle = $.jqplot(divId, [ dataDay ], graphOptions);
 				mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
+				
+				fnFinish.call(this, handle);
 			}
 		});
 	},

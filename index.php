@@ -11,15 +11,21 @@ require_once("template/" . $template . "/index.php");
 		var sliders = WSL.init_sliders("index","#main-middle",
 				function(){
 					if (sliders){
-						WSL.createDayGraph(1, "graphTodayContent","Today"); // Initial load fast
-						window.setInterval(function(){WSL.createDayGraph(1, "graphTodayContent","Today");}, 10000); // every 10 seconds
-						WSL.createDayGraph(1, "graphYesterdayContent","Today"); // Initial load fast
-						window.setInterval(function(){WSL.createDayGraph(1, "graphYesterdayContent","Today");}, 10000); // every 10 seconds
+						var hGraphToday = null;
+						var fnGraphToday = function(handle){hGraphToday=handle;};
+						WSL.createDayGraph(1, "graphTodayContent","Today", fnGraphToday); // Initial load fast
+						window.setInterval(function(){hGraphToday.destroy(); WSL.createDayGraph(1, "graphTodayContent","Today", fnGraphToday);}, 10000); // every 10 seconds
+
+						var hGraphYesterday = null;
+						var fnGraphYesterday = function(handle){hGraphYesterday=handle;};
+						WSL.createDayGraph(1, "graphYesterdayContent","Today", fnGraphYesterday); // Initial load fast
+						window.setInterval(function(){hGraphYesterday.destroy(); WSL.createDayGraph(1, "graphYesterdayContent","Today", fnGraphYesterday);}, 10000); // every 10 seconds
+
 						WSL.init_PageIndexValues("#content"); // Initial load fast
-						window.setInterval(function(){WSL.createDayGraph(1, "graphLastDaysContent","Today");}, 10000); // every 10 seconds		
+						window.setInterval(function(){WSL.createDayGraph(1, "graphLastDaysContent","Today");}, 10000); // every 10 seconds
 						WSL.init_PageIndexValues("#content","#sidebar"); // Initial load fast
-						window.setInterval(function(){WSL.init_PageIndexValues("#content","#sidebar");}, 3000); // every 10 seconds
-						init_carousel();					
+						window.setInterval(function(){WSL.init_PageIndexValues("#content","#sidebar");}, 3000); // every 3 seconds
+						init_carousel();
 					}
     			}
 		)
