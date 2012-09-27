@@ -50,6 +50,27 @@ function checkMaxPowerValue($inverter, $live, $dataAdapter) {
 }
 
 /**
+ * Check if the line is filled with an real alarm
+ * @param Event $event
+ * @return boolean
+ */
+function isAlarmDetected($event) {
+    $event_text = trim($event['Event']);
+    $event_lines = explode("\n", $event_text);
+
+    $alarmFound = false;
+    foreach ($event_lines as $line) {
+        $parts = explode(":", $line);
+        if (trim($parts[1]) != "No Alarm") {
+            $alarmFound = true;
+            break;
+        }
+    }
+
+    return $alarmFound;
+}
+
+/**
  * Checks if there are alarms to save to the database
  * @param Aurora $aurora
  * @param Inverter $inverter
@@ -65,7 +86,12 @@ function checkAlarms($aurora, $inverter, $dataAdapter) {
         $OEvent->event = Util::formatEvent($alarm);
         $OEvent->SDTE = date("Y-m-d H:i");
         $OEvent->type = 'Alarm';
-        $dataAdapter->addEvent($inverter->id, $OEvent);
+        $Oevent->alarmSend = false;
+
+        // Only save if there is an real event
+        if (isAlarmDetected($OEvent)) {
+            $dataAdapter->addEvent($inverter->id, $OEvent);
+        }
     }
 }
 
