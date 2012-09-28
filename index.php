@@ -18,8 +18,8 @@ require_once("template/" . $template . "/index.php");
 
 						var hGraphYesterday = null;
 						var fnGraphYesterday = function(handle){hGraphYesterday=handle;};
-						WSL.createDayGraph(1, "graphYesterdayContent","Today", fnGraphYesterday); // Initial load fast
-						window.setInterval(function(){hGraphYesterday.destroy(); WSL.createDayGraph(1, "graphYesterdayContent","Today", fnGraphYesterday);}, 10000); // every 10 seconds
+						WSL.createDayGraph(1, "graphYesterdayContent","Yesterday", fnGraphYesterday); // Initial load fast
+						window.setInterval(function(){hGraphYesterday.destroy(); WSL.createDayGraph(1, "graphYesterdayContent","Yesterday", fnGraphYesterday);}, 10000); // every 10 seconds
 
 						//WSL.init_PageIndexValues("#content"); // Initial load fast
 						//window.setInterval(function(){WSL.createDayGraph(1, "graphLastDaysContent","Today");}, 10000); // every 10 seconds
