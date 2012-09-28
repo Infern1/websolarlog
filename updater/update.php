@@ -80,14 +80,14 @@ function doCheckout($urlsvn) {
 
 function copyToLive() {
     // We dont want to copy everything, so specify which dirs we dont want
-    $dirs = Array( "data", "database", "updater" );
+    $skipDirs = Array( "data", "database", "updater" );
     $source = "temp/export/";
     $target = "../";
 
     foreach (scandir($source) as $file) {
         // Skip files we can read and the dot(dot) folders
         if (!is_readable($source.'/'.$file) || $file == '.' || $file == '..') continue;
-        if (is_dir($source.$file) && !in_array($file, $dirs) ) {
+        if (is_dir($source.$file) && !in_array($file, $skipDirs) ) {
             // Remove the target dir before updating it
             Common::rrmdir($target . $file);
 
