@@ -53,7 +53,7 @@ class Formulas
      * @param $decimals
      */
     public static function calcAveragePower($kiloWattHourStart, $kiloWattHourStop, $timeDifference, $decimals = 1) {
-        return round((((($kiloWattHourStop-$kiloWattHourStart) * 3600) / $timeDifference) * 1000), $decimals);
+        return round((((($kiloWattHourStart-$kiloWattHourStop) * 3600) / $timeDifference) * 1000), $decimals);
     }
 
 

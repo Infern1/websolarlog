@@ -171,10 +171,7 @@ var WSL = {
 	
 	createDayGraph : function(invtnum, divId, getDay, fnFinish) {
 		var graphOptions = {
-			series : [ {
-				showMarker : false,
-				fill : true
-			} ],
+			series : [{label: '1',yaxis:'yaxis'},{label:'2',yaxis:'y2axis'}],
 			axesDefaults : {
 				tickRenderer : $.jqplot.CanvasAxisTickRenderer
 			},
@@ -190,7 +187,12 @@ var WSL = {
 					}
 				},
 				yaxis : {
-					label : 'Avg. Power(W)',
+					label : 'Cum. Power(W)',
+					min : 0,
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
+				},
+				y2axis : {
+					label : 'Avg. Power(W)2',
 					min : 0,
 					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
 				}
@@ -210,10 +212,12 @@ var WSL = {
 			dataType : 'json',
 			async: false,
 			success : function(result) {
-				var dataDay = [];
+				var dataDay1 = [];
+				var dataDay2 = [];
 				for (line in result.dayData.data) {;
 					var object = result.dayData.data[line];
-					dataDay.push([ object[0], object[1] ]);
+					dataDay1.push([ object[0], object[1] ]);
+					dataDay2.push([ object[0], object[2] ]);
 				}
 				
 				
@@ -221,7 +225,7 @@ var WSL = {
 				//$.jqplot(divId, [ dataDay ], graphOptions).destroy();
 				$('.graph' + getDay + 'Content').remove();
 				$('.graph' + getDay).append('<div id="graph' + getDay + 'Content"></div>');
-				handle = $.jqplot(divId, [ dataDay ], graphOptions);
+				handle = $.jqplot(divId, [ dataDay1,dataDay2 ], graphOptions);
 				mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
 				
 				fnFinish.call(this, handle);
