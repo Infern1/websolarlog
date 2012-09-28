@@ -189,21 +189,18 @@ var WSL = {
 				yaxis : {
 					label : 'Cum. Power(W)',
 					min : 0,
-					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
 				},
 				y2axis : {
 					label : 'Avg. Power(W)2',
 					min : 0,
-					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
 				}
 			},
-			highlighter : {
-				show : true,
-				sizeAdjust : 7.5
-			},
-			cursor : {
-				show : false
-			}
+		      highlighter: {
+		          show: true,
+		          sizeAdjust: 7.5
+		        },			
 		};
 
 		$.ajax({

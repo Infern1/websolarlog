@@ -27,5 +27,6 @@
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.cursor.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.trendline.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.pointLabels.min.js"></script>
+    <script type="text/javascript" src="js/jqplot_plugins/jqplot.highlighter.min.js"></script>
     <script language="javascript" type="text/javascript" src="js/websolarlog.js"></script>
 </head>

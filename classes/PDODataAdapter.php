@@ -423,19 +423,18 @@ class PDODataAdapter {
 
     public function DayDataBeansToDataArray($beans){
     	$i=0;
-    	$firstBean = 0;
-    	$preBean = 0;
+    	$firstBean = array();
+    	$preBean = array();
     	foreach ($beans as $bean){
     		if ($i==0){
-    			$firstBean = $bean['KWHT'];
-    			$preBean = $bean['KWHT'];
+    			$firstBean = $bean;
+    			$preBean = $bean;
     			$preBeanUTCdate = Util::getUTCdate($bean['SDTE']);
     		}
     		$UTCdate = Util::getUTCdate($bean['SDTE']);
     		$UTCtimeDiff = $UTCdate - $preBeanUTCdate;
-    		$cumPower = round($bean['KWHT']-$firstBean *1,3);//cumalative power this day
+    		$cumPower = round($bean['KWHT']-$firstBean['KWHT'] *1,3);//cumalative power this day
     		$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,$coef,2);
-    		
     		
     		$points[] = array ($UTCdate * 1000,$cumPower,$avgPower);
     		
@@ -443,6 +442,7 @@ class PDODataAdapter {
     		$preBean = $bean;
     		$i++;
     	}
+    	$KWHT = round($bean['KWHT'] - $firstBean['KWHT'],3);
     	return array($points,$KWHT);
     }
 
