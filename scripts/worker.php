@@ -55,7 +55,7 @@ function checkMaxPowerValue($inverter, $live, $dataAdapter) {
  * @return boolean
  */
 function isAlarmDetected($event) {
-    $event_text = trim($event['Event']);
+    $event_text = trim($event->event);
     $event_lines = explode("\n", $event_text);
 
     $alarmFound = false;
@@ -195,10 +195,14 @@ try {
 
         if ($isAlive) {
             // TODO :: THIS IS FOR TESTING ONLY, WE DONT WANT TOO LOSE ANY DATA!!!
-            $dumpFile = "dumpdata.csv";
-            $fh = fopen($dumpFile, 'a+');
-            fwrite($fh, $datareturn . "\n");
-            fclose($fh);
+            try {
+                $dumpFile = "dumpdata.csv";
+                $fh = fopen($dumpFile, 'a+');
+                fwrite($fh, $datareturn . "\n");
+                fclose($fh);
+            } catch (Exception $e) {
+                // ignore errors
+            }
             // /TODO
 
             // Convert datareturn to
