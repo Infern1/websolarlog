@@ -230,6 +230,7 @@ class PDODataAdapter {
 
     	$bean->INV = $invtnum;
     	$bean->SDTE = $energy->SDTE;
+    	$bean->KWH = $energy->KWH;
     	$bean->KWHT = $energy->KWHT;
 
     	$id = R::store($bean);
@@ -248,18 +249,19 @@ class PDODataAdapter {
                 )
         );
 
-        $oldKWHT = 0;
+        $oldKWH = 0;
         if (!$bean){
             $bean = R::dispense('Energy');
         } else {
-            $oldKWHT = $bean->KWHT;
+            $oldKWH = $bean->KWH;
         }
         $bean->INV = $invtnum;
         $bean->SDTE = $energy->SDTE;
+        $bean->KWH = $energy->KWH;
         $bean->KWHT = $energy->KWHT;
 
         //Only store the bean when the value
-        if ($energy->KWHT > $oldKWHT) {
+        if ($energy->KWH > $oldKWH) {
             $id = R::store($bean,$bean->id);
         }
         return $id;
@@ -629,7 +631,7 @@ class PDODataAdapter {
     	// summary live data
     	$list = array();
     	$madList = array();
-    	
+
     	$beans = R::findAndExport('Inverter');
     	foreach ($beans as $inverter){
             $oInverter = array();
@@ -664,7 +666,7 @@ class PDODataAdapter {
     		$oInverter["week"] = $KWHT['weekKWHT'];
     		$oInverter["month"] = $KWHT['monthKWHT'];
     		$madList['inverters'][] = $oInverter;
-    		
+
     		$KWHTD = $KWHTD  + $KWHT['dayKWHT'];
     		$KWHTW = $KWHTW  + $KWHT['weekKWHT'];
     		$KWHTM = $KWHTM  + $KWHT['monthKWHT'];

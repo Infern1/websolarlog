@@ -263,7 +263,8 @@ try {
                     $energy = new Energy();
                     $energy->SDTE = $first['SDTE'];
                     $energy->INV = $inverter->id;
-                    $energy->KWHT = $production;
+                    $energy->KWH = $production;
+                    $energy->KWHT = $productionEnd;
                     $dataAdapter->addEnergy($inverter->id, $energy);
                 }
 
