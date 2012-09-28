@@ -378,7 +378,7 @@ class PDODataAdapter {
     					':date'=> '%'.$date.'%'
     					)
     			);
-    	$points = $this->beansToDataArray($bean);
+    	$points = $this->DayDataBeansToDataArray($bean);
     	$lastDays = new LastDays();
     	$lastDays->points=$points[0];
     	$lastDays->KWHT=$points[1];
@@ -406,7 +406,7 @@ class PDODataAdapter {
     			array(':INV'=>$invtnum
     					)
     			);
-    	$points = $this->beansToDataArray($bean);
+    	$points = $this->DayDataBeansToDataArray($bean);
     	$lastDays = new LastDays();
     	$lastDays->points=$points[0];
     	return $lastDays;
@@ -419,11 +419,17 @@ class PDODataAdapter {
     }
 
 
-    public function beansToDataArray($beans){
+    public function DayDataBeansToDataArray($beans){
+    	$i=0;
+    	$firstBean = 0;
     	foreach ($beans as $bean){
+    		if ($i==0){
+    			$firstBean = $bean['KWHT'];
+    		}
     		$UTCdate = Util::getUTCdate($bean['SDTE']) * 1000;
-    		$KWHT = $bean['KWHT']*1;
+    		$KWHT = round($bean['KWHT']-$firstBean *1,3);
     		$points[] = array ($UTCdate,$KWHT);
+    		$i++;
     	}
     	return array($points,$KWHT);
     }
@@ -456,7 +462,6 @@ class PDODataAdapter {
         $bean->smtpServer = $config->smtpServer;
         $bean->smtpPort = $config->smtpPort;
         $bean->smtpSecurity = $config->smtpSecurity;
-        $bean->smtpUser = $config->smtpUser;
         $bean->smtpPassword = $config->smtpPassword;
 
         $bean->template = $config->template;
