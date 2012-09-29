@@ -8,6 +8,7 @@ class Worker {
         // Initialize objects
         $this->config = new Config;
         $this->adapter = new PDODataAdapter();
+        $this->config = $this->adapter->readConfig();
     }
 
     function __destruct() {
@@ -83,7 +84,7 @@ class Worker {
                     // /TODO
 
                     // Write the current live value
-                    $this->dataAdapter->writeLiveInfo($inverter->id, $live);
+                    $this->adapter->writeLiveInfo($inverter->id, $live);
 
                     // Check the Max value
                     $this->checkMaxPowerValue($inverter, $live);

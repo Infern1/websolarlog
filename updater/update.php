@@ -80,7 +80,7 @@ function doCheckout($urlsvn) {
 
 function copyToLive() {
     // We dont want to copy everything, so specify which dirs we dont want
-    $skipDirs = Array( "data", "database", "updater" );
+    $skipDirs = Array( "data", "database", "updater", "scripts" );
     $source = "temp/export/";
     $target = "../";
 
