@@ -6,9 +6,13 @@ define('checkaccess', TRUE);
 //define('AURORA', '/share/martin/aurora/aurora-1.8.0/aurora');
 
 // TODO :: Create autoloader for worker
+require_once '../admin/classes/classloader.php';
+
 $basepath = dirname(dirname(__FILE__));
+/*
 include($basepath . "/config/config_main.php");
 include($basepath . "/classes/Util.php");
+include($basepath . "/classes/Common.php");
 include($basepath . "/classes/Config.php");
 include($basepath . "/classes/Aurora.php");
 include($basepath . "/classes/DataAdapter.php");
@@ -23,6 +27,7 @@ include($basepath . "/classes/objects/Energy.php");
 include($basepath . "/classes/objects/MaxPowerToday.php");
 include($basepath . "/classes/objects/Lock.php");
 include($basepath . "/classes/converters/auroraConverter.php");
+*/
 
 function tricsv($var) {
     return !is_dir($var)&& preg_match('/.*\.csv/', $var);
@@ -175,7 +180,11 @@ try {
         $aurora = new Aurora($config->aurorapath, $inverter->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
 
         $datareturn = $aurora->getData();
-        if ($datareturn == "") {
+
+        // Convert datareturn to live object
+        $live = auroraConverter::toLive($datareturn);
+
+        if ($live == null) {
             // Offline ?
             $tstamp = date("Ymd H:i:s");
             if (Util::isSunDown($config)) {
@@ -186,7 +195,7 @@ try {
                 echo $tstamp . ": No response and the sun is probably down. Inverter is probably a sleep, waiting for 15 minutes.";
                 sleep(60 * 15);
             } else {
-                echo $tstamp . ": No response. Inverter is probably busy or down, waiting for 30 seconds";
+                echo $tstamp . ": No valid response. Inverter is probably busy or down, waiting for 30 seconds";
                 sleep(30);
             }
         } else {
@@ -204,9 +213,6 @@ try {
                 // ignore errors
             }
             // /TODO
-
-            // Convert datareturn to
-            $live = auroraConverter::toLive($datareturn);
 
             // Write the current live value
             $dataAdapter->writeLiveInfo($inverter->id, $live);

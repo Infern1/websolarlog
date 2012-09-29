@@ -9,6 +9,11 @@ class auroraConverter
      */
     public static function toLive($inputLine)
     {
+        // Check if the input line is valid
+        if ($inputLine == null || trim($inputLine) == "") {
+            return null;
+        }
+
         // Split on a serie of spaces (not one)
         $data = preg_split("/[[:space:]]+/",$inputLine);
 
