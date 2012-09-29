@@ -44,7 +44,8 @@ function parseCsvToLive($csv) {
 
     $fields = explode(";", $csv);
     $live = new Live();
-    $live->SDTE = Util::getUTCdate($fields[0]) * 1000;
+    //$live->SDTE = Util::getUTCdate($fields[0]) * 1000;
+    $live->SDTE = $fields[0];
     $live->I1V = $fields[1];
     $live->I1A = $fields[2];
     $live->I1P = $fields[3];
