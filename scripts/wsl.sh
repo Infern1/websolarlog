@@ -19,20 +19,22 @@ sleep 1
 done
 }
 
+cd $BASHDIR;
+
 case $1 in
 start)
-    if [ ! -f /var/lock/123aurora ]; then
-        touch /var/lock/123aurora
+    if [ ! -f /var/lock/wsl.lock ]; then
+        touch /var/lock/wsl.lock
         looping &
-        echo "Starting 123aurora.."
+        echo "Starting WebSolarLog.."
     else
-        echo "123aurora is already started"
+        echo "WebSolarLog is already started"
     fi
 ;;
 stop)
-    if [ -f /var/lock/123aurora ]; then
-    kill `ps -ef | grep '123aurora.sh start' | grep -v grep | awk '{ print $1 }'`
-    rm /var/lock/123aurora
+    if [ -f /var/lock/wsl.lock ]; then
+    kill `ps -ef | grep 'wsl.sh start' | grep -v grep | awk '{ print $2 }'`
+    rm /var/lock/wsl.lock
         if [ -f $WWWDIR'/data/lock' ]; then
         echo "Cleanup port lock"
         rm $WWWDIR'/data/lock'
