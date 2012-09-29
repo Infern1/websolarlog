@@ -434,7 +434,7 @@ class PDODataAdapter {
     		$UTCdate = Util::getUTCdate($bean['SDTE']);
     		$UTCtimeDiff = $UTCdate - $preBeanUTCdate;
     		$cumPower = round($bean['KWHT']-$firstBean['KWHT'] *1,3);//cumalative power this day
-    		$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,$coef,2);
+    		$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,0,2);
     		
     		$points[] = array ($UTCdate * 1000,$cumPower,$avgPower);
     		
@@ -638,12 +638,12 @@ class PDODataAdapter {
     		$liveBean =  R::findOne('Live',' INV = :INV ', array(':INV'=>$inverter['id']));
     		$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
     		$live = array(
-    				array("field"=>"SDTE", value=>date("H:i:s d M Y",Util::getUTCdate($liveBean['SDTE']))),
-    				array("field"=>"INV", value=>$liveBean['INV']),
-    				array("field"=>"GP", value=>round($liveBean['GP'],2)),
-    				array("field"=>"I1P", value=>round($liveBean['I1P'],2)),
-    				array("field"=>"I2P", value=>round($liveBean['I2P'],2)),
-    				array("field"=>"ITP", value=>$ITP)
+    				array("field"=>"SDTE", "value"=>date("H:i:s d M Y",Util::getUTCdate($liveBean['SDTE']))),
+    				array("field"=>"INV", "value"=>$liveBean['INV']),
+    				array("field"=>"GP", "value"=>round($liveBean['GP'],2)),
+    				array("field"=>"I1P", "value"=>round($liveBean['I1P'],2)),
+    				array("field"=>"I2P", "value"=>round($liveBean['I2P'],2)),
+    				array("field"=>"ITP", "value"=>$ITP)
     		);
     		$oInverter["live"] = $live;
     		// get production
