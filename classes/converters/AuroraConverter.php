@@ -1,5 +1,5 @@
 <?php
-class auroraConverter
+class AuroraConverter
 {
 
     /**

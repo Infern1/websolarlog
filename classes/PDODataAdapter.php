@@ -277,8 +277,10 @@ class PDODataAdapter {
 
     	$bean->INV = $invtnum;
     	$bean->SDTE = $event->SDTE;
+    	$bean->time = $event->time;
     	$bean->Event = $event->event;
     	$bean->Type = $event->type;
+    	$bean->alarmSend = $event->alarmSend;
     	$id = R::store($bean);
 
     }
@@ -435,9 +437,9 @@ class PDODataAdapter {
     		$UTCtimeDiff = $UTCdate - $preBeanUTCdate;
     		$cumPower = round($bean['KWHT']-$firstBean['KWHT'] *1,3);//cumalative power this day
     		$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,0,2);
-    		
+
     		$points[] = array ($UTCdate * 1000,$cumPower,$avgPower);
-    		
+
     		$preBeanUTCdate = Util::getUTCdate($bean['SDTE']);
     		$preBean = $bean;
     		$i++;
