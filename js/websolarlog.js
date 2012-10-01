@@ -135,9 +135,9 @@ var WSL = {
 					        // see what the tabs are "doing"
 					        //$("#logger").html("Graph to Create: "+graphToCreate +", graph to Destroy:"+graphToDestroy);
 					        console.log(currentGraphHandler);
-					       // if (currentGraphHandler){
-					       // 	currentGraphHandler.destroy();
-					        //}
+					        if (currentGraphHandler){
+					        	currentGraphHandler.destroy();
+					        }
 				            WSL.createDayGraph(1, data.tabs[ui.index]["graphName"],function(handler) {currentGraphHandler = handler;});
 					    }
 					});
