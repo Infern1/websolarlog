@@ -6,8 +6,10 @@
 		{{/data.sliders}}
 	</ul>
 	{{#data.sliders}}
-		<div id="tabs-{{this.position}}" style="height:350px;">
-        	<div id="graph{{this.graphName}}Content" style="height:300px; width:890px;" ></div>
+		<div id="tabs-{{this.position}}" style="height:350px;">graph{{this.graphName}}
+			<div id="graph{{this.graphName}}">
+        		<div id="graph{{this.graphName}}Content" style="height:300px; width:890px;" ></div>
+        	</div>
        	</div>
 		{{/data.sliders}}
 </div>

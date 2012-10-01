@@ -1,5 +1,7 @@
 // calculate the JS parse time //
-$.ajaxSetup({ cache: false });
+$.ajaxSetup({
+	cache : false
+});
 beforeLoad = (new Date()).getTime();
 window.onload = pageLoadingTime;
 function pageLoadingTime() {
@@ -12,6 +14,8 @@ var dataDay = [];
 var dataYesterday = [];
 var dataLastDays = [];
 var alreadyFetched = [];
+
+var currentGraphHandler;
 
 // WSL class
 var WSL = {
@@ -104,10 +108,10 @@ var WSL = {
 			});
 		});
 	},
-	
-	init_sliders : function(page ,divId,success) {
+
+	init_sliders : function(page, divId, success) {
 		// initialize languages selector on the given div
-		WSL.api.getSliders(page ,function(data) {
+		WSL.api.getSliders(page, function(data) {
 			$.ajax({
 				url : 'js/templates/slider.hb',
 				success : function(source) {
@@ -116,48 +120,57 @@ var WSL = {
 						'data' : data
 					});
 					$(html).prependTo(divId);
-					
-					for (var key in data.sliders) {	
-						$("a#tab-"+data.sliders[key].position).bind('click',function() { // bind click event to link
+					$('#tabs').bind('tabsselect', function(event, ui) {
+						var tabNumber = $("#tabs").tabs('option','selected') + 1;
+						var graphName = $("#tab-" + tabNumber).prop('name').split('-');
+						var graphToDestroy = graphName[1];
 
-							var tabNumber = $( "#tabs" ).tabs('option', 'selected')+1;
-							var graphName = $("#tab-"+tabNumber).prop('name').split('-');
-							var graphToDestroy = graphName[1];
+						var tabNumber = ui.index+1;
+						var tabId = $("#tab-" + tabNumber).prop('name');						
+						var tabName = tabId.split('-');
+						var graphToCreate = tabName[1];
 
-							var tabId = this.id.split('-');
-							var tabName = $("#tab-"+tabId[1]).prop('name').split('-');
-							graphToCreate = tabName[1];
-
-							// see what the tabs are "doing"
-							$("#logger").html("Graph to Create: "+ graphToCreate +", graph to Destroy: "+graphToDestroy);
-							
-							WSL.createDayGraph(1,graphToCreate);
-						});
-					}
+						// see what the tabs are "doing"
+						$("#logger").html("Graph to Create: "+graphToCreate +", graph to Destroy:"+graphToDestroy);
+						
+						if (currentGraphHandler){
+							currentGraphHandler.destroy();
+						}
+						
+						WSL.createDayGraph(1, graphToCreate,function(handler) {currentGraphHandler = handler;});
+					});
 					success.call();
 				},
 				dataType : 'text',
 			});
 		});
 		return true;
-	},	
-	
-	init_PageIndexValues : function(divId,SideBar) {
+	},
+
+	init_PageIndexValues : function(divId, SideBar) {
 		// initialize languages selector on the given div
 		WSL.api.getPageIndexValues(function(data) {
 			var GP = 3600 / 10;
-			   var gaugeGPOptions = {
-			            title: 'AC Power', grid: { background: '#FFF' },
-			            seriesDefaults: {
-			                renderer: $.jqplot.MeterGaugeRenderer,
-			                rendererOptions: {
-			                    min: 0, max: GP*10, padding: 0,
-			                    intervals:[GP, GP * 2, GP * 3, GP *4, GP * 5, GP * 6, GP * 7, GP * 8, GP * 9, GP * 10],
-			                    intervalColors:['#F9FFFB','#EAFFEF', '#CAFFD8', '#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95', '#4BFE78', '#0AFE47', '#01F33E']
-			                }
-			            }
-			        };
-			
+			var gaugeGPOptions = {
+				title : 'AC Power',
+				grid : {
+					background : '#FFF'
+				},
+				seriesDefaults : {
+					renderer : $.jqplot.MeterGaugeRenderer,
+					rendererOptions : {
+						min : 0,
+						max : GP * 10,
+						padding : 0,
+						intervals : [ GP, GP * 2, GP * 3, GP * 4, GP * 5,
+								GP * 6, GP * 7, GP * 8, GP * 9, GP * 10 ],
+						intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
+								'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
+								'#4BFE78', '#0AFE47', '#01F33E' ]
+					}
+				}
+			};
+
 			$.ajax({
 				url : 'js/templates/liveValues.hb',
 				success : function(source) {
@@ -177,26 +190,27 @@ var WSL = {
 						'data' : data
 					});
 					$(SideBar).html(html);
-					var gaugeGP = $.jqplot('gaugeGP',[[0.1]], gaugeGPOptions);
-					gaugeGP.series[0].data = [['W', data.IndexValues.inverters[0].live[2].value]];
-	                gaugeGP.series[0].label = Math.round(data.IndexValues.inverters[0].live[2].value) + ' W';
-	                document.title = '('+data.IndexValues.inverters[0].live[2].value+' W) WebSolarLog';
-	                gaugeGP.replot();
+					var gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ],gaugeGPOptions);
+					gaugeGP.series[0].data = [ [ 'W',data.IndexValues.inverters[0].live[2].value ] ];
+					gaugeGP.series[0].label = Math.round(data.IndexValues.inverters[0].live[2].value)+ ' W';
+					document.title = '('+ data.IndexValues.inverters[0].live[2].value+ ' W) WebSolarLog';
+					gaugeGP.replot();
 				},
 				dataType : 'text',
 			});
 		});
 	},
-	
-	createDayGraph : function(invtnum, getDay) {
+
+	createDayGraph : function(invtnum, getDay, fnFinish) {
 		var graphOptions = {
-			series : [{label: 'Cum. Power',yaxis:'yaxis'},{label:'Avg. Power',yaxis:'y2axis'}],
-			axesDefaults : {
+				series : [{label: 'Cum. Power',yaxis:'yaxis'},{label:'Avg. Power',yaxis:'y2axis'}],
+				axesDefaults : {
 				tickRenderer : $.jqplot.CanvasAxisTickRenderer
-			},
-			legend : {
-				show : true
-			},
+				},
+				legend : {
+				show : true,
+				location:"nw"
+				}, 
 			axes : {
 				xaxis : {
 					label : '',
@@ -209,27 +223,24 @@ var WSL = {
 					}
 				},
 				yaxis : {
-					label : 'Cum. Power(W)',
+					label : 'Avg. Power(W)',
 					min : 0,
-					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-				},
-				y2axis : {
-					label : 'Avg. Power(W)2',
-					min : 0,
-					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
 				}
 			},
-		      highlighter: {
-		          show: true,
-		          sizeAdjust: 7.5
-		        },			
+			highlighter : {
+				show : true,
+				sizeAdjust : 7.5
+			},
+			cursor : {
+				show : false
+			}
 		};
-
 		$.ajax({
-			url : "server.php?method=get" + getDay + "Values&invtnum=" + invtnum + "&r=" + Math.floor(Math.random() * 111111),
+			url : "server.php?method=get" + getDay + "Values&invtnum=" + invtnum + "&r="+ Math.floor(Math.random() * 111111),
 			method : 'GET',
 			dataType : 'json',
-			async: false,
+			async : false,
 			success : function(result) {
 				var dataDay1 = [];
 				var dataDay2 = [];
@@ -237,17 +248,15 @@ var WSL = {
 					var object = result.dayData.data[line];
 					dataDay1.push([ object[0], object[1] ]);
 					dataDay2.push([ object[0], object[2] ]);
-				}
-				
-				
+				} 
 				graphOptions.axes.xaxis.min = result.dayData.data[0][0];
 				//$.jqplot(divId, [ dataDay ], graphOptions).destroy();
-				//$('.graph' + getDay + 'Content').remove();
-				//$('.graph' + getDay).append('<div id="graph' + getDay + 'Content"></div>');
-				handle = $.jqplot('graph' + getDay + 'Content', [ dataDay1,dataDay2 ], graphOptions);
-				//mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
 				
-				//fnFinish.call(this, handle);
+				$('.graph' + getDay + 'Content').remove();
+				$('.graph' + getDay).append('<div id="graph' + getDay + 'Content"></div>');
+				handle = $.jqplot('graph' + getDay + 'Content', [ dataDay1,dataDay2 ], graphOptions);
+				mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
+				fnFinish.call(this, handle); 
 			}
 		});
 	},
@@ -311,29 +320,38 @@ var WSL = {
 			}
 		};
 
-		$.ajax({
-			url : "server.php?method=getLastDaysValues&invtnum="+ invtnum + "&r=" + Math.floor(Math.random() * 111111),
-			method : 'GET',
-			dataType : 'json',
-			async : false,
-			success : function(result) {
-				var lastDaysData = [];
-				for (line in result.lastDaysData.data) {
-					var object = result.lastDaysData.data[line];
-					lastDaysData.push([ object[0], object[1] ]);
-				}
-				
-				graphLastDaysOptions.axes.xaxis.min = result.lastDaysData.data[0][0];
-				$.jqplot(divId, [ lastDaysData ], graphLastDaysOptions).destroy();
-				// alert('destroy');
-				//$('.graphLastDaysContent').remove();
-				//$('.graphLastDays').append('<div id="graphLastDaysContent"></div>');
-					
-				$.jqplot(divId, [ lastDaysData ], graphLastDaysOptions);
-				//mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
-			}
-		});
-	
+		$
+				.ajax({
+					url : "server.php?method=getLastDaysValues&invtnum="
+							+ invtnum + "&r="
+							+ Math.floor(Math.random() * 111111),
+					method : 'GET',
+					dataType : 'json',
+					async : false,
+					success : function(result) {
+						var lastDaysData = [];
+						for (line in result.lastDaysData.data) {
+							var object = result.lastDaysData.data[line];
+							lastDaysData.push([ object[0], object[1] ]);
+						}
+
+						graphLastDaysOptions.axes.xaxis.min = result.lastDaysData.data[0][0];
+						$.jqplot(divId, [ lastDaysData ], graphLastDaysOptions)
+								.destroy();
+						// alert('destroy');
+						// $('.graphLastDaysContent').remove();
+						// $('.graphLastDays').append('<div
+						// id="graphLastDaysContent"></div>');
+
+						$.jqplot(divId, [ lastDaysData ], graphLastDaysOptions);
+						// mytitle = $('<div class="my-jqplot-title"
+						// style="position:absolute;text-align:center;padding-top:
+						// 1px;width:100%">Total energy ' + getDay.toLowerCase()
+						// + ': ' + result.dayData.valueKWHT + '
+						// kWh</div>').insertAfter('#graph' + getDay + '
+						// .jqplot-grid-canvas');
+					}
+				});
 
 		// mytitle = $('<div class="my-jqplot-title"
 		// style="position:absolute;text-align:center;padding-top:
