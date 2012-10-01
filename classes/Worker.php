@@ -265,6 +265,7 @@ class Worker {
         $OLock = new Lock();
         $OLock->SDTE = date('Ymd-H:m:s');
         $OLock->type = 'Lock';
+       	$OLock->time = time();
         $this->adapter->writeLock($OLock);
         Util::createLockFile(); // We need this for the bash script!
     }
