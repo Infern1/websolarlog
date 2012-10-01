@@ -129,17 +129,17 @@ if($yesterdayCount==0){
 
 
 switch ($method) {
-	case 'getSlider':
+	case 'getTabs':
 		// TODO :: Move to json file or something???
-		$slider = array();
+		$tabs = array();
 
-		$slider[] = array( "graphName" => "Today","position" => "1","active" => ($page == "index") ? 'true' : 'false');
-		$slider[] = array( "graphName" => "Yesterday","position" => "2","active" => ($page == "yesterday") ? 'true' : 'false');
-		$slider[] = array( "graphName" => "Month","position" => "3","active" => ($page == "month") ? 'true' : 'false');
-		$slider[] = array( "graphName" => "Year","position" => "4","active" => ($page == "year") ? 'true' : 'false');
-		$slidePosition = Common::searchMultiArray($slider, 'active', 'true');
-		$data['sliderPosition'] = $slidePosition;
-		$data['sliders'] = $slider;
+		$tabs[] = array( "graphName" => "Today","position" => "1","active" => ($page == "index") ? 'true' : 'false');
+		$tabs[] = array( "graphName" => "Yesterday","position" => "2","active" => ($page == "yesterday") ? 'true' : 'false');
+		$tabs[] = array( "graphName" => "Month","position" => "3","active" => ($page == "month") ? 'true' : 'false');
+		$tabs[] = array( "graphName" => "Year","position" => "4","active" => ($page == "year") ? 'true' : 'false');
+		$slidePosition = Common::searchMultiArray($tabs, 'active', 'true');
+		$data['tabsPosition'] = $slidePosition;
+		$data['tabs'] = $tabs;
 
 		break;
 	case 'getLanguages':

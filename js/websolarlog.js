@@ -109,25 +109,25 @@ var WSL = {
 		});
 	},
 
-	init_sliders : function(page, divId, success) {
+	init_tabs : function(page, divId, success) {
 		// initialize languages selector on the given div
-		WSL.api.getSliders(page, function(data) {
+		WSL.api.getTabs(page, function(data) {
 			$.ajax({
-				url : 'js/templates/slider.hb',
+				url : 'js/templates/tabs.hb',
 				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
 						'data' : data
 					});
 					$(html).prependTo(divId);
+					
 					$('#tabs').bind('tabsselect', function(event, ui) {
 						var tabNumber = $("#tabs").tabs('option','selected') + 1;
 						var graphName = $("#tab-" + tabNumber).prop('name').split('-');
 						var graphToDestroy = graphName[1];
 
 						var tabNumber = ui.index+1;
-						var tabId = $("#tab-" + tabNumber).prop('name');						
-						var tabName = tabId.split('-');
+						var tabName = $("#tab-" + tabNumber).prop('name').tabId.split('-');
 						var graphToCreate = tabName[1];
 
 						// see what the tabs are "doing"
@@ -136,9 +136,9 @@ var WSL = {
 						if (currentGraphHandler){
 							currentGraphHandler.destroy();
 						}
-						
-						WSL.createDayGraph(1, graphToCreate,function(handler) {currentGraphHandler = handler;});
+						WSL.createDayGraph(1, graphToCreate,function(handler) {currentGraphHandler = handler;alert('magic');});
 					});
+					
 					success.call();
 				},
 				dataType : 'text',
@@ -368,9 +368,9 @@ WSL.api.programdayfeed = function(invtnum, success) {
 	}, success);
 };
 
-WSL.api.getSliders = function(page, success) {
+WSL.api.getTabs = function(page, success) {
 	$.getJSON("server.php", {
-		method : 'getSlider',
+		method : 'getTabs',
 		'page' : page,
 	}, success);
 };

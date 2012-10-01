@@ -1,17 +1,17 @@
 <!-- Slider -->
 <div id="tabs" class="tabs-bottom" style="height:350px">
 	<ul>
-		{{#data.sliders}}
+		{{#data.tabs}}
 		<li><a href="#tabs-{{this.position}}" id="tab-{{this.position}}" name="tab-{{this.graphName}}">{{this.graphName}}</a></li>
-		{{/data.sliders}}
+		{{/data.tabs}}
 	</ul>
-	{{#data.sliders}}
+	{{#data.tabs}}
 		<div id="tabs-{{this.position}}" style="height:350px;">graph{{this.graphName}}
 			<div id="graph{{this.graphName}}">
-        		<div id="graph{{this.graphName}}Content" style="height:300px; width:890px;" ></div>
+        		<div id="graph{{this.graphName}}Content" style="height:285px; width:890px;" ></div>
         	</div>
        	</div>
-		{{/data.sliders}}
+		{{/data.tabs}}
 </div>
 <div id="logger"></div>
 <!-- END Slider -->
