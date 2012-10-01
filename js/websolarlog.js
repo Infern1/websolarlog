@@ -16,6 +16,7 @@ var dataLastDays = [];
 var alreadyFetched = [];
 
 var currentGraphHandler;
+var todayTimerHandler;
 
 // WSL class
 var WSL = {
@@ -139,7 +140,20 @@ var WSL = {
 					        if (currentGraphHandler){
 					        	currentGraphHandler.destroy();
 					        }
+					        if (todayTimerHandler){
+					            window.clearInterval(todayTimerHandler);
+					        }
 				            WSL.createDayGraph(1, data.tabs[ui.index]["graphName"],function(handler) {currentGraphHandler = handler;});
+				            
+				            // Refresh only the Today tab
+				            if (data.tabs[ui.index]["graphName"] == "Today") {
+				                todayTimerHandler = window.setInterval(function(){
+				                    if (currentGraphHandler){
+				                        currentGraphHandler.destroy();
+				                    }
+				                    WSL.createDayGraph(1, "Today", function(handler) {currentGraphHandler = handler;});				                    
+				                }, 10000);
+				            }
 					    }
 					});
 					
