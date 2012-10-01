@@ -2,7 +2,7 @@
 <div id="tabs" class="tabs-bottom" style="height:350px">
 	<ul>
 		{{#data.tabs}}
-		<li><a href="#tabs-{{this.position}}" id="tab-{{this.position}}" name="tab-{{this.graphName}}">{{this.graphName}}</a></li>
+		<li class="ui-corner-bottom"><a href="#tabs-{{this.position}}" id="tab-{{this.position}}" name="tab-{{this.graphName}}">{{this.graphName}}</a></li>
 		{{/data.tabs}}
 	</ul>
 	{{#data.tabs}}
@@ -11,7 +11,7 @@
         		<div id="graph{{this.graphName}}Content" style="height:285px; width:890px;" ></div>
         	</div>
        	</div>
-		{{/data.tabs}}
+	{{/data.tabs}}
 </div>
 <div id="logger"></div>
 <!-- END Slider -->

@@ -119,26 +119,32 @@ var WSL = {
 					var html = template({
 						'data' : data
 					});
-					$(html).prependTo(divId);
-					$('#tabs').tabs();
-					$('#tabs').bind('tabsselect', function(event, ui) {
-						
-						var tabNumber = $("#tabs").tabs('option','selected') + 1;
-						var graphName = $("#tab-" + tabNumber).prop('name').split('-');
-						var graphToDestroy = graphName[1];
-
-						var tabNumber = ui.index+1;
-						var tabName = $("#tab-" + tabNumber).prop('name').split('-');
-						var graphToCreate = tabName[1];
-
-						// see what the tabs are "doing"
-						$("#logger").html("Graph to Create: "+graphToCreate +", graph to Destroy:"+graphToDestroy);
-						
-						if (currentGraphHandler){
-							currentGraphHandler.destroy();
-						}
-						WSL.createDayGraph(1, graphToCreate,function(handler) {currentGraphHandler = handler;});
+					$(divId).html(html);
+					$('#tabs').tabs({
+					    show: function(event, ui) {
+					        //var tabNumber = $("#tabs").tabs('option','selected');
+					        console.log(ui.index);
+					        console.log(data.tabs[ui.index]["graphName"]);
+					        //var graphName = $("#tab-" + tabNumber).prop('name').split('-');
+					        //var graphToDestroy = graphName[1];
+					        
+					        //var tabNumber = ui.index+1;
+					        //var tabName = $("#tab-" + tabNumber).prop('name').split('-');
+					        //var graphToCreate = tabName[1];
+					        
+					        // see what the tabs are "doing"
+					        //$("#logger").html("Graph to Create: "+graphToCreate +", graph to Destroy:"+graphToDestroy);
+					        console.log(currentGraphHandler);
+					       // if (currentGraphHandler){
+					       // 	currentGraphHandler.destroy();
+					        //}
+				            WSL.createDayGraph(1, data.tabs[ui.index]["graphName"],function(handler) {currentGraphHandler = handler;});
+					    }
 					});
+					
+					
+					
+						
 					
 					success.call();
 				},
@@ -253,8 +259,8 @@ var WSL = {
 				graphOptions.axes.xaxis.min = result.dayData.data[0][0];
 				//$.jqplot(divId, [ dataDay ], graphOptions).destroy();
 				
-				$('.graph' + getDay + 'Content').remove();
-				$('.graph' + getDay).append('<div id="graph' + getDay + 'Content"></div>');
+				//$('.graph' + getDay + 'Content').remove();
+				//$('.graph' + getDay).append('<div id="graph' + getDay + 'Content"></div>');
 				handle = $.jqplot('graph' + getDay + 'Content', [ dataDay1,dataDay2 ], graphOptions);
 				mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
 				fnFinish.call(this, handle); 
