@@ -133,6 +133,7 @@ class Worker {
                             // Set the new values and save it
                             $energy = new Energy();
                             $energy->SDTE = $first['SDTE'];
+                            $energy->time = time();
                             $energy->INV = $inverter->id;
                             $energy->KWH = $production;
                             $energy->KWHT = $productionEnd;
