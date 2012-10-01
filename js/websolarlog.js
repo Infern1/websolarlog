@@ -120,14 +120,15 @@ var WSL = {
 						'data' : data
 					});
 					$(html).prependTo(divId);
-					
+					$('#tabs').tabs();
 					$('#tabs').bind('tabsselect', function(event, ui) {
+						
 						var tabNumber = $("#tabs").tabs('option','selected') + 1;
 						var graphName = $("#tab-" + tabNumber).prop('name').split('-');
 						var graphToDestroy = graphName[1];
 
 						var tabNumber = ui.index+1;
-						var tabName = $("#tab-" + tabNumber).prop('name').tabId.split('-');
+						var tabName = $("#tab-" + tabNumber).prop('name').split('-');
 						var graphToCreate = tabName[1];
 
 						// see what the tabs are "doing"
@@ -136,7 +137,7 @@ var WSL = {
 						if (currentGraphHandler){
 							currentGraphHandler.destroy();
 						}
-						WSL.createDayGraph(1, graphToCreate,function(handler) {currentGraphHandler = handler;alert('magic');});
+						WSL.createDayGraph(1, graphToCreate,function(handler) {currentGraphHandler = handler;});
 					});
 					
 					success.call();
