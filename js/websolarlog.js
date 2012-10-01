@@ -190,9 +190,12 @@ var WSL = {
 	
 	createDayGraph : function(invtnum, getDay) {
 		var graphOptions = {
-			series : [{label: '1',yaxis:'yaxis'},{label:'2',yaxis:'y2axis'}],
+			series : [{label: 'Cum. Power',yaxis:'yaxis'},{label:'Avg. Power',yaxis:'y2axis'}],
 			axesDefaults : {
 				tickRenderer : $.jqplot.CanvasAxisTickRenderer
+			},
+			legend : {
+				show : true
 			},
 			axes : {
 				xaxis : {
