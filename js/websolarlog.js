@@ -119,7 +119,8 @@ var WSL = {
 					var html = template({
 						'data' : data
 					});
-					$(divId).html(html);
+					$(html).prependTo(divId);
+					//$(divId).before(html);
 					$('#tabs').tabs({
 					    show: function(event, ui) {
 					        //var tabNumber = $("#tabs").tabs('option','selected');
