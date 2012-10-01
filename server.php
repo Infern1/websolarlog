@@ -292,7 +292,7 @@ switch ($method) {
 		include("$config_invt");
 		// get the date of today.
 		$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-
+		
 		$lines = $dataAdapter->readDailyData($date,$invtnum);
 		$dayData = new DayDataResult();
 		$dayData->data = $lines->points;

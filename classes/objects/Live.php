@@ -14,6 +14,7 @@ class Live {
     public $GP;
 
     public $SDTE;
+    public $time;
     public $FRQ;
     public $EFF;
     public $INVT;

@@ -1,20 +1,15 @@
 <!-- Slider -->
-<div id="slider">
+<div id="tabs" class="tabs-bottom" style="height:350px">
 	<ul>
 		{{#data.sliders}}
-		<li>
-			<div id="graph{{this.graphName}}">
-        		<div id="graph{{this.graphName}}Content" style="height: 250px;"></div>
-        	</div>
-		</li>
+		<li><a href="#tabs-{{this.position}}" id="tab-{{this.position}}" name="tab-{{this.graphName}}">{{this.graphName}}</a></li>
 		{{/data.sliders}}
 	</ul>
-	<div id="slider-nav">
-		<ul>
-		{{#data.sliders}}
-		<li><a title="{{this.graphName}}" href="#">{{this.graphName}}</a></li>
+	{{#data.sliders}}
+		<div id="tabs-{{this.position}}" style="height:350px;">
+        	<div id="graph{{this.graphName}}Content" style="height:300px; width:890px;" ></div>
+       	</div>
 		{{/data.sliders}}
-		</ul>
-	</div>
 </div>
+<div id="logger"></div>
 <!-- END Slider -->

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
 <head>
-	<title>CSS Free Templates with jQuery Slider</title>
+	<title>WebSolarLog</title>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 	
 	<link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection">
@@ -11,12 +11,15 @@
 	<link rel="shortcut icon" href="template/green/css/images/favicon.ico" />
 	<link rel="stylesheet" href="template/green/css/style.css" type="text/css" media="all" />
 	<link rel="stylesheet" href="css/jquery.jqplot.min.css" type="text/css" />
+	<link rel="stylesheet" href="js/jqueryuicss/jquery-ui-1.8.24.custom.css" type="text/css" />
 	<script src="template/green/js/jquery-1.7.min.js" type="text/javascript"></script>
+	
 	<script src="template/green/js/jquery.jcarousel.js" type="text/javascript"></script>
 	<script src="template/green/js/DD_belatedPNG-min.js" type="text/javascript"></script>
 	<script src="template/green/js/functions.js" type="text/javascript"></script>
 	<script type="text/javascript" src="js/handlebars.js"></script>
 	<script type="text/javascript" src="js/helpers.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.24.custom.min.js"></script>
 	<script type="text/javascript" src="js/jquery.jqplot.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.json2.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.canvasTextRenderer.min.js"></script>
@@ -29,4 +32,13 @@
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.pointLabels.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.highlighter.min.js"></script>
     <script language="javascript" type="text/javascript" src="js/websolarlog.js"></script>
+    			<style>
+			#tabs { height: 200px; } 
+			.tabs-bottom { position: relative; } 
+			.tabs-bottom .ui-tabs-panel { height: 140px; overflow: auto; } 
+			.tabs-bottom .ui-tabs-nav { position: absolute !important; left: 0; bottom: 0; right:0; padding: 0 0.2em 0.2em 0; } 
+			.tabs-bottom .ui-tabs-nav li { margin-top: -2px !important; margin-bottom: 1px !important; border-top: none; border-bottom-width: 1px; }
+			.ui-tabs-selected { margin-top: -3px !important; }
+			</style>
+    
 </head>

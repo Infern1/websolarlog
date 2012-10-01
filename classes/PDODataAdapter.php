@@ -24,6 +24,7 @@ class PDODataAdapter {
         }
 
         $bean->SDTE = date("Ymd-H:i:s");
+        $bean->time = time();
         $bean->INV = $invtnum;
         $bean->I1V = $live->I1V;
         $bean->I1A = $live->I1A;
@@ -76,6 +77,7 @@ class PDODataAdapter {
         $live->EFF = $bean->EFF;
         $live->INVT = $bean->INVT;
 
+        $live->time = $bean->time;
         $live->BOOT = $bean->BOOT;
         $live->KWHT = $bean->KWHT;
 
@@ -112,6 +114,7 @@ class PDODataAdapter {
     	}
     	$bean->INV = $invtnum;
     	$bean->SDTE = $mpt->SDTE;
+    	$bean->time = $mpt->time;
     	$bean->GP = $mpt->GP;
 
     	//Store the bean
@@ -158,6 +161,7 @@ class PDODataAdapter {
     	$bean = R::dispense('History');
 
     	$bean->SDTE = $live->SDTE;
+    	$bean->time = $live->time;
     	$bean->INV = $invtnum;
     	$bean->I1V = $live->I1V;
     	$bean->I1A = $live->I1A;
@@ -230,6 +234,7 @@ class PDODataAdapter {
 
     	$bean->INV = $invtnum;
     	$bean->SDTE = $energy->SDTE;
+    	$bean->time = $energy->time;
     	$bean->KWH = $energy->KWH;
     	$bean->KWHT = $energy->KWHT;
 
@@ -257,6 +262,7 @@ class PDODataAdapter {
         }
         $bean->INV = $invtnum;
         $bean->SDTE = $energy->SDTE;
+        $bean->time = $energy->time;
         $bean->KWH = $energy->KWH;
         $bean->KWHT = $energy->KWHT;
 
@@ -355,6 +361,7 @@ class PDODataAdapter {
     	$bean = R::dispense('Lock');
 
     	$bean->SDTE = $lock->SDTE;
+    	$bean->time = $lock->time;
     	$bean->Type = $lock->type;
 
     	//Store the bean
@@ -382,6 +389,7 @@ class PDODataAdapter {
     					':date'=> '%'.$date.'%'
     					)
     			);
+
     	$points = $this->DayDataBeansToDataArray($bean);
     	$lastDays = new LastDays();
     	$lastDays->points=$points[0];
@@ -442,9 +450,9 @@ class PDODataAdapter {
 
     		$preBeanUTCdate = Util::getUTCdate($bean['SDTE']);
     		$preBean = $bean;
+    		$KWHT = round($bean['KWHT'] - $firstBean['KWHT'],3);
     		$i++;
     	}
-    	$KWHT = round($bean['KWHT'] - $firstBean['KWHT'],3);
     	return array($points,$KWHT);
     }
 

@@ -116,7 +116,25 @@ var WSL = {
 						'data' : data
 					});
 					$(html).prependTo(divId);
-					success.call(); 
+					
+					for (var key in data.sliders) {	
+						$("a#tab-"+data.sliders[key].position).bind('click',function() { // bind click event to link
+
+							var tabNumber = $( "#tabs" ).tabs('option', 'selected')+1;
+							var graphName = $("#tab-"+tabNumber).prop('name').split('-');
+							var graphToDestroy = graphName[1];
+
+							var tabId = this.id.split('-');
+							var tabName = $("#tab-"+tabId[1]).prop('name').split('-');
+							graphToCreate = tabName[1];
+
+							// see what the tabs are "doing"
+							$("#logger").html("Graph to Create: "+ graphToCreate +", graph to Destroy: "+graphToDestroy);
+							
+							WSL.createDayGraph(1,graphToCreate);
+						});
+					}
+					success.call();
 				},
 				dataType : 'text',
 			});
@@ -162,6 +180,7 @@ var WSL = {
 					var gaugeGP = $.jqplot('gaugeGP',[[0.1]], gaugeGPOptions);
 					gaugeGP.series[0].data = [['W', data.IndexValues.inverters[0].live[2].value]];
 	                gaugeGP.series[0].label = Math.round(data.IndexValues.inverters[0].live[2].value) + ' W';
+	                document.title = '('+data.IndexValues.inverters[0].live[2].value+' W) WebSolarLog';
 	                gaugeGP.replot();
 				},
 				dataType : 'text',
@@ -169,7 +188,7 @@ var WSL = {
 		});
 	},
 	
-	createDayGraph : function(invtnum, divId, getDay, fnFinish) {
+	createDayGraph : function(invtnum, getDay) {
 		var graphOptions = {
 			series : [{label: '1',yaxis:'yaxis'},{label:'2',yaxis:'y2axis'}],
 			axesDefaults : {
@@ -220,12 +239,12 @@ var WSL = {
 				
 				graphOptions.axes.xaxis.min = result.dayData.data[0][0];
 				//$.jqplot(divId, [ dataDay ], graphOptions).destroy();
-				$('.graph' + getDay + 'Content').remove();
-				$('.graph' + getDay).append('<div id="graph' + getDay + 'Content"></div>');
-				handle = $.jqplot(divId, [ dataDay1,dataDay2 ], graphOptions);
-				mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
+				//$('.graph' + getDay + 'Content').remove();
+				//$('.graph' + getDay).append('<div id="graph' + getDay + 'Content"></div>');
+				handle = $.jqplot('graph' + getDay + 'Content', [ dataDay1,dataDay2 ], graphOptions);
+				//mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
 				
-				fnFinish.call(this, handle);
+				//fnFinish.call(this, handle);
 			}
 		});
 	},
@@ -296,7 +315,7 @@ var WSL = {
 			async : false,
 			success : function(result) {
 				var lastDaysData = [];
-				for (line in result.lastDaysData.data) {;
+				for (line in result.lastDaysData.data) {
 					var object = result.lastDaysData.data[line];
 					lastDaysData.push([ object[0], object[1] ]);
 				}

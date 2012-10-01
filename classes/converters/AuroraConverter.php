@@ -26,7 +26,7 @@ class AuroraConverter
 
         if (!empty ($data[0])) {
             $live->SDTE = $data[0];
-            $live->logtime = strtotime($data[0]);
+            $live->time = strtotime(substr($data[0], 0, 4)."-".substr($data[0], 4, 2)."-".substr($data[0], 6, 2)." ".substr($data[0], 9, 2).":".substr($data[0], 12, 2).":".substr($data[0], 15, 2));
         }
         if (!empty ($data[1])) {
             $live->I1V = $data[1];
