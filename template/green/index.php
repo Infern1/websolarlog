@@ -44,43 +44,6 @@
 				</div>
 				<!-- END Sidebar -->
 				<div class="cl"></div>
-				<div class="columns">
-					<div class="col posts">
-						<h3>Latest Post</h3>
-						<div class="post">
-							<a class="heading" title="Praesent" href="#">Praesent Tristique Rhoncus</a>
-							<p class="date">April 5, 2011</p>
-							<p>Sed dignissim, felis at pharetra molestie, tellus nisi commodo lacus, at laoreet dui nunc eu nunc. In consequat varius adipiscing.</p>
-							<span class="read-more"><a title="Read More" href="#">&raquo;&nbsp;More</a></span>
-						</div>
-						<span class="sep"></span>
-						<div class="post">
-							<a class="heading" title="Morbi" href="#">Morbi mauris leo</a>
-							<p class="date">April 2, 2011</p>
-							<p>Sed dignissim, felis at pharetra molestie, tellus nisi commodo lacus, at laoreet dui nunc eu nunc. In consequat varius adipiscing.</p>
-							<span class="read-more"><a title="Read More" href="#">&raquo;&nbsp;More</a></span>
-						</div>
-					</div>
-					<div class="col projects">
-						<h3>Latest Projects</h3>
-						<div class="post">
-							<img src="" alt="Template image" />
-							<a class="heading" title="Fusce" href="#">Fusce laoreet mattis nisi </a>
-							<p>Quis condimentum orci feugiat et. Quisque pretium purus quis tortor elementum molestie.</p>
-							<div class="cl"></div>
-							<span class="read-more"><a title="Read More" href="#">&raquo;&nbsp;More</a></span>
-						</div>
-						<span class="sep"></span>
-						<div class="post">
-							<img src="" alt="Template image" />
-							<a class="heading" title="Vivamus" href="#">Vivamus ante dolor</a>
-							<p>Aenean interdum, ante quis lacinia viverra, sapien mauris posuere dolor.</p>
-							<div class="cl"></div>
-							<span class="read-more"><a title="Read More" href="#">&raquo;&nbsp;More</a></span>
-						</div>
-					</div>
-					<div class="cl"></div>
-				</div>
 			</div>
 			<div id="main-bottom"></div>
 		</div>

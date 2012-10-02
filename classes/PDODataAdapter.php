@@ -652,7 +652,109 @@ class PDODataAdapter {
 
         return $list;
     }
+    
+    
+    /*
+     * Get energy values for a period of time...
+     */
+    public function readPeriodValues($invtnum, $type, $count, $startDate){
+    	
+    	// if we want to get a day,week,month,year based on a date and there is no date given;
+    	// we set the date of today
+    	if(stristr($type,"this")===false AND !$startDate){
+    		$startDate = date("Y-m-d");
+    	}
+    	
+    	$startDate = strtotime($startDate);
+    	
+    	switch ($type) {
+    		case 'Day':
+    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
+    			$endDate = Util::getTimestampOfDate(23,59,59,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
+    			
+    			break;
+    		case 'Week':
+    			$beginEndDate = Util::getStartAndEndOfWeek($startDate);
+    			$beginDate = $beginEndDate[0];
+    			$endDate = $beginEndDate[1];
+    			break;
+    		case 'Month':
+    			$beginDate = Util::getTimestampOfDate(0,0,0, 1, date("m",$startDate), date("Y",$startDate));
+    			$endDate = Util::getTimestampOfDate(23,59,59,31, date("m",$startDate), date("Y",$startDate));
 
+    			break;
+    		case 'Year':
+    			$beginDate = Util::getTimestampOfDate(0,0,0, 1,1, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
+    			$endDate = Util::getTimestampOfDate(23,59,59,31,12, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;    			
+    			break;
+    		case 'thisDay':
+    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d"), date("m"), date("Y"));
+    			$endDate = Util::getTimestampOfDate(23,59,59,date("d"), date("m"), date("Y"));
+    			
+    			break;
+    		case 'thisWeek':
+    			$beginEndDate = Util::getStartAndEndOfWeek(date("Y-m-d"));
+    			$beginDate = $beginEndDate[0];
+    			$endDate = $beginEndDate[1];
+
+    			break;
+    		case 'thisMonth':
+    			$beginDate = Util::getFirstDayOfMonth(1, date("m"), date("Y"));
+    			$endDate = Util::getLastDayOfMonth(31, date("m"), date("Y"));
+
+    			break;
+    		case 'thisYear':
+    			$beginDate = Util::getFirstDayOfMonth(1, 1, date("Y"))-3600; // -3600 = correction daylightsavingtime;
+    			$endDate = Util::getLastDayOfMonth(31, 12, date("Y"))-3600; // -3600 = correction daylightsavingtime;
+    			 
+    			break;
+    		case 'lastDay':
+    			/*
+    			 * TODO
+    			 */
+    			break;
+    		case 'lastWeek':
+    			/*
+    			 * TODO
+    			 */    		
+    			break;
+    		case 'lastMonth':
+    			/*
+    			 * TODO
+    			 */
+    			break;
+    		case 'lastYear':
+    		    /*
+    			 * TODO
+    			 */
+    			break;
+    		default:
+    			break;
+    	}    	
+    	
+		if ($invtnum > 0){		
+    		$energyBeans =  
+    		$beans = R::getAll(
+    				"SELECT * FROM 'Energy' WHERE inv = :INV AND time > :beginDate AND  time < :endDate ", 
+    				array(
+    						':INV'=>$invtnum,
+    						':beginDate'=>$beginDate,
+    						':endDate'=>$endDate));
+    		 
+
+    	}else{
+    		$energyBeans =  R::findOne(
+    				"SELECT * FROM 'Energy' WHERE time > :beginDate AND  time < :endDate ", 
+    				array(
+    						':beginDate'=>$beginDate,
+    						':endDate'=>$endDate
+    				));
+    	}
+    	$points = $this->DayDataBeansToDataArray($energyBeans);
+    	$lastDays = new LastDays();
+    	$lastDays->points=$points[0];
+    	return $lastDays;
+    }
 
     public function readPageIndexData() {
     	// summary live data

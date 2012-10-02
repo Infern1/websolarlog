@@ -41,6 +41,9 @@ header('Content-type: application/json');
 $data = array();
 $invtnum = Common::getValue('invtnum', 0);
 $page = Common::getValue('page', 0);
+$count = Common::getValue('count', 0);
+$type = Common::getValue('type', 0);
+$date = Common::getValue('date', 0);
 
 $dataAdapter = new PDODataAdapter();
 
@@ -301,6 +304,33 @@ switch ($method) {
 
 		$data['dayData'] = $dayData;
 		break;
+	case 'getPeriodValues':
+		$config_invt="config/config_invt".$invtnum.".php";
+		include("$config_invt");
+		// get the date of today.
+		
+		$lines = $dataAdapter->readPeriodValues($invtnum,$type, $count,$date);
+		$dayData = new DayDataResult();
+		$dayData->data = $lines->points;
+		$dayData->valueKWHT = $lines->KWHT;
+		$dayData->success = true;
+	
+		$data['dayData'] = $dayData;
+		break;
+	case 'getPageTodayValues':
+		$config_invt="config/config_invt".$invtnum.".php";
+		include("$config_invt");
+		// get the date of today.
+		$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
+	
+		$lines = $dataAdapter->readDailyData($date,$invtnum);
+		$dayData = new DayDataResult();
+		$dayData->data = $lines->points;
+		$dayData->valueKWHT = $lines->KWHT;
+		$dayData->success = true;
+	
+		$data['dayData'] = $dayData;
+		break;
 	case 'getYesterdayValues':
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
@@ -315,18 +345,6 @@ switch ($method) {
 
 		$data['dayData'] = $dayData;
 		break;
-	case 'getLastDaysValues':
-		$config_invt="config/config_invt".$invtnum.".php";
-		include("$config_invt");
-
-		$date = date("Y",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-		$lines = $dataAdapter->readLastDaysData($invtnum);
-
-		$lastDaysData = new LastDaysValuesResult();
-		$lastDaysData->data = $lines->points;
-		$data['lastDaysData'] = $lastDaysData;
-		break;
-
 	case 'getPageIndexValues':
 		$indexValues = $dataAdapter->readPageIndexData();
 		$data['IndexValues'] = $indexValues;
