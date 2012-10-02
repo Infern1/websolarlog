@@ -5,17 +5,12 @@ $template = "green";
 require_once("template/" . $template . "/header.php");
 require_once("template/" . $template . "/index.php");
 ?>
-- kWh van vandaag icm CO2 vandaag
-- Max wat van de dag
-- De gauges tonen w/v/a
-- Grafiek van vandaag (Watt)
-- Grafiek met w/v/a van vandaag
 	<script type="text/javascript">
     // Make sure the page is loaded
 	$(function(){
 		WSL.init_tabs("index","#main-middle",
 			function(){
-				$('#tabs').tabs({ selected: 1 });
+				$('#tabs').tabs({ selected: 2 });
 				var hGraphToday = null;
 				var fnGraphToday = function(handle){hGraphToday=handle;};
 				WSL.createDayGraph(1, "Today", fnGraphToday); // Initial load fast

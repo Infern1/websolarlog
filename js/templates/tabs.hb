@@ -6,7 +6,7 @@
 		{{/data.tabs}}
 	</ul>
 	{{#data.tabs}}
-		<div id="tabs-{{this.position}}" style="height:350px;">graph{{this.graphName}}
+		<div id="tabs-{{this.position}}" style="height:350px;">
 			<div id="graph{{this.graphName}}">
         		<div id="graph{{this.graphName}}Content" style="height:285px; width:890px;" ></div>
         	</div>

@@ -8,9 +8,8 @@ require_once("template/" . $template . "/index.php");
 	<script type="text/javascript">
     // Make sure the page is loaded
 	$(function(){
-		var tabs = WSL.init_tabs("index","#main-middle",
+		WSL.init_tabs("index","#main-middle",
 			function(){
-				if (tabs){
 					var hGraphToday = null;
 					var fnGraphToday = function(handle){hGraphToday=handle;};
 					WSL.createDayGraph(1, "Today", fnGraphToday); // Initial load fast
@@ -20,9 +19,8 @@ require_once("template/" . $template . "/index.php");
 					//var fnGraphYesterday = function(handle){hGraphYesterday=handle;};
 					//WSL.createDayGraph(1, "Yesterday", fnGraphYesterday); // Initial load fast
 
-					//WSL.init_PageIndexValues("#content","#sidebar"); // Initial load fast
-					//window.setInterval(function(){WSL.init_PageIndexValues("#content","#sidebar");}, 3000); // every 3 seconds
-				}
+					WSL.init_PageIndexValues("#content","#sidebar"); // Initial load fast
+					window.setInterval(function(){WSL.init_PageIndexValues("#content","#sidebar");}, 3000); // every 3 seconds
     		}
 		)
 	});

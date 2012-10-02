@@ -121,22 +121,8 @@ var WSL = {
 						'data' : data
 					});
 					$(html).prependTo(divId);
-					//$(divId).before(html);
 					$('#tabs').tabs({
 					    show: function(event, ui) {
-					        //var tabNumber = $("#tabs").tabs('option','selected');
-					        console.log(ui.index);
-					        console.log(data.tabs[ui.index]["graphName"]);
-					        //var graphName = $("#tab-" + tabNumber).prop('name').split('-');
-					        //var graphToDestroy = graphName[1];
-					        
-					        //var tabNumber = ui.index+1;
-					        //var tabName = $("#tab-" + tabNumber).prop('name').split('-');
-					        //var graphToCreate = tabName[1];
-					        
-					        // see what the tabs are "doing"
-					        //$("#logger").html("Graph to Create: "+graphToCreate +", graph to Destroy:"+graphToDestroy);
-					        console.log(currentGraphHandler);
 					        if (currentGraphHandler){
 					        	currentGraphHandler.destroy();
 					        }
@@ -156,11 +142,7 @@ var WSL = {
 				            }
 					    }
 					});
-					
-					
-					
-						
-					
+
 					success.call();
 				},
 				dataType : 'text',
@@ -259,7 +241,7 @@ var WSL = {
 			}
 		};
 		$.ajax({
-			url : "server.php?method=get" + getDay + "Values&invtnum=" + invtnum + "&r="+ Math.floor(Math.random() * 111111),
+			url : "server.php?method=get" + getDay + "Values&invtnum=" + invtnum,
 			method : 'GET',
 			dataType : 'json',
 			async : false,
@@ -271,14 +253,14 @@ var WSL = {
 					dataDay1.push([ object[0], object[1] ]);
 					dataDay2.push([ object[0], object[2] ]);
 				} 
-				graphOptions.axes.xaxis.min = result.dayData.data[0][0];
-				//$.jqplot(divId, [ dataDay ], graphOptions).destroy();
-				
-				//$('.graph' + getDay + 'Content').remove();
-				//$('.graph' + getDay).append('<div id="graph' + getDay + 'Content"></div>');
+				if (!result.dayData.data){
+					dataDay1.push([1],[1]);
+					dataDay2.push([1],[1]);
+				}
+				graphOptions.axes.xaxis.min = dataDay1[0][0];
 				handle = $.jqplot('graph' + getDay + 'Content', [ dataDay1,dataDay2 ], graphOptions);
 				mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
-				fnFinish.call(this, handle); 
+				fnFinish.call(this, handle);
 			}
 		});
 	},
@@ -342,45 +324,24 @@ var WSL = {
 			}
 		};
 
-		$
-				.ajax({
-					url : "server.php?method=getLastDaysValues&invtnum="
-							+ invtnum + "&r="
-							+ Math.floor(Math.random() * 111111),
-					method : 'GET',
-					dataType : 'json',
-					async : false,
-					success : function(result) {
-						var lastDaysData = [];
-						for (line in result.lastDaysData.data) {
-							var object = result.lastDaysData.data[line];
-							lastDaysData.push([ object[0], object[1] ]);
-						}
-
-						graphLastDaysOptions.axes.xaxis.min = result.lastDaysData.data[0][0];
-						$.jqplot(divId, [ lastDaysData ], graphLastDaysOptions)
-								.destroy();
-						// alert('destroy');
-						// $('.graphLastDaysContent').remove();
-						// $('.graphLastDays').append('<div
-						// id="graphLastDaysContent"></div>');
-
-						$.jqplot(divId, [ lastDaysData ], graphLastDaysOptions);
-						// mytitle = $('<div class="my-jqplot-title"
-						// style="position:absolute;text-align:center;padding-top:
-						// 1px;width:100%">Total energy ' + getDay.toLowerCase()
-						// + ': ' + result.dayData.valueKWHT + '
-						// kWh</div>').insertAfter('#graph' + getDay + '
-						// .jqplot-grid-canvas');
-					}
-				});
-
-		// mytitle = $('<div class="my-jqplot-title"
-		// style="position:absolute;text-align:center;padding-top:
-		// 1px;width:100%">Total energy today2: ' + source.kwht + '
-		// kWh</div>').insertAfter('#graphToday2 .jqplot-grid-canvas');
+		$.ajax({
+			url : "server.php?method=getLastDaysValues&invtnum=" + invtnum,
+			method : 'GET',
+			dataType : 'json',
+			async : false,
+			success : function(result) {
+				var lastDaysData = [];
+				for (line in result.lastDaysData.data) {
+					var object = result.lastDaysData.data[line];
+					lastDaysData.push([ object[0], object[1] ]);
+				}
+				console.log('aaaa');
+				graphLastDaysOptions.axes.xaxis.min = result.lastDaysData.data[0][0];
+				$.jqplot(divId, [ lastDaysData ], graphLastDaysOptions).destroy();
+				$.jqplot(divId, [ lastDaysData ], graphLastDaysOptions);
+			}
+		});
 	}
-
 };
 
 // api class
