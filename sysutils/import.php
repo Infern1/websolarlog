@@ -1,4 +1,5 @@
 <?php
+set_time_limit ( 120 ); // 2 minutes
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
@@ -18,7 +19,7 @@ $dataPath = "../data/invt" . $inverterId . "/";
 $dailyPath = $dataPath . "csv/";
 foreach (scandir($dailyPath) as $file) {
     if (is_file($dailyPath.$file))  {
-        //importDailyFile($dailyPath . $file, $inverterId, $adapter);
+        importDailyFile($dailyPath . $file, $inverterId, $adapter);
     }
 }
 
@@ -33,10 +34,9 @@ foreach (scandir($energyPath) as $file) {
 function importDailyFile($src, $inverterId, PDODataAdapter $adapter) {
     // Read all lines
     $lines = file($src);
-    $result = array();
     R::begin();
     foreach ($lines as $line) {
-        $adapter->addHistory($inverterId, parseCsvToLive($line));
+        $adapter->addHistory($inverterId, parseCsvToLive(trim($line, "\n")));
     }
     R::commit();
 }
@@ -45,10 +45,13 @@ function importEnergyFile($src, $inverterId, PDODataAdapter $adapter) {
     // Read all lines
     $lines = file($src);
     echo ($src . ": " . count($lines));
-    $result = array();
     R::begin();
+    $kwht = 0; // this only works if you have one file!
     foreach ($lines as $line) {
-        $adapter->addNewEnergy($inverterId, parseCsvToEnergy($inverterId, $line));
+        $energy = parseCsvToEnergy($inverterId, trim($line, "\n"));
+        $kwht += $energy->KWH;
+        $energy->KWHT = $kwht;
+        $adapter->addNewEnergy($inverterId, $energy);
     }
     R::commit();
 }
@@ -59,7 +62,7 @@ function parseCsvToLive($csv) {
     $fields = explode(";", $csv);
     $live = new Live();
     $live->SDTE = $fields[0];
-    $live->time = Util::getUTCdate($fields[0]) * 1000;
+    $live->time = Util::getUTCdate($fields[0]);
     $live->I1V = $fields[1];
     $live->I1A = $fields[2];
     $live->I1P = $fields[3];
@@ -84,11 +87,12 @@ function parseCsvToEnergy($inverterId, $csv) {
 
     $energy = new Energy();
     $energy->INV = $inverterId;
-    $energy->SDTE = $fields[0];
-    $energy->time = Util::getUTCdate($fields[0]) * 1000;
+    $energy->SDTE = $fields[0] . "-05:00:00";
+    $energy->time = Util::getUTCdate($fields[0] . "-05:00:00");
     $energy->KWH = $fields[1];
     $energy->KWHT = 0;
 
     return $energy;
 }
+
 ?>

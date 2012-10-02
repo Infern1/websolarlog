@@ -756,7 +756,7 @@ class PDODataAdapter {
 
     	$points = array();
         foreach ($beans as $bean){
-    		$points[] = array ($bean['time'] * 1000,$bean['KWH']);
+    		$points[] = array ($bean['time'] * 1000, (float)$bean['KWH']);
     	}
 
     	$lastDays = new LastDays();
