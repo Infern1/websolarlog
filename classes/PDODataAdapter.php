@@ -451,9 +451,6 @@ class PDODataAdapter {
     	$i=0;
     	$firstBean = array();
     	$preBean = array();
-    	$points = array();
-    	$KWHT = 0;
-
     	foreach ($beans as $bean){
     		if ($i==0){
     			$firstBean = $bean;
@@ -474,6 +471,7 @@ class PDODataAdapter {
     	}
     	return array($points,$KWHT);
     }
+
 
     public function writeConfig(Config $config) {
         // Only save the object self not the arrays
@@ -657,21 +655,120 @@ class PDODataAdapter {
     }
 
 
+    /*
+     * Get energy values for a period of time...
+     */
+    public function readPeriodValues($invtnum, $type, $count, $startDate){
+
+    	// if we want to get a day,week,month,year based on a date and there is no date given;
+    	// we set the date of today
+    	if(stristr($type,"this")===false AND !$startDate){
+    		$startDate = date("Y-m-d");
+    	}
+
+    	$startDate = strtotime($startDate);
+
+    	switch ($type) {
+    		case 'Day':
+    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
+    			$endDate = Util::getTimestampOfDate(23,59,59,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
+
+    			break;
+    		case 'Week':
+    			$beginEndDate = Util::getStartAndEndOfWeek($startDate);
+    			$beginDate = $beginEndDate[0];
+    			$endDate = $beginEndDate[1];
+    			break;
+    		case 'Month':
+    			$beginDate = Util::getTimestampOfDate(0,0,0, 1, date("m",$startDate), date("Y",$startDate));
+    			$endDate = Util::getTimestampOfDate(23,59,59,31, date("m",$startDate), date("Y",$startDate));
+
+    			break;
+    		case 'Year':
+    			$beginDate = Util::getTimestampOfDate(0,0,0, 1,1, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
+    			$endDate = Util::getTimestampOfDate(23,59,59,31,12, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
+    			break;
+    		case 'thisDay':
+    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d"), date("m"), date("Y"));
+    			$endDate = Util::getTimestampOfDate(23,59,59,date("d"), date("m"), date("Y"));
+
+    			break;
+    		case 'thisWeek':
+    			$beginEndDate = Util::getStartAndEndOfWeek(date("Y-m-d"));
+    			$beginDate = $beginEndDate[0];
+    			$endDate = $beginEndDate[1];
+
+    			break;
+    		case 'thisMonth':
+    			$beginDate = Util::getFirstDayOfMonth(1, date("m"), date("Y"));
+    			$endDate = Util::getLastDayOfMonth(31, date("m"), date("Y"));
+
+    			break;
+    		case 'thisYear':
+    			$beginDate = Util::getFirstDayOfMonth(1, 1, date("Y"))-3600; // -3600 = correction daylightsavingtime;
+    			$endDate = Util::getLastDayOfMonth(31, 12, date("Y"))-3600; // -3600 = correction daylightsavingtime;
+
+    			break;
+    		case 'lastDay':
+    			/*
+    			 * TODO
+    			 */
+    			break;
+    		case 'lastWeek':
+    			/*
+    			 * TODO
+    			 */
+    			break;
+    		case 'lastMonth':
+    			/*
+    			 * TODO
+    			 */
+    			break;
+    		case 'lastYear':
+    		    /*
+    			 * TODO
+    			 */
+    			break;
+    		default:
+    			break;
+    	}
+
+		if ($invtnum > 0){
+    		$energyBeans =
+    		$beans = R::getAll(
+    				"SELECT * FROM 'Energy' WHERE inv = :INV AND time > :beginDate AND  time < :endDate ",
+    				array(
+    						':INV'=>$invtnum,
+    						':beginDate'=>$beginDate,
+    						':endDate'=>$endDate));
+
+
+    	}else{
+    		$energyBeans =  R::findOne(
+    				"SELECT * FROM 'Energy' WHERE time > :beginDate AND  time < :endDate ",
+    				array(
+    						':beginDate'=>$beginDate,
+    						':endDate'=>$endDate
+    				));
+    	}
+
+        foreach ($beans as $bean){
+    		$points[] = array ($bean['time'] * 1000,$bean['KWH']);
+    	}
+
+    	$lastDays = new LastDays();
+    	$lastDays->points=$points;
+    	return $lastDays;
+    }
+
     public function readPageIndexData() {
     	// summary live data
     	$list = array();
-
-    	// Initialize total values
-    	$KWHTD = 0;
-    	$KWHTW = 0;
-    	$KWHTM = 0;
+    	$madList = array();
 
     	$beans = R::findAndExport('Inverter');
     	foreach ($beans as $inverter){
             $oInverter = array();
-            $oInverter['day'] = 0;
-            $oInverter['week'] = 0;
-            $oInverter['month'] = 0;
     		$liveBean =  R::findOne('Live',' INV = :INV ', array(':INV'=>$inverter['id']));
     		$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
     		$live = array(
@@ -689,17 +786,20 @@ class PDODataAdapter {
     		$KWHT = array();
     		foreach ($beans as $bean){
     			if ($i<(1)){
-    				$oInverter['day'] += $bean['KWH'];
+    				$KWHT['dayKWHT'] = $KWHT['dayKWHT']+$bean['KWH'];
     			}
     			if ($i<(7)){
-    				$oInverter['week'] += $bean['KWH'];
+    				$KWHT['weekKWHT'] = $KWHT['weekKWHT']+$bean['KWH'];
     			}
     			if ($i<(30)){
-    				$oInverter['month'] += $bean['KWH'];
+    				$KWHT['monthKWHT'] = $KWHT['monthKWHT']+$bean['KWH'];
     			}
     			$i++;
     		}
-    		$list['inverters'][] = $oInverter;
+    		$oInverter["day"] = $KWHT['dayKWHT'];
+    		$oInverter["week"] = $KWHT['weekKWHT'];
+    		$oInverter["month"] = $KWHT['monthKWHT'];
+    		$madList['inverters'][] = $oInverter;
 
     		$KWHTD = $KWHTD  + $KWHT['dayKWHT'];
     		$KWHTW = $KWHTW  + $KWHT['weekKWHT'];
@@ -708,7 +808,7 @@ class PDODataAdapter {
     	$oInverter = array();
     	$totals = array("day"=>$KWHTD,"week"=>$KWHTW,"month"=>$KWHTM);
 
-    	$list['summary'] = $totals;
-    	return $list;
+    	$madList['summary'] = $totals;
+    	return $madList;
     }
 }
