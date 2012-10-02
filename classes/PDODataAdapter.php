@@ -451,6 +451,8 @@ class PDODataAdapter {
     	$i=0;
     	$firstBean = array();
     	$preBean = array();
+    	$points = array();
+    	$KWHT = 0;
     	foreach ($beans as $bean){
     		if ($i==0){
     			$firstBean = $bean;
