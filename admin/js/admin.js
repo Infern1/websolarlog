@@ -1,8 +1,34 @@
 $(function()
 {
-    init_menu();
-    init_KWHcalc();
-    init_general(); // First admin item
+    $.getJSON('admin-server.php?s=isLogin', function(data) {
+        if (data.result === true) {
+            init_menu();
+            init_general(); // First admin item
+        } else {
+            $.ajax({
+                url : 'js/templates/login.hb',
+                dataType : 'text',
+                success : function(source) {
+                    var template = Handlebars.compile(source);
+                    var html = template({
+                        'data' : data
+                    });
+                    $('#content').html(html);
+                    $("#btnLoginSubmit").bind('click', function (){
+                        var data = $(this).parent().parent().serialize();
+                        $.post('admin-server.php', data, function(){
+                            $.pnotify({
+                                title: 'Login',
+                                text: 'Succesfully logged in.'
+                            });
+                            init_menu();
+                            init_general(); // First admin item
+                        });
+                    });
+                }
+            });
+        }
+    });
 });
 
 /*
@@ -10,8 +36,6 @@ $(function()
  */
 var Perc=new Array(2,5,7,10,12,14,14,12,10,7,5,2);
 var Month=new Array('jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec');
-
-
 
 /**
  *  Init PowerPreset value's
@@ -31,28 +55,12 @@ function init_KWHcalc(){
 /**
  * Init menu buttons
  */
-function init_menu()
-{
-    $("#btnGeneral").bind('click', function()
-    {
-        init_general();
-    });
-    $("#btnInverters").bind('click', function()
-    {
-        init_inverters();
-    });
-    $("#btnGrid").bind('click', function()
-    {
-        init_grid();
-    });
-    $("#btnEmail").bind('click', function()
-    {
-        init_mail();
-    });
-    $("#btnTestPage").bind('click', function()
-    {
-        init_testpage();
-    });
+function init_menu() {
+    $("#btnGeneral").bind('click', function() { init_general();});
+    $("#btnInverters").bind('click', function() { init_inverters(); });
+    $("#btnGrid").bind('click', function() { init_grid();});
+    $("#btnEmail").bind('click', function() { init_mail(); });
+    $("#btnTestPage").bind('click', function() { init_testpage(); });
 }
 
 function init_general() {

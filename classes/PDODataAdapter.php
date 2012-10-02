@@ -274,6 +274,22 @@ class PDODataAdapter {
     }
 
     /**
+     * write the max power today to the file
+     * @param int $invtnum
+     * @param MaxPowerToday $mpt
+     */
+    public function addNewEnergy($invtnum, Energy $energy) {
+        $bean = R::dispense('Energy');
+        $bean->INV = $invtnum;
+        $bean->SDTE = $energy->SDTE;
+        $bean->time = $energy->time;
+        $bean->KWH = $energy->KWH;
+        $bean->KWHT = $energy->KWHT;
+        $id = R::store($bean,$bean->id);
+        return $id;
+    }
+
+    /**
      * add the events to the events
      * @param int $invtnum
      * @param Event $event

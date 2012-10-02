@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once("classes/classloader.php");
 
 $adapter = new PDODataAdapter();
@@ -69,6 +71,15 @@ switch ($settingstype) {
             }
         }
         $data['templates'] = $templates;
+        break;
+    case 'login':
+        Session::login();
+        break;
+    case 'logout':
+        Session::logout();
+        break;
+    case 'isLogin':
+        $data['result'] = Session::isLogin();
         break;
     case 'save-communication':
         $config->comPort = Common::getValue("comPort");

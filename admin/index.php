@@ -1,4 +1,4 @@
-<?php ?>
+<?php session_start(); ?>
 <!Doctype html>
 <html lang="en">
 <head>
@@ -51,9 +51,9 @@
 				<div id="main-top"></div>
 				<div id="main-middle">
 					<!-- Content -->
-					<main-header>
+					<header>
 						<h1>WSL :: Configuration</h1>
-					</main-header>
+					</header>
 					<div id="content">
     					<header>
     						<h2>Welcome to the configuration</h2>
