@@ -1,6 +1,5 @@
 <?php
 require_once("classes/classloader.php");
-$template = $config->template;
 $template = "green";
 require_once("template/" . $template . "/header.php");
 require_once("template/" . $template . "/index.php");

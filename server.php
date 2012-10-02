@@ -135,13 +135,11 @@ switch ($method) {
 	case 'getTabs':
 		// TODO :: Move to json file or something???
 		$tabs = array();
-
-		$tabs[] = array( "graphName" => "Today","position" => "1","active" => ($page == "index") ? 'true' : 'false');
-		$tabs[] = array( "graphName" => "Yesterday","position" => "2","active" => ($page == "yesterday") ? 'true' : 'false');
-		$tabs[] = array( "graphName" => "Month","position" => "3","active" => ($page == "month") ? 'true' : 'false');
-		$tabs[] = array( "graphName" => "Year","position" => "4","active" => ($page == "year") ? 'true' : 'false');
-		$slidePosition = Common::searchMultiArray($tabs, 'active', 'true');
-		$data['tabsPosition'] = $slidePosition;
+		$tabs[] = array( "graphName" => "Today","position" => "0","active" => ($page == "index") ? 'true' : 'false');
+		$tabs[] = array( "graphName" => "Yesterday","position" => "1","active" => ($page == "yesterday") ? 'true' : 'false');
+		$tabs[] = array( "graphName" => "Month","position" => "2","active" => ($page == "month") ? 'true' : 'false');
+		$tabs[] = array( "graphName" => "Year","position" => "3","active" => ($page == "year") ? 'true' : 'false');
+		$data['tabsPosition'] =  Common::searchMultiArray($tabs, 'active', 'true');
 		$data['tabs'] = $tabs;
 
 		break;
@@ -295,7 +293,6 @@ switch ($method) {
 		include("$config_invt");
 		// get the date of today.
 		$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-		
 		$lines = $dataAdapter->readDailyData($date,$invtnum);
 		$dayData = new DayDataResult();
 		$dayData->data = $lines->points;

@@ -32,12 +32,13 @@ class Session
      */
 
     public static function isLogin() {
+        $result = false;
         if (isset($_SESSION['userid']) && isset($_SESSION['username'])) {
             if ($_SESSION['userid'] != '' && $_SESSION['username'] != '') {
-                return true;
+                $result = true;
             }
         }
-        return false;
+        return $result;
     }
 }
 ?>
