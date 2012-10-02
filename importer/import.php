@@ -86,8 +86,8 @@ function parseCsvToEnergy($inverterId, $csv) {
     $energy->INV = $inverterId;
     $energy->SDTE = $fields[0];
     $energy->time = Util::getUTCdate($fields[0]) * 1000;
-    $energy->KWH = $fields[0];
-    $energy->KWHT = $fields[1];
+    $energy->KWH = $fields[1];
+    $energy->KWHT = 0;
 
     return $energy;
 }
