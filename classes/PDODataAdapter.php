@@ -752,6 +752,7 @@ class PDODataAdapter {
     				));
     	}
 
+    	$points = array();
         foreach ($beans as $bean){
     		$points[] = array ($bean['time'] * 1000,$bean['KWH']);
     	}
@@ -764,7 +765,12 @@ class PDODataAdapter {
     public function readPageIndexData() {
     	// summary live data
     	$list = array();
-    	$madList = array();
+
+    	// Initialize variables
+    	$KWHTD = 0;
+    	$KWHTW = 0;
+    	$KWHTM = 0;
+
 
     	$beans = R::findAndExport('Inverter');
     	foreach ($beans as $inverter){
@@ -783,7 +789,11 @@ class PDODataAdapter {
     		// get production
     		$beans = R::getAll("SELECT INV,KWH FROM 'Energy' WHERE INV = :inv ORDER BY SDTE DESC ,INV DESC LIMIT 0,:limit", array(':limit'=>30,':inv'=>$inverter['id']));
     		$i=0;
+        	// Initialize variables
     		$KWHT = array();
+        	$KWHT['dayKWHT'] = 0;
+        	$KWHT['weekKWHT'] = 0;
+        	$KWHT['monthKWHT'] = 0;
     		foreach ($beans as $bean){
     			if ($i<(1)){
     				$KWHT['dayKWHT'] = $KWHT['dayKWHT']+$bean['KWH'];
@@ -799,7 +809,7 @@ class PDODataAdapter {
     		$oInverter["day"] = $KWHT['dayKWHT'];
     		$oInverter["week"] = $KWHT['weekKWHT'];
     		$oInverter["month"] = $KWHT['monthKWHT'];
-    		$madList['inverters'][] = $oInverter;
+    		$list['inverters'][] = $oInverter;
 
     		$KWHTD = $KWHTD  + $KWHT['dayKWHT'];
     		$KWHTW = $KWHTW  + $KWHT['weekKWHT'];
@@ -808,7 +818,7 @@ class PDODataAdapter {
     	$oInverter = array();
     	$totals = array("day"=>$KWHTD,"week"=>$KWHTW,"month"=>$KWHTM);
 
-    	$madList['summary'] = $totals;
-    	return $madList;
+    	$list['summary'] = $totals;
+    	return $list;
     }
 }
