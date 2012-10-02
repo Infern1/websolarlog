@@ -472,6 +472,7 @@ class PDODataAdapter {
     	return array($points,$KWHT);
     }
 
+
     public function writeConfig(Config $config) {
         // Only save the object self not the arrays
         $bean = R::findOne('Config');
@@ -750,9 +751,13 @@ class PDODataAdapter {
     						':endDate'=>$endDate
     				));
     	}
-    	$points = $this->DayDataBeansToDataArray($energyBeans);
+    	
+        foreach ($beans as $bean){
+    		$points[] = array ($bean['time'] * 1000,$bean['KWH']);
+    	}
+    	
     	$lastDays = new LastDays();
-    	$lastDays->points=$points[0];
+    	$lastDays->points=$points;
     	return $lastDays;
     }
 
