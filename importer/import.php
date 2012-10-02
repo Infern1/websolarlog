@@ -15,15 +15,18 @@ $inverterId = Common::getValue("inverterId", 1);
 $dataPath = "../data/invt" . $inverterId . "/";
 
 // Read daily data
-
-
-
-
-
 $dailyPath = $dataPath . "csv/";
 foreach (scandir($dailyPath) as $file) {
     if (is_file($dailyPath.$file))  {
-        importDailyFile($dailyPath . $file, $inverterId, $adapter);
+        //importDailyFile($dailyPath . $file, $inverterId, $adapter);
+    }
+}
+
+// Reay energy data
+$energyPath = $dataPath . "production/";
+foreach (scandir($energyPath) as $file) {
+    if (is_file($energyPath.$file) && Common::startsWith($file, "energy"))  {
+        importEnergyFile($energyPath . $file, $inverterId, $adapter);
     }
 }
 
@@ -38,14 +41,25 @@ function importDailyFile($src, $inverterId, PDODataAdapter $adapter) {
     R::commit();
 }
 
+function importEnergyFile($src, $inverterId, PDODataAdapter $adapter) {
+    // Read all lines
+    $lines = file($src);
+    echo ($src . ": " . count($lines));
+    $result = array();
+    R::begin();
+    foreach ($lines as $line) {
+        $adapter->addNewEnergy($inverterId, parseCsvToEnergy($inverterId, $line));
+    }
+    R::commit();
+}
+
 function parseCsvToLive($csv) {
     // Convert comma to dot
     $csv = str_replace(",", ".", $csv);
-
     $fields = explode(";", $csv);
     $live = new Live();
-    //$live->SDTE = Util::getUTCdate($fields[0]) * 1000;
     $live->SDTE = $fields[0];
+    $live->time = Util::getUTCdate($fields[0]) * 1000;
     $live->I1V = $fields[1];
     $live->I1A = $fields[2];
     $live->I1P = $fields[3];
@@ -60,10 +74,21 @@ function parseCsvToLive($csv) {
     $live->INVT = $fields[12];
     $live->BOOT = $fields[13];
     $live->KWHT = $fields[14];
-
     return $live;
 }
 
+function parseCsvToEnergy($inverterId, $csv) {
+    // Convert comma to dot
+    $csv = str_replace(",", ".", $csv);
+    $fields = explode(";", $csv);
 
+    $energy = new Energy();
+    $energy->INV = $inverterId;
+    $energy->SDTE = $fields[0];
+    $energy->time = Util::getUTCdate($fields[0]) * 1000;
+    $energy->KWH = $fields[0];
+    $energy->KWHT = $fields[1];
 
+    return $energy;
+}
 ?>
