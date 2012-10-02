@@ -500,6 +500,7 @@ class PDODataAdapter {
         $bean->smtpServer = $config->smtpServer;
         $bean->smtpPort = $config->smtpPort;
         $bean->smtpSecurity = $config->smtpSecurity;
+        $bean->smtpUser = $config->smtpUser;
         $bean->smtpPassword = $config->smtpPassword;
 
         $bean->template = $config->template;
