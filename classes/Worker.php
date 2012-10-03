@@ -193,6 +193,7 @@ class Worker {
             // Found a new max power of today
             $Ompt = new MaxPowerToday();
             $Ompt->SDTE = $live->SDTE;
+            $Ompt->time = Util::getUTCdate($live->SDTE);
             $Ompt->GP = $GP2;
             $this->adapter->writeMaxPowerToday($inverter->id, $Ompt);
         }
