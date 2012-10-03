@@ -28,6 +28,8 @@ class Config
 
     public $inverters; // Contains an array of inverters
 
+    public $co2kwh;
+
     public $aurorapath; // The path to aurora
 
 	/**
@@ -89,6 +91,8 @@ class Config
 		$this->template = 'green'; // Default selected template
 
 		$this->aurorapath = 'aurora'; // If in system path this is enough
+
+		$this->co2kwh = 440; // 440g/kWh is conform europa average
 	}
 
 	function getInverterConfig($inverterId) {

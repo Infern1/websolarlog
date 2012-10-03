@@ -470,6 +470,9 @@ class PDODataAdapter {
         $bean->smtpPassword = $config->smtpPassword;
 
         $bean->template = $config->template;
+        $bean->aurorapath = $config->aurorapath;
+
+        $bean->co2kwh = $config->co2kwh;
 
         //Store the bean
         R::store($bean);
@@ -505,6 +508,9 @@ class PDODataAdapter {
             $config->smtpPassword = $bean->smtpPassword;
 
             $config->template = $bean->template;
+            $config->aurorapath = $bean->aurorapath;
+
+            $config->co2kwh = $bean->co2kwh;
 
             $config->inverters = $this->readInverters();
         }
