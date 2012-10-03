@@ -39,7 +39,6 @@ class Worker {
             }
             }
             //sleep (60); // he's alive ?
-            $dataAdapter->dropLock();
             die;
             }
             */
@@ -262,11 +261,6 @@ class Worker {
      * Create the lock
      */
     private function createLock() {
-        $OLock = new Lock();
-        $OLock->SDTE = date('Ymd-H:m:s');
-        $OLock->type = 'Lock';
-       	$OLock->time = time();
-        $this->adapter->writeLock($OLock);
         Util::createLockFile(); // We need this for the bash script!
     }
 
@@ -274,7 +268,6 @@ class Worker {
      * Remove the lock
      */
     private function dropLock() {
-        $this->adapter->dropLock();
         Util::removeLockFile(); // We need this for the bash script!
     }
 

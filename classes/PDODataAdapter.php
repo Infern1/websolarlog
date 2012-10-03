@@ -350,43 +350,6 @@ class PDODataAdapter {
     	R::trash( $bean );
     }
 
-
-    /**
-     * Drop Lock from DB
-     * @param int $invtnum
-     * @return bean object
-     */
-    public function dropLock() {
-    	$bean =  R::find('Lock',
-    			' Type = :type  ',
-    			array(':type'=>'LockPort'
-    			)
-    	);
-    	if (count($bean)>0) {
-    	    R::trashAll($bean);
-    	}
-    }
-
-
-    /**
-     * Write the Lock to DB
-     * @param int $invtnum
-     * @return bean object
-     */
-    public function writeLock(Lock $lock) {
-    	$bean = R::dispense('Lock');
-
-    	$bean->SDTE = $lock->SDTE;
-    	$bean->time = $lock->time;
-    	$bean->Type = $lock->type;
-
-    	//Store the bean
-    	$id = R::store($bean);
-
-    	return $bean;
-    }
-
-
     public function writeDailyData($invtnum,Day $day) {
 		// TODO :: ??
     }
