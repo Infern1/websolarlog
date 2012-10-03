@@ -148,7 +148,7 @@ var WSL = {
 				                        currentGraphHandler.destroy();
 				                    }
 				                    WSL.createDayGraph(1, "Today", function(handler) {currentGraphHandler = handler;});				                    
-				                }, 30000);
+				                }, 60000); // every minute
 				                $("#loading").remove();
 				            }
 					    }
