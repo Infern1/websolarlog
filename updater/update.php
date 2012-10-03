@@ -101,6 +101,10 @@ function copyToLive() {
             copy($source . $file, $target . $file);
         }
     }
+
+    // We skipped the update folder, but we want to update the update script
+    copy($source . "updater/update.php", $target . "updater/update.php");
+
 }
 ?>
 </body>
