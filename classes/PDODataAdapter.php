@@ -508,9 +508,9 @@ class PDODataAdapter {
             $config->smtpPassword = $bean->smtpPassword;
 
             $config->template = $bean->template;
-            $config->aurorapath = $bean->aurorapath;
+            $config->aurorapath = ($bean->aurorapath != "") ? $bean->aurorapath : $config->aurorapath;
 
-            $config->co2kwh = $bean->co2kwh;
+            $config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
 
             $config->inverters = $this->readInverters();
         }
