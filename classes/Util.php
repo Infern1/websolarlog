@@ -104,5 +104,74 @@ class Util {
     	}
     	return array('name'=>$module,'status'=>$status);
     }
+    
+    /**
+     * return the begin and end date for a given period for a given date.
+     * @param date $startDate ("Y-m-d") ("1900-12-31"), when no date given, the date of today is used.
+     * @param int $count multiplies the day's,weeks,months,year
+     * @return array($beginDate, $endDate);
+     */
+    public function getBeginEndDate($type, $startDate, $count){
+    
+    	if(!$startDate){
+    		$startDate = date("Y-m-d");
+    	}
+    
+    	// Make de StartDate a timestamp
+    	$startDate = strtotime($startDate);
+    	 
+    	// check what we must return
+    	switch (strtolower($type)) {
+    		case 'today':
+    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
+    			$endDate = Util::getTimestampOfDate(23,59,59,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
+    			break;
+    		case 'yesterday':
+    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d",time()-86400), date("m",time()-86400), date("Y",time()-86400));
+    			$endDate = Util::getTimestampOfDate(23,59,59,date("d",time()-86400), date("m",time()-86400), date("Y",time()-86400));
+    			break;
+    		case 'week':
+    			$beginEndDate = Util::getStartAndEndOfWeek($startDate);
+    			$beginDate = $beginEndDate[0];
+    			$endDate = $beginEndDate[1];
+    			break;
+    		case 'month':
+    			$beginDate = Util::getTimestampOfDate(0,0,0, 1, date("m",$startDate), date("Y",$startDate));
+    			$endDate = Util::getTimestampOfDate(23,59,59,31, date("m",$startDate), date("Y",$startDate));
+    
+    			break;
+    		case 'year':
+    			$beginDate = Util::getTimestampOfDate(0,0,0, 1,1, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
+    			$endDate = Util::getTimestampOfDate(23,59,59,31,12, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
+    			break;
+    		case 'lastday':
+    			/*
+    			 * TODO
+    			 */
+    			break;
+    		case 'lastweek':
+    			/*
+    			 * TODO
+    			 */
+    			break;
+    		case 'lastmonth':
+    			/*
+    			 * TODO
+    			 */
+    			break;
+    		case 'lastyear':
+    			/*
+    			 * TODO
+    			 */
+    			break;
+    		default:
+    			return "ERROR::PDODataAdapter::getBeginEndDate()::WRONG Type >> Choose from today,week,month,year";
+    			break;
+    	}
+    
+    	return array("beginDate"=>$beginDate,"endDate"=>$endDate);
+    }
+    
+    
 }
 ?>

@@ -5,11 +5,7 @@ $template = "green";
 require_once("template/" . $template . "/header.php");
 require_once("template/" . $template . "/index.php");
 ?>
-- kWh van vandaag icm CO2 vandaag
-- Max Watt van de dag
-- De gauges tonen w/v/a
-- Grafiek van vandaag (Watt)
-- Grafiek met w/v/a van vandaag
+
 	<script type="text/javascript">
     // Make sure the page is loaded
 	$(function(){
@@ -24,9 +20,8 @@ require_once("template/" . $template . "/index.php");
 				//var hGraphYesterday = null;
 				//var fnGraphYesterday = function(handle){hGraphYesterday=handle;};
 				//WSL.createDayGraph(1, "Yesterday", fnGraphYesterday); // Initial load fast
-
-				WSL.init_PageTodayValues("#content"); // Initial load fast
-				window.setInterval(function(){WSL.init_PageIndexValues("#content");}, 5000); // every 3 seconds
+				WSL.init_PageTodayValues("#columns"); // Initial load fast
+				window.setInterval(function(){WSL.init_PageTodayValues("#columns");}, 30000); // every 3 seconds
     		}
 		)
 	});

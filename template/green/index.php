@@ -35,7 +35,7 @@
 			<div id="main-middle">
 				<!-- Content -->
 				<div id="content">
-
+				
 				</div>
 				<!-- END Content -->
 				<!-- Sidebar -->
@@ -44,6 +44,7 @@
 				</div>
 				<!-- END Sidebar -->
 				<div class="cl"></div>
+				<div id="columns"></div>
 			</div>
 			<div id="main-bottom"></div>
 		</div>

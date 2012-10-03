@@ -101,7 +101,11 @@ span.read-more a { font-family: Tahoma, arial, sans-serif; font-weight: bold; co
 .post p.date { padding-bottom: 5px; line-height: 22px; color: #d97c22; font-weight: bold; }
 .post img { margin: 0 15px 0 2px; padding: 3px; border: solid 1px #afafaf; background: #fff; display: block; float: left; }
 
+
 .posts span.read-more { position: absolute; right: 0; bottom: 9px; }
+#todayPosts .posts{width:250px;}
+#todayPosts .projects{width:500px;}
+
 
 .projects h3 { margin-bottom: 21px; }
 .projects .post { padding-bottom: 8px; }

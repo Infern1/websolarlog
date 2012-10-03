@@ -130,16 +130,13 @@ var WSL = {
 					        if (todayTimerHandler){
 					            window.clearInterval(todayTimerHandler);
 					        }
-					        if (data.tabs[ui.index]["graphName"] == "Today" || data.tabs[ui.index]["graphName"] == "Yesterday") {
-					        	WSL.createDayGraph(1, data.tabs[ui.index]["graphName"],function(handler) {currentGraphHandler = handler;});
-					        }else{
-					        	WSL.createPeriodGraph(1, data.tabs[ui.index]["graphName"],1 , "graph"+data.tabs[ui.index]["graphName"]+"Content" , function(handler) {currentGraphHandler = handler;});
-					        }
 
-					        $("#loading").remove();
-				            //console.log(ui);
-				            console.log(ui.tab.text);
-				            
+					        if (data.tabs[ui.index]["graphName"] == "Today" || data.tabs[ui.index]["graphName"] == "Yesterday") {
+					        	WSL.createDayGraph(1, data.tabs[ui.index]["graphName"],function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+					        }else{
+					        	WSL.createPeriodGraph(1, data.tabs[ui.index]["graphName"],1 , "graph"+data.tabs[ui.index]["graphName"]+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+					        	
+					        }
 				            // Refresh only the Today tab
 				            if (data.tabs[ui.index]["graphName"] == "Today") {
 				                todayTimerHandler = window.setInterval(function(){
@@ -147,9 +144,9 @@ var WSL = {
 				                        $("#graph"+data.tabs[ui.index]["graphName"]+"Content").html('<div id="loading">loading...</div>');
 				                        currentGraphHandler.destroy();
 				                    }
-				                    WSL.createDayGraph(1, "Today", function(handler) {currentGraphHandler = handler;});				                    
+				                    WSL.createDayGraph(1, "Today", function(handler) {currentGraphHandler = handler;$("#loading").remove();});				                    
 				                }, 60000); // every minute
-				                $("#loading").remove();
+				               
 				            }
 					    }
 					});
@@ -215,61 +212,57 @@ var WSL = {
 		});
 	},
 
-	init_PageTodayValues : function(divId, SideBar) {
+	init_PageTodayValues : function(todayValues) {
 		// initialize languages selector on the given div
 		WSL.api.getPageTodayValues(function(data) {
-			var GP = 3600 / 10;
-			var gaugeGPOptions = {
-				title : 'AC Power',
-				grid : {
-					background : '#FFF'
-				},
-				seriesDefaults : {
-					renderer : $.jqplot.MeterGaugeRenderer,
-					rendererOptions : {
-						min : 0,
-						max : GP * 10,
-						padding : 0,
-						intervals : [ GP, GP * 2, GP * 3, GP * 4, GP * 5,
-								GP * 6, GP * 7, GP * 8, GP * 9, GP * 10 ],
-						intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
-								'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
-								'#4BFE78', '#0AFE47', '#01F33E' ]
-					}
-				}
-			};
-
 			$.ajax({
-				url : 'js/templates/liveValues.hb',
+				url : 'js/templates/todayValues.hb',
 				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
 						'data' : data
 					});
-					$(divId).html(html);
-				},
-				dataType : 'text',
-			});
-			$.ajax({
-				url : 'js/templates/totalValues.hb',
-				success : function(source) {
-					var template = Handlebars.compile(source);
-					var html = template({
-						'data' : data
-					});
-					$(SideBar).html(html);
-					var gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ],gaugeGPOptions);
-					gaugeGP.series[0].data = [ [ 'W',data.IndexValues.inverters[0].live[2].value ] ];
-					gaugeGP.series[0].label = Math.round(data.IndexValues.inverters[0].live[2].value)+ ' W';
-					document.title = '('+ data.IndexValues.inverters[0].live[2].value+ ' W) WebSolarLog';
-					gaugeGP.replot();
+					$(todayValues).html(html);
 				},
 				dataType : 'text',
 			});
 		});
 	},
 
-	
+	init_PageMonthValues : function(monthValues) {
+		// initialize languages selector on the given div
+		WSL.api.getPageMonthValues(function(data) {
+			$.ajax({
+				url : 'js/templates/monthValues.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					$(monthValues).html(html);
+				},
+				dataType : 'text',
+			});
+		});
+	},
+
+	init_PageYearValues : function(yearValues) {
+		// initialize languages selector on the given div
+		WSL.api.getPageYearValues(function(data) {
+			$.ajax({
+				url : 'js/templates/yearValues.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					$(yearValues).html(html);
+				},
+				dataType : 'text',
+			});
+		});
+	},
+
 	createDayGraph : function(invtnum, getDay, fnFinish) {
 		var graphOptions = {
 			series : [
@@ -315,7 +308,7 @@ var WSL = {
 			}
 		};
 		$.ajax({
-			url : "server.php?method=get" + getDay + "Values&invtnum=" + invtnum,
+			url : "server.php?method=getGraphPoints&type="+ getDay +"&invtnum=" + invtnum,
 			method : 'GET',
 			dataType : 'json',
 			success : function(result) {
@@ -344,28 +337,27 @@ var WSL = {
 
 	createPeriodGraph : function(invtnum, type, count, divId, fnFinish) {
 		var graphDayPeriodOptions = {
-			// The "seriesDefaults" option is an options object that will
-			// be applied to all series in the chart.
 			seriesDefaults : {
 				renderer : $.jqplot.BarRenderer,
+				labelOptions:{
+					formatString: '%d-%' ,fontSize: '20pt',
+				},
 				rendererOptions : {
 					fillToZero : true,
-					barWidth : 5
+					barWidth : 5,
 				},
 				showMarker : false,
-				pointLabels : {
-					show : true
-				}
+		        pointLabels: {
+		            show: true,
+		            formatString: '%s',
+		        },
+
 			},
-			// Custom labels for the series are specified with the "label"
-			// option on the series option. Here a series option object
-			// is specified for each series.
 			highlighter : {
 				show : true,
-				sizeAdjust : 7.5
+				sizeAdjust : '20pt',
+				formatString: '%s',
 			},
-
-			// series:[{label:'Hotel'}],
 			axesDefaults : {
 				useSeriesColor: true, 
 				tickRenderer : $.jqplot.CanvasAxisTickRenderer,
@@ -374,17 +366,13 @@ var WSL = {
 					fontSize : '10pt'
 				}
 			},
-			// Show the legend and put it outside the grid, but inside the
-			// plot container, shrinking the grid to accomodate the legend.
-			// A value of "outside" would not shrink the grid and allow
-			// the legend to overflow the container.
 			legend : {
 				show : false
 			},
 			axes : {
 				// Use a category axis on the x axis and use our custom ticks.
 				xaxis : {
-					label : '',
+					label : 'Date',
 					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
 					renderer : $.jqplot.DateAxisRenderer,
 					angle : -30,
@@ -392,10 +380,8 @@ var WSL = {
 						formatString : '%d-%m'
 					}
 				},
-				// Pad the y axis just a little so bars can get close to, but
-				// not touch, the grid boundaries. 1.2 is the default padding.
 				yaxis : {
-					label : 'Power(W)',
+					label : 'Power(kWh)',
 					min : 0,
 					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
 				}
@@ -403,7 +389,7 @@ var WSL = {
 		};
 
 		$.ajax({
-			url : "server.php?method=getPeriodValues&type=" + type + "&count=" + count + "&invtnum=" + invtnum,
+			url : "server.php?method=getGraphPoints&type=" + type + "&count=" + count + "&invtnum=" + invtnum,
 			method : 'GET',
 			dataType : 'json',
 			success : function(result) {
@@ -443,6 +429,20 @@ WSL.api.getPageIndexValues = function(success) {
 WSL.api.getPageTodayValues = function(success) {
 	$.getJSON("server.php", {
 		method : 'getPageTodayValues',
+	}, success);
+};
+
+
+WSL.api.getPageMonthValues = function(success) {
+	$.getJSON("server.php", {
+		method : 'getPageMonthValues',
+	}, success);
+};
+
+
+WSL.api.getPageYearValues = function(success) {
+	$.getJSON("server.php", {
+		method : 'getPageYearValues',
 	}, success);
 };
 

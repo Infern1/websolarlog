@@ -19,7 +19,7 @@ require_once("template/" . $template . "/index.php");
 					//WSL.createDayGraph(1, "Yesterday", fnGraphYesterday); // Initial load fast
 
 					WSL.init_PageIndexValues("#content","#sidebar"); // Initial load fast
-					window.setInterval(function(){WSL.init_PageIndexValues("#content","#sidebar");}, 3000); // every 3 seconds
+					window.setInterval(function(){WSL.init_PageIndexValues("#content","#sidebar");}, 30000); // every 3 seconds
     		}
 		)
 	});

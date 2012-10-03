@@ -306,7 +306,23 @@ class PDODataAdapter {
     	$id = R::store($bean);
 
     }
-
+    /**
+     * read the Energy of today
+     * @param int $invtnum
+     * @return MaxPowerToday
+     */
+    public function readEnergyDay($invtnum,$date) {
+    	$date = ($date == 0) ? time(): $date;
+    	
+    	$bean =  R::findOne('Energy',
+    			' INV = :INV AND Time LIKE :date ',
+    			array(':INV'=>$invtnum,
+    					':date'=> '%'.$date.'%'
+    			)
+    	);
+    	return $bean;
+    }
+    
     /**
      * Read the events file
      * @param int $invtnum
@@ -416,25 +432,34 @@ class PDODataAdapter {
     	$preBean = array();
     	$points = array();
     	$KWHT = 0;
+    	//var_dump($beans);
     	foreach ($beans as $bean){
     		if ($i==0){
     			$firstBean = $bean;
     			$preBean = $bean;
-    			$preBeanUTCdate = Util::getUTCdate($bean['SDTE']);
+    			//$preBeanUTCdate = Util::getUTCdate($bean['SDTE']);
+    			$preBeanUTCdate = $bean['time'];
     		}
-    		$UTCdate = Util::getUTCdate($bean['SDTE']);
+    		//$UTCdate = Util::getUTCdate($bean['SDTE']);
+    		$UTCdate = $bean['time'];
     		$UTCtimeDiff = $UTCdate - $preBeanUTCdate;
     		$cumPower = round($bean['KWHT']-$firstBean['KWHT'] *1,3);//cumalative power this day
     		$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,0,2);
 
     		$points[] = array ($UTCdate * 1000,$cumPower,$avgPower);
 
-    		$preBeanUTCdate = Util::getUTCdate($bean['SDTE']);
+    		$preBeanUTCdate = $bean['time'];
     		$preBean = $bean;
     		$KWHT = round($bean['KWHT'] - $firstBean['KWHT'],3);
     		$i++;
     	}
-    	return array($points,$KWHT);
+    	
+    	
+    	$lastDays = new LastDays();
+    	$lastDays->points=$points;
+    	$lastDays->KWHT=$cumPower;
+    	$lastDays->table=$table;
+    	return $lastDays;
     }
 
 
@@ -624,115 +649,99 @@ class PDODataAdapter {
 
         return $list;
     }
-
-
+    
     /*
-     * Get energy values for a period of time...
+     * Create and run the query to getAll Values for a given Period
+     * @Param string $table 
+     * @Param string $type 
+     * @Param date $startDate 
      */
-    public function readPeriodValues($invtnum, $type, $count, $startDate){
-
-    	// if we want to get a day,week,month,year based on a date and there is no date given;
-    	// we set the date of today
-    	if(stristr($type,"this")===false AND !$startDate){
-    		$startDate = date("Y-m-d");
+    public function readTablePeriodValues($invtnum, $table, $type, $startDate){
+    	$count = 0;
+    	if (in_array ( $table, array ("Energy","History","Pmaxotd"))){
+	    	$beginEndDate = Util::getBeginEndDate($type, $startDate,$count);
+    		if ($invtnum > 0){
+	    		$energyBeans = R::getAll("SELECT * FROM '".$table."' WHERE inv = :INV AND time > :beginDate AND  time < :endDate ",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+    		}else{
+	    		$energyBeans = R::getAll("SELECT * FROM '".$table."' WHERE time > :beginDate AND  time < :endDate ",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+    		}
     	}
+    	return $energyBeans;
+    }
+    
 
-    	$startDate = strtotime($startDate);
-
-    	switch ($type) {
-    		case 'Day':
-    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
-    			$endDate = Util::getTimestampOfDate(23,59,59,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
-
-    			break;
-    		case 'Week':
-    			$beginEndDate = Util::getStartAndEndOfWeek($startDate);
-    			$beginDate = $beginEndDate[0];
-    			$endDate = $beginEndDate[1];
-    			break;
-    		case 'Month':
-    			$beginDate = Util::getTimestampOfDate(0,0,0, 1, date("m",$startDate), date("Y",$startDate));
-    			$endDate = Util::getTimestampOfDate(23,59,59,31, date("m",$startDate), date("Y",$startDate));
-
-    			break;
-    		case 'Year':
-    			$beginDate = Util::getTimestampOfDate(0,0,0, 1,1, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
-    			$endDate = Util::getTimestampOfDate(23,59,59,31,12, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
-    			break;
-    		case 'thisDay':
-    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d"), date("m"), date("Y"));
-    			$endDate = Util::getTimestampOfDate(23,59,59,date("d"), date("m"), date("Y"));
-
-    			break;
-    		case 'thisWeek':
-    			$beginEndDate = Util::getStartAndEndOfWeek(date("Y-m-d"));
-    			$beginDate = $beginEndDate[0];
-    			$endDate = $beginEndDate[1];
-
-    			break;
-    		case 'thisMonth':
-    			$beginDate = Util::getFirstDayOfMonth(1, date("m"), date("Y"));
-    			$endDate = Util::getLastDayOfMonth(31, date("m"), date("Y"));
-
-    			break;
-    		case 'thisYear':
-    			$beginDate = Util::getFirstDayOfMonth(1, 1, date("Y"))-3600; // -3600 = correction daylightsavingtime;
-    			$endDate = Util::getLastDayOfMonth(31, 12, date("Y"))-3600; // -3600 = correction daylightsavingtime;
-
-    			break;
-    		case 'lastDay':
-    			/*
-    			 * TODO
-    			 */
-    			break;
-    		case 'lastWeek':
-    			/*
-    			 * TODO
-    			 */
-    			break;
-    		case 'lastMonth':
-    			/*
-    			 * TODO
-    			 */
-    			break;
-    		case 'lastYear':
-    		    /*
-    			 * TODO
-    			 */
-    			break;
-    		default:
-    			break;
-    	}
-
-		if ($invtnum > 0){
-    		$energyBeans =
-    		$beans = R::getAll(
-    				"SELECT * FROM 'Energy' WHERE inv = :INV AND time > :beginDate AND  time < :endDate ",
-    				array(
-    						':INV'=>$invtnum,
-    						':beginDate'=>$beginDate,
-    						':endDate'=>$endDate));
-
-
+    /**
+     * return a array with GraphPoints for 
+     * @param date $startDate ("Y-m-d") ("1900-12-31"), when no date given, the date of today is used.
+     * @return array($beginDate, $endDate);
+     */
+    public function getGraphPoint($invtnum,$type, $startDate){
+    	$type=strtolower($type);
+    	
+    	(stristr($type, 'day') === FALSE) ?	$table = "Energy" : $table = "History";
+    	
+    	$beans = $this->readTablePeriodValues($invtnum, $table, $type, $startDate);
+    	
+    	if(strtolower($table) == "history"){
+    		return $this->DayDataBeansToDataArray($beans);
     	}else{
-    		$energyBeans =  R::findOne(
-    				"SELECT * FROM 'Energy' WHERE time > :beginDate AND  time < :endDate ",
-    				array(
-    						':beginDate'=>$beginDate,
-    						':endDate'=>$endDate
-    				));
+    		return $this->PeriodDataBeansToDataArray($beans);
     	}
-
+    }
+    
+    
+   public function PeriodDataBeansToDataArray($beans){
     	$points = array();
-        foreach ($beans as $bean){
-    		$points[] = array ($bean['time'] * 1000, (float)$bean['KWH']);
+    	
+    	foreach ($beans as $bean){
+    		$cumPower = $cumPower +$bean['KWH'];
+    		$points[] = array (
+    					$bean['time'] * 1000,
+    					(float)sprintf("%.2f", $bean['KWH']),
+    					date("H:i:s d-m-Y",$bean['time']),
+	    				(float)sprintf("%.2f", $cumPower)
+    				);
     	}
-
+    	
+    	// if no data was found, create 1 dummy point for the graph to render
+    	if(count($points)==0){
+    		$cumPower = 0;
+    		$points[] = array (time()* 1000, 0,0);
+    	}
+	    	 
     	$lastDays = new LastDays();
     	$lastDays->points=$points;
+    	$lastDays->KWHT=$cumPower;
+    	$lastDays->table=$table;
     	return $lastDays;
     }
+    
+    
+    
+    public function readMaxPowerOfTodayValues($invtnum, $type, $count, $startDate){
+    
+    	$PmaxotdBeans = $this->readTablePeriodValues($invtnum, "Pmaxotd", "today");
 
+    	$oMaxPowerToday = new MaxPowerToday();
+    	$oMaxPowerToday->GP = $PmaxotdBeans[0]['GP'];
+    	$oMaxPowerToday->INV =$PmaxotdBeans[0]['INV'];
+    	$oMaxPowerToday->time = date("H:i:s d-m-Y",$PmaxotdBeans[0]['time']);
+    	return $oMaxPowerToday;
+    }
+    
+    
+    public function readEnergyValues($invtnum, $type, $count, $startDate){
+    	 
+		$energyBeans = $this->readTablePeriodValues($invtnum, "Energy", "today");
+
+    	$oEnergy = new Energy();
+    	$oEnergy->INV =$energyBeans[0]['INV'];
+    	$oEnergy->time = date("H:i:s d-m-Y",$energyBeans[0]['time']);
+    	$oEnergy->KWH =$energyBeans[0]['KWH'];
+    	$oEnergy->KWHT=$energyBeans[0]['KWHT'];
+    	return $oEnergy;
+    }
+    
     public function readPageIndexData() {
     	// summary live data
     	$list = array();

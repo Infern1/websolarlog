@@ -13,5 +13,4 @@
        	</div>
 	{{/data.tabs}}
 </div>
-<div id="logger"></div>
 <!-- END Slider -->

@@ -46,90 +46,7 @@ $type = Common::getValue('type', 0);
 $date = Common::getValue('date', 0);
 
 $dataAdapter = new PDODataAdapter();
-
-
-
-////////////////////////////////////////////
-///
-/// Dirty "solution" for dummy data
-/// TODO :: (Re)move code below
-////////////////////////////////////////////
-/*
-$today = date("Ymd");
-$yesterday = date("Ymd", strtotime(date('d', strtotime(date('Y-m-d') . " -1 days"))." ".date("M")." ".date("Y")));
-
-$todayCount = $dataAdapter->getHistoryCount(1,$today);
-$yesterdayCount = $dataAdapter->getHistoryCount(1,$yesterday);
-$KWHT = 0;
-if($todayCount==0){
-	$i=0;
-	while($i<50){
-		$Olive = new Live();
-		$Olive->SDTE = date("Ymd-H:i:s", strtotime(date("d")." ".date("M")." ".date("Y"))+($i*300));
-		$Olive->I1V = 200+rand(20,100);
-		$Olive->I1A = 3+rand(1,3);
-		$Olive->I1P = round($Olive->I1V*$Olive->I1A,2);
-		$Olive->I2V = 200+rand(20,100);
-		$Olive->I2A = 3+rand(1,3);
-		$Olive->I2P = round($Olive->I2V*$Olive->I2A,2);
-		$Olive->GV = 220+rand(2,10);
-		$Olive->GP = $Olive->I1P+$Olive->I2P*0.98;
-		$Olive->GA = round($Olive->GP/$Olive->GV,2);
-		$Olive->FRQ = 50;
-		$Olive->EFF = 80+rand(0,15);
-		$Olive->INVT = 20+rand(0,15);
-		$Olive->BOOT = 30+rand(0,15);
-		$KWHT = $KWHT + $Olive->GP/1000;
-		$Olive->KWHT = $KWHT;
-		$dataAdapter->addHistory($invtnum, $Olive);
-		$i++;
-	}
-	$Ompt = new MaxPowerToday();
-	$Ompt->SDTE = $Olive->SDTE;
-	$Ompt->GP = $Olive->GP;
-	$dataAdapter->writeMaxPowerToday($invtnum, $Ompt);
-
-	$Oenergy = new MaxPowerToday();
-	$Oenergy->SDTE = date("Ymd-H:m:s");
-	$Oenergy->GP = $KWHT;
-
-	$dataAdapter->addEnergy($invtnum, $Oenergy);
-
-}
-
-if($yesterdayCount==0){
-	$i=0;
-	$KWHT=0;
-	while($i<50){
-		$Olive = new Live();
-		$Olive->SDTE = date("Ymd-H:i:s", strtotime(  date('d', strtotime(date('Y-m-d') . " -1 days"))   ." ".date("M")." ".date("Y"))+($i*300));
-		$Olive->I1V = 200+rand(20,100);
-		$Olive->I1A = 3+rand(1,3);
-		$Olive->I1P = round($Olive->I1V*$Olive->I1A,2);
-		$Olive->I2V = 200+rand(20,100);
-		$Olive->I2A = 3+rand(1,3);
-		$Olive->I2P = round($Olive->I2V*$Olive->I2A,2);
-		$Olive->GV = 220+rand(2,10);
-		$Olive->GP = $Olive->I1P+$Olive->I2P*0.98;
-		$Olive->GA = round($Olive->GP/$Olive->GV,2);
-		$Olive->FRQ = 50;
-		$Olive->EFF = 80+rand(0,15);
-		$Olive->INVT = 20+rand(0,15);
-		$Olive->BOOT = 30+rand(0,15);
-		$KWHT = $KWHT + $Olive->GP/1000;
-		$Olive->KWHT = $KWHT;
-		$dataAdapter->addHistory($invtnum, $Olive);
-		$i++;
-	}
-}
-*/
-
-////////////////////////////////////////////
-///
-/// / Dirty "solution" for dummy data
-///
-////////////////////////////////////////////
-
+$config = new Config();
 
 switch ($method) {
 	case 'getTabs':
@@ -287,47 +204,149 @@ switch ($method) {
 
 		$data['plantInfo'] = $plantInfo;
 		break;
-
-	case 'getTodayValues':
+	case 'getGraphPoints':
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
-		// get the date of today.
-		$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-		$lines = $dataAdapter->readDailyData($date,$invtnum);
+		
+		$lines = $dataAdapter->getGraphPoint(1, $type, "");
 		$dayData = new DayDataResult();
 		$dayData->data = $lines->points;
 		$dayData->valueKWHT = $lines->KWHT;
 		$dayData->success = true;
-
 		$data['dayData'] = $dayData;
 		break;
-	case 'getPeriodValues':
+	case 'getPageMonthValues':
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
+
 		// get the date of today.
+		//$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
 		
-		$lines = $dataAdapter->readPeriodValues($invtnum,$type, $count,$date);
+		/*
+		- kWh van vandaag icm CO2 vandaag 
+		 */
+		$energyToday = $dataAdapter->readEnergyValues($invtnum, "month", 1, 0);
+		
+		/*
+		 * - Max Watt van de dag 
+		 */
+		
+		$MaxPowerOfToday = $dataAdapter->readMaxPowerOfTodayValues($invtnum, "month", 1, 0);
+		/*
+		 * - De gauges tonen w/v/a
+		 */
+		/// ??????????????????????????????
+		
+		/*
+		 * - Grafiek van vandaag (Watt) 
+		 */
+		///
+		
+		/*
+		 * - Grafiek met w/v/a van vandaag
+		 */
+		
+		/// ????????????????????????????????????
+
 		$dayData = new DayDataResult();
-		$dayData->data = $lines->points;
-		$dayData->valueKWHT = $lines->KWHT;
+		$dayData->data = array(
+				"Energy"=>$energyToday,
+				"MaxPower"=>$MaxPowerOfToday,
+				"CO2Today"=>Formulas::CO2kWh($energyToday->KWH,$config->co2kwh),
+				"CO2Overall"=>Formulas::CO2kWh($energyToday->KWHT, $config->co2kwh)		
+				);
 		$dayData->success = true;
 	
 		$data['dayData'] = $dayData;
+		break;
+	case 'getPageYearValues':
+			$config_invt="config/config_invt".$invtnum.".php";
+			include("$config_invt");
+		
+			// get the date of today.
+			//$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
+		
+			/*
+				- kWh van vandaag icm CO2 vandaag
+			*/
+			$energyToday = $dataAdapter->readEnergyValues($invtnum, "year", 1, 0);
+		
+			/*
+			 * - Max Watt van de dag
+			*/
+		
+			$MaxPowerOfToday = $dataAdapter->readMaxPowerOfTodayValues($invtnum, "year", 1, 0);
+			/*
+			 * - De gauges tonen w/v/a
+			*/
+			/// ??????????????????????????????
+		
+			/*
+			 * - Grafiek van vandaag (Watt)
+			*/
+			///
+		
+			/*
+			 * - Grafiek met w/v/a van vandaag
+			*/
+		
+			/// ????????????????????????????????????
+		
+			$dayData = new DayDataResult();
+			$dayData->data = array(
+					"Energy"=>$energyToday,
+					"MaxPower"=>$MaxPowerOfToday,
+					"CO2Today"=>Formulas::CO2kWh($energyToday->KWH,$config->co2kwh),
+					"CO2Overall"=>Formulas::CO2kWh($energyToday->KWHT, $config->co2kwh)
+			);
+			$dayData->success = true;
+		
+			$data['dayData'] = $dayData;
 		break;
 	case 'getPageTodayValues':
-		$config_invt="config/config_invt".$invtnum.".php";
-		include("$config_invt");
-		// get the date of today.
-		$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-	
-		$lines = $dataAdapter->readDailyData($date,$invtnum);
-		$dayData = new DayDataResult();
-		$dayData->data = $lines->points;
-		$dayData->valueKWHT = $lines->KWHT;
-		$dayData->success = true;
-	
-		$data['dayData'] = $dayData;
-		break;
+			$config_invt="config/config_invt".$invtnum.".php";
+			include("$config_invt");
+		
+			// get the date of today.
+			//$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
+		
+			/*
+				- kWh van vandaag icm CO2 vandaag
+			*/
+			$energyToday = $dataAdapter->readEnergyValues($invtnum, "Day", 1, 0);
+		
+			/*
+			 * - Max Watt van de dag
+			*/
+		
+			$MaxPowerOfToday = $dataAdapter->readMaxPowerOfTodayValues($invtnum, "Day", 1, 0);
+			/*
+			 * - De gauges tonen w/v/a
+			*/
+			/// ??????????????????????????????
+		
+			/*
+			 * - Grafiek van vandaag (Watt)
+			*/
+			///
+		
+			/*
+			 * - Grafiek met w/v/a van vandaag
+			*/
+		
+			/// ????????????????????????????????????
+		
+			$dayData = new DayDataResult();
+			$dayData->data = array(
+					"Energy"=>$energyToday,
+					"MaxPower"=>$MaxPowerOfToday,
+					"CO2Today"=>Formulas::CO2kWh($energyToday->KWH,$config->co2kwh),
+					"CO2Overall"=>Formulas::CO2kWh($energyToday->KWHT, $config->co2kwh)
+			);
+			$dayData->success = true;
+		
+			$data['dayData'] = $dayData;
+			break;
 	case 'getYesterdayValues':
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");

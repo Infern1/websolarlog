@@ -44,7 +44,7 @@ class Formulas
     public static function calcKiloWattHourDay($kiloWattHourStart, $kiloWattHourStop, $COEF, $decimals = 0) {
         return round( (($kiloWattHourStop - $kiloWattHourStart) * 1000 * $COEF) / 1000, $decimals);
     }
-
+    
     /**
      * Calculates the average power over a given time
      * @param $kiloWattHourStart
@@ -53,11 +53,30 @@ class Formulas
      * @param $decimals
      */
     public static function calcAveragePower($kiloWattHourStart, $kiloWattHourStop, $timeDifference, $decimals = 1) {
-        if ($timeDifference == 0) return 0; // Prevent division by zero
-        return round((((($kiloWattHourStart-$kiloWattHourStop) * 3600) / $timeDifference) * 1000), $decimals);
+    	if ($timeDifference == 0) return 0; // Prevent division by zero
+    	return round((((($kiloWattHourStart-$kiloWattHourStop) * 3600) / $timeDifference) * 1000), $decimals);
     }
-
-
+    
+    
+    /**
+     * Calculates the average power over a given time
+     * @param $kiloWattHourStart
+     * @param $kiloWattHourStop
+     * @param $timeDifference
+     * @param $decimals
+     */
+    public static function CO2kWh($kiloWattHour, $ConfigCO2KWH, $decimals = 1) {
+    	$CO2=(($kiloWattHour/1000)*$ConfigCO2KWH);
+    	if ($CO2>1000) {
+    		$CO2 = number_format(($CO2/1000), 3, ",", "")." Tonnes";
+    	}else {
+    		$CO2 = number_format(($CO2),1, ",", "")." Kg";
+    	}
+    	
+    	 return $CO2;
+    }
+    
+    
 }
 
 ?>
