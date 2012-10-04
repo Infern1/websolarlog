@@ -38,7 +38,8 @@ header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Content-type: application/json');
 
 // Initialize return array
-$config = new Config();
+$dataAdapter = new PDODataAdapter();
+$config = $dataAdapter->readConfig();
 
 $data = array();
 $invtnum = Common::getValue('invtnum', 0);
@@ -47,7 +48,6 @@ $count = Common::getValue('count', 0);
 $type = Common::getValue('type', 0);
 $date = Common::getValue('date', 0);
 
-$dataAdapter = new PDODataAdapter();
 
 
 switch ($method) {
@@ -209,7 +209,7 @@ switch ($method) {
 	case 'getGraphPoints':
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
-		
+
 		$lines = $dataAdapter->getGraphPoint(1, $type, "");
 		$dayData = new DayDataResult();
 		$dayData->data = $lines->points;
@@ -223,31 +223,31 @@ switch ($method) {
 
 		// get the date of today.
 		//$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-		
+
 		/*
-		- kWh van vandaag icm CO2 vandaag 
+		- kWh van vandaag icm CO2 vandaag
 		 */
 		$energyToday = $dataAdapter->readEnergyValues($invtnum, "month", 1, 0);
-		
+
 		/*
-		 * - Max Watt van de dag 
+		 * - Max Watt van de dag
 		 */
-		
+
 		$MaxPowerOfToday = $dataAdapter->readMaxPowerValues($invtnum, "month", 1, 0);
 		/*
 		 * - De gauges tonen w/v/a
 		 */
 		/// ??????????????????????????????
-		
+
 		/*
-		 * - Grafiek van vandaag (Watt) 
+		 * - Grafiek van vandaag (Watt)
 		 */
 		///
-		
+
 		/*
 		 * - Grafiek met w/v/a van vandaag
 		 */
-		
+
 		/// ????????????????????????????????????
 
 		$dayData = new DayDataResult();
@@ -255,45 +255,45 @@ switch ($method) {
 				"Energy"=>$energyToday,
 				"MaxPower"=>$MaxPowerOfToday,
 				"CO2Today"=>Formulas::CO2kWh($energyToday->KWH,$config->co2kwh),
-				"CO2Overall"=>Formulas::CO2kWh($energyToday->KWHT, $config->co2kwh)		
+				"CO2Overall"=>Formulas::CO2kWh($energyToday->KWHT, $config->co2kwh)
 				);
 		$dayData->success = true;
-	
+
 		$data['dayData'] = $dayData;
 		break;
 	case 'getPageYearValues':
 			$config_invt="config/config_invt".$invtnum.".php";
 			include("$config_invt");
-		
+
 			// get the date of today.
 			//$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-		
+
 			/*
 				- kWh van vandaag icm CO2 vandaag
 			*/
 			$energyToday = $dataAdapter->readEnergyValues($invtnum, "year", 1, 0);
-		
+
 			/*
 			 * - Max Watt van de dag
 			*/
-		
+
 			$MaxPowerOfToday = $dataAdapter->readMaxPowerValues($invtnum, "year", 1, 0);
 			/*
 			 * - De gauges tonen w/v/a
 			*/
 			/// ??????????????????????????????
-		
+
 			/*
 			 * - Grafiek van vandaag (Watt)
 			*/
 			///
-		
+
 			/*
 			 * - Grafiek met w/v/a van vandaag
 			*/
-		
+
 			/// ????????????????????????????????????
-		
+
 			$dayData = new DayDataResult();
 			$dayData->data = array(
 					"Energy"=>$energyToday,
@@ -302,42 +302,42 @@ switch ($method) {
 					"CO2Overall"=>Formulas::CO2kWh($energyToday->KWHT, $config->co2kwh)
 			);
 			$dayData->success = true;
-		
+
 			$data['dayData'] = $dayData;
 		break;
 	case 'getPageTodayValues':
 			//$config_invt="config/config_invt".$invtnum.".php";
 			//include("$config_invt");
-		
+
 			// get the date of today.
 			//$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-		
+
 			/*
 				- kWh van vandaag icm CO2 vandaag
 			*/
 			$energyToday = $dataAdapter->readEnergyValues(1, "today", 1, 0);
-			
+
 			/*
 			 * - Max Watt van de dag
 			*/
-		
+
 			$MaxPowerOfToday = $dataAdapter->readMaxPowerValues(1, "today", 1, 0);
 			/*
 			 * - De gauges tonen w/v/a
 			*/
 			/// ??????????????????????????????
-		
+
 			/*
 			 * - Grafiek van vandaag (Watt)
 			*/
 			///
-		
+
 			/*
 			 * - Grafiek met w/v/a van vandaag
 			*/
-		
+
 			/// ????????????????????????????????????
-		
+
 			$dayData = new DayDataResult();
 			$dayData->data = array(
 					"Energy"=>$energyToday,
@@ -346,7 +346,7 @@ switch ($method) {
 					"CO2Overall"=>Formulas::CO2kWh($energyToday->KWHT, $config->co2kwh)
 			);
 			$dayData->success = true;
-		
+
 			$data['dayData'] = $dayData;
 			break;
 	/*case 'getYesterdayValues':
