@@ -1,7 +1,5 @@
 <div class="widget">
-	<div style="width: 200px; height: 150px; position: relative;">
-		<div id="gaugeGP" style="width: 200px; height: 150px; position: relative;"></div>
-	</div>
+
 	<div style="height:100px;">
 		<h3>Totals</h3>
 		<div  class="column span-3">

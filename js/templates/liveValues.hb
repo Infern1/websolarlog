@@ -1,20 +1,54 @@
 <div class="post">
+	<div style="width: 180px; height: 150px; float:left;">
+		<div id="gaugeGP" style="width: 200px; height: 150px; position: relative;"></div>
+	</div>
+	<div style="width: 180px; height: 150px; float:left;">
+		<div id="gaugeIP" style="width: 200px; height: 150px; position: relative;"></div>
+	</div>
+	<div style="width: 180px; height: 150px; float:left;">
+		<div id="gaugeEFF" style="width: 200px; height: 150px; position: relative;"></div>
+	</div>	</div><div class="cl"></div>
 	<h3>Live:</h3>
 	<div class="container" >
 		<div  class="column span-14">
-		{{#each data.IndexValues.inverters}}
-			{{#each this.live}}
+
 				<div class="column span-2 first">
-					{{this.field}}
+					time
 				</div>
-			{{/each}}
-		{{/each}}
-		{{#each data.IndexValues.inverters}}
-			{{#each this.live}}
 				<div class="column span-2 first">
-					{{this.value}}
+					INV
 				</div>
-			{{/each}}
+				<div class="column span-2 first">
+					GP
+				</div>
+				<div class="column span-2 first">
+					I1P
+				</div>
+				<div class="column span-2 first">
+					I2P
+				</div>
+				<div class="column span-2 first">
+					ITP
+				</div>
+		{{#each data.IndexValues.inverters}}
+				<div class="column span-2 first">
+					{{this.live.SDTE}}
+				</div>
+				<div class="column span-2 first">
+					{{this.live.INV}}
+				</div>
+				<div class="column span-2 first">
+					{{this.live.GP}}
+				</div>
+				<div class="column span-2 first">
+					{{this.live.I1P}}
+				</div>
+				<div class="column span-2 first">
+					{{this.live.I2P}}
+				</div>
+				<div class="column span-2 first">
+					{{this.live.IP}}
+				</div>
 		{{/each}}
 		<br><br>
 		

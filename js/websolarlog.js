@@ -181,6 +181,47 @@ var WSL = {
 					}
 				}
 			};
+				var IP = 3600 / 10;
+				var gaugeIPOptions = {
+					title : 'DC Power',
+					grid : {
+						background : '#FFF'
+					},
+					seriesDefaults : {
+						renderer : $.jqplot.MeterGaugeRenderer,
+						rendererOptions : {
+							min : 0,
+							max : IP * 10,
+							padding : 0,
+							intervals : [ IP, IP * 2, IP * 3, IP * 4, IP * 5,
+									IP * 6, IP * 7, IP * 8, IP * 9, IP * 10 ],
+							intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
+									'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
+									'#4BFE78', '#0AFE47', '#01F33E' ]
+						}
+					}
+				};
+					var EFF = 100 / 10;
+					var gaugeEFFOptions = {
+						title : 'Efficiency',
+						grid : {
+							background : '#FFF'
+						},
+						seriesDefaults : {
+							renderer : $.jqplot.MeterGaugeRenderer,
+							rendererOptions : {
+								min : 0,
+								max : EFF * 10,
+								padding : 0,
+								intervals : [ EFF, EFF * 2, EFF * 3, EFF * 4, EFF * 5,
+										EFF * 6, EFF * 7, EFF * 8, EFF * 9, EFF * 10 ],
+								intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
+										'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
+										'#4BFE78', '#0AFE47', '#01F33E' ]
+							}
+						}
+					};
+			
 
 			$.ajax({
 				url : 'js/templates/liveValues.hb',
@@ -201,11 +242,23 @@ var WSL = {
 						'data' : data
 					});
 					$(SideBar).html(html);
+
 					var gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ],gaugeGPOptions);
-					gaugeGP.series[0].data = [ [ 'W',data.IndexValues.inverters[0].live[2].value ] ];
-					gaugeGP.series[0].label = Math.round(data.IndexValues.inverters[0].live[2].value)+ ' W';
-					document.title = '('+ data.IndexValues.inverters[0].live[2].value+ ' W) WebSolarLog';
+					gaugeGP.series[0].data = [ [ 'W',data.IndexValues.inverters[0].live.GP ] ];
+					gaugeGP.series[0].label = Math.round(data.IndexValues.inverters[0].live.GP)+ ' W';
+					document.title = '('+ data.IndexValues.inverters[0].live.GP+ ' W) WebSolarLog';
 					gaugeGP.replot();
+					
+					var gaugeIP = $.jqplot('gaugeIP', [ [ 0.1 ] ],gaugeIPOptions);
+					gaugeIP.series[0].data = [ [ 'W',data.IndexValues.inverters[0].live.IP ] ];
+					gaugeIP.series[0].label = Math.round(data.IndexValues.inverters[0].live.IP)+ ' W';
+					gaugeIP.replot();
+					
+					var gaugeEFF = $.jqplot('gaugeEFF', [ [ 0.1 ] ],gaugeEFFOptions);
+					gaugeEFF.series[0].data = [ [ 'W',data.IndexValues.inverters[0].live.EFF] ];
+					gaugeEFF.series[0].label = Math.round(data.IndexValues.inverters[0].live.EFF)+ ' W';
+					gaugeEFF.replot();
+					
 				},
 				dataType : 'text',
 			});
