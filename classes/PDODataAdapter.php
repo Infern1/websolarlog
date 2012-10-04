@@ -662,7 +662,7 @@ class PDODataAdapter {
     	if (in_array ( $table, array ("Energy","History","Pmaxotd"))){
     		
 	    	$beginEndDate = Util::getBeginEndDate($type, $startDate,$count);
-	    	
+
     		if ($invtnum > 0){
     			$energyBeans = R::getAll("SELECT * FROM '".$table."' WHERE inv = :INV AND time > :beginDate AND  time < :endDate ",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
     		}else{
@@ -728,13 +728,14 @@ class PDODataAdapter {
     
     
     public function readMaxPowerValues($invtnum, $type, $count, $startDate){
-    
-    	$PmaxotdBeans = $this->readTablePeriodValues($invtnum, "Pmaxotd", $type,$startDate);
 
-    	$oMaxPowerToday = new MaxPowerToday();
-    	$oMaxPowerToday->GP = $PmaxotdBeans[0]['GP'];
-    	$oMaxPowerToday->INV =$PmaxotdBeans[0]['INV'];
-    	$oMaxPowerToday->time = date("H:i:s d-m-Y",$PmaxotdBeans[0]['time']);
+    	$PmaxotdBeans = $this->readTablePeriodValues($invtnum, "Pmaxotd", $type,$startDate);
+    	foreach ($PmaxotdBeans as $PmaxotdBean){
+    		$oMaxPowerToday = new MaxPowerToday();
+    		$oMaxPowerToday->GP = $PmaxotdBean['GP'];
+    		$oMaxPowerToday->INV =$PmaxotdBean['INV'];
+    		$oMaxPowerToday->time = date("H:i:s d-m-Y",$PmaxotdBean['time']);
+    	}
     	return $oMaxPowerToday;
     }
     
@@ -745,15 +746,14 @@ class PDODataAdapter {
 
 		$inverter = $this->readInverter($invtnum);
 
-		
 		foreach ($energyBeans as $energyBean){
     		$oEnergy = new Energy();
-    		$oEnergy->INV =$energyBean[0]['INV'];
-    		$oEnergy->time = date("H:i:s d-m-Y",$energyBean[0]['time']);
-    		$oEnergy->KWH =$energyBean[0]['KWH'];
+    		$oEnergy->INV =$energyBean['INV'];
+    		$oEnergy->time = date("H:i:s d-m-Y",$energyBean['time']);
+    		$oEnergy->KWH =$energyBean['KWH'];
     		$oEnergy->PanelRatio = array();
-    		$oEnergy->KWHKWP =round($energyBean[0]['KWH']/($inverter->plantpower/1000));
-    		$oEnergy->KWHT=$energyBean[0]['KWHT'];
+    		$oEnergy->KWHKWP =round($energyBean['KWH']/($inverter->plantpower/1000),2);
+    		$oEnergy->KWHT=$energyBean['KWHT'];
 		}
     	return $oEnergy;
     }
