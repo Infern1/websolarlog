@@ -188,6 +188,7 @@ class Worker {
         // Get the highest value off the day
         $currentMPT = $this->adapter->readMaxPowerToday($inverter->id);
         $COEF=($live->EFF/100)* $inverter->correctionFactor;
+        $COEF=($COEF > 1) ? 1 : $COEF;
         $GP2 = round($live->GP * $COEF,2);
         if (!isset($currentMPT) || $GP2 > $currentMPT->GP) {
             // Found a new max power of today
