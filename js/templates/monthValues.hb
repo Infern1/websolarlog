@@ -12,6 +12,8 @@
 		    	<div class="column span-4 last">{{data.dayData.data.MaxPower.time}}</div>
 				<div class="column span-3 first">Energy Month</div>
 			    <div class="column span-4 last">{{data.dayData.data.Energy.KWH}} kWh</div>
+			    <div class="column span-3 first">kWh/kWp</div>
+			    <div class="column span-4 last">{{data.dayData.data.Energy.KWHKWP}} kWh</div>
 				<div class="column span-3 first">CO2 Month</div>
 		    	<div class="column span-4 last">{{data.dayData.data.CO2Today}}</div>
 				<div class="column span-3 first">Last Update</div>
