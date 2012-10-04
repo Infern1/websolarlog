@@ -432,7 +432,7 @@ class PDODataAdapter {
     	$preBean = array();
     	$points = array();
     	$KWHT = 0;
-    	//var_dump($beans);
+
     	foreach ($beans as $bean){
     		if ($i==0){
     			$firstBean = $bean;
@@ -650,7 +650,7 @@ class PDODataAdapter {
         return $list;
     }
     
-    /*
+    /**
      * Create and run the query to getAll Values for a given Period
      * @Param string $table 
      * @Param string $type 
@@ -658,11 +658,16 @@ class PDODataAdapter {
      */
     public function readTablePeriodValues($invtnum, $table, $type, $startDate){
     	$count = 0;
+    	
     	if (in_array ( $table, array ("Energy","History","Pmaxotd"))){
+    		
 	    	$beginEndDate = Util::getBeginEndDate($type, $startDate,$count);
+	    	
     		if ($invtnum > 0){
+    			echo $invtnum." ".$type." ".$table." ".$startDate."....";
 	    		$energyBeans = R::getAll("SELECT * FROM '".$table."' WHERE inv = :INV AND time > :beginDate AND  time < :endDate ",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
     		}else{
+    			echo $invtnum." ".$type." ".$table." ".$startDate."....";
 	    		$energyBeans = R::getAll("SELECT * FROM '".$table."' WHERE time > :beginDate AND  time < :endDate ",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
     		}
     	}
@@ -676,10 +681,11 @@ class PDODataAdapter {
      * @return array($beginDate, $endDate);
      */
     public function getGraphPoint($invtnum,$type, $startDate){
+    	
     	$type=strtolower($type);
     	
     	(stristr($type, 'day') === FALSE) ?	$table = "Energy" : $table = "History";
-
+    	
     	$beans = $this->readTablePeriodValues($invtnum, $table, $type, $startDate);
     	
     	if(strtolower($table) == "history"){
@@ -698,9 +704,12 @@ class PDODataAdapter {
     	foreach ($beans as $bean){
     		$cumPower = $cumPower +$bean['KWH'];
     		$points[] = array (
-    					$bean['time'] * 1000,
+    					mktime(0, 0, 0, 
+    							date("m",$bean['time']), 
+    							date("d",$bean['time']), 
+    							date("Y",$bean['time']))*1000,
     					(float)sprintf("%.2f", $bean['KWH']),
-    					date("H:i:s d-m-Y",$bean['time']),
+    					date("m-d-Y",$bean['time']),
 	    				(float)sprintf("%.2f", $cumPower)
     				);
     	}
@@ -722,7 +731,7 @@ class PDODataAdapter {
     
     public function readMaxPowerValues($invtnum, $type, $count, $startDate){
     
-    	$PmaxotdBeans = $this->readTablePeriodValues($invtnum, "Pmaxotd", $type);
+    	$PmaxotdBeans = $this->readTablePeriodValues($invtnum, "Pmaxotd", $type,$startDate);
 
     	$oMaxPowerToday = new MaxPowerToday();
     	$oMaxPowerToday->GP = $PmaxotdBeans[0]['GP'];
@@ -733,14 +742,15 @@ class PDODataAdapter {
     
     
     public function readEnergyValues($invtnum, $type, $count, $startDate){
-    	 
-		$energyBeans = $this->readTablePeriodValues($invtnum, "Energy", $type);
-
-    	$oEnergy = new Energy();
-    	$oEnergy->INV =$energyBeans[0]['INV'];
-    	$oEnergy->time = date("H:i:s d-m-Y",$energyBeans[0]['time']);
-    	$oEnergy->KWH =$energyBeans[0]['KWH'];
-    	$oEnergy->KWHT=$energyBeans[0]['KWHT'];
+    	
+		$energyBeans = $this->readTablePeriodValues($invtnum, "Energy", $type,$startDate);
+		foreach ($energyBeans as $energyBean){
+    		$oEnergy = new Energy();
+    		$oEnergy->INV =$energyBean[0]['INV'];
+    		$oEnergy->time = date("H:i:s d-m-Y",$energyBean[0]['time']);
+    		$oEnergy->KWH =$energyBean[0]['KWH'];
+    		$oEnergy->KWHT=$energyBean[0]['KWHT'];
+		}
     	return $oEnergy;
     }
     

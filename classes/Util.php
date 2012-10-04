@@ -112,11 +112,10 @@ class Util {
      * @return array($beginDate, $endDate);
      */
     public function getBeginEndDate($type, $startDate, $count){
-    
     	if(!$startDate){
     		$startDate = date("Y-m-d");
     	}
-    
+
     	// Make de StartDate a timestamp
     	$startDate = strtotime($startDate);
     	 
@@ -165,13 +164,10 @@ class Util {
     			 */
     			break;
     		default:
-    			return "ERROR::PDODataAdapter::getBeginEndDate()::WRONG Type >> Choose from today,week,month,year";
+    			echo "ERROR::UTIL::getBeginEndDate()::WRONG Type >> Choose from today,week,month,year";
     			break;
     	}
-    
     	return array("beginDate"=>$beginDate,"endDate"=>$endDate);
     }
-    
-    
 }
 ?>

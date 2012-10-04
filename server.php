@@ -38,6 +38,8 @@ header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Content-type: application/json');
 
 // Initialize return array
+$config = new Config();
+
 $data = array();
 $invtnum = Common::getValue('invtnum', 0);
 $page = Common::getValue('page', 0);
@@ -46,7 +48,7 @@ $type = Common::getValue('type', 0);
 $date = Common::getValue('date', 0);
 
 $dataAdapter = new PDODataAdapter();
-$config = new Config();
+
 
 switch ($method) {
 	case 'getTabs':
@@ -304,8 +306,8 @@ switch ($method) {
 			$data['dayData'] = $dayData;
 		break;
 	case 'getPageTodayValues':
-			$config_invt="config/config_invt".$invtnum.".php";
-			include("$config_invt");
+			//$config_invt="config/config_invt".$invtnum.".php";
+			//include("$config_invt");
 		
 			// get the date of today.
 			//$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
@@ -313,13 +315,13 @@ switch ($method) {
 			/*
 				- kWh van vandaag icm CO2 vandaag
 			*/
-			$energyToday = $dataAdapter->readEnergyValues($invtnum, "Day", 1, 0);
+			$energyToday = $dataAdapter->readEnergyValues(1, "today", 1, 0);
 		
 			/*
 			 * - Max Watt van de dag
 			*/
 		
-			$MaxPowerOfToday = $dataAdapter->readMaxPowerValues($invtnum, "Day", 1, 0);
+			$MaxPowerOfToday = $dataAdapter->readMaxPowerValues(1, "today", 1, 0);
 			/*
 			 * - De gauges tonen w/v/a
 			*/
