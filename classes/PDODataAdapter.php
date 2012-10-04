@@ -717,11 +717,7 @@ class PDODataAdapter {
 
     	foreach ($beans as $bean){
     		$cumPower = $cumPower +$bean['KWH'];
-    		$points[] = array (
-    					mktime(0, 0, 0,
-    							date("m",$bean['time']),
-    							date("d",$bean['time']),
-    							date("Y",$bean['time']))*1000,
+    		$points[] = array (mktime(0, 0, 0,date("m",$bean['time']),date("d",$bean['time']),date("Y",$bean['time']))*1000,
     					(float)sprintf("%.2f", $bean['KWH']),
     					date("m-d-Y",$bean['time']),
 	    				(float)sprintf("%.2f", $cumPower)

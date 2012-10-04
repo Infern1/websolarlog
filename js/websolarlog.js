@@ -256,7 +256,7 @@ var WSL = {
 					
 					var gaugeEFF = $.jqplot('gaugeEFF', [ [ 0.1 ] ],gaugeEFFOptions);
 					gaugeEFF.series[0].data = [ [ 'W',data.IndexValues.inverters[0].live.EFF] ];
-					gaugeEFF.series[0].label = Math.round(data.IndexValues.inverters[0].live.EFF)+ ' W';
+					gaugeEFF.series[0].label = Math.round(data.IndexValues.inverters[0].live.EFF)+ ' %';
 					gaugeEFF.replot();
 					
 				},
@@ -387,8 +387,12 @@ var WSL = {
 
 	createPeriodGraph : function(invtnum, type, count, divId, fnFinish) {
 		var graphDayPeriodOptions = {
+				series : [
+				          {yaxis:'yaxis',renderer:$.jqplot.BarRenderer},
+				          {yaxis:'y2axis'}
+				          ],
 			seriesDefaults : {
-				renderer : $.jqplot.BarRenderer,
+				
 				labelOptions:{
 					formatString: '%d-%' ,fontSize: '20pt',
 				},
@@ -422,7 +426,6 @@ var WSL = {
 			axes : {
 				// Use a category axis on the x axis and use our custom ticks.
 				xaxis : {
-					label : 'Date',
 					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
 					renderer : $.jqplot.DateAxisRenderer,
 					angle : -30,
@@ -432,6 +435,11 @@ var WSL = {
 				},
 				yaxis : {
 					label : 'Power(kWh)',
+					min : 0,
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
+				},
+				y2axis : {
+					label : 'Cum. Power(kWh)',
 					min : 0,
 					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
 				}
@@ -444,13 +452,15 @@ var WSL = {
 			dataType : 'json',
 			success : function(result) {
 				var dayData = [];
+				var dayData1 = [];
 				for (line in result.dayData.data) {
 					var object = result.dayData.data[line];
 					dayData.push([ object[0], object[1] ]);
+					dayData1.push([ object[0], object[3] ]);
 				}
 				graphDayPeriodOptions.axes.xaxis.min = result.dayData.data[0][0];
-				$.jqplot(divId, [ dayData ], graphDayPeriodOptions).destroy();
-				$.jqplot(divId, [ dayData ], graphDayPeriodOptions);
+				$.jqplot(divId, [ dayData,dayData1 ], graphDayPeriodOptions).destroy();
+				$.jqplot(divId, [ dayData,dayData1 ], graphDayPeriodOptions);
 			}
 		});
 	}
