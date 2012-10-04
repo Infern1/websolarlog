@@ -316,7 +316,7 @@ switch ($method) {
 				- kWh van vandaag icm CO2 vandaag
 			*/
 			$energyToday = $dataAdapter->readEnergyValues(1, "today", 1, 0);
-		
+			
 			/*
 			 * - Max Watt van de dag
 			*/

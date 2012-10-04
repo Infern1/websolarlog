@@ -664,10 +664,8 @@ class PDODataAdapter {
 	    	$beginEndDate = Util::getBeginEndDate($type, $startDate,$count);
 	    	
     		if ($invtnum > 0){
-    			echo $invtnum." ".$type." ".$table." ".$startDate."....";
-	    		$energyBeans = R::getAll("SELECT * FROM '".$table."' WHERE inv = :INV AND time > :beginDate AND  time < :endDate ",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+    			$energyBeans = R::getAll("SELECT * FROM '".$table."' WHERE inv = :INV AND time > :beginDate AND  time < :endDate ",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
     		}else{
-    			echo $invtnum." ".$type." ".$table." ".$startDate."....";
 	    		$energyBeans = R::getAll("SELECT * FROM '".$table."' WHERE time > :beginDate AND  time < :endDate ",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
     		}
     	}
@@ -744,11 +742,17 @@ class PDODataAdapter {
     public function readEnergyValues($invtnum, $type, $count, $startDate){
     	
 		$energyBeans = $this->readTablePeriodValues($invtnum, "Energy", $type,$startDate);
+
+		$inverter = $this->readInverter($invtnum);
+
+		
 		foreach ($energyBeans as $energyBean){
     		$oEnergy = new Energy();
     		$oEnergy->INV =$energyBean[0]['INV'];
     		$oEnergy->time = date("H:i:s d-m-Y",$energyBean[0]['time']);
     		$oEnergy->KWH =$energyBean[0]['KWH'];
+    		$oEnergy->PanelRatio = array();
+    		$oEnergy->KWHKWP =round($energyBean[0]['KWH']/($inverter->plantpower/1000));
     		$oEnergy->KWHT=$energyBean[0]['KWHT'];
 		}
     	return $oEnergy;
