@@ -320,10 +320,7 @@ var WSL = {
     					dataDay1.push([ object[0], object[1] ]);
     					dataDay2.push([ object[0], object[2] ]);
     				} 
-    				if (!result.dayData.data){
-    					dataDay1.push([1],[1]);
-    					dataDay2.push([1],[1]);
-    				}
+
     				if (dataDay1[0]) {
     				    graphOptions.axes.xaxis.min = dataDay1[0][0];
     				}

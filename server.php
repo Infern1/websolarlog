@@ -231,7 +231,7 @@ switch ($method) {
 		 * - Max Watt van de dag 
 		 */
 		
-		$MaxPowerOfToday = $dataAdapter->readMaxPowerOfTodayValues($invtnum, "month", 1, 0);
+		$MaxPowerOfToday = $dataAdapter->readMaxPowerValues($invtnum, "month", 1, 0);
 		/*
 		 * - De gauges tonen w/v/a
 		 */
@@ -275,7 +275,7 @@ switch ($method) {
 			 * - Max Watt van de dag
 			*/
 		
-			$MaxPowerOfToday = $dataAdapter->readMaxPowerOfTodayValues($invtnum, "year", 1, 0);
+			$MaxPowerOfToday = $dataAdapter->readMaxPowerValues($invtnum, "year", 1, 0);
 			/*
 			 * - De gauges tonen w/v/a
 			*/
@@ -319,7 +319,7 @@ switch ($method) {
 			 * - Max Watt van de dag
 			*/
 		
-			$MaxPowerOfToday = $dataAdapter->readMaxPowerOfTodayValues($invtnum, "Day", 1, 0);
+			$MaxPowerOfToday = $dataAdapter->readMaxPowerValues($invtnum, "Day", 1, 0);
 			/*
 			 * - De gauges tonen w/v/a
 			*/
@@ -347,7 +347,7 @@ switch ($method) {
 		
 			$data['dayData'] = $dayData;
 			break;
-	case 'getYesterdayValues':
+	/*case 'getYesterdayValues':
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
 		// get the date of today.
@@ -360,7 +360,7 @@ switch ($method) {
 		$dayData->success = true;
 
 		$data['dayData'] = $dayData;
-		break;
+		break;*/
 	case 'getPageIndexValues':
 		$indexValues = $dataAdapter->readPageIndexData();
 		$data['IndexValues'] = $indexValues;

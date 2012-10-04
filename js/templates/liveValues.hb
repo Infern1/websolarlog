@@ -1,18 +1,27 @@
 <div class="post">
 	<h3>Live:</h3>
 	<div class="container" >
-		<div  class="column span-13">
+		<div  class="column span-14">
 		{{#each data.IndexValues.inverters}}
-			<div class="column span-6">
 			{{#each this.live}}
-				<div class="column span-3 first">
+				<div class="column span-2 first">
 					{{this.field}}
 				</div>
-				<div class="column span-2 last">
+			{{/each}}
+		{{/each}}
+		{{#each data.IndexValues.inverters}}
+			{{#each this.live}}
+				<div class="column span-2 first">
 					{{this.value}}
 				</div>
 			{{/each}}
-			<br>
+		{{/each}}
+		<br><br>
+		
+	</div><div class="cl"></div>
+	<br>
+	<div  class="column span-6">
+		{{#each data.IndexValues.inverters}}
 			<div class="column span-5 first">Totals:</div>
 			<div class="column span-3 first">Today</div>
 		    <div class="column span-2 last">{{this.day}}</div>

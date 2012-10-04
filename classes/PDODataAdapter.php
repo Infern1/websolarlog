@@ -385,7 +385,7 @@ class PDODataAdapter {
     					)
     			);
 
-    	$points = $this->DayDataBeansToDataArray($bean);
+    	$points = $this->DayBeansToDataArray($bean);
     	$lastDays = new LastDays();
     	$lastDays->points=$points[0];
     	$lastDays->KWHT=$points[1];
@@ -413,7 +413,7 @@ class PDODataAdapter {
     			array(':INV'=>$invtnum
     					)
     			);
-    	$points = $this->DayDataBeansToDataArray($bean);
+    	$points = $this->DayBeansToDataArray($bean);
     	$lastDays = new LastDays();
     	$lastDays->points=$points[0];
     	return $lastDays;
@@ -426,7 +426,7 @@ class PDODataAdapter {
     }
 
 
-    public function DayDataBeansToDataArray($beans){
+    public function DayBeansToDataArray($beans){
     	$i=0;
     	$firstBean = array();
     	$preBean = array();
@@ -679,18 +679,20 @@ class PDODataAdapter {
     	$type=strtolower($type);
     	
     	(stristr($type, 'day') === FALSE) ?	$table = "Energy" : $table = "History";
-    	
+
     	$beans = $this->readTablePeriodValues($invtnum, $table, $type, $startDate);
     	
     	if(strtolower($table) == "history"){
-    		return $this->DayDataBeansToDataArray($beans);
+    		// NO history bean? Create a dummy bean...
+    		(!$beans) ? $beans[0] = array('time'=>time(),'KWH'=>0) : $beans = $beans;
+    		return $this->DayBeansToDataArray($beans);
     	}else{
-    		return $this->PeriodDataBeansToDataArray($beans);
+    		return $this->PeriodBeansToDataArray($beans);
     	}
     }
     
     
-   public function PeriodDataBeansToDataArray($beans){
+   public function PeriodBeansToDataArray($beans){
     	$points = array();
     	
     	foreach ($beans as $bean){
@@ -718,9 +720,9 @@ class PDODataAdapter {
     
     
     
-    public function readMaxPowerOfTodayValues($invtnum, $type, $count, $startDate){
+    public function readMaxPowerValues($invtnum, $type, $count, $startDate){
     
-    	$PmaxotdBeans = $this->readTablePeriodValues($invtnum, "Pmaxotd", "today");
+    	$PmaxotdBeans = $this->readTablePeriodValues($invtnum, "Pmaxotd", $type);
 
     	$oMaxPowerToday = new MaxPowerToday();
     	$oMaxPowerToday->GP = $PmaxotdBeans[0]['GP'];
@@ -732,7 +734,7 @@ class PDODataAdapter {
     
     public function readEnergyValues($invtnum, $type, $count, $startDate){
     	 
-		$energyBeans = $this->readTablePeriodValues($invtnum, "Energy", "today");
+		$energyBeans = $this->readTablePeriodValues($invtnum, "Energy", $type);
 
     	$oEnergy = new Energy();
     	$oEnergy->INV =$energyBeans[0]['INV'];
@@ -758,7 +760,7 @@ class PDODataAdapter {
     		$liveBean =  R::findOne('Live',' INV = :INV ', array(':INV'=>$inverter['id']));
     		$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
     		$live = array(
-    				array("field"=>"SDTE", "value"=>date("H:i:s d M Y",Util::getUTCdate($liveBean['SDTE']))),
+    				array("field"=>"time", "value"=>date("H:i:s",$liveBean['time'])),
     				array("field"=>"INV", "value"=>$liveBean['INV']),
     				array("field"=>"GP", "value"=>round($liveBean['GP'],2)),
     				array("field"=>"I1P", "value"=>round($liveBean['I1P'],2)),

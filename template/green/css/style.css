@@ -119,3 +119,5 @@ span.read-more a { font-family: Tahoma, arial, sans-serif; font-weight: bold; co
 #footer-middle { padding: 8px 10px 4px; background: url(images/footer-middle.png) repeat 0 0; }
 #footer .author { float:right; }
 #footer-bottom { font-size: 0; line-height: 0; text-indent: -4000px; height: 6px; background: url(images/footer-bottom.png) no-repeat 0 0; }
+
+#main-middle .span-1 {margin:0px;}
