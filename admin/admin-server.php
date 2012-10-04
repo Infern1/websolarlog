@@ -126,6 +126,8 @@ switch ($settingstype) {
         $panel->description = Common::getValue("description");
         $panel->roofOrientation = Common::getValue("roofOrientation");
         $panel->roofPitch = Common::getValue("roofPitch");
+        $panel->amount = Common::getValue("amount");
+        $panel->wp = Common::getValue("wp");
 
         $adapter->writePanel($panel);
         break;

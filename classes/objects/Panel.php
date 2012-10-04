@@ -6,6 +6,8 @@ class Panel
     public $description;
     public $roofOrientation;
     public $roofPitch;
+    public $amount;
+    public $wp;
 
     /**
      * Constructor
@@ -17,5 +19,7 @@ class Panel
         $this->description='';
         $this->roofOrientation='';
         $this->roofPitch='';
+        $this->amount=0;
+        $this->wp=0;
     }
 }

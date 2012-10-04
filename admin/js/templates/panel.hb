@@ -7,6 +7,8 @@
     <label for="description">description:</label><input type="text" name="description" value="{{data.panel.description}}" /><br />
     <label for="roofOrientation">roof orientation:</label><input type="text" name="roofOrientation" value="{{data.panel.roofOrientation}}" /><br />
     <label for="roofPitch">roof pitch:</label><input type="text" name="roofPitch" value="{{data.panel.roofPitch}}" /><br />
+    <label for="amount">amount:</label><input type="text" name="amount" value="{{data.panel.amount}}" /><br />
+    <label for="wp">wp one panel:</label><input type="text" name="wp" value="{{data.panel.wp}}" /><br />
     <button type="button" id="btnPanelSubmit-1" class="panel_submit">Save</button>
   </fieldset>
 </form>

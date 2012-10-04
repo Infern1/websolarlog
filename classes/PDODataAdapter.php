@@ -313,7 +313,7 @@ class PDODataAdapter {
      */
     public function readEnergyDay($invtnum,$date) {
     	$date = ($date == 0) ? time(): $date;
-    	
+
     	$bean =  R::findOne('Energy',
     			' INV = :INV AND Time LIKE :date ',
     			array(':INV'=>$invtnum,
@@ -322,7 +322,7 @@ class PDODataAdapter {
     	);
     	return $bean;
     }
-    
+
     /**
      * Read the events file
      * @param int $invtnum
@@ -453,8 +453,8 @@ class PDODataAdapter {
     		$KWHT = round($bean['KWHT'] - $firstBean['KWHT'],3);
     		$i++;
     	}
-    	
-    	
+
+
     	$lastDays = new LastDays();
     	$lastDays->points=$points;
     	$lastDays->KWHT=$cumPower;
@@ -555,7 +555,6 @@ class PDODataAdapter {
         $bean->description = $inverter->description;
         $bean->initialkwh = $inverter->initialkwh;
         $bean->expectedkwh = $inverter->expectedkwh;
-        $bean->plantpower = $inverter->plantpower;
         $bean->heading = $inverter->heading;
         $bean->correctionFactor = $inverter->correctionFactor;
         $bean->comAddress = $inverter->comAddress;
@@ -574,12 +573,17 @@ class PDODataAdapter {
         $inverter->description = $bean->description;
         $inverter->initialkwh = $bean->initialkwh;
         $inverter->expectedkwh = $bean->expectedkwh;
-        $inverter->plantpower = $bean->plantpower;
         $inverter->heading = $bean->heading;
         $inverter->correctionFactor = $bean->correctionFactor;
         $inverter->comAddress = $bean->comAddress;
         $inverter->comLog = $bean->comLog;
         $inverter->panels = $this->readPanelsByInverter($inverter->id);
+
+        $inverter->plantpower = 0;
+        foreach ($inverter->panels as $panel) {
+            //$panel = new Panel();
+            $inverter->plantpower += ($panel->amount * $panel->wp);
+        }
 
         return $inverter;
     }
@@ -593,12 +597,18 @@ class PDODataAdapter {
             $inverter->description = $bean->description;
             $inverter->initialkwh = $bean->initialkwh;
             $inverter->expectedkwh = $bean->expectedkwh;
-            $inverter->plantpower = $bean->plantpower;
             $inverter->heading = $bean->heading;
             $inverter->correctionFactor = $bean->correctionFactor;
             $inverter->comAddress = $bean->comAddress;
             $inverter->comLog = $bean->comLog;
             $inverter->panels = $this->readPanelsByInverter($inverter->id);
+
+            $inverter->plantpower = 0;
+            foreach ($inverter->panels as $panel) {
+                //$panel = new Panel();
+                $inverter->plantpower += ($panel->amount * $panel->wp);
+            }
+
             $list[] = $inverter;
         }
 
@@ -617,6 +627,8 @@ class PDODataAdapter {
         $bean->description = $panel->description;
         $bean->roofOrientation = $panel->roofOrientation;
         $bean->roofPitch = $panel->roofPitch;
+        $bean->amount = $panel->amount;
+        $bean->wp = $panel->wp;
 
         //Store the bean
         R::store($bean);
@@ -631,6 +643,8 @@ class PDODataAdapter {
         $panel->description = $bean->description;
         $panel->roofOrientation = $bean->roofOrientation;
         $panel->roofPitch = $bean->roofPitch;
+        $panel->amount = $bean->amount;
+        $panel->wp = $bean->wp;
         return $panel;
     }
 
@@ -644,23 +658,25 @@ class PDODataAdapter {
             $panel->description = $bean->description;
             $panel->roofOrientation = $bean->roofOrientation;
             $panel->roofPitch = $bean->roofPitch;
+            $panel->amount = $bean->amount;
+            $panel->wp = $bean->wp;
             $list[] = $panel;
         }
 
         return $list;
     }
-    
+
     /**
      * Create and run the query to getAll Values for a given Period
-     * @Param string $table 
-     * @Param string $type 
-     * @Param date $startDate 
+     * @Param string $table
+     * @Param string $type
+     * @Param date $startDate
      */
     public function readTablePeriodValues($invtnum, $table, $type, $startDate){
     	$count = 0;
-    	
+
     	if (in_array ( $table, array ("Energy","History","Pmaxotd"))){
-    		
+
 	    	$beginEndDate = Util::getBeginEndDate($type, $startDate,$count);
 
     		if ($invtnum > 0){
@@ -671,21 +687,21 @@ class PDODataAdapter {
     	}
     	return $energyBeans;
     }
-    
+
 
     /**
-     * return a array with GraphPoints for 
+     * return a array with GraphPoints for
      * @param date $startDate ("Y-m-d") ("1900-12-31"), when no date given, the date of today is used.
      * @return array($beginDate, $endDate);
      */
     public function getGraphPoint($invtnum,$type, $startDate){
-    	
+
     	$type=strtolower($type);
-    	
+
     	(stristr($type, 'day') === FALSE) ?	$table = "Energy" : $table = "History";
-    	
+
     	$beans = $this->readTablePeriodValues($invtnum, $table, $type, $startDate);
-    	
+
     	if(strtolower($table) == "history"){
     		// NO history bean? Create a dummy bean...
     		(!$beans) ? $beans[0] = array('time'=>time(),'KWH'=>0) : $beans = $beans;
@@ -694,39 +710,39 @@ class PDODataAdapter {
     		return $this->PeriodBeansToDataArray($beans);
     	}
     }
-    
-    
+
+
    public function PeriodBeansToDataArray($beans){
     	$points = array();
-    	
+
     	foreach ($beans as $bean){
     		$cumPower = $cumPower +$bean['KWH'];
     		$points[] = array (
-    					mktime(0, 0, 0, 
-    							date("m",$bean['time']), 
-    							date("d",$bean['time']), 
+    					mktime(0, 0, 0,
+    							date("m",$bean['time']),
+    							date("d",$bean['time']),
     							date("Y",$bean['time']))*1000,
     					(float)sprintf("%.2f", $bean['KWH']),
     					date("m-d-Y",$bean['time']),
 	    				(float)sprintf("%.2f", $cumPower)
     				);
     	}
-    	
+
     	// if no data was found, create 1 dummy point for the graph to render
     	if(count($points)==0){
     		$cumPower = 0;
     		$points[] = array (time()* 1000, 0,0);
     	}
-	    	 
+
     	$lastDays = new LastDays();
     	$lastDays->points=$points;
     	$lastDays->KWHT=$cumPower;
     	$lastDays->table=$table;
     	return $lastDays;
     }
-    
-    
-    
+
+
+
     public function readMaxPowerValues($invtnum, $type, $count, $startDate){
 
     	$PmaxotdBeans = $this->readTablePeriodValues($invtnum, "Pmaxotd", $type,$startDate);
@@ -738,10 +754,10 @@ class PDODataAdapter {
     	}
     	return $oMaxPowerToday;
     }
-    
-    
+
+
     public function readEnergyValues($invtnum, $type, $count, $startDate){
-    	
+
 		$energyBeans = $this->readTablePeriodValues($invtnum, "Energy", $type,$startDate);
 
 		$inverter = $this->readInverter($invtnum);
@@ -757,7 +773,7 @@ class PDODataAdapter {
 		}
     	return $oEnergy;
     }
-    
+
     public function readPageIndexData() {
     	// summary live data
     	$list = array();
