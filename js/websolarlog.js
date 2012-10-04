@@ -389,7 +389,7 @@ var WSL = {
 		var graphDayPeriodOptions = {
 				series : [
 				          {yaxis:'yaxis',renderer:$.jqplot.BarRenderer},
-				          {yaxis:'y2axis'}
+				          {yaxis:'y2axis',showMarker: true, pointLabels: {show: false}}
 				          ],
 			seriesDefaults : {
 				
