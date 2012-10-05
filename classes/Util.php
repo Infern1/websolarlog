@@ -39,7 +39,7 @@ class Util {
     public static function removeLockFile() {
         return unlink(self::getDataLockFile());
     }
-    
+
     public static function getUTCdate($text) {
     	$year = substr($text, 0, 4);
     	$month = substr($text, 4, 2);
@@ -49,7 +49,7 @@ class Util {
     	$seconde = substr($text, 15, 2);
     	return strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$seconde);
     }
-    
+
     /**
      * get First Day Of Month
      * @param int $invtnum
@@ -69,7 +69,7 @@ class Util {
     public static function getTimestampOfDate($hour=0,$minute=0,$second=0,$day,$month,$year) {
     	return mktime($hour,$minute,$second, $month, $day, $year);
     }
-    
+
     /**
      * get Last Day Of Month
      * @param int $invtnum
@@ -79,17 +79,17 @@ class Util {
     public static function getLastDayOfMonth($day,$month,$year) {
     	return strtotime(date('Y-m-t', mktime(0, 0, 0, $month, 1, $year)));
     }
-    
-    
+
+
     function getStartAndEndOfWeek($date) {
     	$ts = strtotime($date);
     	$start = (date('w', $ts) == 0) ? $ts : strtotime('last monday', $ts);
     	return array(strtotime(date('Y-m-d', $start)),strtotime(date('Y-m-d', strtotime('next sunday', $start))));
     }
-    
-    
+
+
     public static function formatEvent($event){
-		$find = array("W", "E");
+		$find = array(" W ", " E ");
 		$replace = array("Warning ", "Error ");
 		$event = str_ireplace($find, $replace, $event);
     	return $event;
@@ -104,7 +104,7 @@ class Util {
     	}
     	return array('name'=>$module,'status'=>$status);
     }
-    
+
     /**
      * return the begin and end date for a given period for a given date.
      * @param date $startDate ("Y-m-d") ("1900-12-31"), when no date given, the date of today is used.
@@ -118,7 +118,7 @@ class Util {
 
     	// Make de StartDate a timestamp
     	$startDate = strtotime($startDate);
-    	 
+
     	// check what we must return
     	switch (strtolower($type)) {
     		case 'today':
@@ -137,7 +137,7 @@ class Util {
     		case 'month':
     			$beginDate = Util::getTimestampOfDate(0,0,0, 1, date("m",$startDate), date("Y",$startDate));
     			$endDate = Util::getTimestampOfDate(23,59,59,31, date("m",$startDate), date("Y",$startDate));
-    
+
     			break;
     		case 'year':
     			$beginDate = Util::getTimestampOfDate(0,0,0, 1,1, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
