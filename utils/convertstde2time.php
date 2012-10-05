@@ -11,7 +11,7 @@ $config = $adapter->readConfig();
 
 echo ("If you get an memory exception, just restart it will continue<br/><br/>");
 
-$tableString = "Energy,History,Event";
+$tableString = "Energy,History,Event,Pmaxotd";
 $tables = explode(",", $tableString);
 foreach ($tables as $table) {
     echo ("Converting " . $table . "......... ");
