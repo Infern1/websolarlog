@@ -1,5 +1,5 @@
 <?php
-set_time_limit ( 120 ); // 2 minutes
+set_time_limit ( 240 ); // 2 minutes
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
@@ -26,6 +26,7 @@ foreach (scandir($dailyPath) as $file) {
 // Reay energy data
 $energyPath = $dataPath . "production/";
 foreach (scandir($energyPath) as $file) {
+	echo $energyPath."".$file." ".$inverterId;
     if (is_file($energyPath.$file) && Common::startsWith($file, "energy"))  {
         importEnergyFile($energyPath . $file, $inverterId, $adapter);
     }

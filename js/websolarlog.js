@@ -388,7 +388,7 @@ var WSL = {
 	createPeriodGraph : function(invtnum, type, count, divId, fnFinish) {
 		var graphDayPeriodOptions = {
 				series : [
-				          {yaxis:'yaxis',renderer:$.jqplot.BarRenderer},
+				          {yaxis:'yaxis',renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
 				          {yaxis:'y2axis',showMarker: true, pointLabels: {show: false}}
 				          ],
 			seriesDefaults : {
@@ -407,11 +407,6 @@ var WSL = {
 		        },
 
 			},
-			highlighter : {
-				show : true,
-				sizeAdjust : '20pt',
-				formatString: '%s',
-			},
 			axesDefaults : {
 				useSeriesColor: true, 
 				tickRenderer : $.jqplot.CanvasAxisTickRenderer,
@@ -423,6 +418,7 @@ var WSL = {
 			legend : {
 				show : false
 			},
+			highlighter : {tooltipContentEditor: tooltipContentEditor,show : true,tooltipLocation:'n'},
 			axes : {
 				// Use a category axis on the x axis and use our custom ticks.
 				xaxis : {
@@ -446,6 +442,11 @@ var WSL = {
 			}
 		};
 
+		function tooltipContentEditor(str, seriesIndex, pointIndex, plot) {
+			return plot.series[seriesIndex].data[pointIndex][1]+" kWh";
+		}
+
+		
 		$.ajax({
 			url : "server.php?method=getGraphPoints&type=" + type + "&count=" + count + "&invtnum=" + invtnum,
 			method : 'GET',
@@ -459,8 +460,9 @@ var WSL = {
 					dayData1.push([ object[0], object[3] ]);
 				}
 				graphDayPeriodOptions.axes.xaxis.min = result.dayData.data[0][0];
-				$.jqplot(divId, [ dayData,dayData1 ], graphDayPeriodOptions).destroy();
-				$.jqplot(divId, [ dayData,dayData1 ], graphDayPeriodOptions);
+				var plot = $.jqplot(divId, [ dayData,dayData1 ], graphDayPeriodOptions).destroy();
+				plot = null; 
+				var plot = $.jqplot(divId, [ dayData,dayData1 ], graphDayPeriodOptions);
 			}
 		});
 	}

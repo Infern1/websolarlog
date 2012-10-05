@@ -678,7 +678,6 @@ class PDODataAdapter {
     	if (in_array ( $table, array ("Energy","History","Pmaxotd"))){
 
 	    	$beginEndDate = Util::getBeginEndDate($type, $startDate,$count);
-
     		if ($invtnum > 0){
     			$energyBeans = R::getAll("SELECT * FROM '".$table."' WHERE inv = :INV AND time > :beginDate AND  time < :endDate ",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
     		}else{
@@ -756,17 +755,23 @@ class PDODataAdapter {
 
 		$energyBeans = $this->readTablePeriodValues($invtnum, "Energy", $type,$startDate);
 
-		$inverter = $this->readInverter($invtnum);
-
-		foreach ($energyBeans as $energyBean){
-    		$oEnergy = new Energy();
-    		$oEnergy->INV =$energyBean['INV'];
-    		$oEnergy->time = date("H:i:s d-m-Y",$energyBean['time']);
-    		$oEnergy->KWH =$energyBean['KWH'];
-    		$oEnergy->PanelRatio = array();
-    		$oEnergy->KWHKWP =round($energyBean['KWH']/($inverter->plantpower/1000),2);
-    		$oEnergy->KWHT=$energyBean['KWHT'];
+		if($invtnum == 0 || !$invtnum){
+			$inverters = R::getAll("SELECT sum(plantPower) as totalPlantPower FROM inverter");		
+		}else{
+			$inverters = R::getAll("SELECT sum(plantPower) as totalPlantPower FROM inverter WHERE id = :INV", array("INV"=>$invtnum));
 		}
+
+		$oEnergy = new Energy();
+		foreach ($energyBeans as $energyBean){
+    		$oEnergy->INV = $energyBean['INV'];
+    		$oEnergy->KWH += $energyBean['KWH'];
+    		$oEnergy->time = date("H:i:s d-m-Y",$energyBean['time']);
+    		$oEnergy->KWHT=$energyBean['KWHT'];
+    		$oEnergy->PanelRatio = array();
+		}
+		echo $inverters[0]['plantPower'];
+		$oEnergy->KWHKWP =round($oEnergy->KWH/($inverters[0]['totalPlantPower']/1000),2);
+		
     	return $oEnergy;
     }
 
@@ -785,17 +790,7 @@ class PDODataAdapter {
             $oInverter = array();
     		$liveBean =  R::findOne('Live',' INV = :INV ', array(':INV'=>$inverter['id']));
     		$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
-    		/*
-    		$live = array(
-    				array("field"=>"time", "value"=>date("H:i:s",$liveBean['time'])),
-    				array("field"=>"INV", "value"=>$liveBean['INV']),
-    				array("field"=>"GP", "value"=>round($liveBean['GP'],2)),
-    				array("field"=>"I1P", "value"=>round($liveBean['I1P'],2)),
-    				array("field"=>"I2P", "value"=>round($liveBean['I2P'],2)),
-    				array("field"=>"ITP", "value"=>$ITP)
-    		);
-    		$oInverter["live"] = $live;
-    		*/
+    		
     		$live = new Live();
     		$live->SDTE = date("H:i:s",$liveBean['time']);
     		$live->INV = $liveBean['INV'];
@@ -818,13 +813,13 @@ class PDODataAdapter {
         	$KWHT['monthKWHT'] = 0;
     		foreach ($beans as $bean){
     			if ($i<(1)){
-    				$KWHT['dayKWHT'] = $KWHT['dayKWHT']+$bean['KWH'];
+    				$KWHT['dayKWHT'] += $bean['KWH'];
     			}
     			if ($i<(7)){
-    				$KWHT['weekKWHT'] = $KWHT['weekKWHT']+$bean['KWH'];
+    				$KWHT['weekKWHT'] +=$bean['KWH'];
     			}
     			if ($i<(30)){
-    				$KWHT['monthKWHT'] = $KWHT['monthKWHT']+$bean['KWH'];
+    				$KWHT['monthKWHT'] +$bean['KWH'];
     			}
     			$i++;
     		}

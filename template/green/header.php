@@ -11,6 +11,7 @@
 	<link rel="shortcut icon" href="template/green/css/images/favicon.ico" />
 	<link rel="stylesheet" href="template/green/css/style.css" type="text/css" media="all" />
 	<link rel="stylesheet" href="css/jquery.jqplot.min.css" type="text/css" />
+	<link rel="stylesheet" href="css/jquery.jqplot.overrule.style.css" type="text/css" />
 	<link rel="stylesheet" href="js/jqueryuicss/jquery-ui-1.8.24.custom.css" type="text/css" />
 	<script src="template/green/js/jquery-1.7.min.js" type="text/javascript"></script>
 
