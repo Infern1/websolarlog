@@ -287,7 +287,7 @@ var WSL = {
 		});
 	},
 
-	init_PageMonthValues : function(monthValues) {
+	init_PageMonthValues : function(monthValues,periodList) {
 		// initialize languages selector on the given div
 		WSL.api.getPageMonthValues(function(data) {
 			$.ajax({
@@ -301,10 +301,22 @@ var WSL = {
 				},
 				dataType : 'text',
 			});
+			$.ajax({
+				url : 'js/templates/periodList.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					$(periodList).html(html);
+				},
+				dataType : 'text',
+			});
+
 		});
 	},
 
-	init_PageYearValues : function(yearValues) {
+	init_PageYearValues : function(yearValues,periodList) {
 		// initialize languages selector on the given div
 		WSL.api.getPageYearValues(function(data) {
 			$.ajax({
@@ -315,6 +327,18 @@ var WSL = {
 						'data' : data
 					});
 					$(yearValues).html(html);
+				},
+				dataType : 'text',
+			});
+			
+			$.ajax({
+				url : 'js/templates/periodList.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					$(periodList).html(html);
 				},
 				dataType : 'text',
 			});

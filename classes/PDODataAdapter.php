@@ -674,9 +674,7 @@ class PDODataAdapter {
      */
     public function readTablePeriodValues($invtnum, $table, $type, $startDate){
     	$count = 0;
-
     	if (in_array ( $table, array ("Energy","History","Pmaxotd"))){
-
 	    	$beginEndDate = Util::getBeginEndDate($type, $startDate,$count);
     		if ($invtnum > 0){
     			$energyBeans = R::getAll("SELECT * FROM '".$table."' WHERE inv = :INV AND time > :beginDate AND  time < :endDate ORDER BY time",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
@@ -715,7 +713,7 @@ class PDODataAdapter {
     	$points = array();
 
     	foreach ($beans as $bean){
-    		$cumPower = $cumPower +$bean['KWH'];
+    		$cumPower += $bean['KWH'];
     		$points[] = array (mktime(0, 0, 0,date("m",$bean['time']),date("d",$bean['time']),date("Y",$bean['time']))*1000,
     					(float)sprintf("%.2f", $bean['KWH']),
     					date("d-m-Y",$bean['time']),
@@ -768,11 +766,12 @@ class PDODataAdapter {
     		$oEnergy->time = date("H:i:s d-m-Y",$energyBean['time']);
     		$oEnergy->KWHT=$energyBean['KWHT'];
     		$oEnergy->PanelRatio = array();
+    		
+    		$month[] = array("kwh"=>$energyBean['KWH'], "time"=>date("d-m-Y",$energyBean['time']));
 		}
-		echo $inverters[0]['plantPower'];
 		$oEnergy->KWHKWP =round($oEnergy->KWH/($inverters[0]['totalPlantPower']/1000),2);
 		
-    	return $oEnergy;
+    	return array($month,$oEnergy);
     }
 
     public function readPageIndexData() {
@@ -819,7 +818,7 @@ class PDODataAdapter {
     				$KWHT['weekKWHT'] +=$bean['KWH'];
     			}
     			if ($i<(30)){
-    				$KWHT['monthKWHT'] +$bean['KWH'];
+    				$KWHT['monthKWHT'] +=$bean['KWH'];
     			}
     			$i++;
     		}
@@ -829,9 +828,9 @@ class PDODataAdapter {
     		$list['inverters'][] = $oInverter;
     		
 
-    		$KWHTD = $KWHTD  + $KWHT['dayKWHT'];
-    		$KWHTW = $KWHTW  + $KWHT['weekKWHT'];
-    		$KWHTM = $KWHTM  + $KWHT['monthKWHT'];
+    		$KWHTD += $KWHT['dayKWHT'];
+    		$KWHTW += $KWHT['weekKWHT'];
+    		$KWHTM += $KWHT['monthKWHT'];
     	}
     	$oInverter = array();
     	$totals = array("day"=>$KWHTD,"week"=>$KWHTW,"month"=>$KWHTM);

@@ -227,7 +227,7 @@ switch ($method) {
 		/*
 		- kWh van vandaag icm CO2 vandaag
 		 */
-		$energyToday = $dataAdapter->readEnergyValues($invtnum, "month", 1, 0);
+		$energy = $dataAdapter->readEnergyValues($invtnum, "month", 1, 0);
 
 		/*
 		 * - Max Watt van de dag
@@ -243,7 +243,8 @@ switch ($method) {
 		 * - Grafiek van vandaag (Watt)
 		 */
 		///
-
+		
+		
 		/*
 		 * - Grafiek met w/v/a van vandaag
 		 */
@@ -252,7 +253,8 @@ switch ($method) {
 
 		$dayData = new DayDataResult();
 		$dayData->data = array(
-				"Energy"=>$energyToday,
+				"Energy"=>$energy[1],
+				"Month"=>$energy[0],
 				"MaxPower"=>$MaxPowerOfToday,
 				"CO2Today"=>Formulas::CO2kWh($energyToday->KWH,$config->co2kwh),
 				"CO2Overall"=>Formulas::CO2kWh($energyToday->KWHT, $config->co2kwh)
