@@ -446,7 +446,7 @@ class PDODataAdapter {
     		$cumPower = round($bean['KWHT']-$firstBean['KWHT'] *1,3);//cumalative power this day
     		$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,0,2);
 
-    		$points[] = array ($UTCdate * 1000,$cumPower,$avgPower);
+    		$points[] = array ($UTCdate * 1000,$cumPower,$avgPower,date("d-m-Y",$bean['time']),);
 
     		$preBeanUTCdate = $bean['time'];
     		$preBean = $bean;
@@ -718,7 +718,7 @@ class PDODataAdapter {
     		$cumPower = $cumPower +$bean['KWH'];
     		$points[] = array (mktime(0, 0, 0,date("m",$bean['time']),date("d",$bean['time']),date("Y",$bean['time']))*1000,
     					(float)sprintf("%.2f", $bean['KWH']),
-    					date("m-d-Y",$bean['time']),
+    					date("d-m-Y",$bean['time']),
 	    				(float)sprintf("%.2f", $cumPower)
     				);
     	}

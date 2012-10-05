@@ -18,8 +18,13 @@ var alreadyFetched = [];
 var currentGraphHandler;
 var todayTimerHandler;
 
+function tooltipContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
+	return "Power: "+plot.series[seriesIndex].data[pointIndex][1] +" kWh<br>Date: "+plot.series[seriesIndex].data[pointIndex][2];
+}
+
 // WSL class
 var WSL = {
+		
 	api : {},
 	init_events : function(invtnum, divId) {
 		// Retrieve the error events
@@ -353,8 +358,10 @@ var WSL = {
 				}
 			},
 			highlighter : {
+				tooltipContentEditor: tooltipContentEditor,
 				show : true,
-				sizeAdjust : 7.5
+				yvalues:4,
+				tooltipLocation:'n'
 			},
 			cursor : {
 				show : false
@@ -370,8 +377,8 @@ var WSL = {
 				if (result.dayData) {
     				for (line in result.dayData.data) {;
     					var object = result.dayData.data[line];
-    					dataDay1.push([ object[0], object[1] ]);
-    					dataDay2.push([ object[0], object[2] ]);
+    					dataDay1.push([ object[0], object[1],object[3] ]);
+    					dataDay2.push([ object[0], object[2],object[3] ]);
     				} 
 
     				if (dataDay1[0]) {
@@ -389,7 +396,7 @@ var WSL = {
 		var graphDayPeriodOptions = {
 				series : [
 				          {yaxis:'yaxis',renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
-				          {yaxis:'y2axis',showMarker: true, pointLabels: {show: false}}
+				          {yaxis:'y2axis', pointLabels: {show: false}}
 				          ],
 			seriesDefaults : {
 				labelOptions:{
@@ -417,7 +424,12 @@ var WSL = {
 			legend : {
 				show : false
 			},
-			highlighter : {tooltipContentEditor: tooltipContentEditor,show : true,tooltipLocation:'n'},
+			highlighter : {
+				tooltipContentEditor: tooltipContentEditor,
+				show : true,
+				yvalues:4,
+				tooltipLocation:'n'
+			},
 			axes : {
 				// Use a category axis on the x axis and use our custom ticks.
 				xaxis : {
@@ -441,10 +453,6 @@ var WSL = {
 			}
 		};
 
-		function tooltipContentEditor(str, seriesIndex, pointIndex, plot) {
-			return plot.series[seriesIndex].data[pointIndex][1]+" kWh";
-		}
-
 		
 		$.ajax({
 			url : "server.php?method=getGraphPoints&type=" + type + "&count=" + count + "&invtnum=" + invtnum,
@@ -455,8 +463,8 @@ var WSL = {
 				var dayData1 = [];
 				for (line in result.dayData.data) {
 					var object = result.dayData.data[line];
-					dayData.push([ object[0], object[1] ]);
-					dayData1.push([ object[0], object[3] ]);
+					dayData.push([ object[0], object[1], object[2] ]);
+					dayData1.push([ object[0], object[3],object[2] ]);
 				}
 				graphDayPeriodOptions.axes.xaxis.min = result.dayData.data[0][0];
 				var plot = $.jqplot(divId, [ dayData,dayData1 ], graphDayPeriodOptions).destroy();
