@@ -392,7 +392,6 @@ var WSL = {
 				          {yaxis:'y2axis',showMarker: true, pointLabels: {show: false}}
 				          ],
 			seriesDefaults : {
-				
 				labelOptions:{
 					formatString: '%d-%' ,fontSize: '20pt',
 				},
