@@ -253,11 +253,11 @@ switch ($method) {
 
 		$dayData = new DayDataResult();
 		$dayData->data = array(
-				"Energy"=>$energy[1],
-				"Month"=>$energy[0],
-				"MaxPower"=>$MaxPowerOfToday,
-				"CO2Today"=>Formulas::CO2kWh($energyToday->KWH,$config->co2kwh),
-				"CO2Overall"=>Formulas::CO2kWh($energyToday->KWHT, $config->co2kwh)
+					"Energy"=>$energy[1],
+					"Month"=>$energy[0],
+					"MaxPower"=>$MaxPowerOfToday,
+					"CO2Today"=>Formulas::CO2kWh($energy[1]->KWH,$config->co2kwh),
+					"CO2Overall"=>Formulas::CO2kWh($energy[1]->KWHT, $config->co2kwh)
 				);
 		$dayData->success = true;
 
@@ -299,9 +299,10 @@ switch ($method) {
 			$dayData = new DayDataResult();
 			$dayData->data = array(
 					"Energy"=>$energy[1],
-					"MaxPower"=>$MaxPowerOfToday[0],
-					"CO2Today"=>Formulas::CO2kWh($energyToday->KWH,$config->co2kwh),
-					"CO2Overall"=>Formulas::CO2kWh($energyToday->KWHT, $config->co2kwh)
+					"Month"=>$energy[0],
+					"MaxPower"=>$MaxPowerOfToday,
+					"CO2Today"=>Formulas::CO2kWh($energy[1]->KWH,$config->co2kwh),
+					"CO2Overall"=>Formulas::CO2kWh($energy[1]->KWHT, $config->co2kwh)
 			);
 			$dayData->success = true;
 
