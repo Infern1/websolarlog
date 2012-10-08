@@ -560,6 +560,18 @@ class PDODataAdapter {
         $bean->comAddress = $inverter->comAddress;
         $bean->comLog = $inverter->comLog;
 
+        $bean->expectedJAN = $inverter->expectedJAN;
+        $bean->expectedFEB = $inverter->expectedFEB;
+        $bean->expectedMRT = $inverter->expectedMRT;
+        $bean->expectedAPR = $inverter->expectedAPR;
+        $bean->expectedMAY = $inverter->expectedMAY;
+        $bean->expectedJUN = $inverter->expectedJUN;
+        $bean->expectedJUL = $inverter->expectedJUL;
+        $bean->expectedAUG = $inverter->expectedAUG;
+        $bean->expectedSEP = $inverter->expectedSEP;
+        $bean->expectedOCT = $inverter->expectedOCT;
+        $bean->expectedNOV = $inverter->expectedNOV;
+
         //Store the bean
         R::store($bean);
     }
@@ -578,6 +590,18 @@ class PDODataAdapter {
         $inverter->comAddress = $bean->comAddress;
         $inverter->comLog = $bean->comLog;
         $inverter->panels = $this->readPanelsByInverter($inverter->id);
+
+        $inverter->expectedJAN = $bean->expectedJAN;
+        $inverter->expectedFEB = $bean->expectedFEB;
+        $inverter->expectedMRT = $bean->expectedMRT;
+        $inverter->expectedAPR = $bean->expectedAPR;
+        $inverter->expectedMAY = $bean->expectedMAY;
+        $inverter->expectedJUN = $bean->expectedJUN;
+        $inverter->expectedJUL = $bean->expectedJUL;
+        $inverter->expectedAUG = $bean->expectedAUG;
+        $inverter->expectedSEP = $bean->expectedSEP;
+        $inverter->expectedOCT = $bean->expectedOCT;
+        $inverter->expectedNOV = $bean->expectedNOV;
 
         $inverter->plantpower = 0;
         foreach ($inverter->panels as $panel) {
@@ -602,6 +626,18 @@ class PDODataAdapter {
             $inverter->comAddress = $bean->comAddress;
             $inverter->comLog = $bean->comLog;
             $inverter->panels = $this->readPanelsByInverter($inverter->id);
+
+            $inverter->expectedJAN = $bean->expectedJAN;
+            $inverter->expectedFEB = $bean->expectedFEB;
+            $inverter->expectedMRT = $bean->expectedMRT;
+            $inverter->expectedAPR = $bean->expectedAPR;
+            $inverter->expectedMAY = $bean->expectedMAY;
+            $inverter->expectedJUN = $bean->expectedJUN;
+            $inverter->expectedJUL = $bean->expectedJUL;
+            $inverter->expectedAUG = $bean->expectedAUG;
+            $inverter->expectedSEP = $bean->expectedSEP;
+            $inverter->expectedOCT = $bean->expectedOCT;
+            $inverter->expectedNOV = $bean->expectedNOV;
 
             $inverter->plantpower = 0;
             foreach ($inverter->panels as $panel) {
@@ -826,7 +862,7 @@ class PDODataAdapter {
     		$oInverter["week"] = $KWHT['weekKWHT'];
     		$oInverter["month"] = $KWHT['monthKWHT'];
     		$list['inverters'][] = $oInverter;
-    		
+
 
     		$KWHTD += $KWHT['dayKWHT'];
     		$KWHTW += $KWHT['weekKWHT'];

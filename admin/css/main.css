@@ -1,15 +1,36 @@
-.monthProd{
-	width:42px;
-	float:left;
+#expectation {
+	display: table;
+}
+
+#expectation_graph {
+    display: block;
+    width: 100%;	
+}
+
+.monthProd input {
+	width:42px;	
 }
 
 .monthName{
-	width:44px;
-	float:left;
+	width:44px;	
 }
+
+
+.expectation_row {
+	display:table-row;
+}
+
+.expectation_cell {
+	display: table-cell;
+}
+
 
 .monthBAR{
 	width:44px;float:left;height:200px;
+}
+
+.monthBAR_label {
+	width:44px;float:left;
 }
 
 .monthIMG{
@@ -64,3 +85,4 @@ form fieldset button {
     padding: 8px 35px 8px 14px;
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
+

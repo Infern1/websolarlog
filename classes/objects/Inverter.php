@@ -14,6 +14,19 @@ class Inverter
     public $comLog;
     public $syncTime;
 
+    public $expectedJAN;
+    public $expectedFEB;
+    public $expectedMRT;
+    public $expectedAPR;
+    public $expectedMAY;
+    public $expectedJUN;
+    public $expectedJUL;
+    public $expectedAUG;
+    public $expectedSEP;
+    public $expectedOCT;
+    public $expectedNOV;
+    public $expectedDEC;
+
     public $panels;
 
     /**

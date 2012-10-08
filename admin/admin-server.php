@@ -78,6 +78,21 @@ switch ($settingstype) {
     case 'logout':
         Session::logout();
         break;
+    case 'updater-getversions':
+        $experimental = (Common::getValue("experimental", 'false') === 'true') ? true : false;
+
+        if (Updater::isUpdateable()) {
+            $data['result'] = true;
+            $data['versions'] = Updater::getVersions($experimental);
+        } else {
+            $data['result'] = false;
+            $data['problems'] = Updater::$problems;
+        }
+        break;
+    case 'updater-go':
+        // TODO start the update
+        $data['result'] = false;
+        break;
     case 'isLogin':
         $data['result'] = Session::isLogin();
         break;
@@ -130,6 +145,28 @@ switch ($settingstype) {
         $panel->wp = Common::getValue("wp");
 
         $adapter->writePanel($panel);
+        break;
+    case 'save_expectation':
+        $id = Common::getValue("id");
+        $inverter = new Inverter();
+        if ($id > 0) {
+            // get the current data
+            $inverter = $adapter->readInverter($id);
+        }
+        $inverter->expectedkwh = Common::getValue("totalProdKWH");
+        $inverter->expectedJAN = Common::getValue("janPER");
+        $inverter->expectedFEB = Common::getValue("febPER");
+        $inverter->expectedMRT = Common::getValue("mrtPER");
+        $inverter->expectedAPR = Common::getValue("aprPER");
+        $inverter->expectedMAY = Common::getValue("mayPER");
+        $inverter->expectedJUN = Common::getValue("junPER");
+        $inverter->expectedJUL = Common::getValue("julPER");
+        $inverter->expectedAUG = Common::getValue("augPER");
+        $inverter->expectedSEP = Common::getValue("sepPER");
+        $inverter->expectedOCT = Common::getValue("octPER");
+        $inverter->expectedNOV = Common::getValue("novPER");
+
+        $adapter->writeInverter($inverter);
         break;
     case 'save-email':
         $config->emailFromName = Common::getValue("emailFromName");

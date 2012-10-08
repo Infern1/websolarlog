@@ -66,21 +66,6 @@ class Config
 		$this->YINTERVAL='1000';
 		$this->PRODXDAYS='20';
 
-		// ### EXPECTED PRODUCTION
-		$this->EXPECTEDPROD='3400';
-		$this->EXPECTJAN='2.4';
-		$this->EXPECTFEB='3.6';
-		$this->EXPECTMAR='8.1';
-		$this->EXPECTAPR='12.3';
-		$this->EXPECTMAY='13.9';
-		$this->EXPECTJUN='14.35';
-		$this->EXPECTJUI='13.65';
-		$this->EXPECTAUG='11.8';
-		$this->EXPECTSEP='9.1';
-		$this->EXPECTOCT='5.9';
-		$this->EXPECTNOV='3';
-		$this->EXPECTDEC='1.9';
-
 		// ### EMAIL
 		$this->emailFrom = "test-from@test.localhost";
 		$this->emailTo = "test-to@test.localhost";

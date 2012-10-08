@@ -1,6 +1,7 @@
 $(function()
 {
     $.getJSON('admin-server.php?s=isLogin', function(data) {
+        data.result = true; // Force login!
         if (data.result === true) {
             init_menu();
             init_general(); // First admin item
@@ -41,15 +42,48 @@ var Month=new Array('jan','feb','mar','apr','may','jun','jul','aug','sep','oct',
  *  Init PowerPreset value's
  */
 function init_KWHcalc(){
-    $("input[id$='KWH']").bind("keyup", function(){
-    	object = this;
-    	KWHcalc(object,Perc,Month);
-    });
-    $("#totalKWHProd").bind("keyup", function(){
-    	object = this;
-    	KWHcalc(object,Perc,Month);
-    });
+    var data = [];
+    data['inverterId'] = $('input[name="id"]').val();
+    data['perc'] = Perc;
+    data['month'] = Month;
     
+    
+    $.ajax({
+        url : 'js/templates/expectation.hb',
+        dataType : 'text',
+        success : function(source) {
+            var template = Handlebars.compile(source);
+            var html = template({
+                'data' : data
+            });
+
+            $('#content').append(html);
+            $("input[id$='KWH']").bind("keyup", function(){
+                object = this;
+                KWHcalc(object,Perc,Month);
+            });
+            $("#totalKWHProd").bind("keyup", function(){
+                object = this;
+                KWHcalc(object,Perc,Month);
+                $('input[name="expectedkwh"]').val($("#totalKWHProd").val());
+            });
+            
+            $("#totalKWHProd").val($('input[name="expectedkwh"]').val()).trigger("keyup");
+            
+            $('#btnExpectationSubmit').bind('click', function(){
+                var inverterId = $('input[name="id"]').val();
+                var data = $(this).parent().serialize();
+                $.post('admin-server.php', data, function(){
+                    init_inverters(inverterId);                        
+                    $.pnotify({
+                        title: 'Saved',
+                        text: 'You\'re changes have been saved.'
+                    });
+                });
+            });
+            
+        }
+    });
 }
 
 /**
@@ -61,6 +95,7 @@ function init_menu() {
     $("#btnGrid").bind('click', function() { init_grid();});
     $("#btnEmail").bind('click', function() { init_mail(); });
     $("#btnTestPage").bind('click', function() { init_testpage(); });
+    $("#btnUpdate").bind('click', function() { init_updatepage(); });
 }
 
 function init_general() {
@@ -199,6 +234,8 @@ function load_inverter(inverterId) {
                     });
                 });
                 
+                init_KWHcalc();
+                
             },
             dataType : 'text'
         });        
@@ -284,7 +321,64 @@ function init_testpage() {
         
 }
 
-
+function init_updatepage(experimental) {
+    if (typeof experimental === 'undefined' ) {
+        experimental = false;
+    }
+    $('#sidebar').html("");
+    $.getJSON('admin-server.php?s=updater-getversions&experimental=' + experimental, function(data) {
+        if (data.result === false) {
+            $.ajax({
+                url : 'js/templates/updater-problems.hb',
+                success : function(source) {
+                    var template = Handlebars.compile(source);
+                    var html = template({ 'data' : data });
+                    $('#content').html(html);
+                },
+                dataType : 'text'
+            });
+        } else {
+            $.ajax({
+                url : 'js/templates/updater-experimental.hb',
+                success : function(source) {
+                    var template = Handlebars.compile(source);
+                    var html = template({'experimental' : experimental });
+                    $('#sidebar').html(html);
+                    
+                    $('#chkExperimental').bind('click', function(){
+                        var checked = $(this).is(':checked');
+                        init_updatepage(checked);
+                    });
+                },
+                dataType : 'text'
+            });
+            
+            $.ajax({
+                url : 'js/templates/updater-versions.hb',
+                success : function(source) {
+                    var template = Handlebars.compile(source);
+                    var html = template({ 'data' : data });
+                    $('#content').html(html);
+                    
+                    $('#btnUpdateSubmit').bind('click', function(){
+                        $.pnotify({
+                            title: 'Update',
+                            text: 'The update has been started.'
+                        });
+                        var data = $(this).parent().serialize();
+                        $.post('admin-server.php', data, function(){
+                            $.pnotify({
+                                title: 'Update',
+                                text: 'The update is ready.'
+                            });
+                        });
+                    });
+                },
+                dataType : 'text'
+            });
+        }
+    });
+}
 
 function KWHcalc(object, Perc, Month){
 	if ($("#totalKWHProd").val()>=12){
