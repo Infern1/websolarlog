@@ -562,7 +562,7 @@ class PDODataAdapter {
 
         $bean->expectedJAN = $inverter->expectedJAN;
         $bean->expectedFEB = $inverter->expectedFEB;
-        $bean->expectedMRT = $inverter->expectedMRT;
+        $bean->expectedMAR = $inverter->expectedMAR;
         $bean->expectedAPR = $inverter->expectedAPR;
         $bean->expectedMAY = $inverter->expectedMAY;
         $bean->expectedJUN = $inverter->expectedJUN;
@@ -571,6 +571,7 @@ class PDODataAdapter {
         $bean->expectedSEP = $inverter->expectedSEP;
         $bean->expectedOCT = $inverter->expectedOCT;
         $bean->expectedNOV = $inverter->expectedNOV;
+        $bean->expectedDEC = $inverter->expectedDEC;
 
         //Store the bean
         R::store($bean);
@@ -593,7 +594,7 @@ class PDODataAdapter {
 
         $inverter->expectedJAN = $bean->expectedJAN;
         $inverter->expectedFEB = $bean->expectedFEB;
-        $inverter->expectedMRT = $bean->expectedMRT;
+        $inverter->expectedMAR = $bean->expectedMAR;
         $inverter->expectedAPR = $bean->expectedAPR;
         $inverter->expectedMAY = $bean->expectedMAY;
         $inverter->expectedJUN = $bean->expectedJUN;
@@ -602,6 +603,7 @@ class PDODataAdapter {
         $inverter->expectedSEP = $bean->expectedSEP;
         $inverter->expectedOCT = $bean->expectedOCT;
         $inverter->expectedNOV = $bean->expectedNOV;
+        $inverter->expectedDEC = $bean->expectedDEC;
 
         $inverter->plantpower = 0;
         foreach ($inverter->panels as $panel) {
@@ -629,7 +631,7 @@ class PDODataAdapter {
 
             $inverter->expectedJAN = $bean->expectedJAN;
             $inverter->expectedFEB = $bean->expectedFEB;
-            $inverter->expectedMRT = $bean->expectedMRT;
+            $inverter->expectedMAR = $bean->expectedMAR;
             $inverter->expectedAPR = $bean->expectedAPR;
             $inverter->expectedMAY = $bean->expectedMAY;
             $inverter->expectedJUN = $bean->expectedJUN;
@@ -638,6 +640,7 @@ class PDODataAdapter {
             $inverter->expectedSEP = $bean->expectedSEP;
             $inverter->expectedOCT = $bean->expectedOCT;
             $inverter->expectedNOV = $bean->expectedNOV;
+            $inverter->expectedDEC = $bean->expectedDEC;
 
             $inverter->plantpower = 0;
             foreach ($inverter->panels as $panel) {
@@ -790,7 +793,7 @@ class PDODataAdapter {
 		$energyBeans = $this->readTablePeriodValues($invtnum, "Energy", $type,$startDate);
 
 		if($invtnum == 0 || !$invtnum){
-			$inverters = R::getAll("SELECT sum(plantPower) as totalPlantPower FROM inverter");		
+			$inverters = R::getAll("SELECT sum(plantPower) as totalPlantPower FROM inverter");
 		}else{
 			$inverters = R::getAll("SELECT sum(plantPower) as totalPlantPower FROM inverter WHERE id = :INV", array("INV"=>$invtnum));
 		}
@@ -802,11 +805,11 @@ class PDODataAdapter {
     		$oEnergy->time = date("H:i:s d-m-Y",$energyBean['time']);
     		$oEnergy->KWHT=$energyBean['KWHT'];
     		$oEnergy->PanelRatio = array();
-    		
+
     		$month[] = array("kwh"=>$energyBean['KWH'], "time"=>date("d-m-Y",$energyBean['time']));
 		}
 		$oEnergy->KWHKWP =round($oEnergy->KWH/($inverters[0]['totalPlantPower']/1000),2);
-		
+
     	return array($month,$oEnergy);
     }
 
@@ -825,7 +828,7 @@ class PDODataAdapter {
             $oInverter = array();
     		$liveBean =  R::findOne('Live',' INV = :INV ', array(':INV'=>$inverter['id']));
     		$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
-    		
+
     		$live = new Live();
     		$live->SDTE = date("H:i:s",$liveBean['time']);
     		$live->INV = $liveBean['INV'];

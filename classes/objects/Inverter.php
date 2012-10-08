@@ -16,7 +16,7 @@ class Inverter
 
     public $expectedJAN;
     public $expectedFEB;
-    public $expectedMRT;
+    public $expectedMAR;
     public $expectedAPR;
     public $expectedMAY;
     public $expectedJUN;

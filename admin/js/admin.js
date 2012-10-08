@@ -41,18 +41,37 @@ $(function()
 /*
  * Init var/array
  */
-var Perc=new Array(2,5,7,10,12,14,14,12,10,7,5,2);
+var originalPerc=new Array(2,5,7,10,12,14,14,12,10,7,5,2);
+var Perc=[];
 var Month=new Array('jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec');
 
 /**
  *  Init PowerPreset value's
  */
-function init_KWHcalc(){
+function init_KWHcalc(inv_data){
     var data = [];
     data['inverterId'] = $('input[name="id"]').val();
-    data['perc'] = Perc;
-    data['month'] = Month;
+    data['month_perc'] = [];
+    var newPerc = [];
     
+    // Merge month with percentages from live stream if not null or empty
+    $.each(Month, function(){
+        var perc = inv_data.inverter["expected"+this.toUpperCase()];
+        var month_perc = [];
+        month_perc['month'] = this;
+        month_perc['perc'] = perc;
+        if (typeof (perc) != 'undefined' && perc != null && perc != "" ) {
+            newPerc.push(perc);            
+        }
+        data['month_perc'].push(month_perc);
+    });
+    
+    // Replace Perc if we have received an valid value for all months!
+    if (newPerc.length==12) {
+        Perc = newPerc;        
+    } else {
+        Perc = originalPerc;
+    }
     
     $.ajax({
         url : 'js/templates/expectation.hb',
@@ -86,6 +105,11 @@ function init_KWHcalc(){
                         text: 'You\'re changes have been saved.'
                     });
                 });
+            });
+            
+            $('#btnExpectationDefault').bind('click', function(){
+                Perc = originalPerc;
+                $("#totalKWHProd").val($('input[name="expectedkwh"]').val()).trigger("keyup");
             });
             
         }
@@ -240,7 +264,7 @@ function load_inverter(inverterId) {
                     });
                 });
                 
-                init_KWHcalc();
+                init_KWHcalc(inv_data);
                 
             },
             dataType : 'text'

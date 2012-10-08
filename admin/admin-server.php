@@ -156,7 +156,7 @@ switch ($settingstype) {
         $inverter->expectedkwh = Common::getValue("totalProdKWH");
         $inverter->expectedJAN = Common::getValue("janPER");
         $inverter->expectedFEB = Common::getValue("febPER");
-        $inverter->expectedMRT = Common::getValue("mrtPER");
+        $inverter->expectedMAR = Common::getValue("marPER");
         $inverter->expectedAPR = Common::getValue("aprPER");
         $inverter->expectedMAY = Common::getValue("mayPER");
         $inverter->expectedJUN = Common::getValue("junPER");
@@ -165,6 +165,7 @@ switch ($settingstype) {
         $inverter->expectedSEP = Common::getValue("sepPER");
         $inverter->expectedOCT = Common::getValue("octPER");
         $inverter->expectedNOV = Common::getValue("novPER");
+        $inverter->expectedDEC = Common::getValue("decPER");
 
         $adapter->writeInverter($inverter);
         break;
