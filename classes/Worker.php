@@ -113,7 +113,7 @@ class Worker {
 
 
                     // Energy check if every hour, old situation this was every 5 minutes
-                    if (PeriodHelper::isPeriodJob("EnergyJob", 60)) {
+                    if (PeriodHelper::isPeriodJob("EnergyJob", 5)) {
 
                         // The first hour we dont get much kwh, so wait for at least ten history lines
                         if (count($arHistory) > 10) {
@@ -136,6 +136,7 @@ class Worker {
                             $energy->INV = $inverter->id;
                             $energy->KWH = $production;
                             $energy->KWHT = $productionEnd;
+                            $energy->co2 = Formulas::CO2kWh($production, $this->config->co2kwh); // Calculate co2
                             $this->adapter->addEnergy($inverter->id, $energy);
                         }
 

@@ -237,6 +237,7 @@ class PDODataAdapter {
     	$bean->time = $energy->time;
     	$bean->KWH = $energy->KWH;
     	$bean->KWHT = $energy->KWHT;
+    	$bean->co2 = $energy->co2;
 
     	$id = R::store($bean);
     }
@@ -265,6 +266,7 @@ class PDODataAdapter {
         $bean->time = $energy->time;
         $bean->KWH = $energy->KWH;
         $bean->KWHT = $energy->KWHT;
+        $bean->co2 = $energy->co2;
 
         //Only store the bean when the value
         if ($energy->KWH > $oldKWH) {
@@ -285,6 +287,7 @@ class PDODataAdapter {
         $bean->time = $energy->time;
         $bean->KWH = $energy->KWH;
         $bean->KWHT = $energy->KWHT;
+        $bean->co2 = $energy->co2;
         $id = R::store($bean,$bean->id);
         return $id;
     }
@@ -801,6 +804,7 @@ class PDODataAdapter {
 		$oEnergy = new Energy();
 		foreach ($energyBeans as $energyBean){
     		$oEnergy->INV = $energyBean['INV'];
+    		$oEnergy->co2 = $energyBean['co2'];
     		$oEnergy->KWH += $energyBean['KWH'];
     		$oEnergy->time = date("H:i:s d-m-Y",$energyBean['time']);
     		$oEnergy->KWHT=$energyBean['KWHT'];
@@ -821,7 +825,6 @@ class PDODataAdapter {
     	$KWHTD = 0;
     	$KWHTW = 0;
     	$KWHTM = 0;
-
 
     	$beans = R::findAndExport('Inverter');
     	foreach ($beans as $inverter){

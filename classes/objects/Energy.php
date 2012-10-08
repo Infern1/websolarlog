@@ -6,5 +6,6 @@ class Energy {
     public $KWH;
     public $KWHT;
     public $KWHKWP; // kWh per kWp
+    public $co2;
 }
 ?>
