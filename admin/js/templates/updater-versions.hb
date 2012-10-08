@@ -12,3 +12,4 @@
     <input type="hidden" name="s" value="updater-go" /> 
     <button type="button" id="btnUpdateSubmit">Update</button>
 </form>
+<div id="update-console"></div>

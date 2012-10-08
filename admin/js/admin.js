@@ -22,12 +22,14 @@ $(function()
                                 init_general(); // First admin item
                                 $.pnotify({
                                     title: 'Login',
-                                    text: 'Succesfully logged in.'
+                                    text: 'Succesfully logged in.',
+                                    type: 'success'
                                 });
                             } else {
                                 $.pnotify({
                                     title: 'Login',
-                                    text: 'Failed to log in. Please retry!'
+                                    text: 'Failed to log in. Please retry!',
+                                    type: 'error'
                                 });
                             }
                         });
@@ -102,7 +104,7 @@ function init_KWHcalc(inv_data){
                     init_inverters(inverterId);                        
                     $.pnotify({
                         title: 'Saved',
-                        text: 'You\'re changes have been saved.'
+                        text: 'You\'re changes have been saved.',
                     });
                 });
             });
@@ -317,12 +319,14 @@ function init_mail() {
                         if (data.result == true) {
                             $.pnotify({
                                 title: 'Succes',
-                                text: 'Email was send, check your inbox.'
+                                text: 'Email was send, check your inbox.',
+                                type: 'success'                                    
                             });                                  
                         } else {
                             $.pnotify({
                                 title: 'Error',
-                                text: 'Email was not send, check the settings.<br />' + data.message
+                                text: 'Email was not send, check the settings.<br />' + data.message,
+                                type: 'error'
                             });      
                         }
                     });
@@ -396,11 +400,21 @@ function init_updatepage(experimental) {
                             text: 'The update has been started.'
                         });
                         var data = $(this).parent().serialize();
-                        $.post('admin-server.php', data, function(){
-                            $.pnotify({
-                                title: 'Update',
-                                text: 'The update is ready.'
-                            });
+                        $.post('admin-server.php', data, function(updateresult){
+                            console.log(updateresult.result);
+                            if (updateresult.result === true) {
+                                $.pnotify({
+                                    title: 'Update',
+                                    text: 'The update is ready.',
+                                    type: 'success'
+                                });                                
+                            } else {
+                                $.pnotify({
+                                    title: 'Update',
+                                    text: 'The update failed. <br />' + updateresult.error,
+                                    type: 'error'
+                                });                                                                
+                            }
                         });
                     });
                 },

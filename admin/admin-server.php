@@ -90,8 +90,33 @@ switch ($settingstype) {
         }
         break;
     case 'updater-go':
-        // TODO start the update
-        $data['result'] = false;
+        $version = Common::getValue("version", "none");
+        if ($version === "none") {
+            $data['error'] = "No version selected.";
+            $data['result'] = false;
+            break;
+        }
+
+        // Prepare folders
+        if (!Updater::prepareCheckout()) {
+            $data['error'] = "Error preparing download folder.";
+            $data['result'] = false;
+            break;
+        }
+
+        // Do the checkout
+        $url = Updater::$url + "tag/" + $version;
+        $url = ($version == "trunk") ? $url + "trunk" : $url;
+        if(!Updater::doCheckout($url)) {
+            $data['error'] = "Error preparing download folder.";
+            $data['result'] = false;
+            break;
+        }
+
+        // Copy the files
+        Updater::copyToLive();
+
+        $data['result'] = true;
         break;
     case 'isLogin':
         $data['result'] = Session::isLogin();
@@ -203,12 +228,6 @@ switch ($settingstype) {
         $data['test'] = checkSQLite();
         break;
 }
-
-$data['sessioninfo'] = array();
-$data['sessioninfo']['id'] = session_id();
-$data['sessioninfo']['userid'] = $_SESSION['userid'];
-$data['sessioninfo']['username'] = $_SESSION['username'];
-
 
 // Set headers for JSON response
 header('Cache-Control: no-cache, must-revalidate');
