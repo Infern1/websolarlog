@@ -8,9 +8,8 @@ class Session
     public static function login() {
         $username = Common::getValue('username', 'none');
         $password = sha1(Common::getValue('password', 'none'));
-
-        if ($username === "admin" && $password === "admin") {
-            $_SESSION['userid'] = session_id();
+        if ($username === "admin" && $password === sha1("admin")) {
+            $_SESSION['userid'] = 1;
             $_SESSION['username'] = $username;
             return true;
         }
@@ -34,7 +33,7 @@ class Session
     public static function isLogin() {
         $result = false;
         if (isset($_SESSION['userid']) && isset($_SESSION['username'])) {
-            if ($_SESSION['userid'] != '' && $_SESSION['username'] != '') {
+            if ($_SESSION['userid'] > 0 && $_SESSION['username'] === 'admin') {
                 $result = true;
             }
         }

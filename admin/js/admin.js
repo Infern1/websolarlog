@@ -1,7 +1,6 @@
 $(function()
 {
     $.getJSON('admin-server.php?s=isLogin', function(data) {
-        data.result = true; // Force login!
         if (data.result === true) {
             init_menu();
             init_general(); // First admin item
@@ -17,13 +16,20 @@ $(function()
                     $('#content').html(html);
                     $("#btnLoginSubmit").bind('click', function (){
                         var data = $(this).parent().parent().serialize();
-                        $.post('admin-server.php', data, function(){
-                            $.pnotify({
-                                title: 'Login',
-                                text: 'Succesfully logged in.'
-                            });
-                            init_menu();
-                            init_general(); // First admin item
+                        $.post('admin-server.php', data, function(logindata){
+                            if (logindata.result == true) {
+                                init_menu();
+                                init_general(); // First admin item
+                                $.pnotify({
+                                    title: 'Login',
+                                    text: 'Succesfully logged in.'
+                                });
+                            } else {
+                                $.pnotify({
+                                    title: 'Login',
+                                    text: 'Failed to log in. Please retry!'
+                                });
+                            }
                         });
                     });
                 }

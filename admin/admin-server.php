@@ -73,7 +73,7 @@ switch ($settingstype) {
         $data['templates'] = $templates;
         break;
     case 'login':
-        Session::login();
+        $data['result'] = Session::login();
         break;
     case 'logout':
         Session::logout();
@@ -203,6 +203,10 @@ switch ($settingstype) {
         break;
 }
 
+$data['sessioninfo'] = array();
+$data['sessioninfo']['id'] = session_id();
+$data['sessioninfo']['userid'] = $_SESSION['userid'];
+$data['sessioninfo']['username'] = $_SESSION['username'];
 
 
 // Set headers for JSON response

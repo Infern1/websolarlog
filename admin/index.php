@@ -1,14 +1,4 @@
-<?php
-session_start();
-$language = 'nl';
-putenv("LANG=$language");
-setlocale(LC_ALL, $language);
-
-// Set the text domain as 'messages'
-$domain = 'admin';
-bindtextdomain($domain, "../locales");
-textdomain($domain);
-?>
+<?php session_start(); ?>
 <!Doctype html>
 <html lang="en">
 <head>
@@ -47,11 +37,11 @@ textdomain($domain);
 			<!-- Navigation -->
 			<div id="navigation">
 				<ul>
-					<li class="nav-start"><a href="#" id="btnGeneral">_("General")</a></li>
-					<li><a href="#" id="btnInverters">_("Inverters")</a></li>
-					<li><a href="#" id="btnEmail">_("eMail")</a></li>
-					<li><a href="#" id="btnAdvanced">_("Advanced")</a></li>
-					<li><a href="#" id="btnUpdate">_("Update")</a></li>
+					<li class="nav-start"><a href="#" id="btnGeneral">General</a></li>
+					<li><a href="#" id="btnInverters">Inverters</a></li>
+					<li><a href="#" id="btnEmail">eMail</a></li>
+					<li><a href="#" id="btnAdvanced">Advanced</a></li>
+					<li><a href="#" id="btnUpdate">Update</a></li>
 					<li class="nav-end"><a href="#" id="btnTestPage">Test page</a></li>
 				</ul>
 				<div class="cl"></div>
@@ -63,11 +53,11 @@ textdomain($domain);
 				<div id="main-middle">
 					<!-- Content -->
 					<header>
-						<h1>WSL :: _("Configuration")</h1>
+						<h1>WSL :: Configuration</h1>
 					</header>
 					<div id="content">
     					<header>
-    						<h2>_("Welcome to the configuration")</h2>
+    						<h2>Welcome to the configuration</h2>
     					</header>
             			<!-- Defining content section article -->
 					</div>
