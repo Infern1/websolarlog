@@ -2,7 +2,7 @@
 <!Doctype html>
 <html lang="en">
 <head>
-<title>_("Configuration")</title>
+<title>Configuration</title>
 <meta charset="utf-8">
 <link rel="shortcut icon" href="css/images/favicon.ico" />
 <link rel="stylesheet" href="../css/jquery.pnotify.default.css" type="text/css" />
