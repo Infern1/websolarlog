@@ -21,7 +21,7 @@ class PDODataAdapter {
         if (!$bean){
         	$bean = R::dispense('Live');
         }
-
+        $plantPower=0;
         $oPanels = $this->readPanelsByInverter($invtnum);
         foreach($oPanels as $panel){
         	$plantPower += ($panel->amount*$panel->wp) +  ($panel->amount*$panel->wp);
