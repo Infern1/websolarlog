@@ -24,7 +24,7 @@ class PDODataAdapter {
 
         $oPanels = $this->readPanelsByInverter($invtnum);
         foreach($oPanels as $panel){
-        	$plantPower += ($panel['amount']*$panel['wp']) +  ($panel['amount']*$panel['wp']);
+        	$plantPower += ($panel->amount*$panel->wp) +  ($panel->amount*$panel->wp);
         }
         
         
