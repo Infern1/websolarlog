@@ -171,6 +171,7 @@ class Worker {
 
             R::commit(); // Commit the transaction
         } catch (Exception $e) {
+        	
             $error = $e->getFile() . "(" . $e->getLine() . ") " .  + $e->getMessage() + " TRACE: " . $e->getTraceAsString();
             $OEvent = new Event(0, time(), "Script error", $error);
             $this->adapter->addEvent(0, $OEvent);
