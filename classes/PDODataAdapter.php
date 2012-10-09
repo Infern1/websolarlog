@@ -32,12 +32,12 @@ class PDODataAdapter {
         $bean->I1V = $live->I1V;
         $bean->I1A = $live->I1A;
         $bean->I1P = $live->I1P;
-        $bean->I1ratio = round(((($live->I1P)/$plantPower)*100),1);
+        $bean->I1Ratio = round(((($live->I1P)/$plantPower)*100),1);
 
         $bean->I2V = $live->I2V;
         $bean->I2A = $live->I2A;
         $bean->I2P = $live->I2P;
-        $bean->I2ratio = round(((($live->I2P)/$plantPower)*100),1);
+        $bean->I1Ratio = round(((($live->I2P)/$plantPower)*100),1);
 
         $bean->GV = $live->GV;
         $bean->GA = $live->GA;
