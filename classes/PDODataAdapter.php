@@ -16,14 +16,17 @@ class PDODataAdapter {
      * @param Live $live
      */
     public function writeLiveInfo($invtnum, Live $live) {
-
     	$bean =  R::findOne('Live',' INV = :INV ', array(':INV'=>$invtnum));
 
         if (!$bean){
         	$bean = R::dispense('Live');
         }
+
         $oPanels = $this->readPanelsByInverter($invtnum);
-        $plantPower = ($oPanels[0]['amount']*$oPanels[0]['wp']) +  ($oPanels[1]['amount']*$oPanels[1]['wp']);
+        foreach($oPanels as $panel){
+        	$plantPower += ($panel['amount']*$panel['wp']) +  ($panel['amount']*$panel['wp']);
+        }
+        
         
         $bean->SDTE = date("Ymd-H:i:s");
         $bean->time = time();
@@ -37,7 +40,7 @@ class PDODataAdapter {
         $bean->I2V = $live->I2V;
         $bean->I2A = $live->I2A;
         $bean->I2P = $live->I2P;
-        $bean->I1Ratio = round(((($live->I2P)/$plantPower)*100),1);
+        $bean->I2Ratio = round(((($live->I2P)/$plantPower)*100),1);
 
         $bean->GV = $live->GV;
         $bean->GA = $live->GA;
