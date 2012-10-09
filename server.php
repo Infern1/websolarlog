@@ -215,22 +215,25 @@ switch ($method) {
 				$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($inverter['id']);
 				
 			}
-			$history = $dataAdapter->getDayHistoryPerRecord();
-			
-			
-			for ($i = 0; $i < count($history); $i++) {
-				$history[$i]['GP'] = round($history[$i]['GP'],2);
-			}
-
 			$dayData = new DayDataResult();
 			$dayData->data = array(
 					"maxPower"=>$maxPower,
 					"maxEnergy"=>$maxEnergy,
-					"history"=>$history,
 			);
 			$dayData->success = true;
 			$data['dayData'] = $dayData;
-			break;
+		break;
+	case 'getHistoryValues':
+		
+			$history = $dataAdapter->getDayHistoryPerRecord();
+			for ($i = 0; $i < count($history); $i++) {
+				$history[$i]['GP'] = round($history[$i]['GP'],2);
+			}
+			$dayData = new DayDataResult();
+			$dayData->data = array("history"=>$history);
+			$dayData->success = true;
+			$data['dayData'] = $dayData;
+		break;
 	case 'getPageIndexValues':
 		$indexValues = $dataAdapter->readPageIndexData();
 		$data['IndexValues'] = $indexValues;

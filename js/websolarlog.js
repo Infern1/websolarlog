@@ -30,6 +30,23 @@ var WSL = {
 	init_nextRelease : function(divId) {
 		$(divId).html("<br/><br/><H1>WSL::NextRelease();</h1>");
 	},
+	init_PageTodayHistoryValues : function(divId) {
+		// Retrieve the error events
+		WSL.api.getHistoryValues(function(data) {
+			
+			$.ajax({
+				url : 'js/templates/historyValues.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					$(divId).html(html);
+				},
+				dataType : 'text'
+			});
+		});
+	},	
 	init_events : function(invtnum, divId) {
 		// Retrieve the error events
 		WSL.api.getEvents(invtnum, function(data) {
@@ -272,7 +289,7 @@ var WSL = {
 		});
 	},
 
-	init_PageTodayValues : function(todayValues) {
+	init_PageTodayValues : function(todayValues,success) {
 		// initialize languages selector on the given div
 		WSL.api.getPageTodayValues(function(data) {
 			$.ajax({
@@ -283,9 +300,11 @@ var WSL = {
 						'data' : data
 					});
 					$(todayValues).html(html);
+					success.call();
 				},
 				dataType : 'text',
 			});
+			
 		});
 	},
 
@@ -502,7 +521,14 @@ var WSL = {
 	}
 };
 
-// api class
+
+//api class
+WSL.api.getHistoryValues = function(success) {
+	$.getJSON("server.php", {
+		method : 'getHistoryValues',
+	}, success);
+};
+
 WSL.api.programdayfeed = function(invtnum, success) {
 	$.getJSON("programs/programdayfeed.php", {
 		invtnum : invtnum

@@ -46,13 +46,8 @@
 			<div class="column span-3">kWh</div>
 			<div class="column span-4 last">Date</div>
 			<div class="cl"></div>	
-			<div class="column span-10" style="overflow:scroll;height:200px;overflow-x: hidden;overflow-y: scroll;">
-			{{#each data.dayData.data.history}}
-	    			<div class="column span-2 first">{{this.INV}}</div>
-	    			<div class="column span-3">{{this.GP}} kWh</div>
-	    			<div class="column span-4 last">{{this.date}}</div>
-
-	    	{{/each}}
+			<div id="history" class="column span-10" style="overflow:scroll;height:200px;overflow-x: hidden;overflow-y: scroll;">
+	    	..
 	    	</div>
 	    	</div>
 			<div class="cl"></div>									

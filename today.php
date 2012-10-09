@@ -20,8 +20,11 @@ require_once("template/" . $template . "/index.php");
 				//var hGraphYesterday = null;
 				//var fnGraphYesterday = function(handle){hGraphYesterday=handle;};
 				//WSL.createDayGraph(1, "Yesterday", fnGraphYesterday); // Initial load fast
-				WSL.init_PageTodayValues("#columns"); // Initial load fast
-				window.setInterval(function(){WSL.init_PageTodayValues("#columns");}, 30000); // every 3 seconds
+				WSL.init_PageTodayValues("#columns",
+						function(){
+						WSL.init_PageTodayHistoryValues("#history"); // Initial load fast
+					}); // Initial load fast
+			
     		}
 		)
 	});
