@@ -469,7 +469,6 @@ class PDODataAdapter {
     	$lastDays = new LastDays();
     	$lastDays->points=$points;
     	$lastDays->KWHT=$cumPower;
-    	$lastDays->table=$table;
     	return $lastDays;
     }
     
