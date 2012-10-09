@@ -26,6 +26,10 @@ function tooltipContentEditor(str, seriesIndex, pointIndex, plot,series	) {
 var WSL = {
 		
 	api : {},
+	
+	init_nextRelease : function(divId) {
+		$(divId).html("<br/><br/><H1>WSL::NextRelease();</h1>");
+	},
 	init_events : function(invtnum, divId) {
 		// Retrieve the error events
 		WSL.api.getEvents(invtnum, function(data) {
@@ -47,7 +51,7 @@ var WSL = {
 		WSL.api.getLiveData(invtnum, function(data) {
 			if (data.liveData.success) {
 				$.ajax({
-					url : 'js/templates/livedata.hb',
+					url : 'js/templates/liveValues.hb',
 					success : function(source) {
 						var template = Handlebars.compile(source);
 						var html = template({
@@ -57,8 +61,6 @@ var WSL = {
 					},
 					dataType : 'text'
 				});
-			} else {
-				alert(data.liveData.message);
 			}
 		});
 	},
@@ -226,19 +228,18 @@ var WSL = {
 							}
 						}
 					};
-			
-
-			$.ajax({
-				url : 'js/templates/liveValues.hb',
-				success : function(source) {
-					var template = Handlebars.compile(source);
-					var html = template({
-						'data' : data
-					});
-					$(divId).html(html);
-				},
-				dataType : 'text',
-			});
+				$.ajax({
+					url : 'js/templates/liveValues.hb',
+					success : function(source) {
+						var template = Handlebars.compile(source);
+						var html = template({
+							'data' : data
+						});
+						$(divId).html(html);
+					},
+					dataType : 'text',
+				});
+				
 			$.ajax({
 				url : 'js/templates/totalValues.hb',
 				success : function(source) {
@@ -249,24 +250,25 @@ var WSL = {
 					$(SideBar).html(html);
 
 					var gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ],gaugeGPOptions);
-					gaugeGP.series[0].data = [ [ 'W',data.IndexValues.inverters[0].live.GP ] ];
-					gaugeGP.series[0].label = Math.round(data.IndexValues.inverters[0].live.GP)+ ' W';
-					document.title = '('+ data.IndexValues.inverters[0].live.GP+ ' W) WebSolarLog';
+					gaugeGP.series[0].data = [ [ 'W',data.IndexValues.sum.GP ] ];
+					gaugeGP.series[0].label = data.IndexValues.sum.GP;
+					document.title = '('+ data.IndexValues.sum.GP+ ' W) WebSolarLog';
 					gaugeGP.replot();
 					
 					var gaugeIP = $.jqplot('gaugeIP', [ [ 0.1 ] ],gaugeIPOptions);
-					gaugeIP.series[0].data = [ [ 'W',data.IndexValues.inverters[0].live.IP ] ];
-					gaugeIP.series[0].label = Math.round(data.IndexValues.inverters[0].live.IP)+ ' W';
+					gaugeIP.series[0].data = [ [ 'W',data.IndexValues.sum.IP ] ];
+					gaugeIP.series[0].label = data.IndexValues.sum.IP;
 					gaugeIP.replot();
 					
 					var gaugeEFF = $.jqplot('gaugeEFF', [ [ 0.1 ] ],gaugeEFFOptions);
-					gaugeEFF.series[0].data = [ [ 'W',data.IndexValues.inverters[0].live.EFF] ];
-					gaugeEFF.series[0].label = Math.round(data.IndexValues.inverters[0].live.EFF)+ ' %';
+					gaugeEFF.series[0].data = [ [ 'W',data.IndexValues.sum.EFF] ];
+					gaugeEFF.series[0].label = data.IndexValues.sum.EFF;
 					gaugeEFF.replot();
 					
 				},
 				dataType : 'text',
 			});
+
 		});
 	},
 
@@ -330,7 +332,7 @@ var WSL = {
 				},
 				dataType : 'text',
 			});
-			
+			/*
 			$.ajax({
 				url : 'js/templates/periodList.hb',
 				success : function(source) {
@@ -341,7 +343,7 @@ var WSL = {
 					$(periodList).html(html);
 				},
 				dataType : 'text',
-			});
+			});*/
 		});
 	},
 
@@ -422,7 +424,8 @@ var WSL = {
 				          {yaxis:'yaxis',renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
 				          {yaxis:'y2axis', pointLabels: {show: false}}
 				          ],
-			seriesDefaults : {
+				stackSeries: true,
+				seriesDefaults : {
 				labelOptions:{
 					formatString: '%d-%' ,fontSize: '20pt',
 				},

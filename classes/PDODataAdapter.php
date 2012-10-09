@@ -22,17 +22,22 @@ class PDODataAdapter {
         if (!$bean){
         	$bean = R::dispense('Live');
         }
-
+        $oPanels = $this->readPanelsByInverter($invtnum);
+        $plantPower = ($oPanels[0]['amount']*$oPanels[0]['wp']) +  ($oPanels[1]['amount']*$oPanels[1]['wp']);
+        
         $bean->SDTE = date("Ymd-H:i:s");
         $bean->time = time();
         $bean->INV = $invtnum;
+        
         $bean->I1V = $live->I1V;
         $bean->I1A = $live->I1A;
         $bean->I1P = $live->I1P;
+        $bean->I1ratio = round(((($live->I1P)/$plantPower)*100),1);
 
         $bean->I2V = $live->I2V;
         $bean->I2A = $live->I2A;
         $bean->I2P = $live->I2P;
+        $bean->I2ratio = round(((($live->I2P)/$plantPower)*100),1);
 
         $bean->GV = $live->GV;
         $bean->GA = $live->GA;
@@ -429,7 +434,7 @@ class PDODataAdapter {
     }
 
 
-    public function DayBeansToDataArray($beans){
+  public function DayBeansToGraphPoints($beans){
     	$i=0;
     	$firstBean = array();
     	$preBean = array();
@@ -453,7 +458,7 @@ class PDODataAdapter {
 
     		$preBeanUTCdate = $bean['time'];
     		$preBean = $bean;
-    		$KWHT = round($bean['KWHT'] - $firstBean['KWHT'],3);
+    		$KWHT = $i."".$bean['KWHT']."*".$i."".$firstBean['KWHT'];
     		$i++;
     	}
 
@@ -464,7 +469,7 @@ class PDODataAdapter {
     	$lastDays->table=$table;
     	return $lastDays;
     }
-
+    
 
     public function writeConfig(Config $config) {
         // Only save the object self not the arrays
@@ -714,44 +719,149 @@ class PDODataAdapter {
      * @Param string $type
      * @Param date $startDate
      */
-    public function readTablePeriodValues($invtnum, $table, $type, $startDate){
-    	$count = 0;
-    	if (in_array ( $table, array ("Energy","History","Pmaxotd"))){
-	    	$beginEndDate = Util::getBeginEndDate($type, $startDate,$count);
+    public function readTablesPeriodValues($invtnum, $table, $type, $startDate){
+    	$count = 0;    	
+
+    	if (in_array ( strtolower($table), array ("energy","history","pmaxotd"))){
+			// get the begin and end date/time
+    		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
     		if ($invtnum > 0){
-    			$energyBeans = R::getAll("SELECT * FROM '".$table."' WHERE inv = :INV AND time > :beginDate AND  time < :endDate ORDER BY time",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+    			$energyBeans = R::getAll("SELECT strftime ( '%H:%M:%S %d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date,* FROM '".$table."' WHERE INV = :INV AND time > :beginDate AND  time < :endDate ORDER BY time",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
     		}else{
-	    		$energyBeans = R::getAll("SELECT * FROM '".$table."' WHERE time > :beginDate AND  time < :endDate ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+	    		$energyBeans = R::getAll("SELECT strftime ( '%H:%M:%S %d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date,* FROM '".$table."' WHERE time > :beginDate AND  time < :endDate ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
     		}
     	}
     	return $energyBeans;
     }
 
-
     /**
-     * return a array with GraphPoints for
+     * Get Max & (summed)Total Energy Values from Energy Tabel
+     * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
+     */
+    public function getMonthEnergyPerDay($invtnum=0){
+    		if ($invtnum>0){
+				$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum));
+			}else{
+				$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC");
+			}
+			return $beans;
+    }
+    
+    /**
+     * Get Max & (summed)Total Energy Values from Energy Tabel
+     * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
+     */
+    public function getMonthMaxPowerPerDay($invtnum=0){
+    	if ($invtnum>0){
+    		$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM pmaxotd WHERE INV = :INV GROUP BY strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum));
+    	}else{
+    		$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM pmaxotd GROUP BY strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC");
+    	}
+    	return $beans;
+    }
+    
+    
+    /**
+     * Get Max & (summed)Total Energy Values from Energy Tabel
+     * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
+     */
+    public function getYearEnergyPerMonth($invtnum=0){
+    	if ($invtnum>0){
+    		$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum));
+    	}else{
+    		$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC");
+    	}
+    	return $beans;
+    }
+    
+    /**
+     * Get Max & (summed)Total Energy Values from Energy Tabel
+     * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
+     */
+    public function getYearMaxPowerPerMonth($invtnum=0){
+    	if ($invtnum>0){
+    		$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM pmaxotd WHERE INV = :INV GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum));
+    	}else{
+    		$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM pmaxotd GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC");
+    	}
+    	return $beans;
+    }
+    
+    
+    /**
+     * Get Max & (summed)Total Energy Values from Energy Tabel
+     * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
+     */
+    public function getDayEnergyPerDay($invtnum=0){
+    	$beginEndDate = Util::getBeginEndDate('today', 1,$startDate);
+    	if ($invtnum>0){
+    
+    		$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+    				FROM energy WHERE INV = :INV  AND time > :beginDate AND time < :endDate GROUP BY strftime ( 'd%-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+    	}else{
+    		$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+    				FROM energy WHERE time > :beginDate AND time < :endDate GROUP BY strftime ( 'd%-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+    	}
+    	return $beans;
+    }
+    
+    /**
+     * Get Max & (summed)Total Energy Values from Energy Tabel
+     * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
+     */
+    public function getDayMaxPowerPerDay($invtnum=0){
+    	$beginEndDate = Util::getBeginEndDate('today', 1,$startDate);
+    	 
+    	if ($invtnum>0){
+    		$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+    				FROM pmaxotd WHERE INV = :INV AND time > :beginDate AND time < :endDate GROUP BY strftime ( 'd%-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+    	}else{
+    		$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+    				FROM pmaxotd WHERE time > :beginDate AND time < :endDate GROUP BY strftime ( 'd%-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+    	}
+    	return $beans;
+    }
+    
+    
+    /**
+     * Get Max & (summed)Total Energy Values from Energy Tabel
+     * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
+     */
+    public function getDayHistoryPerRecord($invtnum=1){
+    	$beginEndDate = Util::getBeginEndDate('today', 1,$startDate);
+   		$beans = R::getAll("SELECT INV, GP,KWHT, strftime ( '%H:%M %d-%m-%Y' , datetime ( time , 'unixepoch' ) ) AS date FROM history WHERE INV = :INV  AND time > :beginDate AND time < :endDate order by time ASC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+    	return $beans;
+    }
+
+
+    
+    /**
+     * return a array with GraphPoints
      * @param date $startDate ("Y-m-d") ("1900-12-31"), when no date given, the date of today is used.
      * @return array($beginDate, $endDate);
      */
     public function getGraphPoint($invtnum,$type, $startDate){
-
     	$type=strtolower($type);
 
     	(stristr($type, 'day') === FALSE) ?	$table = "Energy" : $table = "History";
 
-    	$beans = $this->readTablePeriodValues($invtnum, $table, $type, $startDate);
+    	$beans = $this->readTablesPeriodValues($invtnum, $table, $type, $startDate);
 
     	if(strtolower($table) == "history"){
     		// NO history bean? Create a dummy bean...
-    		(!$beans) ? $beans[0] = array('time'=>time(),'KWH'=>0) : $beans = $beans;
-    		return $this->DayBeansToDataArray($beans);
+    		(!$beans) ? $beans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $beans = $beans;
+    		return $this->DayBeansToGraphPoints($beans);
     	}else{
-    		return $this->PeriodBeansToDataArray($beans);
+    		return $this->PeriodBeansToGraphPoints($beans);
     	}
     }
 
-
-   public function PeriodBeansToDataArray($beans){
+    /**
+     * return a array that can be understand by JQplot
+     * @param array $beans from $this->getGraphPoint()
+     * @return array($beginDate, $endDate);
+     */
+   public function PeriodBeansToGraphPoints($beans){
     	$points = array();
 
     	foreach ($beans as $bean){
@@ -777,44 +887,51 @@ class PDODataAdapter {
     }
 
 
-
-    public function readMaxPowerValues($invtnum, $type, $count, $startDate){
-
-    	$PmaxotdBeans = $this->readTablePeriodValues($invtnum, "Pmaxotd", $type,$startDate);
-    	foreach ($PmaxotdBeans as $PmaxotdBean){
-    		$oMaxPowerToday = new MaxPowerToday();
-    		$oMaxPowerToday->GP = $PmaxotdBean['GP'];
-    		$oMaxPowerToday->INV =$PmaxotdBean['INV'];
-    		$oMaxPowerToday->time = date("H:i:s d-m-Y",$PmaxotdBean['time']);
-    	}
-    	return $oMaxPowerToday;
-    }
-
-
-    public function readEnergyValues($invtnum, $type, $count, $startDate){
-
-		$energyBeans = $this->readTablePeriodValues($invtnum, "Energy", $type,$startDate);
-
-		if($invtnum == 0 || !$invtnum){
-			$inverters = R::getAll("SELECT sum(plantPower) as totalPlantPower FROM inverter");
-		}else{
-			$inverters = R::getAll("SELECT sum(plantPower) as totalPlantPower FROM inverter WHERE id = :INV", array("INV"=>$invtnum));
-		}
-
-		$oEnergy = new Energy();
+    
+	/**
+	 * read Energy Values
+	 * @param int $invtnum
+	 * @param str $type can be: today, week, month, year
+	 * @param int $count
+	 * @param date $startDate
+	 * @param str $maxType 
+	 * 
+	 */
+    public function readEnergyValues($invtnum, $type, $count, $startDate,$maxType){
+    	$config = new Config;
+		$energyBeans = $this->readTablesPeriodValues($invtnum, "Energy", $type,$startDate);
+		
 		foreach ($energyBeans as $energyBean){
-    		$oEnergy->INV = $energyBean['INV'];
-    		$oEnergy->co2 = $energyBean['co2'];
-    		$oEnergy->KWH += $energyBean['KWH'];
+			$oEnergy = new Energy();
+    		$invConfig = $this->readInverter($energyBean['INV']);
+    		
+    		
+    		$oEnergy->INV =  $energyBean['INV'];
+    		$oEnergy->KWHKWP = round($energyBean['KWH'] / ($invConfig->plantpower/1000),3);
+
+    		$oEnergy->KWH = Util::formatPower($energyBean['KWH'],2);
+    		$oEnergy->CO2 =Formulas::CO2kWh($energyBean['KWH'],$config->co2kwh);
     		$oEnergy->time = date("H:i:s d-m-Y",$energyBean['time']);
-    		$oEnergy->KWHT=$energyBean['KWHT'];
-    		$oEnergy->PanelRatio = array();
-
-    		$month[] = array("kwh"=>$energyBean['KWH'], "time"=>date("d-m-Y",$energyBean['time']));
-		}
-		$oEnergy->KWHKWP =round($oEnergy->KWH/($inverters[0]['totalPlantPower']/1000),2);
-
-    	return array($month,$oEnergy);
+    		$oEnergy->KWHT = Util::formatPower($energyBean['KWHT'],2);
+    		$KWHT += $energyBean['KWH'];
+    		$energy[] = $oEnergy;
+    		$days[] = array("kwh"=>$energyBean['KWH'], "time"=>date("d-m-Y",$energyBean['time']));
+		}		
+    	return array($energy,$KWHT);
+    }
+    
+    public function readPmaxValues($invtnum, $type, $count, $startDate){
+    	
+    	$beans = $this->readTablesPeriodValues($invtnum, "Pmaxotd", $type,$startDate);
+    
+    	foreach ($beans as $bean){
+    		$oMaxPowerToday = new MaxPowerToday();
+    		$oMaxPowerToday->GP =  $bean['GP'];
+    		$oMaxPowerToday->INV = $bean['INV'];
+    		$oMaxPowerToday->time = date("H:i:s d-m-Y",$bean['time']);;
+    		$maxPowerDay[] = $oMaxPowerToday;
+    	}
+    	return array($maxPowerDay);
     }
 
     public function readPageIndexData() {
@@ -822,62 +939,105 @@ class PDODataAdapter {
     	$list = array();
 
     	// Initialize variables
-    	$KWHTD = 0;
-    	$KWHTW = 0;
-    	$KWHTM = 0;
+    	$GP=0;
+    	$I1P = 0;
+    	$I2P = 0;
+    	$IP  = 0;
+    	$EFF = 0;
 
     	$beans = R::findAndExport('Inverter');
     	foreach ($beans as $inverter){
             $oInverter = array();
+            
     		$liveBean =  R::findOne('Live',' INV = :INV ', array(':INV'=>$inverter['id']));
     		$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
-
+    		
     		$live = new Live();
-    		$live->SDTE = date("H:i:s",$liveBean['time']);
+    		$live->Time = date("H:i:s",$liveBean['time']);
     		$live->INV = $liveBean['INV'];
-    		$live->GP = $liveBean['GP'];
-    		$live->I1P = $liveBean['I1P'];
-    		$live->I2P = $liveBean['I2P'];
-    		$live->IP = $ITP;
+    		$live->GP = Util::formatPower($liveBean['GP'],2);
+    		
+    		
+    		$live->I1P = Util::formatPower($liveBean['I1P'],2);
+    		$live->I1Ratio = $liveBean['I1Ratio'];
+    		$live->I2P = Util::formatPower($liveBean['I2P'],2);
+    		$live->I2Ratio = $liveBean['I2Ratio'];
+
+    		$live->IP = Util::formatPower($ITP,2);
     		$live->EFF = $liveBean['EFF'];
     		//$list['inverters'][$liveBean['INV']]['live'] = $live;
     		$oInverter["id"] = $liveBean['INV'];
     		$oInverter["live"] = $live;
+    		$GP  += $live->GP;
+    		$I1P += $live->I1P;
+    		$I2P += $live->I2P;
+    		$IP  += $live->IP;
+    		$EFF  += $live->EFF;
 
-    		// get production
-    		$beans = R::getAll("SELECT INV,KWH FROM 'Energy' WHERE INV = :inv ORDER BY SDTE DESC ,INV DESC LIMIT 0,:limit", array(':limit'=>30,':inv'=>$inverter['id']));
-    		$i=0;
-        	// Initialize variables
-    		$KWHT = array();
-        	$KWHT['dayKWHT'] = 0;
-        	$KWHT['weekKWHT'] = 0;
-        	$KWHT['monthKWHT'] = 0;
-    		foreach ($beans as $bean){
-    			if ($i<(1)){
-    				$KWHT['dayKWHT'] += $bean['KWH'];
-    			}
-    			if ($i<(7)){
-    				$KWHT['weekKWHT'] +=$bean['KWH'];
-    			}
-    			if ($i<(30)){
-    				$KWHT['monthKWHT'] +=$bean['KWH'];
-    			}
-    			$i++;
-    		}
-    		$oInverter["day"] = $KWHT['dayKWHT'];
-    		$oInverter["week"] = $KWHT['weekKWHT'];
-    		$oInverter["month"] = $KWHT['monthKWHT'];
     		$list['inverters'][] = $oInverter;
-
-
-    		$KWHTD += $KWHT['dayKWHT'];
-    		$KWHTW += $KWHT['weekKWHT'];
-    		$KWHTM += $KWHT['monthKWHT'];
     	}
+    	
+    	$list['sum']['GP'] = Util::formatPower($GP,1);
+    	$list['sum']['I1P'] = Util::formatPower($I1P,1);
+    	$list['sum']['I2P'] = Util::formatPower($I2P,1);
+    	$list['sum']['IP'] = Util::formatPower($IP,1);
+    	$list['sum']['EFF'] = round($EFF/count($oInverter),1)." %";
+    	$readMaxPowerValues = $this->getMaxTotalEnergyValues(1,"all");
+    	
     	$oInverter = array();
-    	$totals = array("day"=>$KWHTD,"week"=>$KWHTW,"month"=>$KWHTM);
+    	//$totals = array("day"=>$KWHTD,"week"=>$KWHTW,"month"=>$KWHTM);
 
-    	$list['summary'] = $totals;
+    	$list['summary'] = $readMaxPowerValues;
     	return $list;
     }
+    
+    /**
+     * Get Max & (summed)Total Energy Values from Energy Tabel
+     * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
+     */
+    public function getMaxTotalEnergyValues($invtnum,$type,$limit=1){
+    
+    	$type = strtolower($type);
+    
+    	if($type == "today" || $type == "day" || $type == "all"){
+    		$MaxEnergyBeansToday = $this->readTablesPeriodValues(0, "Energy", "today", date("d-m-Y"));
+    		$MaxPowerBeansToday = $this->readTablesPeriodValues(0, "Pmaxotd", "today", date("d-m-Y"));
+    	}
+    	if($type == "week" || $type == "all"){
+    		$MaxEnergyBeansWeek = R::getAll("SELECT MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%Y%W' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY date ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit));
+    	}
+    	if($type == "month" ||  $type == "all"){
+    		if ($invtnum>0){
+    			$MaxEnergyBeansMonth = R::getAll("
+    					SELECT INV,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
+    		}else{
+    			$MaxEnergyBeansMonth = R::getAll("
+    					SELECT INV,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit));
+    		}
+    	}
+    	if($type == "year" || $type == "all"){
+    		if ($invtnum>0){
+    			$MaxEnergyBeansYear = R::getAll("SELECT MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh,strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
+    		}else{
+    			$MaxEnergyBeansYear = R::getAll("SELECT MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh,strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit));
+    		}
+    	}
+    	if($type == "overall" || $type == "all"){
+    		if ($invtnum>0){
+    			$MaxEnergyBeansOverall = R::getAll("SELECT MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV order by time limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
+    		}else{
+    			$MaxEnergyBeansOverall = R::getAll("SELECT MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy order by time limit 0,:limit",array(':limit'=>$limit));
+    		}
+    	}
+    	$MaxEnergy = array(
+    			"MaxPowerToday"=>$MaxPowerBeansToday,
+    			"MaxEnergyToday"=>$MaxEnergyBeansToday,
+    			"MaxEnergyWeek"=>$MaxEnergyBeansWeek,
+    			"MaxEnergyMonth"=>$MaxEnergyBeansMonth,
+    			"MaxEnergyYear"=>$MaxEnergyBeansYear,
+    			"MaxEnergyOverall"=>$MaxEnergyBeansOverall);
+    	return $MaxEnergy;
+    }
+    
+    
 }

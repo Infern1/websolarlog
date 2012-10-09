@@ -1,37 +1,41 @@
 <div id="todayPosts">
-<div class="columns">
-	<div class="col posts">
-		<h3>Month</h3>
+<div class="columns"><h3>Month</h3>
+<div class="col posts">
+	<div class="column span-10 first">
+	
+		<h3>Max Grid Power</h3>
 		<div class="post">
-			<div class="container" >
-				<div  class="column span-13">
-					<div class="column span-7">
-						<div class="column span-7"><h4>Max values</h4></div>
-						<div class="column span-3 first">Max Power</div>
-				    	<div class="column span-4 last">{{data.dayData.data.MaxPower.GP}} W</div>
-				    	<div class="column span-3 first">Time Max Power</div>
-				    	<div class="column span-4 last">{{data.dayData.data.MaxPower.time}}</div>
-				    	<div class="column span-7"><h4>kWh values</h4></div>
-						<div class="column span-3 first">Energy Month</div>
-					    <div class="column span-4 last">{{data.dayData.data.Energy.KWH}} kWh</div>
-					    <div class="column span-3 first">kWh/kWp</div>
-					    <div class="column span-4 last">{{data.dayData.data.Energy.KWHKWP}} kWh</div>
-					    <div class="column span-7"><h4>Co2 values</h4></div>
-						<div class="column span-3 first">CO2 Month</div>
-				    	<div class="column span-4 last">{{data.dayData.data.CO2Today}}</div>
-						<div class="column span-3 first">Last Update</div>
-				    	<div class="column span-4 last">{{data.dayData.data.Energy.time}}</div>
-				    </div>
-				</div>
-			</div>								
+				<div class="column span-2 first">Inv.</div>
+				<div class="column span-3">Watt</div>
+				<div class="column span-3">Date</div>
+				{{#each data.monthData.data.maxPower}}
+					{{#each this}}
+		    		<div class="column span-2 first">{{this.INV}}</div>
+		    		<div class="column span-3">{{this.maxGP}} W</div>
+		    		<div class="column span-3" last>{{this.date}}&nbsp;</div>
+			    	{{/each}}
+		    	{{/each}}
+	    	</div>
 		</div>
 	</div>
-	<div class="col projects">
-		<h3>Gauges/Graphs?!</h3>
+	
+<div class="col posts">
+	<div class="column span-10 last">
+		<h3>Max kWh</h3>
 		<div class="post">
-		<div id="periodList"></div>
-			<div class="cl"></div>									
-		</div>							
+				<div class="column span-2 first">Inv.</div>
+				<div class="column span-3">Watt</div>
+				<div class="column span-3">Date</div>
+				{{#each data.monthData.data.maxEnergy}}
+					{{#each this}}
+		    		<div class="column span-2 first">{{this.INV}}</div>
+		    		<div class="column span-3">{{this.kWh}} W</div>
+		    		<div class="column span-3" last>{{this.date}}&nbsp;</div>
+			    	{{/each}}
+		    	{{/each}}
+	    	</div>
+		</div>
+
 	</div>
 	<div class="cl"></div>
 </div>

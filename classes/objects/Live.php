@@ -4,11 +4,13 @@ class Live {
     public $I1V;
     public $I1A;
     public $I1P;
-
+    public $I1Ratio;
+    
     public $I2V;
     public $I2A;
     public $I2P;
-
+    public $I2Ratio;
+    
     public $GV;
     public $GA;
     public $GP;

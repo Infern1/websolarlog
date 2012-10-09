@@ -108,20 +108,22 @@ class Util {
     /**
      * return the begin and end date for a given period for a given date.
      * @param date $startDate ("Y-m-d") ("1900-12-31"), when no date given, the date of today is used.
+     * @param str $type options are: (to)day, yesterday,week,month,year
      * @param int $count multiplies the day's,weeks,months,year
      * @return array($beginDate, $endDate);
      */
-    public function getBeginEndDate($type, $startDate, $count){
+    public function getBeginEndDate($type, $count,$startDate){
     	if(!$startDate){
     		$startDate = date("Y-m-d");
     	}
 
     	// Make de StartDate a timestamp
     	$startDate = strtotime($startDate);
-
+    	
     	// check what we must return
     	switch (strtolower($type)) {
     		case 'today':
+    		case 'day':
     			$beginDate = Util::getTimestampOfDate(0,0,0,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
     			$endDate = Util::getTimestampOfDate(23,59,59,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
     			break;
@@ -168,6 +170,10 @@ class Util {
     			break;
     	}
     	return array("beginDate"=>$beginDate,"endDate"=>$endDate);
+    }
+    
+    public function formatPower($value,$decimals){
+    	return ($value>1000) ? round(($value/1000),$decimals)." kWh": round($value,$decimals)." W";
     }
 }
 ?>

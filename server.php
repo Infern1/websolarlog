@@ -58,6 +58,7 @@ switch ($method) {
 		$tabs[] = array( "graphName" => "Yesterday","position" => "1","active" => ($page == "yesterday") ? 'true' : 'false');
 		$tabs[] = array( "graphName" => "Month","position" => "2","active" => ($page == "month") ? 'true' : 'false');
 		$tabs[] = array( "graphName" => "Year","position" => "3","active" => ($page == "year") ? 'true' : 'false');
+		//$tabs[] = array( "graphName" => "Expected","position" => "4","active" => ($page == "expected") ? 'true' : 'false');
 		$data['tabsPosition'] =  Common::searchMultiArray($tabs, 'active', 'true');
 		$data['tabs'] = $tabs;
 
@@ -87,47 +88,6 @@ switch ($method) {
 		break;
 	case 'getEvents':
 		$data['events'] = $dataAdapter->readAlarm($invtnum);
-		break;
-	case 'getLiveData':
-		$config_invt="config/config_invt".$invtnum.".php";
-		include("$config_invt");
-		$live = $dataAdapter->readLiveInfo($invtnum);
-		$UTCdate = strtotime(substr($live->SDTE, 0, 4)."-".substr($live->SDTE, 4, 2)."-".substr($live->SDTE, 6, 2)." ".substr($live->SDTE, 9, 2).":".substr($live->SDTE, 12, 2).":".substr($live->SDTE, 15, 2));
-
-		/*
-		 * $array[11] = by inverter reported efficiency;
-		* $CORRECTFACTOR = var set in int_config for correcting reported efficiency;
-		* $COEF = COrrected EFficiency;
-		*/
-		$COEF=($live->EFF/100)*$CORRECTFACTOR;
-		$COEF=($COEF > 1) ? 1 : $COEF;
-		$gp = $live->GP * $COEF;
-		$gp = ($gp > 1000) ? round($gp,0) : $gp= round($gp,9) ;
-
-		// Fill the live data
-		$liveData = new LiveDataResult();
-		$liveData->setMppOne(floatval(round($live->I1V,2)), floatval(round($live->I1A,2)), floatval(round($live->I1P,2)));
-		$liveData->setMppTwo(floatval(round($live->I2V,2)), floatval(round($live->I2A,2)), floatval(round($live->I2P,2)));
-		$liveData->setGrid(floatval(round($live->GV,2)), floatval(round($live->GA,2)), floatval($gp));
-		$liveData->valueSDTE = $UTCdate*1000;
-		$liveData->valueFRQ = floatval(round($live->FRQ,2));
-		$liveData->valueEFF = floatval(round($live->EFF,2));
-		$liveData->valueINVT = floatval(round($live->INVT,1));
-		$liveData->valueBOOT = floatval(round($live->BOOT,1));
-		$liveData->valueKWHT = floatval($live->KWHT);
-
-		// Set the Power Max Today
-		$mpt = $dataAdapter->readMaxPowerToday($invtnum);
-		$liveData->valuePMAXOTD = floatval(round($mpt->GP,0));
-		$liveData->valuePMAXOTDTIME = (substr($mpt->SDTE, 9, 2).":".substr($mpt->SDTE, 12, 2));
-		$liveData->valueMPSDTE = $mpt->SDTE; // TODO :: ^ above code is wrong if i check the containing data
-
-		// Set some translations
-		$liveData->lgDASHBOARD = $lgDASHBOARD;
-		$liveData->lgPMAX = $lgPMAX;
-		$liveData->success = true;
-
-		$data['liveData'] = $liveData;
 		break;
 	case 'getPlantInfo':
 		$config_invt="config/config_invt".$invtnum.".php";
@@ -217,155 +177,60 @@ switch ($method) {
 		$dayData->success = true;
 		$data['dayData'] = $dayData;
 		break;
-	case 'getPageMonthValues':
-		$config_invt="config/config_invt".$invtnum.".php";
-		include("$config_invt");
-
-		// get the date of today.
-		//$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-
-		/*
-		- kWh van vandaag icm CO2 vandaag
-		 */
-		$energy = $dataAdapter->readEnergyValues($invtnum, "month", 1, 0);
-
-		/*
-		 * - Max Watt van de dag
-		 */
-
-		$MaxPowerOfToday = $dataAdapter->readMaxPowerValues($invtnum, "month", 1, 0);
-		/*
-		 * - De gauges tonen w/v/a
-		 */
-		/// ??????????????????????????????
-
-		/*
-		 * - Grafiek van vandaag (Watt)
-		 */
-		///
-		
-		
-		/*
-		 * - Grafiek met w/v/a van vandaag
-		 */
-
-		/// ????????????????????????????????????
-
-		$dayData = new DayDataResult();
-		$dayData->data = array(
-					"Energy"=>$energy[1],
-					"Month"=>$energy[0],
-					"MaxPower"=>$MaxPowerOfToday,
-					"CO2Today"=>Formulas::CO2kWh($energy[1]->KWH,$config->co2kwh),
-					"CO2Overall"=>Formulas::CO2kWh($energy[1]->KWHT, $config->co2kwh)
-				);
-		$dayData->success = true;
-
-		$data['dayData'] = $dayData;
-		break;
 	case 'getPageYearValues':
-			$config_invt="config/config_invt".$invtnum.".php";
-			include("$config_invt");
-
-			// get the date of today.
-			//$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-
-			/*
-				- kWh van vandaag icm CO2 vandaag
-			*/
-			$energy = $dataAdapter->readEnergyValues($invtnum, "year", 1, 0);
-
-			/*
-			 * - Max Watt van de dag
-			*/
-
-			$MaxPowerOfToday = $dataAdapter->readMaxPowerValues($invtnum, "year", 1, 0);
-			/*
-			 * - De gauges tonen w/v/a
-			*/
-			/// ??????????????????????????????
-
-			/*
-			 * - Grafiek van vandaag (Watt)
-			*/
-			///
-
-			/*
-			 * - Grafiek met w/v/a van vandaag
-			*/
-
-			/// ????????????????????????????????????
+			$beans = R::findAndExport('Inverter');
+			foreach ($beans as $inverter){
+				$maxEnergy[] = $dataAdapter->getYearEnergyPerMonth($inverter['id']);
+				$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($inverter['id']);
+			}
 
 			$dayData = new DayDataResult();
 			$dayData->data = array(
-					"Energy"=>$energy[1],
-					"Month"=>$energy[0],
-					"MaxPower"=>$MaxPowerOfToday,
-					"CO2Today"=>Formulas::CO2kWh($energy[1]->KWH,$config->co2kwh),
-					"CO2Overall"=>Formulas::CO2kWh($energy[1]->KWHT, $config->co2kwh)
+					"maxPower"=>$maxPower,
+					"maxEnergy"=>$maxEnergy,
 			);
 			$dayData->success = true;
 
-			$data['dayData'] = $dayData;
-		break;
+			$data['yearData'] = $dayData;
+			break;
+	case 'getPageMonthValues':
+			$beans = R::findAndExport('Inverter');
+			foreach ($beans as $inverter){
+				$maxEnergy[] = $dataAdapter->getMonthEnergyPerDay($inverter['id']);
+				$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($inverter['id']);
+			}
+
+			$dayData = new DayDataResult();
+			$dayData->data = array(
+					"maxPower"=>$maxPower,
+					"maxEnergy"=>$maxEnergy,
+			);
+			$dayData->success = true;
+			$data['monthData'] = $dayData;
+			break;
 	case 'getPageTodayValues':
-			//$config_invt="config/config_invt".$invtnum.".php";
-			//include("$config_invt");
-
-			// get the date of today.
-			//$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d"), date("Y")));
-
-			/*
-				- kWh van vandaag icm CO2 vandaag
-			*/
-			$energyToday = $dataAdapter->readEnergyValues(1, "today", 1, 0);
-
-			/*
-			 * - Max Watt van de dag
-			*/
-
-			$MaxPowerOfToday = $dataAdapter->readMaxPowerValues(1, "today", 1, 0);
-			/*
-			 * - De gauges tonen w/v/a
-			*/
-			/// ??????????????????????????????
-
-			/*
-			 * - Grafiek van vandaag (Watt)
-			*/
-			///
-
-			/*
-			 * - Grafiek met w/v/a van vandaag
-			*/
-
-			/// ????????????????????????????????????
+			$beans = R::findAndExport('Inverter');
+			foreach ($beans as $inverter){
+				$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($inverter['id']);
+				$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($inverter['id']);
+				
+			}
+			$history = $dataAdapter->getDayHistoryPerRecord();
+			
+			
+			for ($i = 0; $i < count($history); $i++) {
+				$history[$i]['GP'] = round($history[$i]['GP'],2);
+			}
 
 			$dayData = new DayDataResult();
 			$dayData->data = array(
-					"Energy"=>$energyToday,
-					"MaxPower"=>$MaxPowerOfToday,
-					"CO2Today"=>Formulas::CO2kWh($energyToday->KWH,$config->co2kwh),
-					"CO2Overall"=>Formulas::CO2kWh($energyToday->KWHT, $config->co2kwh)
+					"maxPower"=>$maxPower,
+					"maxEnergy"=>$maxEnergy,
+					"history"=>$history,
 			);
 			$dayData->success = true;
-
 			$data['dayData'] = $dayData;
 			break;
-	/*case 'getYesterdayValues':
-		$config_invt="config/config_invt".$invtnum.".php";
-		include("$config_invt");
-		// get the date of today.
-		$date = date("Ymd",mktime(0, 0, 0, date("m")  , date("d")-1 , date("Y")));
-
-		$lines = $dataAdapter->readDailyData($date,$invtnum);
-		$dayData = new DayDataResult();
-		$dayData->data = $lines->points;
-		$dayData->valueKWHT = $lines->KWHT;
-		$dayData->success = true;
-
-		$data['dayData'] = $dayData;
-		break;*/
 	case 'getPageIndexValues':
 		$indexValues = $dataAdapter->readPageIndexData();
 		$data['IndexValues'] = $indexValues;
