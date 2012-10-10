@@ -46,7 +46,103 @@ var WSL = {
 				dataType : 'text'
 			});
 		});
-	},	
+	},
+	
+	init_PageIndexLiveValues : function(divId) {
+		// initialize languages selector on the given div
+		WSL.api.getPageIndexLiveValues(function(data) {
+			var GP = 3600 / 10;
+			var gaugeGPOptions = {
+				title : 'AC Power',
+				grid : {
+					background : '#FFF'
+				},
+				seriesDefaults : {
+					renderer : $.jqplot.MeterGaugeRenderer,
+					rendererOptions : {
+						min : 0,
+						max : GP * 10,
+						padding : 0,
+						intervals : [ GP, GP * 2, GP * 3, GP * 4, GP * 5,
+								GP * 6, GP * 7, GP * 8, GP * 9, GP * 10 ],
+						intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
+								'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
+								'#4BFE78', '#0AFE47', '#01F33E' ]
+					}
+				}
+			};
+				var IP = 3600 / 10;
+				var gaugeIPOptions = {
+					title : 'DC Power',
+					grid : {
+						background : '#FFF'
+					},
+					seriesDefaults : {
+						renderer : $.jqplot.MeterGaugeRenderer,
+						rendererOptions : {
+							min : 0,
+							max : IP * 10,
+							padding : 0,
+							intervals : [ IP, IP * 2, IP * 3, IP * 4, IP * 5,
+									IP * 6, IP * 7, IP * 8, IP * 9, IP * 10 ],
+							intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
+									'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
+									'#4BFE78', '#0AFE47', '#01F33E' ]
+						}
+					}
+				};
+					var EFF = 100 / 10;
+					var gaugeEFFOptions = {
+						title : 'Efficiency',
+						grid : {
+							background : '#FFF'
+						},
+						seriesDefaults : {
+							renderer : $.jqplot.MeterGaugeRenderer,
+							rendererOptions : {
+								min : 0,
+								max : EFF * 10,
+								padding : 0,
+								intervals : [ EFF, EFF * 2, EFF * 3, EFF * 4, EFF * 5,
+										EFF * 6, EFF * 7, EFF * 8, EFF * 9, EFF * 10 ],
+								intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
+										'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
+										'#4BFE78', '#0AFE47', '#01F33E' ]
+							}
+						}
+					};
+				$.ajax({
+					url : 'js/templates/liveValues.hb',
+					success : function(source) {
+						var template = Handlebars.compile(source);
+						var html = template({
+							'data' : data
+						});
+						$(divId).html(html);
+						var gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ],gaugeGPOptions);
+						gaugeGP.series[0].data = [ [ 'W',data.IndexValues.sum.GP ] ];
+						gaugeGP.series[0].label = data.IndexValues.sum.GP;
+						document.title = '('+ data.IndexValues.sum.GP+ ' W) WebSolarLog';
+						gaugeGP.replot();
+						
+						var gaugeIP = $.jqplot('gaugeIP', [ [ 0.1 ] ],gaugeIPOptions);
+						gaugeIP.series[0].data = [ [ 'W',data.IndexValues.sum.IP ] ];
+						gaugeIP.series[0].label = data.IndexValues.sum.IP;
+						gaugeIP.replot();
+						
+						var gaugeEFF = $.jqplot('gaugeEFF', [ [ 0.1 ] ],gaugeEFFOptions);
+						gaugeEFF.series[0].data = [ [ 'W',data.IndexValues.sum.EFF] ];
+						gaugeEFF.series[0].label = data.IndexValues.sum.EFF;
+						gaugeEFF.replot();
+						
+					},
+					dataType : 'text',
+				});
+
+
+		});
+	},
+
 	init_events : function(invtnum, divId) {
 		// Retrieve the error events
 		WSL.api.getEvents(invtnum, function(data) {
@@ -61,24 +157,6 @@ var WSL = {
 				},
 				dataType : 'text'
 			});
-		});
-	},
-	init_liveData : function(invtnum, divId) {
-		// Retrieve the error events
-		WSL.api.getLiveData(invtnum, function(data) {
-			if (data.liveData.success) {
-				$.ajax({
-					url : 'js/templates/liveValues.hb',
-					success : function(source) {
-						var template = Handlebars.compile(source);
-						var html = template({
-							'data' : data.liveData
-						});
-						$(divId).html(html);
-					},
-					dataType : 'text'
-				});
-			}
 		});
 	},
 	init_plantInfo : function(invtnum, divId) {
@@ -547,6 +625,14 @@ WSL.api.getPageIndexValues = function(success) {
 		method : 'getPageIndexValues',
 	}, success);
 };
+
+WSL.api.getPageIndexLiveValues = function(success) {
+	$.getJSON("server.php", {
+		method : 'getPageIndexLiveValues',
+	}, success);
+};
+
+
 
 WSL.api.getPageTodayValues = function(success) {
 	$.getJSON("server.php", {

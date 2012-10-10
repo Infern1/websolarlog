@@ -47,7 +47,7 @@
 			<div class="column span-4 last">Date</div>
 			<div class="cl"></div>	
 			<div id="history" class="column span-10" style="overflow:scroll;height:200px;overflow-x: hidden;overflow-y: scroll;">
-	    	..
+	    	Loading...
 	    	</div>
 	    	</div>
 			<div class="cl"></div>									

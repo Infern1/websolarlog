@@ -234,6 +234,10 @@ switch ($method) {
 			$dayData->success = true;
 			$data['dayData'] = $dayData;
 		break;
+	case 'getPageIndexLiveValues':
+		$indexValues = $dataAdapter->readPageIndexLiveValues();
+		$data['IndexValues'] = $indexValues;
+		break;
 	case 'getPageIndexValues':
 		$indexValues = $dataAdapter->readPageIndexData();
 		$data['IndexValues'] = $indexValues;

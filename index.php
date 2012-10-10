@@ -10,8 +10,10 @@ require_once("template/" . $template . "/index.php");
 		WSL.init_tabs("index","#main-middle",
 			function(){
 			WSL.init_PageIndexValues("#content","#sidebar"); // Initial load fast
-			window.setInterval(function(){WSL.init_PageIndexValues("#content","#sidebar");}, 30000); // every 3 seconds
+			window.setInterval(function(){WSL.init_PageIndexValues("#content","#sidebar");}, 120000); // every 120 seconds
 
+			WSL.init_PageIndexLiveValues("#liveContent"); // Initial load fast
+			window.setInterval(function(){WSL.init_PageIndexLiveValues("#content","#sidebar");}, 5000); // every 5 seconds
     		}
 		)
 	});

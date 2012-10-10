@@ -72,11 +72,13 @@ class PDODataAdapter {
         $live->I1V = $bean->I1V;
         $live->I1A = $bean->I1A;
         $live->I1P = $bean->I1P;
+        $live->I1Ratio = $bean->I1Ratio;
 
         $live->I2V = $bean->I2V;
         $live->I2A = $bean->I2A;
         $live->I2P = $bean->I2P;
-
+        $live->I2Ratio = $bean->I2Ratio;
+        
         $live->GA = $bean->GA;
         $live->GP = $bean->GP;
         $live->GV = $bean->GV;
@@ -935,36 +937,47 @@ class PDODataAdapter {
     	}
     	return array($maxPowerDay);
     }
-
+    
     public function readPageIndexData() {
     	// summary live data
     	$list = array();
 
+    	$readMaxPowerValues = $this->getMaxTotalEnergyValues(0,"all");
+    	$list['summary'] = $readMaxPowerValues;
+    	return $list;
+    }
+    
+    
+    
+    public function readPageIndexLiveValues() {
+    	// summary live data
+    	$list = array();
+    
     	// Initialize variables
     	$GP=0;
     	$I1P = 0;
     	$I2P = 0;
     	$IP  = 0;
     	$EFF = 0;
-
+    
     	$beans = R::findAndExport('Inverter');
     	foreach ($beans as $inverter){
-            $oInverter = array();
-            
+    		$oInverter = array();
+    
     		$liveBean =  R::findOne('Live',' INV = :INV ', array(':INV'=>$inverter['id']));
     		$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
-    		
+    
     		$live = new Live();
     		$live->Time = date("H:i:s",$liveBean['time']);
     		$live->INV = $liveBean['INV'];
     		$live->GP = Util::formatPower($liveBean['GP'],2);
-    		
-    		
+    
+    
     		$live->I1P = Util::formatPower($liveBean['I1P'],2);
     		$live->I1Ratio = $liveBean['I1Ratio'];
     		$live->I2P = Util::formatPower($liveBean['I2P'],2);
     		$live->I2Ratio = $liveBean['I2Ratio'];
-
+    
     		$live->IP = Util::formatPower($ITP,2);
     		$live->EFF = $liveBean['EFF'];
     		//$list['inverters'][$liveBean['INV']]['live'] = $live;
@@ -975,21 +988,19 @@ class PDODataAdapter {
     		$I2P += $live->I2P;
     		$IP  += $live->IP;
     		$EFF  += $live->EFF;
-
+    
     		$list['inverters'][] = $oInverter;
     	}
-    	
+    	 
     	$list['sum']['GP'] = Util::formatPower($GP,1);
     	$list['sum']['I1P'] = Util::formatPower($I1P,1);
     	$list['sum']['I2P'] = Util::formatPower($I2P,1);
     	$list['sum']['IP'] = Util::formatPower($IP,1);
     	$list['sum']['EFF'] = round($EFF/count($oInverter),1)." %";
-    	$readMaxPowerValues = $this->getMaxTotalEnergyValues(1,"all");
-    	
+    
     	$oInverter = array();
     	//$totals = array("day"=>$KWHTD,"week"=>$KWHTW,"month"=>$KWHTM);
 
-    	$list['summary'] = $readMaxPowerValues;
     	return $list;
     }
     
