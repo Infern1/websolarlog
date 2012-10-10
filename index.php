@@ -11,11 +11,10 @@ require_once("template/" . $template . "/index.php");
 			function(){
 			WSL.init_PageIndexValues("#content","#sidebar"); // Initial load fast
 			window.setInterval(function(){WSL.init_PageIndexValues("#content","#sidebar");}, 120000); // every 120 seconds
-
-			WSL.init_PageIndexLiveValues("#liveContent"); // Initial load fast
-			window.setInterval(function(){WSL.init_PageIndexLiveValues("#content","#sidebar");}, 5000); // every 5 seconds
     		}
-		)
+		),			
+		WSL.init_PageIndexLiveValues("#liveContent"); // Initial load fast
+		window.setInterval(function(){WSL.init_PageIndexLiveValues("#content","#sidebar");}, 2500); // every 5 seconds
 	});
 	</script>
 	<!-- END Wrapper -->
