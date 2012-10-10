@@ -132,7 +132,7 @@ var WSL = {
 						
 						var gaugeEFF = $.jqplot('gaugeEFF', [ [ 0.1 ] ],gaugeEFFOptions);
 						gaugeEFF.series[0].data = [ [ 'W',data.IndexValues.sum.EFF] ];
-						gaugeEFF.series[0].label = data.IndexValues.sum.EFF;
+						gaugeEFF.series[0].label = data.IndexValues.sum.EFF+' %';
 						gaugeEFF.replot();
 						
 					},

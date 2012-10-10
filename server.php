@@ -213,7 +213,6 @@ switch ($method) {
 			foreach ($beans as $inverter){
 				$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($inverter['id']);
 				$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($inverter['id']);
-				
 			}
 			$dayData = new DayDataResult();
 			$dayData->data = array(
@@ -227,7 +226,7 @@ switch ($method) {
 		
 			$history = $dataAdapter->getDayHistoryPerRecord();
 			for ($i = 0; $i < count($history); $i++) {
-				$history[$i]['GP'] = round($history[$i]['GP'],2);
+				$history[$i]['GP'] = number_format($history[$i]['GP'],2,',','');
 			}
 			$dayData = new DayDataResult();
 			$dayData->data = array("history"=>$history);

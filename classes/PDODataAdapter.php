@@ -739,6 +739,9 @@ class PDODataAdapter {
 			}else{
 				$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC");
 			}
+    		for ($i = 0; $i < count($beans); $i++) {
+				$beans[$i]['kWh'] = number_format($beans[$i]['kWh'],2,',','');
+			}
 			return $beans;
     }
     
@@ -751,6 +754,9 @@ class PDODataAdapter {
     		$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM pMaxOTD WHERE INV = :INV GROUP BY strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum));
     	}else{
     		$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM pMaxOTD GROUP BY strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC");
+    	}
+    	for ($i = 0; $i < count($beans); $i++) {
+    		$beans[$i]['maxGP'] = number_format($beans[$i]['maxGP'],2,',','');
     	}
     	return $beans;
     }
@@ -824,7 +830,7 @@ class PDODataAdapter {
      */
     public function getDayHistoryPerRecord($invtnum=1){
     	$beginEndDate = Util::getBeginEndDate('today', 1,$startDate);
-   		$beans = R::getAll("SELECT INV, GP,KWHT, strftime ( '%H:%M %d-%m-%Y' , datetime ( time , 'unixepoch' ) ) AS date FROM history WHERE INV = :INV  AND time > :beginDate AND time < :endDate order by time ASC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+   		$beans = R::getAll("SELECT INV, GP,KWHT, strftime ( '%H:%M %d-%m-%Y' , datetime ( time , 'unixepoch' ) ) AS date FROM history WHERE INV = :INV  AND time > :beginDate AND time < :endDate order by time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
     	return $beans;
     }
 
@@ -902,12 +908,13 @@ class PDODataAdapter {
     		
     		
     		$oEnergy->INV =  $energyBean['INV'];
-    		$oEnergy->KWHKWP = round($energyBean['KWH'] / ($invConfig->plantpower/1000),3);
+    		$oEnergy->KWHKWP = number_format($energyBean['KWH'] / ($invConfig->plantpower/1000),2,',','');
 
-    		$oEnergy->KWH = Util::formatPower($energyBean['KWH'],2);
+
+    		$oEnergy->KWH = number_format($energyBean['KWH'],2,',','');
     		$oEnergy->CO2 =Formulas::CO2kWh($energyBean['KWH'],$config->co2kwh);
     		$oEnergy->time = date("H:i:s d-m-Y",$energyBean['time']);
-    		$oEnergy->KWHT = Util::formatPower($energyBean['KWHT'],2);
+    		$oEnergy->KWHT = number_format($energyBean['KWHT'],2,',','');
     		$KWHT += $energyBean['KWH'];
     		$energy[] = $oEnergy;
     		$days[] = array("kwh"=>$energyBean['KWH'], "time"=>date("d-m-Y",$energyBean['time']));
@@ -921,7 +928,7 @@ class PDODataAdapter {
     
     	foreach ($beans as $bean){
     		$oMaxPowerToday = new MaxPowerToday();
-    		$oMaxPowerToday->GP =  $bean['GP'];
+    		$oMaxPowerToday->GP =  number_format($bean['GP'],2,',','');
     		$oMaxPowerToday->INV = $bean['INV'];
     		$oMaxPowerToday->time = date("H:i:s d-m-Y",$bean['time']);;
     		$maxPowerDay[] = $oMaxPowerToday;
@@ -962,16 +969,16 @@ class PDODataAdapter {
     		$live = new Live();
     		$live->Time = date("H:i:s",$liveBean['time']);
     		$live->INV = $liveBean['INV'];
-    		$live->GP = Util::formatPower($liveBean['GP'],2);
+    		$live->GP = number_format($liveBean['GP'],0,',','');
+    		
     
+    		$live->I1P = number_format($liveBean['I1P'],2,',','');
+    		$live->I1Ratio = number_format($liveBean['I1Ratio'],2,',','');
+    		$live->I2P = number_format($liveBean['I2P'],2,',','');
+    		$live->I2Ratio = number_format($liveBean['I2Ratio'],2,',','');
     
-    		$live->I1P = Util::formatPower($liveBean['I1P'],2);
-    		$live->I1Ratio = $liveBean['I1Ratio'];
-    		$live->I2P = Util::formatPower($liveBean['I2P'],2);
-    		$live->I2Ratio = $liveBean['I2Ratio'];
-    
-    		$live->IP = Util::formatPower($ITP,2);
-    		$live->EFF = $liveBean['EFF'];
+    		$live->IP = number_format($ITP,2,',','');
+    		$live->EFF = number_format($liveBean['EFF'],2,',','');
     		//$list['inverters'][$liveBean['INV']]['live'] = $live;
     		$oInverter["id"] = $liveBean['INV'];
     		$oInverter["live"] = $live;
@@ -983,12 +990,12 @@ class PDODataAdapter {
     
     		$list['inverters'][] = $oInverter;
     	}
-    	 
-    	$list['sum']['GP'] = Util::formatPower($GP,1);
-    	$list['sum']['I1P'] = Util::formatPower($I1P,1);
-    	$list['sum']['I2P'] = Util::formatPower($I2P,1);
-    	$list['sum']['IP'] = Util::formatPower($IP,1);
-    	$list['sum']['EFF'] = round($EFF/count($oInverter),1)." %";
+    	
+    	$list['sum']['GP'] = number_format($GP,0,',','');
+    	$list['sum']['I1P'] = number_format($I1P,0,',','');
+    	$list['sum']['I2P'] = number_format($I2P,0,',','');
+    	$list['sum']['IP'] = number_format($IP,0,',','');
+    	$list['sum']['EFF'] = number_format($EFF/count($oInverter),0,',','');
     
     	$oInverter = array();
     	//$totals = array("day"=>$KWHTD,"week"=>$KWHTW,"month"=>$KWHTM);
@@ -1005,9 +1012,10 @@ class PDODataAdapter {
     	$type = strtolower($type);
     
     	if($type == "today" || $type == "day" || $type == "all"){
-    		$MaxEnergyBeansToday = $this->readTablesPeriodValues(0, "Energy", "today", date("d-m-Y"));
+    		$MaxEnergyBeansToday = $this->readTablesPeriodValues(0, "energy", "today", date("d-m-Y"));
     		$MaxPowerBeansToday = $this->readTablesPeriodValues(0, "pMaxOTD", "today", date("d-m-Y"));
     	}
+    	
     	if($type == "week" || $type == "all"){
     		$MaxEnergyBeansWeek = R::getAll("SELECT MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%Y%W' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY date ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit));
     	}
