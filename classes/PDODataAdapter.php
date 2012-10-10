@@ -23,13 +23,6 @@ class PDODataAdapter {
         	$bean = R::dispense('live');
         }
 
-        $plantPower=0;
-        $oPanels = $this->readPanelsByInverter($invtnum);
-        
-        foreach($oPanels as $panel){
-        	$plantPower += ($panel->amount*$panel->wp);
-        }
-        
         
         $bean->SDTE = date("Ymd-H:i:s");
         $bean->time = time();
@@ -38,13 +31,15 @@ class PDODataAdapter {
         $bean->I1V = $live->I1V;
         $bean->I1A = $live->I1A;
         $bean->I1P = $live->I1P;
-        $bean->I1Ratio = round((($live->I1P/$plantPower)*100),1);
+        
 
         $bean->I2V = $live->I2V;
         $bean->I2A = $live->I2A;
         $bean->I2P = $live->I2P;
-        $bean->I2Ratio = round((($live->I2P/$plantPower)*100),1);
-
+        $IP = $live->I1P+$live->I2P;
+        
+        $bean->I1Ratio = number_format(($live->I1P/$IP)*100,1,',','');
+        $bean->I2Ratio = number_format(($live->I2P/$IP)*100,1,',','');
         $bean->GV = $live->GV;
         $bean->GA = $live->GA;
         $bean->GP = $live->GP;
@@ -987,7 +982,7 @@ class PDODataAdapter {
     		$I2P += $live->I2P;
     		$IP  += $live->IP;
     		$EFF  += $live->EFF;
-    
+    		
     		$list['inverters'][] = $oInverter;
     	}
     	
@@ -995,7 +990,7 @@ class PDODataAdapter {
     	$list['sum']['I1P'] = number_format($I1P,0,',','');
     	$list['sum']['I2P'] = number_format($I2P,0,',','');
     	$list['sum']['IP'] = number_format($IP,0,',','');
-    	$list['sum']['EFF'] = number_format($EFF/count($oInverter),0,',','');
+    	$list['sum']['EFF'] = number_format($EFF/count($beans)-1,0,',','');
     
     	$oInverter = array();
     	//$totals = array("day"=>$KWHTD,"week"=>$KWHTW,"month"=>$KWHTM);
