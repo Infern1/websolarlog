@@ -105,8 +105,11 @@ switch ($settingstype) {
         }
 
         // Do the checkout
-        $url = Updater::$url + "tag/" + $version;
-        $url = ($version == "trunk") ? $url + "trunk" : $url;
+        $url = Updater::$url . "tag/" . $version;
+        $url = ($version == "trunk") ? Updater::$url . "trunk" : $url;
+        $data['svnurl'] = $url;
+
+
         if(!Updater::doCheckout($url)) {
             $data['error'] = "Error preparing download folder.";
             $data['result'] = false;

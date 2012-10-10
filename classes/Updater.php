@@ -2,6 +2,7 @@
 class Updater {
     public static $url = "svn://svn.code.sf.net/p/websolarlog/code/";
     public static $problems = array();
+    public static $basepath = "../tmp";
 
     function __construct() {
     }
@@ -58,17 +59,17 @@ class Updater {
      * return boolean
      */
     public static function prepareCheckout() {
-        if (!Common::checkPath("temp")) {
+        if (!Common::checkPath(self::$basepath)) {
             return false;
         }
 
         // We need to have an temp folder if it exist we need to remove it
-        if (is_dir("temp/export")) {
-            Common::rrmdir("temp/export");
+        if (is_dir(self::$basepath . "/export")) {
+            Common::rrmdir(self::$basepath . "/export");
         }
 
         // Try to create the temp folder
-        return Common::checkPath("temp/export");
+        return Common::checkPath(self::$basepath . "/export");
     }
 
     /**
@@ -78,7 +79,7 @@ class Updater {
      */
     public static function doCheckout($urlsvn) {
         // Try to do an export
-        return svn_export (self::$url , "temp/export", false );
+        return svn_export ($urlsvn, self::$basepath . "/export", false );
     }
 
     /**
@@ -86,8 +87,8 @@ class Updater {
      */
     public static function copyToLive() {
         // We dont want to copy everything, so specify which dirs we dont want
-        $skipDirs = Array( "data", "database", "updater", "scripts" );
-        $source = "temp/export/";
+        $skipDirs = Array( "data", "database", "updater", "scripts", "tmp" );
+        $source = self::$basepath . "/export/";
         $target = "../";
 
         foreach (scandir($source) as $file) {
