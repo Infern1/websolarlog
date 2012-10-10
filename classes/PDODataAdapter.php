@@ -16,14 +16,19 @@ class PDODataAdapter {
      * @param Live $live
      */
     public function writeLiveInfo($invtnum, Live $live) {
+    	echo "begin writeLiveInfo()";
     	$bean =  R::findOne('live',' INV = :INV ', array(':INV'=>$invtnum));
-
+    	echo "done with: R::findOne()";
+    	
         if (!$bean){
+        	echo "No bean, so lets dispense()";
         	$bean = R::dispense('live');
+        	echo "done with: dispense()";
         }
-
-        $panels=0;
+        echo "Go with the flow";
+        $plantPower=0;
         $oPanels = $this->readPanelsByInverter($invtnum);
+        
         foreach($oPanels as $panel){
         	$plantPower += ($panel->amount*$panel->wp);
         }
