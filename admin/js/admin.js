@@ -395,6 +395,8 @@ function init_updatepage(experimental) {
                     $('#content').html(html);
                     
                     $('#btnUpdateSubmit').bind('click', function(){
+                        var button = $(this);
+                        button.attr('disabled', true);
                         $.pnotify({
                             title: 'Update',
                             text: 'The update has been started.'
@@ -407,13 +409,15 @@ function init_updatepage(experimental) {
                                     title: 'Update',
                                     text: 'The update is ready.',
                                     type: 'success'
-                                });                                
+                                });
+                                button.attr('disabled', false);
                             } else {
                                 $.pnotify({
                                     title: 'Update',
                                     text: 'The update failed. <br />' + updateresult.error,
                                     type: 'error'
-                                });                                                                
+                                });
+                                button.attr('disabled', false);
                             }
                         });
                     });
