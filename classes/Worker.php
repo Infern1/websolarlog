@@ -169,6 +169,9 @@ class Worker {
         $this->dropLock();
 
         R::commit(); // Commit the transaction
+
+        $inactiveCheck = new InactiveCheck();
+        $inactiveCheck->check();
     }
 
     /**
