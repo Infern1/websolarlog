@@ -122,12 +122,40 @@ function init_KWHcalc(inv_data){
  * Init menu buttons
  */
 function init_menu() {
+    $("#btnAdvanced").bind('click', function() { init_advanced();});
     $("#btnGeneral").bind('click', function() { init_general();});
     $("#btnInverters").bind('click', function() { init_inverters(); });
     $("#btnGrid").bind('click', function() { init_grid();});
     $("#btnEmail").bind('click', function() { init_mail(); });
     $("#btnTestPage").bind('click', function() { init_testpage(); });
     $("#btnUpdate").bind('click', function() { init_updatepage(); });
+}
+
+function init_advanced() {
+    $('#sidebar').html("");
+    $.getJSON('admin-server.php?s=advanced', function(data) {
+        $.ajax({
+            url : 'js/templates/advanced.hb',
+            success : function(source) {
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : data
+                });
+                $('#content').html(html);
+                
+                $('#btnAdvancedSubmit').bind('click', function(){
+                    var data = $(this).parent().parent().serialize();
+                    $.post('admin-server.php', data, function(){
+                        $.pnotify({
+                            title: 'Saved',
+                            text: 'You\'re changes have been saved.'
+                        });
+                    });
+                });
+            },
+            dataType : 'text'
+        });        
+    });
 }
 
 function init_general() {

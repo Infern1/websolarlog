@@ -11,7 +11,8 @@
     <label for="heading">heading:</label><input type="text" name="heading" value="{{data.inverter.heading}}" /><br />
     <label for="correctionFactor">correction factor:</label><input type="text" name="correctionFactor" value="{{data.inverter.correctionFactor}}" /><br />
     <label for="comAddress">RS485 address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" /><br />
-    <label for="comLog">Log comm:</label><input type="checkbox" name="comLog" value="1" {{#if data.comLog}}checked=checked{{/if}}/><br />
+    <label for="comLog">Log comm:</label><input type="checkbox" name="comLog" value="1" {{#if data.inverter.comLog}}checked=checked{{/if}}/><br />
+    <label for="syncTime">Synchronize time:</label><input type="checkbox" name="syncTime" value="1" {{#if data.inverter.syncTime}}checked=checked{{/if}}/><br />
     <button type="button" id="btnInverterSubmit">Save</button>
   </fieldset>
 </form> 

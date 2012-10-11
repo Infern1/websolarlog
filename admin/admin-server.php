@@ -11,6 +11,10 @@ $settingstype = Common::getValue("s", null);
 
 $data = array();
 switch ($settingstype) {
+    case 'advanced':
+        $data['co2kwh'] = $config->co2kwh;
+        $data['aurorapath'] = $config->aurorapath;
+        break;
     case 'communication';
         $data['comPort'] = $config->comPort;
         $data['comOptions'] = $config->comOptions;
@@ -124,6 +128,11 @@ switch ($settingstype) {
     case 'isLogin':
         $data['result'] = Session::isLogin();
         break;
+    case 'save-advanced':
+        $config->co2kwh = Common::getValue("co2kwh");
+        $config->aurorapath =Common::getValue("aurorapath");
+        $adapter->writeConfig($config);
+        break;
     case 'save-communication':
         $config->comPort = Common::getValue("comPort");
         $config->comOptions = Common::getValue("comOptions");
@@ -155,6 +164,7 @@ switch ($settingstype) {
         $inverter->correctionFactor = Common::getValue("correctionFactor");
         $inverter->comAddress = Common::getValue("comAddress");
         $inverter->comLog = Common::getValue("comLog");
+        $inverter->syncTime = Common::getValue("syncTime");
 
         $adapter->writeInverter($inverter);
         break;
