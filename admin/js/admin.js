@@ -359,7 +359,6 @@ function init_updatepage(experimental) {
     if (typeof experimental === 'undefined' ) {
         experimental = false;
     }
-    $('#sidebar').html("");
     $.getJSON('admin-server.php?s=updater-getversions&experimental=' + experimental, function(data) {
         if (data.result === false) {
             $.ajax({
@@ -399,7 +398,7 @@ function init_updatepage(experimental) {
                         button.attr('disabled', true);
                         var updateNotice = $.pnotify({
                             title: 'Update',
-                            text: 'The update has been started.',
+                            text: 'Busy with updating, please wait for this message to dissapear.',
                             nonblock: true,
                             hide: false,
                             closer: false,
