@@ -397,9 +397,13 @@ function init_updatepage(experimental) {
                     $('#btnUpdateSubmit').bind('click', function(){
                         var button = $(this);
                         button.attr('disabled', true);
-                        $.pnotify({
+                        var updateNotice = $.pnotify({
                             title: 'Update',
-                            text: 'The update has been started.'
+                            text: 'The update has been started.',
+                            nonblock: true,
+                            hide: false,
+                            closer: false,
+                            sticker: false
                         });
                         var data = $(this).parent().serialize();
                         $.post('admin-server.php', data, function(updateresult){
@@ -410,15 +414,15 @@ function init_updatepage(experimental) {
                                     text: 'The update is ready.',
                                     type: 'success'
                                 });
-                                button.attr('disabled', false);
                             } else {
                                 $.pnotify({
                                     title: 'Update',
                                     text: 'The update failed. <br />' + updateresult.error,
                                     type: 'error'
                                 });
-                                button.attr('disabled', false);
                             }
+                            if (updateNotice.pnotify_remove) updateNotice.pnotify_remove();
+                            button.attr('disabled', false);
                         });
                     });
                 },
