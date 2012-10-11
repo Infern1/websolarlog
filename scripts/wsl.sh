@@ -9,7 +9,7 @@ looping ()
 while [ "true" ] # To infinity ... and beyond!
 do
 #Check if the lock file is too old
-find $WWWDIR"/data/lock" -mmin +2 -delete 2> /dev/null
+find $WWWDIR"/data/lock" -mmin +15 -delete 2> /dev/null
 
 if [ ! -f $WWWDIR"/data/lock" ] # Port lock
 then
