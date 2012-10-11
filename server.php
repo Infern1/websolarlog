@@ -8,6 +8,10 @@ include("config/config_main.php");
 
 require 'classes/classloader.php';
 
+// InActiveCheck
+$inactiveCheck = new InactiveCheck();
+$inactiveCheck->check();
+
 // Retrieve action params
 $method = $_GET['method'];
 
@@ -223,7 +227,7 @@ switch ($method) {
 			$data['dayData'] = $dayData;
 		break;
 	case 'getHistoryValues':
-		
+
 			$history = $dataAdapter->getDayHistoryPerRecord();
 			for ($i = 0; $i < count($history); $i++) {
 				$history[$i]['GP'] = number_format($history[$i]['GP'],2,',','');
