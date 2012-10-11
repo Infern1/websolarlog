@@ -37,7 +37,9 @@ class Util {
     }
 
     public static function removeLockFile() {
-        return unlink(self::getDataLockFile());
+        if (file_exists(self::getDataLockFile())) {
+            return unlink(self::getDataLockFile());
+        }
     }
 
     public static function getUTCdate($text) {
@@ -119,7 +121,7 @@ class Util {
 
     	// Make de StartDate a timestamp
     	$startDate = strtotime($startDate);
-    	
+
     	// check what we must return
     	switch (strtolower($type)) {
     		case 'today':
@@ -171,7 +173,7 @@ class Util {
     	}
     	return array("beginDate"=>$beginDate,"endDate"=>$endDate);
     }
-    
+
     public function formatPower($value,$decimals){
     	return ($value>1000) ? round(($value/1000),$decimals)." kWh": round($value,$decimals)." W";
     }
