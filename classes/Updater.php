@@ -111,5 +111,9 @@ class Updater {
 
         // We skipped the update folder, but we want to update the update script
         copy($source . "updater/update.php", $target . "updater/update.php");
+
+        // Update a few script files
+        copy($source . "scripts/worker.php", $target . "scripts/worker.php");
+        copy($source . "scripts/wsl.sh", $target . "scripts/wsl.sh");
     }
 }
