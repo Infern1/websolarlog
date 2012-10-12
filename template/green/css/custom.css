@@ -1,0 +1,8 @@
+#filter {
+	margin-top: 20px;
+	padding: 5px;
+    width: 200px;
+    border: 1px solid #AAAAAA;
+    display: block;
+    overflow: hidden;
+}

@@ -592,6 +592,12 @@ WSL.api.getEvents = function(invtnum, success) {
 	}, success);
 };
 
+WSL.api.getInverters = function(success) {
+    $.getJSON("server.php", {
+        method : 'getInverters'
+    }, success);
+};
+
 WSL.api.getLiveData = function(invtnum, success) {
 	$.getJSON("server.php", {
 		method : 'getLiveData',

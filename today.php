@@ -24,9 +24,9 @@ require_once("template/" . $template . "/index.php");
 						function(){
 						WSL.init_PageTodayHistoryValues("#history"); // Initial load fast
 					}); // Initial load fast
-			
+
     		}
-		)
+		);
 	});
 	</script>
 	<!-- END Wrapper -->

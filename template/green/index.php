@@ -35,7 +35,7 @@
 			<div id="main-middle">
 				<!-- Content -->
 				<div id="content">
-				
+
 				</div>
 				<!-- END Content -->
 				<!-- Sidebar -->
@@ -44,7 +44,10 @@
 				</div>
 				<!-- END Sidebar -->
 				<div class="cl"></div>
-				<div id="columns"></div>
+				<div style="display: table;">
+        			<div style="display:table-cell;"><div id="right-column"></div></div>
+    				<div id="columns" style="display:table-cell; width:100%;"></div>
+				</div>
 			</div>
 			<div id="main-bottom"></div>
 		</div>
@@ -52,8 +55,6 @@
 		<!-- Footer -->
 		<div id="footer">
 			<div id="footer-middle">
-				<span class="author"><a href="http://css-free-templates.com/">Design by: CSS Free Templates</a></span>
-				<p><a title="Home" href="#">Home</a><span>&#47;</span><a title="Who We Are" href="#">Who We Are</a><span>&#47;</span><a title="Our Projects" href="#">Our Projects</a><span>&#47;</span><a title="What We Do" href="#">What We Do</a><span>&#47;</span><a title="How We Do" href="#">How We Do</a><span>&#47;</span><a title="Get In Touch" href="#">Get In Touch</a></p>
 			</div>
 			<div id="footer-bottom">
 
