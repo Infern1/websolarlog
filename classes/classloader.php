@@ -47,8 +47,8 @@ function wsl_autoloader($classname)
         return;
     }
     if ($classname === "PHPMailer") {
-        require_once "../classes/phpmailer/class.phpmailer.php";
-        require_once "../classes/phpmailer/class.smtp.php";
+        require_once "classes/phpmailer/class.phpmailer.php";
+        require_once "classes/phpmailer/class.smtp.php";
         return;
     }
 
