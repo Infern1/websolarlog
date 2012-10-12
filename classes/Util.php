@@ -1,10 +1,10 @@
 <?php
 class Util {
 
-    public static function isSunDown($config) {
+    public static function isSunDown($config, $correction=300) {
         $now = strtotime(date("Ymd H:i"));
         $sun_info = date_sun_info((strtotime(date("Ymd"))), $config->latitude , $config->longitude);
-        return $now<($sun_info['sunrise']-300) || $now>($sun_info['sunset']+300);
+        return $now<($sun_info['sunrise']-$correction) || $now>($sun_info['sunset']+$correction);
     }
 
     public static function getDataDir($invtnum) {

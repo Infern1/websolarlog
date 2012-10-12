@@ -15,7 +15,7 @@ class InactiveCheck {
 
     public function check() {
         // Only continue when the sun is up!
-        if (Util::isSunDown($this->config)) {
+        if (Util::isSunDown($this->config,0)) {
             return true;
         }
 
