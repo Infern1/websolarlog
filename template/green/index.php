@@ -24,6 +24,7 @@
 				<li><a title="Year" href="year.php">Jaar</a></li>
 				<li><a title="Details" href="details.php">Details</a></li>
 				<li><a title="Compare" href="compare.php">Vergelijk</a></li>
+				<li><a title="Production" href="production.php">Productie</a></li>
 				<li class="nav-end"><a title="Misc" href="misc.php">Overige</a></li>
 			</ul>
 			<div class="cl"></div>
@@ -55,6 +56,10 @@
 		<!-- Footer -->
 		<div id="footer">
 			<div id="footer-middle">
+<<<<<<< .mine
+			{{footer-middle->HB}}
+=======
+>>>>>>> .r218
 			</div>
 			<div id="footer-bottom">
 

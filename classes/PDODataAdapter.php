@@ -804,14 +804,14 @@ class PDODataAdapter {
     	}
     	return $beans;
     }
-
+    
     /**
      * Get Max & (summed)Total Energy Values from Energy Tabel
      * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
      */
     public function getDayMaxPowerPerDay($invtnum=0){
     	$beginEndDate = Util::getBeginEndDate('today', 1,$startDate);
-
+    
     	if ($invtnum>0){
     		$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
     				FROM pMaxOTD WHERE INV = :INV AND time > :beginDate AND time < :endDate GROUP BY strftime ( 'd%-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
@@ -821,7 +821,78 @@ class PDODataAdapter {
     	}
     	return $beans;
     }
+    
+    
+    /**
+     * Get Max & (summed)Total Energy Values from Energy Tabel
+     * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
+     */
+    public function getYearSumPowerPerMonth($invtnum,$startDate){
+    	$inverter = array();
+    	$beginEndDate = Util::getBeginEndDate('year', 1,$startDate);
+    	
+    	if ($invtnum>0){
+    		$beans = R::getAll("SELECT INV,SUM(KWH) as KWH, time 
+    				FROM Energy WHERE INV = :INV AND time > :beginDate AND time < :endDate GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time ASC",
+    				array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+    	}else{
+    		$beans = R::getAll("SELECT INV,SUM(KWH) as KWH, time 
+    				FROM Energy WHERE time > :beginDate AND time < :endDate GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time ASC",
+    				array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+    	}
 
+    	$monthCount = count($beans); //  5
+    	$currentMonthNumber = (int)date("n"); // 10 
+    	$monthTillEndYear = 12 - $currentMonthNumber; // 2
+
+    	$inverter = $this->readInverter($invtnum);
+    	$expected = $inverter->expectedkwh;
+    	$invExp[0] = ($expected/100)*$inverter->expectedJAN;
+        $invExp[1] = ($expected/100)*$inverter->expectedFEB;
+        $invExp[2] = ($expected/100)*$inverter->expectedMAR;
+        $invExp[3] = ($expected/100)*$inverter->expectedAPR;
+        $invExp[4] = ($expected/100)*$inverter->expectedMAY;
+        $invExp[5] = ($expected/100)*$inverter->expectedJUN;
+        $invExp[6] = ($expected/100)*$inverter->expectedJUL;
+        $invExp[7] = ($expected/100)*$inverter->expectedAUG;
+        $invExp[8] = ($expected/100)*$inverter->expectedSEP;
+        $invExp[9] = ($expected/100)*$inverter->expectedOCT;
+        $invExp[10] = ($expected/100)*$inverter->expectedNOV;
+        $invExp[11] = ($expected/100)*$inverter->expectedDEC;
+    	
+    	$res = $currentMonthNumber - $monthCount-1;
+    	$ii	=0;
+    	for ($i = 0; $i < 12; $i++) {
+    		$iMonth = $i+1;
+    		if($i <= $res OR $i>= $currentMonthNumber){
+    			$newBean[$i]['time'] = strtotime(date("01-".$iMonth."-Y"));
+    			$newBean[$i]['KWH'] = number_format(0,0,',','');
+    			$newBean[$i]['Exp'] = number_format($invExp[$i],0,',','');
+    			$newBean[$i]['Diff'] = number_format($newBean[$i]['KWH']-$newBean[$i]['Exp'],0,',','');
+    			if($i > $res){
+    				$cumExp += $invExp[$i];
+    				$newBean[$i]['cumExp']=number_format($cumExp,0,',','');
+    			}
+    			$cumKWH += 0;
+    			$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
+       		}else{
+    			$newBean[$i]['time'] = $beans[$ii]['time'];
+    			$newBean[$i]['KWH'] =number_format($beans[$ii]['KWH'],0,',','');
+    			$newBean[$i]['Exp'] =number_format($invExp[$i],0,',','');
+    			$newBean[$i]['Diff'] = number_format($newBean[$i]['KWH']-$newBean[$i]['Exp'],0,',','');
+    			
+    			$cumExp += $invExp[$i];
+    			$newBean[$i]['cumExp']=number_format($cumExp,0,',','');
+    			
+    			$cumKWH += $beans[$ii]['KWH'];
+    			$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
+    			$ii++;
+    		}
+    	}
+    	//var_dump($newBean);
+    	return array("energy"=>$this->CompareBeansToGraphPoints($newBean),"expected"=>0);
+    }
+    
 
     /**
      * Get Max & (summed)Total Energy Values from Energy Tabel
@@ -856,6 +927,39 @@ class PDODataAdapter {
     	}
     }
 
+    
+    /**
+     * return a array that can be understand by JQplot
+     * @param array $beans from $this->getGraphPoint()
+     * @return array($beginDate, $endDate);
+     */
+    public function CompareBeansToGraphPoints($beans){
+    	$points = array();
+    	$cumPower = 0;
+    	foreach ($beans as $bean){
+    		$cumPower += $bean['KWH'];
+    		$points[] = array (mktime(0, 0, 0,date("m",$bean['time']),1,date("Y",$bean['time']))*1000,
+    				(float)sprintf("%.2f", $bean['KWH']),
+    				"1-".date("m-Y",$bean['time']),
+    				(float)$bean['Exp'],
+    				(float)$bean['Diff'],
+    				(float)$bean['cumExp'],
+    				(float)$bean['cumKWH']
+    		);
+    	}
+    
+    	// if no data was found, create 1 dummy point for the graph to render
+    	if(count($points)==0){
+    		$cumPower = 0;
+    		$points[] = array (time()* 1000, 0,0);
+    	}
+    
+    	$lastDays = new LastDays();
+    	$lastDays->points=$points;
+    	$lastDays->KWHT=$cumPower;
+    	return $lastDays;
+    }
+    
     /**
      * return a array that can be understand by JQplot
      * @param array $beans from $this->getGraphPoint()
@@ -1022,7 +1126,9 @@ class PDODataAdapter {
     		}else{
     			for ($i = 0; $i < count($maxPowerBeansToday); $i++) {
     				$maxPowerBeansToday[$i]['sumkWh'] = number_format($maxPowerBeansToday[$i]['sumkWh'],2,',','');
-    			}    			
+    				$avgEnergyBeansToday=$maxPowerBeansToday[$i]['sumkWh'];
+    			} 
+    			
     		}
     		
     		if(count ( $maxPowerBeansToday )==0 ){

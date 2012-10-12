@@ -9,7 +9,10 @@ require_once("template/" . $template . "/index.php");
 	<script type="text/javascript">
     // Make sure the page is loaded
 	$(function(){
-		//WSL.init_compare("content"); // Initial load fast
+		var invtnum;
+		var year;
+		invtnum=(!invtnum)?invtnum=1:invtnum=invtnum;
+		WSL.init_production(invtnum,"content"); // Initial load fast
 	});
 	</script>
 	

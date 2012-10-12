@@ -21,6 +21,21 @@ var todayTimerHandler;
 function tooltipContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	return "Power: "+plot.series[seriesIndex].data[pointIndex][1] +" kWh<br>Date: "+plot.series[seriesIndex].data[pointIndex][2];
 }
+function tooltipCompareContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
+	var returned = ""; 
+	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""]; 
+	returned += bold[0]+"Harvested: "+ plot.series[0].data[pointIndex][1] +" kWh<br>"+bold[1];
+	
+	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];
+	returned += bold[0]+"Expected:"+ plot.series[1].data[pointIndex][1]+" kWh<br>"+bold[1];
+	
+	( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];
+	returned += bold[0]+"Cum. Expected: "+plot.series[2].data[pointIndex][1]+" kWh<br>"+bold[1];
+	
+	( seriesIndex == 3 ) ? bold=["<b>","</b>"] : bold=["",""];
+	returned += bold[0]+"Cum. Harvested:"+plot.series[3].data[pointIndex][1]+" kWh<br>"+bold[1];
+	return returned;
+}
 
 // WSL class
 var WSL = {
@@ -376,10 +391,7 @@ var WSL = {
 
 	createDayGraph : function(invtnum, getDay, fnFinish) {
 		var graphOptions = {
-			series : [
-			          {label:'Cum. Power',yaxis:'yaxis'},
-			          {label:'Avg. Power',yaxis:'y2axis'}
-			          ],
+			series : [{label:'Cum. Power',yaxis:'yaxis'},{label:'Avg. Power',yaxis:'y2axis'}],
 			axesDefaults : {
 				useSeriesColor: true, 
 				tickRenderer : $.jqplot.CanvasAxisTickRenderer
@@ -513,17 +525,94 @@ var WSL = {
 			method : 'GET',
 			dataType : 'json',
 			success : function(result) {
-				var dayData = [];
 				var dayData1 = [];
+				var dayData2 = [];
 				for (line in result.dayData.data) {
 					var object = result.dayData.data[line];
-					dayData.push([ object[0], object[1], object[2] ]);
-					dayData1.push([ object[0], object[3],object[2] ]);
+					alert(object[4]);
+					dayData1.push([ object[0], object[1], object[2], object[4] ]);
+					dayData2.push([ object[0], object[3], object[2], object[4] ]);
 				}
 				graphDayPeriodOptions.axes.xaxis.min = result.dayData.data[0][0];
-				var plot = $.jqplot(divId, [ dayData,dayData1 ], graphDayPeriodOptions).destroy();
+				var plot = $.jqplot(divId, [ dayData1,dayData2 ], graphDayPeriodOptions).destroy();
 				plot = null; 
-				var plot = $.jqplot(divId, [ dayData,dayData1 ], graphDayPeriodOptions);
+				var plot = $.jqplot(divId, [ dayData1,dayData2 ], graphDayPeriodOptions);
+			}
+		});
+	},
+	
+	init_compare : function(invtnum,divId){
+		WSL.createCompareGraph(invtnum, divId);
+	},
+	
+	createCompareGraph : function(invtnum, divId) {
+		var graphOptions = {
+			series : [
+			          {label:'Expected(kWh)',yaxis:'yaxis',renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
+			          {label:'Harvested(kWh)',yaxis:'y2axis',renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
+			          {label:'Cum. Expected(kWh)',yaxis:'y3axis',renderer:$.jqplot.LineRenderer, pointLabels: {show: false}},
+			          {label:'Cum. Harvested(kWh)',yaxis:'y4axis',renderer:$.jqplot.LineRenderer, pointLabels: {show: false}}
+		    ],
+			axesDefaults : {useSeriesColor: true, },
+			legend : {show : true,location:"nw"}, 
+		    seriesDefaults:{
+		        //renderer:$.jqplot.BarRenderer,
+		        rendererOptions: {
+		            // Put a 30 pixel margin between bars.
+		            barMargin: 40,
+		            barWidth:10,
+		            // Highlight bars when mouse button pressed.
+		            // Disables default highlighting on mouse over.
+		              
+		        }
+		      },
+			axes : {
+				xaxis : {labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,tickInterval:'1 month',tickOptions : {angle : -50}},
+				yaxis : {label : 'Expected(kWh)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
+				y2axis : {label : 'Harvested(kWh)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
+				y3axis : {label : 'Cum. Expected(kWh)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
+				y4axis : {label : 'Cum. Harvested(kWh)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer}
+			},
+			highlighter : {
+				tooltipContentEditor: tooltipCompareContentEditor,
+				show : true,
+				yvalues:4,
+				tooltipLocation:'n'
+			},
+			cursor : {
+				show : false
+			}
+		};
+		
+		$.ajax({
+			url : "server.php?method=getProductionGraph&invtnum=" + invtnum,
+			method : 'GET',
+			dataType : 'json',
+			success : function(result) {
+
+				var dataDay1 = [];
+				var dataDay2 = [];
+				var dataDay3 = [];
+				var dataDay4 = [];
+				if (result.dayData) {
+					
+					$("#main-middle").prepend('<div id="ProductionGraph"></div>');
+					
+					for (line in result.dayData.data) {
+						var object = result.dayData.data[line];
+						dataDay1.push([  object[0], object[1], object[2] ]);
+						dataDay2.push([  object[0], object[3], object[2] ]);
+						dataDay3.push([  object[0], object[5], object[2] ]);
+						dataDay4.push([  object[0], object[6], object[2] ]);
+					}
+					
+    				if (dataDay1[0][0]) {
+    				    graphOptions.axes.xaxis.min = dataDay1[0][0];
+    				}
+    				handle = $.jqplot("ProductionGraph", [ dataDay1 , dataDay2, dataDay3, dataDay4], graphOptions);
+    				//mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#' + divId + ' .jqplot-grid-canvas');
+    				//fnFinish.call(this, handle);
+				}
 			}
 		});
 	}

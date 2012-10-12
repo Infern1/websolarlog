@@ -114,7 +114,7 @@ class Util {
      * @param int $count multiplies the day's,weeks,months,year
      * @return array($beginDate, $endDate);
      */
-    public function getBeginEndDate($type, $count,$startDate){
+    public function getBeginEndDate($type, $count,$startDate=null){
     	if(!$startDate){
     		$startDate = date("Y-m-d");
     	}

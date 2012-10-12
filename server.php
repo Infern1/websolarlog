@@ -51,6 +51,7 @@ $page = Common::getValue('page', 0);
 $count = Common::getValue('count', 0);
 $type = Common::getValue('type', 0);
 $date = Common::getValue('date', 0);
+$year = Common::getValue('year', 0);
 
 
 
@@ -181,22 +182,37 @@ switch ($method) {
 		$dayData->success = true;
 		$data['dayData'] = $dayData;
 		break;
+	case 'getProductionGraph':
+		//$config_invt="config/config_invt".$invtnum.".php";
+		//include("$config_invt");
+		(!$year)?$year=date("Y"):$year=$year;
+		(!$invtnum)?$invtnum=1:$invtnum=$invtnum;
+		
+		$lines = $dataAdapter->getYearSumPowerPerMonth($invtnum, $date);
+		//var_dump($lines['energy']->points);
+		
+		
+		$dayData = new DayDataResult();
+		$dayData->data = $lines['energy']->points;
+		$dayData->success = true;
+		$data['dayData'] = $dayData;
+		break;
 	case 'getPageYearValues':
-			$beans = R::findAndExport('Inverter');
-			foreach ($beans as $inverter){
-				$maxEnergy[] = $dataAdapter->getYearEnergyPerMonth($inverter['id']);
-				$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($inverter['id']);
-			}
+		$beans = R::findAndExport('Inverter');
+		foreach ($beans as $inverter){
+			$maxEnergy[] = $dataAdapter->getYearEnergyPerMonth($inverter['id']);
+			$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($inverter['id']);
+		}
 
-			$dayData = new DayDataResult();
-			$dayData->data = array(
-					"maxPower"=>$maxPower,
-					"maxEnergy"=>$maxEnergy,
-			);
-			$dayData->success = true;
+		$dayData = new DayDataResult();
+		$dayData->data = array(
+				"maxPower"=>$maxPower,
+				"maxEnergy"=>$maxEnergy,
+		);
+		$dayData->success = true;
 
-			$data['yearData'] = $dayData;
-			break;
+		$data['yearData'] = $dayData;
+		break;
 	case 'getPageMonthValues':
 			$beans = R::findAndExport('Inverter');
 			foreach ($beans as $inverter){
