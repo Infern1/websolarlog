@@ -541,11 +541,11 @@ var WSL = {
 		});
 	},
 	
-	init_compare : function(invtnum,divId){
-		WSL.createCompareGraph(invtnum, divId);
+	init_production : function(invtnum,divId){
+		WSL.createProductionGraph(invtnum, divId);
 	},
 	
-	createCompareGraph : function(invtnum, divId) {
+	createProductionGraph : function(invtnum, divId) {
 		var graphOptions = {
 			series : [
 			          {label:'Expected(kWh)',yaxis:'yaxis',renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
