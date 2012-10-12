@@ -227,7 +227,6 @@ switch ($method) {
 			$data['dayData'] = $dayData;
 		break;
 	case 'getHistoryValues':
-
 			$history = $dataAdapter->getDayHistoryPerRecord();
 			for ($i = 0; $i < count($history); $i++) {
 				$history[$i]['GP'] = number_format($history[$i]['GP'],2,',','');
