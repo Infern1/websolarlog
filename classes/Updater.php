@@ -30,11 +30,6 @@ class Updater {
      * @return array
      */
     public static function getVersions($experimental = false) {
-        $tags = array();
-        if ($step == 0) {
-            $tags = svn_ls(self::$url . "tags");
-        }
-
         $versions = array();
         foreach ($tags as $tag) {
             if ($experimental) {
