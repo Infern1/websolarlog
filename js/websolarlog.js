@@ -555,17 +555,7 @@ var WSL = {
 		    ],
 			axesDefaults : {useSeriesColor: true, },
 			legend : {show : true,location:"nw"}, 
-		    seriesDefaults:{
-		        //renderer:$.jqplot.BarRenderer,
-		        rendererOptions: {
-		            // Put a 30 pixel margin between bars.
-		            barMargin: 40,
-		            barWidth:10,
-		            // Highlight bars when mouse button pressed.
-		            // Disables default highlighting on mouse over.
-		              
-		        }
-		      },
+		    seriesDefaults:{rendererOptions: {barMargin: 40,barWidth:10,}},
 			axes : {
 				xaxis : {labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,tickInterval:'1 month',tickOptions : {angle : -50}},
 				yaxis : {label : 'Expected(kWh)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
@@ -579,9 +569,7 @@ var WSL = {
 				yvalues:4,
 				tooltipLocation:'n'
 			},
-			cursor : {
-				show : false
-			}
+			cursor : {show : false}
 		};
 		
 		$.ajax({

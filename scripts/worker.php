@@ -3,7 +3,8 @@ error_reporting(E_ALL);
 
 define('checkaccess', TRUE);
 
-require_once '../admin/classes/classloader.php';
+$docRoot = dirname(dirname(__FILE__));
+require_once $docRoot . '/admin/classes/classloader.php';
 
 $worker = new Worker();
 $worker->start();

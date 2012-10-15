@@ -20,17 +20,18 @@
 function wsl_autoloader($classname)
 {
     global $current_module;
-
+    $docRoot = dirname(dirname(__FILE__));
+    
     if ($classname == "") {
         exit("Could not autoload empty classname!");
     }
 
 	// Gather the dirs we need to check
-	$classdirs = Array( "classes", "classes/objects" );
+	$classdirs = Array( "/classes", "/classes/objects" );
 
     foreach ($classdirs as $classdir) {
         // Check the domain model
-        $filename = $classdir . "/" . $classname . ".php";
+        $filename = $docRoot . $classdir . "/" . $classname . ".php";
         if (file_exists($filename)) {
             require_once($filename);
             return;
@@ -39,7 +40,7 @@ function wsl_autoloader($classname)
 
     // plugins
     if ($classname === "R" || substr($classname, 0, strlen("RedBean")) === "RedBean") {
-        require_once "classes/redbean.php";
+        require_once $docRoot ."/classes/redbean.php";
         return;
     }
     if (substr($classname, 0, strlen("Model")) === "Model") {
@@ -47,12 +48,12 @@ function wsl_autoloader($classname)
         return;
     }
     if ($classname === "PHPMailer") {
-        require_once "classes/phpmailer/class.phpmailer.php";
-        require_once "classes/phpmailer/class.smtp.php";
+        require_once $docRoot . "/classes/phpmailer/class.phpmailer.php";
+        require_once $docRoot . "/classes/phpmailer/class.smtp.php";
         return;
     }
 
-    exit("Could not autoload: " . $classname);
+    exit("ClassLoader::Basic::Could not autoload: " . $classname. ", " .$docRoot. " is used as documentRoot");
 }
 
 spl_autoload_register('wsl_autoloader');
