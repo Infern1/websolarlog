@@ -1,4 +1,4 @@
-trunkVersion = '222';
+trunkVersion = '223';
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
@@ -24,58 +24,38 @@ var todayTimerHandler;
 
 function tooltipContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = ""; 
-	
-	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];
-	returned += bold[0]+"Energy:"+ plot.series[1].data[pointIndex][1]+ " W<br>"+bold[1];
-	
-	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""]; 
-	returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " W<br>"+bold[1];
-
+	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Energy:"+ plot.series[1].data[pointIndex][1]+ " W<br>"+bold[1];
+	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " W<br>"+bold[1];
 	returned += "Date:"+ plot.series[0].data[pointIndex][2]+"";
 	return returned;
 }
 
 function tooltipPeriodContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = ""; 
-	
-	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];
-	returned += bold[0]+"Energy:"+ plot.series[1].data[pointIndex][1]+ " W<br>"+bold[1];
-	
-	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""]; 
-	returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " W<br>"+bold[1];
-	
+	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Energy:"+ plot.series[1].data[pointIndex][1]+ " W<br>"+bold[1];
+	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " W<br>"+bold[1];
 	returned += "Date:"+ plot.series[1].data[pointIndex][2]+"";
 	return returned;
 }
 
 function tooltipCompareContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = ""; 
-	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""]; 
-	returned += bold[0]+"Harvested: "+ plot.series[0].data[pointIndex][1] +" kWh<br>"+bold[1];
-	
-	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];
-	returned += bold[0]+"Expected:"+ plot.series[1].data[pointIndex][1]+" kWh<br>"+bold[1];
-	
-	( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];
-	returned += bold[0]+"Cum. Expected: "+plot.series[2].data[pointIndex][1]+" kWh<br>"+bold[1];
-	
-	( seriesIndex == 3 ) ? bold=["<b>","</b>"] : bold=["",""];
-	returned += bold[0]+"Cum. Harvested:"+plot.series[3].data[pointIndex][1]+" kWh<br>"+bold[1];
+	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Harvested: "+ plot.series[0].data[pointIndex][1] +" kWh<br>"+bold[1];
+	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Expected:"+ plot.series[1].data[pointIndex][1]+" kWh<br>"+bold[1];
+	( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum. Expected: "+plot.series[2].data[pointIndex][1]+" kWh<br>"+bold[1];
+	( seriesIndex == 3 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum. Harvested:"+plot.series[3].data[pointIndex][1]+" kWh<br>"+bold[1];
 	return returned;
 }
 
 // WSL class
 var WSL = {
-		
 	api : {},
-	
 	init_nextRelease : function(divId) {
 		$(divId).html("<br/><br/><H1>WSL::NextRelease();</h1>");
 	},
 	init_PageTodayHistoryValues : function(divId) {
 		// Retrieve the error events
 		WSL.api.getHistoryValues(function(data) {
-			
 			$.ajax({
 				url : 'js/templates/historyValues.hb',
 				success : function(source) {

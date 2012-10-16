@@ -121,3 +121,10 @@ span.read-more a { font-family: Tahoma, arial, sans-serif; font-weight: bold; co
 #footer-bottom { font-size: 0; line-height: 0; text-indent: -4000px; height: 6px; background: url(images/footer-bottom.png) no-repeat 0 0; }
 
 #main-middle .span-1 {margin:0px;}
+
+#tabs { height: 200px; }
+.tabs-bottom { position: relative; }
+.tabs-bottom .ui-tabs-panel { height: 140px; overflow: auto; }
+.tabs-bottom .ui-tabs-nav { position: absolute !important; left: 0; bottom: 0; right:0; padding: 0 0.2em 0.2em 0; }
+.tabs-bottom .ui-tabs-nav li { margin-top: -2px !important; margin-bottom: 1px !important; border-top: none; border-bottom-width: 1px; }
+.ui-tabs-selected { margin-top: -3px !important; }
