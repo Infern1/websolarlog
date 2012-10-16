@@ -443,14 +443,18 @@ class PDODataAdapter {
     		//$UTCdate = Util::getUTCdate($bean['SDTE']);
     		$UTCdate = $bean['time'];
     		$UTCtimeDiff = $UTCdate - $preBeanUTCdate;
-    		$cumPower = round($bean['KWHT']-$firstBean['KWHT'] *1,3);//cumalative power this day
-    		$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,0,2);
+    		
+    		//$tempCum = $bean['KWHT']-$firstBean['KWHT'];
+    		//($tempCum<1)? $cumPower = $tempCum * 1000: $cumPower = $tempCum;
+    		$cumPower = round(($bean['KWHT']-$firstBean['KWHT'])*1000,0);
+    		
 
-    		$points[] = array ($UTCdate * 1000,$cumPower,$avgPower,date("d-m-Y",$bean['time']),);
+    		$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,0,0);
+
+    		$points[] = array ($UTCdate * 1000,$cumPower,$avgPower,date("H:i, d-m-Y",$bean['time']),);
 
     		$preBeanUTCdate = $bean['time'];
     		$preBean = $bean;
-    		$KWHT = $i."".$bean['KWHT']."*".$i."".$firstBean['KWHT'];
     		$i++;
     	}
 
@@ -912,12 +916,11 @@ class PDODataAdapter {
      * @return array($beginDate, $endDate);
      */
     public function getGraphPoint($invtnum,$type, $startDate){
-    	$type=strtolower($type);
+    	($type == 'today')?$type='day':$type=$type;
 
-    	(stristr($type, 'day') === FALSE) ?	$table = "energy" : $table = "history";
+    	(stristr(strtolower($type), 'day') === FALSE) ?	$table = "energy" : $table = "history";
 
     	$beans = $this->readTablesPeriodValues($invtnum, $table, $type, $startDate);
-
     	if(strtolower($table) == "history"){
     		// NO history bean? Create a dummy bean...
     		(!$beans) ? $beans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $beans = $beans;
@@ -967,12 +970,12 @@ class PDODataAdapter {
      */
    public function PeriodBeansToGraphPoints($beans){
     	$points = array();
-
+    	$cumPower=0;
     	foreach ($beans as $bean){
     		$cumPower += $bean['KWH'];
-    		$points[] = array (mktime(0, 0, 0,date("m",$bean['time']),date("d",$bean['time']),date("Y",$bean['time']))*1000,
+    		$points[] = array (Util::getTimestampOfDate(0,0,0, date("d",$bean['time']),date("m",$bean['time']), date("Y",$bean['time']))*1000,
     					(float)sprintf("%.2f", $bean['KWH']),
-    					date("d-m-Y",$bean['time']),
+    					date("Y-m-d",$bean['time']),
 	    				(float)sprintf("%.2f", $cumPower)
     				);
     	}
@@ -981,8 +984,22 @@ class PDODataAdapter {
     	if(count($points)==0){
     		$cumPower = 0;
     		$points[] = array (time()* 1000, 0,0);
-    	}
+    	}else{
+    		$endOfMonth =Util::getTimestampOfDate(0,0,0,  date('t'),date("m"), date("Y")); 
+    		$countPoints = count($points)-1;
 
+    		$time = strtotime(date("d-m-Y",($points[$countPoints][0])/1000));
+    		$time += 86400;
+    		while ($time<$endOfMonth){
+    			$time += 86400;
+    			$points[] = array (
+    					($time)*1000,
+    					0,
+    					date("Y-m-d",$time),
+	    				(float)sprintf("%.2f", $cumPower)
+    					);
+    		}
+    	}
     	$lastDays = new LastDays();
     	$lastDays->points=$points;
     	$lastDays->KWHT=$cumPower;

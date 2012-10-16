@@ -1,14 +1,18 @@
+trunkVersion = '222';
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
 });
 beforeLoad = (new Date()).getTime();
 window.onload = pageLoadingTime;
+
 function pageLoadingTime() {
+	$('#subversion').html(trunkVersion);
 	afterLoad = (new Date()).getTime();
 	secondes = (afterLoad - beforeLoad) / 1000;
 	document.getElementById("JSloadingtime").innerHTML = secondes;
 }
+
 var graphDay = null;
 var dataDay = [];
 var dataYesterday = [];
@@ -19,8 +23,31 @@ var currentGraphHandler;
 var todayTimerHandler;
 
 function tooltipContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
-	return "Power: "+plot.series[seriesIndex].data[pointIndex][1] +" kWh<br>Date: "+plot.series[seriesIndex].data[pointIndex][2];
+	var returned = ""; 
+	
+	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];
+	returned += bold[0]+"Energy:"+ plot.series[1].data[pointIndex][1]+ " W<br>"+bold[1];
+	
+	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""]; 
+	returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " W<br>"+bold[1];
+
+	returned += "Date:"+ plot.series[0].data[pointIndex][2]+"";
+	return returned;
 }
+
+function tooltipPeriodContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
+	var returned = ""; 
+	
+	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];
+	returned += bold[0]+"Energy:"+ plot.series[1].data[pointIndex][1]+ " W<br>"+bold[1];
+	
+	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""]; 
+	returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " W<br>"+bold[1];
+	
+	returned += "Date:"+ plot.series[1].data[pointIndex][2]+"";
+	return returned;
+}
+
 function tooltipCompareContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = ""; 
 	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""]; 
@@ -391,15 +418,28 @@ var WSL = {
 
 	createDayGraph : function(invtnum, getDay, fnFinish) {
 		var graphOptions = {
-			series : [{label:'Cum. Power',yaxis:'yaxis'},{label:'Avg. Power',yaxis:'y2axis'}],
+			series : [
+			          {label:'Cum. Power',yaxis:'yaxis',showMarker:false},
+			          {label:'Avg. Power',yaxis:'y2axis'}
+			          ],
 			axesDefaults : {
 				useSeriesColor: true, 
-				tickRenderer : $.jqplot.CanvasAxisTickRenderer
+				tickRenderer : $.jqplot.CanvasAxisTickRenderer,
+
 			},
+			animate: true,
 			legend : {
 			show : true,
-			location:"nw"
+			location:"nw",
+			 renderer: $.jqplot.EnhancedLegendRenderer,
+			 rendererOptions: {
+                // set to true to replot when toggling series on/off
+                // set to an options object to pass in replot options.
+                seriesToggle: 'normal',
+                //seriesToggleReplot: {resetAxes: true}
+            }
 			}, 
+			
 			axes : {
 				xaxis : {
 					label : '',
@@ -421,7 +461,12 @@ var WSL = {
 					min : 0,
 					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
 				}
-			},
+			}, 
+			seriesDefaults: {
+		          rendererOptions: {
+		              smooth: true
+		          }
+		      },
 			highlighter : {
 				tooltipContentEditor: tooltipContentEditor,
 				show : true,
@@ -450,7 +495,7 @@ var WSL = {
     				    graphOptions.axes.xaxis.min = dataDay1[0][0];
     				}
     				handle = $.jqplot('graph' + getDay + 'Content', [ dataDay1,dataDay2 ], graphOptions);
-    				mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
+    				mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT +' W </div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
     				fnFinish.call(this, handle);
 				}
 			}
@@ -459,11 +504,11 @@ var WSL = {
 
 	createPeriodGraph : function(invtnum, type, count, divId, fnFinish) {
 		var graphDayPeriodOptions = {
+				
 				series : [
-				          {yaxis:'yaxis',renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
-				          {yaxis:'y2axis', pointLabels: {show: false}}
+				          {label:'Cum. Power',yaxis:'yaxis',showMarker:false,renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
+				          {label:'Avg. Power',yaxis:'y2axis', pointLabels: {show: false}}
 				          ],
-				stackSeries: true,
 				seriesDefaults : {
 				labelOptions:{
 					formatString: '%d-%' ,fontSize: '20pt',
@@ -488,10 +533,17 @@ var WSL = {
 				}
 			},
 			legend : {
-				show : false
+				show : true,
+				 renderer: $.jqplot.EnhancedLegendRenderer,
+				 rendererOptions: {
+	                // set to true to replot when toggling series on/off
+	                // set to an options object to pass in replot options.
+	                seriesToggle: 'normal',
+	                //seriesToggleReplot: {resetAxes: true}
+	            }
 			},
 			highlighter : {
-				tooltipContentEditor: tooltipContentEditor,
+				tooltipContentEditor: tooltipPeriodContentEditor,
 				show : true,
 				yvalues:4,
 				tooltipLocation:'n'
@@ -507,12 +559,12 @@ var WSL = {
 					}
 				},
 				yaxis : {
-					label : 'Power(kWh)',
+					label : 'Cum. Power',
 					min : 0,
 					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
 				},
 				y2axis : {
-					label : 'Cum. Power(kWh)',
+					label : 'Avg. Power',
 					min : 0,
 					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
 				}
@@ -527,13 +579,16 @@ var WSL = {
 			success : function(result) {
 				var dayData1 = [];
 				var dayData2 = [];
+				var i = 0;
 				for (line in result.dayData.data) {
 					var object = result.dayData.data[line];
-					alert(object[4]);
-					dayData1.push([ object[0], object[1], object[2], object[4] ]);
-					dayData2.push([ object[0], object[3], object[2], object[4] ]);
+					//alert(object);
+					dayData1.push([ object[0], object[1], object[2]]);
+					dayData2.push([ object[0], object[3], object[2]]);
+					i +=1;
 				}
-				graphDayPeriodOptions.axes.xaxis.min = result.dayData.data[0][0];
+				graphDayPeriodOptions.axes.xaxis.min = result.dayData.data[0][2];
+				graphDayPeriodOptions.axes.xaxis.max = result.dayData.data[i-1][2];
 				var plot = $.jqplot(divId, [ dayData1,dayData2 ], graphDayPeriodOptions).destroy();
 				plot = null; 
 				var plot = $.jqplot(divId, [ dayData1,dayData2 ], graphDayPeriodOptions);
@@ -554,8 +609,18 @@ var WSL = {
 			          {label:'Cum. Harvested(kWh)',yaxis:'y4axis',renderer:$.jqplot.LineRenderer, pointLabels: {show: false}}
 		    ],
 			axesDefaults : {useSeriesColor: true, },
-			legend : {show : true,location:"nw"}, 
-		    seriesDefaults:{rendererOptions: {barMargin: 40,barWidth:10,}},
+			legend : {
+				show : true,
+				location:"nw",
+				 renderer: $.jqplot.EnhancedLegendRenderer,
+				 rendererOptions: {
+	                // set to true to replot when toggling series on/off
+	                // set to an options object to pass in replot options.
+	                seriesToggle: 'normal',
+	                //seriesToggleReplot: {resetAxes: true}
+	            }
+			}, 
+		    seriesDefaults:{rendererOptions: {barMargin: 40,barWidth:10}},
 			axes : {
 				xaxis : {labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,tickInterval:'1 month',tickOptions : {angle : -50}},
 				yaxis : {label : 'Expected(kWh)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},

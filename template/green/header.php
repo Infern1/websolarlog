@@ -34,6 +34,7 @@
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.trendline.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.pointLabels.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.highlighter.min.js"></script>
+    <script type="text/javascript" src="js/jqplot_plugins/jqplot.enhancedLegendRenderer.min.js"></script>
     <script language="javascript" type="text/javascript" src="js/websolarlog.js"></script>
     			<style>
 			#tabs { height: 200px; }

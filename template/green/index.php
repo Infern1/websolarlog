@@ -56,15 +56,15 @@
 		<!-- Footer -->
 		<div id="footer">
 			<div id="footer-middle">
-<<<<<<< .mine
-			{{footer-middle->HB}}
-=======
->>>>>>> .r218
+			
 			</div>
 			<div id="footer-bottom">
 
 			</div>
-			<div id="JSloadingtime"></div>
+			<div style="float:left;">JS loadtime:&nbsp;</div>&nbsp;&nbsp;
+			<div id="JSloadingtime" style="float:left;"></div>
+			<div style="margin-left:10px;float:left;">WSL-version:&nbsp;</div>
+			<div id="subversion" style="float:left;"></div>
 		</div>
 		<!-- END Footer -->
 	</div>
