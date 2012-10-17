@@ -1,4 +1,4 @@
-trunkVersion = '225';
+trunkVersion = '226';
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
@@ -660,7 +660,7 @@ var WSL = {
 
 	createDetailsGraph : function(invtnum, divId) {
 		var graphOptions = {
-
+				series:[],
 			axesDefaults : {useSeriesColor: true },
 			legend : {
 				show: true, location: 'nw', xoffset: -115, 
@@ -719,10 +719,10 @@ var WSL = {
 					$("#main-middle").prepend('<div id="detailsGraph"></div>');
 
     				graphOptions.axes.xaxis.min = seriesData[0][0][0];
-    				graphOptions.labels = jQuery.parseJSON(seriesLabels);
+    				graphOptions.legend.labels = seriesLabels;
     				//alert(dataSeries.BOOT[10][1]);
 					console.log(JSON.stringify(seriesLabels));
-    				//handle = $.jqplot("detailsGraph",seriesData, graphOptions);
+    				handle = $.jqplot("detailsGraph",seriesData, graphOptions);
     				//mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#' + divId + ' .jqplot-grid-canvas');
     				//fnFinish.call(this, handle);
 				}
