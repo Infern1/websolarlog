@@ -182,6 +182,19 @@ switch ($method) {
 		$dayData->success = true;
 		$data['dayData'] = $dayData;
 		break;
+	case 'getDetailsGraph':
+		$config_invt="config/config_invt".$invtnum.".php";
+		include("$config_invt");
+	
+		$lines = $dataAdapter->getDetailsHistory($invtnum,$date);
+		
+		//var_dump($details);
+		
+		$dayData = new DayDataResult();
+		$dayData->data = $lines['details'];
+		$dayData->success = true;
+		$data['dayData'] = $dayData;
+		break;
 	case 'getProductionGraph':
 		//$config_invt="config/config_invt".$invtnum.".php";
 		//include("$config_invt");

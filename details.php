@@ -62,7 +62,7 @@ require_once("template/" . $template . "/index.php");
 			alert('type=' + type + ' inverterId=' + inverterId + ' stringId=' + stringId + ' checked=' + $(this).is(':checked'));
 		}
 	}
+	WSL.init_details(1,"#details"); // Initial load fast
 	</script>
-
 </body>
 </html>

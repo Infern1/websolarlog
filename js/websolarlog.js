@@ -1,4 +1,4 @@
-trunkVersion = '223';
+trunkVersion = '224';
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
@@ -40,13 +40,17 @@ function tooltipPeriodContentEditor(str, seriesIndex, pointIndex, plot,series	) 
 
 function tooltipCompareContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = ""; 
-	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Harvested: "+ plot.series[0].data[pointIndex][1] +" kWh<br>"+bold[1];
-	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Expected:"+ plot.series[1].data[pointIndex][1]+" kWh<br>"+bold[1];
-	( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum. Expected: "+plot.series[2].data[pointIndex][1]+" kWh<br>"+bold[1];
-	( seriesIndex == 3 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum. Harvested:"+plot.series[3].data[pointIndex][1]+" kWh<br>"+bold[1];
+	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Harvested: "+ plot.series[1].data[pointIndex][1] +" kWh<br>"+bold[1];
+	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Expected:"+ plot.series[0].data[pointIndex][1]+" kWh<br>"+bold[1];
+	( seriesIndex == 3 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum. Expected: "+plot.series[3].data[pointIndex][1]+" kWh<br>"+bold[1];
+	( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum. Harvested:"+plot.series[2].data[pointIndex][1]+" kWh<br>"+bold[1];
 	return returned;
 }
 
+function tooltipDetailsContentEditor(str, seriesIndex, pointIndex, plot,series	){
+	var returned = ""; 
+	return returned;	
+}
 // WSL class
 var WSL = {
 	api : {},
@@ -633,16 +637,91 @@ var WSL = {
 					
 					for (line in result.dayData.data) {
 						var object = result.dayData.data[line];
-						dataDay1.push([  object[0], object[1], object[2] ]);
-						dataDay2.push([  object[0], object[3], object[2] ]);
-						dataDay3.push([  object[0], object[5], object[2] ]);
-						dataDay4.push([  object[0], object[6], object[2] ]);
+						dataDay1.push([  object[0], object[3], object[2] ]);
+						dataDay2.push([  object[0], object[1], object[2] ]);
+						dataDay3.push([  object[0], object[6], object[2] ]);
+						dataDay4.push([  object[0], object[5], object[2] ]);
 					}
 					
     				if (dataDay1[0][0]) {
     				    graphOptions.axes.xaxis.min = dataDay1[0][0];
     				}
     				handle = $.jqplot("ProductionGraph", [ dataDay1 , dataDay2, dataDay3, dataDay4], graphOptions);
+    				//mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#' + divId + ' .jqplot-grid-canvas');
+    				//fnFinish.call(this, handle);
+				}
+			}
+		});
+	},
+	
+	init_details : function(invtnum,divId){
+		WSL.createDetailsGraph(invtnum, divId);
+	},
+
+	createDetailsGraph : function(invtnum, divId) {
+		var graphOptions = {
+
+			axesDefaults : {useSeriesColor: true },
+			legend : {
+				show: true, location: 'nw', xoffset: -115, 
+				 renderer: $.jqplot.EnhancedLegendRenderer,
+				 rendererOptions: {
+	                // set to true to replot when toggling series on/off
+	                // set to an options object to pass in replot options.
+	                seriesToggle: 'normal',
+	                //seriesToggleReplot: {resetAxes: true}
+	            }
+			}, 
+			
+			
+		    seriesDefaults:{
+		    	rendererOptions: {barMargin: 40,barWidth:10},
+		    	pointLabels: {show: false}
+		    	},
+			axes : {
+				xaxis : {
+					label : '',
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+					renderer : $.jqplot.DateAxisRenderer,
+					tickInterval : '3600', // 1 hour
+					tickOptions : {
+						angle : -30,
+						formatString : '%H:%M'
+					}
+				},
+			},
+			highlighter : {
+				tooltipContentEditor: tooltipDetailsContentEditor,
+				show : true,
+				yvalues:4
+			},
+			cursor : {show : false}
+		};
+		
+		$.ajax({
+			url : "server.php?method=getDetailsGraph&invtnum=" + invtnum,
+			method : 'GET',
+			dataType : 'json',
+			success : function(result) {
+				
+				if (result.dayData.data) {
+					var dataSeries= [];
+					var dataSerie= [];
+					for (line in result.dayData.data) {
+						var json = [];
+						for (values in result.dayData.data[line]) {
+							json.push([result.dayData.data[line][values][0],result.dayData.data[line][values][1]]);
+						}
+						dataSerie[line] = json;
+						dataSeries= dataSerie;
+					}
+					
+					$("#main-middle").prepend('<div id="detailsGraph"></div>');
+
+    				//graphOptions.axes.xaxis.min = dataSeries[0][0];
+    				//alert(dataSeries.BOOT[10][1]);
+					console.log(dataSeries);
+    				handle = $.jqplot("detailsGraph",dataSeries, graphOptions);
     				//mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#' + divId + ' .jqplot-grid-canvas');
     				//fnFinish.call(this, handle);
 				}

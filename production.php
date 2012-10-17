@@ -9,9 +9,8 @@ require_once("template/" . $template . "/index.php");
 	<script type="text/javascript">
     // Make sure the page is loaded
 	$(function(){
-		var invtnum;
-		var year;
-		invtnum=(!invtnum)?invtnum=1:invtnum=invtnum;
+
+		var invtnum=(!invtnum)?invtnum=1:invtnum=invtnum;
 		WSL.init_production(invtnum,"content"); // Initial load fast
 	});
 	</script>
