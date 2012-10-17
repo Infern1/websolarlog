@@ -1,4 +1,4 @@
-trunkVersion = '224';
+trunkVersion = '225';
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
@@ -705,23 +705,24 @@ var WSL = {
 			success : function(result) {
 				
 				if (result.dayData.data) {
-					var dataSeries= [];
-					var dataSerie= [];
+					var seriesLabels= [];
+					var seriesData = [];
 					for (line in result.dayData.data) {
 						var json = [];
 						for (values in result.dayData.data[line]) {
 							json.push([result.dayData.data[line][values][0],result.dayData.data[line][values][1]]);
 						}
-						dataSerie[line] = json;
-						dataSeries= dataSerie;
+						seriesLabels.push('label',line);
+						seriesData.push(json);
 					}
-					
+
 					$("#main-middle").prepend('<div id="detailsGraph"></div>');
 
-    				//graphOptions.axes.xaxis.min = dataSeries[0][0];
+    				graphOptions.axes.xaxis.min = seriesData[0][0][0];
+    				graphOptions.labels = jQuery.parseJSON(seriesLabels);
     				//alert(dataSeries.BOOT[10][1]);
-					console.log(dataSeries);
-    				handle = $.jqplot("detailsGraph",dataSeries, graphOptions);
+					console.log(JSON.stringify(seriesLabels));
+    				//handle = $.jqplot("detailsGraph",seriesData, graphOptions);
     				//mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#' + divId + ' .jqplot-grid-canvas');
     				//fnFinish.call(this, handle);
 				}
