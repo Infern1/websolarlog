@@ -840,13 +840,24 @@ class PDODataAdapter {
 					array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}
 		$historyColumns = R::getColumns('history');
+		$labels[]= "Grid V";
+		$labels[]= "Grid A";
+		$labels[]= "Grid P";
+		$labels[]= "Grid Freq.";
+		$labels[]= "MPP1 V";
+		$labels[]= "MPP1 A";
+		$labels[]= "MPP1 P";
+		$labels[]= "MPP1 Ratio";
+		$labels[]= "MPP2 V";
+		$labels[]= "MPP2 A";
+		$labels[]= "MPP2 P";
+		$labels[]= "MPP2 Ratio";
+		$labels[]= "DC>AC Efficiency";
+		$labels[]= "Boos. Temp.";
+		$labels[]= "Inv. Temp.";
 		//$live = new Live();
 		foreach($beans as $bean){
 			$bean['time'] =$bean['time']*1000;
-			$live->BOOT[]	= array($bean['time'],(float)$bean['BOOT']);
-			$live->EFF[] 	= array($bean['time'],(float)$bean['EFF']);
-			$live->FRQ[] 	= array($bean['time'],(float)$bean['FRQ']);
-			
 			$live->GA[] 	= array($bean['time'],(float)$bean['GA']);
 			$live->GP[] 	= array($bean['time'],(float)$bean['GP']);
 			$live->GV[] 	= array($bean['time'],(float)$bean['GV']);
@@ -861,12 +872,35 @@ class PDODataAdapter {
 			$live->I2Ratio[]= array($bean['time'],(float)$bean['I2Ratio']);
 			$live->I2V[] 	= array($bean['time'],(float)$bean['I2V']);
 			
-			$live->INV[] 	= array($bean['time'],(float)$bean['INV']);
+			$live->EFF[] 	= array($bean['time'],(float)$bean['EFF']);
+			
+			$live->FRQ[] 	= array($bean['time'],(float)$bean['FRQ']);
+			$live->BOOT[]	= array($bean['time'],(float)$bean['BOOT']);
 			$live->INVT[] 	= array($bean['time'],(float)$bean['INVT']);
-			$live->KWHT[] 	= array($bean['time'],(float)$bean['KWHT']);
 		}
+		if(!$beans){
+			$live->GV[] 	= array(time()*1000,0);
+			$live->GA[] 	= array(time()*1000,0);
+			$live->GP[] 	= array(time()*1000,0);
+			$live->FRQ[] 	= array(time()*1000,0);
+			
+			$live->I1V[] 	= array(time()*1000,0);
+			$live->I1A[] 	= array(time()*1000,0);
+			$live->I1P[] 	= array(time()*1000,0);
+			$live->I1Ratio[]= array(time()*1000,0);
 
-		return array("details"=>$live);
+			$live->I2V[] 	= array(time()*1000,0);
+			$live->I2A[] 	= array(time()*1000,0);
+			$live->I2P[] 	= array(time()*1000,0);
+			$live->I2Ratio[]= array(time()*1000,0);
+			$live->EFF[] 	= array(time()*1000,0);
+			
+
+			$live->BOOT[]	= array(time()*1000,0);
+			$live->INVT[] 	= array(time()*1000,0);
+		}
+		
+		return array("details"=>$live,"labels"=>$labels);
 	}
 
 	/**

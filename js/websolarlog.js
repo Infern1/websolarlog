@@ -1,4 +1,4 @@
-trunkVersion = '226';
+trunkVersion = '227';
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
@@ -57,6 +57,7 @@ var WSL = {
 	init_nextRelease : function(divId) {
 		$(divId).html("<br/><br/><H1>WSL::NextRelease();</h1>");
 	},
+	
 	init_PageTodayHistoryValues : function(divId) {
 		// Retrieve the error events
 		WSL.api.getHistoryValues(function(data) {
@@ -112,34 +113,28 @@ var WSL = {
 							min : 0,
 							max : IP * 10,
 							padding : 0,
-							intervals : [ IP, IP * 2, IP * 3, IP * 4, IP * 5,
-									IP * 6, IP * 7, IP * 8, IP * 9, IP * 10 ],
-							intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
-									'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
-									'#4BFE78', '#0AFE47', '#01F33E' ]
+							intervals : [ IP, IP * 2, IP * 3, IP * 4, IP * 5, IP * 6, IP * 7, IP * 8, IP * 9, IP * 10 ],
+							intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8','#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95','#4BFE78', '#0AFE47', '#01F33E' ]
 						}
 					}
 				};
-					var EFF = 100 / 10;
-					var gaugeEFFOptions = {
-						title : 'Efficiency',
-						grid : {
-							background : '#FFF'
-						},
-						seriesDefaults : {
-							renderer : $.jqplot.MeterGaugeRenderer,
-							rendererOptions : {
-								min : 0,
-								max : EFF * 10,
-								padding : 0,
-								intervals : [ EFF, EFF * 2, EFF * 3, EFF * 4, EFF * 5,
-										EFF * 6, EFF * 7, EFF * 8, EFF * 9, EFF * 10 ],
-								intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
-										'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
-										'#4BFE78', '#0AFE47', '#01F33E' ]
-							}
+				var EFF = 100 / 10;
+				var gaugeEFFOptions = {
+					title : 'Efficiency',
+					grid : {
+						background : '#FFF'
+					},
+					seriesDefaults : {
+						renderer : $.jqplot.MeterGaugeRenderer,
+						rendererOptions : {
+							min : 0,
+							max : EFF * 10,
+							padding : 0,
+							intervals : [ EFF, EFF * 2, EFF * 3, EFF * 4, EFF * 5,EFF * 6, EFF * 7, EFF * 8, EFF * 9, EFF * 10 ],
+							intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8','#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95','#4BFE78', '#0AFE47', '#01F33E' ]
 						}
-					};
+					}
+				};
 				$.ajax({
 					url : 'js/templates/liveInverters.hb',
 					success : function(source) {
@@ -415,13 +410,10 @@ var WSL = {
 			legend : {
 			show : true,
 			location:"nw",
-			 renderer: $.jqplot.EnhancedLegendRenderer,
-			 rendererOptions: {
-                // set to true to replot when toggling series on/off
-                // set to an options object to pass in replot options.
-                seriesToggle: 'normal',
-                //seriesToggleReplot: {resetAxes: true}
-            }
+			renderer: $.jqplot.EnhancedLegendRenderer,
+				 rendererOptions: {
+	                seriesToggle: 'normal',
+	            }
 			}, 
 			
 			axes : {
@@ -494,37 +486,20 @@ var WSL = {
 				          {label:'Avg. Power',yaxis:'y2axis', pointLabels: {show: false}}
 				          ],
 				seriesDefaults : {
-				labelOptions:{
-					formatString: '%d-%' ,fontSize: '20pt',
-				},
-				rendererOptions : {
-					fillToZero : true,
-					barWidth : 5,
-				},
+				labelOptions:{formatString: '%d-%' ,fontSize: '20pt'},
+				rendererOptions : {fillToZero : true,barWidth : 5},
 				showMarker : false,
-		        pointLabels: {
-		            show: true,
-		            formatString: '%s',
-		        },
-
+		        pointLabels: {show: true,formatString: '%s'},
 			},
 			axesDefaults : {
 				useSeriesColor: true, 
 				tickRenderer : $.jqplot.CanvasAxisTickRenderer,
-				tickOptions : {
-					angle : -30,
-					fontSize : '10pt'
-				}
+				tickOptions : {angle : -30,fontSize : '10pt'}
 			},
 			legend : {
 				show : true,
 				 renderer: $.jqplot.EnhancedLegendRenderer,
-				 rendererOptions: {
-	                // set to true to replot when toggling series on/off
-	                // set to an options object to pass in replot options.
-	                seriesToggle: 'normal',
-	                //seriesToggleReplot: {resetAxes: true}
-	            }
+				 rendererOptions: {seriesToggle: 'normal'}
 			},
 			highlighter : {
 				tooltipContentEditor: tooltipPeriodContentEditor,
@@ -660,42 +635,12 @@ var WSL = {
 
 	createDetailsGraph : function(invtnum, divId) {
 		var graphOptions = {
-				series:[],
-			axesDefaults : {useSeriesColor: true },
-			legend : {
-				show: true, location: 'nw', xoffset: -115, 
-				 renderer: $.jqplot.EnhancedLegendRenderer,
-				 rendererOptions: {
-	                // set to true to replot when toggling series on/off
-	                // set to an options object to pass in replot options.
-	                seriesToggle: 'normal',
-	                //seriesToggleReplot: {resetAxes: true}
-	            }
-			}, 
-			
-			
-		    seriesDefaults:{
-		    	rendererOptions: {barMargin: 40,barWidth:10},
-		    	pointLabels: {show: false}
-		    	},
-			axes : {
-				xaxis : {
-					label : '',
-					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-					renderer : $.jqplot.DateAxisRenderer,
-					tickInterval : '3600', // 1 hour
-					tickOptions : {
-						angle : -30,
-						formatString : '%H:%M'
-					}
-				},
-			},
-			highlighter : {
-				tooltipContentEditor: tooltipDetailsContentEditor,
-				show : true,
-				yvalues:4
-			},
-			cursor : {show : false}
+				series:[{show:true},{show:true},{show:true},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},],
+				axesDefaults : {useSeriesColor: true,yaxis:{min:0} },
+				legend : {show: true, location: 's', placement: 'outsideGrid',renderer: $.jqplot.EnhancedLegendRenderer,rendererOptions: {seriesToggle: 'normal',numberRows: 2,seriesToggleReplot:  {resetAxes:["yaxis"]}}}, 
+				seriesDefaults:{rendererOptions: {barMargin: 40,barWidth:10},pointLabels: {show: false},},
+				axes : {xaxis : {label : '',labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,tickInterval : '3600', /* 1 hour*/  tickOptions : {angle : -30,formatString : '%H:%M'}},yaxis:{min:0}},
+				highlighter : {tooltipContentEditor: tooltipDetailsContentEditor,show : true}
 		};
 		
 		$.ajax({
@@ -712,19 +657,18 @@ var WSL = {
 						for (values in result.dayData.data[line]) {
 							json.push([result.dayData.data[line][values][0],result.dayData.data[line][values][1]]);
 						}
-						seriesLabels.push('label',line);
+						seriesLabels.push(line);
 						seriesData.push(json);
 					}
 
 					$("#main-middle").prepend('<div id="detailsGraph"></div>');
+					$("#detailsGraph").height(450);
 
-    				graphOptions.axes.xaxis.min = seriesData[0][0][0];
-    				graphOptions.legend.labels = seriesLabels;
-    				//alert(dataSeries.BOOT[10][1]);
-					console.log(JSON.stringify(seriesLabels));
+					graphOptions.axes.xaxis.min = seriesData[0][0][0];
+					graphOptions.axes.yaxis.min = 0;
+    				graphOptions.legend.labels = result.dayData['labels'];
     				handle = $.jqplot("detailsGraph",seriesData, graphOptions);
-    				//mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT + ' kWh</div>').insertAfter('#' + divId + ' .jqplot-grid-canvas');
-    				//fnFinish.call(this, handle);
+
 				}
 			}
 		});

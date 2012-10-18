@@ -6,3 +6,6 @@
     display: block;
     overflow: hidden;
 }
+table.jqplot-table-legend{
+	width:800px;
+}
