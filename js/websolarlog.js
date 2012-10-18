@@ -1,4 +1,4 @@
-trunkVersion = '227';
+trunkVersion = '228';
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
@@ -397,10 +397,7 @@ var WSL = {
 
 	createDayGraph : function(invtnum, getDay, fnFinish) {
 		var graphOptions = {
-			series : [
-			          {label:'Cum. Power',yaxis:'yaxis',showMarker:false},
-			          {label:'Avg. Power',yaxis:'y2axis'}
-			          ],
+			series : [ {label:'Cum. Power',yaxis:'yaxis',showMarker:false},{label:'Avg. Power',yaxis:'y2axis'}],
 			axesDefaults : {
 				useSeriesColor: true, 
 				tickRenderer : $.jqplot.CanvasAxisTickRenderer,
@@ -635,14 +632,35 @@ var WSL = {
 
 	createDetailsGraph : function(invtnum, divId) {
 		var graphOptions = {
-				series:[{show:true},{show:true},{show:true},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},{show:false},],
-				axesDefaults : {useSeriesColor: true,yaxis:{min:0} },
-				legend : {show: true, location: 's', placement: 'outsideGrid',renderer: $.jqplot.EnhancedLegendRenderer,rendererOptions: {seriesToggle: 'normal',numberRows: 2,seriesToggleReplot:  {resetAxes:["yaxis"]}}}, 
+				series:[
+	          {yaxis:'yaxis',label:'aa'},
+	          {yaxis:'y2axis'},
+	          {yaxis:'y3axis'},
+	          {yaxis:'y4axis'},
+	          {yaxis:'y2axis'},
+	          {yaxis:'y3axis'},
+	          {yaxis:'y5axis'},
+	          {yaxis:'yaxis'},
+	          {yaxis:'yaxis'},
+	          {yaxis:'yaxis'},
+	          {yaxis:'yaxis'},
+	          {yaxis:'y4axis'}
+	          ],
+				axesDefaults : {useSeriesColor: true },
+				legend : {show: true, location: 's', placement: 'outsideGrid',renderer: $.jqplot.EnhancedLegendRenderer,rendererOptions: {seriesToggle: 'normal',numberRows: 2,
+						//seriesToggleReplot:  {resetAxes:["yaxis"]}
+				}}, 
 				seriesDefaults:{rendererOptions: {barMargin: 40,barWidth:10},pointLabels: {show: false},},
-				axes : {xaxis : {label : '',labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,tickInterval : '3600', /* 1 hour*/  tickOptions : {angle : -30,formatString : '%H:%M'}},yaxis:{min:0}},
+				axes : {xaxis : {label : '',labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,tickInterval : '3600', /* 1 hour*/ tickOptions : {angle : -30,formatString : '%H:%M'}},
+					yaxis : {label:'Power',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
+					y2axis : {label:'Voltage',min : 0,max:300,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
+					y3axis : {label:'Ampere',min : 0,max:10,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
+					y4axis : {label:'Frequency',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
+					y5axis : {label:'Ratio',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
+					y6axis : {label:'Temperature',min : 0,max : 70,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true}
+				},
 				highlighter : {tooltipContentEditor: tooltipDetailsContentEditor,show : true}
 		};
-		
 		$.ajax({
 			url : "server.php?method=getDetailsGraph&invtnum=" + invtnum,
 			method : 'GET',
@@ -660,15 +678,16 @@ var WSL = {
 						seriesLabels.push(line);
 						seriesData.push(json);
 					}
-
+					
+					
+					
 					$("#main-middle").prepend('<div id="detailsGraph"></div>');
 					$("#detailsGraph").height(450);
 
 					graphOptions.axes.xaxis.min = seriesData[0][0][0];
-					graphOptions.axes.yaxis.min = 0;
     				graphOptions.legend.labels = result.dayData['labels'];
     				handle = $.jqplot("detailsGraph",seriesData, graphOptions);
-
+    				$('table.jqplot-table-legend').attr('class', 'jqplot-table-legend-custom');
 				}
 			}
 		});
