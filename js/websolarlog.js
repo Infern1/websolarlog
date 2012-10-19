@@ -1,4 +1,4 @@
-trunkVersion = '229';
+trunkVersion = '230';
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
@@ -40,8 +40,8 @@ function tooltipPeriodContentEditor(str, seriesIndex, pointIndex, plot,series	) 
 
 function tooltipCompareContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = ""; 
-	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Harvested: "+ plot.series[1].data[pointIndex][1] +" kWh<br>"+bold[1];
 	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Expected:"+ plot.series[0].data[pointIndex][1]+" kWh<br>"+bold[1];
+	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Harvested: "+ plot.series[1].data[pointIndex][1] +" kWh<br>"+bold[1];
 	( seriesIndex == 3 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum. Expected: "+plot.series[3].data[pointIndex][1]+" kWh<br>"+bold[1];
 	( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum. Harvested:"+plot.series[2].data[pointIndex][1]+" kWh<br>"+bold[1];
 	return returned;
