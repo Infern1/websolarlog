@@ -1,4 +1,4 @@
-trunkVersion = '230';
+trunkVersion = '231';
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
@@ -40,10 +40,14 @@ function tooltipPeriodContentEditor(str, seriesIndex, pointIndex, plot,series	) 
 
 function tooltipCompareContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = ""; 
+	var diff = plot.series[1].data[pointIndex][1]-plot.series[0].data[pointIndex][1];
+	var yearDiff = plot.series[2].data[pointIndex][1]-plot.series[3].data[pointIndex][1];
 	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Expected:"+ plot.series[0].data[pointIndex][1]+" kWh<br>"+bold[1];
 	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Harvested: "+ plot.series[1].data[pointIndex][1] +" kWh<br>"+bold[1];
+	returned += "This month: "+ diff +" kWh<br>";
 	( seriesIndex == 3 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum. Expected: "+plot.series[3].data[pointIndex][1]+" kWh<br>"+bold[1];
 	( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum. Harvested:"+plot.series[2].data[pointIndex][1]+" kWh<br>"+bold[1];
+	returned += "This year: "+ yearDiff +" kWh<br>";
 	return returned;
 }
 
@@ -544,7 +548,7 @@ var WSL = {
 			          {label:'Expected(kWh)',yaxis:'yaxis',renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
 			          {label:'Harvested(kWh)',yaxis:'y2axis',renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
 			          {label:'Cum. Expected(kWh)',yaxis:'y3axis',renderer:$.jqplot.LineRenderer, pointLabels: {show: false}},
-			          {label:'Cum. Harvested(kWh)',yaxis:'y4axis',renderer:$.jqplot.LineRenderer, pointLabels: {show: false}}
+			          {label:'Cum. Harvested(kWh)',yaxis:'y4axis',renderer:$.jqplot.LineRenderer, pointLabels: {show: false}},
 		    ],
 			axesDefaults : {useSeriesColor: true, },
 			legend : {
@@ -564,12 +568,13 @@ var WSL = {
 				yaxis : {label : 'Expected(kWh)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
 				y2axis : {label : 'Harvested(kWh)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
 				y3axis : {label : 'Cum. Expected(kWh)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
-				y4axis : {label : 'Cum. Harvested(kWh)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer}
+				y4axis : {label : 'Cum. Harvested(kWh)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
+				y5axis : {label : '',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,show:false},
+				
 			},
 			highlighter : {
 				tooltipContentEditor: tooltipCompareContentEditor,
 				show : true,
-				yvalues:4,
 				tooltipLocation:'n'
 			},
 			cursor : {show : false}
