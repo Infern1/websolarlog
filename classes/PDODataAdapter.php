@@ -458,11 +458,38 @@ class PDODataAdapter {
 			$i++;
 		}
 
+		$plantPower = $this->readPlantPower();
 
+		$kWhkWp = number_format(($cumPower/1000) / ($plantPower/1000),2,',','');
+		if($cumPower >= 1000){
+			$cumPower = number_format($cumPower /=1000,2,',','');
+			$cumPowerUnit = "kWh";
+		}else{
+			$cumPowerUnit = "W";
+		}
 		$lastDays = new LastDays();
 		$lastDays->points=$points;
 		$lastDays->KWHT=$cumPower;
+		$lastDays->KWHTUnit=$cumPowerUnit;
+		$lastDays->KWHKWP=$kWhkWp;
 		return $lastDays;
+	}
+	
+	function readPlantPower(){
+
+		$inverters = $this->readInverters();
+		$plantPower = 0;
+		
+		foreach ($inverters as $inverter) {
+			$inverter->panels = $this->readPanelsByInverter($inverter->id);
+			
+			foreach ($inverter->panels as $panel) {
+				//$panel = new Panel();
+				$plantPower += ($panel->amount * $panel->wp);
+			}
+
+		}
+		return $plantPower;
 	}
 
 
@@ -763,13 +790,13 @@ class PDODataAdapter {
 		}
 		return $beans;
 	}
-
-
+	
+	
 	/**
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
 	 */
-	public function getYearEnergyPerMonth($invtnum=0){
+	public function getYearMaxEnergyPerMonth($invtnum=0){
 		if ($invtnum>0){
 			$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum));
 		}else{
@@ -777,7 +804,39 @@ class PDODataAdapter {
 		}
 		return $beans;
 	}
+	
+	
+	/**
+	 * Get Max & (summed)Total Energy Values from Energy Tabel
+	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
+	 */
+	public function getYearEnergyPerMonth($invtnum=0,$year = null){
+		(!$year) ? $year = date("Y") : $year=$year;
+		if ($invtnum>0){
+			$beans = R::getAll("SELECT INV,sum(kWh) AS kWh, strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum));
+		}else{
+			$beans = R::getAll("SELECT INV,sum(kWh) AS kWh, strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC");
+		}
+		return $beans;
+	}
+	
+	/**
+	 * Get Max & (summed)Total Energy Values from Energy Tabel
+	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
+	 */
+	public function getMaxMinEnergyYear($invtnum=0){
+		(!$year)?$year=date("Y"):$year=$year;
+		if ($invtnum>0){
+			$beansMax = R::getRow("SELECT INV,max(kWh) as maxkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum));
+			$beansMin = R::getRow("SELECT INV,min(kWh) as minkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum));
+		}else{
+			$beansMax = R::getRow("SELECT INV,min(kWh) as minkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC");
+			$beansMin = R::getRow("SELECT INV,max(kWh) as maxkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC");
+		}
 
+		return array("maxEnergy"=>$beansMax,"minEnergy"=>$beansMin);
+	}
+	
 	/**
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
@@ -1071,6 +1130,7 @@ class PDODataAdapter {
 				);
 			}
 		}
+		
 		$lastDays = new LastDays();
 		$lastDays->points=$points;
 		$lastDays->KWHT=$cumPower;

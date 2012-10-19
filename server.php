@@ -179,6 +179,8 @@ switch ($method) {
 		$dayData = new DayDataResult();
 		$dayData->data = $lines->points;
 		$dayData->valueKWHT = $lines->KWHT;
+		$dayData->KWHTUnit = $lines->KWHTUnit;
+		$dayData->KWHKWP = $lines->KWHKWP;
 		$dayData->success = true;
 		$data['dayData'] = $dayData;
 		break;
@@ -213,14 +215,23 @@ switch ($method) {
 		break;
 	case 'getPageYearValues':
 		$beans = R::findAndExport('Inverter');
+		$maxEnergy=array();
+		$energy=array();
+		$maxPower=array();
+		$minMaxEnergyYear=array();
+		
 		foreach ($beans as $inverter){
-			$maxEnergy[] = $dataAdapter->getYearEnergyPerMonth($inverter['id']);
+			$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($inverter['id']);
+			$energy[] = $dataAdapter->getYearEnergyPerMonth($inverter['id']);
 			$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($inverter['id']);
+			$minMaxEnergyYear[] = $dataAdapter->getMaxMinEnergyYear($inverter['id']);
 		}
 
 		$dayData = new DayDataResult();
 		$dayData->data = array(
 				"maxPower"=>$maxPower,
+				"energy"=>$energy,
+				"minMaxEnergy"=>$minMaxEnergyYear,
 				"maxEnergy"=>$maxEnergy,
 		);
 		$dayData->success = true;
