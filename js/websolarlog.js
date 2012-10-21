@@ -1,4 +1,4 @@
-trunkVersion = '231';
+trunkVersion = '232';
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
@@ -32,8 +32,8 @@ function tooltipContentEditor(str, seriesIndex, pointIndex, plot,series	) {
 
 function tooltipPeriodContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = ""; 
-	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Energy:"+ plot.series[1].data[pointIndex][1]+ " kWh<br>"+bold[1];
-	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " kWh<br>"+bold[1];
+	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Energy:"+ plot.series[1].data[pointIndex][1]+ " kWh<br>"+bold[1];
+	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " kWh<br>"+bold[1];
 	returned += "Date:"+ plot.series[1].data[pointIndex][2]+"";
 	return returned;
 }
@@ -300,6 +300,8 @@ var WSL = {
 			},
 			dataType : 'text',
 		});	
+		
+		
 		WSL.api.getPageIndexValues(function(data) {
 		$.ajax({
 			url : 'js/templates/totalValues.hb',

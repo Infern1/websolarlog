@@ -187,11 +187,11 @@ switch ($method) {
 	case 'getDetailsGraph':
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
-	
+
 		$lines = $dataAdapter->getDetailsHistory($invtnum,$date);
-		
+
 		//var_dump($details);
-		
+
 		$dayData = new DayDataResult();
 		$dayData->data = $lines['details'];
 		$dayData->labels = $lines['labels'];
@@ -203,11 +203,11 @@ switch ($method) {
 		//include("$config_invt");
 		(!$year)?$year=date("Y"):$year=$year;
 		(!$invtnum)?$invtnum=1:$invtnum=$invtnum;
-		
+
 		$lines = $dataAdapter->getYearSumPowerPerMonth($invtnum, $date);
 		//var_dump($lines['energy']->points);
-		
-		
+
+
 		$dayData = new DayDataResult();
 		$dayData->data = $lines['energy']->points;
 		$dayData->success = true;
@@ -219,7 +219,7 @@ switch ($method) {
 		$energy=array();
 		$maxPower=array();
 		$minMaxEnergyYear=array();
-		
+
 		foreach ($beans as $inverter){
 			$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($inverter['id']);
 			$energy[] = $dataAdapter->getYearEnergyPerMonth($inverter['id']);
@@ -239,43 +239,58 @@ switch ($method) {
 		$data['yearData'] = $dayData;
 		break;
 	case 'getPageMonthValues':
-			$beans = R::findAndExport('Inverter');
-			foreach ($beans as $inverter){
-				$maxEnergy[] = $dataAdapter->getMonthEnergyPerDay($inverter['id']);
-				$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($inverter['id']);
-			}
+		$beans = R::findAndExport('Inverter');
+		foreach ($beans as $inverter){
+			$maxEnergy[] = $dataAdapter->getMonthEnergyPerDay($inverter['id']);
+			$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($inverter['id']);
+		}
 
-			$dayData = new DayDataResult();
-			$dayData->data = array(
-					"maxPower"=>$maxPower,
-					"maxEnergy"=>$maxEnergy,
-			);
-			$dayData->success = true;
-			$data['monthData'] = $dayData;
-			break;
+		$dayData = new DayDataResult();
+		$dayData->data = array(
+				"maxPower"=>$maxPower,
+				"maxEnergy"=>$maxEnergy,
+		);
+		$dayData->success = true;
+		$data['monthData'] = $dayData;
+		break;
 	case 'getPageTodayValues':
-			$beans = R::findAndExport('Inverter');
-			foreach ($beans as $inverter){
-				$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($inverter['id']);
-				$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($inverter['id']);
-			}
-			$dayData = new DayDataResult();
-			$dayData->data = array(
-					"maxPower"=>$maxPower,
-					"maxEnergy"=>$maxEnergy,
-			);
-			$dayData->success = true;
-			$data['dayData'] = $dayData;
+		$beans = R::findAndExport('Inverter');
+		foreach ($beans as $inverter){
+			$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($inverter['id']);
+			$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($inverter['id']);
+		}
+		$dayData = new DayDataResult();
+		$dayData->data = array(
+				"maxPower"=>$maxPower,
+				"maxEnergy"=>$maxEnergy,
+		);
+		$dayData->success = true;
+		$data['dayData'] = $dayData;
+		break;
+	case 'getCompareGraph':
+		//$config_invt="config/config_invt".$invtnum.".php";
+		//include("$config_invt");
+		(!$year)?$year=date("Y"):$year=$year;
+		(!$invtnum)?$invtnum=1:$invtnum=$invtnum;
+
+		$lines = $dataAdapter->getCompareGraph($invtnum, $date);
+		//var_dump($lines['energy']->points);
+
+
+		$dayData = new DayDataResult();
+		$dayData->data = $lines['energy']->points;
+		$dayData->success = true;
+		$data['dayData'] = $dayData;
 		break;
 	case 'getHistoryValues':
-			$history = $dataAdapter->getDayHistoryPerRecord();
-			for ($i = 0; $i < count($history); $i++) {
-				$history[$i]['GP'] = number_format($history[$i]['GP'],2,',','');
-			}
-			$dayData = new DayDataResult();
-			$dayData->data = array("history"=>$history);
-			$dayData->success = true;
-			$data['dayData'] = $dayData;
+		$history = $dataAdapter->getDayHistoryPerRecord();
+		for ($i = 0; $i < count($history); $i++) {
+			$history[$i]['GP'] = number_format($history[$i]['GP'],2,',','');
+		}
+		$dayData = new DayDataResult();
+		$dayData->data = array("history"=>$history);
+		$dayData->success = true;
+		$data['dayData'] = $dayData;
 		break;
 	case 'getPageIndexLiveValues':
 		$indexValues = $dataAdapter->readPageIndexLiveValues();

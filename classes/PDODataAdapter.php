@@ -1221,8 +1221,6 @@ class PDODataAdapter {
 			$live->Time = date("H:i:s",$liveBean['time']);
 			$live->INV = $liveBean['INV'];
 			$live->GP = number_format($liveBean['GP'],0,',','');
-
-
 			$live->I1P = number_format($liveBean['I1P'],2,',','');
 			$live->I1Ratio = number_format($liveBean['I1Ratio'],2,',','');
 			$live->I2P = number_format($liveBean['I2P'],2,',','');
@@ -1230,7 +1228,6 @@ class PDODataAdapter {
 
 			$live->IP = number_format($ITP,2,',','');
 			$live->EFF = number_format($liveBean['EFF'],2,',','');
-			//$list['inverters'][$liveBean['INV']]['live'] = $live;
 			$oInverter["id"] = $liveBean['INV'];
 			$oInverter["live"] = $live;
 			$GP  += $live->GP;
@@ -1269,16 +1266,16 @@ class PDODataAdapter {
 
 
 			if (count ( $maxPowerBeansToday )==0 ){
-				$avgEnergyBeansToday="0";
-				$maxEnergyBeansToday[]['KWH']="0";
+				$avgEnergyBeansToday=number_format(0,3,',','');
+				$maxEnergyBeansToday[]['KWH']=number_format(0,3,',','');
 			}else{
 				for ($i = 0; $i < count($maxPowerBeansToday); $i++) {
 					$maxPowerBeansToday[$i]['sumkWh'] = number_format($maxPowerBeansToday[$i]['sumkWh'],2,',','');
-					$avgEnergyBeansToday=$maxPowerBeansToday[$i]['sumkWh'];
+					$avgEnergyBeansToday=number_format($maxEnergyBeansToday[$i]['KWH'],3,',','');
 				}
 				 
 			}
-
+var_dump();
 			if(count ( $maxPowerBeansToday )==0 ){
 				$maxPowerBeansToday[]['GP']="0";
 			}

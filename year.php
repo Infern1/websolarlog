@@ -8,7 +8,7 @@ require_once("template/" . $template . "/index.php");
 	<script type="text/javascript">
     // Make sure the page is loaded
 	$(function(){
-		WSL.init_tabs("index","#main-middle",
+		WSL.init_tabs("year","#main-middle",
 			function(){
 				$('#tabs').tabs({ selected: 3 });
 				//var hGraphToday = null;

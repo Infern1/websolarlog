@@ -53,19 +53,19 @@ The values below are grouped by month of the selected year.
 
 		{{#each data.yearData.data.minMaxEnergy}}
 		<div class="column span-8">The Best Day:</div>
-			{{#each this.maxEnergy}}
-				<div class="column span-2 first">{{this.INV}}</div>
-				<div class="column span-3">{{this.maxkWh}}</div>
-				<div class="column span-3 last">{{this.date}}</div>
-			{{/each}}
+			
+				<div class="column span-2 first">{{this.maxEnergy.INV}}</div>
+				<div class="column span-3">{{this.maxEnergy.maxkWh}}</div>
+				<div class="column span-3 last">{{this.maxEnergy.date}}</div>
+			
 
 		    <br><br>
 		    <div class="column span-8">The Worst Day:</div>
-			{{#each this.minEnergy}}
-				<div class="column span-2 first">{{this.INV}}</div>
-				<div class="column span-3">{{this.minkWh}}</div>
-				<div class="column span-3 last">{{this.date}}</div>
-		    {{/each}}
+			
+				<div class="column span-2 first">{{this.minEnergy.INV}}</div>
+				<div class="column span-3">{{this.minEnergy.minkWh}}</div>
+				<div class="column span-3 last">{{this.minEnergy.date}}</div>
+		    
 	    {{/each}}
 	    </div>
 	</div>
