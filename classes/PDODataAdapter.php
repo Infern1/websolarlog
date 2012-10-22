@@ -918,6 +918,30 @@ class PDODataAdapter {
 		$labels[]= "Boos. Temp.";
 		$labels[]= "Inv. Temp.";
 		//$live = new Live();
+		$switches['P'][] = 0;
+		$switches['P'][] = 4;
+		$switches['P'][] = 8;
+		$switches['V'][] = 1;
+		$switches['V'][] = 5;
+		$switches['V'][] = 9;
+		$switches['A'][] = 2;
+		$switches['A'][] = 6;
+		$switches['A'][] = 10;
+		$switches['R'][] = 7;
+		$switches['R'][] = 11;
+		
+		$switches['G'][] = 0;
+		$switches['G'][] = 1;
+		$switches['G'][] = 2;
+		$switches['I1'][] = 4;
+		$switches['I1'][] = 5;
+		$switches['I1'][] = 6;
+		$switches['I1'][] = 7;
+		$switches['I2'][] = 8;
+		$switches['I2'][] = 9;
+		$switches['I2'][] = 10;
+		$switches['I2'][] = 11;
+		
 		foreach($beans as $bean){
 			$bean['time'] =$bean['time']*1000;
 			$live->GP[] 	= array($bean['time'],(float)$bean['GP']);
@@ -925,6 +949,7 @@ class PDODataAdapter {
 			$live->GA[] 	= array($bean['time'],(float)$bean['GA']);
 			$live->FRQ[] 	= array($bean['time'],(float)$bean['FRQ']);
 			$live->I1P[] 	= array($bean['time'],(float)$bean['I1P']);
+			
 			$live->I1V[] 	= array($bean['time'],(float)$bean['I1V']);
 			$live->I1A[] 	= array($bean['time'],(float)$bean['I1A']);
 			$live->I1Ratio[]= array($bean['time'],(float)$bean['I1Ratio']);
@@ -954,7 +979,7 @@ class PDODataAdapter {
 			$live->INVT[] 	= array(time()*1000,0);
 		}
 		
-		return array("details"=>$live,"labels"=>$labels);
+		return array("details"=>$live,"labels"=>$labels,"switches"=>$switches);
 	}
 
 	/**
@@ -974,56 +999,58 @@ class PDODataAdapter {
 					FROM Energy WHERE time > :beginDate AND time < :endDate GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time ASC",
 					array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}
-
-		$monthCount = count($beans); //  5
-		$currentMonthNumber = (int)date("n"); // 10
-		$monthTillEndYear = 12 - $currentMonthNumber; // 2
-
-		$inverter = $this->readInverter($invtnum);
-		$expected = $inverter->expectedkwh;
-		$invExp[0] = ($expected/100)*$inverter->expectedJAN;
-		$invExp[1] = ($expected/100)*$inverter->expectedFEB;
-		$invExp[2] = ($expected/100)*$inverter->expectedMAR;
-		$invExp[3] = ($expected/100)*$inverter->expectedAPR;
-		$invExp[4] = ($expected/100)*$inverter->expectedMAY;
-		$invExp[5] = ($expected/100)*$inverter->expectedJUN;
-		$invExp[6] = ($expected/100)*$inverter->expectedJUL;
-		$invExp[7] = ($expected/100)*$inverter->expectedAUG;
-		$invExp[8] = ($expected/100)*$inverter->expectedSEP;
-		$invExp[9] = ($expected/100)*$inverter->expectedOCT;
-		$invExp[10] = ($expected/100)*$inverter->expectedNOV;
-		$invExp[11] = ($expected/100)*$inverter->expectedDEC;
-		 
-		$res = $currentMonthNumber - $monthCount-1;
-		$ii	=0;
-		for ($i = 0; $i < 12; $i++) {
-			$iMonth = $i+1;
-			if($i <= $res OR $i>= $currentMonthNumber){
-				$newBean[$i]['time'] = strtotime(date("01-".$iMonth."-Y"));
-				$newBean[$i]['KWH'] = number_format(0,0,',','');
-				$newBean[$i]['Exp'] = number_format($invExp[$i],0,',','');
-				$newBean[$i]['Diff'] = number_format($newBean[$i]['KWH']-$newBean[$i]['Exp'],0,',','');
-				if($i > $res){
+		if(count($beans)==0){
+			$newBean = null;
+		}else{
+			$monthCount = count($beans); //  5
+			$currentMonthNumber = (int)date("n"); // 10
+			$monthTillEndYear = 12 - $currentMonthNumber; // 2
+	
+			$inverter = $this->readInverter($invtnum);
+			$expected = $inverter->expectedkwh;
+			$invExp[0] = ($expected/100)*$inverter->expectedJAN;
+			$invExp[1] = ($expected/100)*$inverter->expectedFEB;
+			$invExp[2] = ($expected/100)*$inverter->expectedMAR;
+			$invExp[3] = ($expected/100)*$inverter->expectedAPR;
+			$invExp[4] = ($expected/100)*$inverter->expectedMAY;
+			$invExp[5] = ($expected/100)*$inverter->expectedJUN;
+			$invExp[6] = ($expected/100)*$inverter->expectedJUL;
+			$invExp[7] = ($expected/100)*$inverter->expectedAUG;
+			$invExp[8] = ($expected/100)*$inverter->expectedSEP;
+			$invExp[9] = ($expected/100)*$inverter->expectedOCT;
+			$invExp[10] = ($expected/100)*$inverter->expectedNOV;
+			$invExp[11] = ($expected/100)*$inverter->expectedDEC;
+			 
+			$res = $currentMonthNumber - $monthCount-1;
+			$ii	=0;
+			for ($i = 0; $i < 12; $i++) {
+				$iMonth = $i+1;
+				if($i <= $res OR $i>= $currentMonthNumber){
+					$newBean[$i]['time'] = strtotime(date("01-".$iMonth."-Y"));
+					$newBean[$i]['KWH'] = number_format(0,0,',','');
+					$newBean[$i]['Exp'] = number_format($invExp[$i],0,',','');
+					$newBean[$i]['Diff'] = number_format($newBean[$i]['KWH']-$newBean[$i]['Exp'],0,',','');
+					if($i > $res){
+						$cumExp += $invExp[$i];
+						$newBean[$i]['cumExp']=number_format($cumExp,0,',','');
+					}
+					$cumKWH += 0;
+					$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
+				}else{
+					$newBean[$i]['time'] = $beans[$ii]['time'];
+					$newBean[$i]['KWH'] =number_format($beans[$ii]['KWH'],0,',','');
+					$newBean[$i]['Exp'] =number_format($invExp[$i],0,',','');
+					$newBean[$i]['Diff'] = number_format($newBean[$i]['KWH']-$newBean[$i]['Exp'],0,',','');
+					 
 					$cumExp += $invExp[$i];
 					$newBean[$i]['cumExp']=number_format($cumExp,0,',','');
+					 
+					$cumKWH += $beans[$ii]['KWH'];
+					$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
+					$ii++;
 				}
-				$cumKWH += 0;
-				$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
-			}else{
-				$newBean[$i]['time'] = $beans[$ii]['time'];
-				$newBean[$i]['KWH'] =number_format($beans[$ii]['KWH'],0,',','');
-				$newBean[$i]['Exp'] =number_format($invExp[$i],0,',','');
-				$newBean[$i]['Diff'] = number_format($newBean[$i]['KWH']-$newBean[$i]['Exp'],0,',','');
-				 
-				$cumExp += $invExp[$i];
-				$newBean[$i]['cumExp']=number_format($cumExp,0,',','');
-				 
-				$cumKWH += $beans[$ii]['KWH'];
-				$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
-				$ii++;
 			}
 		}
-		//var_dump($newBean);
 		return array("energy"=>$this->CompareBeansToGraphPoints($newBean),"expected"=>0);
 	}
 

@@ -1,4 +1,4 @@
-trunkVersion = '234';
+trunkVersion = '235';
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
@@ -622,11 +622,11 @@ var WSL = {
 	createDetailsGraph : function(invtnum, divId) {
 		var graphOptions = {
 				series:[
-	          {yaxis:'yaxis',label:'aa'},
+	          {yaxis:'y7axis',label:'aa'},
 	          {yaxis:'y2axis'},
 	          {yaxis:'y3axis'},
 	          {yaxis:'y4axis'},
-	          {yaxis:'y2axis'},
+	          {yaxis:'y7axis'},
 	          {yaxis:'y3axis'},
 	          {yaxis:'y5axis'},
 	          {yaxis:'yaxis'},
@@ -646,7 +646,127 @@ var WSL = {
 					y3axis : {label:'Ampere',min : 0,max:10,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
 					y4axis : {label:'Frequency',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
 					y5axis : {label:'Ratio',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y6axis : {label:'Temperature',min : 0,max : 70,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true}
+					y6axis : {label:'Temperature',min : 0,max : 70,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
+					y7axis : {label:'Temperature',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true}
+				},
+				highlighter : {tooltipContentEditor: tooltipDetailsContentEditor,show : true}
+		};
+		
+
+		
+		$.ajax({
+			url : "server.php?method=getDetailsGraph&invtnum=" + invtnum,
+			method : 'GET',
+			dataType : 'json',
+			success : function(result) {
+				
+				if (result.dayData.data) {
+					var seriesLabels= [];
+					var seriesData = [];
+					var switches = [];
+					for (line in result.dayData.data) {
+						var json = [];
+						for (values in result.dayData.data[line]) {
+							json.push([result.dayData.data[line][values][0],result.dayData.data[line][values][1]]);
+						}
+						seriesLabels.push(line);
+						seriesData.push(json);
+					}
+					switches = result.dayData.switches;
+					
+					
+					
+					$("#main-middle").prepend('<div id="detailsGraph"></div>');
+					$("#detailsGraph").height(450);
+
+					graphOptions.axes.xaxis.min = seriesData[0][0][0];
+    				graphOptions.legend.labels = result.dayData['labels'];
+    				handle = $.jqplot("detailsGraph",seriesData, graphOptions);
+    				$('table.jqplot-table-legend').attr('class', 'jqplot-table-legend-custom');
+    				
+    				
+
+					$.ajax({
+						url : 'js/templates/detailsSwitches.hb',
+						success : function(source) {
+							var template = Handlebars.compile(source);
+							var html = template({
+								'data' : ''
+							});
+							$('#detailsGraph').before(html);
+						},
+						dataType : 'text',
+					});
+    				
+    				
+    				$('input:checkbox').live('change', function(){
+    				     if($(this).is(':checked')){
+    				    	for (var i=0; i<switches[this.id].length; i++) {
+    				    		handle.series[switches[this.id][i]].show = false; // i is an integer
+    				    	}
+    				    	handle.replot();
+    				     } else {
+     				    	for (var i=0; i<switches[this.id].length; i++) {
+    				    		 handle.series[switches[this.id][i]].show = true; // i is an integer
+    				    	}
+     				    	handle.replot();
+    				     }
+    			   });
+
+				}
+			}
+		});	
+
+	},
+	
+	init_compare : function(invtnum,divId){
+		
+		WSL.api.getCompareValues(function(data) {
+			$.ajax({
+				url : 'js/templates/compareFilters.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					$(yearValues).html(html);
+				},
+				dataType : 'text',
+			});
+		});
+		WSL.createCompareGraph(invtnum, divId);
+		
+	},
+
+	createCompareGraph : function(invtnum, divId) {
+		var graphOptions = {
+				series:[
+	          {yaxis:'yaxis',label:'aa'},
+	          {yaxis:'y2axis'},
+	          {yaxis:'y3axis'},
+	          {yaxis:'y4axis'},
+	          {yaxis:'y7axis'},
+	          {yaxis:'y3axis'},
+	          {yaxis:'y5axis'},
+	          {yaxis:'yaxis'},
+	          {yaxis:'yaxis'},
+	          {yaxis:'yaxis'},
+	          {yaxis:'yaxis'},
+	          {yaxis:'y4axis'}
+	          ],
+				axesDefaults : {useSeriesColor: true },
+				legend : {show: true, location: 's', placement: 'outsideGrid',renderer: $.jqplot.EnhancedLegendRenderer,rendererOptions: {seriesToggle: 'normal',numberRows: 2,
+						//seriesToggleReplot:  {resetAxes:["yaxis"]}
+				}}, 
+				seriesDefaults:{rendererOptions: {barMargin: 40,barWidth:10},pointLabels: {show: false},},
+				axes : {xaxis : {label : '',labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true,renderer : $.jqplot.DateAxisRenderer,tickInterval : '3600', /* 1 hour*/ tickOptions : {angle : -30,formatString : '%H:%M'}},
+					yaxis : {label:'Power',min : 0, labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
+					y2axis : {label:'Voltage',min : 0,max:300,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
+					y3axis : {label:'Ampere',min : 0,max:10,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
+					y4axis : {label:'Frequency',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
+					y5axis : {label:'Ratio',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
+					y6axis : {label:'Temperature',min : 0,max : 70,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
+					y7axis : {label:'Power',min : 0, labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
 				},
 				highlighter : {tooltipContentEditor: tooltipDetailsContentEditor,show : true}
 		};
@@ -668,14 +788,13 @@ var WSL = {
 						seriesData.push(json);
 					}
 					
-					
-					
 					$("#main-middle").prepend('<div id="detailsGraph"></div>');
 					$("#detailsGraph").height(450);
 
 					graphOptions.axes.xaxis.min = seriesData[0][0][0];
     				graphOptions.legend.labels = result.dayData['labels'];
     				handle = $.jqplot("detailsGraph",seriesData, graphOptions);
+    				 
     				$('table.jqplot-table-legend').attr('class', 'jqplot-table-legend-custom');
 				}
 			}

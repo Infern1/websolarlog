@@ -5,8 +5,8 @@
 		<!-- Header -->
 		<div id="header">
 			<!-- Logo -->
-			<h1 id="logo"><a href="/" title="Dashboard"><?php echo $config->title; ?></a></h1>
-			<h2 id="subLogo"><a href="/" title="Dashboard"><?php echo $config->subtitle; ?></a></h2>
+			<h1 id="logo"><a href="./" title="Dashboard"><?php echo $config->title; ?></a></h1>
+			<h2 id="subLogo"><a href="./" title="Dashboard"><?php echo $config->subtitle; ?></a></h2>
 			<div class="socials">
 				<a title="pvoutput" class="pvoutput" href="#">in</a>
 				<a title="twitter" class="twitter" href="#">twitter</a>
@@ -57,7 +57,7 @@
 		<!-- Footer -->
 		<div id="footer">
 			<div id="footer-middle">
-			<a href="https://sourceforge.net/projects/websolarlog/">WebSolarLog [at] sourceforge.net</a>
+			<a href="https://sourceforge.net/projects/websolarlog/" target="_blank">WebSolarLog [at] sourceforge.net</a>
 			</div>
 			<div id="footer-bottom">
 			</div>

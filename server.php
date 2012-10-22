@@ -195,6 +195,7 @@ switch ($method) {
 		$dayData = new DayDataResult();
 		$dayData->data = $lines['details'];
 		$dayData->labels = $lines['labels'];
+		$dayData->switches = $lines['switches'];
 		$dayData->success = true;
 		$data['dayData'] = $dayData;
 		break;
