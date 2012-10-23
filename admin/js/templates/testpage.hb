@@ -11,7 +11,8 @@
 </div>
 <br />
 <div id="encryptiontest">
-    Encrypting test <b>{{#if data.test.encrypting}}passed{{else}}failed{{/if}}</b>
+    mcrypt_module_open function exists <b>{{#if data.test.mcrypt_module_open}}passed{{else}}failed{{/if}}</b><br />
+    Encrypting test <b>{{#if data.test.encrypting}}passed{{else}}failed{{/if}}</b><br />
 </div>
 <div id="sqlite">
     <div>SQLlite version: {{data.test.sqlite_version}}</div>
