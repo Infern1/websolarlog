@@ -241,6 +241,7 @@ switch ($method) {
 		break;
 	case 'getPageMonthValues':
 		$beans = R::findAndExport('Inverter');
+		
 		foreach ($beans as $inverter){
 			$maxEnergy[] = $dataAdapter->getMonthEnergyPerDay($inverter['id']);
 			$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($inverter['id']);
@@ -271,15 +272,21 @@ switch ($method) {
 	case 'getCompareGraph':
 		//$config_invt="config/config_invt".$invtnum.".php";
 		//include("$config_invt");
-		(!$year)?$year=date("Y"):$year=$year;
-		(!$invtnum)?$invtnum=1:$invtnum=$invtnum;
+		$whichMonth = Common::getValue('whichMonth', 0);
+		$whichYear = Common::getValue('whichYear', 0);
+		$compareMonth = Common::getValue('compareMonth', 0);
+		$compareYear = Common::getValue('compareYear', 0);
 
-		$lines = $dataAdapter->getCompareGraph($invtnum, $date);
+		$monthYear = $dataAdapter->getYearsMonthCompareFilters();
+		
+		$lines = $dataAdapter->getCompareGraph($invtnum, $whichMonth,$whichYear,$compareMonth,$compareYear);
 		//var_dump($lines['energy']->points);
 
 
 		$dayData = new DayDataResult();
 		$dayData->data = $lines['energy']->points;
+		$dayData->month = $monthYear['month'];
+		$dayData->year = $monthYear['year'];
 		$dayData->success = true;
 		$data['dayData'] = $dayData;
 		break;

@@ -23,7 +23,6 @@ class PDODataAdapter {
 			$bean = R::dispense('live');
 		}
 
-
 		$bean->SDTE = date("Ymd-H:i:s");
 		$bean->time = time();
 		$bean->INV = $invtnum;
@@ -391,11 +390,18 @@ class PDODataAdapter {
 		$lastDays->KWHT=$points[1];
 		return $lastDays;
 	}
-
+/**
+ * 
+ * @param unknown_type $invtnum
+ */
 	public function dropDailyData($invtnum) {
 		// TODO :: ??
 	}
-
+/**
+ * 
+ * @param unknown_type $invtnum
+ * @param Day $day
+ */
 	public function writeLastDaysData($invtnum,Day $day) {
 		// TODO :: ??
 	}
@@ -425,7 +431,10 @@ class PDODataAdapter {
 		// TODO :: ??
 	}
 
-
+/**
+ * 
+ * @param unknown_type $beans
+ */
 	public function DayBeansToGraphPoints($beans){
 		$i=0;
 		$firstBean = array();
@@ -474,7 +483,9 @@ class PDODataAdapter {
 		$lastDays->KWHKWP=$kWhkWp;
 		return $lastDays;
 	}
-	
+	/**
+	 * 
+	 */
 	function readPlantPower(){
 
 		$inverters = $this->readInverters();
@@ -492,7 +503,10 @@ class PDODataAdapter {
 		return $plantPower;
 	}
 
-
+/**
+ * 
+ * @param Config $config
+ */
 	public function writeConfig(Config $config) {
 		// Only save the object self not the arrays
 		$bean = R::findOne('config');
@@ -532,7 +546,9 @@ class PDODataAdapter {
 		//Store the bean
 		R::store($bean);
 	}
-
+/**
+ * 
+ */
 	public function readConfig() {
 		$bean = R::findOne('config');
 
@@ -572,7 +588,10 @@ class PDODataAdapter {
 
 		return $config;
 	}
-
+/**
+ * 
+ * @param Inverter $inverter
+ */
 	public function writeInverter(Inverter $inverter) {
 		// Only save the object self not the arrays
 		$bean = R::load('inverter',$inverter->id);
@@ -607,7 +626,10 @@ class PDODataAdapter {
 		//Store the bean
 		R::store($bean);
 	}
-
+/**
+ * 
+ * @param unknown_type $id
+ */
 	public function readInverter($id) {
 		$bean = R::load('inverter',$id);
 
@@ -645,7 +667,9 @@ class PDODataAdapter {
 
 		return $inverter;
 	}
-
+/**
+ * 
+ */
 	private function readInverters() {
 		$list = array();
 		foreach(R::find('inverter') as $bean) {
@@ -687,6 +711,10 @@ class PDODataAdapter {
 		return $list;
 	}
 
+	/**
+	 * 
+	 * @param Panel $panel
+	 */
 	public function writePanel(Panel $panel) {
 		// Only save the object self not the arrays
 		$bean = R::load('panel', $panel->id);
@@ -705,6 +733,11 @@ class PDODataAdapter {
 		//Store the bean
 		R::store($bean);
 	}
+	
+	/**
+	 * 
+	 * @param unknown_type $id
+	 */
 
 	public function readPanel($id) {
 		$bean = R::load('panel', $id);
@@ -719,7 +752,10 @@ class PDODataAdapter {
 		$panel->wp = $bean->wp;
 		return $panel;
 	}
-
+/**
+ * 
+ * @param unknown_type $inverterId
+ */
 	private function readPanelsByInverter($inverterId) {
 		$list = array();
 		$beans = R::find('panel',' inverterId = :id ', array( ":id"=>$inverterId ));
@@ -885,7 +921,11 @@ class PDODataAdapter {
 		return $beans;
 	}
 
-
+/**
+ * 
+ * @param unknown_type $invtnum
+ * @param unknown_type $startDate
+ */
 
 	public function getDetailsHistory($invtnum,$startDate){
 		 
@@ -917,7 +957,7 @@ class PDODataAdapter {
 		$labels[]= "DC>AC Efficiency";
 		$labels[]= "Boos. Temp.";
 		$labels[]= "Inv. Temp.";
-		//$live = new Live();
+
 		$switches['P'][] = 0;
 		$switches['P'][] = 4;
 		$switches['P'][] = 8;
@@ -929,10 +969,10 @@ class PDODataAdapter {
 		$switches['A'][] = 10;
 		$switches['R'][] = 7;
 		$switches['R'][] = 11;
-		
 		$switches['G'][] = 0;
 		$switches['G'][] = 1;
 		$switches['G'][] = 2;
+		$switches['G'][] = 3;
 		$switches['I1'][] = 4;
 		$switches['I1'][] = 5;
 		$switches['I1'][] = 6;
@@ -941,6 +981,9 @@ class PDODataAdapter {
 		$switches['I2'][] = 9;
 		$switches['I2'][] = 10;
 		$switches['I2'][] = 11;
+		$switches['EFF'][] = 12;
+		$switches['TEMP'][] = 13;
+		$switches['TEMP'][] = 14;
 		
 		foreach($beans as $bean){
 			$bean['time'] =$bean['time']*1000;
@@ -980,6 +1023,44 @@ class PDODataAdapter {
 		}
 		
 		return array("details"=>$live,"labels"=>$labels,"switches"=>$switches);
+	}
+	
+	/**
+	 * 
+	 * @param int $invtnum
+	 */
+	public function getYearsMonthCompareFilters(){
+		$month = array();
+		$year = array();
+		$year = R::getAll("SELECT distinct(strftime ( '%Y' , date ( time , 'unixepoch' ) )) AS date FROM Energy GROUP BY strftime ( '%m-%Y' , date ( time ,'unixepoch' ) ) ORDER BY date ASC");
+		$month[] = "Jan";
+		$month[] = "Feb";
+		$month[] = "Mar";
+		$month[] = "Apr";
+		$month[] = "May";
+		$month[] = "Jun";
+		$month[] = "Jul";
+		$month[] = "Aug";
+		$month[] = "Sep";
+		$month[] = "Oct";
+		$month[] = "Nov";
+		$month[] = "Dec";
+		return array('month'=> $month, 'year'=>$year );
+	} 
+
+	
+	/**
+	 * 
+	 * @param unknown_type $invtnum
+	 * @param unknown_type $whichMonth
+	 * @param unknown_type $whichYear
+	 * @param unknown_type $compareMonth
+	 * @param unknown_type $compareYear
+	 */
+	public function getCompareGraph($invtnum, $whichMonth,$whichYear,$compareMonth,$compareYear){
+		
+		
+		$this->getDayHistoryPerRecord();
 	}
 
 	/**
@@ -1075,6 +1156,7 @@ class PDODataAdapter {
 	public function getGraphPoint($invtnum,$type, $startDate){
 		($type == 'today')?$type='day':$type=$type;
 
+		// if $type 
 		(stristr(strtolower($type), 'day') === FALSE) ?	$table = "energy" : $table = "history";
 
 		$beans = $this->readTablesPeriodValues($invtnum, $table, $type, $startDate);
@@ -1199,7 +1281,13 @@ class PDODataAdapter {
 		}
 		return array($energy,$KWHT);
 	}
-
+/**
+ * 
+ * @param unknown_type $invtnum
+ * @param unknown_type $type
+ * @param unknown_type $count
+ * @param unknown_type $startDate
+ */
 	public function readPmaxValues($invtnum, $type, $count, $startDate){
 
 		$beans = $this->readTablesPeriodValues($invtnum, "pMaxOTD", $type,$startDate);
@@ -1213,7 +1301,9 @@ class PDODataAdapter {
 		}
 		return array($maxPowerDay);
 	}
-
+/**
+ * 
+ */
 	public function readPageIndexData() {
 		// summary live data
 		$list = array();
@@ -1224,7 +1314,9 @@ class PDODataAdapter {
 	}
 
 
-
+/**
+ * 
+ */
 	public function readPageIndexLiveValues() {
 		// summary live data
 		$list = array();
@@ -1302,7 +1394,7 @@ class PDODataAdapter {
 				}
 				 
 			}
-var_dump();
+
 			if(count ( $maxPowerBeansToday )==0 ){
 				$maxPowerBeansToday[]['GP']="0";
 			}
@@ -1388,6 +1480,4 @@ var_dump();
 		);
 		return $maxEnergy;
 	}
-
-
 }

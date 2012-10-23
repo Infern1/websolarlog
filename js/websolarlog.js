@@ -1,4 +1,4 @@
-trunkVersion = '235';
+trunkVersion = '241';
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
@@ -673,9 +673,7 @@ var WSL = {
 						seriesData.push(json);
 					}
 					switches = result.dayData.switches;
-					
-					
-					
+
 					$("#main-middle").prepend('<div id="detailsGraph"></div>');
 					$("#detailsGraph").height(450);
 
@@ -684,8 +682,6 @@ var WSL = {
     				handle = $.jqplot("detailsGraph",seriesData, graphOptions);
     				$('table.jqplot-table-legend').attr('class', 'jqplot-table-legend-custom');
     				
-    				
-
 					$.ajax({
 						url : 'js/templates/detailsSwitches.hb',
 						success : function(source) {
@@ -697,31 +693,45 @@ var WSL = {
 						},
 						dataType : 'text',
 					});
-    				
-    				
-    				$('input:checkbox').live('change', function(){
-    				     if($(this).is(':checked')){
-    				    	for (var i=0; i<switches[this.id].length; i++) {
-    				    		handle.series[switches[this.id][i]].show = false; // i is an integer
-    				    	}
-    				    	handle.replot();
-    				     } else {
-     				    	for (var i=0; i<switches[this.id].length; i++) {
-    				    		 handle.series[switches[this.id][i]].show = true; // i is an integer
-    				    	}
-     				    	handle.replot();
-    				     }
-    			   });
 
+    				$('input:checkbox').live('change', function(){
+    					 var id = $(this).attr("id");
+    				     if(id == 'every'){
+    				    	 if($(this).is(':checked')){
+    				    		 for (var i=0; i<handle.series.length; i++) {
+    				    			 handle.series[i].show = true; // i is an integer
+    				    		 } 
+    				    		 $('input:checkbox').attr('checked', true);
+    				    	 }else{ 
+    				    		 for (var i=0; i<handle.series.length; i++) {
+    				    			 handle.series[i].show = false; // i is an integer
+    				    		 }
+    				    		 $('input:checkbox').attr('checked', false);
+    				    	 }
+    				     }else{
+	    					if($(this).is(':checked')){
+	    				    	for (var i=0; i<switches[this.id].length; i++) {
+	    				    		handle.series[switches[this.id][i]].show = true; // i is an integer
+	    				    	}
+	    				     } else {
+	     				    	for (var i=0; i<switches[this.id].length; i++) {
+	    				    		 handle.series[switches[this.id][i]].show = false; // i is an integer
+	    				    	}
+	    				    } 
+    				     }
+  				    	handle.replot();
+				    	$('table.jqplot-table-legend').attr('class', 'jqplot-table-legend-custom');
+    			   });
 				}
 			}
 		});	
 
 	},
-	
-	init_compare : function(invtnum,divId){
-		
-		WSL.api.getCompareValues(function(data) {
+
+
+	init_compare : function( invtnum,divId, success) {
+		// initialize languages selector on the given div
+		WSL.api.getCompare(function(data) {
 			$.ajax({
 				url : 'js/templates/compareFilters.hb',
 				success : function(source) {
@@ -729,16 +739,15 @@ var WSL = {
 					var html = template({
 						'data' : data
 					});
-					$(yearValues).html(html);
+					$(divId).html(html);
+					//WSL.createCompareGraph(invtnum, divId,whichMonth,whichYear,compareMonth,compareYear);
 				},
 				dataType : 'text',
 			});
 		});
-		WSL.createCompareGraph(invtnum, divId);
-		
 	},
 
-	createCompareGraph : function(invtnum, divId) {
+	createCompareGraph : function(invtnum,whichMonth,whichYear,compareMonth,compareYear) {
 		var graphOptions = {
 				series:[
 	          {yaxis:'yaxis',label:'aa'},
@@ -770,8 +779,9 @@ var WSL = {
 				},
 				highlighter : {tooltipContentEditor: tooltipDetailsContentEditor,show : true}
 		};
+		
 		$.ajax({
-			url : "server.php?method=getDetailsGraph&invtnum=" + invtnum,
+			url : "server.php?method=getCompareGraph&1invtnum=" + invtnum+'&whichMonth=' + whichMonth+'&whichYear=' + whichYear+'&compareMonth=' + compareMonth+'&compareYear=' + compareYear,
 			method : 'GET',
 			dataType : 'json',
 			success : function(result) {
@@ -810,18 +820,20 @@ WSL.api.getHistoryValues = function(success) {
 	}, success);
 };
 
-WSL.api.programdayfeed = function(invtnum, success) {
-	$.getJSON("programs/programdayfeed.php", {
-		invtnum : invtnum
-	}, success);
-};
-
 WSL.api.getTabs = function(page, success) {
 	$.getJSON("server.php", {
 		method : 'getTabs',
 		'page' : page,
 	}, success);
 };
+
+WSL.api.getCompare = function(success) {
+	$.getJSON("server.php", {
+		method : 'getCompareGraph'
+	}, success);
+};
+
+
 
 WSL.api.getPageIndexValues = function(success) {
 	$.getJSON("server.php", {

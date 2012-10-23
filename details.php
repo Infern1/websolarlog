@@ -11,8 +11,6 @@ require_once("template/" . $template . "/index.php");
 	
 	WSL.init_details(1,"#details"); // Initial load fast
 
-
-	
 	</script>
 </body>
 </html>
