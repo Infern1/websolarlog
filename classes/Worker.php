@@ -44,7 +44,7 @@ class Worker {
         R::begin(); // Start a transaction to speed things up
         foreach ($this->config->inverters as $inverter) {
             // Handle inverter
-            $this->aurora = new Aurora($this->config->aurorapath, $inverter->comAddress, $this->config->comPort, $this->config->comOptions, $this->config->comDebug);
+            $this->aurora = $inverter->getApi($this->config);
 
             $datareturn = $this->aurora->getData();
 

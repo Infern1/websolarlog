@@ -1,6 +1,9 @@
 <?php
 class Config
 {
+    public $version_title;
+    public $version_revision;
+
     public $title;
     public $subtitle;
     public $location;
@@ -31,6 +34,7 @@ class Config
     public $co2kwh;
 
     public $aurorapath; // The path to aurora
+    public $smagetpath; // The path to sma-get
 
 	/**
 	 * Constructor
@@ -76,6 +80,7 @@ class Config
 		$this->template = 'green'; // Default selected template
 
 		$this->aurorapath = 'aurora'; // If in system path this is enough
+		$this->smagetpath = 'sma_get'; // If in system path this is enough
 
 		$this->co2kwh = 440; // 440g/kWh is conform europa average
 	}

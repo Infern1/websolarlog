@@ -34,17 +34,16 @@ class Updater {
         $versions = array();
         foreach ($tags as $tag) {
             if ($experimental) {
-                $versions[] = array('name'=>$tag['name'],'experimental'=>true);
+                $versions[] = array('name'=>$tag['name'],'revision'=>$tag['created_rev'],'experimental'=>true);
             } else {
-                if (Common::startsWith($tag['name'], "release")) {
-                    $versions[] = array('name'=>$tag['name'],'experimental'=>false);
-                } else if(Common::startsWith($tag['name'], "stable")) {
-                    $versions[] = array('name'=>$tag['name'],'experimental'=>false);
+                if (Common::startsWith($tag['name'], "release") || Common::startsWith($tag['name'], "stable")) {
+                    $versions[] = array('name'=>$tag['name'],'revision'=>$tag['created_rev'], 'experimental'=>false);
                 }
             }
         }
         if ($experimental) {
-            $versions[] = array('name'=>'trunk','experimental'=>true);
+            $trunk = svn_ls(self::$url);
+            $versions[] = array('name'=>'trunk','experimental'=>true, 'revision'=>$trunk['trunk']['created_rev']);
         }
 
         return $versions;

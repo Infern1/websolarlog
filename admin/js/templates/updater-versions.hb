@@ -2,7 +2,7 @@
 <h3>We found the following available versions:</h3>
 <form>
     {{#data.versions}}
-    <input type="radio" name="version" value="{{this.name}}">
+    <input type="radio" name="version" value="{{this.name}}*{{this.revision}}">
         {{#if this.experimental}}<span style="color:red">{{/if}}{{this.name}}{{#if this.experimental}}</span>{{/if}}<br />
     </input>
     {{/data.versions}}

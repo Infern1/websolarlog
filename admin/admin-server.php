@@ -95,7 +95,10 @@ switch ($settingstype) {
         }
         break;
     case 'updater-go':
-        $version = Common::getValue("version", "none");
+        $versioninfo = explode("*",Common::getValue("version", "none"));
+        $version = $versioninfo[0];
+        $revision = $versioninfo[1];
+
         if ($version === "none") {
             $data['error'] = "No version selected.";
             $data['result'] = false;
@@ -123,6 +126,11 @@ switch ($settingstype) {
 
         // Copy the files
         Updater::copyToLive();
+
+        // Everything ok, save version info to db
+        $config->version_title = $version;
+        $config->version_revision = $revision;
+        $adapter->writeConfig($config);
 
         $data['result'] = true;
         break;
@@ -295,6 +303,7 @@ function checkSQLite() {
     $testphrase ="This is an test sentence";
     $encrypted = Encryption::encrypt($testphrase);
     $decrypted = Encryption::decrypt($encrypted);
+    $result['mcrypt_module_open'] = function_exists("mcrypt_module_open");
     $result['encrypting'] = ($testphrase === $decrypted);
 
     return $result;

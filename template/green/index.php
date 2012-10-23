@@ -64,7 +64,7 @@
 			<div style="float:left;">JS loadtime:&nbsp;</div>&nbsp;&nbsp;
 			<div id="JSloadingtime" style="float:left;"></div>
 			<div style="margin-left:10px;float:left;">WSL-version:&nbsp;</div>
-			<div id="subversion" style="float:left;"></div>
+			<div id="version" style="float:left;"><?php echo($config->version_title . " (build " . $config->version_revision . ")") ?></div>
 		</div>
 		<!-- END Footer -->
 	</div>

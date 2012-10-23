@@ -391,14 +391,14 @@ class PDODataAdapter {
 		return $lastDays;
 	}
 /**
- * 
+ *
  * @param unknown_type $invtnum
  */
 	public function dropDailyData($invtnum) {
 		// TODO :: ??
 	}
 /**
- * 
+ *
  * @param unknown_type $invtnum
  * @param Day $day
  */
@@ -432,7 +432,7 @@ class PDODataAdapter {
 	}
 
 /**
- * 
+ *
  * @param unknown_type $beans
  */
 	public function DayBeansToGraphPoints($beans){
@@ -484,16 +484,16 @@ class PDODataAdapter {
 		return $lastDays;
 	}
 	/**
-	 * 
+	 *
 	 */
 	function readPlantPower(){
 
 		$inverters = $this->readInverters();
 		$plantPower = 0;
-		
+
 		foreach ($inverters as $inverter) {
 			$inverter->panels = $this->readPanelsByInverter($inverter->id);
-			
+
 			foreach ($inverter->panels as $panel) {
 				//$panel = new Panel();
 				$plantPower += ($panel->amount * $panel->wp);
@@ -504,7 +504,7 @@ class PDODataAdapter {
 	}
 
 /**
- * 
+ *
  * @param Config $config
  */
 	public function writeConfig(Config $config) {
@@ -514,6 +514,9 @@ class PDODataAdapter {
 		if (!$bean){
 			$bean = R::dispense('config');
 		}
+
+		$bean->version_title = $config->version_title;
+		$bean->version_revision = $config->version_revision;
 
 		$bean->title = $config->title;
 		$bean->subtitle = $config->subtitle;
@@ -540,6 +543,7 @@ class PDODataAdapter {
 
 		$bean->template = $config->template;
 		$bean->aurorapath = $config->aurorapath;
+		$bean->smagetpath = $config->smagetpath;
 
 		$bean->co2kwh = $config->co2kwh;
 
@@ -547,7 +551,7 @@ class PDODataAdapter {
 		R::store($bean);
 	}
 /**
- * 
+ *
  */
 	public function readConfig() {
 		$bean = R::findOne('config');
@@ -555,6 +559,9 @@ class PDODataAdapter {
 		$config = new Config();
 
 		if ($bean) {
+		    $config->version_title = $bean->version_title;
+		    $config->version_revision = $bean->version_revision;
+
 			$config->title = $bean->title;
 			$config->subtitle = $bean->subtitle;
 			$config->location = $bean->location;
@@ -580,6 +587,7 @@ class PDODataAdapter {
 
 			$config->template = $bean->template;
 			$config->aurorapath = ($bean->aurorapath != "") ? $bean->aurorapath : $config->aurorapath;
+			$config->smagetpath = ($bean->smagetpath != "") ? $bean->smagetpath : $config->smagetpath;
 
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
 
@@ -589,7 +597,7 @@ class PDODataAdapter {
 		return $config;
 	}
 /**
- * 
+ *
  * @param Inverter $inverter
  */
 	public function writeInverter(Inverter $inverter) {
@@ -600,6 +608,7 @@ class PDODataAdapter {
 			$bean = R::dispense('inverter');
 		}
 
+		$bean->deviceApi = $inverter->deviceApi;
 		$bean->name = $inverter->name;
 		$bean->description = $inverter->description;
 		$bean->initialkwh = $inverter->initialkwh;
@@ -627,7 +636,7 @@ class PDODataAdapter {
 		R::store($bean);
 	}
 /**
- * 
+ *
  * @param unknown_type $id
  */
 	public function readInverter($id) {
@@ -635,6 +644,7 @@ class PDODataAdapter {
 
 		$inverter = new Inverter();
 		$inverter->id = $bean->id;
+		$inverter->deviceApi = $bean->deviceApi;
 		$inverter->name = $bean->name;
 		$inverter->description = $bean->description;
 		$inverter->initialkwh = $bean->initialkwh;
@@ -668,13 +678,14 @@ class PDODataAdapter {
 		return $inverter;
 	}
 /**
- * 
+ *
  */
 	private function readInverters() {
 		$list = array();
 		foreach(R::find('inverter') as $bean) {
 			$inverter = new Inverter();
 			$inverter->id = $bean->id;
+			$inverter->deviceApi = $bean->deviceApi;
 			$inverter->name = $bean->name;
 			$inverter->description = $bean->description;
 			$inverter->initialkwh = $bean->initialkwh;
@@ -712,7 +723,7 @@ class PDODataAdapter {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param Panel $panel
 	 */
 	public function writePanel(Panel $panel) {
@@ -733,9 +744,9 @@ class PDODataAdapter {
 		//Store the bean
 		R::store($bean);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param unknown_type $id
 	 */
 
@@ -753,7 +764,7 @@ class PDODataAdapter {
 		return $panel;
 	}
 /**
- * 
+ *
  * @param unknown_type $inverterId
  */
 	private function readPanelsByInverter($inverterId) {
@@ -826,8 +837,8 @@ class PDODataAdapter {
 		}
 		return $beans;
 	}
-	
-	
+
+
 	/**
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
@@ -840,8 +851,8 @@ class PDODataAdapter {
 		}
 		return $beans;
 	}
-	
-	
+
+
 	/**
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
@@ -855,7 +866,7 @@ class PDODataAdapter {
 		}
 		return $beans;
 	}
-	
+
 	/**
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
@@ -872,7 +883,7 @@ class PDODataAdapter {
 
 		return array("maxEnergy"=>$beansMax,"minEnergy"=>$beansMin);
 	}
-	
+
 	/**
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
@@ -922,13 +933,13 @@ class PDODataAdapter {
 	}
 
 /**
- * 
+ *
  * @param unknown_type $invtnum
  * @param unknown_type $startDate
  */
 
 	public function getDetailsHistory($invtnum,$startDate){
-		 
+
 		$beginEndDate = Util::getBeginEndDate('day', 1,$startDate);
 
 		if ($invtnum>0){
@@ -943,17 +954,17 @@ class PDODataAdapter {
 		$labels[]= "Grid V";
 		$labels[]= "Grid A";
 		$labels[]= "Grid Freq.";
-		
+
 		$labels[]= "MPP1 P";
 		$labels[]= "MPP1 V";
 		$labels[]= "MPP1 A";
 		$labels[]= "MPP1 Ratio";
-		
+
 		$labels[]= "MPP2 P";
 		$labels[]= "MPP2 V";
 		$labels[]= "MPP2 A";
 		$labels[]= "MPP2 Ratio";
-		
+
 		$labels[]= "DC>AC Efficiency";
 		$labels[]= "Boos. Temp.";
 		$labels[]= "Inv. Temp.";
@@ -984,7 +995,7 @@ class PDODataAdapter {
 		$switches['EFF'][] = 12;
 		$switches['TEMP'][] = 13;
 		$switches['TEMP'][] = 14;
-		
+
 		foreach($beans as $bean){
 			$bean['time'] =$bean['time']*1000;
 			$live->GP[] 	= array($bean['time'],(float)$bean['GP']);
@@ -992,7 +1003,7 @@ class PDODataAdapter {
 			$live->GA[] 	= array($bean['time'],(float)$bean['GA']);
 			$live->FRQ[] 	= array($bean['time'],(float)$bean['FRQ']);
 			$live->I1P[] 	= array($bean['time'],(float)$bean['I1P']);
-			
+
 			$live->I1V[] 	= array($bean['time'],(float)$bean['I1V']);
 			$live->I1A[] 	= array($bean['time'],(float)$bean['I1A']);
 			$live->I1Ratio[]= array($bean['time'],(float)$bean['I1Ratio']);
@@ -1000,7 +1011,7 @@ class PDODataAdapter {
 			$live->I2V[] 	= array($bean['time'],(float)$bean['I2V']);
 			$live->I2A[] 	= array($bean['time'],(float)$bean['I2A']);
 			$live->I2Ratio[]= array($bean['time'],(float)$bean['I2Ratio']);
-			$live->EFF[] 	= array($bean['time'],(float)$bean['EFF']);			
+			$live->EFF[] 	= array($bean['time'],(float)$bean['EFF']);
 			$live->BOOT[]	= array($bean['time'],(float)$bean['BOOT']);
 			$live->INVT[] 	= array($bean['time'],(float)$bean['INVT']);
 		}
@@ -1021,12 +1032,12 @@ class PDODataAdapter {
 			$live->BOOT[]	= array(time()*1000,0);
 			$live->INVT[] 	= array(time()*1000,0);
 		}
-		
+
 		return array("details"=>$live,"labels"=>$labels,"switches"=>$switches);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param int $invtnum
 	 */
 	public function getYearsMonthCompareFilters(){
@@ -1046,11 +1057,11 @@ class PDODataAdapter {
 		$month[] = "Nov";
 		$month[] = "Dec";
 		return array('month'=> $month, 'year'=>$year );
-	} 
+	}
 
-	
+
 	/**
-	 * 
+	 *
 	 * @param unknown_type $invtnum
 	 * @param unknown_type $whichMonth
 	 * @param unknown_type $whichYear
@@ -1058,8 +1069,8 @@ class PDODataAdapter {
 	 * @param unknown_type $compareYear
 	 */
 	public function getCompareGraph($invtnum, $whichMonth,$whichYear,$compareMonth,$compareYear){
-		
-		
+
+
 		$this->getDayHistoryPerRecord();
 	}
 
@@ -1070,7 +1081,7 @@ class PDODataAdapter {
 	public function getYearSumPowerPerMonth($invtnum,$startDate){
 		$inverter = array();
 		$beginEndDate = Util::getBeginEndDate('year', 1,$startDate);
-		 
+
 		if ($invtnum>0){
 			$beans = R::getAll("SELECT INV,SUM(KWH) as KWH, time
 					FROM Energy WHERE INV = :INV AND time > :beginDate AND time < :endDate GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time ASC",
@@ -1086,7 +1097,7 @@ class PDODataAdapter {
 			$monthCount = count($beans); //  5
 			$currentMonthNumber = (int)date("n"); // 10
 			$monthTillEndYear = 12 - $currentMonthNumber; // 2
-	
+
 			$inverter = $this->readInverter($invtnum);
 			$expected = $inverter->expectedkwh;
 			$invExp[0] = ($expected/100)*$inverter->expectedJAN;
@@ -1101,7 +1112,7 @@ class PDODataAdapter {
 			$invExp[9] = ($expected/100)*$inverter->expectedOCT;
 			$invExp[10] = ($expected/100)*$inverter->expectedNOV;
 			$invExp[11] = ($expected/100)*$inverter->expectedDEC;
-			 
+
 			$res = $currentMonthNumber - $monthCount-1;
 			$ii	=0;
 			for ($i = 0; $i < 12; $i++) {
@@ -1122,10 +1133,10 @@ class PDODataAdapter {
 					$newBean[$i]['KWH'] =number_format($beans[$ii]['KWH'],0,',','');
 					$newBean[$i]['Exp'] =number_format($invExp[$i],0,',','');
 					$newBean[$i]['Diff'] = number_format($newBean[$i]['KWH']-$newBean[$i]['Exp'],0,',','');
-					 
+
 					$cumExp += $invExp[$i];
 					$newBean[$i]['cumExp']=number_format($cumExp,0,',','');
-					 
+
 					$cumKWH += $beans[$ii]['KWH'];
 					$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
 					$ii++;
@@ -1156,7 +1167,7 @@ class PDODataAdapter {
 	public function getGraphPoint($invtnum,$type, $startDate){
 		($type == 'today')?$type='day':$type=$type;
 
-		// if $type 
+		// if $type
 		(stristr(strtolower($type), 'day') === FALSE) ?	$table = "energy" : $table = "history";
 
 		$beans = $this->readTablesPeriodValues($invtnum, $table, $type, $startDate);
@@ -1239,7 +1250,7 @@ class PDODataAdapter {
 				);
 			}
 		}
-		
+
 		$lastDays = new LastDays();
 		$lastDays->points=$points;
 		$lastDays->KWHT=$cumPower;
@@ -1282,7 +1293,7 @@ class PDODataAdapter {
 		return array($energy,$KWHT);
 	}
 /**
- * 
+ *
  * @param unknown_type $invtnum
  * @param unknown_type $type
  * @param unknown_type $count
@@ -1302,7 +1313,7 @@ class PDODataAdapter {
 		return array($maxPowerDay);
 	}
 /**
- * 
+ *
  */
 	public function readPageIndexData() {
 		// summary live data
@@ -1315,7 +1326,7 @@ class PDODataAdapter {
 
 
 /**
- * 
+ *
  */
 	public function readPageIndexLiveValues() {
 		// summary live data
@@ -1378,7 +1389,7 @@ class PDODataAdapter {
 
 		$type = strtolower($type);
 		$avgEnergyBeansToday[] = array();
-		 
+
 		if($type == "today" || $type == "day" || $type == "all"){
 			$maxEnergyBeansToday = $this->readTablesPeriodValues(0, "energy", "today", date("d-m-Y"));
 			$maxPowerBeansToday = $this->readTablesPeriodValues(0, "pMaxOTD", "today", date("d-m-Y"));
@@ -1392,7 +1403,7 @@ class PDODataAdapter {
 					$maxPowerBeansToday[$i]['sumkWh'] = number_format($maxPowerBeansToday[$i]['sumkWh'],2,',','');
 					$avgEnergyBeansToday=number_format($maxEnergyBeansToday[$i]['KWH'],3,',','');
 				}
-				 
+
 			}
 
 			if(count ( $maxPowerBeansToday )==0 ){
@@ -1410,7 +1421,7 @@ class PDODataAdapter {
 			}
 
 		}
-		 
+
 		if($type == "month" ||  $type == "all"){
 			if ($invtnum>0){
 				$maxEnergyBeansMonth = R::getAll("SELECT INV,COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
@@ -1426,7 +1437,7 @@ class PDODataAdapter {
 				}
 			}
 		}
-		 
+
 		if($type == "year" || $type == "all"){
 			if ($invtnum>0){
 				$maxEnergyBeansYear = R::getAll("SELECT COUNT(kwh) as countkWh,MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh,strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
@@ -1442,7 +1453,7 @@ class PDODataAdapter {
 				}
 			}
 		}
-		 
+
 		if($type == "overall" || $type == "all"){
 			if ($invtnum>0){
 				$maxEnergyBeansOverall = R::getAll("SELECT COUNT(kwh) as countkWh, MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV order by time limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
@@ -1458,23 +1469,23 @@ class PDODataAdapter {
 				}
 			}
 		}
-		 
+
 		$maxEnergy = array(
 				"maxPowerToday"=>$maxPowerBeansToday,
 				"avgEnergyBeansWeek"=>$avgEnergyBeansWeek,
-				 
+
 				"maxEnergyToday"=>$maxEnergyBeansToday,
 				"avgEnergyToday"=>$avgEnergyBeansToday,
-				 
+
 				"maxEnergyWeek"=>$maxEnergyBeansWeek,
 				"avgEnergyWeek"=>$avgEnergyBeansWeek,
-				 
+
 				"maxEnergyMonth"=>$maxEnergyBeansMonth,
 				"avgEnergyMonth"=>$avgEnergyBeansMonth,
-				 
+
 				"maxEnergyYear"=>$maxEnergyBeansYear,
 				"avgEnergyYear"=>$avgEnergyBeansYear,
-				 
+
 				"maxEnergyOverall"=>$maxEnergyBeansOverall,
 				"avgEnergyOverall"=>$avgEnergyBeansOverall
 		);

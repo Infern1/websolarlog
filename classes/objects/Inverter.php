@@ -3,6 +3,7 @@
 class Inverter
 {
     public $id;
+    public $deviceApi;
     public $name;
     public $description;
     public $initialkwh;
@@ -46,6 +47,15 @@ class Inverter
         $this->comLog = false;
         $this->syncTime = false;
         $this->panels = array();
+    }
+
+    function getApi($config) {
+        if ($this->deviceApi == "AURORA") {
+            return new Aurora($config->aurorapath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+        }
+        if ($this->deviceApi == "SMA-RS485") {
+            return new Sma($config->smagetpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+        }
     }
 }
 ?>
