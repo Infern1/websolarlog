@@ -4,16 +4,16 @@ class Encryption {
     const MODE   = MCRYPT_MODE_CBC;
 
     public static function encrypt($plaintext) {
-        if (function_exists("mcrypt_module_open")) {
+        //if (function_exists("mcrypt_module_open")) {
             $td = mcrypt_module_open(self::CYPHER, '', self::MODE, '');
             $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
             mcrypt_generic_init($td, self::getKey(), $iv);
             $crypttext = mcrypt_generic($td, $plaintext);
             mcrypt_generic_deinit($td);
             return base64_encode($iv.$crypttext);
-        } else {
-            return $plaintext;
-        }
+        //} else {
+        //    return $plaintext;
+        //}
     }
 
     public static function decrypt($crypttext) {
