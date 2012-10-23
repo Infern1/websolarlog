@@ -14,6 +14,7 @@ switch ($settingstype) {
     case 'advanced':
         $data['co2kwh'] = $config->co2kwh;
         $data['aurorapath'] = $config->aurorapath;
+        $data['smagetpath'] = $config->smagetpath;
         break;
     case 'communication';
         $data['comPort'] = $config->comPort;
@@ -131,6 +132,7 @@ switch ($settingstype) {
     case 'save-advanced':
         $config->co2kwh = Common::getValue("co2kwh");
         $config->aurorapath =Common::getValue("aurorapath");
+        $config->smagetpath =Common::getValue("smagetpath");
         $adapter->writeConfig($config);
         break;
     case 'save-communication':
@@ -162,6 +164,7 @@ switch ($settingstype) {
         $inverter->plantpower = Common::getValue("plantpower");
         $inverter->heading = Common::getValue("heading");
         $inverter->correctionFactor = Common::getValue("correctionFactor");
+        $inverter->deviceApi = Common::getValue("deviceApi");
         $inverter->comAddress = Common::getValue("comAddress");
         $inverter->comLog = Common::getValue("comLog");
         $inverter->syncTime = Common::getValue("syncTime");
@@ -281,12 +284,19 @@ function checkSQLite() {
     }
 
     // Check if the following extensions are installed/activated
-    $checkExtensions = array('curl','sqlite','sqlite3','json','calendar');
+    $checkExtensions = array('curl','sqlite','sqlite3','json','calendar','mcrypt');
     foreach ($checkExtensions as $extension) {
     	$extensions[] = Util::checkIfModuleLoaded($extension);
     }
 
     $result['extensions'] = $extensions;
+
+    // Encryption/Decryption test
+    $testphrase ="This is an test sentence";
+    $encrypted = Encryption::encrypt($testphrase);
+    $decrypted = Encryption::decrypt($encrypted);
+    $result['encrypting'] = ($testphrase === $decrypted);
+
     return $result;
 }
 ?>
