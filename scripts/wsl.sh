@@ -67,7 +67,7 @@ start)
 stop)
 
     if [ -f /var/lock/wsl.lock ]; then
-    kill `ps -ef | grep 'wsl start' | grep -v grep | awk '{ print $2 }'`
+    kill `ps -ef | grep 'wsl.sh start' | grep -v grep | awk '{ print $2 }'`
     rm /var/lock/wsl.lock
         if [ -f $WWWDIR'/data/lock' ]; then
         echo "Cleanup port lock"
