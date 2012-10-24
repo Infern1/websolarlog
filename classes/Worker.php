@@ -43,8 +43,12 @@ class Worker {
         */
         R::begin(); // Start a transaction to speed things up
         foreach ($this->config->inverters as $inverter) {
-            // Handle inverter
+            // Try to get the selected api class for this inverter
             $this->aurora = $inverter->getApi($this->config);
+            if ($this->aurora == null) {
+            	// If nothing is received, we will use the aurora class (Compatibility mode)
+            	$this->aurora = new Aurora($this->config->aurorapath, $inverter->comAddress, $this->config->comPort, $this->config->comOptions, $this->config->comDebug);
+            }
 
             $datareturn = $this->aurora->getData();
 
