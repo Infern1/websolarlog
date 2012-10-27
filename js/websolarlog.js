@@ -1,4 +1,3 @@
-trunkVersion = '241';
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
@@ -7,7 +6,6 @@ beforeLoad = (new Date()).getTime();
 window.onload = pageLoadingTime;
 
 function pageLoadingTime() {
-	$('#subversion').html(trunkVersion);
 	afterLoad = (new Date()).getTime();
 	secondes = (afterLoad - beforeLoad) / 1000;
 	document.getElementById("JSloadingtime").innerHTML = secondes;
@@ -51,10 +49,33 @@ function tooltipCompareContentEditor(str, seriesIndex, pointIndex, plot,series	)
 	return returned;
 }
 
+function tooltipCompareEditor(str, seriesIndex, pointIndex, plot,series	) { 
+	var returned = "";
+	
+	
+	if($.isArray(plot.series[0].data[pointIndex])){
+		( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Expected:"+ plot.series[0].data[pointIndex][1]+" kWh<br>"+bold[1];
+		( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"date:"+ plot.series[0].data[pointIndex][2]+" <br>"+bold[1];
+	}else{
+		returned += "<br>Expected: No data available for "+ plot.series[1].data[pointIndex][2]+"<br>";
+	}
+	
+	if($.isArray(plot.series[1].data[pointIndex])){
+		( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Harvested: "+ plot.series[1].data[pointIndex][1] +" kWh<br>"+bold[1];
+		( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"date:"+ plot.series[1].data[pointIndex][2]+" <br>"+bold[1];
+	
+	}else{
+		returned += "<br>Harvested: No data available for "+plot.series[0].data[pointIndex][2];
+	}
+
+	return returned;
+}
+
 function tooltipDetailsContentEditor(str, seriesIndex, pointIndex, plot,series	){
 	var returned = ""; 
 	return returned;	
 }
+
 // WSL class
 var WSL = {
 	api : {},
@@ -729,9 +750,10 @@ var WSL = {
 	},
 
 
-	init_compare : function( invtnum,divId, success) {
+	init_compare : function( invtnum,divId, fnFinish) {
 		// initialize languages selector on the given div
-		WSL.api.getCompare(function(data) {
+
+		WSL.api.getCompare(function(data,success) {
 			$.ajax({
 				url : 'js/templates/compareFilters.hb',
 				success : function(source) {
@@ -740,72 +762,98 @@ var WSL = {
 						'data' : data
 					});
 					$(divId).html(html);
-					//WSL.createCompareGraph(invtnum, divId,whichMonth,whichYear,compareMonth,compareYear);
+					fnFinish.call();
 				},
 				dataType : 'text',
+				
 			});
+		});
+		$('select').live('change', function(){
+			WSL.createCompareGraph(1,$('#whichMonth').val(),$('#whichYear').val(),$('#compareMonth').val(),$('#compareYear').val()); // Initial load fast	
 		});
 	},
 
-	createCompareGraph : function(invtnum,whichMonth,whichYear,compareMonth,compareYear) {
+	createCompareGraph : function(invtnum,whichMonth,whichYear,compareMonth,compareYear,type) {
+		$('#whichMonth').val(whichMonth);
+		$('#whichYear').val(whichYear);
+		$('#compareMonth').val(compareMonth);
+		$('#compareYear').val(compareYear);
+		(type==0) ? compareYear=0 : compareYear=compareYear;
+		$('#compareYear').val(compareYear);
 		var graphOptions = {
 				series:[
-	          {yaxis:'yaxis',label:'aa'},
-	          {yaxis:'y2axis'},
-	          {yaxis:'y3axis'},
-	          {yaxis:'y4axis'},
-	          {yaxis:'y7axis'},
-	          {yaxis:'y3axis'},
-	          {yaxis:'y5axis'},
-	          {yaxis:'yaxis'},
-	          {yaxis:'yaxis'},
-	          {yaxis:'yaxis'},
-	          {yaxis:'yaxis'},
-	          {yaxis:'y4axis'}
-	          ],
-				axesDefaults : {useSeriesColor: true },
-				legend : {show: true, location: 's', placement: 'outsideGrid',renderer: $.jqplot.EnhancedLegendRenderer,rendererOptions: {seriesToggle: 'normal',numberRows: 2,
+				        {label:'Expected',xaxis:'x2axis',renderer:$.jqplot.LineRenderer},
+				        {label:'Harvested', xaxis:'xaxis',renderer:$.jqplot.LineRenderer}
+				        ],
+	          axesDefaults: {useSeriesColor: true,
+	              tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+	              tickOptions: {
+	                angle: -30,
+	                fontSize: '10pt'
+	              }
+	          },
+				legend : {
+					show: true, location: 's', placement: 'outsideGrid',
+					renderer: $.jqplot.EnhancedLegendRenderer,
+					rendererOptions: {
+						seriesToggle: 'normal',
+						numberRows: 1,
 						//seriesToggleReplot:  {resetAxes:["yaxis"]}
 				}}, 
-				seriesDefaults:{rendererOptions: {barMargin: 40,barWidth:10},pointLabels: {show: false},},
-				axes : {xaxis : {label : '',labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true,renderer : $.jqplot.DateAxisRenderer,tickInterval : '3600', /* 1 hour*/ tickOptions : {angle : -30,formatString : '%H:%M'}},
-					yaxis : {label:'Power',min : 0, labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y2axis : {label:'Voltage',min : 0,max:300,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y3axis : {label:'Ampere',min : 0,max:10,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y4axis : {label:'Frequency',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y5axis : {label:'Ratio',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y6axis : {label:'Temperature',min : 0,max : 70,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y7axis : {label:'Power',min : 0, labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-				},
-				highlighter : {tooltipContentEditor: tooltipDetailsContentEditor,show : true}
+				seriesDefaults:{rendererOptions: {barMargin: 40,barWidth:10},pointLabels: {show: false},},				
+	            axes: {
+	                xaxis: {
+						labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+						renderer : $.jqplot.DateAxisRenderer,
+						angle : -30,
+						tickOptions : {
+							formatString : '%d-%m'
+						}
+	                },
+	                x2axis: {
+						labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+						renderer : $.jqplot.DateAxisRenderer,
+						angle : -30,
+						tickOptions : {
+							formatString : '%d-%m'
+						}
+	                }
+	            },
+				highlighter : {tooltipContentEditor: tooltipCompareEditor,show : true}
 		};
 		
 		$.ajax({
-			url : "server.php?method=getCompareGraph&1invtnum=" + invtnum+'&whichMonth=' + whichMonth+'&whichYear=' + whichYear+'&compareMonth=' + compareMonth+'&compareYear=' + compareYear,
+			url : "server.php?method=getCompareGraph&invtnum=" + invtnum+'&whichMonth=' + whichMonth+'&whichYear=' + whichYear+'&compareMonth=' + compareMonth+'&compareYear=' + compareYear,
 			method : 'GET',
 			dataType : 'json',
 			success : function(result) {
-				
+
 				if (result.dayData.data) {
-					var seriesLabels= [];
-					var seriesData = [];
-					for (line in result.dayData.data) {
-						var json = [];
-						for (values in result.dayData.data[line]) {
-							json.push([result.dayData.data[line][values][0],result.dayData.data[line][values][1]]);
-						}
-						seriesLabels.push(line);
-						seriesData.push(json);
+					var dataDay1 = [];
+					var dataDay2 = [];
+					for (line in result.dayData.data.compare) {
+						var object = result.dayData.data.compare[line];
+						dataDay1.push([  object[0], object[1], object[2] ]);
+
+					}
+					for (line in result.dayData.data.which) {
+						var object = result.dayData.data.which[line];
+						dataDay2.push([  object[0], object[1], object[2] ]);
 					}
 					
-					$("#main-middle").prepend('<div id="detailsGraph"></div>');
-					$("#detailsGraph").height(450);
-
-					graphOptions.axes.xaxis.min = seriesData[0][0][0];
-    				graphOptions.legend.labels = result.dayData['labels'];
-    				handle = $.jqplot("detailsGraph",seriesData, graphOptions);
-    				 
-    				$('table.jqplot-table-legend').attr('class', 'jqplot-table-legend-custom');
+					
+					$("#compareFilter").append('<div id="compareGraph"></div>');
+					$("#compareGraph").height(350);
+					$("#compareGraph").width(830);
+					//console.log(result.dayData.data.compare[0][0]);
+					//console.log("compare:"+dataDay1);
+					//console.log("which:"+dataDay2);
+					graphOptions.axes.xaxis.min = result.dayData.data.which[0][0];
+					graphOptions.axes.x2axis.min = result.dayData.data.compare[0][0];
+					
+    				handle = $.jqplot("compareGraph", [ dataDay1 , dataDay2], graphOptions);
+    				handle.replot();
+    				
 				}
 			}
 		});

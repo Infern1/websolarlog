@@ -1,4 +1,4 @@
-<div>
+<div id="compareFilter">
     <table>
     	<tr>
     		<td>Inverter:</td>
@@ -13,7 +13,7 @@
     		<td>
 	    		<select id="whichMonth">
 	    			{{#each data.dayData.month}}
-	    			<option value="this">{{this}}</option>
+	    			<option value="{{this.number}}">{{this.name}}</option>
 	    			{{/each}}
 	    		</select>/
 	    		<select id="whichYear">
@@ -26,11 +26,11 @@
 	    	<td>
 	    		<select id="compareMonth">
 	    			{{#each data.dayData.month}}
-	    			<option value="{{this}}">{{this}}</option>
+	    			<option value="{{this.number}}">{{this.name}}</option>
 	    			{{/each}}
 	    		</select>/
 	    		<select id="compareYear">
-	    			<option value="expected">expected</option>
+	    			<option value="0">expected</option>
 					{{#each data.dayData.year}}
 	    			<option value="{{this.date}}">{{this.date}}</option>
 	    			{{/each}}

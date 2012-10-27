@@ -5,14 +5,18 @@ $template = "green";
 require_once("template/" . $template . "/header.php");
 require_once("template/" . $template . "/index.php");
 ?>
-
 	<script type="text/javascript">
     // Make sure the page is loaded
 	
-	WSL.init_compare(1,"#content"); // Initial load fast
-	$('select').live('change', function(){
-		WSL.createCompareGraph(1,$('#whichMonth').val(),$('#whichYear').val(),$('#compareMonth').val(),$('#compareYear').val()); // Initial load fast	
-	});
+	var whichMonth = <?php echo date("m");?>;
+	var whichYear = <?php echo date("Y");?>;
+	var compareMonth = <?php echo date("m");?>;
+	var compareYear = <?php echo date("Y");?>;
+	WSL.init_compare(1,"#content",
+			function(){
+				WSL.createCompareGraph(1,whichMonth,whichYear,compareMonth,compareYear,0);
+			}
+	); // Initial load fast
 	</script>
 </body>
 </html>

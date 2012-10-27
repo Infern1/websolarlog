@@ -278,15 +278,15 @@ switch ($method) {
 		$compareYear = Common::getValue('compareYear', 0);
 
 		$monthYear = $dataAdapter->getYearsMonthCompareFilters();
-		
-		$lines = $dataAdapter->getCompareGraph($invtnum, $whichMonth,$whichYear,$compareMonth,$compareYear);
-		//var_dump($lines['energy']->points);
 
+		$lines = $dataAdapter->getCompareGraph($invtnum, $config,$whichMonth,$whichYear,$compareMonth,$compareYear);
+		//var_dump($lines);
 
 		$dayData = new DayDataResult();
-		$dayData->data = $lines['energy']->points;
 		$dayData->month = $monthYear['month'];
 		$dayData->year = $monthYear['year'];
+		$dayData->data = array("which"=>$lines['whichBeans']->points,"compare"=>$lines['compareBeans']->points);
+		$dayData->type = $lines['type'];
 		$dayData->success = true;
 		$data['dayData'] = $dayData;
 		break;
