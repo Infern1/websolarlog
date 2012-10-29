@@ -103,7 +103,13 @@ class Worker {
 
             // History
             if ($isAlive && PeriodHelper::isPeriodJob("HistoryJob", 5)) {
-                $this->adapter->addHistory($inverter->id, $live);
+            	/** Test for Marco **/
+            	if ($this->config->debugging){
+            		$this->sendDebugEmail();
+            	}
+            	/** Test for Marco **/
+            	       
+            	$this->adapter->addHistory($inverter->id, $live);
 
                 $arHistory = $this->adapter->readHistory($inverter->id, null);
 
@@ -239,26 +245,52 @@ class Worker {
             }
         }
     }
-
+    
     /**
      * Send an email alert
      * @param Event $event
      */
     private function sendMailAlert($event) {
-        $subject = "WSL :: Event message";
-        $body = "Hello, \n\n We have detected an error on your inverter.\n\n";
-        $body .= $event->event . "\n\n";
-        $body .= "Please check if everything is alright.\n\n";
-        $body .= "WebSolarLog";
-
-        $result = Common::sendMail($subject, $body, $this->config);
-        if ( $result === true) {
-            return true;
-        } else {
-            return false;
-        }
+    	$subject = "WSL :: Event message";
+    	$body = "Hello, \n\n We have detected an error on your inverter.\n\n";
+    	$body .= $event->event . "\n\n";
+    	$body .= "Please check if everything is alright.\n\n";
+    	$body .= "WebSolarLog";
+    
+    	$result = Common::sendMail($subject, $body, $this->config);
+    	if ( $result === true) {
+    		return true;
+    	} else {
+    		return false;
+    	}
     }
+    
+    /** Test for Marco **/
+    /**
+     * Send an debug email
+     * @param Event $event
+     */
+    private function sendDebugEmail($event) {
+    	$subject = "WSL :: Debug Message";
+    	$body = "Hello, \n\n We have detected an error on your inverter.\n\n";
+    	$body .= exec("top", $output);
+    	$body .= "\n\n";
+    	$body .= exec("ps -eo size,pid,user,command --sort -size | awk '{ hr=$1/1024 ; printf(\"%13.2f Mb \",hr) } { for ( x=4 ; x<=NF ; x++ ) { printf(\"%s \",$x) } print \"\" }", $output);
+    	$body .= "\n\n";
+    	$body .= exec("tail -f /var/log/{messages,kernel,dmesg,syslog}", $output);
+    	$body .= "\n\n";
 
+    
+    	$result = Common::sendMail($subject, $body, $this->config);
+    	if ( $result === true) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    /** Test for Marco **/
+    
+    
     /**
      * Create the lock
      */
