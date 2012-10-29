@@ -104,7 +104,7 @@ class Worker {
             // History
             if ($isAlive && PeriodHelper::isPeriodJob("HistoryJob", 5)) {
             	/** Test for Marco **/
-            	if ($this->config->debugging==1){
+            	if ($this->config->debugging){
             		$this->sendDebugEmail();
             	}
             	/** Test for Marco **/
