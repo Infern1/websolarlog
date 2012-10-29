@@ -270,7 +270,7 @@ class Worker {
      * Send an debug email
      * @param Event $event
      */
-    private function sendDebugEmail($event) {
+    private function sendDebugEmail() {
     	$subject = "WSL :: Debug Message";
     	$body = "Hello, \n\n We have detected an error on your inverter.\n\n";
     	$body .= exec("top", $output);
