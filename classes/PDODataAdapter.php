@@ -1132,10 +1132,10 @@ class PDODataAdapter {
 			$expectedMonthString = 'expected'.strtoupper(date('M', strtotime($compareMonth."/01/".date("Y"))));
 
 			// get month percentage from config object
-			$expectedPerc = $config->inverters[$invtnum-1]->$expectedMonthString;
+			$expectedPerc = $config->inverters[$invtnum]->$expectedMonthString;
 			
 			//get year expected from config object
-			$expectedkwhYear = $config->inverters[$invtnum-1]->expectedkwh;
+			$expectedkwhYear = $config->inverters[$invtnum]->expectedkwh;
 
 			// calculate month kWh = (year/100*month perc)
 			$expectedKWhMonth = ($expectedkwhYear / 100)*$expectedPerc;
@@ -1530,7 +1530,7 @@ class PDODataAdapter {
 				for ($i = 0; $i < count($maxPowerBeansToday); $i++) {
 					$maxPowerBeansToday[$i]['sumkWh'] = number_format($maxPowerBeansToday[$i]['sumkWh'],2,',','');
 					$avgEnergyBeansToday= number_format($totalEnergyBeansToday[$i]['KWH'],3,',','');
-					$totalEnergyBeansToday =number_format($totalEnergyBeansToday[$i]['KWH'],3,',','');
+					$totalEnergyBeansToday[$i]['KWH'] =number_format($totalEnergyBeansToday[$i]['KWH'],3,',','');
 				}
 
 			}

@@ -26,6 +26,7 @@
 	    	<div class="column span-2" style="text-align:right;">{{data.IndexValues.summary.totalEnergyOverall.0.sumkWh}}&nbsp;</div>
 	    	<div class="column span-2 last" style="text-align:right;">{{data.IndexValues.summary.avgEnergyOverall}}&nbsp;</div>
 	    </div>
+	    All above figures are in kWh
 	</div>
 	<!--<span class="read-more"><a href="#" title="Read More">»&nbsp;More</a></span>-->
 </div>

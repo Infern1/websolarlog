@@ -55,15 +55,15 @@ function tooltipCompareEditor(str, seriesIndex, pointIndex, plot,series	) {
 	
 	
 	if($.isArray(plot.series[0].data[pointIndex])){
-		( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Expected:"+ plot.series[0].data[pointIndex][1]+" kWh<br>"+bold[1];
-		( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"date:"+ plot.series[0].data[pointIndex][2]+" <br>"+bold[1];
+		( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+""+ plot.series[1].label +": "+ plot.series[1].data[pointIndex][1]+" kWh<br>"+bold[1];
+		( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"date: "+ plot.series[1].data[pointIndex][2]+" <br>"+bold[1];
 	}else{
 		returned += "<br>Expected: No data available for "+ plot.series[1].data[pointIndex][2]+"<br>";
 	}
 	
 	if($.isArray(plot.series[1].data[pointIndex])){
-		( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Harvested: "+ plot.series[1].data[pointIndex][1] +" kWh<br>"+bold[1];
-		( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"date:"+ plot.series[1].data[pointIndex][2]+" <br>"+bold[1];
+		( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+""+ plot.series[0].label +": "+ plot.series[0].data[pointIndex][1] +" kWh<br>"+bold[1];
+		( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"date: "+ plot.series[0].data[pointIndex][2]+" <br>"+bold[1];
 	
 	}else{
 		returned += "<br>Harvested: No data available for "+plot.series[0].data[pointIndex][2];
@@ -815,8 +815,9 @@ var WSL = {
 		$('#compareYear').val(compareYear);
 		var graphOptions = {
 				series:[
-				        {label:'Expected',xaxis:'x2axis',renderer:$.jqplot.LineRenderer},
-				        {label:'Harvested', xaxis:'xaxis',renderer:$.jqplot.LineRenderer}
+				        {xaxis:'x2axis',renderer:$.jqplot.LineRenderer},
+				        {xaxis:'xaxis',renderer:$.jqplot.LineRenderer},
+				        {label:'', xaxis:'yaxis',renderer:$.jqplot.LineRenderer}
 				        ],
 	          axesDefaults: {useSeriesColor: true,
 	              tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
@@ -850,6 +851,8 @@ var WSL = {
 						tickOptions : {
 							formatString : '%d-%m'
 						}
+	                },
+	                yaxis: {
 	                }
 	            },
 				highlighter : {tooltipContentEditor: tooltipCompareEditor,show : true}
@@ -881,10 +884,19 @@ var WSL = {
 					//console.log(result.dayData.data.compare[0][0]);
 					//console.log("compare:"+dataDay1);
 					//console.log("which:"+dataDay2);
-					graphOptions.axes.xaxis.min = result.dayData.data.which[0][0];
-					graphOptions.axes.x2axis.min = result.dayData.data.compare[0][0];
 					
-    				handle = $.jqplot("compareGraph", [ dataDay1 , dataDay2], graphOptions);
+					graphOptions.axes.x2axis.label = $("#whichMonth option:selected").text()+' '+$("#whichYear option:selected").text();
+					graphOptions.axes.xaxis.label = $("#compareMonth option:selected").text()+' '+$("#compareYear option:selected").text();
+					
+					graphOptions.series[0].label = $("#whichMonth option:selected").text()+' '+$("#whichYear option:selected").text();
+					graphOptions.series[1].label = $("#compareMonth option:selected").text()+' '+$("#compareYear option:selected").text();
+					
+					graphOptions.axes.x2axis.min = result.dayData.data.which[0][0];
+					graphOptions.axes.xaxis.min = result.dayData.data.compare[0][0];
+					
+					graphOptions.axes.yaxis.min = 0;
+					
+    				handle = $.jqplot("compareGraph", [ dataDay2, dataDay1], graphOptions);
     				handle.replot();
     				
 				}

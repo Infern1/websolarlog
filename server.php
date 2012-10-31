@@ -278,16 +278,25 @@ switch ($method) {
 		$whichYear = Common::getValue('whichYear', 0);
 		$compareMonth = Common::getValue('compareMonth', 0);
 		$compareYear = Common::getValue('compareYear', 0);
-
+		$invtnum = Common::getValue('invnum', 0);
+		
 		$monthYear = $dataAdapter->getYearsMonthCompareFilters();
-
+		$inverters = R::findAndExport('Inverter');
+		foreach ($inverters as $inv){
+			$inverter[] = array("name"=>$inv['name'],"id"=>$inv['id']);
+		}
 		$lines = $dataAdapter->getCompareGraph($invtnum, $config,$whichMonth,$whichYear,$compareMonth,$compareYear);
-		//var_dump($lines);
+		//var_dump($inverters);
 
 		$dayData = new DayDataResult();
 		$dayData->month = $monthYear['month'];
 		$dayData->year = $monthYear['year'];
-		$dayData->data = array("which"=>$lines['whichBeans']->points,"compare"=>$lines['compareBeans']->points);
+		$dayData->inverters = $inverter;
+		$dayData->data = array(
+				"which"=>$lines['whichBeans']->points,
+				"compare"=>$lines['compareBeans']->points,
+				
+				);
 		$dayData->type = $lines['type'];
 		$dayData->success = true;
 		$data['dayData'] = $dayData;
