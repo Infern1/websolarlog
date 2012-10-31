@@ -324,7 +324,7 @@ var WSL = {
 		
 		
 		WSL.api.getPageIndexValues(function(data) {
-			if (!data.result) {
+			if (typeof data.result != "undefined" && data.result != 'true') {
 				$.pnotify({
                     title: 'Error',
                     text: data.message,
