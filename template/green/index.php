@@ -57,14 +57,19 @@
 		<!-- Footer -->
 		<div id="footer">
 			<div id="footer-middle">
-			<a href="https://sourceforge.net/projects/websolarlog/" target="_blank">WebSolarLog [at] sourceforge.net</a>
+				<div style="display: inline-block;">
+					<a href="https://sourceforge.net/projects/websolarlog/" target="_blank">WebSolarLog [at] sourceforge.net</a>
+				</div>
+				<div style="display: inline-block; text-align: right; width: 275px;">
+					<div style="display: inline-block;">JS loadtime:&nbsp;</div>
+					<div id="JSloadingtime" style="display: inline-block;"></div>
+				</div>
+				<div style="float: right;">
+					<div id="version" style="display: inline-block;">
+						version:&nbsp;<?php echo($config->version_title . " (build " . $config->version_revision . ")") ?>
+					</div>
+				</div>
 			</div>
-			<div id="footer-bottom">
-			</div>
-			<div style="float:left;">JS loadtime:&nbsp;</div>&nbsp;&nbsp;
-			<div id="JSloadingtime" style="float:left;"></div>
-			<div style="margin-left:10px;float:left;">WSL-version:&nbsp;</div>
-			<div id="version" style="float:left;"><?php echo($config->version_title . " (build " . $config->version_revision . ")") ?></div>
 		</div>
 		<!-- END Footer -->
 	</div>

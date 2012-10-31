@@ -324,17 +324,24 @@ var WSL = {
 		
 		
 		WSL.api.getPageIndexValues(function(data) {
-		$.ajax({
-			url : 'js/templates/totalValues.hb',
-			success : function(source) {
-				var template = Handlebars.compile(source);
-				var html = template({
-					'data' : data
-				});
-				$(sideBar).html(html);
-			},
-			dataType : 'text',
-		});
+			if (!data.result) {
+				$.pnotify({
+                    title: 'Error',
+                    text: data.message,
+                    type: 'error'
+                });
+			}
+			$.ajax({
+				url : 'js/templates/totalValues.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					$(sideBar).html(html);
+				},
+				dataType : 'text',
+			});
 		});
 	},
 	init_PageTodayValues : function(todayValues,success) {
