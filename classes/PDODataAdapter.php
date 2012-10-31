@@ -893,6 +893,9 @@ class PDODataAdapter {
 		}else{
 			$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM pMaxOTD GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC");
 		}
+		for ($i = 0; $i < count($beans); $i++) {
+			$beans[$i]['maxGP'] = number_format($beans[$i]['maxGP'],2,',','');
+		}
 		return $beans;
 	}
 
@@ -911,6 +914,9 @@ class PDODataAdapter {
 			$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
 					FROM energy WHERE time > :beginDate AND time < :endDate GROUP BY strftime ( 'd%-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}
+		for ($i = 0; $i < count($beans); $i++) {
+			$beans[$i]['kWh'] = number_format($beans[$i]['kWh'],2,',','');
+		}
 		return $beans;
 	}
 
@@ -927,6 +933,10 @@ class PDODataAdapter {
 		}else{
 			$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
 					FROM pMaxOTD WHERE time > :beginDate AND time < :endDate GROUP BY strftime ( 'd%-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+
+		}
+		for ($i = 0; $i < count($beans); $i++) {
+			$beans[$i]['maxGP'] = number_format($beans[$i]['maxGP'],2,',','');
 		}
 		return $beans;
 	}
@@ -1460,9 +1470,15 @@ class PDODataAdapter {
 			$live->Time = date("H:i:s",$liveBean['time']);
 			$live->INV = $liveBean['INV'];
 			$live->GP = number_format($liveBean['GP'],0,',','');
+			$live->GA = number_format($liveBean['GA'],0,',','');
+			$live->GV = number_format($liveBean['GV'],0,',','');
 			$live->I1P = number_format($liveBean['I1P'],2,',','');
+			$live->I1A = number_format($liveBean['I1A'],2,',','');
+			$live->I1V = number_format($liveBean['I1V'],2,',','');
 			$live->I1Ratio = number_format($liveBean['I1Ratio'],2,',','');
 			$live->I2P = number_format($liveBean['I2P'],2,',','');
+			$live->I2A = number_format($liveBean['I2A'],2,',','');
+			$live->I2V = number_format($liveBean['I2V'],2,',','');
 			$live->I2Ratio = number_format($liveBean['I2Ratio'],2,',','');
 
 			$live->IP = number_format($ITP,2,',','');
@@ -1500,17 +1516,21 @@ class PDODataAdapter {
 		$avgEnergyBeansToday[] = array();
 
 		if($type == "today" || $type == "day" || $type == "all"){
-			$maxEnergyBeansToday = $this->readTablesPeriodValues(0, "energy", "today", date("d-m-Y"));
+			$totalEnergyBeansToday = $this->readTablesPeriodValues(0, "energy", "today", date("d-m-Y"));
 			$maxPowerBeansToday = $this->readTablesPeriodValues(0, "pMaxOTD", "today", date("d-m-Y"));
 
 
+
 			if (count ( $maxPowerBeansToday )==0 ){
-				$avgEnergyBeansToday=number_format(0,3,',','');
-				$maxEnergyBeansToday[]['KWH']=number_format(0,3,',','');
+
+				$avgEnergyBeansToday= number_format(0,3,',','');
+				$totalEnergyBeansToday[]['KWH']=number_format(0,3,',','');
 			}else{
+
 				for ($i = 0; $i < count($maxPowerBeansToday); $i++) {
 					$maxPowerBeansToday[$i]['sumkWh'] = number_format($maxPowerBeansToday[$i]['sumkWh'],2,',','');
-					$avgEnergyBeansToday=number_format($maxEnergyBeansToday[$i]['KWH'],3,',','');
+					$avgEnergyBeansToday= number_format($totalEnergyBeansToday[$i]['KWH'],3,',','');
+					$totalEnergyBeansToday =number_format($totalEnergyBeansToday[$i]['KWH'],3,',','');
 				}
 
 			}
@@ -1522,82 +1542,80 @@ class PDODataAdapter {
 		}
 
 		if($type == "week" || $type == "all"){
-			$maxEnergyBeansWeek = R::getAll("SELECT COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%Y%W' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY date ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit));
-			$avgEnergyBeansWeek = number_format($maxEnergyBeansWeek[0]['sumkWh']/$maxEnergyBeansWeek[0]['countkWh'],2,',','');
+			$totalEnergyBeansWeek = R::getAll("SELECT COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%Y%W' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY date ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit));
+			$avgEnergyBeansWeek = number_format($totalEnergyBeansWeek[0]['sumkWh']/$totalEnergyBeansWeek[0]['countkWh'],2,',','');
 
-			for ($i = 0; $i < count($maxEnergyBeansWeek); $i++) {
-				$maxEnergyBeansWeek[$i]['sumkWh'] = number_format($maxEnergyBeansWeek[$i]['sumkWh'],2,',','');
+			for ($i = 0; $i < count($totalEnergyBeansWeek); $i++) {
+				$totalEnergyBeansWeek[$i]['sumkWh'] = number_format($totalEnergyBeansWeek[$i]['sumkWh'],2,',','');
 			}
 
 		}
 
 		if($type == "month" ||  $type == "all"){
 			if ($invtnum>0){
-				$maxEnergyBeansMonth = R::getAll("SELECT INV,COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
-				$avgEnergyBeansMonth = number_format($maxEnergyBeansMonth[0]['sumkWh']/$maxEnergyBeansMonth[0]['countkWh'],2,',','');
-				for ($i = 0; $i < count($maxEnergyBeansMonth); $i++) {
-					$maxEnergyBeansMonth[$i]['sumkWh'] = number_format($maxEnergyBeansMonth[$i]['sumkWh'],2,',','');
+				$totalEnergyBeansMonth = R::getAll("SELECT INV,COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
+				$avgEnergyBeansMonth = number_format($totalEnergyBeansMonth[0]['sumkWh']/$totalEnergyBeansMonth[0]['countkWh'],2,',','');
+				for ($i = 0; $i < count($totalEnergyBeansMonth); $i++) {
+					$totalEnergyBeansMonth[$i]['sumkWh'] = number_format($totalEnergyBeansMonth[$i]['sumkWh'],2,',','');
 				}
 			}else{
-				$maxEnergyBeansMonth = R::getAll("SELECT INV,COUNT(kwh) as countkWh, MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit));
-				$avgEnergyBeansMonth = number_format($maxEnergyBeansMonth[0]['sumkWh']/$maxEnergyBeansMonth[0]['countkWh'],2,',','');
+				$totalEnergyBeansMonth = R::getAll("SELECT INV,COUNT(kwh) as countkWh, MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit));
+				$avgEnergyBeansMonth = number_format($totalEnergyBeansMonth[0]['sumkWh']/$totalEnergyBeansMonth[0]['countkWh'],2,',','');
 				for ($i = 0; $i < count($avgEnergyBeansMonth); $i++) {
-					$maxEnergyBeansMonth[$i]['sumkWh'] = number_format($maxEnergyBeansMonth[$i]['sumkWh'],2,',','');
+					$totalEnergyBeansMonth[$i]['sumkWh'] = number_format($totalEnergyBeansMonth[$i]['sumkWh'],2,',','');
 				}
 			}
 		}
 
 		if($type == "year" || $type == "all"){
 			if ($invtnum>0){
-				$maxEnergyBeansYear = R::getAll("SELECT COUNT(kwh) as countkWh,MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh,strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
-				$avgEnergyBeansYear = number_format($maxEnergyBeansYear[0]['sumkWh']/$maxEnergyBeansYear[0]['countkWh'],2,',','');
-				for ($i = 0; $i < count($maxEnergyBeansYear); $i++) {
-					$maxEnergyBeansYear[$i]['sumkWh'] = number_format($maxEnergyBeansYear[$i]['sumkWh'],2,',','');
+				$totalEnergyBeansYear = R::getAll("SELECT COUNT(kwh) as countkWh,MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh,strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
+				$avgEnergyBeansYear = number_format($totalEnergyBeansYear[0]['sumkWh']/$totalEnergyBeansYear[0]['countkWh'],2,',','');
+				for ($i = 0; $i < count($totalEnergyBeansYear); $i++) {
+					$totalEnergyBeansYear[$i]['sumkWh'] = number_format($totalEnergyBeansYear[$i]['sumkWh'],2,',','');
 				}
 			}else{
-				$maxEnergyBeansYear = R::getAll("SELECT COUNT(kwh) as countkWh,MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh,strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit));
-				$avgEnergyBeansYear = number_format($maxEnergyBeansYear[0]['sumkWh']/$maxEnergyBeansYear[0]['countkWh'],2,',','');
-				for ($i = 0; $i < count($maxEnergyBeansYear); $i++) {
-					$maxEnergyBeansYear[$i]['sumkWh'] = number_format($maxEnergyBeansYear[$i]['sumkWh'],2,',','');
+				$totalEnergyBeansYear = R::getAll("SELECT COUNT(kwh) as countkWh,MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh,strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit));
+				$avgEnergyBeansYear = number_format($totalEnergyBeansYear[0]['sumkWh']/$totalEnergyBeansYear[0]['countkWh'],2,',','');
+				for ($i = 0; $i < count($totalEnergyBeansYear); $i++) {
+					$totalEnergyBeansYear[$i]['sumkWh'] = number_format($totalEnergyBeansYear[$i]['sumkWh'],2,',','');
 				}
 			}
 		}
 
 		if($type == "overall" || $type == "all"){
 			if ($invtnum>0){
-				$maxEnergyBeansOverall = R::getAll("SELECT COUNT(kwh) as countkWh, MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV order by time limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
-				$avgEnergyBeansOverall = number_format($maxEnergyBeansOverall[0]['sumkWh']/$maxEnergyBeansOverall[0]['countkWh'],2,',','');
-				for ($i = 0; $i < count($maxEnergyBeansOverall); $i++) {
-					$maxEnergyBeansOverall[$i]['sumkWh'] = number_format($maxEnergyBeansOverall[$i]['sumkWh'],2,',','');
+				$totalEnergyBeansOverall = R::getAll("SELECT COUNT(kwh) as countkWh, MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV order by time limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
+				$avgEnergyBeansOverall = number_format($totalEnergyBeansOverall[0]['sumkWh']/$totalEnergyBeansOverall[0]['countkWh'],2,',','');
+				for ($i = 0; $i < count($totalEnergyBeansOverall); $i++) {
+					$totalEnergyBeansOverall[$i]['sumkWh'] = number_format($totalEnergyBeansOverall[$i]['sumkWh'],2,',','');
 				}
 			}else{
-				$maxEnergyBeansOverall = R::getAll("SELECT COUNT(kwh) as countkWh, MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy order by time limit 0,:limit",array(':limit'=>$limit));
-				$avgEnergyBeansOverall = number_format($maxEnergyBeansOverall[0]['sumkWh']/$maxEnergyBeansOverall[0]['countkWh'],2,',','');
-				for ($i = 0; $i < count($maxEnergyBeansOverall); $i++) {
-					$maxEnergyBeansOverall[$i]['sumkWh'] = number_format($maxEnergyBeansOverall[$i]['sumkWh'],2,',','');
+				$totalEnergyBeansOverall = R::getAll("SELECT COUNT(kwh) as countkWh, MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy order by time limit 0,:limit",array(':limit'=>$limit));
+				$avgEnergyBeansOverall = number_format($totalEnergyBeansOverall[0]['sumkWh']/$totalEnergyBeansOverall[0]['countkWh'],2,',','');
+				for ($i = 0; $i < count($totalEnergyBeansOverall); $i++) {
+					$totalEnergyBeansOverall[$i]['sumkWh'] = number_format($totalEnergyBeansOverall[$i]['sumkWh'],2,',','');
 				}
 			}
 		}
 
-		$maxEnergy = array(
+		$energy = array(
 				"maxPowerToday"=>$maxPowerBeansToday,
-				"avgEnergyBeansWeek"=>$avgEnergyBeansWeek,
-
-				"maxEnergyToday"=>$maxEnergyBeansToday,
+				"totalEnergyToday"=>$totalEnergyBeansToday,
 				"avgEnergyToday"=>$avgEnergyBeansToday,
 
-				"maxEnergyWeek"=>$maxEnergyBeansWeek,
+				"totalEnergyWeek"=>$totalEnergyBeansWeek,
 				"avgEnergyWeek"=>$avgEnergyBeansWeek,
 
-				"maxEnergyMonth"=>$maxEnergyBeansMonth,
+				"totalEnergyMonth"=>$totalEnergyBeansMonth,
 				"avgEnergyMonth"=>$avgEnergyBeansMonth,
 
-				"maxEnergyYear"=>$maxEnergyBeansYear,
+				"totalEnergyYear"=>$totalEnergyBeansYear,
 				"avgEnergyYear"=>$avgEnergyBeansYear,
 
-				"maxEnergyOverall"=>$maxEnergyBeansOverall,
+				"totalEnergyOverall"=>$totalEnergyBeansOverall,
 				"avgEnergyOverall"=>$avgEnergyBeansOverall
 		);
-		return $maxEnergy;
+		return $energy;
 	}
 }
