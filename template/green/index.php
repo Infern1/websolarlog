@@ -19,6 +19,7 @@
 		<!-- Navigation -->
 		<div id="navigation">
 			<ul>
+
 				<li class="nav-start"><a title="Dashboard" href="index.php">Dashboard</a></li>
 				<li><a title="Today" href="today.php">Vandaag</a></li>
 				<li><a title="Month" href="month.php">Maand</a></li>

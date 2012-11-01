@@ -1183,9 +1183,8 @@ class PDODataAdapter {
 		if(count($beans)==0){
 			$newBean = null;
 		}else{
-			$monthCount = count($beans); //  5
-			$currentMonthNumber = (int)date("n"); // 10
-			$monthTillEndYear = 12 - $currentMonthNumber; // 2
+			$firstMonth = date("n",$beans[0]['time']);
+			$lastMonth = date("n",$beans[count($beans)-1]['time']);
 
 			$inverter = $this->readInverter($invtnum);
 			$expected = $inverter->expectedkwh;
@@ -1202,22 +1201,25 @@ class PDODataAdapter {
 			$invExp[10] = ($expected/100)*$inverter->expectedNOV;
 			$invExp[11] = ($expected/100)*$inverter->expectedDEC;
 
-			$res = $currentMonthNumber - $monthCount-1;
 			$ii	=0;
 			for ($i = 0; $i < 12; $i++) {
 				$iMonth = $i+1;
-				if($i <= $res OR $i>= $currentMonthNumber){
+				// if $i <= 5 
+				if($iMonth<$firstMonth || $iMonth>$lastMonth){
+					
 					$newBean[$i]['time'] = strtotime(date("01-".$iMonth."-Y"));
 					$newBean[$i]['KWH'] = number_format(0,0,',','');
 					$newBean[$i]['Exp'] = number_format($invExp[$i],0,',','');
 					$newBean[$i]['Diff'] = number_format($newBean[$i]['KWH']-$newBean[$i]['Exp'],0,',','');
-					if($i > $res){
+					if($iMonth > $lastMonth){
 						$cumExp += $invExp[$i];
 						$newBean[$i]['cumExp']=number_format($cumExp,0,',','');
 					}
 					$cumKWH += 0;
 					$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
+					$newBean[$i]['what'] = 'prepend';
 				}else{
+					
 					$newBean[$i]['time'] = $beans[$ii]['time'];
 					$newBean[$i]['KWH'] =number_format($beans[$ii]['KWH'],0,',','');
 					$newBean[$i]['Exp'] =number_format($invExp[$i],0,',','');
@@ -1228,10 +1230,12 @@ class PDODataAdapter {
 
 					$cumKWH += $beans[$ii]['KWH'];
 					$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
+					$newBean[$i]['what'] = 'apprepend';
 					$ii++;
 				}
 			}
 		}
+		//var_dump($newBean);
 		return array("energy"=>$this->CompareBeansToGraphPoints($newBean),"expected"=>0);
 	}
 
@@ -1467,7 +1471,7 @@ class PDODataAdapter {
 			$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
 
 			$live = new Live();
-			$live->Time = date("H:i:s",$liveBean['time']);
+			$live->time = date("H:i:s",$liveBean['time']);
 			$live->INV = $liveBean['INV'];
 			$live->GP = number_format($liveBean['GP'],0,',','');
 			$live->GA = number_format($liveBean['GA'],0,',','');
@@ -1484,6 +1488,7 @@ class PDODataAdapter {
 			$live->IP = number_format($ITP,2,',','');
 			$live->EFF = number_format($liveBean['EFF'],2,',','');
 			$oInverter["id"] = $liveBean['INV'];
+			$oInverter["currentTime"] = time();
 			$oInverter["live"] = $live;
 			$GP  += $live->GP;
 			$I1P += $live->I1P;
@@ -1493,7 +1498,7 @@ class PDODataAdapter {
 
 			$list['inverters'][] = $oInverter;
 		}
-
+		
 		$list['sum']['GP'] = number_format($GP,0,',','');
 		$list['sum']['I1P'] = number_format($I1P,0,',','');
 		$list['sum']['I2P'] = number_format($I2P,0,',','');

@@ -43,6 +43,13 @@ textarea { overflow: auto; }
 .socials a.flickr { background: url(images/flickr.png) no-repeat 0 0; }
 .socials a.facebook { padding-right: 0; background: url(images/facebook.png) no-repeat 0 0; }
 
+.loading { 
+	height: 50px;position: fixed; top: 0px; padding: 0 0 5px 6px; width: 144px;
+	background: url(images/socials.png) no-repeat; z-index: 100000000000; display: block; }
+.loading img {position: absolute; width: 138px; height:15px; }
+
+
+
 #navigation { width: 940px; position: relative; }
 #navigation ul { float: left; display: inline; position: relative; }
 #navigation ul li { display: inline; float: left; font-family: Tahoma, arial, sans-serif; font-size: 18px; color: #fff; line-height: 47px; text-shadow: 0 1px #5a8503; }

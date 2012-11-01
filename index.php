@@ -14,6 +14,7 @@ require_once("template/" . $template . "/index.php");
 		),			
 		WSL.init_PageIndexLiveValues("#indexLiveInverters"); // Initial load fast
 		window.setInterval(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");}, 2500); // every 5 seconds
+
 	});
 	</script>
 	<!-- END Wrapper -->
