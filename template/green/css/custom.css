@@ -38,3 +38,8 @@ table.jqplot-table-legend-custom{
   background-color: #d9edf7;
   border-color: #bce8f1;
 }
+
+#footer-middle {
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
