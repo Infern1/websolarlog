@@ -401,7 +401,8 @@ var WSL = {
 				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
-						'data' : data
+						'data' : data.dayData.data,
+						'lang' : data.lang
 					});
 					$(todayValues).html(html);
 					success.call();

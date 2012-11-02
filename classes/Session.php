@@ -39,5 +39,28 @@ class Session
         }
         return $result;
     }
+    
+    private static $config;
+    public static function getConfig() {
+    	if (!isset(self::$config) || self::$config == null) {
+    		self::$config = PDODataAdapter::getInstance()->readConfig();
+    	}
+    	return self::$config;
+    }
+    
+    /**
+     * Set the language to the give language code
+     * @param language
+     */
+    public static function setLanguage($language) {
+    	$locale = $language . ".UTF-8";
+    	$domain = "default";
+    	
+    	setlocale(LC_ALL, $locale);
+    	putenv("LC_ALL=".$locale);
+    	bindtextdomain($domain, "./locale");
+    	bind_textdomain_codeset($domain, 'UTF-8');
+    	textdomain($domain);
+    }
 }
 ?>

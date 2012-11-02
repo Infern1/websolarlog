@@ -1,5 +1,16 @@
 <?php
 class PDODataAdapter {
+	private static $instance;
+	
+	// Singleton
+	public static function getInstance() {
+		if (self::$instance == null) {
+			self::$instance = new PDODataAdapter();
+		}
+		return self::$instance;
+	}
+	
+	
 	function __construct() {
 		$config = new Config;
 		R::setup('sqlite:'.$config->dbHost );

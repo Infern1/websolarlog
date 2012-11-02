@@ -1,5 +1,12 @@
 <?php
+// For debugging only
+//error_reporting(E_ALL);
+//ini_set('display_errors', '1');
+
 require_once("classes/classloader.php");
+
+Session::setLanguage("nl_NL");
+
 $template = "green";
 require_once("template/" . $template . "/header.php");
 require_once("template/" . $template . "/index.php");

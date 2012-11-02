@@ -1,7 +1,7 @@
 <div id="todayPosts">
 	<div class="columns">
 		<div class="col posts">
-			<h3>Today</h3>
+			<h3>{{lang.today}}</h3>
 			<div class="post">
 				<div class="container">
 					<div  class="column span-12">
@@ -10,7 +10,7 @@
 							<div class="column span-1 first">Inv.</div>
 							<div class="column span-3" style="text-align:right;">kWh</div>
 							<div class="column span-4 last">Date</div>
-				    		{{#each data.dayData.data.maxPower}}
+				    		{{#each data.maxPower}}
 				    			{{#each this}}
 					    			<div class="column span-1 first">{{this.INV}}</div>
 					    			<div class="column span-3" style="text-align:right;">{{this.maxGP}}</div>
@@ -24,7 +24,7 @@
 							<div class="column span-1 first">Inv.</div>
 							<div class="column span-3" style="text-align:right;">kWh</div>
 							<div class="column span-4 last">Date</div>
-							{{#each data.dayData.data.maxEnergy}}
+							{{#each data.maxEnergy}}
 								{{#each this}}
 					    			<div class="column span-1 first">{{this.INV}}</div>
 					    			<div class="column span-3" style="text-align:right;">{{this.kWh}}</div>

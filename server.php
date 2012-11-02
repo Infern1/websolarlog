@@ -8,6 +8,8 @@ include("config/config_main.php");
 
 require 'classes/classloader.php';
 
+Session::setLanguage("nl_NL");
+
 try {
 // InActiveCheck
 $inactiveCheck = new InactiveCheck();
@@ -81,17 +83,17 @@ switch ($method) {
 		$data['languages'] = $languages;
 		$data['currentlanguage'] = $user_lang;
 		break;
-	case 'getMenu':
-		// TODO :: Move to json file or something???
-		$menu = array();
-		$menu[] = array( "url" => "index.php", "title" => $lgMINDEX);
-		$menu[] = array( "url" => "indexdetailed.php", "title" => $lgMDETAILED);
-		$menu[] = array( "url" => "indexproduction.php", "title" => $lgMPRODUCTION);
-		$menu[] = array( "url" => "indexcomparison.php", "title" => $lgMCOMPARISON);
-		$menu[] = array( "url" => "plantinfo.php", "title" => $lgMINFO);
-		$menu[] = array( "url" => "index_chartstest.php", "title" => "Test page");
-		$data['menu'] = $menu;
-		break;
+// 	case 'getMenu':
+// 		// TODO :: Move to json file or something???
+// 		$menu = array();
+// 		$menu[] = array( "url" => "index.php", "title" => $lgMINDEX);
+// 		$menu[] = array( "url" => "indexdetailed.php", "title" => $lgMDETAILED);
+// 		$menu[] = array( "url" => "indexproduction.php", "title" => $lgMPRODUCTION);
+// 		$menu[] = array( "url" => "indexcomparison.php", "title" => $lgMCOMPARISON);
+// 		$menu[] = array( "url" => "plantinfo.php", "title" => $lgMINFO);
+// 		$menu[] = array( "url" => "index_chartstest.php", "title" => "Test page");
+// 		$data['menu'] = $menu;
+// 		break;
 	case 'getEvents':
 		$data['events'] = $dataAdapter->readAlarm($invtnum);
 		break;
@@ -270,6 +272,10 @@ switch ($method) {
 		);
 		$dayData->success = true;
 		$data['dayData'] = $dayData;
+		
+		$lang = array();
+		$lang['today'] = _("Today");
+		$data['lang'] = $lang;
 		break;
 	case 'getCompareGraph':
 		//$config_invt="config/config_invt".$invtnum.".php";

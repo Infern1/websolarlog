@@ -19,15 +19,14 @@
 		<!-- Navigation -->
 		<div id="navigation">
 			<ul>
-
-				<li class="nav-start"><a title="Dashboard" href="index.php">Dashboard</a></li>
-				<li><a title="Today" href="today.php">Vandaag</a></li>
-				<li><a title="Month" href="month.php">Maand</a></li>
-				<li><a title="Year" href="year.php">Jaar</a></li>
-				<li><a title="Details" href="details.php">Details</a></li>
-				<li><a title="Compare" href="compare.php">Vergelijk</a></li>
-				<li><a title="Production" href="production.php">Productie</a></li>
-				<li class="nav-end"><a title="Misc" href="misc.php">Overige</a></li>
+				<li class="nav-start"><a title="Dashboard" href="index.php"><?php echo _("Dashboard");?></a></li>
+				<li><a title="Today" href="today.php"><?php echo _("Day");?></a></li>
+				<li><a title="Month" href="month.php"><?php echo _("Month");?></a></li>
+				<li><a title="Year" href="year.php"><?php echo _("Year");?></a></li>
+				<li><a title="Details" href="details.php"><?php echo _("Details");?></a></li>
+				<li><a title="Compare" href="compare.php"><?php echo _("Compare");?></a></li>
+				<li><a title="Production" href="production.php"><?php echo _("Production");?></a></li>
+				<li class="nav-end"><a title="Misc" href="misc.php"><?php echo _("Other");?></a></li>
 			</ul>
 			<div class="cl"></div>
 		</div>
@@ -37,14 +36,10 @@
 			<div id="main-top"></div>
 			<div id="main-middle">
 				<!-- Content -->
-				<div id="content">
-
-				</div>
+				<div id="content"></div>
 				<!-- END Content -->
 				<!-- Sidebar -->
-				<div id="sidebar">
-
-				</div>
+				<div id="sidebar"></div>
 				<!-- END Sidebar -->
 				<div class="cl"></div>
 				<div style="display: table;">
@@ -67,7 +62,7 @@
 				</div>
 				<div style="float: right;">
 					<div id="version" style="display: inline-block;">
-						version:&nbsp;<?php echo($config->version_title . " (build " . $config->version_revision . ")") ?>
+						<?php echo _("version") ?>:&nbsp;<?php echo($config->version_title . " (build " . $config->version_revision . ")") ?>
 					</div>
 				</div>
 			</div>

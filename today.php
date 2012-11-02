@@ -1,7 +1,9 @@
 <?php
 require_once("classes/classloader.php");
-$template = $config->template;
-$template = "green";
+
+Session::setLanguage("nl_NL");
+
+$template = Session::getConfig()->template;
 require_once("template/" . $template . "/header.php");
 require_once("template/" . $template . "/index.php");
 ?>
