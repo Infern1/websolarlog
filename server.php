@@ -62,10 +62,10 @@ switch ($method) {
 	case 'getTabs':
 		// TODO :: Move to json file or something???
 		$tabs = array();
-		$tabs[] = array( "graphName" => "Today","position" => "0","active" => ($page == "index") ? 'true' : 'false');
-		$tabs[] = array( "graphName" => "Yesterday","position" => "1","active" => ($page == "yesterday") ? 'true' : 'false');
-		$tabs[] = array( "graphName" => "Month","position" => "2","active" => ($page == "month") ? 'true' : 'false');
-		$tabs[] = array( "graphName" => "Year","position" => "3","active" => ($page == "year") ? 'true' : 'false');
+		$tabs[] = array( "graphName" => "Today","translation" => _("Today"),"position" => "0","active" => ($page == "index") ? 'true' : 'false');
+		$tabs[] = array( "graphName" => "Yesterday","translation" => _("Yesterday"),"position" => "1","active" => ($page == "yesterday") ? 'true' : 'false');
+		$tabs[] = array( "graphName" => "Month","translation" => _("Month"),"position" => "2","active" => ($page == "month") ? 'true' : 'false');
+		$tabs[] = array( "graphName" => "Year","translation" => _("Year"),"position" => "3","active" => ($page == "year") ? 'true' : 'false');
 		//$tabs[] = array( "graphName" => "Expected","position" => "4","active" => ($page == "expected") ? 'true' : 'false');
 		$data['tabsPosition'] =  Common::searchMultiArray($tabs, 'active', 'true');
 		$data['tabs'] = $tabs;
@@ -177,7 +177,11 @@ switch ($method) {
 	case 'getGraphPoints':
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
-
+		($type==0)? $type = 'Today' : $type=$type;
+		($type==1)? $type = 'Yesterday' : $type=$type;
+		($type==2)? $type = 'Month' : $type=$type;
+		($type==3)? $type = 'Year' : $type=$type;
+		
 		$lines = $dataAdapter->getGraphPoint(1, $type, "");
 		$dayData = new DayDataResult();
 		$dayData->data = $lines->points;
@@ -274,7 +278,15 @@ switch ($method) {
 		$data['dayData'] = $dayData;
 		
 		$lang = array();
-		$lang['today'] = _("Today");
+		$lang['today'] 			= _("Today");
+		$lang['maxGridPower'] 	= _("Max Grid Power");
+		$lang['date'] 			= _("date");
+		$lang['totalKWh'] 		= _("TotalKWh");
+		$lang['inv'] 			= _("Inv");
+		$lang['kwh'] 			= _("kwh");
+		$lang['historyValues'] 	= _("History values");
+		$lang['loading'] 		= _("loading")."...";
+		$lang['watt'] 			= _("watt");
 		$data['lang'] = $lang;
 		break;
 	case 'getCompareGraph':
@@ -294,6 +306,19 @@ switch ($method) {
 		$lines = $dataAdapter->getCompareGraph($invtnum, $config,$whichMonth,$whichYear,$compareMonth,$compareYear);
 		//var_dump($inverters);
 
+		
+		$lang = array();
+		$lang['today'] 			= _("Today");
+		$lang['maxGridPower'] 	= _("Max Grid Power");
+		$lang['date'] 			= _("date");
+		$lang['totalKWh'] 		= _("TotalKWh");
+		$lang['inv'] 			= _("Inv");
+		$lang['kwh'] 			= _("kwh");
+		$lang['historyValues'] 	= _("History values");
+		$lang['loading'] 		= _("loading")."...";
+		$lang['watt'] 			= _("watt");
+		$data['lang'] = $lang;
+		
 		$dayData = new DayDataResult();
 		$dayData->month = $monthYear['month'];
 		$dayData->year = $monthYear['year'];

@@ -6,7 +6,7 @@ $dataAdapter = new PDODataAdapter();
 $config = $dataAdapter->readConfig();
 ?>
 	<title><?php echo $config->title; ?></title>
-	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<META http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 	<link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
     <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/>

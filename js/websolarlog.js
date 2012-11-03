@@ -4,24 +4,22 @@ $.ajaxSetup({
 });
 
 function ajaxReady(){
+
 	tooltip.pnotify_remove();	
 }
 
 function ajaxStart(){
+
 	tooltip.pnotify_display();	
 }
 
 var tooltip = $.pnotify({
 		title: "Request in progress",
-		text: "There is a page update request in progress.",
-		hide: false,
-		closer: false,
-		sticker: false,
-		history: false,
-		animate_speed: 500,
-		opacity: 0.9,
-		icon: "ui-icon ui-icon-comment",
-		stack: false
+		text: "<img src='./template/green/css/images/loading.gif'/>",
+		delay:700,
+		hide: false,closer: false,sticker: false,history: false,animate_speed: 500,opacity: 0.5,
+		nonblock: true,nonblock_opacity: .8,icon: "ui-icon ui-icon-comment",stack: false,
+	    before_open: function(pnotify) {pnotify.css({top: 10,left: 10,width:215,});}
 	}
 );
 
@@ -317,25 +315,32 @@ var WSL = {
 					$(html).prependTo(divId);
 					$('#tabs').tabs({
 					    show: function(event, ui) {
-					        if (currentGraphHandler){
-					        	$("#graph"+data.tabs[ui.index]["graphName"]+"Content").html('<div id="loading">loading...</div>');
+					    	var type='Today';
+					    	(data.tabs[ui.index]["position"] == 0)? type= 'Today' : type=type;
+					    	(data.tabs[ui.index]["position"] == 1)? type= 'Yesterday' : type=type;
+					    	(data.tabs[ui.index]["position"] == 2)? type= 'Month' : type=type;
+					    	(data.tabs[ui.index]["position"] == 3)? type= 'Year'	: type=type;
+					    	
+					
+					    	if (currentGraphHandler){
+					        	$("#graph"+type+"Content").html('<div id="loading">loading...</div>');
 					        	currentGraphHandler.destroy();
 					        }
 					        if (todayTimerHandler){
 					            window.clearInterval(todayTimerHandler);
 					        }
 
-					        if (data.tabs[ui.index]["graphName"] == "Today" || data.tabs[ui.index]["graphName"] == "Yesterday") {
-					        	WSL.createDayGraph(1, data.tabs[ui.index]["graphName"],function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+					        if (type == "Today" || type == "Yesterday") {
+					        	WSL.createDayGraph(1, type,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
 					        }else{
-					        	WSL.createPeriodGraph(1, data.tabs[ui.index]["graphName"],1 , "graph"+data.tabs[ui.index]["graphName"]+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+					        	WSL.createPeriodGraph(1, type,1 , "graph"+type+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
 					        	
 					        }
 				            // Refresh only the Today tab
-				            if (data.tabs[ui.index]["graphName"] == "Today") {
+				            if (type == "Today") {
 				                todayTimerHandler = window.setInterval(function(){
 				                    if (currentGraphHandler){
-				                        $("#graph"+data.tabs[ui.index]["graphName"]+"Content").html('<div id="loading">loading...</div>');
+				                        $("#graph"+type+"Content").html('<div id="loading">loading...</div>');
 				                        currentGraphHandler.destroy();
 				                    }
 				                    WSL.createDayGraph(1, "Today", function(handler) {currentGraphHandler = handler;$("#loading").remove();});				                    
@@ -345,6 +350,7 @@ var WSL = {
 					    }
 					});
 					success.call();
+					
 					
 				},
 				dataType : 'text',
@@ -383,7 +389,8 @@ var WSL = {
 				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
-						'data' : data
+						'data' : data,
+						'lang' : lang
 					});
 					$(sideBar).html(html);
 					ajaxReady();
