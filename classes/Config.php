@@ -36,6 +36,8 @@ class Config
 
     public $aurorapath; // The path to aurora
     public $smagetpath; // The path to sma-get
+    
+    public $adminpasswd;
 
 	/**
 	 * Constructor
@@ -85,6 +87,8 @@ class Config
 		$this->debugging = false;
 		
 		$this->co2kwh = 440; // 440g/kWh is conform europa average
+		
+		$this->adminpasswd = sha1('admin');
 	}
 
 	function getInverterConfig($inverterId) {

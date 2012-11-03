@@ -3,8 +3,9 @@ session_start();
 
 require_once("classes/classloader.php");
 
-$adapter = new PDODataAdapter();
-$config = $adapter->readConfig();
+$adapter = PDODataAdapter::getInstance();
+$config = Session::getConfig();
+Session::setLanguage("nl_NL");
 
 // Retrieve action params
 $settingstype = Common::getValue("s", null);
@@ -137,6 +138,38 @@ switch ($settingstype) {
     case 'isLogin':
         $data['result'] = Session::isLogin();
         break;
+    case 'save-adminpasswd':
+    	$oldPassword = sha1(Common::getValue("oldPasswd"));
+    	
+    	if ($config->adminpasswd !== $oldPassword) {
+    		$data['success'] = false;
+    		$data['title'] = _("Validation");
+    		$data['text'] = _("Old password is invalid:");
+    		break;    		
+    	}
+    	
+    	if (strlen(Common::getValue("newPasswd1", "")) < 6) {
+    		$data['success'] = false;
+    		$data['title'] = _("Validation");
+    		$data['text'] = _("New password should be at least 6 characters");
+    		break;
+    	}
+    	
+    	$newPassword1 = sha1(Common::getValue("newPasswd1", ""));
+    	$newPassword2 = sha1(Common::getValue("newPasswd2"));
+    	if ($newPassword1 !== $newPassword2) {
+    		$data['success'] = false;
+    		$data['title'] = _("Validation");
+    		$data['text'] = _("New passwords are not the same");
+    		break;
+    	}
+    	
+		$config->adminpasswd = $newPassword1;
+    	$adapter->writeConfig($config);
+    	$data['success'] = true;
+   		$data['title'] = _("Success");
+   		$data['text'] = _("Password successfully changed");
+    	break;
     case 'save-advanced':
         $config->co2kwh = Common::getValue("co2kwh");
         $config->aurorapath =Common::getValue("aurorapath");

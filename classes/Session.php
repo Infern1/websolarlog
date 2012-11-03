@@ -8,7 +8,7 @@ class Session
     public static function login() {
         $username = Common::getValue('username', 'none');
         $password = sha1(Common::getValue('password', 'none'));
-        if ($username === "admin" && $password === sha1("admin")) {
+        if ($username === "admin" && $password === self::getConfig()->adminpasswd) {
             $_SESSION['userid'] = 1;
             $_SESSION['username'] = $username;
             return true;

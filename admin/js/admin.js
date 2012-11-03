@@ -161,7 +161,7 @@ function init_advanced() {
 function init_general() {
     $('#sidebar').html("");
     var content = $('#content');
-    content.html('<div id="c_general"></div><div id="c_communication"></div>'); // Clear old data
+    content.html('<div id="c_general"></div><div id="c_communication"></div><div id="c_security"></div>'); // Clear old data
     $.getJSON('admin-server.php?s=general', function(data) {
         $.ajax({
             url : 'js/templates/general.hb',
@@ -208,6 +208,25 @@ function init_general() {
             dataType : 'text'
         });        
     });
+	$.ajax({
+		url : 'js/templates/security.hb',
+		success : function(source) {
+			var template = Handlebars.compile(source);
+			var html = template();
+			$('#c_security', content).html(html);
+			
+			$('#btnSecuritySubmit').bind('click', function(){
+				var data = $(this).parent().parent().serialize();
+				$.post('admin-server.php', data, function(result){
+					$.pnotify({
+						title: result.title,
+						text: result.text
+					});						
+				});
+			});
+		},
+		dataType : 'text'
+	});        
 }
 
 function init_inverters(selected_inverterId) {
