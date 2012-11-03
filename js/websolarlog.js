@@ -389,8 +389,8 @@ var WSL = {
 				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
-						'data' : data,
-						'lang' : lang
+						'data' : data.IndexValues,
+						'lang' : data.lang
 					});
 					$(sideBar).html(html);
 					ajaxReady();
@@ -851,7 +851,7 @@ var WSL = {
 
 	init_compare : function( invtnum,divId, fnFinish) {
 		ajaxStart();
-		console.log('start');
+		
 		// initialize languages selector on the given div
 		WSL.api.getCompare(function(data,success) {
 			$.ajax({
@@ -864,7 +864,7 @@ var WSL = {
 					$(divId).html(html);
 					fnFinish.call();
 					ajaxReady();
-					console.log('ready');
+					
 				},
 				dataType : 'text',
 			});
@@ -1063,4 +1063,3 @@ WSL.api.getMenu = function(success) {
 		method : 'getMenu'
 	}, success);
 };
-

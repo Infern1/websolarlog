@@ -348,6 +348,19 @@ switch ($method) {
 		break;
 	case 'getPageIndexValues':
 		$indexValues = $dataAdapter->readPageIndexData();
+		$lang = array();
+		$lang['someFigures'] 	= _("Some Figures");
+		$lang['by']			 	= _("By");
+		$lang['total'] 			= _("Total");
+		$lang['averages']	 	= _("Averages");
+		$lang['today'] 			= _("today");
+		$lang['week'] 			= _("week");
+		$lang['month'] 			= _("month");
+		$lang['year'] 			= _("year");
+		$lang['overall'] 		= _("overall");
+		$lang['allFiguresAreInKWH']= _("* All figures are in kWh");
+		
+		$data['lang'] = $lang;
 		$data['IndexValues'] = $indexValues;
 		break;
 	default:

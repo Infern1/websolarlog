@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WSL-Dutch\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-02 14:33+0100\n"
-"PO-Revision-Date: 2012-11-02 14:35+0100\n"
+"POT-Creation-Date: 2012-11-03 11:41+0100\n"
+"PO-Revision-Date: 2012-11-03 11:42+0100\n"
 "Last-Translator: a <a@a.nl>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -17,7 +17,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: server.php:65
-#: server.php:277
+#: server.php:281
+#: server.php:311
 msgid "Today"
 msgstr "Today"
 
@@ -33,37 +34,111 @@ msgstr "Maand"
 msgid "Year"
 msgstr "Jaar"
 
-#: server.php:278
+#: server.php:282
+#: server.php:312
 msgid "Max Grid Power"
 msgstr "Max Netwerk Vermogen"
 
-#: server.php:279
+#: server.php:283
+#: server.php:313
 msgid "date"
 msgstr "datum"
 
-#: server.php:280
+#: server.php:284
+#: server.php:314
 msgid "TotalKWh"
 msgstr "Totaal kWh"
 
-#: server.php:281
+#: server.php:285
+#: server.php:315
 msgid "Inv"
 msgstr "Inv."
 
-#: server.php:282
+#: server.php:286
+#: server.php:316
 msgid "kwh"
 msgstr "kWh"
 
-#: server.php:283
+#: server.php:287
+#: server.php:317
 msgid "History values"
 msgstr "Geschiedenis"
 
-#: server.php:284
+#: server.php:288
+#: server.php:318
 msgid "loading"
 msgstr "Laden"
 
-#: server.php:285
+#: server.php:289
+#: server.php:319
 msgid "watt"
 msgstr "Watt"
+
+#: server.php:352
+msgid "Some Figures"
+msgstr "Wat getallen"
+
+#: server.php:353
+msgid "By"
+msgstr "Per"
+
+#: server.php:354
+msgid "Total"
+msgstr "Totaal"
+
+#: server.php:355
+msgid "Averages"
+msgstr "Gemiddeld"
+
+#: server.php:356
+msgid "today"
+msgstr "Today"
+
+#: server.php:357
+msgid "week"
+msgstr "week"
+
+#: server.php:358
+msgid "month"
+msgstr "Maand"
+
+#: server.php:359
+msgid "year"
+msgstr "year"
+
+#: server.php:360
+msgid "overall"
+msgstr "Totaal"
+
+#: server.php:361
+msgid "* All figures are in kWh"
+msgstr "* Alle cijfer zijn in kWh"
+
+#: admin/admin-server.php:146
+#: admin/admin-server.php:153
+#: admin/admin-server.php:162
+msgid "Validation"
+msgstr "Valideren"
+
+#: admin/admin-server.php:147
+msgid "Old password is invalid:"
+msgstr "Het oude wachtwoord is onjuist:"
+
+#: admin/admin-server.php:154
+msgid "New password should be at least 6 characters"
+msgstr "Het nieuwe wachtwoord moet uit minimaal 6 karakters bestaan"
+
+#: admin/admin-server.php:163
+msgid "New passwords are not the same"
+msgstr "De nieuw ingevoerde wachtwoord zijn niet hetzelfde"
+
+#: admin/admin-server.php:170
+msgid "Success"
+msgstr "Opgeslagen"
+
+#: admin/admin-server.php:171
+msgid "Password successfully changed"
+msgstr "Wachtwoord opgeslagen"
 
 #: template/green/index.php:22
 msgid "Dashboard"
