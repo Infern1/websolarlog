@@ -1,7 +1,9 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<?php $config = new Config;
+<?php 
+Session::setLanguage("nl_NL");
+$config = new Config;
 $dataAdapter = new PDODataAdapter();
 $config = $dataAdapter->readConfig();
 ?>
