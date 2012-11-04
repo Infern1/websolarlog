@@ -353,9 +353,7 @@ class PDODataAdapter {
 	 * @return bean object
 	 */
 	public function readEvent($invtnum,$limit=10) {
-		$bean = R::findAll(
-				'event',
-				' ORDER BY ID LIMIT :limit ',
+		$bean = R::getAll('select * from event ORDER BY id DESC LIMIT :limit ',
 				array(':limit'=>$limit)
 		);
 

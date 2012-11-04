@@ -95,7 +95,40 @@ switch ($method) {
 // 		$data['menu'] = $menu;
 // 		break;
 	case 'getEvents':
-		$data['events'] = $dataAdapter->readAlarm($invtnum);
+		$events = $dataAdapter->readEvent($invtnum);
+		$resultEvents=array();
+		foreach ($events as $event){
+			
+			$order   = array("\r\n", "\n", "\r");
+			$replace = ' ';
+			// Processes \r\n's first so they aren't converted twice.
+			$eventText= str_replace($order, $replace, $event['Event']);
+			
+			$eventText = preg_split('/(Alarm)/', $eventText, -1, PREG_SPLIT_DELIM_CAPTURE);
+			
+			if(count($eventText)>1){
+				$eventText = $eventText[1].' '.substr($eventText[2],4,strlen($eventText[2]));
+			}else{
+				$eventText = trim($eventText[0]);
+			}
+			$event['time'] = date('d-m-Y H:i:s',$event['time']);
+			$event['Event'] = $eventText;
+			$newEvents[] = $event;
+		}
+		/*
+		Alarm 1: Grid Fail Warning 003 
+		Alarm\r\n2: Grid Fail Warning 003 
+		Alarm 3: Grid Fail Warning 003 
+		Alarm 4: Grid Fail\r\nWarning 003
+		*/
+		//var_dump($resultEvents);
+		$lang = array();
+		$lang['Time'] = _('Time');
+		$lang['Inverter'] = _('Inverter');
+		$lang['Events'] = _('Events');
+		$data['lang'] = $lang;
+		$data['events'] = $newEvents;
+		
 		break;
 	case 'getPlantInfo':
 		$config_invt="config/config_invt".$invtnum.".php";
@@ -189,6 +222,11 @@ switch ($method) {
 		$dayData->KWHTUnit = $lines->KWHTUnit;
 		$dayData->KWHKWP = $lines->KWHKWP;
 		$dayData->success = true;
+		$lang = array();
+		$lang['cumPowerW'] = _('cum. Power (W)');
+		$lang['avgPowerW'] = _('avg. Power (W)');
+		$lang['totalEnergy'] = _('total Energy');
+		$data['lang'] = $lang;
 		$data['dayData'] = $dayData;
 		break;
 	case 'getDetailsGraph':
@@ -344,6 +382,11 @@ switch ($method) {
 		break;
 	case 'getPageIndexLiveValues':
 		$indexValues = $dataAdapter->readPageIndexLiveValues();
+		$lang['DCPower'] 		= _("DC Power");
+		$lang['ACPower'] 		= _("AC Power");
+		$lang['Efficiency'] 	= _("Efficiency");
+		
+		$data['lang'] = $lang;
 		$data['IndexValues'] = $indexValues;
 		break;
 	case 'getPageIndexValues':

@@ -5,12 +5,16 @@ $.ajaxSetup({
 
 function ajaxReady(){
 
-	tooltip.pnotify_remove();	
+	tooltip.pnotify_remove();
+	 
+		// init tooltips
+		 $( '.tooltip' ).tooltip({});
 }
 
 function ajaxStart(){
 
-	tooltip.pnotify_display();	
+	tooltip.pnotify_display();
+	$('.ui-tooltip').remove();
 }
 
 var tooltip = $.pnotify({
@@ -132,60 +136,7 @@ var WSL = {
 		// initialize languages selector on the given div
 		ajaxStart();
 		WSL.api.getPageIndexLiveValues(function(data) {
-			var GP = 3600 / 10;
-			var gaugeGPOptions = {
-				title : 'AC Power',
-				grid : {
-					background : '#FFF'
-				},
-				seriesDefaults : {
-					renderer : $.jqplot.MeterGaugeRenderer,
-					rendererOptions : {
-						min : 0,
-						max : GP * 10,
-						padding : 0,
-						intervals : [ GP, GP * 2, GP * 3, GP * 4, GP * 5,
-								GP * 6, GP * 7, GP * 8, GP * 9, GP * 10 ],
-						intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
-								'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
-								'#4BFE78', '#0AFE47', '#01F33E' ]
-					}
-				}
-			};
-				var IP = 3600 / 10;
-				var gaugeIPOptions = {
-					title : 'DC Power',
-					grid : {
-						background : '#FFF'
-					},
-					seriesDefaults : {
-						renderer : $.jqplot.MeterGaugeRenderer,
-						rendererOptions : {
-							min : 0,
-							max : IP * 10,
-							padding : 0,
-							intervals : [ IP, IP * 2, IP * 3, IP * 4, IP * 5, IP * 6, IP * 7, IP * 8, IP * 9, IP * 10 ],
-							intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8','#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95','#4BFE78', '#0AFE47', '#01F33E' ]
-						}
-					}
-				};
-				var EFF = 100 / 10;
-				var gaugeEFFOptions = {
-					title : 'Efficiency',
-					grid : {
-						background : '#FFF'
-					},
-					seriesDefaults : {
-						renderer : $.jqplot.MeterGaugeRenderer,
-						rendererOptions : {
-							min : 0,
-							max : EFF * 10,
-							padding : 0,
-							intervals : [ EFF, EFF * 2, EFF * 3, EFF * 4, EFF * 5,EFF * 6, EFF * 7, EFF * 8, EFF * 9, EFF * 10 ],
-							intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8','#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95','#4BFE78', '#0AFE47', '#01F33E' ]
-						}
-					}
-				};
+			
 				$.ajax({
 					url : 'js/templates/liveInverters.hb',
 					success : function(source) {
@@ -196,10 +147,67 @@ var WSL = {
 						});
 						$(divId).html(html);
 						// remove frozen tooltips
-						 $('.ui-tooltip').remove();
-						// init tooltips
-						 $( document ).tooltip({});
+//						//////////////////////////////////////
+						//////////////////
+						console.log(data);
+						console.log(source);
+						var GP = 3600 / 10;
+						var gaugeGPOptions = {
+							title : data.lang.ACPower,
+							grid : {
+								background : '#FFF'
+							},
+							seriesDefaults : {
+								renderer : $.jqplot.MeterGaugeRenderer,
+								rendererOptions : {
+									min : 0,
+									max : GP * 10,
+									padding : 0,
+									intervals : [ GP, GP * 2, GP * 3, GP * 4, GP * 5,
+											GP * 6, GP * 7, GP * 8, GP * 9, GP * 10 ],
+									intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
+											'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
+											'#4BFE78', '#0AFE47', '#01F33E' ]
+								}
+							}
+						};
+							var IP = 3600 / 10;
+							var gaugeIPOptions = {
+								title : data.lang.DCPower,
+								grid : {
+									background : '#FFF'
+								},
+								seriesDefaults : {
+									renderer : $.jqplot.MeterGaugeRenderer,
+									rendererOptions : {
+										min : 0,
+										max : IP * 10,
+										padding : 0,
+										intervals : [ IP, IP * 2, IP * 3, IP * 4, IP * 5, IP * 6, IP * 7, IP * 8, IP * 9, IP * 10 ],
+										intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8','#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95','#4BFE78', '#0AFE47', '#01F33E' ]
+									}
+								}
+							};
+							var EFF = 100 / 10;
+							var gaugeEFFOptions = {
+								title : data.lang.Efficiency,
+								grid : {
+									background : '#FFF'
+								},
+								seriesDefaults : {
+									renderer : $.jqplot.MeterGaugeRenderer,
+									rendererOptions : {
+										min : 0,
+										max : EFF * 10,
+										padding : 0,
+										intervals : [ EFF, EFF * 2, EFF * 3, EFF * 4, EFF * 5,EFF * 6, EFF * 7, EFF * 8, EFF * 9, EFF * 10 ],
+										intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8','#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95','#4BFE78', '#0AFE47', '#01F33E' ]
+									}
+								}
+							};
 						
+						//////////////////
+						////////////////////////////////////////
 						var gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ],gaugeGPOptions);
 						gaugeGP.series[0].data = [ [ 'W',data.IndexValues.sum.GP ] ];
 						gaugeGP.series[0].label = data.IndexValues.sum.GP;
@@ -226,17 +234,19 @@ var WSL = {
 
 	init_events : function(invtnum, divId) {
 		// Retrieve the error events
-		ajaxStart();
+		//ajaxStart();
 		WSL.api.getEvents(invtnum, function(data) {
 			$.ajax({
 				url : 'js/templates/events.hb',
 				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
+						'lang' : data.lang,
 						'data' : data
 					});
+					
 					$(divId).html(html);
-					ajaxReady();
+					//ajaxReady();
 				},
 				dataType : 'text'
 			});
@@ -263,7 +273,6 @@ var WSL = {
 				alert(data.plantInfo.message);
 			}
 		});
-
 	},
 	init_menu : function(divId) {
 		ajaxStart();
@@ -487,47 +496,56 @@ var WSL = {
 
 	createDayGraph : function(invtnum, getDay, fnFinish) {
 		ajaxStart();
-		var graphOptions = {
-			series : [ {label:'Cum. Power',yaxis:'yaxis',showMarker:false},{label:'Avg. Power',yaxis:'y2axis'}],
-			axesDefaults : {useSeriesColor: true, tickRenderer : $.jqplot.CanvasAxisTickRenderer,},
-			animate: true,
-			legend : {
-			show : true,
-			location:"nw",
-			renderer: $.jqplot.EnhancedLegendRenderer,
-				 rendererOptions: {seriesToggle: 'normal',}
-			}, 
-			
-			axes : {
-				xaxis : {
-					label : '',
-					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-					renderer : $.jqplot.DateAxisRenderer,
-					tickInterval : '3600', // 1 hour
-					tickOptions : {angle : -30,formatString : '%H:%M'}
-				},
-				yaxis : {
-					label : 'Cum. Power(W)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer
-				},
-				y2axis : {
-					label : 'Avg. Power(W)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer
-				}
-			}, 
-			seriesDefaults: {
-		          rendererOptions: {smooth: true}
-		      },
-			highlighter : {
-				tooltipContentEditor: tooltipContentEditor,show : true,yvalues:4,tooltipLocation:'n'
-			},
-			cursor : {
-				show : false
-			}
-		};
+		
 		$.ajax({
 			url : "server.php?method=getGraphPoints&type="+ getDay +"&invtnum=" + invtnum,
 			method : 'GET',
 			dataType : 'json',
 			success : function(result) {
+				
+				////////////////////////////////////////
+				/////////////
+				
+				var graphOptions = {
+						series : [ {label:result.lang.cumPowerW,yaxis:'yaxis',showMarker:false},{label:result.lang.avgPowerW,yaxis:'y2axis'}],
+						axesDefaults : {useSeriesColor: true, tickRenderer : $.jqplot.CanvasAxisTickRenderer,},
+						animate: true,
+						legend : {
+						show : true,
+						location:"nw",
+						renderer: $.jqplot.EnhancedLegendRenderer,
+							 rendererOptions: {seriesToggle: 'normal',}
+						}, 
+						
+						axes : {
+							xaxis : {
+								label : '',
+								labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+								renderer : $.jqplot.DateAxisRenderer,
+								tickInterval : '3600', // 1 hour
+								tickOptions : {angle : -30,formatString : '%H:%M'}
+							},
+							yaxis : {
+								label : result.lang.cumPowerW,min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer
+							},
+							y2axis : {
+								label : result.lang.avgPowerW,min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer
+							}
+						}, 
+						seriesDefaults: {
+					          rendererOptions: {smooth: true}
+					      },
+						highlighter : {
+							tooltipContentEditor: tooltipContentEditor,show : true,yvalues:4,tooltipLocation:'n'
+						},
+						cursor : {
+							show : false
+						}
+					};
+				
+				/////////////
+				////////////////////////////////////////
+				
 				var dataDay1 = [];
 				var dataDay2 = [];
 				if (result.dayData) {
@@ -541,7 +559,11 @@ var WSL = {
     				    graphOptions.axes.xaxis.min = dataDay1[0][0];
     				}
     				handle = $.jqplot('graph' + getDay + 'Content', [ dataDay1,dataDay2 ], graphOptions);
-    				mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">Total energy ' + getDay.toLowerCase() + ': ' + result.dayData.valueKWHT +' '+result.dayData.KWHTUnit+' ('+result.dayData.KWHKWP+' kWh/kWp)</div>').insertAfter('#graph' + getDay + ' .jqplot-grid-canvas');
+    				mytitle = 
+    					$('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+
+    							result.lang.totalEnergy+': ' + result.dayData.valueKWHT +
+    							' '+result.dayData.KWHTUnit+' ('+result.dayData.KWHKWP+' kWh/kWp)</div>').insertAfter('#graph' + 
+    									getDay + ' .jqplot-grid-canvas');
     				fnFinish.call(this, handle);
     				ajaxReady();
 				}
@@ -714,7 +736,7 @@ var WSL = {
     				var axesMargin = Math.round(maxAxesValue/100)*10;
     				graphOptions.axes.yaxis.max = maxAxesValue+axesMargin;
     				graphOptions.axes.y2axis.max = maxAxesValue+axesMargin;
-    				
+
     				maxAxesValue = Math.max(Math.round(dataDay3[11][1]/100)*100,Math.round(dataDay4[11][1]/100)*100);
     				var axesMargin = Math.round(maxAxesValue/100)*10;
     				graphOptions.axes.y3axis.max = maxAxesValue+axesMargin;
@@ -900,7 +922,6 @@ var WSL = {
 					rendererOptions: {
 						seriesToggle: 'normal',
 						numberRows: 1,
-						// seriesToggleReplot: {resetAxes:["yaxis"]}
 				}}, 
 				seriesDefaults:{rendererOptions: {barMargin: 10,barWidth:10},pointLabels: {show: false},},				
 	            axes: {

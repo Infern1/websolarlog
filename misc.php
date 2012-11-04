@@ -6,15 +6,12 @@ require_once("template/" . $template . "/index.php");
 ?>
 
 	<script type="text/javascript">
-    // Make sure the page is loaded
 	$(function(){
 		WSL.init_tabs("index","#main-middle",
-			function(){
-				$('#tabs').tabs({ selected: 0 });
-				WSL.init_nextRelease("#columns"); // Initial load fast
-				window.setInterval(function(){WSL.init_nextRelease("#columns");}, 300000); // every 3 seconds
-    		}
-		)
+				function(){WSL.init_events(1,"#columns"); // Initial load fast
+		});
+		
+
 	});
 	</script>
 	
