@@ -758,44 +758,41 @@ var WSL = {
 
 		var graphOptions = {
 				series:[
-	          {yaxis:'y7axis',label:'aa'},// 0
+	          {yaxis:'yaxis'},// 0
 	          {yaxis:'y2axis'},// 1
 	          {yaxis:'y3axis'},// 2
 	          {yaxis:'y4axis'},// 3
-	          {yaxis:'y7axis'},// 4
-	          {yaxis:'y3axis'},// 5
-	          {yaxis:'y5axis'},// 6
-	          {yaxis:'yaxis'},// 7
+	          {yaxis:'yaxis'},// 4
+	          {yaxis:'y2axis'},// 5
+	          {yaxis:'y3axis'},// 6
+	          {yaxis:'y5axis'},// 7
 	          {yaxis:'yaxis'},// 8
-	          {yaxis:'yaxis'},// 9
-	          {yaxis:'yaxis'},// 10
-	          {yaxis:'y4axis'}// 11
+	          {yaxis:'y2axis'},// 9
+	          {yaxis:'y3axis'},// 10
+	          {yaxis:'y5axis'},// 11
+	          {yaxis:'y7axis'},// 12
+	          {yaxis:'y6axis'},// 13
+	          {yaxis:'y6axis'}// 13
 	          ],
 				axesDefaults : {useSeriesColor: true },legend : {show: true, location: 's', placement: 'outsideGrid',renderer: $.jqplot.EnhancedLegendRenderer,rendererOptions: {seriesToggle: 'normal',numberRows: 2,// seriesToggleReplot:
 																																																						// {resetAxes:["yaxis"]}
 				}}, 
 				seriesDefaults:{rendererOptions: {barMargin: 40,barWidth:10},pointLabels: {show: false},},
-				axes : {xaxis : {label : '',labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,tickInterval : '3600', /*
-																																							 * 1
-																																							 * hour
-																																							 */ tickOptions : {angle : -30,formatString : '%H:%M'}},
+				axes : {xaxis : {label : '',labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,tickInterval : '3600', /*1 hour*/ 
+					tickOptions : {angle : -30,formatString : '%H:%M'}},
 					yaxis : {label:'Power',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
 					y2axis : {label:'Voltage',min : 100,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y3axis : {label:'Ampere',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
+					y3axis : {label:'Ampere',min : 0,max:20,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
 					y4axis : {label:'Frequency',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
 					y5axis : {label:'Ratio',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
 					y6axis : {label:'Temperature',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y7axis : {label:'Power',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true}
+					y7axis : {label:'Efficiency',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true}
 				},
 				highlighter : {tooltipContentEditor: tooltipDetailsContentEditor,show : true}
 		};
-
 		$.ajax({
-			url : "server.php?method=getDetailsGraph&invtnum=" + invtnum,
-			method : 'GET',
-			dataType : 'json',
+			url : "server.php?method=getDetailsGraph&invtnum=" + invtnum,method : 'GET',dataType : 'json',
 			success : function(result) {
-				
 				if (result.dayData.data) {
 					var seriesLabels= [];
 					var seriesData = [];
@@ -808,6 +805,29 @@ var WSL = {
 						seriesLabels.push(line);
 						seriesData.push(json);
 					}
+					var maxP = result.dayData.max.P;
+					graphOptions.axes.yaxis.max = maxP+((maxP/100)*10);
+					graphOptions.axes.y7axis.max = maxP+((maxP/100)*10);
+					
+					var maxV = result.dayData.max.V;
+					graphOptions.axes.y2axis.max = maxV+((maxV/100)*10);
+					
+					var maxA = result.dayData.max.A;
+					graphOptions.axes.y3axis.max = maxA+((maxA/100)*10);
+					
+					var maxFRQ = result.dayData.max.FRQ;
+					graphOptions.axes.y4axis.max = maxFRQ+((maxFRQ/100)*10);
+					
+					var maxRatio = result.dayData.max.Ratio;
+					(!maxRatio)? maxRatio = 10:maxRatio = maxRatio;
+					graphOptions.axes.y5axis.max = maxRatio+((maxRatio/100)*10);
+					
+					var maxT = result.dayData.max.T;
+					graphOptions.axes.y6axis.max = maxT+((maxT/100)*10);
+					
+					var maxEFF = result.dayData.max.EFF;
+					graphOptions.axes.y7axis.max = maxEFF+((maxEFF/100)*10);
+					
 					switches = result.dayData.switches;
 
 					$("#main-middle").prepend('<div id="detailsGraph"></div>');
@@ -815,7 +835,9 @@ var WSL = {
 
 					graphOptions.axes.xaxis.min = seriesData[0][0][0];
     				graphOptions.legend.labels = result.dayData['labels'];
+    				
     				handle = $.jqplot("detailsGraph",seriesData, graphOptions);
+    				$('jqplot-axis').attr('width', 40);
     				$('table.jqplot-table-legend').attr('class', 'jqplot-table-legend-custom');
     				
 					$.ajax({

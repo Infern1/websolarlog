@@ -1021,41 +1021,70 @@ class PDODataAdapter {
 		foreach($beans as $bean){
 			$bean['time'] =$bean['time']*1000;
 			$live->GP[] 	= array($bean['time'],(float)$bean['GP']);
+			($bean['GP'] > $max['P'])? $max['P'] = (float)$bean['GP'] : $max['P'] = $max['P']; 
+			
 			$live->GV[] 	= array($bean['time'],(float)$bean['GV']);
+			($bean['GV'] > $max['V'])? $max['V'] = (float)$bean['GV'] : $max['V'] = $max['V'];
+			
 			$live->GA[] 	= array($bean['time'],(float)$bean['GA']);
+			($bean['GA'] > $max['A'])? $max['A'] = (float)$bean['GA'] : $max['A'] = $max['A'];
+			
 			$live->FRQ[] 	= array($bean['time'],(float)$bean['FRQ']);
+			($bean['FRQ'] > $max['FRQ'])? $max['FRQ'] = (float)$bean['FRQ'] : $max['FRQ'] = $max['FRQ'];
+			
 			$live->I1P[] 	= array($bean['time'],(float)$bean['I1P']);
-
+			($bean['I1P'] > $max['P'])? $max['P'] = (float)$bean['I1P'] : $max['P'] = $max['P'];
+			
 			$live->I1V[] 	= array($bean['time'],(float)$bean['I1V']);
+			($bean['I1V'] > $max['V'])? $max['V'] = (float)$bean['I1V'] : $max['V'] = $max['V'];
+			
 			$live->I1A[] 	= array($bean['time'],(float)$bean['I1A']);
+			($bean['I1A'] > $max['A'])? $max['A'] = (float)$bean['I1A'] : $max['A'] = $max['A'];
+			
 			$live->I1Ratio[]= array($bean['time'],(float)$bean['I1Ratio']);
+			($bean['I1Ratio'] > $max['Ratio'])? $max['Ratio'] = (float)$bean['I1Ratio'] : $max['Ratio'] = $max['Ratio'];
+			
 			$live->I2P[] 	= array($bean['time'],(float)$bean['I2P']);
+			($bean['I2P'] > $max['P'])? $max['P'] = (float)$bean['I2P'] : $max['P'] = $max['P'];
+			
 			$live->I2V[] 	= array($bean['time'],(float)$bean['I2V']);
+			($bean['I2V'] > $max['V'])? $max['V'] = (float)$bean['I2V'] : $max['V'] = $max['V'];
+			
 			$live->I2A[] 	= array($bean['time'],(float)$bean['I2A']);
+			($bean['I2A'] > $max['A'])? $max['A'] = (float)$bean['I2A'] : $max['A'] = $max['A'];
+			
 			$live->I2Ratio[]= array($bean['time'],(float)$bean['I2Ratio']);
+			($bean['I2Ratio'] > $max['Ratio'])? $max['Ratio'] = (float)$bean['I2Ratio'] : $max['Ratio'] = $max['Ratio'];
+			
 			$live->EFF[] 	= array($bean['time'],(float)$bean['EFF']);
+			($bean['EFF'] > $max['EFF'])? $max['EFF'] = (float)$bean['EFF'] : $max['EFF'] = $max['EFF'];
+			
 			$live->BOOT[]	= array($bean['time'],(float)$bean['BOOT']);
+			($bean['BOOT'] > $max['T'])? $max['T'] = (float)$bean['BOOT'] : $max['T'] = $max['T'];
+			
 			$live->INVT[] 	= array($bean['time'],(float)$bean['INVT']);
+			($bean['INVT'] > $max['T'])? $max['T'] = (float)$bean['INVT'] : $max['T'] = $max['T'];
 		}
-		if(!$beans){
-			$live->GP[] 	= array(time()*1000,0);
-			$live->GV[] 	= array(time()*1000,0);
-			$live->GA[] 	= array(time()*1000,0);
-			$live->FRQ[] 	= array(time()*1000,0);
-			$live->I1P[] 	= array(time()*1000,0);
-			$live->I1V[] 	= array(time()*1000,0);
-			$live->I1A[] 	= array(time()*1000,0);
-			$live->I1Ratio[]= array(time()*1000,0);
-			$live->I2P[] 	= array(time()*1000,0);
-			$live->I2V[] 	= array(time()*1000,0);
-			$live->I2A[] 	= array(time()*1000,0);
-			$live->I2Ratio[]= array(time()*1000,0);
-			$live->EFF[] 	= array(time()*1000,0);
-			$live->BOOT[]	= array(time()*1000,0);
-			$live->INVT[] 	= array(time()*1000,0);
-		}
+		
 
-		return array("details"=>$live,"labels"=>$labels,"switches"=>$switches);
+		if(!$beans){
+			$live->GP[] 	= array(time()*1000,0);//0
+			$live->GV[] 	= array(time()*1000,0);//1
+			$live->GA[] 	= array(time()*1000,0);//2
+			$live->FRQ[] 	= array(time()*1000,0);//3
+			$live->I1P[] 	= array(time()*1000,0);//4
+			$live->I1V[] 	= array(time()*1000,0);//5
+			$live->I1A[] 	= array(time()*1000,0);//6
+			$live->I1Ratio[]= array(time()*1000,0);//7
+			$live->I2P[] 	= array(time()*1000,0);//8
+			$live->I2V[] 	= array(time()*1000,0);//9
+			$live->I2A[] 	= array(time()*1000,0);//10
+			$live->I2Ratio[]= array(time()*1000,0);//11
+			$live->EFF[] 	= array(time()*1000,0);//12
+			$live->BOOT[]	= array(time()*1000,0);//13
+			$live->INVT[] 	= array(time()*1000,0);//14
+		}
+		return array("details"=>$live,"labels"=>$labels,"switches"=>$switches,"max"=>$max);
 	}
 
 	/**
