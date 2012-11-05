@@ -972,24 +972,24 @@ class PDODataAdapter {
 					array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}
 		$historyColumns = R::getColumns('history');
-		$labels[]= "Grid P";
-		$labels[]= "Grid V";
-		$labels[]= "Grid A";
-		$labels[]= "Grid Freq.";
+		$labels[]= _('Grid')." "._('Power');
+		$labels[]= _('Grid')." "._('Voltage');
+		$labels[]= _('Grid')." "._('Amps');
+		$labels[]= _('Grid')." "._('Frequency');
 
-		$labels[]= "MPP1 P";
-		$labels[]= "MPP1 V";
-		$labels[]= "MPP1 A";
-		$labels[]= "MPP1 Ratio";
+		$labels[]= "MPP1 "._('Power');
+		$labels[]= "MPP1 "._('Voltage');
+		$labels[]= "MPP1 "._('Amps');
+		$labels[]= "MPP1 "._('Ratio');
 
-		$labels[]= "MPP2 P";
-		$labels[]= "MPP2 V";
-		$labels[]= "MPP2 A";
-		$labels[]= "MPP2 Ratio";
+		$labels[]= "MPP2 "._('Power');
+		$labels[]= "MPP2 "._('Voltage');;
+		$labels[]= "MPP2 "._('Amps');
+		$labels[]= "MPP2 "._('Ratio');
 
-		$labels[]= "DC>AC Efficiency";
-		$labels[]= "Boos. Temp.";
-		$labels[]= "Inv. Temp.";
+		$labels[]= "DC>AC "._('Efficiency');
+		$labels[]= "Boos. "._('Temperature');
+		$labels[]= "Inv. "._('Temperature');
 
 		$switches['P'][] = 0;
 		$switches['P'][] = 4;
@@ -1304,7 +1304,8 @@ class PDODataAdapter {
 
 		// if $type
 		(stristr(strtolower($type), 'day') === FALSE) ?	$table = "energy" : $table = "history";
-
+		
+		
 		$beans = $this->readTablesPeriodValues($invtnum, $table, $type, $startDate);
 		if(strtolower($table) == "history"){
 			// NO history bean? Create a dummy bean...

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WSL-Dutch\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-04 13:09+0100\n"
-"PO-Revision-Date: 2012-11-04 13:09+0100\n"
+"POT-Creation-Date: 2012-11-05 21:17+0100\n"
+"PO-Revision-Date: 2012-11-05 21:19+0100\n"
 "Last-Translator: a <a@a.nl>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -17,8 +17,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: server.php:65
-#: server.php:319
-#: server.php:349
+#: server.php:330
+#: server.php:360
 msgid "Today"
 msgstr "Today"
 
@@ -46,107 +46,144 @@ msgstr "Omvormer"
 msgid "Events"
 msgstr "Meldingen"
 
-#: server.php:226
+#: server.php:222
 msgid "cum. Power (W)"
 msgstr "cum. Vermogen(W)"
 
-#: server.php:227
+#: server.php:223
 msgid "avg. Power (W)"
 msgstr "gem. Vermogen (W)"
 
-#: server.php:228
+#: server.php:224
+msgid "harvested (W)"
+msgstr "Opgewekt (W)"
+
+#: server.php:225
+msgid "cumulative (W)"
+msgstr "cumulatief (W)"
+
+#: server.php:226
 msgid "total Energy"
 msgstr "totaal opgewekt vermogen"
 
-#: server.php:320
-#: server.php:350
-msgid "Max Grid Power"
-msgstr "Max Netwerk Vermogen"
+#: server.php:245
+msgid "Show or hide graph groups:"
+msgstr "Tonen of verbergen grafiek groepen:"
 
-#: server.php:321
-#: server.php:351
-msgid "date"
-msgstr "datum"
+#: server.php:246
+msgid "Power"
+msgstr "Vermogen"
 
-#: server.php:322
-#: server.php:352
-msgid "TotalKWh"
-msgstr "Totaal kWh"
+#: server.php:247
+msgid "Voltage"
+msgstr "Spanning"
 
-#: server.php:323
-#: server.php:353
-msgid "Inv"
-msgstr "Inv."
+#: server.php:248
+msgid "Amps"
+msgstr "Stroom"
 
-#: server.php:324
-#: server.php:354
-msgid "kwh"
-msgstr "kWh"
+#: server.php:249
+msgid "Frequency"
+msgstr "Frequentie"
 
-#: server.php:325
-#: server.php:355
-msgid "History values"
-msgstr "Geschiedenis"
+#: server.php:250
+msgid "Ratio"
+msgstr "Ratio"
 
-#: server.php:326
-#: server.php:356
-msgid "loading"
-msgstr "Laden"
+#: server.php:251
+msgid "Temperature"
+msgstr "Temperatuur"
 
-#: server.php:327
-#: server.php:357
-msgid "watt"
-msgstr "Watt"
-
-#: server.php:385
-msgid "DC Power"
-msgstr "DC vermogen"
-
-#: server.php:386
-msgid "AC Power"
-msgstr "AC Vermogen"
-
-#: server.php:387
+#: server.php:252
+#: server.php:398
 msgid "Efficiency"
 msgstr "Efficiëntie"
 
-#: server.php:395
+#: server.php:331
+#: server.php:361
+msgid "Max Grid Power"
+msgstr "Max Netwerk Vermogen"
+
+#: server.php:332
+#: server.php:362
+msgid "date"
+msgstr "datum"
+
+#: server.php:333
+#: server.php:363
+msgid "TotalKWh"
+msgstr "Totaal kWh"
+
+#: server.php:334
+#: server.php:364
+msgid "Inv"
+msgstr "Inv."
+
+#: server.php:335
+#: server.php:365
+msgid "kwh"
+msgstr "kWh"
+
+#: server.php:336
+#: server.php:366
+msgid "History values"
+msgstr "Geschiedenis"
+
+#: server.php:337
+#: server.php:367
+msgid "loading"
+msgstr "Laden"
+
+#: server.php:338
+#: server.php:368
+msgid "watt"
+msgstr "Watt"
+
+#: server.php:396
+msgid "DC Power"
+msgstr "DC vermogen"
+
+#: server.php:397
+msgid "AC Power"
+msgstr "AC Vermogen"
+
+#: server.php:406
 msgid "Some Figures"
 msgstr "Wat getallen"
 
-#: server.php:396
+#: server.php:407
 msgid "By"
 msgstr "Per"
 
-#: server.php:397
+#: server.php:408
 msgid "Total"
 msgstr "Totaal"
 
-#: server.php:398
+#: server.php:409
 msgid "Averages"
 msgstr "Gemiddeld"
 
-#: server.php:399
+#: server.php:410
 msgid "today"
 msgstr "Today"
 
-#: server.php:400
+#: server.php:411
 msgid "week"
 msgstr "week"
 
-#: server.php:401
+#: server.php:412
 msgid "month"
 msgstr "Maand"
 
-#: server.php:402
+#: server.php:413
 msgid "year"
 msgstr "year"
 
-#: server.php:403
+#: server.php:414
 msgid "overall"
 msgstr "Totaal"
 
-#: server.php:404
+#: server.php:415
 msgid "* All figures are in kWh"
 msgstr "* Alle cijfer zijn in kWh"
 
@@ -175,6 +212,13 @@ msgstr "Opgeslagen"
 #: admin/admin-server.php:171
 msgid "Password successfully changed"
 msgstr "Wachtwoord opgeslagen"
+
+#: classes/PDODataAdapter.php:975
+#: classes/PDODataAdapter.php:976
+#: classes/PDODataAdapter.php:977
+#: classes/PDODataAdapter.php:978
+msgid "Grid"
+msgstr "Net"
 
 #: template/green/index.php:22
 msgid "Dashboard"

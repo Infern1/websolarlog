@@ -210,11 +210,7 @@ switch ($method) {
 	case 'getGraphPoints':
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
-		($type==0)? $type = 'Today' : $type=$type;
-		($type==1)? $type = 'Yesterday' : $type=$type;
-		($type==2)? $type = 'Month' : $type=$type;
-		($type==3)? $type = 'Year' : $type=$type;
-		
+
 		$lines = $dataAdapter->getGraphPoint(1, $type, "");
 		$dayData = new DayDataResult();
 		$dayData->data = $lines->points;
@@ -225,6 +221,8 @@ switch ($method) {
 		$lang = array();
 		$lang['cumPowerW'] = _('cum. Power (W)');
 		$lang['avgPowerW'] = _('avg. Power (W)');
+		$lang['harvested'] = _('harvested (W)');
+		$lang['cumulative'] = _('cumulative (W)');
 		$lang['totalEnergy'] = _('total Energy');
 		$data['lang'] = $lang;
 		$data['dayData'] = $dayData;
@@ -242,6 +240,18 @@ switch ($method) {
 		$dayData->labels = $lines['labels'];
 		$dayData->switches = $lines['switches'];
 		$dayData->max = $lines['max'];
+		
+		$lang = array();
+		$lang['showHideGroups'] = _('Show or hide graph groups:');
+		$lang['P'] = _('Power');
+		$lang['V'] = _('Voltage');
+		$lang['A'] = _('Amps');
+		$lang['F'] = _('Frequency');
+		$lang['R'] = _('Ratio');
+		$lang['T'] = _('Temperature');
+		$lang['E'] = _('Efficiency');
+		$data['lang'] = $lang;
+		
 		$dayData->success = true;
 		$data['dayData'] = $dayData;
 		break;

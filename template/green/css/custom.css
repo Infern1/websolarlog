@@ -6,8 +6,13 @@
     display: block;
     overflow: hidden;
 }
+
+#header{
+	padding:13px 0 11px 29px;
+}
+
 table.jqplot-table-legend-custom{
-	width:800px;
+	width:870px;
 }
 
 .alert {

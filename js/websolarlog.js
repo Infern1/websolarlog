@@ -149,8 +149,7 @@ var WSL = {
 						// remove frozen tooltips
 //						//////////////////////////////////////
 						//////////////////
-						console.log(data);
-						console.log(source);
+
 						var GP = 3600 / 10;
 						var gaugeGPOptions = {
 							title : data.lang.ACPower,
@@ -573,56 +572,6 @@ var WSL = {
 
 	createPeriodGraph : function(invtnum, type, count, divId, fnFinish) {
 		ajaxStart();
-		var graphDayPeriodOptions = {
-				
-				series : [
-				          {label:'Harvested',yaxis:'yaxis',showMarker:false,renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
-				          {label:'Cumulative',yaxis:'y2axis', pointLabels: {show: false}}
-				          ],
-				seriesDefaults : {
-				labelOptions:{formatString: '%d-%' ,fontSize: '20pt'},
-				rendererOptions : {fillToZero : true,barWidth : 5},
-				showMarker : false,
-		        pointLabels: {show: true,formatString: '%s'},
-			},
-			axesDefaults : {
-				useSeriesColor: true, 
-				tickRenderer : $.jqplot.CanvasAxisTickRenderer,
-				tickOptions : {angle : -30,fontSize : '10pt'}
-			},
-			legend : {
-				show : true,
-				 renderer: $.jqplot.EnhancedLegendRenderer,
-				 rendererOptions: {seriesToggle: 'normal',location: 's', placement: 'outsideGrid',numberRows:1}, 
-			},
-			highlighter : {
-				tooltipContentEditor: tooltipPeriodContentEditor,
-				show : true,
-				yvalues:4,
-				tooltipLocation:'n'
-			},
-			axes : {
-				// Use a category axis on the x axis and use our custom ticks.
-				xaxis : {
-					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-					renderer : $.jqplot.DateAxisRenderer,
-					angle : -30,
-					tickOptions : {
-						formatString : '%d-%m'
-					}
-				},
-				yaxis : {
-					label : 'Harvested',
-					min : 0,
-					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
-				},
-				y2axis : {
-					label : 'Cumulative',
-					min : 0,
-					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
-				}
-			}
-		};
 
 		
 		$.ajax({
@@ -640,6 +589,60 @@ var WSL = {
 					dayData2.push([ object[0], object[3], object[2]]);
 					i +=1;
 				}
+
+				var graphDayPeriodOptions = {
+						
+						series : [
+						          {label:result.lang.harvested,yaxis:'yaxis',showMarker:false,renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
+						          {label:result.lang.cumulative,yaxis:'y2axis', pointLabels: {show: false}}
+						          ],
+						seriesDefaults : {
+						labelOptions:{formatString: '%d-%' ,fontSize: '20pt'},
+						rendererOptions : {fillToZero : true,barWidth : 5},
+						showMarker : false,
+				        pointLabels: {show: true,formatString: '%s'},
+					},
+					axesDefaults : {
+						useSeriesColor: true, 
+						tickRenderer : $.jqplot.CanvasAxisTickRenderer,
+						tickOptions : {angle : -30,fontSize : '10pt'}
+					},
+					legend : {
+						show : true,
+						 renderer: $.jqplot.EnhancedLegendRenderer,
+						 rendererOptions: {seriesToggle: 'normal',location: 's', placement: 'outsideGrid',numberRows:1}, 
+					},
+					highlighter : {
+						tooltipContentEditor: tooltipPeriodContentEditor,
+						show : true,
+						yvalues:4,
+						tooltipLocation:'n'
+					},
+					axes : {
+						// Use a category axis on the x axis and use our custom ticks.
+						xaxis : {
+							labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+							renderer : $.jqplot.DateAxisRenderer,
+							angle : -30,
+							tickOptions : {
+								formatString : '%d-%m'
+							}
+						},
+						yaxis : {
+							label : result.lang.harvested,
+							min : 0,
+							labelRenderer : $.jqplot.CanvasAxisLabelRenderer
+						},
+						y2axis : {
+							label : result.lang.cumulative,
+							min : 0,
+							labelRenderer : $.jqplot.CanvasAxisLabelRenderer
+						}
+					}
+				};
+
+				
+				
 				graphDayPeriodOptions.axes.xaxis.min = result.dayData.data[0][2];
 				graphDayPeriodOptions.axes.xaxis.max = result.dayData.data[i-1][2];
 				var plot = $.jqplot(divId, [ dayData1,dayData2 ], graphDayPeriodOptions).destroy();
@@ -755,41 +758,6 @@ var WSL = {
 	},
 
 	createDetailsGraph : function(invtnum, divId) {
-
-		var graphOptions = {
-				series:[
-	          {yaxis:'yaxis'},// 0
-	          {yaxis:'y2axis'},// 1
-	          {yaxis:'y3axis'},// 2
-	          {yaxis:'y4axis'},// 3
-	          {yaxis:'yaxis'},// 4
-	          {yaxis:'y2axis'},// 5
-	          {yaxis:'y3axis'},// 6
-	          {yaxis:'y5axis'},// 7
-	          {yaxis:'yaxis'},// 8
-	          {yaxis:'y2axis'},// 9
-	          {yaxis:'y3axis'},// 10
-	          {yaxis:'y5axis'},// 11
-	          {yaxis:'y7axis'},// 12
-	          {yaxis:'y6axis'},// 13
-	          {yaxis:'y6axis'}// 13
-	          ],
-				axesDefaults : {useSeriesColor: true },legend : {show: true, location: 's', placement: 'outsideGrid',renderer: $.jqplot.EnhancedLegendRenderer,rendererOptions: {seriesToggle: 'normal',numberRows: 2,// seriesToggleReplot:
-																																																						// {resetAxes:["yaxis"]}
-				}}, 
-				seriesDefaults:{rendererOptions: {barMargin: 40,barWidth:10},pointLabels: {show: false},},
-				axes : {xaxis : {label : '',labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,tickInterval : '3600', /*1 hour*/ 
-					tickOptions : {angle : -30,formatString : '%H:%M'}},
-					yaxis : {label:'Power',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y2axis : {label:'Voltage',min : 100,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y3axis : {label:'Ampere',min : 0,max:20,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y4axis : {label:'Frequency',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y5axis : {label:'Ratio',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y6axis : {label:'Temperature',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true},
-					y7axis : {label:'Efficiency',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true}
-				},
-				highlighter : {tooltipContentEditor: tooltipDetailsContentEditor,show : true}
-		};
 		$.ajax({
 			url : "server.php?method=getDetailsGraph&invtnum=" + invtnum,method : 'GET',dataType : 'json',
 			success : function(result) {
@@ -805,6 +773,45 @@ var WSL = {
 						seriesLabels.push(line);
 						seriesData.push(json);
 					}
+					var lang = result.lang;
+					var graphOptions = {
+							series:[
+				          {yaxis:'yaxis'},// 0
+				          {yaxis:'y2axis'},// 1
+				          {yaxis:'y3axis'},// 2
+				          {yaxis:'y4axis'},// 3
+				          {yaxis:'yaxis'},// 4
+				          {yaxis:'y2axis'},// 5
+				          {yaxis:'y3axis'},// 6
+				          {yaxis:'y5axis'},// 7
+				          {yaxis:'yaxis'},// 8
+				          {yaxis:'y2axis'},// 9
+				          {yaxis:'y3axis'},// 10
+				          {yaxis:'y5axis'},// 11
+				          {yaxis:'y7axis'},// 12
+				          {yaxis:'y6axis'},// 13
+				          {yaxis:'y6axis'}// 13
+				          ],
+							axesDefaults : {useSeriesColor: true },legend : {show: true, location: 's', placement: 'outsideGrid',renderer: $.jqplot.EnhancedLegendRenderer,rendererOptions: {seriesToggle: 'normal',numberRows: 3,// seriesToggleReplot:
+																																																									// {resetAxes:["yaxis"]}
+							}}, 
+							seriesDefaults:{
+								tickOptions : {
+									formatString: '%d'
+								},
+								rendererOptions: {barMargin: 40,barWidth:10},pointLabels: {show: false},},
+							axes : {xaxis : {label : '',labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,tickInterval : '3600', /*1 hour*/ 
+								tickOptions : {angle : -30,formatString : '%H:%M'}},
+								yaxis : {label:lang.P,min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true,tickOptions:{formatString:'%.0f'}},
+								y2axis : {label:lang.V,min : 100,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true,tickOptions:{formatString:'%.0f'}},
+								y3axis : {label:lang.A,min : 0,max:20,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true,tickOptions:{formatString:'%.0f'}},
+								y4axis : {label:lang.F,min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true,tickOptions:{formatString:'%.0f'}},
+								y5axis : {label:lang.R,min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true,tickOptions:{formatString:'%.0f'}},
+								y6axis : {label:lang.T,min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true,tickOptions:{formatString:'%.0f'}},
+								y7axis : {label:lang.E,min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true,tickOptions:{formatString:'%.0f'}}
+							},
+							highlighter : {tooltipContentEditor: tooltipDetailsContentEditor,show : true}
+					};
 					var maxP = result.dayData.max.P;
 					graphOptions.axes.yaxis.max = maxP+((maxP/100)*10);
 					graphOptions.axes.y7axis.max = maxP+((maxP/100)*10);
@@ -823,9 +830,11 @@ var WSL = {
 					graphOptions.axes.y5axis.max = maxRatio+((maxRatio/100)*10);
 					
 					var maxT = result.dayData.max.T;
+					
 					graphOptions.axes.y6axis.max = maxT+((maxT/100)*10);
 					
 					var maxEFF = result.dayData.max.EFF;
+					(!maxEFF)? maxEFF = 10:maxEFF = maxEFF;
 					graphOptions.axes.y7axis.max = maxEFF+((maxEFF/100)*10);
 					
 					switches = result.dayData.switches;
@@ -837,15 +846,17 @@ var WSL = {
     				graphOptions.legend.labels = result.dayData['labels'];
     				
     				handle = $.jqplot("detailsGraph",seriesData, graphOptions);
-    				$('jqplot-axis').attr('width', 40);
+    				
     				$('table.jqplot-table-legend').attr('class', 'jqplot-table-legend-custom');
+    				$('table.jqplot-table-legend-custom').attr('left', 40);
     				
 					$.ajax({
 						url : 'js/templates/detailsSwitches.hb',
 						success : function(source) {
 							var template = Handlebars.compile(source);
 							var html = template({
-								'data' : ''
+								'data' : '',
+								'lang' :lang
 							});
 							$('#detailsGraph').before(html);
 						},
@@ -857,34 +868,27 @@ var WSL = {
     				     if(id == 'every'){
     				    	 if($(this).is(':checked')){
     				    		 for (var i=0; i<handle.series.length; i++) {
-    				    			 handle.series[i].show = true; // i is an
-																	// integer
+    				    			 handle.series[i].show = true; // i is an integer
     				    		 } 
     				    		 $('input:checkbox').attr('checked', true);
     				    	 }else{ 
     				    		 for (var i=0; i<handle.series.length; i++) {
-    				    			 handle.series[i].show = false; // i is an
-																	// integer
+    				    			 handle.series[i].show = false; // i is an integer
     				    		 }
     				    		 $('input:checkbox').attr('checked', false);
     				    	 }
     				     }else{
 	    					if($(this).is(':checked')){
 	    				    	for (var i=0; i<switches[this.id].length; i++) {
-	    				    		handle.series[switches[this.id][i]].show = true; // i is
-																						// an
-																						// integer
+	    				    		handle.series[switches[this.id][i]].show = true; // i isan integer
 	    				    	}
 	    				     } else {
 	     				    	for (var i=0; i<switches[this.id].length; i++) {
-	    				    		 handle.series[switches[this.id][i]].show = false; // i is
-																						// an
-																						// integer
+	    				    		 handle.series[switches[this.id][i]].show = false; // i is an integer
 	    				    	}
 	    				    } 
     				     }
   				    	handle.replot();
-  				    	
 				    	$('table.jqplot-table-legend').attr('class', 'jqplot-table-legend-custom');
     			   });
 				}
@@ -951,20 +955,15 @@ var WSL = {
 						labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
 						renderer : $.jqplot.DateAxisRenderer,
 						angle : -30,
-						tickOptions : {
-							formatString : '%d-%m'
-						}
+						tickOptions : {formatString : '%d-%m'}
 	                },
 	                x2axis: {
 						labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
 						renderer : $.jqplot.DateAxisRenderer,
 						angle : -30,
-						tickOptions : {
-							formatString : '%d-%m'
-						}
+						tickOptions : {formatString : '%d-%m'}
 	                },
-	                yaxis: {
-	                }
+	                yaxis: {}
 	            },
 				highlighter : {tooltipContentEditor: tooltipCompareEditor,show : true}
 		};
@@ -1044,8 +1043,6 @@ WSL.api.getPageIndexLiveValues = function(success) {
 		method : 'getPageIndexLiveValues',
 	}, success);
 };
-
-
 
 WSL.api.getPageTodayValues = function(success) {
 	$.getJSON("server.php", {
