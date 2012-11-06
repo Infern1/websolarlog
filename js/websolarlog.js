@@ -5,7 +5,7 @@ $.ajaxSetup({
 
 function ajaxReady(){
 
-	tooltip.pnotify_remove();
+	$('#reqLoading').hide();
 	 
 		// init tooltips
 		 $( '.tooltip' ).tooltip({});
@@ -13,19 +13,10 @@ function ajaxReady(){
 
 function ajaxStart(){
 
-	tooltip.pnotify_display();
+	$('#reqLoading').show();
 	$('.ui-tooltip').remove();
 }
 
-var tooltip = $.pnotify({
-		title: "Request in progress",
-		text: "<img src='./template/green/css/images/loading.gif'/>",
-		delay:700,
-		hide: false,closer: false,sticker: false,history: false,animate_speed: 500,opacity: 0.5,
-		nonblock: true,nonblock_opacity: .8,icon: "ui-icon ui-icon-comment",stack: false,
-	    before_open: function(pnotify) {pnotify.css({top: 10,left: 10,width:215,});}
-	}
-);
 
 beforeLoad = (new Date()).getTime();
 window.onload = pageLoadingTime;
@@ -140,10 +131,10 @@ var WSL = {
 				$.ajax({
 					url : 'js/templates/liveInverters.hb',
 					success : function(source) {
-						
 						var template = Handlebars.compile(source);
 						var html = template({
-							'data' : data
+							'data' : data,
+							'lang':data.lang
 						});
 						$(divId).html(html);
 						// remove frozen tooltips
@@ -369,22 +360,24 @@ var WSL = {
 
 	init_PageIndexAddContainers : function (divId,sideBar){
 		ajaxStart();
-		$.ajax({
-			url : 'js/templates/liveValues.hb',
-			success : function(source) {
-				var template = Handlebars.compile(source);
-				var html = template({
-					'data' : ''
-				});
-				$(divId).html(html);
-				ajaxReady();
-			},
-			dataType : 'text',
-		});	
+
 		
 		
 		WSL.api.getPageIndexValues(function(data) {
 			ajaxStart();
+			$.ajax({
+				url : 'js/templates/liveValues.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : '',
+						'lang' : data.lang
+					});
+					$(divId).html(html);
+					ajaxReady();
+				},
+				dataType : 'text',
+			});	
 			if (typeof data.result != "undefined" && data.result != 'true') {
 				$.pnotify({
                     title: 'Error',

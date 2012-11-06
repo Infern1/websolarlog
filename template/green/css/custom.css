@@ -56,3 +56,24 @@ table.jqplot-table-legend-custom{
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
 }
+
+/*override standard .socials*/
+.socials { position: absolute; top: -6px; right: 0; padding: 0; width: 150px; background: url() no-repeat 0 0;  }
+
+.spiffy{display:block}
+.spiffy *{  display:block;  height:1px;  overflow:hidden;  font-size:.01em;  background:#61a707}
+.spiffy1{  margin-left:3px;  margin-right:3px;  padding-left:1px;  padding-right:1px;  border-left:1px solid #579b03;  border-right:1px solid #579b03;  background:#5da105}
+.spiffy2{  margin-left:1px;  margin-right:1px;  padding-right:1px;  padding-left:1px;  border-left:1px solid #529400;  border-right:1px solid #529400;  background:#5da305}
+.spiffy3{  margin-left:1px;  margin-right:1px;  border-left:1px solid #5da305;  border-right:1px solid #5da305;}
+.spiffy4{  border-left:1px solid #579b03; border-right:1px solid #579b03}
+.spiffy5{  border-left:1px solid #5da105; border-right:1px solid #5da105}
+.spiffyfg{  padding-top:4px;background:#61a707;padding-left:7px;}
+  
+  
+#reqLoading{height:28px;position:relative;top:-3px;}
+ 
+#imgLoading{height:10px;width:138px;position:relative;top:-8px;}
+
+.indexGaugeContainer{width: 180px; height: 150px; float:left;}
+
+.indexGauge{width: 200px; height: 150px; position: relative;}

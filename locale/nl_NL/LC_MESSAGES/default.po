@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WSL-Dutch\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-05 21:17+0100\n"
-"PO-Revision-Date: 2012-11-05 21:19+0100\n"
+"POT-Creation-Date: 2012-11-06 15:32+0100\n"
+"PO-Revision-Date: 2012-11-06 15:32+0100\n"
 "Last-Translator: a <a@a.nl>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -19,26 +19,31 @@ msgstr ""
 #: server.php:65
 #: server.php:330
 #: server.php:360
+#: server.php:410
 msgid "Today"
-msgstr "Today"
+msgstr "Vandaag"
 
 #: server.php:66
 msgid "Yesterday"
 msgstr "Gisteren"
 
 #: server.php:67
+#: server.php:412
 msgid "Month"
 msgstr "Maand"
 
 #: server.php:68
+#: server.php:413
 msgid "Year"
 msgstr "Jaar"
 
 #: server.php:126
+#: server.php:417
 msgid "Time"
 msgstr "Tijd"
 
 #: server.php:127
+#: server.php:418
 msgid "Inverter"
 msgstr "Omvormer"
 
@@ -71,6 +76,7 @@ msgid "Show or hide graph groups:"
 msgstr "Tonen of verbergen grafiek groepen:"
 
 #: server.php:246
+#: server.php:419
 msgid "Power"
 msgstr "Vermogen"
 
@@ -163,27 +169,27 @@ msgstr "Totaal"
 msgid "Averages"
 msgstr "Gemiddeld"
 
-#: server.php:410
-msgid "today"
-msgstr "Today"
-
 #: server.php:411
-msgid "week"
-msgstr "week"
-
-#: server.php:412
-msgid "month"
-msgstr "Maand"
-
-#: server.php:413
-msgid "year"
-msgstr "year"
+msgid "Week"
+msgstr "Week"
 
 #: server.php:414
 msgid "overall"
 msgstr "Totaal"
 
 #: server.php:415
+msgid "Inv."
+msgstr "Omv."
+
+#: server.php:416
+msgid "gridShort"
+msgstr "net"
+
+#: server.php:420
+msgid "ratio"
+msgstr "Ratio"
+
+#: server.php:421
 msgid "* All figures are in kWh"
 msgstr "* Alle cijfer zijn in kWh"
 
@@ -220,31 +226,42 @@ msgstr "Wachtwoord opgeslagen"
 msgid "Grid"
 msgstr "Net"
 
-#: template/green/index.php:22
+#: template/green/index.php:44
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: template/green/index.php:23
+#: template/green/index.php:45
 msgid "Day"
 msgstr "Dag"
 
-#: template/green/index.php:26
+#: template/green/index.php:48
 msgid "Details"
 msgstr "Details"
 
-#: template/green/index.php:27
+#: template/green/index.php:49
 msgid "Compare"
 msgstr "Vergelijk"
 
-#: template/green/index.php:28
+#: template/green/index.php:50
 msgid "Production"
 msgstr "Productie"
 
-#: template/green/index.php:29
+#: template/green/index.php:51
 msgid "Other"
 msgstr "Overige"
 
-#: template/green/index.php:65
+#: template/green/index.php:87
 msgid "version"
 msgstr "versie"
 
+#~ msgid "month"
+#~ msgstr "Maand"
+
+#~ msgid "year"
+#~ msgstr "year"
+
+#~ msgid "today"
+#~ msgstr "Today"
+
+#~ msgid "week"
+#~ msgstr "week"

@@ -407,11 +407,17 @@ switch ($method) {
 		$lang['by']			 	= _("By");
 		$lang['total'] 			= _("Total");
 		$lang['averages']	 	= _("Averages");
-		$lang['today'] 			= _("today");
-		$lang['week'] 			= _("week");
-		$lang['month'] 			= _("month");
-		$lang['year'] 			= _("year");
+		$lang['today'] 			= _("Today");
+		$lang['week'] 			= _("Week");
+		$lang['month'] 			= _("Month");
+		$lang['year'] 			= _("Year");
 		$lang['overall'] 		= _("overall");
+		$lang['inv'] 			= _("Inv.");
+		$lang['gridShort'] 		= _("gridShort");
+		$lang['time'] 			= _("Time");
+		$lang['inverter'] 		= _("Inverter");
+		$lang['power'] 			= _("Power");
+		$lang['ratio'] 			= _("ratio");
 		$lang['allFiguresAreInKWH']= _("* All figures are in kWh");
 		
 		$data['lang'] = $lang;
