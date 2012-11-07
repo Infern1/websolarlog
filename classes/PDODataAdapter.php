@@ -1311,7 +1311,7 @@ class PDODataAdapter {
 			(!$beans) ? $beans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $beans = $beans;
 			return $this->DayBeansToGraphPoints($beans);
 		}else{
-			return $this->PeriodBeansToGraphPoints($beans);
+			return $this->PeriodBeansToGraphPoints($beans,$type,$startDate);
 		}
 	}
 
@@ -1388,7 +1388,7 @@ class PDODataAdapter {
 	 * @param array $beans from $this->getGraphPoint()
 	 * @return array($beginDate, $endDate);
 	 */
-	public function PeriodBeansToGraphPoints($beans){
+	public function PeriodBeansToGraphPoints($beans,$period,$date){
 		$points = array();
 		$cumPower=0;
 		foreach ($beans as $bean){
@@ -1405,9 +1405,14 @@ class PDODataAdapter {
 			$cumPower = 0;
 			$points[] = array (time()* 1000, 0,0);
 		}else{
-			$endOfMonth =Util::getTimestampOfDate(0,0,0,  date('t'),date("m"), date("Y"));
+			if (strtolower($period) == 'month'){
+				$endOfMonth =Util::getTimestampOfDate(0,0,0,  date('t'),date("m"), date("Y"));
+			}else{
+				$beginEndWeek = Util::getStartAndEndOfWeek(strtotime($date));
+				$endOfMonth = $beginEndWeek[1];
+			}
 			$countPoints = count($points)-1;
-
+			
 			$time = strtotime(date("d-m-Y",($points[$countPoints][0])/1000));
 			$time += 86400;
 			while ($time<$endOfMonth){

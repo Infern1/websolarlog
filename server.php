@@ -218,7 +218,7 @@ switch ($method) {
 	case 'getGraphPoints':
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
-
+		
 		$lines = $dataAdapter->getGraphPoint(1, $type, $date);
 		$dayData = new DayDataResult();
 		$dayData->data = $lines->points;

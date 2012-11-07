@@ -95,7 +95,7 @@ function tooltipDetailsContentEditor(str, seriesIndex, pointIndex, plot,series	)
 
 
 function handleGraphs(request=''){
-	console.log(request);
+	
 	// get activated Tab;
 	var tabSelected = $('#tabs').tabs('option', 'selected');
 	// set type to Today
@@ -106,12 +106,9 @@ function handleGraphs(request=''){
 	(tabSelected == 3)? tab= 'Year'	: tab=tab;
 	var period = tab;
 	
-	if (request=='picker'){
-		period= $('#pickerPeriod').val();
-	}
 	var date = $('#datepicker').val();
 	
-	//console.log(date);
+	console.log('data:'+date);
 	if (currentGraphHandler){
     	$("#graph"+tab+"Content").html('<div id="loading">loading...</div>');
     	currentGraphHandler.destroy();
@@ -121,20 +118,23 @@ function handleGraphs(request=''){
     }
     
     if (request=='picker'){
+    	$('#lastCall').val('picker');
+    	period= $('#pickerPeriod').val();
     	if (period == "Today") {
     		WSL.createDayGraph(1, period, date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}else{
-    		WSL.createPeriodGraph(1, period,1 , "graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    		WSL.createPeriodGraph(1, period,1 ,date, "graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}    
     }else{
+    	$('#lastCall').val('normal');
     	if (tab == "Today" || tab == "Yesterday") {
     		WSL.createDayGraph(1, period, date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}else{
-    		WSL.createPeriodGraph(1, period,1 , "graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    		WSL.createPeriodGraph(1, period,1 , date,"graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}
     }
     // Refresh only the Today tab
-    if (tab == "Today") {
+    if (tab == "Today" && $('#lastCall').val() == 'normal') {
         todayTimerHandler = window.setInterval(function(){
             if (currentGraphHandler){
                 $("#graph"+tab+"Content").html('<div id="loading">loading...</div>');
@@ -598,12 +598,12 @@ var WSL = {
 		});
 	},
 
-	createPeriodGraph : function(invtnum, type, count, divId, fnFinish) {
+	createPeriodGraph : function(invtnum, type, count, date,divId, fnFinish) {
 		ajaxStart();
 
 		
 		$.ajax({
-			url : "server.php?method=getGraphPoints&type=" + type + "&count=" + count + "&invtnum=" + invtnum,
+			url : "server.php?method=getGraphPoints&type=" + type + "&count=" + count  +"&date="+ date + "&invtnum=" + invtnum,
 			method : 'GET',
 			dataType : 'json',
 			success : function(result) {

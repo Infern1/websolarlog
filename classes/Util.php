@@ -119,10 +119,10 @@ class Util {
      */
     public function getBeginEndDate($type, $count,$startDate=null){
     	if(!$startDate){
-    		$startDate = date("Y-m-d");
+    		$startDate = date("d-m-Y");
     	}
-
     	// Make de StartDate a timestamp
+    	
     	$startDate = strtotime($startDate);
 
 
@@ -141,10 +141,14 @@ class Util {
 	    			//var_dump($beginEndDate);
 	    			$beginDate = $beginEndDate[0];
 	    			$endDate = $beginEndDate[1];
+	    			//echo "beginDate:".$beginDate;
+	    			//echo "endDate:".$endDate;
 	    			break;
 	    		case 'month':
 	    			$beginDate = Util::getTimestampOfDate(0,0,0, 1, date("m",$startDate), date("Y",$startDate));
 	    			$endDate = Util::getTimestampOfDate(23,59,59,31, date("m",$startDate), date("Y",$startDate));
+	    			//echo date("d-m-Y",$beginDate);
+	    			//echo date("d-m-Y",$endDate);
 	    			break;
 	    		case 'year':
 	    			$beginDate = Util::getTimestampOfDate(0,0,0, 1,1, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;

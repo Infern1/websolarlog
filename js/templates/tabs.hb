@@ -3,6 +3,7 @@
 <div id="tabs" class="tabs-bottom" style="height:375px">
 		periode:<select id="pickerPeriod">{{#each data.options}}<option value="{{this.value}}">{{this.name}}</option>{{/each}}</select>
 		date:<input type="text" id="datepicker" style="position: relative; z-index: 100000;"/>
+		<input type="hidden" id="lastCall" />
 	<ul>
 		{{#data.tabs}}
 		<li class="ui-corner-bottom"><a href="#tabs-{{this.position}}" id="tab-{{this.position}}" name="tab-{{this.graphName}}">{{this.translation}}</a></li>
