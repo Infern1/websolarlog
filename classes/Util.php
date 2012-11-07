@@ -138,7 +138,7 @@ class Util {
 	    			break;
 	    		case 'week':
 	    			$beginEndDate = Util::getStartAndEndOfWeek($startDate);
-	    			var_dump($beginEndDate);
+	    			//var_dump($beginEndDate);
 	    			$beginDate = $beginEndDate[0];
 	    			$endDate = $beginEndDate[1];
 	    			break;
