@@ -24,7 +24,7 @@ $config = $dataAdapter->readConfig();
 
 	<link rel="stylesheet" href="js/jqueryuicss/jquery-ui-custom.css" type="text/css" />
 	
-	<script type="text/javascript" src="js/jquery-1.7.min.js"></script>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.pnotify.min.js"></script>
 	<script type="text/javascript" src="js/handlebars.js"></script>
 	<script type="text/javascript" src="js/helpers.js"></script>

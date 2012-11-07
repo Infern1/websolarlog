@@ -94,6 +94,61 @@ function tooltipDetailsContentEditor(str, seriesIndex, pointIndex, plot,series	)
 }
 
 
+function handleGraphs(request=''){
+	console.log(request);
+	// get activated Tab;
+	var tabSelected = $('#tabs').tabs('option', 'selected');
+	// set type to Today
+	var tab='Today';
+	(tabSelected == 0)? tab= 'Today' : tab=tab;
+	(tabSelected == 1)? tab= 'Yesterday' : tab=tab;
+	(tabSelected == 2)? tab= 'Month' : tab=tab;
+	(tabSelected == 3)? tab= 'Year'	: tab=tab;
+	var period = tab;
+	
+	if (request=='picker'){
+		period= $('#pickerPeriod').val();
+	}
+	var date = $('#datepicker').val();
+	
+	//console.log(date);
+	if (currentGraphHandler){
+    	$("#graph"+tab+"Content").html('<div id="loading">loading...</div>');
+    	currentGraphHandler.destroy();
+    }
+    if (todayTimerHandler){
+        window.clearInterval(todayTimerHandler);
+    }
+    
+    if (request=='picker'){
+    	if (period == "Today") {
+    		WSL.createDayGraph(1, period, date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    	}else{
+    		WSL.createPeriodGraph(1, period,1 , "graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    	}    
+    }else{
+    	if (tab == "Today" || tab == "Yesterday") {
+    		WSL.createDayGraph(1, period, date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    	}else{
+    		WSL.createPeriodGraph(1, period,1 , "graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    	}
+    }
+    // Refresh only the Today tab
+    if (tab == "Today") {
+        todayTimerHandler = window.setInterval(function(){
+            if (currentGraphHandler){
+                $("#graph"+tab+"Content").html('<div id="loading">loading...</div>');
+                currentGraphHandler.destroy();
+            }
+            WSL.createDayGraph(1, "Today", date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});				                    
+        }, 60000); // every minute
+       
+    }
+    
+    
+    
+}
+
 // WSL class
 var WSL = {
 	api : {},
@@ -301,8 +356,20 @@ var WSL = {
 	},
 
 	init_tabs : function(page, divId, success) {
+		$('#datepicker').live("change",
+				function(){
+					var request = 'picker';
+					handleGraphs(request);
+				}
+		);
+		$('#pickerPeriod').live("change",
+				function(){
+					var request = 'picker';
+					handleGraphs(request);
+				}
+		);
+		
 		// initialize languages selector on the given div
-
 		WSL.api.getTabs(page, function(data) {
 			$.ajax({
 				url : 'js/templates/tabs.hb',
@@ -314,38 +381,7 @@ var WSL = {
 					$(html).prependTo(divId);
 					$('#tabs').tabs({
 					    show: function(event, ui) {
-					    	var type='Today';
-					    	(data.tabs[ui.index]["position"] == 0)? type= 'Today' : type=type;
-					    	(data.tabs[ui.index]["position"] == 1)? type= 'Yesterday' : type=type;
-					    	(data.tabs[ui.index]["position"] == 2)? type= 'Month' : type=type;
-					    	(data.tabs[ui.index]["position"] == 3)? type= 'Year'	: type=type;
-					    	
-					
-					    	if (currentGraphHandler){
-					        	$("#graph"+type+"Content").html('<div id="loading">loading...</div>');
-					        	currentGraphHandler.destroy();
-					        }
-					        if (todayTimerHandler){
-					            window.clearInterval(todayTimerHandler);
-					        }
-
-					        if (type == "Today" || type == "Yesterday") {
-					        	WSL.createDayGraph(1, type,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
-					        }else{
-					        	WSL.createPeriodGraph(1, type,1 , "graph"+type+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
-					        	
-					        }
-				            // Refresh only the Today tab
-				            if (type == "Today") {
-				                todayTimerHandler = window.setInterval(function(){
-				                    if (currentGraphHandler){
-				                        $("#graph"+type+"Content").html('<div id="loading">loading...</div>');
-				                        currentGraphHandler.destroy();
-				                    }
-				                    WSL.createDayGraph(1, "Today", function(handler) {currentGraphHandler = handler;$("#loading").remove();});				                    
-				                }, 60000); // every minute
-				               
-				            }
+					    	handleGraphs();
 					    }
 					});
 					success.call();
@@ -360,9 +396,6 @@ var WSL = {
 
 	init_PageIndexAddContainers : function (divId,sideBar){
 		ajaxStart();
-
-		
-		
 		WSL.api.getPageIndexValues(function(data) {
 			ajaxStart();
 			$.ajax({
@@ -400,6 +433,8 @@ var WSL = {
 			});
 		});
 	},
+	
+	
 	init_PageTodayValues : function(todayValues,success) {
 		ajaxStart();
 		// initialize languages selector on the given div
@@ -486,11 +521,11 @@ var WSL = {
 		});
 	},
 
-	createDayGraph : function(invtnum, getDay, fnFinish) {
+	createDayGraph : function(invtnum, getDay, date ,fnFinish) {
 		ajaxStart();
 		
 		$.ajax({
-			url : "server.php?method=getGraphPoints&type="+ getDay +"&invtnum=" + invtnum,
+			url : "server.php?method=getGraphPoints&type="+ getDay +"&date="+ date +"&invtnum=" + invtnum,
 			method : 'GET',
 			dataType : 'json',
 			success : function(result) {

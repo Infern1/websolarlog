@@ -66,9 +66,17 @@ switch ($method) {
 		$tabs[] = array( "graphName" => "Yesterday","translation" => _("Yesterday"),"position" => "1","active" => ($page == "yesterday") ? 'true' : 'false');
 		$tabs[] = array( "graphName" => "Month","translation" => _("Month"),"position" => "2","active" => ($page == "month") ? 'true' : 'false');
 		$tabs[] = array( "graphName" => "Year","translation" => _("Year"),"position" => "3","active" => ($page == "year") ? 'true' : 'false');
+		
+		$options = array();
+		$options[] =array( "value" => "Today","name"=> _("Day"));
+		$options[] =array( "value" => "Week","name"=> _("Week"));
+		$options[] =array( "value" => "Month","name"=> _("Month"));
+		$options[] =array( "value" => "Year","name"=> _("Year"));
+		
 		//$tabs[] = array( "graphName" => "Expected","position" => "4","active" => ($page == "expected") ? 'true' : 'false');
 		$data['tabsPosition'] =  Common::searchMultiArray($tabs, 'active', 'true');
 		$data['tabs'] = $tabs;
+		$data['options'] = $options;
 
 		break;
 	case 'getLanguages':
@@ -211,7 +219,7 @@ switch ($method) {
 		$config_invt="config/config_invt".$invtnum.".php";
 		include("$config_invt");
 
-		$lines = $dataAdapter->getGraphPoint(1, $type, "");
+		$lines = $dataAdapter->getGraphPoint(1, $type, $date);
 		$dayData = new DayDataResult();
 		$dayData->data = $lines->points;
 		$dayData->valueKWHT = $lines->KWHT;

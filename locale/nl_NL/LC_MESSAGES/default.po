@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WSL-Dutch\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-06 15:32+0100\n"
-"PO-Revision-Date: 2012-11-06 15:32+0100\n"
+"POT-Creation-Date: 2012-11-07 11:55+0100\n"
+"PO-Revision-Date: 2012-11-07 11:55+0100\n"
 "Last-Translator: a <a@a.nl>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -17,9 +17,9 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: server.php:65
-#: server.php:330
-#: server.php:360
-#: server.php:410
+#: server.php:331
+#: server.php:361
+#: server.php:411
 msgid "Today"
 msgstr "Vandaag"
 
@@ -28,168 +28,172 @@ msgid "Yesterday"
 msgstr "Gisteren"
 
 #: server.php:67
-#: server.php:412
+#: server.php:413
 msgid "Month"
 msgstr "Maand"
 
 #: server.php:68
-#: server.php:413
+#: server.php:414
 msgid "Year"
 msgstr "Jaar"
 
-#: server.php:126
-#: server.php:417
-msgid "Time"
-msgstr "Tijd"
+#: server.php:69
+msgid "Custom"
+msgstr "Aangepast"
 
 #: server.php:127
 #: server.php:418
+msgid "Time"
+msgstr "Tijd"
+
+#: server.php:128
+#: server.php:419
 msgid "Inverter"
 msgstr "Omvormer"
 
-#: server.php:128
+#: server.php:129
 msgid "Events"
 msgstr "Meldingen"
 
-#: server.php:222
+#: server.php:223
 msgid "cum. Power (W)"
 msgstr "cum. Vermogen(W)"
 
-#: server.php:223
+#: server.php:224
 msgid "avg. Power (W)"
 msgstr "gem. Vermogen (W)"
 
-#: server.php:224
+#: server.php:225
 msgid "harvested (W)"
 msgstr "Opgewekt (W)"
 
-#: server.php:225
+#: server.php:226
 msgid "cumulative (W)"
 msgstr "cumulatief (W)"
 
-#: server.php:226
+#: server.php:227
 msgid "total Energy"
 msgstr "totaal opgewekt vermogen"
 
-#: server.php:245
+#: server.php:246
 msgid "Show or hide graph groups:"
 msgstr "Tonen of verbergen grafiek groepen:"
 
-#: server.php:246
-#: server.php:419
+#: server.php:247
+#: server.php:420
 msgid "Power"
 msgstr "Vermogen"
 
-#: server.php:247
+#: server.php:248
 msgid "Voltage"
 msgstr "Spanning"
 
-#: server.php:248
+#: server.php:249
 msgid "Amps"
 msgstr "Stroom"
 
-#: server.php:249
+#: server.php:250
 msgid "Frequency"
 msgstr "Frequentie"
 
-#: server.php:250
+#: server.php:251
 msgid "Ratio"
 msgstr "Ratio"
 
-#: server.php:251
+#: server.php:252
 msgid "Temperature"
 msgstr "Temperatuur"
 
-#: server.php:252
-#: server.php:398
+#: server.php:253
+#: server.php:399
 msgid "Efficiency"
 msgstr "Efficiëntie"
 
-#: server.php:331
-#: server.php:361
+#: server.php:332
+#: server.php:362
 msgid "Max Grid Power"
 msgstr "Max Netwerk Vermogen"
 
-#: server.php:332
-#: server.php:362
+#: server.php:333
+#: server.php:363
 msgid "date"
 msgstr "datum"
 
-#: server.php:333
-#: server.php:363
+#: server.php:334
+#: server.php:364
 msgid "TotalKWh"
 msgstr "Totaal kWh"
 
-#: server.php:334
-#: server.php:364
+#: server.php:335
+#: server.php:365
 msgid "Inv"
 msgstr "Inv."
 
-#: server.php:335
-#: server.php:365
+#: server.php:336
+#: server.php:366
 msgid "kwh"
 msgstr "kWh"
 
-#: server.php:336
-#: server.php:366
+#: server.php:337
+#: server.php:367
 msgid "History values"
 msgstr "Geschiedenis"
 
-#: server.php:337
-#: server.php:367
+#: server.php:338
+#: server.php:368
 msgid "loading"
 msgstr "Laden"
 
-#: server.php:338
-#: server.php:368
+#: server.php:339
+#: server.php:369
 msgid "watt"
 msgstr "Watt"
 
-#: server.php:396
+#: server.php:397
 msgid "DC Power"
 msgstr "DC vermogen"
 
-#: server.php:397
+#: server.php:398
 msgid "AC Power"
 msgstr "AC Vermogen"
 
-#: server.php:406
+#: server.php:407
 msgid "Some Figures"
 msgstr "Wat getallen"
 
-#: server.php:407
+#: server.php:408
 msgid "By"
 msgstr "Per"
 
-#: server.php:408
+#: server.php:409
 msgid "Total"
 msgstr "Totaal"
 
-#: server.php:409
+#: server.php:410
 msgid "Averages"
 msgstr "Gemiddeld"
 
-#: server.php:411
+#: server.php:412
 msgid "Week"
 msgstr "Week"
 
-#: server.php:414
+#: server.php:415
 msgid "overall"
 msgstr "Totaal"
 
-#: server.php:415
+#: server.php:416
 msgid "Inv."
 msgstr "Omv."
 
-#: server.php:416
+#: server.php:417
 msgid "gridShort"
 msgstr "net"
 
-#: server.php:420
+#: server.php:421
 msgid "ratio"
 msgstr "Ratio"
 
-#: server.php:421
+#: server.php:422
 msgid "* All figures are in kWh"
 msgstr "* Alle cijfer zijn in kWh"
 

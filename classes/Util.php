@@ -82,9 +82,12 @@ class Util {
     	return strtotime(date('Y-m-t', mktime(0, 0, 0, $month, 1, $year)));
     }
 
+	/**
+ 	* Add timestamp 
+ 	* @param int $ts 
+ 	*/
+    function getStartAndEndOfWeek($ts) {
 
-    function getStartAndEndOfWeek($date) {
-    	$ts = strtotime($date);
     	$start = (date('w', $ts) == 0) ? $ts : strtotime('last monday', $ts);
     	return array(strtotime(date('Y-m-d', $start)),strtotime(date('Y-m-d', strtotime('next sunday', $start))));
     }
@@ -122,54 +125,36 @@ class Util {
     	// Make de StartDate a timestamp
     	$startDate = strtotime($startDate);
 
-    	// check what we must return
-    	switch (strtolower($type)) {
-    		case 'today':
-    		case 'day':
-    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
-    			$endDate = Util::getTimestampOfDate(23,59,59,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
-    			break;
-    		case 'yesterday':
-    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d",time()-86400), date("m",time()-86400), date("Y",time()-86400));
-    			$endDate = Util::getTimestampOfDate(23,59,59,date("d",time()-86400), date("m",time()-86400), date("Y",time()-86400));
-    			break;
-    		case 'week':
-    			$beginEndDate = Util::getStartAndEndOfWeek($startDate);
-    			$beginDate = $beginEndDate[0];
-    			$endDate = $beginEndDate[1];
-    			break;
-    		case 'month':
-    			$beginDate = Util::getTimestampOfDate(0,0,0, 1, date("m",$startDate), date("Y",$startDate));
-    			$endDate = Util::getTimestampOfDate(23,59,59,31, date("m",$startDate), date("Y",$startDate));
-    			break;
-    		case 'year':
-    			$beginDate = Util::getTimestampOfDate(0,0,0, 1,1, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
-    			$endDate = Util::getTimestampOfDate(23,59,59,31,12, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
-    			break;
-    		case 'lastday':
-    			/*
-    			 * TODO
-    			 */
-    			break;
-    		case 'lastweek':
-    			/*
-    			 * TODO
-    			 */
-    			break;
-    		case 'lastmonth':
-    			/*
-    			 * TODO
-    			 */
-    			break;
-    		case 'lastyear':
-    			/*
-    			 * TODO
-    			 */
-    			break;
-    		default:
-    			echo "ERROR::UTIL::getBeginEndDate()::WRONG Type >> Choose from today,week,month,year";
-    			break;
-    	}
+
+	    	switch (strtolower($type)) {
+	    		case 'today':
+	    		case 'day':
+	    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
+	    			$endDate = Util::getTimestampOfDate(23,59,59,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
+	    			break;
+	    		case 'yesterday':
+	    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d",time()-86400), date("m",time()-86400), date("Y",time()-86400));
+	    			$endDate = Util::getTimestampOfDate(23,59,59,date("d",time()-86400), date("m",time()-86400), date("Y",time()-86400));
+	    			break;
+	    		case 'week':
+	    			$beginEndDate = Util::getStartAndEndOfWeek($startDate);
+	    			var_dump($beginEndDate);
+	    			$beginDate = $beginEndDate[0];
+	    			$endDate = $beginEndDate[1];
+	    			break;
+	    		case 'month':
+	    			$beginDate = Util::getTimestampOfDate(0,0,0, 1, date("m",$startDate), date("Y",$startDate));
+	    			$endDate = Util::getTimestampOfDate(23,59,59,31, date("m",$startDate), date("Y",$startDate));
+	    			break;
+	    		case 'year':
+	    			$beginDate = Util::getTimestampOfDate(0,0,0, 1,1, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
+	    			$endDate = Util::getTimestampOfDate(23,59,59,31,12, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
+	    			break;
+	    		default:
+	    			echo "ERROR::UTIL::getBeginEndDate()::WRONG Type >> Choose from today,week,month,year";
+	    			break;
+	    	}
+    	
     	return array("beginDate"=>$beginDate,"endDate"=>$endDate);
     }
 

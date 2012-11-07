@@ -1301,7 +1301,6 @@ class PDODataAdapter {
 	 */
 	public function getGraphPoint($invtnum,$type, $startDate){
 		($type == 'today')?$type='day':$type=$type;
-
 		// if $type
 		(stristr(strtolower($type), 'day') === FALSE) ?	$table = "energy" : $table = "history";
 		
