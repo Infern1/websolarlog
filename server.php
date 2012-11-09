@@ -75,6 +75,10 @@ switch ($method) {
 		
 		//$tabs[] = array( "graphName" => "Expected","position" => "4","active" => ($page == "expected") ? 'true' : 'false');
 		$data['tabsPosition'] =  Common::searchMultiArray($tabs, 'active', 'true');
+		$lang = array();
+		$lang['date'] = _('date');
+		$lang['periode'] = _('periode');
+		$data['lang'] = $lang;
 		$data['tabs'] = $tabs;
 		$data['options'] = $options;
 

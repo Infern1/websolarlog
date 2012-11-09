@@ -1,7 +1,6 @@
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
-	
 });
 
 function ajaxReady(){
@@ -9,7 +8,7 @@ function ajaxReady(){
 	$('#reqLoading').hide();
 	 
 		// init tooltips
-		 $( '.tooltip' ).tooltip({});
+	$( '.tooltip' ).tooltip({});
 }
 
 function ajaxStart(){
@@ -36,6 +35,7 @@ var alreadyFetched = [];
 
 var currentGraphHandler;
 var todayTimerHandler;
+
 
 function tooltipContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = ""; 
@@ -95,7 +95,7 @@ function tooltipDetailsContentEditor(str, seriesIndex, pointIndex, plot,series	)
 }
 
 
-function handleGraphs(request=''){
+function handleGraphs(request){
 	
 	// get activated Tab;
 	var tabSelected = $('#tabs').tabs('option', 'selected');
@@ -369,7 +369,7 @@ var WSL = {
 					handleGraphs(request);
 				}
 		);
-		
+
 		// initialize languages selector on the given div
 		WSL.api.getTabs(page, function(data) {
 			$.ajax({
@@ -377,12 +377,20 @@ var WSL = {
 				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
-						'data' : data
+						'data' : data,
+						'lang' : data.lang
 					});
 					$(html).prependTo(divId);
 					$('#tabs').tabs({
 					    show: function(event, ui) {
 					    	handleGraphs();
+					    	$(".mainTabContainer").hover(function() {
+					    		$("#pickerFilterDiv").hide();
+					    		$( "#datepicker" ).datepicker("hide");
+							}, function() {
+								$("#pickerFilterDiv").show();
+							});
+
 					    }
 					});
 					success.call();
