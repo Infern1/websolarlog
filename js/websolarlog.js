@@ -1,6 +1,7 @@
 // calculate the JS parse time //
 $.ajaxSetup({
 	cache : false
+	
 });
 
 function ajaxReady(){
