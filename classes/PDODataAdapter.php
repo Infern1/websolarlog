@@ -1502,38 +1502,53 @@ class PDODataAdapter {
 		// summary live data
 		$list = array();
 
-		// Initialize variables
-		$GP=0;
-		$I1P = 0;
-		$I2P = 0;
-		$IP  = 0;
-		$EFF = 0;
-
 		$beans = R::findAndExport('inverter');
+		
 		foreach ($beans as $inverter){
-			$oInverter = array();
-
-			$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$inverter['id']));
-
-			$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
-
-			$live = new Live();
-			$live->time = date("H:i:s",$liveBean['time']);
-			$live->INV = $liveBean['INV'];
-			$live->GP = number_format($liveBean['GP'],0,',','');
-			$live->GA = number_format($liveBean['GA'],0,',','');
-			$live->GV = number_format($liveBean['GV'],0,',','');
-			$live->I1P = number_format($liveBean['I1P'],2,',','');
-			$live->I1A = number_format($liveBean['I1A'],2,',','');
-			$live->I1V = number_format($liveBean['I1V'],2,',','');
-			$live->I1Ratio = number_format($liveBean['I1Ratio'],2,',','');
-			$live->I2P = number_format($liveBean['I2P'],2,',','');
-			$live->I2A = number_format($liveBean['I2A'],2,',','');
-			$live->I2V = number_format($liveBean['I2V'],2,',','');
-			$live->I2Ratio = number_format($liveBean['I2Ratio'],2,',','');
-
-			$live->IP = number_format($ITP,2,',','');
-			$live->EFF = number_format($liveBean['EFF'],2,',','');
+			
+			$oInverter = 	array();
+			
+			if(Util::isSunDown($this->config)){
+				$live = new Live();
+				$live->time = _('sleeping');
+				$live->INV = $inverter['id'];
+				$live->GP = number_format(0,0,',','');
+				$live->GA = number_format(0,0,',','');
+				$live->GV = number_format(0,0,',','');
+				$live->I1P = number_format(0,2,',','');
+				$live->I1A = number_format(0,2,',','');
+				$live->I1V = number_format(0,2,',','');
+				$live->I1Ratio = number_format(0,2,',','');
+				$live->I2P = number_format(0,2,',','');
+				$live->I2A = number_format(0,2,',','');
+				$live->I2V = number_format(0,2,',','');
+				$live->I2Ratio = number_format(0,2,',','');
+				
+				$live->IP = number_format(0,2,',','');
+				$live->EFF = number_format(0,2,',','');
+			}else{
+				$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$inverter['id']));
+	
+				$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
+	
+				$live = new Live();
+				$live->time = date("H:i:s",$liveBean['time']);
+				$live->INV = $liveBean['INV'];
+				$live->GP = number_format($liveBean['GP'],0,',','');
+				$live->GA = number_format($liveBean['GA'],0,',','');
+				$live->GV = number_format($liveBean['GV'],0,',','');
+				$live->I1P = number_format($liveBean['I1P'],2,',','');
+				$live->I1A = number_format($liveBean['I1A'],2,',','');
+				$live->I1V = number_format($liveBean['I1V'],2,',','');
+				$live->I1Ratio = number_format($liveBean['I1Ratio'],2,',','');
+				$live->I2P = number_format($liveBean['I2P'],2,',','');
+				$live->I2A = number_format($liveBean['I2A'],2,',','');
+				$live->I2V = number_format($liveBean['I2V'],2,',','');
+				$live->I2Ratio = number_format($liveBean['I2Ratio'],2,',','');
+				
+				$live->IP = number_format($ITP,2,',','');
+				$live->EFF = number_format($liveBean['EFF'],2,',','');
+			}
 			$oInverter["id"] = $liveBean['INV'];
 			$oInverter["currentTime"] = time();
 			$oInverter["live"] = $live;
@@ -1541,7 +1556,7 @@ class PDODataAdapter {
 			$I1P += $live->I1P;
 			$I2P += $live->I2P;
 			$IP  += $live->IP;
-			$EFF  += $live->EFF;
+			$EFF += $live->EFF;
 
 			$list['inverters'][] = $oInverter;
 		}
@@ -1550,7 +1565,7 @@ class PDODataAdapter {
 		$list['sum']['I1P'] = number_format($I1P,0,',','');
 		$list['sum']['I2P'] = number_format($I2P,0,',','');
 		$list['sum']['IP'] = number_format($IP,0,',','');
-		$list['sum']['EFF'] = number_format($EFF/count($beans)-1,0,',','');
+		$list['sum']['EFF'] = number_format($EFF/(count($beans)-1),0,',','');
 
 		$oInverter = array();
 		//$totals = array("day"=>$KWHTD,"week"=>$KWHTW,"month"=>$KWHTM);

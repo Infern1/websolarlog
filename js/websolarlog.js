@@ -109,7 +109,7 @@ function handleGraphs(request){
 	
 	var date = $('#datepicker').val();
 	
-	console.log('data:'+date);
+	//console.log('data:'+date);
 	if (currentGraphHandler){
     	$("#graph"+tab+"Content").html('<div id="loading">loading...</div>');
     	currentGraphHandler.destroy();
