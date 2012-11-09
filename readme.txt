@@ -1,4 +1,4 @@
- WebSolarLog Version 0.0.1
+ WebSolarLog Version 0.0.2
  
  Fork off the 123Aurora Web Solar Logger project created by Louviaux Jean-Marc
  
@@ -6,12 +6,12 @@
  
  ╔═════════════════════════════════════════════════════════════════════════════╗
  ║                                                                             ║
- ║                      - 123Aurora Web Solar Logger -                         ║
- ║               PHP Charting for Aurora Power One Inverters                   ║
+ ║                      - WebSolarLogger -                                     ║
+ ║               PHP Charting for Inverters                                    ║
  ║                                                                             ║
- ║             Version     : 1.4.8                                             ║
- ║             Made by     : Louviaux Jean-Marc                                ║
- ║             Last Update : 15/06/12                                          ║
+ ║             Version     : 0.0.2                                             ║
+ ║             Made by     : Marco Frijmann, Martin Diphoorn                   ║
+ ║             Last Update : 01/01/2013                                        ║
  ║                                                                             ║
  ╚═════════════════════════════════════════════════════════════════════════════╝
  
