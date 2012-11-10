@@ -48,8 +48,11 @@ class PDODataAdapter {
 		$bean->I2P = $live->I2P;
 		$IP = $live->I1P+$live->I2P;
 
-		$bean->I1Ratio = ($live->I1P/$IP)*100;
-		$bean->I2Ratio = ($live->I2P/$IP)*100;
+		// Prevent division by zero error
+		if (!empty($IP)) {
+			$bean->I1Ratio = ($live->I1P/$IP)*100;
+			$bean->I2Ratio = ($live->I2P/$IP)*100;
+		}
 
 		$bean->GV = $live->GV;
 		$bean->GA = $live->GA;
