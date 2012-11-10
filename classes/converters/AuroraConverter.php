@@ -70,6 +70,11 @@ class AuroraConverter
         if (!empty ($data[19])) {
             $live->KWHT = $data[19];
         }
+        
+        // This line is only valid if GP and KWHT are filled with data
+        if (empty($live->KWHT) || empty($live->GP)) {
+        	return null;
+        }
 
         return $live;
     }
