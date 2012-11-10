@@ -1561,12 +1561,11 @@ class PDODataAdapter {
 			$list['inverters'][] = $oInverter;
 		}
 		
-		$list['sum']['GP'] = number_format($GP,0,',','');
-		$list['sum']['I1P'] = number_format($I1P,0,',','');
-		$list['sum']['I2P'] = number_format($I2P,0,',','');
-		$list['sum']['IP'] = number_format($IP,0,',','');
-		$list['sum']['EFF'] = number_format($EFF/(count($beans)-1),0,',','');
-
+		($GP<1000)? $list['sum']['GP'] = number_format($GP,1,'.','') : $list['sum']['GP'] = number_format($GP,0,'','');
+		($I1P<1000)? $list['sum']['I1P'] = number_format($I1P,1,'.','') : $list['sum']['I1P'] = number_format($I1P,0,'','');
+		($I2P<1000)? $list['sum']['I2P'] = number_format($I2P,1,'.','') : $list['sum']['I2P'] = number_format($I2P,0,'','');
+		($IP<1000)? $list['sum']['IP'] = number_format($IP,1,'.','') : $list['sum']['IP'] = number_format($IP,0,'','');
+		($EFF<100)? $list['sum']['EFF'] = number_format($EFF,1,'.','') : $list['sum']['EFF'] = number_format($EFF,0,'','');
 		$oInverter = array();
 		//$totals = array("day"=>$KWHTD,"week"=>$KWHTW,"month"=>$KWHTM);
 
