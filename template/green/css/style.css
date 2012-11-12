@@ -1,13 +1,6 @@
 * { margin: 0; padding: 0; outline: 0; }
 
-body {
-    font-size: 12px;
-    line-height: 22px;
-    font-family: arial, sans-serif;
-    color: #5c5c5c;
-    background: #8bc32b url(images/body.png) repeat 0 0;
-    min-width: 940px; 
-}
+body {font-size: 12px;line-height: 22px;font-family: arial, sans-serif;color: #5c5c5c;background: #8bc32b url(images/body.png) repeat 0 0;min-width: 940px; }
 
 a { color: #0252aa; text-decoration: none; cursor: pointer; }
 a:hover { text-decoration: underline; }
@@ -32,7 +25,7 @@ textarea { overflow: auto; }
 #logo a:hover { display: block; width: 193px; height: 36px; text-decoration: none; text-shadow: yellow 1px 1px 5px;} 
 
 #subLogo { width: 193px; font-size: 20px; }
-#subLogo a { display: block; width: 350px; height: 20px; color: #8FC32B; text-shadow: white 1px 1px 4px;} 
+#subLogo a { display: block; width: 740px; height: 20px; color: #8FC32B; text-shadow: white 1px 1px 4px;} 
 #subLogo a:hover { display: block; width: 350px; height: 20px; text-decoration: none; text-shadow: yellow 1px 1px 5px;} 
 
 
@@ -43,12 +36,8 @@ textarea { overflow: auto; }
 .socials a.flickr { background: url(images/flickr.png) no-repeat 0 0; }
 .socials a.facebook { padding-right: 0; background: url(images/facebook.png) no-repeat 0 0; }
 
-.loading { 
-	height: 50px;position: fixed; top: 0px; padding: 0 0 5px 6px; width: 144px;
-	background: url(images/socials.png) no-repeat; z-index: 100000000000; display: block; }
+.loading { height: 50px;position: fixed; top: 0px; padding: 0 0 5px 6px; width: 144px;background: url(images/socials.png) no-repeat; z-index: 100000000000; display: block; }
 .loading img {position: absolute; width: 138px; height:15px; }
-
-
 
 #navigation { width: 940px; position: relative; }
 #navigation ul { float: left; display: inline; position: relative; }

@@ -47,8 +47,8 @@ function tooltipContentEditor(str, seriesIndex, pointIndex, plot,series	) {
 
 function tooltipPeriodContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = ""; 
-	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Energy:"+ plot.series[1].data[pointIndex][1]+ " kWh<br>"+bold[1];
-	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " kWh<br>"+bold[1];
+	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Energy:"+ plot.series[0].data[pointIndex][1]+ " kWh<br>"+bold[1];
+	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Cum.: "+ plot.series[1].data[pointIndex][1]+ " kWh<br>"+bold[1];
 	returned += "Date:"+ plot.series[1].data[pointIndex][2]+"";
 	return returned;
 }
@@ -391,6 +391,45 @@ var WSL = {
 								$("#pickerFilterDiv").show();
 							});
 
+							$('#next').click(function () {
+							    var $picker = $("#datepicker");
+							    var date=new Date($picker.datepicker('getDate'));
+							    var splitDate = $('#datepicker').val().split('-');
+							    if($('#pickerPeriod').val()=='Today'){
+							    	date.setDate(date.getDate()+1);	
+							    }else if($('#pickerPeriod').val()=='Week'){
+							    	date.setDate(date.getDate()+7);
+							    }else if($('#pickerPeriod').val()=='Month'){
+							    	var value = splitDate[1];
+							    	date.setMonth(value);
+							    }else if($('#pickerPeriod').val()=='Year'){
+							    	var value = parseInt(splitDate[2])+1;
+							    	date.setFullYear(value);
+							    }
+							    $picker.datepicker('setDate', date);
+							    handleGraphs('picker');
+							});
+							
+							$('#previous').click(function () {
+							    var $picker = $("#datepicker");
+							    var date=new Date($picker.datepicker('getDate'));
+							    var splitDate = $('#datepicker').val().split('-');
+							    if($('#pickerPeriod').val()=='Today'){
+							    	date.setDate(date.getDate()-1);	
+							    }else if($('#pickerPeriod').val()=='Week'){
+							    	date.setDate(date.getDate()-7);
+							    }else if($('#pickerPeriod').val()=='Month'){
+							    	var value = splitDate[1]-2;
+							    	date.setMonth(value);
+							    }else if($('#pickerPeriod').val()=='Year'){
+							    	var value = splitDate[2]-1;
+							    	date.setFullYear(value);
+							    }
+							    $picker.datepicker('setDate', date);
+							    handleGraphs('picker');
+							});
+							
+					    	
 					    }
 					});
 					success.call();
@@ -646,9 +685,15 @@ var WSL = {
 					},
 					legend : {
 						show : true,
+						location:"nw",
 						 renderer: $.jqplot.EnhancedLegendRenderer,
-						 rendererOptions: {seriesToggle: 'normal',location: 's', placement: 'outsideGrid',numberRows:1}, 
-					},
+						 rendererOptions: {
+			                // set to true to replot when toggling series on/off
+			                // set to an options object to pass in replot options.
+			                seriesToggle: 'normal',
+			                // seriesToggleReplot: {resetAxes: true}
+			            }
+					}, 
 					highlighter : {
 						tooltipContentEditor: tooltipPeriodContentEditor,
 						show : true,

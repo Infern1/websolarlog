@@ -73,11 +73,13 @@ switch ($method) {
 		$options[] =array( "value" => "Month","name"=> _("Month"));
 		$options[] =array( "value" => "Year","name"=> _("Year"));
 		
-		//$tabs[] = array( "graphName" => "Expected","position" => "4","active" => ($page == "expected") ? 'true' : 'false');
 		$data['tabsPosition'] =  Common::searchMultiArray($tabs, 'active', 'true');
 		$lang = array();
 		$lang['date'] = _('date');
 		$lang['periode'] = _('periode');
+		$lang['previous'] = _('previous');
+		$lang['next'] = _('next');
+		
 		$data['lang'] = $lang;
 		$data['tabs'] = $tabs;
 		$data['options'] = $options;
@@ -95,17 +97,6 @@ switch ($method) {
 		$data['languages'] = $languages;
 		$data['currentlanguage'] = $user_lang;
 		break;
-// 	case 'getMenu':
-// 		// TODO :: Move to json file or something???
-// 		$menu = array();
-// 		$menu[] = array( "url" => "index.php", "title" => $lgMINDEX);
-// 		$menu[] = array( "url" => "indexdetailed.php", "title" => $lgMDETAILED);
-// 		$menu[] = array( "url" => "indexproduction.php", "title" => $lgMPRODUCTION);
-// 		$menu[] = array( "url" => "indexcomparison.php", "title" => $lgMCOMPARISON);
-// 		$menu[] = array( "url" => "plantinfo.php", "title" => $lgMINFO);
-// 		$menu[] = array( "url" => "index_chartstest.php", "title" => "Test page");
-// 		$data['menu'] = $menu;
-// 		break;
 	case 'getEvents':
 		$events = $dataAdapter->readEvent($invtnum);
 		$resultEvents=array();
@@ -142,86 +133,7 @@ switch ($method) {
 		$data['events'] = $newEvents;
 		
 		break;
-	case 'getPlantInfo':
-		$config_invt="config/config_invt".$invtnum.".php";
-		include("$config_invt");
-		$dir = "data/invt$invtnum/csv";
-		$di = new DirectoryIterator($dir);
-		foreach ($di as $fileinfo) {
-			if (!$fileinfo->isDot()) {
-				if ($fileinfo->getMTime() > $timestamp) {
-					// current file has been modified more recently
-					// than any other file we've checked until now
-					$path = $dir."/" . $fileinfo->getFilename();
-				}
-			}
-		}
-
-		$lines=file($path);
-		$contalines = count($lines);
-		$array = explode(";",$lines[$contalines-1]);
-		/*
-		 * $KWHP = corrected total kWh Production
-		* $array[14] = by inverter reported total production
-		* $INITIALCOUNT = is > 0 in config_invt1.php if
-		* $CORRECTFACTOR = the factor to correct with
-		*/
-		$KWHP=round(($array[14]+$INITIALCOUNT)*$CORRECTFACTOR,1);
-		/*
-		 * calculate avoided CO2 in grams
-		* 456 = grams CO2 per kWh >> move to a var. in admin???
-		* CO2 = ((total produced kWh / 1000) * "energy mix" grams CO2 per produced kWh)   in "CountryXXX" (NL = 630 grams per produced kWh)
-		*/
-		$CO2=(($KWHP/1000)*456);
-		if ($CO2>1000) {
-			$CO2v="Tonnes";
-			$CO2=round(($CO2/1000),3);
-		}else {
-			$CO2v="Kg";
-			$CO2=round(($CO2),1);
-		}
-		$info="data/invt$invtnum/infos/infos.txt";
-		$lines=file($info);
-		$updtd=date ("d M H:i.", filemtime($info));
-		$reKey = 0;
-		foreach ($lines as $key => $value){
-			if($value != "\n") {
-				$inverter[$reKey]  = $value;
-				$reKey++;
-			}
-		}
-		$filename="data/invt$invtnum/infos/events.txt";
-		$handle = fopen($filename, "r");
-		$contents = explode("\n", fread($handle, filesize($filename)));
-		fclose($handle);
-
-		$plantInfo = new PlantInfoResult();
-		$plantInfo->langEVENTS = $lgEVENTS;
-		$plantInfo->langINVERTERINFO = $lgINVERTERINFO;
-		$plantInfo->langTOTALPROD = $lgTOTALPROD;
-		$plantInfo->langECOLOGICALINFOB = $lgECOLOGICALINFOB;
-		$plantInfo->langPLANTINFO = $lgPLANTINFO;
-		$plantInfo->langLOCATION = $lgLOCATION;
-		$plantInfo->langCOUNTER = $lgCOUNTER;
-		$plantInfo->langPLANTPOWER = $lgPLANTPOWER;
-
-		$plantInfo->valueSYSID = $SYSID;
-		$plantInfo->valuePLANT_POWER = $PLANT_POWER;
-		$plantInfo->valueLOCATION = $LOCATION;
-		$plantInfo->valueCO2 = $CO2;
-		$plantInfo->valueCO2v =$CO2v;
-		$plantInfo->valueKWHP = $KWHP;
-		$plantInfo->valueUpdtd = $updtd;
-		$plantInfo->valueEvents = $contents;
-		$plantInfo->valueInverter = $inverter;
-
-		$plantInfo->success = true;
-
-		$data['plantInfo'] = $plantInfo;
-		break;
 	case 'getGraphPoints':
-		$config_invt="config/config_invt".$invtnum.".php";
-		include("$config_invt");
 		
 		$lines = $dataAdapter->getGraphPoint(1, $type, $date);
 		$dayData = new DayDataResult();
@@ -240,12 +152,7 @@ switch ($method) {
 		$data['dayData'] = $dayData;
 		break;
 	case 'getDetailsGraph':
-		$config_invt="config/config_invt".$invtnum.".php";
-		include("$config_invt");
-
 		$lines = $dataAdapter->getDetailsHistory($invtnum,$date);
-
-		//var_dump($details);
 
 		$dayData = new DayDataResult();
 		$dayData->data = $lines['details'];
@@ -268,14 +175,10 @@ switch ($method) {
 		$data['dayData'] = $dayData;
 		break;
 	case 'getProductionGraph':
-		//$config_invt="config/config_invt".$invtnum.".php";
-		//include("$config_invt");
 		(!$year)?$year=date("Y"):$year=$year;
 		(!$invtnum)?$invtnum=1:$invtnum=$invtnum;
 
 		$lines = $dataAdapter->getYearSumPowerPerMonth($invtnum, $date);
-		//var_dump($lines['energy']->points);
-
 
 		$dayData = new DayDataResult();
 		$dayData->data = $lines['energy']->points;
@@ -313,7 +216,7 @@ switch ($method) {
 		$beans = R::findAndExport('Inverter');
 		
 		foreach ($beans as $inverter){
-			$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($inverter['id']);
+			$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($inverter['id'], $date);
 		}
 
 		$dayData = new DayDataResult();

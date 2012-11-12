@@ -841,11 +841,21 @@ class PDODataAdapter {
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
 	 */
-	public function getMonthMaxPowerPerDay($invtnum=0){
+	public function getMonthMaxPowerPerDay($invtnum=0,$startDate){
+		$beginEndDate = Util::getBeginEndDate('month', 1,$startDate);
+var_dump($beginEndDate);		
+		
+		
 		if ($invtnum>0){
-			$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM pMaxOTD WHERE INV = :INV GROUP BY strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum));
+			$beans = R::getAll("
+					SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date 
+					FROM pMaxOTD WHERE INV = :INV AND  
+					time > :beginDate AND time < :endDate GROUP BY strftime ( 'd%-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}else{
-			$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM pMaxOTD GROUP BY strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC");
+			$beans = R::getAll("
+					SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date 
+					FROM pMaxOTD 
+					time > :beginDate AND time < :endDate GROUP BY strftime ( 'd%-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}
 		for ($i = 0; $i < count($beans); $i++) {
 			$beans[$i]['maxGP'] = number_format($beans[$i]['maxGP'],2,',','');
@@ -922,6 +932,7 @@ class PDODataAdapter {
 	 */
 	public function getDayEnergyPerDay($invtnum=0){
 		$beginEndDate = Util::getBeginEndDate('today', 1,$startDate);
+		
 		if ($invtnum>0){
 
 			$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
