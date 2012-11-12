@@ -1409,7 +1409,8 @@ class PDODataAdapter {
 			$points[] = array (time()* 1000, 0,0);
 		}else{
 			if (strtolower($period) == 'month'){
-				$endOfMonth =Util::getTimestampOfDate(0,0,0,  date('t'),date("m"), date("Y"));
+				$endOfMonth =Util::getTimestampOfDate(0,0,0,  date('t'),date("m",strtotime($date)), date("Y"));
+				
 			}else{
 				$beginEndWeek = Util::getStartAndEndOfWeek(strtotime($date));
 				$endOfMonth = $beginEndWeek[1];
