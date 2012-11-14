@@ -267,7 +267,7 @@ switch ($method) {
 		foreach ($inverters as $inv){
 			$inverter[] = array("name"=>$inv['name'],"id"=>$inv['id']);
 		}
-		$lines = $dataAdapter->getCompareGraph($invtnum, $config,$whichMonth,$whichYear,$compareMonth,$compareYear);
+		$lines = $dataAdapter->getCompareGraph($invtnum, $whichMonth,$whichYear,$compareMonth,$compareYear);
 		//var_dump($inverters);
 
 		
@@ -316,9 +316,9 @@ switch ($method) {
 		$data['IndexValues'] = $indexValues;
 		break;
 	case 'getPageIndexValues':
-		$indexValues = $dataAdapter->readPageIndexData();
+		$indexValues = $dataAdapter->readPageIndexData($config);
 		$lang = array();
-		$lang['someFigures'] 	= _("Some Figures");
+		$lang['someFigures'] 	= _("Some Figures*");
 		$lang['by']			 	= _("By");
 		$lang['total'] 			= _("Total");
 		$lang['averages']	 	= _("Averages");
@@ -333,7 +333,9 @@ switch ($method) {
 		$lang['inverter'] 		= _("Inverter");
 		$lang['power'] 			= _("Power");
 		$lang['ratio'] 			= _("ratio");
+		$lang['overallTotal']	= _("overall**");
 		$lang['allFiguresAreInKWH']= _("* All figures are in kWh");
+		$lang['overallTotalText']= _("** Incl. initial kWh");
 		
 		$data['lang'] = $lang;
 		$data['IndexValues'] = $indexValues;

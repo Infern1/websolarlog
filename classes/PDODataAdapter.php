@@ -1133,7 +1133,7 @@ var_dump($beginEndDate);
 	 * @param unknown_type $compareMonth
 	 * @param unknown_type $compareYear
 	 */
-	public function getCompareGraph($invtnum, $config ,$whichMonth,$whichYear,$compareMonth,$compareYear){
+	public function getCompareGraph($invtnum,$whichMonth,$whichYear,$compareMonth,$compareYear){
 		$beans = array();
 		$whichBeans = array();
 		$compareBeans = array();
@@ -1500,15 +1500,14 @@ var_dump($beginEndDate);
 /**
  *
  */
-	public function readPageIndexData() {
+	public function readPageIndexData($config) {
 		// summary live data
 		$list = array();
 
-		$readMaxPowerValues = $this->getMaxTotalEnergyValues(0,"all");
+		$readMaxPowerValues = $this->getMaxTotalEnergyValues(0,"all",$config);
 		$list['summary'] = $readMaxPowerValues;
 		return $list;
 	}
-
 
 /**
  *
@@ -1516,9 +1515,13 @@ var_dump($beginEndDate);
 	public function readPageIndexLiveValues() {
 		// summary live data
 		$list = array();
-
+		$GP  = 0;
+		$I1P = 0;
+		$I2P = 0;
+		$IP  = 0;
+		$EFF = 0;
 		$beans = R::findAndExport('inverter');
-		
+		$liveBean = array();
 		foreach ($beans as $inverter){
 			
 			$oInverter = 	array();
@@ -1591,7 +1594,7 @@ var_dump($beginEndDate);
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
 	 */
-	public function getMaxTotalEnergyValues($invtnum,$type,$limit=1){
+	public function getMaxTotalEnergyValues($invtnum,$type,$config,$limit=1){
 
 		$type = strtolower($type);
 		$avgEnergyBeansToday[] = array();
@@ -1680,6 +1683,13 @@ var_dump($beginEndDate);
 			}
 		}
 
+		foreach ($config->inverters as $inverter){
+			$initialkwh += (float)$inverter->initialkwh;
+		}
+		$tempTotal = 0;
+		$tempTotal = $initialkwh + (float)$totalEnergyBeansOverall[0]['sumkWh'] ;
+		$totalEnergyOverallTotal = number_format($tempTotal,2,',','');
+		
 		$energy = array(
 				"maxPowerToday"=>$maxPowerBeansToday,
 				"totalEnergyToday"=>$totalEnergyBeansToday,
@@ -1695,7 +1705,9 @@ var_dump($beginEndDate);
 				"avgEnergyYear"=>$avgEnergyBeansYear,
 
 				"totalEnergyOverall"=>$totalEnergyBeansOverall,
-				"avgEnergyOverall"=>$avgEnergyBeansOverall
+				"avgEnergyOverall"=>$avgEnergyBeansOverall,
+				"initialkwh" => $initialkwh,
+				"totalEnergyOverallTotal"=> $totalEnergyOverallTotal
 		);
 		return $energy;
 	}

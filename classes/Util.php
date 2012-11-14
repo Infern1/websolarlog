@@ -86,7 +86,7 @@ class Util {
  	* Add timestamp 
  	* @param int $ts 
  	*/
-    function getStartAndEndOfWeek($ts) {
+    public static function getStartAndEndOfWeek($ts) {
 
     	$start = (date('w', $ts) == 0) ? $ts : strtotime('last monday', $ts);
     	return array(strtotime(date('Y-m-d', $start)),strtotime(date('Y-m-d', strtotime('next sunday', $start))));
@@ -117,7 +117,7 @@ class Util {
      * @param int $count multiplies the day's,weeks,months,year
      * @return array($beginDate, $endDate);
      */
-    public function getBeginEndDate($type, $count,$startDate=null){
+    public static function getBeginEndDate($type, $count,$startDate=null){
     	if(!$startDate){
     		$startDate = date("d-m-Y");
     	}
