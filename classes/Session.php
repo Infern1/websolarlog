@@ -49,7 +49,7 @@ class Session
     }
     
     /**
-     * Set the language to the give language code
+     * Set the language to the given language code
      * @param language
      */
     public static function setLanguage($language) {
@@ -61,6 +61,13 @@ class Session
     	bindtextdomain($domain, "./locale");
     	bind_textdomain_codeset($domain, 'UTF-8');
     	textdomain($domain);
+    }
+    
+    /**
+     * Sets the time zone
+     */
+    public static function setTimezone() {
+    	ini_set('date.timezone', self::getConfig()->timezone);
     }
 }
 ?>

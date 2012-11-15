@@ -1,6 +1,7 @@
 <?php
 require_once("classes/classloader.php");
 $template = Session::getConfig()->template;
+Session::setTimezone();
 require_once("template/" . $template . "/header.php");
 require_once("template/" . $template . "/index.php");
 ?>

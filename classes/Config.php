@@ -9,6 +9,7 @@ class Config
     public $location;
     public $latitude;
     public $longitude;
+    public $timezone;
 
     public $comPort;
     public $comOptions;

@@ -568,6 +568,7 @@ class PDODataAdapter {
 		$bean->location = $config->location;
 		$bean->latitude = $config->latitude;
 		$bean->longitude = $config->longitude;
+		$bean->timezone = $config->timezone;
 
 		$bean->comPort = $config->comPort;
 		$bean->comOptions = $config->comOptions;
@@ -614,6 +615,7 @@ class PDODataAdapter {
 			$config->location = $bean->location;
 			$config->latitude = $bean->latitude;
 			$config->longitude = $bean->longitude;
+			$config->timezone = $bean->timezone;
 
 			$config->comPort = $bean->comPort;
 			$config->comOptions = $bean->comOptions;

@@ -6,6 +6,7 @@ require_once("classes/classloader.php");
 $adapter = PDODataAdapter::getInstance();
 $config = Session::getConfig();
 Session::setLanguage("nl_NL");
+Session::setTimezone();
 
 // Retrieve action params
 $settingstype = Common::getValue("s", null);
@@ -42,6 +43,8 @@ switch ($settingstype) {
         $data['latitude'] = $config->latitude;
         $data['longitude'] = $config->longitude;
         $data['template'] = $config->template;
+        $data['timezone'] = $config->timezone;
+        $data['timezones'] = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
         break;
     case 'inverters':
         $data['inverters'] = $config->inverters;
@@ -188,6 +191,7 @@ switch ($settingstype) {
         $config->location = Common::getValue("location");
         $config->latitude = Common::getValue("latitude");
         $config->longitude = Common::getValue("longitude");
+        $config->timezone = Common::getValue("timezone");
         $config->template = Common::getValue("template");
         $adapter->writeConfig($config);
         break;

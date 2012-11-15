@@ -3,6 +3,8 @@
 //error_reporting(E_ALL);
 //ini_set('display_errors', '1');
 require_once("classes/classloader.php");
+Session::setTimezone();
+
 $template = Session::getConfig()->template;
 require_once("template/" . $template . "/header.php");
 require_once("template/" . $template . "/index.php");

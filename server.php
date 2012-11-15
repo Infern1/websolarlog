@@ -9,6 +9,7 @@ include("config/config_main.php");
 require 'classes/classloader.php';
 
 Session::setLanguage("nl_NL");
+Session::setTimezone();
 
 try {
 // InActiveCheck
