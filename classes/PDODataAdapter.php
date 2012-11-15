@@ -12,7 +12,7 @@ class PDODataAdapter {
 	
 	
 	function __construct() {
-		$config = new Config;
+		$config = new Config; // We dont need data from dbase
 		R::setup('sqlite:'.$config->dbHost );
 		R::debug(false);
 		R::setStrictTyping(false);
@@ -1134,6 +1134,8 @@ var_dump($beginEndDate);
 	 * @param unknown_type $compareYear
 	 */
 	public function getCompareGraph($invtnum,$whichMonth,$whichYear,$compareMonth,$compareYear){
+		$config = Session::getConfig();
+		
 		$beans = array();
 		$whichBeans = array();
 		$compareBeans = array();
@@ -1460,7 +1462,7 @@ var_dump($beginEndDate);
 	 *
 	 */
 	public function readEnergyValues($invtnum, $type, $count, $startDate){
-		$config = new Config;
+		$config = Session::getConfig();
 		$energyBeans = $this->readTablesPeriodValues($invtnum, "energy", $type,$startDate);
 		$Energy = array();
 		foreach ($energyBeans as $energyBean){
@@ -1513,6 +1515,8 @@ var_dump($beginEndDate);
  *
  */
 	public function readPageIndexLiveValues() {
+		$config = Session::getConfig();
+		
 		// summary live data
 		$list = array();
 		$GP  = 0;
@@ -1526,7 +1530,7 @@ var_dump($beginEndDate);
 			
 			$oInverter = 	array();
 			
-			if(Util::isSunDown($this->config)){
+			if(Util::isSunDown($config)){
 				$live = new Live();
 				$live->time = _('sleeping');
 				$live->INV = $inverter['id'];
