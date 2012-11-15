@@ -202,6 +202,14 @@ class PDODataAdapter {
 
 		$bean->BOOT = $live->BOOT;
 		$bean->KWHT = $live->KWHT;
+		
+		$IP = $live->I1P+$live->I2P;
+		
+		// Prevent division by zero error
+		if (!empty($IP)) {
+			$bean->I1Ratio = ($live->I1P/$IP)*100;
+			$bean->I2Ratio = ($live->I2P/$IP)*100;
+		}
 
 		//Store the bean
 		$id = R::store($bean);
