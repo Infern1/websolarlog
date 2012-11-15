@@ -6,8 +6,8 @@ ini_set('display_errors', '1');
 require_once '../admin/classes/classloader.php';
 
 // Initialize adapter and config
-$adapter = new PDODataAdapter();
-$config = $adapter->readConfig();
+$adapter = PDODataAdapter::getInstance();
+$config = Session::getConfig();
 
 // Get values from url
 $inverterId = Common::getValue("inverterId", 1);

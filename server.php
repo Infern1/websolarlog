@@ -45,8 +45,8 @@ header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Content-type: application/json');
 
 // Initialize return array
-$dataAdapter = new PDODataAdapter();
-$config = $dataAdapter->readConfig();
+$dataAdapter = PDODataAdapter::getInstance();
+$config = Session::getConfig();
 
 $data = array();
 $invtnum = Common::getValue('invtnum', 0);

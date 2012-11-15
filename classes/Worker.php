@@ -6,9 +6,8 @@ class Worker {
 
     function __construct() {
         // Initialize objects
-        $this->config = new Config;
-        $this->adapter = new PDODataAdapter();
-        $this->config = $this->adapter->readConfig();
+        $this->adapter = PDODataAdapter::getInstance();
+        $this->config = Session::getConfig();
     }
 
     function __destruct() {

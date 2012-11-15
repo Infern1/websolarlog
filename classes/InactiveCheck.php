@@ -4,8 +4,8 @@ class InactiveCheck {
     private $config;
 
     function __construct() {
-        $this->adapter = new PDODataAdapter();
-        $this->config = $this->adapter->readConfig();
+        $this->adapter = PDODataAdapter::getInstance();
+        $this->config = Session::getConfig();
     }
 
     function __destruct() {
