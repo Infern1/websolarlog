@@ -18,6 +18,9 @@ $inactiveCheck->check();
 // Retrieve action params
 $method = $_GET['method'];
 
+/*
+ * For now its disabled.
+ * 
 // Detect en load the current user_lang
 if (!empty ($_POST['user_lang'])) {
 	setcookie('user_lang',$_POST['user_lang'],strtotime('+5 year'));
@@ -29,6 +32,7 @@ if (!empty ($_POST['user_lang'])) {
 }
 include("languages/".$user_lang.".php");
 
+
 // Detect the current user style
 if (!empty ($_POST['user_style'])) {
 	setcookie('user_style',$_POST['user_style'],strtotime('+5 year'));
@@ -38,6 +42,7 @@ if (!empty ($_POST['user_style'])) {
 } else {
 	$user_style="default";
 }
+*/
 
 // Set headers for JSON response
 header('Cache-Control: no-cache, must-revalidate');
@@ -98,39 +103,24 @@ switch ($method) {
 		$data['currentlanguage'] = $user_lang;
 		break;
 	case 'getEvents':
-		$events = $dataAdapter->readEvent($invtnum);
-		$resultEvents=array();
-		foreach ($events as $event){
-			
-			$order   = array("\r\n", "\n", "\r");
-			$replace = ' ';
-			// Processes \r\n's first so they aren't converted twice.
-			$eventText= str_replace($order, $replace, $event['Event']);
-			
-			$eventText = preg_split('/(Alarm)/', $eventText, -1, PREG_SPLIT_DELIM_CAPTURE);
-			
-			if(count($eventText)>1){
-				$eventText = $eventText[1].' '.substr($eventText[2],4,strlen($eventText[2]));
-			}else{
-				$eventText = trim($eventText[0]);
-			}
-			$event['time'] = date('d-m-Y H:i:s',$event['time']);
-			$event['Event'] = $eventText;
-			$newEvents[] = $event;
-		}
-		/*
-		Alarm 1: Grid Fail Warning 003 
-		Alarm\r\n2: Grid Fail Warning 003 
-		Alarm 3: Grid Fail Warning 003 
-		Alarm 4: Grid Fail\r\nWarning 003
-		*/
-		//var_dump($resultEvents);
+		$noticeEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Notice'));
+		$alarmEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Alarm'));
+		$infoEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Info'));
+
 		$lang = array();
 		$lang['Time'] = _('Time');
+		$lang['Inv'] = _('Inv');
 		$lang['Inverter'] = _('Inverter');
-		$lang['Events'] = _('Events');
+		$lang['Event'] = _('Event');
+		$lang['Miscellaneous'] = _('Miscellaneous');
+		$lang['Notice'] = _('Notice');
+		$lang['Alarm'] = _('Alarm');
+		$lang['Info'] = _('Info');
+		$lang['Information'] = _('Information');
 		$data['lang'] = $lang;
-		$data['events'] = $newEvents;
+		$data['noticeEvents'] = $noticeEvents;
+		$data['alarmEvents'] = $alarmEvents;
+		$data['infoEvents'] = $infoEvents;
 		
 		break;
 	case 'getGraphPoints':
@@ -186,6 +176,7 @@ switch ($method) {
 		$data['dayData'] = $dayData;
 		break;
 	case 'getPageYearValues':
+		var_dump($config);
 		$beans = R::findAndExport('Inverter');
 		$maxEnergy=array();
 		$energy=array();
@@ -217,18 +208,36 @@ switch ($method) {
 		
 		foreach ($beans as $inverter){
 			$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($inverter['id'], $date);
+			$maxEnergy[] = $dataAdapter->getMonthEnergyPerDay($inverter['id'], $date);
+			$minMaxEnergyMonth[] = $dataAdapter->getMaxMinEnergyMonth($inverter['id']);
 		}
 
 		$dayData = new DayDataResult();
 		$dayData->data = array(
 				"maxPower"=>$maxPower,
 				"maxEnergy"=>$maxEnergy,
+				"minMaxEnergy"=>$minMaxEnergyMonth
 		);
+		$lang = array();
+		$lang['today'] 			= _("Today");
+		$lang['maxGridPower'] 	= _("Max Grid Power");
+		$lang['date'] 			= _("date");
+		$lang['totalKWh'] 		= _("TotalKWh");
+		$lang['inv'] 			= _("Inv");
+		$lang['kwh'] 			= _("kwh");
+		$lang['historyValues'] 	= _("History values");
+		$lang['loading'] 		= _("loading")."...";
+		$lang['watt'] 			= _("watt");
 		$dayData->success = true;
+		$data['lang'] = $lang;
 		$data['monthData'] = $dayData;
 		break;
 	case 'getPageTodayValues':
 		$beans = R::findAndExport('Inverter');
+		
+		$maxEnergy = array();
+		$maxPower = array();
+		
 		foreach ($beans as $inverter){
 			$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($inverter['id']);
 			$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($inverter['id']);
@@ -289,8 +298,7 @@ switch ($method) {
 		$dayData->inverters = $inverter;
 		$dayData->data = array(
 				"which"=>$lines['whichBeans']->points,
-				"compare"=>$lines['compareBeans']->points,
-				
+				"compare"=>$lines['compareBeans']->points
 				);
 		$dayData->type = $lines['type'];
 		$dayData->success = true;

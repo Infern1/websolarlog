@@ -8,7 +8,7 @@ require_once("template/" . $template . "/index.php");
 	<script type="text/javascript">
 	$(function(){
 		WSL.init_tabs("index","#main-middle",
-				function(){WSL.init_events(1,"#columns"); // Initial load fast
+				function(){WSL.init_misc(1,"#columns"); // Initial load fast
 		});
 		
 

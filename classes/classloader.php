@@ -21,6 +21,8 @@ function wsl_autoloader($classname)
 {
     global $current_module;
     $docRoot = dirname(dirname(__FILE__));
+
+    ini_set('date.timezone', 'Europe/Amsterdam');
     
     if ($classname == "") {
         exit("Could not autoload empty classname!");

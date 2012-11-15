@@ -162,8 +162,30 @@ class Util {
     	return array("beginDate"=>$beginDate,"endDate"=>$endDate);
     }
 
-    public function formatPower($value,$decimals){
+    public static function formatPower($value,$decimals){
     	return ($value>1000) ? round(($value/1000),$decimals)." kWh": round($value,$decimals)." W";
     }
+    
+    public static function makeEventsReadable($events){
+    	foreach ($events as $event){
+    		$order   = array("\r\n", "\n", "\r");
+    		$replace = ' ';
+    		// Processes \r\n's first so they aren't converted twice.
+    		$eventText= str_replace($order, $replace, $event['Event']);
+    			
+    		$eventText = preg_split('/(Alarm)/', $eventText, -1, PREG_SPLIT_DELIM_CAPTURE);
+    			
+    		if(count($eventText)>1){
+    			$eventText = $eventText[1].' '.substr($eventText[2],4,strlen($eventText[2]));
+    		}else{
+    			$eventText = trim($eventText[0]);
+    		}
+    		$event['time'] = date('d-m-Y H:i:s',$event['time']);
+    		$event['Event'] = $eventText;
+    		$newEvents[] = $event;
+    	}
+    	return $newEvents;
+    }
+    
 }
 ?>

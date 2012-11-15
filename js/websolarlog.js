@@ -278,7 +278,7 @@ var WSL = {
 		});
 	},
 
-	init_events : function(invtnum, divId) {
+	init_misc : function(invtnum, divId) {
 		// Retrieve the error events
 		//ajaxStart();
 		WSL.api.getEvents(invtnum, function(data) {
@@ -292,12 +292,12 @@ var WSL = {
 					});
 					
 					$(divId).html(html);
-					//ajaxReady();
 				},
 				dataType : 'text'
 			});
 		});
 	},
+	
 	init_plantInfo : function(invtnum, divId) {
 		ajaxStart();
 		// Retrieve the error events
@@ -514,14 +514,15 @@ var WSL = {
 				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
-						'data' : data
+						'data' : data,
+						'lang' : data.lang
 					});
 					$(monthValues).html(html);
 				    $(function() {
-				        $( "#monthPowerAcc" ).accordion({
+				        $( ".accordion" ).accordion({
 				            collapsible: true
 				        });
-				        $( "#monthEnergyAcc" ).accordion({
+				        $( ".accordion" ).accordion({
 				            collapsible: true
 				        });
 				    });
@@ -1153,6 +1154,14 @@ WSL.api.getEvents = function(invtnum, success) {
 		'invtnum' : invtnum,
 	}, success);
 };
+
+WSL.api.getInvInfo = function(success) {
+	$.getJSON("server.php", {
+		method : 'getInvInfo'
+	}, success);
+};
+
+
 
 WSL.api.getInverters = function(success) {
     $.getJSON("server.php", {
