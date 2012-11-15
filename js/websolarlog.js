@@ -4,15 +4,11 @@ $.ajaxSetup({
 });
 
 function ajaxReady(){
-
 	$('#reqLoading').hide();
-	 
-		// init tooltips
 	$( '.tooltip' ).tooltip({});
 }
 
 function ajaxStart(){
-
 	$('#reqLoading').show();
 	$('.ui-tooltip').remove();
 }
@@ -183,7 +179,6 @@ var WSL = {
 		// initialize languages selector on the given div
 		ajaxStart();
 		WSL.api.getPageIndexLiveValues(function(data) {
-			
 				$.ajax({
 					url : 'js/templates/liveInverters.hb',
 					success : function(source) {
@@ -193,10 +188,7 @@ var WSL = {
 							'lang':data.lang
 						});
 						$(divId).html(html);
-						// remove frozen tooltips
-//						//////////////////////////////////////
-						//////////////////
-
+						
 						var GP = 3600 / 10;
 						var gaugeGPOptions = {
 							title : data.lang.ACPower,
@@ -320,6 +312,7 @@ var WSL = {
 			}
 		});
 	},
+	
 	init_menu : function(divId) {
 		ajaxStart();
 		WSL.api.getMenu(function(data) {
@@ -357,18 +350,6 @@ var WSL = {
 	},
 
 	init_tabs : function(page, divId, success) {
-		$('#datepicker').live("change",
-				function(){
-					var request = 'picker';
-					handleGraphs(request);
-				}
-		);
-		$('#pickerPeriod').live("change",
-				function(){
-					var request = 'picker';
-					handleGraphs(request);
-				}
-		);
 
 		// initialize languages selector on the given div
 		WSL.api.getTabs(page, function(data) {
@@ -390,6 +371,13 @@ var WSL = {
 							}, function() {
 								$("#pickerFilterDiv").show();
 							});
+
+							$('#pickerPeriod').on("change",
+									function(){
+										var request = 'picker';
+										handleGraphs(request);
+									}
+							);
 
 							$('#next').click(function () {
 							    var $picker = $("#datepicker");
@@ -507,6 +495,7 @@ var WSL = {
 
 	init_PageMonthValues : function(monthValues,periodList) {
 		ajaxStart();
+
 		// initialize languages selector on the given div
 		WSL.api.getPageMonthValues(function(data) {
 			$.ajax({
@@ -517,26 +506,34 @@ var WSL = {
 						'data' : data,
 						'lang' : data.lang
 					});
+
 					$(monthValues).html(html);
+
 				    $(function() {
-				        $( ".accordion" ).accordion({
-				            collapsible: true
-				        });
-				        $( ".accordion" ).accordion({
-				            collapsible: true
-				        });
+				        $( ".accordion" ).accordion({collapsible: true});
+				        $( ".accordion" ).accordion({collapsible: true});
 				    });
 				},
 				dataType : 'text',
 			});
+			
 			$.ajax({
-				url : 'js/templates/periodList.hb',
+				url : 'js/templates/pageDateFilter.hb',
 				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
-						'data' : data
+						'data' : data,
+						'lang' : data.lang
 					});
-					$(periodList).html(html);
+					$('#pageMonthDateFilter').html(html);
+
+					$('#datePickerMonth').on("change",
+							function(){
+								WSL.init_PageMonthValues("#columns","#periodList"); // Initial load fast
+								console.log('datePickerMonth');
+							}
+					);
+
 				},
 				dataType : 'text',
 			});
@@ -561,12 +558,6 @@ var WSL = {
 				},
 				dataType : 'text',
 			});
-			/*
-			 * $.ajax({ url : 'js/templates/periodList.hb', success :
-			 * function(source) { var template = Handlebars.compile(source); var
-			 * html = template({ 'data' : data }); $(periodList).html(html); },
-			 * dataType : 'text', });
-			 */
 		});
 	},
 
@@ -946,7 +937,7 @@ var WSL = {
 						dataType : 'text',
 					});
 
-    				$('input:checkbox').live('change', function(){
+    				$('input:checkbox').on('change', function(){
     					 var id = $(this).attr("id");
     				     if(id == 'every'){
     				    	 if($(this).is(':checked')){
@@ -1000,7 +991,7 @@ var WSL = {
 				dataType : 'text',
 			});
 		});
-		$('select').live('change', function(){
+		$('select').on('change', function(){
 			WSL.createCompareGraph(1,$('#whichMonth').val(),$('#whichYear').val(),$('#compareMonth').val(),$('#compareYear').val()); // Initial// load// fast
 		});
 	},

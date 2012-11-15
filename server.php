@@ -177,7 +177,6 @@ switch ($method) {
 		$data['dayData'] = $dayData;
 		break;
 	case 'getPageYearValues':
-		var_dump($config);
 		$beans = R::findAndExport('Inverter');
 		$maxEnergy=array();
 		$energy=array();
@@ -223,6 +222,7 @@ switch ($method) {
 		$lang['today'] 			= _("Today");
 		$lang['maxGridPower'] 	= _("Max Grid Power");
 		$lang['date'] 			= _("date");
+		$lang['selectTheMonth']	= _("Select the month");
 		$lang['totalKWh'] 		= _("TotalKWh");
 		$lang['inv'] 			= _("Inv");
 		$lang['kwh'] 			= _("kwh");

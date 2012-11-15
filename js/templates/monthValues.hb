@@ -1,22 +1,26 @@
 <div id="todayPosts">
-<div class="columns"><h3>{{lang.month}}</h3>
-
+<div class="columns">
+<h3>{{lang.month}}</h3>
 The values below are grouped by month of the selected year.
+<br>
+<div id="pageMonthDateFilter">
+</div>
 <br><br>
 <div class="col posts">
 	<div class="column span-6 first">
 		<h3>Max Grid Power</h3>
 		<div class="post">
 			<div id="monthPowerAcc" class="column span-9 last accordion">
-			<h3 style="margin:0px;">Inv. 1</h3><div>
-    			<div class="column span-1 first">{{lang.inv}}</div>
-				<div class="column span-2" style="text-align:right;">{{lang.watt}}</div>
-				<div class="column span-4" style="text-align:center;">{{lang.date}}</div>
+
 			{{#each data.monthData.data.maxPower}}	
+			<h3 style="margin:0px;">Inv. 1</h3><div>
+    			<div class="column span-2 first">{{../lang.inv}}</div>
+				<div class="column span-2" style="text-align:right;">{{../lang.watt}}</div>
+				<div class="column span-3" style="text-align:center;">{{../lang.date}}</div>
     			{{#each this}}
-		    		<div class="column span-1 first">{{this.INV}}</div>
+		    		<div class="column span-2 first">{{this.INV}}</div>
 		    		<div class="column span-2" style="text-align:right;">{{this.maxGP}}</div>
-		    		<div class="column span-4" last" style="text-align:right;">{{this.date}}</div>
+		    		<div class="column span-3" last" style="text-align:right;">{{this.date}}</div>
 			    	{{/each}}
 			   	</div>
 		    {{/each}}
@@ -33,14 +37,14 @@ The values below are grouped by month of the selected year.
 			{{#each data.monthData.data.maxEnergy}}
 	    		<h3 style="margin:0px;">Inv. 1</h3>
 	    		<div>
-    				<div class="column span-1 first">{{lang.inv}}</div>
-					<div class="column span-2" style="text-align:right;">{{lang.kwh}}</div>
-					<div class="column span-4" style="text-align:center;">{{lang.date}}</div>
+    				<div class="column span-2 first">{{../lang.inv}}</div>
+					<div class="column span-2" style="text-align:right;">{{../lang.kwh}}</div>
+					<div class="column span-3" style="text-align:center;">{{../lang.date}}</div>
 		
     				{{#each this}}
-		    			<div class="column span-1 first">{{this.INV}}</div>
+		    			<div class="column span-2 first">{{this.INV}}</div>
 			    		<div class="column span-2" style="text-align:right;">{{this.KWH}}</div>
-			    		<div class="column span-4" last" style="text-align:right;">{{this.date}}</div>
+			    		<div class="column span-3" last" style="text-align:right;">{{this.date}}</div>
 				    {{/each}}
 			   	</div>
 		    {{/each}}
@@ -53,22 +57,22 @@ The values below are grouped by month of the selected year.
 	<div class="column span-8 first">
 		<div class="post">
 		<h3>The best/worst day</h3>
-		<div class="column span-2 first">Inv.</div>
-		<div class="column span-3" style="text-align:right;">Watt</div>
-		<div class="column span-3 last">Date</div>
 		<div id="monthPowerAcc" class="column span-9 last accordion">
 		{{#each data.monthData.data.minMaxEnergy}}
 			<h3 style="margin:0px;">Inv. 1</h3>
-				<div>
-					<div class="column span-2">The Best:</div>
-					<div class="column span-2" style="text-align:right;">{{this.maxEnergy.kWh}}</div>
-					<div class="column span-2 last">{{this.maxEnergy.date}}</div>
-					
-	    			<div class="column span-2">The Worst:</div>
-					<div class="column span-2" style="text-align:right;">{{this.minEnergy.kWh}}</div>
-					<div class="column span-2 last">{{this.minEnergy.date}}</div>
-					</div>
-				</div>
+			<div>
+				<div class="column span-2" style="text-align:right;">&nbsp;</div>
+				<div class="column span-2" style="text-align:right;">{{../lang.watt}}</div>
+				<div class="column span-3 last">{{../lang.date}}</div>
+				
+				<div class="column span-2">The Best:</div>
+				<div class="column span-2" style="text-align:right;">{{this.maxEnergy.kWh}}</div>
+				<div class="column span-3 last">{{this.maxEnergy.date}}</div>
+				
+    			<div class="column span-2">The Worst:</div>
+				<div class="column span-2" style="text-align:right;">{{this.minEnergy.kWh}}</div>
+				<div class="column span-3 last">{{this.minEnergy.date}}</div>
+			</div>
 	    {{/each}}
 	    </div>
 		</div>
@@ -85,5 +89,6 @@ The values below are grouped by month of the selected year.
 	
 <div class="cl"></div>
 
+</div>
 </div>
 </div>

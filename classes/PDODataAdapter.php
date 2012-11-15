@@ -968,10 +968,12 @@ class PDODataAdapter {
 					FROM energy WHERE INV = :INV AND time > :beginDate AND time < :endDate  
 					order by time DESC",
 					array(':INV'=>$invtnum,'beginDate'=>$beginEndDate['beginDate'],'endDate'=>$beginEndDate['endDate']));
-
+			$beansMax['kWh'] = number_format($beansMax['kWh'],2,',','');
+			$beansMin['kWh'] = number_format($beansMin['kWh'],2,',','');
+			
 			$return = array(
-					"maxEnergy"=>number_format($beansMax['kWh'],2,',',''),
-					"minEnergy"=>number_format($beansMin['kWh'],2,',','')
+					"maxEnergy"=>$beansMax,
+					"minEnergy"=>$beansMin
 					);
 		}else{
 			$beansMax = R::getRow("
@@ -992,7 +994,7 @@ class PDODataAdapter {
 			}
 			$return = array("maxEnergy"=>$beansMax,"minEnergy"=>$beansMin);
 		}
-		return $return;
+		return $return;																																																														
 	}
 	
 	
