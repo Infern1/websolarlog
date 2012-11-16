@@ -14,14 +14,14 @@ $config = Session::getConfig();
 
 	<link rel="shortcut icon" href="template/green/css/images/favicon.ico" />
 	<link rel="stylesheet" href="template/green/css/style.css" type="text/css" media="all" />
-	<link rel="stylesheet" href="template/green/css/custom.css" type="text/css" media="all" />
+	
 	<link rel="stylesheet" href="css/jquery.jqplot.min.css" type="text/css" />
 	<link rel="stylesheet" href="css/jquery.jqplot.overrule.style.css" type="text/css" />
 	<link rel="stylesheet" href="css/jquery.pnotify.default.css" type="text/css" />
 	<link rel="stylesheet" href="css/jquery.pnotify.default.css" type="text/css" />
 
 	<link rel="stylesheet" href="js/jqueryuicss/jquery-ui-custom.css" type="text/css" />
-	
+	<link rel="stylesheet" href="template/green/css/custom.css" type="text/css" media="all" />
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.pnotify.min.js"></script>
 	<script type="text/javascript" src="js/handlebars.js"></script>

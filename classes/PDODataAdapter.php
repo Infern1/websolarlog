@@ -955,8 +955,8 @@ class PDODataAdapter {
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
 	 */
-	public function getMaxMinEnergyMonth($invtnum=0){
-		$beginEndDate = Util::getBeginEndDate('month', 1);
+	public function getMaxMinEnergyMonth($invtnum=0,$date){
+		$beginEndDate = Util::getBeginEndDate('month', 1,$date);
 		if ($invtnum>0){
 			$beansMax = R::getRow("
 					SELECT INV,max(kWh) as kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date 

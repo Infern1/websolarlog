@@ -209,7 +209,7 @@ switch ($method) {
 		foreach ($beans as $inverter){
 			$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($inverter['id'], $date);
 			$maxEnergy[] = $dataAdapter->getMonthEnergyPerDay($inverter['id'], $date);
-			$minMaxEnergyMonth[] = $dataAdapter->getMaxMinEnergyMonth($inverter['id']);
+			$minMaxEnergyMonth[] = $dataAdapter->getMaxMinEnergyMonth($inverter['id'],$date);
 		}
 
 		$dayData = new DayDataResult();
@@ -229,6 +229,7 @@ switch ($method) {
 		$lang['historyValues'] 	= _("History values");
 		$lang['loading'] 		= _("loading")."...";
 		$lang['watt'] 			= _("watt");
+		$lang['month']			= _("Month");
 		$dayData->success = true;
 		$data['lang'] = $lang;
 		$data['monthData'] = $dayData;

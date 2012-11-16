@@ -1,4 +1,5 @@
 <body>
+<a name="top"></a>
 <!-- Wrapper -->
 <div id="wrapper">
 	<div class="shell">
@@ -17,7 +18,7 @@
   <b class="spiffy3"></b>
   <b class="spiffy4"></b>
   <b class="spiffy5"></b></b>
-  <div class="spiffyfg" ">
+  <div class="spiffyfg">
    				<a title="pvoutput" class="pvoutput" href="#">in</a>
 				<a title="twitter" class="twitter" href="#">twitter</a>
 				<a title="flickr" class="flickr" href="#">flickr</a>

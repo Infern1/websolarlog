@@ -76,3 +76,10 @@ table.jqplot-table-legend-custom{
 .indexGaugeContainer{width: 180px; height: 150px; float:left;}
 
 .indexGauge{width: 200px; height: 150px; position: relative;}
+
+.innerAccordionPeriod{
+	height:150px;overflow-y: scroll;overflow-x: hidden;
+}
+.ui-accordion .ui-accordion-content{
+	padding:1em 1.5em;
+}

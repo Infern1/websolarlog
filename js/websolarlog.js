@@ -495,9 +495,9 @@ var WSL = {
 
 	init_PageMonthValues : function(monthValues,periodList) {
 		ajaxStart();
-
+		var date = $('#datePickerMonth').val();
 		// initialize languages selector on the given div
-		WSL.api.getPageMonthValues(function(data) {
+		WSL.api.getPageMonthValues(date,function(data) {
 			$.ajax({
 				url : 'js/templates/monthValues.hb',
 				success : function(source) {
@@ -527,6 +527,20 @@ var WSL = {
 					});
 					$('#pageMonthDateFilter').html(html);
 
+					if(!date){
+						console.log('standaard datum');
+						$("#datePickerMonth").datepicker();
+						$("#datePickerMonth").datepicker("option","dateFormat","dd-mm-yy");
+						$("#datePickerMonth").datepicker('setDate', new Date());
+						$(".ui-datepicker-calendar").css('display', 'none');
+					}else{
+						console.log('oude datum');
+						$("#datePickerMonth").datepicker();
+						$("#datePickerMonth").datepicker("option","dateFormat","dd-mm-yy");
+						$("#datePickerMonth").datepicker('setDate', date);
+						$(".ui-datepicker-calendar").css('display', 'none');
+					}
+
 					$('#datePickerMonth').on("change",
 							function(){
 								WSL.init_PageMonthValues("#columns","#periodList"); // Initial load fast
@@ -537,7 +551,7 @@ var WSL = {
 				},
 				dataType : 'text',
 			});
-
+			
 		});
 		ajaxReady();
 	},
@@ -1125,9 +1139,11 @@ WSL.api.getPageTodayValues = function(success) {
 };
 
 
-WSL.api.getPageMonthValues = function(success) {
+WSL.api.getPageMonthValues = function(date,success) {
+	console.log(date);
 	$.getJSON("server.php", {
 		method : 'getPageMonthValues',
+		'date' : date,
 	}, success);
 };
 

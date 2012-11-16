@@ -1,11 +1,10 @@
 <div id="todayPosts">
 <div class="columns">
-<h3>{{lang.month}}</h3>
+<a name="{{lang.month}}">
+<h3><a href="#{{lang.month}}">{{lang.month}}</a> <a href="#top">^</a></h3>
 The values below are grouped by month of the selected year.
-<br>
 <div id="pageMonthDateFilter">
-</div>
-<br><br>
+</div><br>
 <div class="col posts">
 	<div class="column span-6 first">
 		<h3>Max Grid Power</h3>
@@ -13,7 +12,7 @@ The values below are grouped by month of the selected year.
 			<div id="monthPowerAcc" class="column span-9 last accordion">
 
 			{{#each data.monthData.data.maxPower}}	
-			<h3 style="margin:0px;">Inv. 1</h3><div>
+			<h3 style="margin:0px;">Inv. 1</h3><div class="innerAccordionPeriod">
     			<div class="column span-2 first">{{../lang.inv}}</div>
 				<div class="column span-2" style="text-align:right;">{{../lang.watt}}</div>
 				<div class="column span-3" style="text-align:center;">{{../lang.date}}</div>
