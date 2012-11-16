@@ -59,7 +59,7 @@ class Session
      */
     public static function setLanguage() {
     	// TODO :: Replace language from dbase
-    	$lang = "nl_NL"; 
+    	$language = "nl_NL"; 
     	
     	$locale = $language . ".UTF-8";
     	$domain = "default";
