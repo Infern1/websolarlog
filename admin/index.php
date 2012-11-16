@@ -1,4 +1,7 @@
-<?php session_start(); ?>
+<?php
+session_start(); 
+Session::initialize();
+?>
 <!Doctype html>
 <html lang="en">
 <head>

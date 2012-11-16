@@ -1,10 +1,9 @@
+<?php 
+$config = Session::getConfig();
+?>
 <!DOCTYPE HTML>
 <html>
 <head>
-<?php 
-Session::setLanguage("nl_NL");
-$config = Session::getConfig();
-?>
 	<title><?php echo $config->title; ?></title>
 	<META http-equiv="Content-Type" content="text/html; charset=utf-8" />
 

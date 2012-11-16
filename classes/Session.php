@@ -40,6 +40,12 @@ class Session
         return $result;
     }
     
+    public static function initialize() {
+    	self::setTimezone();
+    	self::setLanguage(); 
+    	self::registerHooks();
+    }
+    
     private static $config;
     public static function getConfig() {
     	if (!isset(self::$config) || self::$config == null) {
@@ -50,9 +56,11 @@ class Session
     
     /**
      * Set the language to the given language code
-     * @param language
      */
-    public static function setLanguage($language) {
+    public static function setLanguage() {
+    	// TODO :: Replace language from dbase
+    	$lang = "nl_NL"; 
+    	
     	$locale = $language . ".UTF-8";
     	$domain = "default";
     	
@@ -68,6 +76,30 @@ class Session
      */
     public static function setTimezone() {
     	ini_set('date.timezone', self::getConfig()->timezone);
+    }
+    
+    /**
+     * Register all the addon hooks
+     */
+    public static function registerHooks() {
+    	// TODO :: Get from dbase
+    	$hookHandler = HookHandler::getInstance();
+    	// MailAddon
+    	$hookHandler->add("onError", "MailAddon.onError");
+    	$hookHandler->add("onInverterStartup", "MailAddon.onInverterStartup");
+    	$hookHandler->add("onInverterShutdown", "MailAddon.onInverterShutdown");
+    	$hookHandler->add("onInverterError", "MailAddon.onInverterError");
+    	
+    	// LoggerAddon
+    	$hookHandler->add("onError", "LoggerAddon.onError");
+    	$hookHandler->add("onWarning", "LoggerAddon.onWarning");
+    	$hookHandler->add("onInfo", "LoggerAddon.onInfo");
+    	$hookHandler->add("onDebug", "LoggerAddon.onDebug");
+    	$hookHandler->add("onInverterStartup", "LoggerAddon.onInverterStartup");
+    	$hookHandler->add("onInverterShutdown", "LoggerAddon.onInverterShutdown");
+    	$hookHandler->add("onInverterError", "LoggerAddon.onInverterError");
+    	
+    	$hookHandler->fire("onDebug", "Hooks loaded");
     }
 }
 ?>

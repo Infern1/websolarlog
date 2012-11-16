@@ -42,11 +42,27 @@ class HookHandler {
     /**
      * fire all hook listeners
      * @param $name off the hook
+     * @param * will be passed too the hook
      */
-    public function fire($name) {
+    public function fire() {
+    	$numargs = func_num_args();
+    	if ($numargs < 1) return; // We at least need one 1 paramater the name off the hook
+    	
+    	// Get the name off the hook
+    	$name = func_get_arg(0);
+    	
         foreach($this->getCallbacks($name) as $callback) {
-        	// Convert to class.method
-            call_user_func($callback);
+        	// Callback should be an class with an method seperated by an .
+        	$classmethod = explode (".",$callback);
+        	$classname = $classmethod[0];
+        	$methodname = $classmethod[1];
+        	$object = new $classname();
+        	
+        	if (method_exists($object, $methodname)) {
+        		$result = $object->$methodname(func_get_args());
+        	} else {
+        		// Log handling?
+        	}
         }
     }
 }

@@ -5,7 +5,7 @@ define('checkaccess', TRUE);
 
 $docRoot = dirname(dirname(__FILE__));
 require_once $docRoot . '/admin/classes/classloader.php';
-Session::setTimezone();
+Session::initialize();
 
 $worker = new Worker();
 $worker->start();

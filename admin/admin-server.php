@@ -2,12 +2,11 @@
 session_start();
 
 require_once("classes/classloader.php");
+Session::initialize();
 
-$adapter = PDODataAdapter::getInstance();
+
 $config = Session::getConfig();
-Session::setLanguage("nl_NL");
-Session::setTimezone();
-
+$adapter = PDODataAdapter::getInstance();
 // Retrieve action params
 $settingstype = Common::getValue("s", null);
 

@@ -232,10 +232,14 @@ class Worker {
             //Alarms and warnings to DB
             $OEvent = new Event($inverter->id, time(), 'Alarm', Util::formatEvent($alarm));
 
-            // Only save if there is an real event
+            // Only save and send email if there is an real event
             if ($this->isAlarmDetected($OEvent)) {
+            	HookHandler::getInstance()->fire("onError", $OEvent->event);
+            	
                 $OEvent->alarmSend = $this->sendMailAlert($OEvent);
                 $this->adapter->addEvent($inverter->id, $OEvent);
+            } else {
+            	HookHandler::getInstance()->fire("onInfo", $OEvent->event);            	
             }
         }
     }

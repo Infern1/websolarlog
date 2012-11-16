@@ -45,6 +45,10 @@ class Config
 	 */
 	function __construct()
 	{
+		// Disable for production switch to true to get debug logging
+		$this->debugging = false;
+		
+		
 		// ### DATABASE CONFIG
 		$this->basepath = dirname(dirname(__FILE__));
 		$this->dbType='sqlite';
@@ -85,7 +89,6 @@ class Config
 
 		$this->aurorapath = 'aurora'; // If in system path this is enough
 		$this->smagetpath = 'sma_get'; // If in system path this is enough
-		$this->debugging = false;
 		
 		$this->co2kwh = 440; // 440g/kWh is conform europa average
 		
