@@ -1,6 +1,5 @@
 <?php
 session_start(); 
-Session::initialize();
 ?>
 <!Doctype html>
 <html lang="en">
