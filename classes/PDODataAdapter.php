@@ -1615,7 +1615,7 @@ class PDODataAdapter {
 			
 			$oInverter = 	array();
 			
-			if(Util::isSunDown($this->config)){
+			if(Util::isSunDown(Session::getConfig())){
 				$live = new Live();
 				$live->time = _('sleeping');
 				$live->INV = $inverter['id'];
