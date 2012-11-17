@@ -94,7 +94,7 @@ class Util {
 
 
     public static function formatEvent($event){
-		$find = array(" W ", " E ");
+		$find = array(" W", " E");
 		$replace = array("Warning ", "Error ");
 		$event = str_ireplace($find, $replace, $event);
     	return $event;

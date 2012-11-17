@@ -86,6 +86,7 @@ class Session
     	$hookHandler = HookHandler::getInstance();
     	// MailAddon
     	$hookHandler->add("onError", "MailAddon.onError");
+    	$hookHandler->add("onWarning", "MailAddon.onWarning");
     	$hookHandler->add("onInverterStartup", "MailAddon.onInverterStartup");
     	$hookHandler->add("onInverterShutdown", "MailAddon.onInverterShutdown");
     	$hookHandler->add("onInverterError", "MailAddon.onInverterError");

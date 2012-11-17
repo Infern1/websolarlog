@@ -234,9 +234,18 @@ class Worker {
 
             // Only save and send email if there is an real event
             if ($this->isAlarmDetected($OEvent)) {
-            	HookHandler::getInstance()->fire("onError", $OEvent->event);
-            	
-                $OEvent->alarmSend = $this->sendMailAlert($OEvent);
+				try {
+	            	if (strpos($OEvent->event, 'Warning') !== false ) {
+		            	HookHandler::getInstance()->fire("onWarning", $OEvent->event);
+	            	}
+	            	if (strpos($OEvent->event, 'Error') !== false ) {
+		            	HookHandler::getInstance()->fire("onError", $OEvent->event);
+	            	}
+	                $OEvent->alarmSend = true;
+				} catch (Exception $e) {
+					$Oevent->alarmSend = false;
+		            	HookHandler::getInstance()->fire("onError", $e->getMessage());
+				}
                 $this->adapter->addEvent($inverter->id, $OEvent);
             } else {
             	HookHandler::getInstance()->fire("onInfo", $OEvent->event);            	
