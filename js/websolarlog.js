@@ -495,62 +495,112 @@ var WSL = {
 
 	init_PageMonthValues : function(monthValues,periodList) {
 		ajaxStart();
-		var date = $('#datePickerMonth').val();
+		
+		
+		if($('#datePickerPeriod').val()){
+			var completeDate = "01-"+$('#datePickerPeriod').val();
+		}else{
+			var completeDate = $('#datePickerPeriod').val();
+		}
+		var pickerDate = $('#datePickerPeriod').val();
+		
 		// initialize languages selector on the given div
-		WSL.api.getPageMonthValues(date,function(data) {
+		WSL.api.getPageMonthValues(completeDate,function(data) {
 			$.ajax({
 				url : 'js/templates/monthValues.hb',
 				success : function(source) {
+					console.log('start compile');
 					var template = Handlebars.compile(source);
 					var html = template({
 						'data' : data,
 						'lang' : data.lang
 					});
-
+					console.log('add html');
 					$(monthValues).html(html);
 
 				    $(function() {
+				    	console.log('add accordion');
 				        $( ".accordion" ).accordion({collapsible: true});
 				        $( ".accordion" ).accordion({collapsible: true});
 				    });
+				    
+				    $.ajax({
+						url : 'js/templates/pageDateFilter.hb',
+						success : function(source) {
+							var template = Handlebars.compile(source);
+							var html = template({
+								'data' : data,
+								'lang' : data.lang
+							});
+							$('#pageMonthDateFilter').html(html);
+
+							if(!pickerDate){
+								console.log('standaard datum');
+								$("#datePickerPeriod").datepicker({
+							        dateFormat: 'mm-yy',
+							        changeMonth: true,
+							        changeYear: true,
+							        //showButtonPanel: true,
+
+							        onClose: function(dateText, inst) {
+							            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+							            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+							            //new Date(year, month, day) // W3schools
+							            $(this).val($.datepicker.formatDate('mm-yy', new Date(year, month, 1)));
+										WSL.init_PageMonthValues("#columns","#periodList"); // Initial load fast
+										
+										console.log('datePickerMonth');
+							        }
+								});
+					            //new Date(year, month, day) // W3schools
+								$("#datePickerPeriod").datepicker('setDate', new Date());
+							}else{
+								console.log('oude datum');
+								$("#datePickerPeriod").datepicker({
+							        dateFormat: 'mm-yy',
+							        changeMonth: true,
+							        changeYear: true,
+							        //showButtonPanel: true,
+
+							        onClose: function(dateText, inst) {
+							            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+							            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+							            
+							            //new Date(year, month, day) // W3schools
+							            $(this).val($.datepicker.formatDate('mm-yy', new Date(year, month, 1)));
+										WSL.init_PageMonthValues("#columns","#periodList"); // Initial load fast
+										console.log('datePickerMonth');
+							        }
+								});
+								
+								console.log('setPicker');
+								console.log(pickerDate);
+								pickerDate = pickerDate.split('-'); // 01-2012 (month-year)
+								pickerDate[0] = pickerDate[0]-1;
+					            //new Date(year, month, day) // W3schools
+								$("#datePickerPeriod").datepicker('setDate', new Date(pickerDate[1],pickerDate[0],1));
+								console.log('dateSet');
+							}
+							 $("#datePickerPeriod").focus(function () {
+								 $(".ui-datepicker-calendar").hide();
+								 
+							        
+							        $("#ui-datepicker-div").position({
+							            my: "center top",
+							            at: "center bottom",
+							            of: $(this)
+							        });
+							    });
+						},
+						dataType : 'text',
+					});
+					
+				    
+				    
 				},
 				dataType : 'text',
 			});
 			
-			$.ajax({
-				url : 'js/templates/pageDateFilter.hb',
-				success : function(source) {
-					var template = Handlebars.compile(source);
-					var html = template({
-						'data' : data,
-						'lang' : data.lang
-					});
-					$('#pageMonthDateFilter').html(html);
-
-					if(!date){
-						console.log('standaard datum');
-						$("#datePickerMonth").datepicker();
-						$("#datePickerMonth").datepicker("option","dateFormat","dd-mm-yy");
-						$("#datePickerMonth").datepicker('setDate', new Date());
-						$(".ui-datepicker-calendar").css('display', 'none');
-					}else{
-						console.log('oude datum');
-						$("#datePickerMonth").datepicker();
-						$("#datePickerMonth").datepicker("option","dateFormat","dd-mm-yy");
-						$("#datePickerMonth").datepicker('setDate', date);
-						$(".ui-datepicker-calendar").css('display', 'none');
-					}
-
-					$('#datePickerMonth').on("change",
-							function(){
-								WSL.init_PageMonthValues("#columns","#periodList"); // Initial load fast
-								console.log('datePickerMonth');
-							}
-					);
-
-				},
-				dataType : 'text',
-			});
 			
 		});
 		ajaxReady();
@@ -558,23 +608,110 @@ var WSL = {
 
 	init_PageYearValues : function(yearValues,periodList) {
 		ajaxStart();
+		
+		if($('#datePickerPeriod').val()){
+			var completeDate = "01-01-"+$('#datePickerPeriod').val();
+		}else{
+			var completeDate = $('#datePickerPeriod').val();
+		}
+		var pickerDate = $('#datePickerPeriod').val();
+		console.log("completeDate:"+completeDate);
+		console.log("pickerDate:"+pickerDate);
 		// initialize languages selector on the given div
-		WSL.api.getPageYearValues(function(data) {
+		WSL.api.getPageYearValues(completeDate,function(data) {
 			$.ajax({
 				url : 'js/templates/yearValues.hb',
 				success : function(source) {
+					console.log('start compile');
 					var template = Handlebars.compile(source);
 					var html = template({
-						'data' : data
+						'data' : data,
+						'lang' : data.lang
 					});
+					console.log('add html');
 					$(yearValues).html(html);
-					ajaxReady();
+
+				    $(function() {
+				    	console.log('add accordion');
+				        $( ".accordion" ).accordion({collapsible: true});
+				        $( ".accordion" ).accordion({collapsible: true});
+				    });
+				    $.ajax({
+						url : 'js/templates/pageDateFilter.hb',
+						success : function(source) {
+							var template = Handlebars.compile(source);
+							var html = template({
+								'data' : data,
+								'lang' : data.lang
+							});
+							$('#pageYearDateFilter').html(html);
+
+							if(!pickerDate){
+								console.log('standaard datum');
+								$("#datePickerPeriod").datepicker({
+							        dateFormat: 'yy',
+							        changeMonth: false,
+							        changeYear: true,
+							        //showButtonPanel: true,
+
+							        onClose: function(dateText, inst) {
+							            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+							            //new Date(year, month, day) // W3schools
+							            $(this).val($.datepicker.formatDate('yy', new Date(year, 1, 1)));
+										WSL.init_PageYearValues("#columns","#periodList"); // Initial load fast
+										console.log('datePickerYear');
+							        }
+								});
+								$("#datePickerPeriod").datepicker('setDate', new Date());
+							}else{
+								console.log('oude datum');
+								$("#datePickerPeriod").datepicker({
+							        dateFormat: 'yy',
+							        changeMonth: false,
+							        changeYear: true,
+							        //showButtonPanel: true,
+
+							        onClose: function(dateText, inst) {
+							            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+							            //new Date(year, month, day) // W3schools
+							            $(this).val($.datepicker.formatDate('yy', new Date(year, 1, 1)));
+										WSL.init_PageYearValues("#columns","#periodList"); // Initial load fast
+										console.log('datePickerYear');
+							        }
+								});
+								
+								console.log('setPicker');
+								console.log(pickerDate);
+					            //new Date(year, month, day) // W3schools
+								$("#datePickerPeriod").datepicker('setDate', new Date(pickerDate,1,1));
+								console.log('dateSet');
+							}
+							 $("#datePickerPeriod").focus(function () {
+							        $(".ui-datepicker-calendar").hide();
+							        $(".ui-datepicker-month").hide();
+							        $(".ui-icon-circle-triangle-w").hide();
+							        $(".ui-icon-circle-triangle-e").hide();
+							        $("#ui-datepicker-div").position({
+							            my: "center top",
+							            at: "center bottom",
+							            of: $(this)
+							        });
+							    });
+						},
+						dataType : 'text',
+					});
+				    
 				},
 				dataType : 'text',
 			});
+			
+			
+			
 		});
+		ajaxReady();
 	},
 
+	
 	createDayGraph : function(invtnum, getDay, date ,fnFinish) {
 		ajaxStart();
 		
@@ -1148,9 +1285,10 @@ WSL.api.getPageMonthValues = function(date,success) {
 };
 
 
-WSL.api.getPageYearValues = function(success) {
+WSL.api.getPageYearValues = function(date,success) {
 	$.getJSON("server.php", {
 		method : 'getPageYearValues',
+		'date': date,
 	}, success);
 };
 

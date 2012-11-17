@@ -1,4 +1,1 @@
-{{lang.selectTheMonth}}:<input type="text" id="datePickerMonth" style="position: relative; z-index: 100000;"/>
-<script>
-
-</script>
+{{lang.selectPeriod}}:<input type="text" id="datePickerPeriod" style="position: relative; z-index: 100000;">

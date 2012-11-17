@@ -8,17 +8,14 @@
 			<!-- Logo -->
 			<h1 id="logo"><a href="./" title="Dashboard"><?php echo $config->title; ?></a></h1>
 			<h2 id="subLogo"><a href="./" title="Dashboard"><?php echo $config->subtitle; ?></a></h2>
-
-			
-			
-						<div class="socials">
-  <b class="spiffy">
-  <b class="spiffy1"><b></b></b>
-  <b class="spiffy2"><b></b></b>
-  <b class="spiffy3"></b>
-  <b class="spiffy4"></b>
-  <b class="spiffy5"></b></b>
-  <div class="spiffyfg">
+			<div class="socials">
+			  <b class="spiffy">
+			  <b class="spiffy1"><b></b></b>
+			  <b class="spiffy2"><b></b></b>
+			  <b class="spiffy3"></b>
+			  <b class="spiffy4"></b>
+			  <b class="spiffy5"></b></b>
+			  <div class="spiffyfg">
    				<a title="pvoutput" class="pvoutput" href="#">in</a>
 				<a title="twitter" class="twitter" href="#">twitter</a>
 				<a title="flickr" class="flickr" href="#">flickr</a>
@@ -28,15 +25,14 @@
 					Request Loading...
 						<img id="imgLoading" src='./template/green/css/images/loading.gif'/>
 				</div>
-				
-  </div>
-  <b class="spiffy">
-  <b class="spiffy5"></b>
-  <b class="spiffy4"></b>
-  <b class="spiffy3"></b>
-  <b class="spiffy2"><b></b></b>
-  <b class="spiffy1"><b></b></b></b>
-</div>
+			  </div>
+			  <b class="spiffy">
+			  <b class="spiffy5"></b>
+			  <b class="spiffy4"></b>
+			  <b class="spiffy3"></b>
+			  <b class="spiffy2"><b></b></b>
+			  <b class="spiffy1"><b></b></b></b>
+			</div>
 		</div>
 		<!-- END Header -->
 		<!-- Navigation -->

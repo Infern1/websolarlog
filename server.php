@@ -182,13 +182,30 @@ switch ($method) {
 		$minMaxEnergyYear=array();
 
 		foreach ($beans as $inverter){
-			$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($inverter['id']);
-			$energy[] = $dataAdapter->getYearEnergyPerMonth($inverter['id']);
-			$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($inverter['id']);
-			$minMaxEnergyYear[] = $dataAdapter->getMaxMinEnergyYear($inverter['id']);
+			$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($inverter['id'],$date);
+			$energy[] = $dataAdapter->getYearEnergyPerMonth($inverter['id'],$date);
+			$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($inverter['id'],$date);
+			$minMaxEnergyYear[] = $dataAdapter->getMaxMinEnergyYear($inverter['id'],$date);
 		}
 		
 		
+		$lang = array();
+		$lang['today'] 			= _("Today");
+		$lang['maxGridPower'] 	= _("Max Grid Power");
+		$lang['date'] 			= _("date");
+		$lang['selectPeriod']	= _("Select period");
+		$lang['totalKWh'] 		= _("TotalKWh");
+		$lang['inv'] 			= _("Inv");
+		$lang['kwh'] 			= _("kwh");
+		$lang['historyValues'] 	= _("History values");
+		$lang['loading'] 		= _("loading")."...";
+		$lang['watt'] 			= _("watt");
+		$lang['Year']			= _("Year");
+		$lang['valuesGroupedByMonthYearText'] = _("The values below are grouped by Month of the selected Year");
+		
+		
+		
+		$data['lang'] = $lang;
 		
 		$dayData = new DayDataResult();
 		$dayData->data = array(
@@ -220,14 +237,17 @@ switch ($method) {
 		$lang['today'] 			= _("Today");
 		$lang['maxGridPower'] 	= _("Max Grid Power");
 		$lang['date'] 			= _("date");
-		$lang['selectTheMonth']	= _("Select the month");
+		$lang['selectPeriod']	= _("Select period");
 		$lang['totalKWh'] 		= _("TotalKWh");
 		$lang['inv'] 			= _("Inv");
 		$lang['kwh'] 			= _("kwh");
 		$lang['historyValues'] 	= _("History values");
 		$lang['loading'] 		= _("loading")."...";
 		$lang['watt'] 			= _("watt");
-		$lang['month']			= _("Month");
+		$lang['Month']			= _("Month");
+		$lang['month']			= strtolower(_("Month"));
+		$lang['valuesGroupedByDayMonthText'] = _("The values below are grouped by Day of the selected Month");
+		
 		$dayData->success = true;
 		$data['lang'] = $lang;
 		$data['monthData'] = $dayData;
