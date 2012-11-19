@@ -18,7 +18,7 @@
     			{{#each this}}
 		    		<div class="column span-2 first">{{this.INV}}</div>
 		    		<div class="column span-2" style="text-align:right;">{{this.maxGP}}</div>
-		    		<div class="column span-3" last" style="text-align:right;">{{this.date}}</div>
+		    		<div class="column span-3" last" style="text-align:right;"><a href="month.php?date={{this.date}}">{{this.date}}</a></div>
 			    	{{/each}}
 			   	</div>
 		    {{/each}}

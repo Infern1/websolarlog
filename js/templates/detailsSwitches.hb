@@ -1,4 +1,6 @@
+<form>
 <table style="width:800px;text-align:left;">
+
 <tr><td colspan="6">{{lang.showHideGroups}}</td></tr>
 <tr>
 <td style="width:17px;"><input type="checkbox" id="G" name="detailsSwitch" checked="checked"/></td><td style="width:65px;">Grid</td>
@@ -14,3 +16,4 @@
 <tr><td><input type="checkbox" id="every" name="detailsSwitch" checked="checked"/></td><td>All on/of</td></tr>
 </table>
 
+</form>

@@ -118,15 +118,19 @@ function handleGraphs(request){
     	$('#lastCall').val('picker');
     	period= $('#pickerPeriod').val();
     	if (period == "Today") {
-    		WSL.createDayGraph(1, period, date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    		console.log("period1:"+tab);
+    		WSL.createDayGraph(1, period, tab,date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}else{
+    		console.log("period2:"+tab);
     		WSL.createPeriodGraph(1, period,1 ,date, "graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}    
     }else{
     	$('#lastCall').val('normal');
     	if (tab == "Today" || tab == "Yesterday") {
-    		WSL.createDayGraph(1, period, date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    		console.log("period3:"+period);
+    		WSL.createDayGraph(1, period, tab,date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}else{
+    		console.log("period4:"+period);
     		WSL.createPeriodGraph(1, period,1 , date,"graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}
     }
@@ -137,6 +141,7 @@ function handleGraphs(request){
                 $("#graph"+tab+"Content").html('<div id="loading">loading...</div>');
                 currentGraphHandler.destroy();
             }
+            console.log("period5:Today");
             WSL.createDayGraph(1, "Today", date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});				                    
         }, 60000); // every minute
        
@@ -378,40 +383,54 @@ var WSL = {
 										handleGraphs(request);
 									}
 							);
-
+							$('#next').unbind('click');
+							$('#previous').unbind('click');
+							$('#pickerPeriod').unbind('click');
+							
+							
 							$('#next').click(function () {
+								console.log('click NEXT');
 							    var $picker = $("#datepicker");
 							    var date=new Date($picker.datepicker('getDate'));
 							    var splitDate = $('#datepicker').val().split('-');
 							    if($('#pickerPeriod').val()=='Today'){
 							    	date.setDate(date.getDate()+1);	
+							    	console.log(date.getDate()+1);
 							    }else if($('#pickerPeriod').val()=='Week'){
 							    	date.setDate(date.getDate()+7);
+							    	console.log(date.getDate()+7);
 							    }else if($('#pickerPeriod').val()=='Month'){
 							    	var value = splitDate[1];
 							    	date.setMonth(value);
+							    	console.log(date.setMonth(value));
 							    }else if($('#pickerPeriod').val()=='Year'){
 							    	var value = parseInt(splitDate[2])+1;
 							    	date.setFullYear(value);
+							    	console.log(	date.setFullYear(value));
 							    }
 							    $picker.datepicker('setDate', date);
 							    handleGraphs('picker');
 							});
 							
 							$('#previous').click(function () {
+								console.log('click PREVIOUS');
 							    var $picker = $("#datepicker");
 							    var date=new Date($picker.datepicker('getDate'));
 							    var splitDate = $('#datepicker').val().split('-');
 							    if($('#pickerPeriod').val()=='Today'){
 							    	date.setDate(date.getDate()-1);	
+							    	console.log(date.getDate()-1);
 							    }else if($('#pickerPeriod').val()=='Week'){
 							    	date.setDate(date.getDate()-7);
+							    	console.log(date.getDate()-7);
 							    }else if($('#pickerPeriod').val()=='Month'){
 							    	var value = splitDate[1]-2;
 							    	date.setMonth(value);
+							    	console.log(date.setMonth(value));
 							    }else if($('#pickerPeriod').val()=='Year'){
-							    	var value = splitDate[2]-1;
+							    	var value = parseInt(splitDate[2])-1;
 							    	date.setFullYear(value);
+							    	console.log(date.setFullYear(value));
 							    }
 							    $picker.datepicker('setDate', date);
 							    handleGraphs('picker');
@@ -712,7 +731,7 @@ var WSL = {
 	},
 
 	
-	createDayGraph : function(invtnum, getDay, date ,fnFinish) {
+	createDayGraph : function(invtnum, getDay, tab,date ,fnFinish) {
 		ajaxStart();
 		
 		$.ajax({
@@ -776,7 +795,7 @@ var WSL = {
     				if (dataDay1[0]) {
     				    graphOptions.axes.xaxis.min = dataDay1[0][0];
     				}
-    				handle = $.jqplot('graph' + getDay + 'Content', [ dataDay1,dataDay2 ], graphOptions);
+    				handle = $.jqplot('graph' + tab + 'Content', [ dataDay1,dataDay2 ], graphOptions);
     				mytitle = 
     					$('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+
     							result.lang.totalEnergy+': ' + result.dayData.valueKWHT +
@@ -1087,25 +1106,25 @@ var WSL = {
 						},
 						dataType : 'text',
 					});
-
-    				$('input:checkbox').on('change', function(){
+					
+					$('[type=checkbox]').live('change',function(){
     					 var id = $(this).attr("id");
     				     if(id == 'every'){
     				    	 if($(this).is(':checked')){
     				    		 for (var i=0; i<handle.series.length; i++) {
     				    			 handle.series[i].show = true; // i is an integer
     				    		 } 
-    				    		 $('input:checkbox').attr('checked', true);
+    				    		 $('[type="checkbox"]').attr('checked', true);
     				    	 }else{ 
     				    		 for (var i=0; i<handle.series.length; i++) {
     				    			 handle.series[i].show = false; // i is an integer
     				    		 }
-    				    		 $('input:checkbox').attr('checked', false);
+    				    		 $('[type="checkbox"]').attr('checked', false);
     				    	 }
     				     }else{
 	    					if($(this).is(':checked')){
 	    				    	for (var i=0; i<switches[this.id].length; i++) {
-	    				    		handle.series[switches[this.id][i]].show = true; // i isan integer
+	    				    		handle.series[switches[this.id][i]].show = true; // i is an integer
 	    				    	}
 	    				     } else {
 	     				    	for (var i=0; i<switches[this.id].length; i++) {
@@ -1115,7 +1134,8 @@ var WSL = {
     				     }
   				    	handle.replot();
 				    	$('table.jqplot-table-legend').attr('class', 'jqplot-table-legend-custom');
-    			   });
+					});
+					ajaxReady();
 				}
 			}
 		});	

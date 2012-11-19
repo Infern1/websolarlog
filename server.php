@@ -185,7 +185,7 @@ switch ($method) {
 			$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($inverter['id'],$date);
 			$energy[] = $dataAdapter->getYearEnergyPerMonth($inverter['id'],$date);
 			$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($inverter['id'],$date);
-			$minMaxEnergyYear[] = $dataAdapter->getMaxMinEnergyYear($inverter['id'],$date);
+			$maxMinEnergyYear[] = $dataAdapter->getMaxMinEnergyYear($inverter['id'],$date);
 		}
 		
 		
@@ -211,7 +211,7 @@ switch ($method) {
 		$dayData->data = array(
 				"maxPower"=>$maxPower,
 				"energy"=>$energy,
-				"minMaxEnergy"=>$minMaxEnergyYear,
+				"minMaxEnergy"=>$maxMinEnergyYear,
 				"maxEnergy"=>$maxEnergy,
 		);
 		$dayData->success = true;

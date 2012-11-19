@@ -27,7 +27,6 @@ $config = Session::getConfig();
 	<script type="text/javascript" src="js/helpers.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="js/jquery.jqplot.min.js"></script>
-	<script type="text/javascript" src="js/jquery.mtz.monthpicker.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.json2.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.barRenderer.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.canvasTextRenderer.min.js"></script>
