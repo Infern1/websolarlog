@@ -148,7 +148,7 @@ switch ($method) {
 		$dayData->labels = $lines['labels'];
 		$dayData->switches = $lines['switches'];
 		$dayData->max = $lines['max'];
-		
+
 		$lang = array();
 		$lang['showHideGroups'] = _('Show or hide graph groups:');
 		$lang['P'] = _('Power');
@@ -158,10 +158,41 @@ switch ($method) {
 		$lang['R'] = _('Ratio');
 		$lang['T'] = _('Temperature');
 		$lang['E'] = _('Efficiency');
+
 		$data['lang'] = $lang;
-		
-		$dayData->success = true;
 		$data['dayData'] = $dayData;
+		break;
+	case 'getPeriodFilter':
+		$options = array();
+		$options[] =array( "value" => "Today","name"=> _("Day"));
+		
+		$lang = array();
+		$lang['date'] = _('date');
+		$lang['periode'] = _('periode');
+		$lang['previous'] = _('previous');
+		$lang['next'] = _('next');
+
+		$dayData->success = true;
+		$data['lang'] = $lang;
+		$data['options'] = $options;
+		$data['dayData'] = $dayData;
+		
+		break;
+	case 'getDetailsSwitches':
+
+			$lang = array();
+		$lang['showHideGroups'] = _('Show or hide graph groups:');
+		$lang['P'] = _('Power');
+		$lang['V'] = _('Voltage');
+		$lang['A'] = _('Amps');
+		$lang['F'] = _('Frequency');
+		$lang['R'] = _('Ratio');
+		$lang['T'] = _('Temperature');
+		$lang['E'] = _('Efficiency');
+		$dayData->success = true;
+		$data['lang'] = $lang;
+		$data['dayData'] = $dayData;
+		
 		break;
 	case 'getProductionGraph':
 		(!$year)?$year=date("Y"):$year=$year;

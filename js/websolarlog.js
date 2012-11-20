@@ -118,16 +118,16 @@ function handleGraphs(request){
     	$('#lastCall').val('picker');
     	period= $('#pickerPeriod').val();
     	if (period == "Today") {
-    		console.log("period1:"+tab);
+    		//console.log("period1:"+tab);
     		WSL.createDayGraph(1, period, tab,date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}else{
-    		console.log("period2:"+tab);
+    		//console.log("period2:"+tab);
     		WSL.createPeriodGraph(1, period,1 ,date, "graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}    
     }else{
     	$('#lastCall').val('normal');
     	if (tab == "Today" || tab == "Yesterday") {
-    		console.log("period3:"+period);
+    		//console.log("period3:"+period);
     		WSL.createDayGraph(1, period, tab,date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}else{
     		console.log("period4:"+period);
@@ -141,7 +141,7 @@ function handleGraphs(request){
                 $("#graph"+tab+"Content").html('<div id="loading">loading...</div>');
                 currentGraphHandler.destroy();
             }
-            console.log("period5:Today");
+           //console.log("period5:Today");
             WSL.createDayGraph(1, "Today", date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});				                    
         }, 60000); // every minute
        
@@ -367,10 +367,18 @@ var WSL = {
 						'lang' : data.lang
 					});
 					$(html).prependTo(divId);
-					$('#tabs').tabs({
-					    show: function(event, ui) {
-					    	handleGraphs();
-					    	$(".mainTabContainer").hover(function() {
+					
+					$.ajax({
+						url : 'js/templates/datePeriodFilter.hb',
+						success : function(source) {
+							var template = Handlebars.compile(source);
+							var html = template({
+								'data' : data,
+								'lang' : data.lang
+							});
+							$('#pickerFilter').html(html);
+						
+							$(".mainTabContainer").hover(function() {
 					    		$("#pickerFilterDiv").hide();
 					    		$( "#datepicker" ).datepicker("hide");
 							}, function() {
@@ -379,8 +387,7 @@ var WSL = {
 
 							$('#pickerPeriod').on("change",
 									function(){
-										var request = 'picker';
-										handleGraphs(request);
+										handleGraphs('picker');
 									}
 							);
 							$('#next').unbind('click');
@@ -389,53 +396,49 @@ var WSL = {
 							
 							
 							$('#next').click(function () {
-								console.log('click NEXT');
 							    var $picker = $("#datepicker");
 							    var date=new Date($picker.datepicker('getDate'));
 							    var splitDate = $('#datepicker').val().split('-');
 							    if($('#pickerPeriod').val()=='Today'){
 							    	date.setDate(date.getDate()+1);	
-							    	console.log(date.getDate()+1);
 							    }else if($('#pickerPeriod').val()=='Week'){
 							    	date.setDate(date.getDate()+7);
-							    	console.log(date.getDate()+7);
 							    }else if($('#pickerPeriod').val()=='Month'){
 							    	var value = splitDate[1];
 							    	date.setMonth(value);
-							    	console.log(date.setMonth(value));
 							    }else if($('#pickerPeriod').val()=='Year'){
 							    	var value = parseInt(splitDate[2])+1;
 							    	date.setFullYear(value);
-							    	console.log(	date.setFullYear(value));
 							    }
 							    $picker.datepicker('setDate', date);
 							    handleGraphs('picker');
 							});
 							
 							$('#previous').click(function () {
-								console.log('click PREVIOUS');
 							    var $picker = $("#datepicker");
 							    var date=new Date($picker.datepicker('getDate'));
 							    var splitDate = $('#datepicker').val().split('-');
 							    if($('#pickerPeriod').val()=='Today'){
 							    	date.setDate(date.getDate()-1);	
-							    	console.log(date.getDate()-1);
 							    }else if($('#pickerPeriod').val()=='Week'){
 							    	date.setDate(date.getDate()-7);
-							    	console.log(date.getDate()-7);
 							    }else if($('#pickerPeriod').val()=='Month'){
 							    	var value = splitDate[1]-2;
 							    	date.setMonth(value);
-							    	console.log(date.setMonth(value));
 							    }else if($('#pickerPeriod').val()=='Year'){
 							    	var value = parseInt(splitDate[2])-1;
 							    	date.setFullYear(value);
-							    	console.log(date.setFullYear(value));
 							    }
 							    $picker.datepicker('setDate', date);
 							    handleGraphs('picker');
 							});
-							
+						},
+						dataType : 'text'
+					});
+					
+					$('#tabs').tabs({
+					    show: function(event, ui) {
+					    	handleGraphs();
 					    	
 					    }
 					});
@@ -528,17 +531,17 @@ var WSL = {
 			$.ajax({
 				url : 'js/templates/monthValues.hb',
 				success : function(source) {
-					console.log('start compile');
+					//console.log('start compile');
 					var template = Handlebars.compile(source);
 					var html = template({
 						'data' : data,
 						'lang' : data.lang
 					});
-					console.log('add html');
+					//console.log('add html');
 					$(monthValues).html(html);
 
 				    $(function() {
-				    	console.log('add accordion');
+				    	//console.log('add accordion');
 				        $( ".accordion" ).accordion({collapsible: true});
 				        $( ".accordion" ).accordion({collapsible: true});
 				    });
@@ -554,7 +557,7 @@ var WSL = {
 							$('#pageMonthDateFilter').html(html);
 
 							if(!pickerDate){
-								console.log('standaard datum');
+								//console.log('standaard datum');
 								$("#datePickerPeriod").datepicker({
 							        dateFormat: 'mm-yy',
 							        changeMonth: true,
@@ -568,13 +571,13 @@ var WSL = {
 							            $(this).val($.datepicker.formatDate('mm-yy', new Date(year, month, 1)));
 										WSL.init_PageMonthValues("#columns","#periodList"); // Initial load fast
 										
-										console.log('datePickerMonth');
+										//console.log('datePickerMonth');
 							        }
 								});
 					            //new Date(year, month, day) // W3schools
 								$("#datePickerPeriod").datepicker('setDate', new Date());
 							}else{
-								console.log('oude datum');
+								//console.log('oude datum');
 								$("#datePickerPeriod").datepicker({
 							        dateFormat: 'mm-yy',
 							        changeMonth: true,
@@ -588,17 +591,17 @@ var WSL = {
 							            //new Date(year, month, day) // W3schools
 							            $(this).val($.datepicker.formatDate('mm-yy', new Date(year, month, 1)));
 										WSL.init_PageMonthValues("#columns","#periodList"); // Initial load fast
-										console.log('datePickerMonth');
+										//console.log('datePickerMonth');
 							        }
 								});
 								
-								console.log('setPicker');
-								console.log(pickerDate);
+								//console.log('setPicker');
+								//console.log(pickerDate);
 								pickerDate = pickerDate.split('-'); // 01-2012 (month-year)
 								pickerDate[0] = pickerDate[0]-1;
 					            //new Date(year, month, day) // W3schools
 								$("#datePickerPeriod").datepicker('setDate', new Date(pickerDate[1],pickerDate[0],1));
-								console.log('dateSet');
+								//console.log('dateSet');
 							}
 							 $("#datePickerPeriod").focus(function () {
 								 $(".ui-datepicker-calendar").hide();
@@ -634,20 +637,20 @@ var WSL = {
 			var completeDate = $('#datePickerPeriod').val();
 		}
 		var pickerDate = $('#datePickerPeriod').val();
-		console.log("completeDate:"+completeDate);
-		console.log("pickerDate:"+pickerDate);
+		//console.log("completeDate:"+completeDate);
+		//console.log("pickerDate:"+pickerDate);
 		// initialize languages selector on the given div
 		WSL.api.getPageYearValues(completeDate,function(data) {
 			$.ajax({
 				url : 'js/templates/yearValues.hb',
 				success : function(source) {
-					console.log('start compile');
+					//console.log('start compile');
 					var template = Handlebars.compile(source);
 					var html = template({
 						'data' : data,
 						'lang' : data.lang
 					});
-					console.log('add html');
+					//console.log('add html');
 					$(yearValues).html(html);
 
 				    $(function() {
@@ -666,7 +669,7 @@ var WSL = {
 							$('#pageYearDateFilter').html(html);
 
 							if(!pickerDate){
-								console.log('standaard datum');
+								//console.log('standaard datum');
 								$("#datePickerPeriod").datepicker({
 							        dateFormat: 'yy',
 							        changeMonth: false,
@@ -678,12 +681,12 @@ var WSL = {
 							            //new Date(year, month, day) // W3schools
 							            $(this).val($.datepicker.formatDate('yy', new Date(year, 1, 1)));
 										WSL.init_PageYearValues("#columns","#periodList"); // Initial load fast
-										console.log('datePickerYear');
+										//console.log('datePickerYear');
 							        }
 								});
 								$("#datePickerPeriod").datepicker('setDate', new Date());
 							}else{
-								console.log('oude datum');
+								//console.log('oude datum');
 								$("#datePickerPeriod").datepicker({
 							        dateFormat: 'yy',
 							        changeMonth: false,
@@ -695,15 +698,15 @@ var WSL = {
 							            //new Date(year, month, day) // W3schools
 							            $(this).val($.datepicker.formatDate('yy', new Date(year, 1, 1)));
 										WSL.init_PageYearValues("#columns","#periodList"); // Initial load fast
-										console.log('datePickerYear');
+										//console.log('datePickerYear');
 							        }
 								});
 								
-								console.log('setPicker');
-								console.log(pickerDate);
+								//console.log('setPicker');
+								//console.log(pickerDate);
 					            //new Date(year, month, day) // W3schools
 								$("#datePickerPeriod").datepicker('setDate', new Date(pickerDate,1,1));
-								console.log('dateSet');
+								//onsole.log('dateSet');
 							}
 							 $("#datePickerPeriod").focus(function () {
 							        $(".ui-datepicker-calendar").hide();
@@ -996,14 +999,114 @@ var WSL = {
 			}
 		});
 	},
-	
+
 	init_details : function(invtnum,divId){
-		WSL.createDetailsGraph(invtnum, divId);
+		$("#main-middle").prepend('<div id="datePeriodFilter"></div><div id="detailsSwitches"></div><div id="detailsGraph"></div>');
+
+		$.getJSON('server.php?method=getDetailsSwitches', function(data) {
+			$.ajax({
+				url : 'js/templates/detailsSwitches.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : '',
+						'lang' :data.lang
+					});
+					$('#detailsSwitches').html(html);
+				},
+				dataType : 'text',
+			});
+		});
+		
+	    $.getJSON('server.php?method=getPeriodFilter', function(data) {
+			$.ajax({
+				url : 'js/templates/datePeriodFilter.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data,
+						'lang' : data.lang
+					});
+					$('#datePeriodFilter').html(html);
+					
+				
+					$(".mainTabContainer").hover(function() {
+			    		$("#pickerFilterDiv").hide();
+			    		$( "#datepicker" ).datepicker("hide");
+					}, function() {
+						$("#pickerFilterDiv").show();
+					});
+
+					$('#pickerPeriod').on("change",
+							function(){
+						WSL.createDetailsGraph(invtnum, divId);
+							}
+					);
+					
+					
+					$('#datepicker').live("change",
+							function(){
+						WSL.createDetailsGraph(invtnum, divId);
+							}
+					);
+					
+					
+					
+					$('#next').unbind('click');
+					$('#previous').unbind('click');
+					$('#pickerPeriod').unbind('click');
+					
+					
+					$('#next').click(function () {
+					    var $picker = $("#datepicker");
+					    var date=new Date($picker.datepicker('getDate'));
+					    var splitDate = $('#datepicker').val().split('-');
+					    if($('#pickerPeriod').val()=='Today'){
+					    	date.setDate(date.getDate()+1);	
+					    }else if($('#pickerPeriod').val()=='Week'){
+					    	date.setDate(date.getDate()+7);
+					    }else if($('#pickerPeriod').val()=='Month'){
+					    	var value = splitDate[1];
+					    	date.setMonth(value);
+					    }else if($('#pickerPeriod').val()=='Year'){
+					    	var value = parseInt(splitDate[2])+1;
+					    	date.setFullYear(value);
+					    }
+					    $picker.datepicker('setDate', date);
+					    WSL.createDetailsGraph(invtnum, divId);
+					});
+					
+					$('#previous').click(function () {
+					    var $picker = $("#datepicker");
+					    var date=new Date($picker.datepicker('getDate'));
+					    var splitDate = $('#datepicker').val().split('-');
+					    if($('#pickerPeriod').val()=='Today'){
+					    	date.setDate(date.getDate()-1);	
+					    }else if($('#pickerPeriod').val()=='Week'){
+					    	date.setDate(date.getDate()-7);
+					    }else if($('#pickerPeriod').val()=='Month'){
+					    	var value = splitDate[1]-2;
+					    	date.setMonth(value);
+					    }else if($('#pickerPeriod').val()=='Year'){
+					    	var value = parseInt(splitDate[2])-1;
+					    	date.setFullYear(value);
+					    }
+					    $picker.datepicker('setDate', date);
+					    WSL.createDetailsGraph(invtnum, divId);
+					});
+					
+				},
+				dataType : 'text'
+			});
+			WSL.createDetailsGraph(invtnum, divId);
+	    });
+	    
 	},
 
 	createDetailsGraph : function(invtnum, divId) {
+		var date = $('#datepicker').val();
 		$.ajax({
-			url : "server.php?method=getDetailsGraph&invtnum=" + invtnum,method : 'GET',dataType : 'json',
+			url : "server.php?method=getDetailsGraph&invtnum=" + invtnum+"&date="+date,method : 'GET',dataType : 'json',
 			success : function(result) {
 				if (result.dayData.data) {
 					var seriesLabels= [];
@@ -1085,30 +1188,19 @@ var WSL = {
 					
 					switches = result.dayData.switches;
 
-					$("#main-middle").prepend('<div id="detailsGraph"></div>');
 					$("#detailsGraph").height(450);
 
 					graphOptions.axes.xaxis.min = seriesData[0][0][0];
     				graphOptions.legend.labels = result.dayData['labels'];
     				
+
+    				handle = $.jqplot("detailsGraph",seriesData, graphOptions).destroy();
+    				handle = null;
     				handle = $.jqplot("detailsGraph",seriesData, graphOptions);
     				
     				$('table.jqplot-table-legend').attr('class', 'jqplot-table-legend-custom');
     				$('table.jqplot-table-legend-custom').attr('left', 40);
-					
-					$.ajax({
-						url : 'js/templates/detailsSwitches.hb',
-						success : function(source) {
-							var template = Handlebars.compile(source);
-							var html = template({
-								'data' : '',
-								'lang' :lang
-							});
-							$('#detailsGraph').before(html);
-						},
-						dataType : 'text',
-					});
-					
+
 					$('[type=checkbox]').live('change',function(){
     					 var id = $(this).attr("id");
     				     if(id == 'every'){
@@ -1299,7 +1391,7 @@ WSL.api.getPageTodayValues = function(success) {
 
 
 WSL.api.getPageMonthValues = function(date,success) {
-	console.log(date);
+	//console.log(date);
 	$.getJSON("server.php", {
 		method : 'getPageMonthValues',
 		'date' : date,
