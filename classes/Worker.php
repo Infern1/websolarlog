@@ -112,6 +112,7 @@ class Worker {
                     // log 'Interver awake' to DB
                     $OEvent = new Event($inverter->id, time(), 'Notice', 'Inverter awake');
                     $this->adapter->addEvent($inverter->id, $OEvent);
+                    HookHandler::getInstance()->fire("onInverterStartup", $OEvent->event);
                 }
 
 
