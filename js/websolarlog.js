@@ -91,8 +91,12 @@ function tooltipDetailsContentEditor(str, seriesIndex, pointIndex, plot,series	)
 }
 
 
-function handleGraphs(request){
+function handleGraphs(request,invtnum){
+
+	invtnum = $('#pickerInv').val();
+
 	
+	console.log('invtnum:'+invtnum);
 	// get activated Tab;
 	var tabSelected = $('#tabs').tabs('option', 'selected');
 	// set type to Today
@@ -118,20 +122,18 @@ function handleGraphs(request){
     	$('#lastCall').val('picker');
     	period= $('#pickerPeriod').val();
     	if (period == "Today") {
-    		//console.log("period1:"+tab);
-    		WSL.createDayGraph(1, period, tab,date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    		console.log("period1:"+tab);
+    		WSL.createDayGraph(invtnum, period, tab,date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}else{
-    		//console.log("period2:"+tab);
-    		WSL.createPeriodGraph(1, period,1 ,date, "graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    		console.log("period2:"+tab);
+    		WSL.createPeriodGraph(invtnum, period,1 ,date, "graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}    
     }else{
     	$('#lastCall').val('normal');
     	if (tab == "Today" || tab == "Yesterday") {
-    		//console.log("period3:"+period);
-    		WSL.createDayGraph(1, period, tab,date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    		WSL.createDayGraph(invtnum, period, tab,date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}else{
-    		console.log("period4:"+period);
-    		WSL.createPeriodGraph(1, period,1 , date,"graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    		WSL.createPeriodGraph(invtnum, period,1 , date,"graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}
     }
     // Refresh only the Today tab
@@ -141,8 +143,7 @@ function handleGraphs(request){
                 $("#graph"+tab+"Content").html('<div id="loading">loading...</div>');
                 currentGraphHandler.destroy();
             }
-           //console.log("period5:Today");
-            WSL.createDayGraph(1, "Today", date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});				                    
+            WSL.createDayGraph(invtnum, "Today",tab, date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});				                    
         }, 60000); // every minute
        
     }
@@ -150,6 +151,85 @@ function handleGraphs(request){
     
     
 }
+
+
+function populateTabs(){
+	$.getJSON('server.php?method=getPeriodFilter&type=all', function(data) {
+		$.ajax({
+			url : 'js/templates/datePeriodFilter.hb',
+			success : function(source) {
+				var template = Handlebars.compile(source);
+			
+				var html = template({
+				'data' : data,
+				'lang' : data.lang
+				});
+				$('#pickerFilter').html(html);
+				
+				var invtnum = $('#pickerInv').val();
+				
+				$(".mainTabContainer").hover(function() {
+		    		$("#pickerFilterDiv").hide();
+		    		$( "#datepicker" ).datepicker("hide");
+				}, function() {
+					$("#pickerFilterDiv").show();
+				});
+
+				$('#pickerPeriod').live("change",
+						function(){
+							handleGraphs('picker',invtnum);
+						}
+				);
+				$('#next').unbind('click');
+				$('#previous').unbind('click');
+				$('#pickerPeriod').unbind('click');
+				
+				
+				$('#next').click(function () {
+				    var $picker = $("#datepicker");
+				    var date=new Date($picker.datepicker('getDate'));
+				    var splitDate = $('#datepicker').val().split('-');
+				    if($('#pickerPeriod').val()=='Today'){
+				    	date.setDate(date.getDate()+1);	
+				    }else if($('#pickerPeriod').val()=='Week'){
+				    	date.setDate(date.getDate()+7);
+				    }else if($('#pickerPeriod').val()=='Month'){
+				    	var value = splitDate[1];
+				    	date.setMonth(value);
+				    }else if($('#pickerPeriod').val()=='Year'){
+				    	var value = parseInt(splitDate[2])+1;
+				    	date.setFullYear(value);
+				    }
+				    $picker.datepicker('setDate', date);
+				    handleGraphs('picker',invtnum);
+				});
+				
+				$('#previous').click(function () {
+				    var $picker = $("#datepicker");
+				    var date=new Date($picker.datepicker('getDate'));
+				    var splitDate = $('#datepicker').val().split('-');
+				    if($('#pickerPeriod').val()=='Today'){
+				    	date.setDate(date.getDate()-1);	
+				    }else if($('#pickerPeriod').val()=='Week'){
+				    	date.setDate(date.getDate()-7);
+				    }else if($('#pickerPeriod').val()=='Month'){
+				    	var value = splitDate[1]-2;
+				    	date.setMonth(value);
+				    }else if($('#pickerPeriod').val()=='Year'){
+				    	var value = parseInt(splitDate[2])-1;
+				    	date.setFullYear(value);
+				    }
+				    $picker.datepicker('setDate', date);
+				    handleGraphs('picker',invtnum);
+				});
+				invtnum = $('#pickerInv').val();
+		    	handleGraphs('standard',invtnum);
+			},
+			dataType : 'text'
+		});
+    });
+}
+
 
 // WSL class
 var WSL = {
@@ -354,8 +434,10 @@ var WSL = {
 		});
 	},
 
-	init_tabs : function(page, divId, success) {
 
+	
+	init_tabs : function(page, divId, success) {
+		
 		// initialize languages selector on the given div
 		WSL.api.getTabs(page, function(data) {
 			$.ajax({
@@ -368,83 +450,18 @@ var WSL = {
 					});
 					$(html).prependTo(divId);
 					
-					$.ajax({
-						url : 'js/templates/datePeriodFilter.hb',
-						success : function(source) {
-							var template = Handlebars.compile(source);
-							var html = template({
-								'data' : data,
-								'lang' : data.lang
-							});
-							$('#pickerFilter').html(html);
-						
-							$(".mainTabContainer").hover(function() {
-					    		$("#pickerFilterDiv").hide();
-					    		$( "#datepicker" ).datepicker("hide");
-							}, function() {
-								$("#pickerFilterDiv").show();
-							});
-
-							$('#pickerPeriod').on("change",
-									function(){
-										handleGraphs('picker');
-									}
-							);
-							$('#next').unbind('click');
-							$('#previous').unbind('click');
-							$('#pickerPeriod').unbind('click');
-							
-							
-							$('#next').click(function () {
-							    var $picker = $("#datepicker");
-							    var date=new Date($picker.datepicker('getDate'));
-							    var splitDate = $('#datepicker').val().split('-');
-							    if($('#pickerPeriod').val()=='Today'){
-							    	date.setDate(date.getDate()+1);	
-							    }else if($('#pickerPeriod').val()=='Week'){
-							    	date.setDate(date.getDate()+7);
-							    }else if($('#pickerPeriod').val()=='Month'){
-							    	var value = splitDate[1];
-							    	date.setMonth(value);
-							    }else if($('#pickerPeriod').val()=='Year'){
-							    	var value = parseInt(splitDate[2])+1;
-							    	date.setFullYear(value);
-							    }
-							    $picker.datepicker('setDate', date);
-							    handleGraphs('picker');
-							});
-							
-							$('#previous').click(function () {
-							    var $picker = $("#datepicker");
-							    var date=new Date($picker.datepicker('getDate'));
-							    var splitDate = $('#datepicker').val().split('-');
-							    if($('#pickerPeriod').val()=='Today'){
-							    	date.setDate(date.getDate()-1);	
-							    }else if($('#pickerPeriod').val()=='Week'){
-							    	date.setDate(date.getDate()-7);
-							    }else if($('#pickerPeriod').val()=='Month'){
-							    	var value = splitDate[1]-2;
-							    	date.setMonth(value);
-							    }else if($('#pickerPeriod').val()=='Year'){
-							    	var value = parseInt(splitDate[2])-1;
-							    	date.setFullYear(value);
-							    }
-							    $picker.datepicker('setDate', date);
-							    handleGraphs('picker');
-							});
-						},
-						dataType : 'text'
-					});
-					
 					$('#tabs').tabs({
 					    show: function(event, ui) {
-					    	handleGraphs();
+					    	//invtnum = $('#pickerInv').val();
+					    	//handleGraphs('standard',invtnum);
+					    	
+					    	
+					    	// populate the tabs:
+					    	populateTabs();
 					    	
 					    }
 					});
 					success.call();
-					
-					
 				},
 				dataType : 'text',
 			});
@@ -1000,7 +1017,8 @@ var WSL = {
 		});
 	},
 
-	init_details : function(invtnum,divId){
+	init_details : function(divId){
+		
 		$("#main-middle").prepend('<div id="datePeriodFilter"></div><div id="detailsSwitches"></div><div id="detailsGraph"></div>');
 
 		$.getJSON('server.php?method=getDetailsSwitches', function(data) {
@@ -1018,7 +1036,7 @@ var WSL = {
 			});
 		});
 		
-	    $.getJSON('server.php?method=getPeriodFilter', function(data) {
+	    $.getJSON('server.php?method=getPeriodFilter&type=today', function(data) {
 			$.ajax({
 				url : 'js/templates/datePeriodFilter.hb',
 				success : function(source) {
@@ -1029,7 +1047,12 @@ var WSL = {
 					});
 					$('#datePeriodFilter').html(html);
 					
-				
+					var invtnum = $('#pickerInv').val();
+					console.log('invtnum:'+invtnum);
+					
+					// get the details graph....
+					WSL.createDetailsGraph(invtnum, divId);
+					
 					$(".mainTabContainer").hover(function() {
 			    		$("#pickerFilterDiv").hide();
 			    		$( "#datepicker" ).datepicker("hide");
@@ -1037,7 +1060,7 @@ var WSL = {
 						$("#pickerFilterDiv").show();
 					});
 
-					$('#pickerPeriod').on("change",
+					$('#pickerPeriod').live("change",
 							function(){
 						WSL.createDetailsGraph(invtnum, divId);
 							}
@@ -1045,6 +1068,12 @@ var WSL = {
 					
 					
 					$('#datepicker').live("change",
+							function(){
+						WSL.createDetailsGraph(invtnum, divId);
+							}
+					);
+					
+					$('#pickerInv').live("change",
 							function(){
 						WSL.createDetailsGraph(invtnum, divId);
 							}
@@ -1073,6 +1102,7 @@ var WSL = {
 					    	date.setFullYear(value);
 					    }
 					    $picker.datepicker('setDate', date);
+						var invtnum = $('#pickerInv').val();
 					    WSL.createDetailsGraph(invtnum, divId);
 					});
 					
@@ -1092,18 +1122,20 @@ var WSL = {
 					    	date.setFullYear(value);
 					    }
 					    $picker.datepicker('setDate', date);
+						var invtnum = $('#pickerInv').val();
 					    WSL.createDetailsGraph(invtnum, divId);
 					});
-					
+							
 				},
 				dataType : 'text'
 			});
-			WSL.createDetailsGraph(invtnum, divId);
+			
 	    });
 	    
 	},
 
 	createDetailsGraph : function(invtnum, divId) {
+		console.log(invtnum);
 		var date = $('#datepicker').val();
 		$.ajax({
 			url : "server.php?method=getDetailsGraph&invtnum=" + invtnum+"&date="+date,method : 'GET',dataType : 'json',

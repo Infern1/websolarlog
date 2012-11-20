@@ -164,10 +164,24 @@ switch ($method) {
 		break;
 	case 'getPeriodFilter':
 		$options = array();
-		$options[] =array( "value" => "Today","name"=> _("Day"));
+		if($type=="all" ){
+			$options[] =array( "value" => "Today","name"=> _("Day"));
+			$options[] =array( "value" => "Week","name"=> _("Week"));
+			$options[] =array( "value" => "Month","name"=> _("Month"));
+			$options[] =array( "value" => "Year","name"=> _("Year"));
+		}else{
+			$options[] =array( "value" => "Today","name"=> _("Day"));
+		}
+
+		//var_dump($config->inverters);
+		foreach ($config->inverters as $inverter){
+			 $data['inverters'][] = array('id'=>$inverter->id,'name'=>$inverter->name);
+		}
+		
 		
 		$lang = array();
 		$lang['date'] = _('date');
+		$lang['inv'] = _('inv');
 		$lang['periode'] = _('periode');
 		$lang['previous'] = _('previous');
 		$lang['next'] = _('next');

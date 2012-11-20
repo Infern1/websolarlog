@@ -8,7 +8,7 @@ require_once("template/" . $template . "/index.php");
 ?>
 	<script type="text/javascript">
     // Make sure the page is loaded
-	WSL.init_details(1,"#details"); // Initial load fast
+	WSL.init_details("#details"); // Initial load fast
 	</script>
 </body>
 </html>
