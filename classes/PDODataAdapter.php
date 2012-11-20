@@ -1292,6 +1292,13 @@ class PDODataAdapter {
 			$live->EFF[] 	= array(time()*1000,0);//12
 			$live->BOOT[]	= array(time()*1000,0);//13
 			$live->INVT[] 	= array(time()*1000,0);//14
+			$max['P'] = 1;
+			$max['V'] = 1;
+			$max['A'] = 1;
+			$max['EFF'] = 1;
+			$max['FRQ'] = 1;
+			$max['Ratio'] = 1;
+			$max['T'] = 1;
 		}
 		return array("details"=>$live,"labels"=>$labels,"switches"=>$switches,"max"=>$max);
 	}

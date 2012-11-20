@@ -1056,6 +1056,8 @@ var WSL = {
 							},
 							highlighter : {tooltipContentEditor: tooltipDetailsContentEditor,show : true}
 					};
+
+
 					var maxP = result.dayData.max.P;
 					graphOptions.axes.yaxis.max = maxP+((maxP/100)*10);
 					graphOptions.axes.y7axis.max = maxP+((maxP/100)*10);
@@ -1093,7 +1095,7 @@ var WSL = {
     				
     				$('table.jqplot-table-legend').attr('class', 'jqplot-table-legend-custom');
     				$('table.jqplot-table-legend-custom').attr('left', 40);
-    				
+					
 					$.ajax({
 						url : 'js/templates/detailsSwitches.hb',
 						success : function(source) {
