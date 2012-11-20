@@ -14,8 +14,8 @@ $(function()
                         'data' : data
                     });
                     $('#content').html(html);
-                    $("#btnLoginSubmit").bind('click', function (){
-                        var data = $(this).parent().parent().serialize();
+                    $('#loginForm').bind('submit', function (){
+                        var data = $(this).serialize();
                         $.post('admin-server.php', data, function(logindata){
                             if (logindata.result == true) {
                                 init_menu();
@@ -33,6 +33,7 @@ $(function()
                                 });
                             }
                         });
+                        return false; // prevent form submit
                     });
                 }
             });
