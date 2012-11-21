@@ -45,6 +45,7 @@ class LoggerAddon {
 			}
 		}
 		
+		$message = str_replace("\n", " ", $message);
 		$logmsg = date("Ymd His") . "\t" . $message . "\n";
 		
 		$fh = fopen($logPath . "/" . $level . ".log", "a+");
