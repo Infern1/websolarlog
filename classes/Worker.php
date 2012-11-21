@@ -177,6 +177,17 @@ class Worker {
 
         $inactiveCheck = new InactiveCheck();
         $inactiveCheck->check();
+        
+        // Make sure te log files are readable and writeable for everyone
+        $logPath = dirname(__FILE__) . "/log";
+        $foldersAndFiles = scandir($logPath);
+        $entries = array_slice($foldersAndFiles, 2); // Remove "." and ".." from the list
+        // Parse every result...
+        foreach($entries as $entry) {
+        	if (is_file($logPath . "/" . $entry)) {
+	        	chmod($logPath  . "/" . $entry, 0666);
+        	}
+        }
     }
 
     /**
@@ -245,7 +256,7 @@ class Worker {
 	                $OEvent->alarmSend = true;
 				} catch (Exception $e) {
 					$Oevent->alarmSend = false;
-		            	HookHandler::getInstance()->fire("onError", $e->getMessage());
+	            	HookHandler::getInstance()->fire("onError", $e->getMessage());
 				}
                 $this->adapter->addEvent($inverter->id, $OEvent);
             } else {
