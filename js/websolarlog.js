@@ -1288,7 +1288,7 @@ var WSL = {
 				dataType : 'text',
 			});
 		});
-		$('select').on('change', function(){
+		$('select').live('change', function(){
 			WSL.createCompareGraph(1,$('#whichMonth').val(),$('#whichYear').val(),$('#compareMonth').val(),$('#compareYear').val()); // Initial// load// fast
 		});
 	},
