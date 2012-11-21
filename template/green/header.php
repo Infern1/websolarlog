@@ -22,7 +22,7 @@ $config = Session::getConfig();
 	<link rel="stylesheet" href="js/jqueryuicss/jquery-ui-custom.css" type="text/css" />
 	<link rel="stylesheet" href="template/green/css/custom.css" type="text/css" media="all" />
 	
-	<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/excanvas.js"></script><![endif]-->
+	<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.pnotify.min.js"></script>
 	<script type="text/javascript" src="js/handlebars.js"></script>
