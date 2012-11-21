@@ -98,7 +98,7 @@ switch ($settingstype) {
         }
         break;
     case 'updater-go':
-    	$jsonFilePath = dirname(__FILE__);
+    	$jsonFilePath = dirname(__FILE__) . "/update.json";
     	$status = array();
     	$status['state'] = "busy";
     	$status['info'] = "Preparing";
