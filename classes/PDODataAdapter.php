@@ -1743,7 +1743,7 @@ class PDODataAdapter {
 				$live->name = $inverter->name;
 				$live->status = _('sleeping');
 				$live->time = date("H:i:s");
-				$live->INV = $inverter['id'];
+				$live->INV = $inverter->id;
 				$live->GP = number_format(0,0,',','');
 				$live->GA = number_format(0,0,',','');
 				$live->GV = number_format(0,0,',','');
