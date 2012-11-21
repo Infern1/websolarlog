@@ -59,7 +59,14 @@ class HookHandler {
         	$object = new $classname();
         	
         	if (method_exists($object, $methodname)) {
-        		$result = $object->$methodname(func_get_args());
+        		// Handle any exception thrown by an hook
+        		try {
+	        		$result = $object->$methodname(func_get_args());
+        		} catch (Exception $e) {
+        			try {
+        				$this->fire('onError', "Error in hook " . $classmethod . " error: " . $e->getMessage());
+	        		} catch (Exception $ignore) {}
+        		}
         	} else {
         		// Log handling?
         	}
