@@ -96,7 +96,7 @@ function handleGraphs(request,invtnum){
 	invtnum = $('#pickerInv').val();
 
 	
-	console.log('invtnum:'+invtnum);
+	//console.log('invtnum:'+invtnum);
 	// get activated Tab;
 	var tabSelected = $('#tabs').tabs('option', 'selected');
 	// set type to Today
@@ -122,10 +122,10 @@ function handleGraphs(request,invtnum){
     	$('#lastCall').val('picker');
     	period= $('#pickerPeriod').val();
     	if (period == "Today") {
-    		console.log("period1:"+tab);
+    		//console.log("period1:"+tab);
     		WSL.createDayGraph(invtnum, period, tab,date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}else{
-    		console.log("period2:"+tab);
+    		//console.log("period2:"+tab);
     		WSL.createPeriodGraph(invtnum, period,1 ,date, "graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}    
     }else{
@@ -671,7 +671,7 @@ var WSL = {
 					$(yearValues).html(html);
 
 				    $(function() {
-				    	console.log('add accordion');
+				    	//console.log('add accordion');
 				        $( ".accordion" ).accordion({collapsible: true});
 				        $( ".accordion" ).accordion({collapsible: true});
 				    });
@@ -1048,7 +1048,7 @@ var WSL = {
 					$('#datePeriodFilter').html(html);
 					
 					var invtnum = $('#pickerInv').val();
-					console.log('invtnum:'+invtnum);
+					//console.log('invtnum:'+invtnum);
 					
 					// get the details graph....
 					WSL.createDetailsGraph(invtnum, divId);
@@ -1135,7 +1135,7 @@ var WSL = {
 	},
 
 	createDetailsGraph : function(invtnum, divId) {
-		console.log(invtnum);
+		//console.log(invtnum);
 		var date = $('#datepicker').val();
 		$.ajax({
 			url : "server.php?method=getDetailsGraph&invtnum=" + invtnum+"&date="+date,method : 'GET',dataType : 'json',
