@@ -98,11 +98,13 @@ switch ($settingstype) {
         }
         break;
     case 'updater-go':
+    	HookHandler::getInstance()->fire("onInfo", "Starting update");
         $versioninfo = explode("*",Common::getValue("version", "none"));
         $version = $versioninfo[0];
         $revision = $versioninfo[1];
 
         if ($version === "none") {
+	    	HookHandler::getInstance()->fire("onInfo", "Update error: No version selected");
             $data['error'] = "No version selected.";
             $data['result'] = false;
             break;
@@ -110,6 +112,7 @@ switch ($settingstype) {
 
         // Prepare folders
         if (!Updater::prepareCheckout()) {
+	    	HookHandler::getInstance()->fire("onInfo", "Update error: Error preparing download folder");
             $data['error'] = "Error preparing download folder.";
             $data['result'] = false;
             break;
@@ -121,16 +124,20 @@ switch ($settingstype) {
         $data['svnurl'] = $url;
 
 
+        HookHandler::getInstance()->fire("onInfo", "Update info: Starting checkout of " . $url);
         if(!Updater::doCheckout($url)) {
-            $data['error'] = "Error preparing download folder.";
+        	HookHandler::getInstance()->fire("onInfo", "Update error: Checkout failed.");
+            $data['error'] = "Error while doing the checkout.";
             $data['result'] = false;
             break;
         }
 
         // Copy the files
+        HookHandler::getInstance()->fire("onInfo", "Update info: Removing old files and copy new files.");
         Updater::copyToLive();
 
         // Everything ok, save version info to db
+        HookHandler::getInstance()->fire("onInfo", "Update ready: " . $version . " (" . $revision . ")");
         $config->version_title = $version;
         $config->version_revision = $revision;
         $adapter->writeConfig($config);
