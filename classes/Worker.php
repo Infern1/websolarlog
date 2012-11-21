@@ -179,7 +179,7 @@ class Worker {
         $inactiveCheck->check();
         
         // Make sure te log files are readable and writeable for everyone
-        $logPath = dirname(__FILE__) . "/log";
+        $logPath = dirname(dirname(__FILE__)) . "/log";
         $foldersAndFiles = scandir($logPath);
         $entries = array_slice($foldersAndFiles, 2); // Remove "." and ".." from the list
         // Parse every result...
