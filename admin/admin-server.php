@@ -98,11 +98,7 @@ switch ($settingstype) {
         }
         break;
     case 'updater-go':
-    	$jsonFilePath = dirname(__FILE__) . "/update.json";
-    	$status = array();
-    	$status['state'] = "busy";
-    	$status['info'] = "Preparing";
-    	$status['percentage'] = 1;
+    	updaterJsonFile("busy", "preparing", 1);
     	FileUtil::writeObjectToJsonFile($jsonFilePath, $status);
     	 
     	HookHandler::getInstance()->fire("onInfo", "Starting update");
@@ -112,14 +108,17 @@ switch ($settingstype) {
 
         if ($version === "none") {
 	    	HookHandler::getInstance()->fire("onInfo", "Update error: No version selected");
+	    	updaterJsonFile("error", "No Version selected", 1);
             $data['error'] = "No version selected.";
             $data['result'] = false;
             break;
         }
 
         // Prepare folders
+    	updaterJsonFile("busy", "preparing", 5);
         if (!Updater::prepareCheckout()) {
 	    	HookHandler::getInstance()->fire("onInfo", "Update error: Error preparing download folder");
+	    	updaterJsonFile("error", "Error preparing download folder", 5);
             $data['error'] = "Error preparing download folder.";
             $data['result'] = false;
             break;
@@ -131,8 +130,10 @@ switch ($settingstype) {
         $data['svnurl'] = $url;
 
 
+    	updaterJsonFile("busy", "retrieving update", 10);
         HookHandler::getInstance()->fire("onInfo", "Update info: Starting checkout of " . $url);
         if(!Updater::doCheckout($url)) {
+	    	updaterJsonFile("error", "retrieving update failed", 10);
         	HookHandler::getInstance()->fire("onInfo", "Update error: Checkout failed.");
             $data['error'] = "Error while doing the checkout.";
             $data['result'] = false;
@@ -140,6 +141,7 @@ switch ($settingstype) {
         }
 
         // Copy the files
+    	updaterJsonFile("busy", "applying update", 60);
         HookHandler::getInstance()->fire("onInfo", "Update info: Removing old files and copy new files.");
         Updater::copyToLive();
 
@@ -321,6 +323,15 @@ try {
 }
 
 exit();
+
+function updaterJsonFile($state, $info, $percentage) {
+	$jsonFilePath = dirname(__FILE__) . "/update.json";
+	$status = array();
+	$status['state'] = $state;
+	$status['info'] = $info;
+	$status['percentage'] = $percentage;
+	FileUtil::writeObjectToJsonFile($jsonFilePath, $status);
+}
 
 /**
  * This function will check if sqlite is installed an which version
