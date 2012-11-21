@@ -21,7 +21,7 @@ class MailAddon {
 	}
 	
 	public function onInverterStartup($args) {
-		Common::sendMail("WSL :: Startup", "Startup test", Session::getConfig());
+		// Common::sendMail("WSL :: Startup", "Startup test", Session::getConfig());
 	}
 	
 	public function onInverterShutdown($args) {
