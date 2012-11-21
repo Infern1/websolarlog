@@ -1288,9 +1288,22 @@ var WSL = {
 				dataType : 'text',
 			});
 		});
-		$('select').live('change', function(){
+		$('#invtnum').live('change', function(){
 			WSL.createCompareGraph(1,$('#whichMonth').val(),$('#whichYear').val(),$('#compareMonth').val(),$('#compareYear').val()); // Initial// load// fast
 		});
+		$('#whichMonth').live('change', function(){
+			WSL.createCompareGraph(1,$('#whichMonth').val(),$('#whichYear').val(),$('#compareMonth').val(),$('#compareYear').val()); // Initial// load// fast
+		});
+		$('#whichYear').live('change', function(){
+			WSL.createCompareGraph(1,$('#whichMonth').val(),$('#whichYear').val(),$('#compareMonth').val(),$('#compareYear').val()); // Initial// load// fast
+		});
+		$('#compareMonth').live('change', function(){
+			WSL.createCompareGraph(1,$('#whichMonth').val(),$('#whichYear').val(),$('#compareMonth').val(),$('#compareYear').val()); // Initial// load// fast
+		});
+		$('#compareYear').live('change', function(){
+			WSL.createCompareGraph(1,$('#whichMonth').val(),$('#whichYear').val(),$('#compareMonth').val(),$('#compareYear').val()); // Initial// load// fast
+		});
+		
 	},
 
 	createCompareGraph : function(invtnum,whichMonth,whichYear,compareMonth,compareYear,type) {
