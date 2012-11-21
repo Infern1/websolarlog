@@ -72,7 +72,7 @@ textarea { overflow: auto; }
 span.read-more { position: absolute; right: 0; bottom: 0;  }
 span.read-more a { font-family: Tahoma, arial, sans-serif; font-weight: bold; color: #456103; }
 
-#content { display: inline; float: left; padding-left: 41px; width: 560px; }
+#content { display: inline; float: left; padding-left: 10px; width: 620px; }
 
 .welcome-post { position: relative; padding-bottom: 29px; width: 100%; }
 .welcome-post h3 { padding-bottom: 15px; font-family: Tahoma, arial, sans-serif; font-size: 22px; line-height: 24px; font-weight: normal; color: #2e2e2e; }
@@ -82,7 +82,7 @@ span.read-more a { font-family: Tahoma, arial, sans-serif; font-weight: bold; co
 .welcome-post p a { font-style: italic; font-weight: bold; color: #d36800; text-decoration: underline; }
 .welcome-post p a:hover { text-decoration: none; }
 
-#sidebar { display: inline; float: right; padding-right: 38px; width: 224px; }
+#sidebar { display: inline; float: right; padding-right: 10px; width: 280px; }
 
 .widget { position: relative; padding-bottom: 34px; width: 100%; }
 .widget h3 { padding-bottom: 18px; margin-bottom: 15px; border-bottom: solid 1px #d7d7d7; font-family: Tahoma, arial, sans-serif; font-size: 22px; line-height: 24px; font-weight: normal; color: #2e2e2e; } 

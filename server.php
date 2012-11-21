@@ -4,7 +4,7 @@
 //ini_set('display_errors', '1');
 
 define('checkaccess', TRUE);
-include("config/config_main.php");
+//include("config/config_main.php");
 
 require 'classes/classloader.php';
 Session::initialize();
@@ -17,31 +17,6 @@ $inactiveCheck->check();
 // Retrieve action params
 $method = $_GET['method'];
 
-/*
- * For now its disabled.
- * 
-// Detect en load the current user_lang
-if (!empty ($_POST['user_lang'])) {
-	setcookie('user_lang',$_POST['user_lang'],strtotime('+5 year'));
-	$user_lang=$_POST['user_lang'];
-} elseif (isset($_COOKIE['user_lang'])){
-	$user_lang=$_COOKIE['user_lang'];
-} else {
-	$user_lang="English";
-}
-include("languages/".$user_lang.".php");
-
-
-// Detect the current user style
-if (!empty ($_POST['user_style'])) {
-	setcookie('user_style',$_POST['user_style'],strtotime('+5 year'));
-	$user_style=$_POST['user_style'];
-} elseif (isset($_COOKIE['user_style'])){
-	$user_style=$_COOKIE['user_style'];
-} else {
-	$user_style="default";
-}
-*/
 
 // Set headers for JSON response
 header('Cache-Control: no-cache, must-revalidate');
@@ -59,7 +34,6 @@ $count = Common::getValue('count', 0);
 $type = Common::getValue('type', 0);
 $date = Common::getValue('date', 0);
 $year = Common::getValue('year', 0);
-
 
 
 switch ($method) {
@@ -173,12 +147,10 @@ switch ($method) {
 			$options[] =array( "value" => "Today","name"=> _("Day"));
 		}
 
-		//var_dump($config->inverters);
 		foreach ($config->inverters as $inverter){
 			 $data['inverters'][] = array('id'=>$inverter->id,'name'=>$inverter->name);
 		}
-		
-		
+
 		$lang = array();
 		$lang['date'] = _('date');
 		$lang['inv'] = _('inv');
@@ -232,8 +204,7 @@ switch ($method) {
 			$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($inverter['id'],$date);
 			$maxMinEnergyYear[] = $dataAdapter->getMaxMinEnergyYear($inverter['id'],$date);
 		}
-		
-		
+
 		$lang = array();
 		$lang['today'] 			= _("Today");
 		$lang['maxGridPower'] 	= _("Max Grid Power");
@@ -247,9 +218,7 @@ switch ($method) {
 		$lang['watt'] 			= _("watt");
 		$lang['Year']			= _("Year");
 		$lang['valuesGroupedByMonthYearText'] = _("The values below are grouped by Month of the selected Year");
-		
-		
-		
+
 		$data['lang'] = $lang;
 		
 		$dayData = new DayDataResult();
@@ -328,19 +297,19 @@ switch ($method) {
 		$data['lang'] = $lang;
 		break;
 	case 'getCompareGraph':
-		//$config_invt="config/config_invt".$invtnum.".php";
-		//include("$config_invt");
+
 		$whichMonth = Common::getValue('whichMonth', 0);
 		$whichYear = Common::getValue('whichYear', 0);
 		$compareMonth = Common::getValue('compareMonth', 0);
 		$compareYear = Common::getValue('compareYear', 0);
-		$invtnum = Common::getValue('invnum', 0);
+		$invtnum = Common::getValue('invtnum', 0);
 		
 		$monthYear = $dataAdapter->getYearsMonthCompareFilters();
 		$inverters = R::findAndExport('Inverter');
 		foreach ($inverters as $inv){
 			$inverter[] = array("name"=>$inv['name'],"id"=>$inv['id']);
 		}
+				
 		$lines = $dataAdapter->getCompareGraph($invtnum, $whichMonth,$whichYear,$compareMonth,$compareYear);
 		//var_dump($inverters);
 
@@ -380,7 +349,7 @@ switch ($method) {
 		$data['dayData'] = $dayData;
 		break;
 	case 'getPageIndexLiveValues':
-		$indexValues = $dataAdapter->readPageIndexLiveValues();
+		$indexValues = $dataAdapter->readPageIndexLiveValues($config);
 		$lang['DCPower'] 		= _("DC Power");
 		$lang['ACPower'] 		= _("AC Power");
 		$lang['Efficiency'] 	= _("Efficiency");
@@ -393,8 +362,11 @@ switch ($method) {
 		$lang = array();
 		$lang['someFigures'] 	= _("Some Figures*");
 		$lang['by']			 	= _("By");
+		$lang['status']			= _("status");
+		$lang['IT'] 			= _("IT");
 		$lang['total'] 			= _("Total");
-		$lang['averages']	 	= _("Averages");
+		
+		$lang['AvgDay']	 	= _("Avg. Day");
 		$lang['today'] 			= _("Today");
 		$lang['week'] 			= _("Week");
 		$lang['month'] 			= _("Month");
@@ -407,6 +379,8 @@ switch ($method) {
 		$lang['power'] 			= _("Power");
 		$lang['ratio'] 			= _("ratio");
 		$lang['overallTotal']	= _("overall**");
+		$lang['KWHKWP']			= _("kWh/kWp");
+		
 		$lang['allFiguresAreInKWH']= _("* All figures are in kWh");
 		$lang['overallTotalText']= _("** Incl. initial kWh");
 		

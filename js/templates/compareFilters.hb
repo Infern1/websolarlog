@@ -3,7 +3,7 @@
     	<tr>
     		<td>Inverter:</td>
 	    	<td>
-	    		<select id="invnum">
+	    		<select id="invtnum">
 	    			{{#each data.dayData.inverters}}
 	    			<option value="{{this.id}}">{{this.name}}</option>
 	    			{{/each}}
