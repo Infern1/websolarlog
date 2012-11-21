@@ -98,6 +98,13 @@ switch ($settingstype) {
         }
         break;
     case 'updater-go':
+    	$jsonFilePath = dirname(__FILE__);
+    	$status = array();
+    	$status['state'] = "busy";
+    	$status['info'] = "Preparing";
+    	$status['percentage'] = 1;
+    	FileUtil::writeObjectToJsonFile($jsonFilePath, $status);
+    	 
     	HookHandler::getInstance()->fire("onInfo", "Starting update");
         $versioninfo = explode("*",Common::getValue("version", "none"));
         $version = $versioninfo[0];
@@ -141,6 +148,11 @@ switch ($settingstype) {
         $config->version_title = $version;
         $config->version_revision = $revision;
         $adapter->writeConfig($config);
+        
+        $status['state'] = "ready";
+        $status['info'] = "Update ready";
+        $status['percentage'] = 100;
+        FileUtil::writeObjectToJsonFile($jsonFilePath, $status);
 
         $data['result'] = true;
         break;
