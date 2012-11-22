@@ -50,11 +50,7 @@ switch ($settingstype) {
         break;
     case 'inverter':
         $inverterId = $_GET['id'];
-        foreach ($config->inverters as $inverter) {
-            if ($inverter->id == $inverterId) {
-                $data['inverter'] = $inverter;
-            }
-        }
+        $data['inverter'] = $config->getInverterConfig($inverterId);
         if ($inverterId == -1) {
             $data['inverter'] = new Inverter();
         }

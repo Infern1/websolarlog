@@ -96,7 +96,11 @@ class Config
 	}
 
 	function getInverterConfig($inverterId) {
-
+		foreach ($this->inverters as $inverter) {
+			if ($inverter->id == $inverterId) {
+				return $inverter;
+			}
+		}
 	}
 }
 ?>
