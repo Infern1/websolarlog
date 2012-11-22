@@ -1,7 +1,7 @@
 <div id="compareFilter">
     <table>
     	<tr>
-    		<td>Inverter:</td>
+    		<td>{{lang.inverter}}:</td>
 	    	<td>
 	    		<select id="invtnum">
 	    			{{#each data.dayData.inverters}}
@@ -10,7 +10,7 @@
 	    		</select>
 	    	</td>
 	    	</tr><tr>
-    		<td>Compare:</td>
+    		<td>{{lang.compare}}:</td>
     		<td>
 	    		<select id="whichMonth">
 	    			{{#each data.dayData.month}}
@@ -23,7 +23,7 @@
 	    			{{/each}}
 	    		</select>
 	    	</td>
-    		<td colspan="2">To:</td>
+    		<td colspan="2">{{lang.to}}:</td>
 	    	<td>
 	    		<select id="compareMonth">
 	    			{{#each data.dayData.month}}
@@ -31,7 +31,7 @@
 	    			{{/each}}
 	    		</select>/
 	    		<select id="compareYear">
-	    			<option value="0">expected</option>
+	    			<option value="0">{{lang.expected}}</option>
 					{{#each data.dayData.year}}
 	    			<option value="{{this.date}}">{{this.date}}</option>
 	    			{{/each}}

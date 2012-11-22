@@ -1348,6 +1348,8 @@ class PDODataAdapter {
 		$beans = array();
 		$whichBeans = array();
 		$compareBeans = array();
+		
+		if($whichMonth >0 AND $whichYear>0){
 		$whichMonthDays =  cal_days_in_month(CAL_GREGORIAN, $whichMonth, $whichYear);
 		
 		if ($compareYear > 0){
@@ -1395,11 +1397,15 @@ class PDODataAdapter {
 			$expectedMonthDays =  cal_days_in_month(CAL_GREGORIAN, $compareMonth, date("Y"));
 			
 			// create string to get month percentage
-			//$expectedMonthString = 'expected'.strtoupper(date('M', strtotime($compareMonth."/01/".date("Y"))));
+			$expectedMonthString = 'expected'.strtoupper(date('M', strtotime($compareMonth."/01/".date("Y"))));
 			
 			// get month percentage from config object
-			$expectedPerc = $config->inverters[$invtnum]->{'expected'.strtoupper(date('M', strtotime($compareMonth."/01/".date("Y"))))};
+			$expectedPerc = $config->inverters[$invtnum]->$expectedMonthString;
 
+			
+			$inverter = $config->inverters[$invtnum];
+			$expectedPerc = $inverter->$expectedMonthString;
+			
 			//get year expected from config object
 			$expectedkwhYear = $config->inverters[$invtnum]->expectedkwh;
 			
@@ -1416,6 +1422,7 @@ class PDODataAdapter {
 				$expectedBeans[$i]['KWH'] = number_format($expectedKwhPerDay,2,',','');
 			}
 			$type = "energy vs expected";
+		}
 		}
 		return array(
 				"expectedKWhMonth"=>$expectedKWhMonth,

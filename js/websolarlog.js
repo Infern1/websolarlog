@@ -1272,13 +1272,14 @@ var WSL = {
 		ajaxStart();
 		
 		// initialize languages selector on the given div
-		WSL.api.getCompare(function(data,success) {
+	    $.getJSON('server.php?method=getCompareFilters&type=today', function(data) {
 			$.ajax({
 				url : 'js/templates/compareFilters.hb',
 				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
-						'data' : data
+						'data' : data,
+						'lang' : data.lang
 					});
 					$(divId).html(html);
 					fnFinish.call();
@@ -1414,7 +1415,11 @@ WSL.api.getCompare = function(success) {
 	}, success);
 };
 
-
+WSL.api.getCompareFilters = function(succes){
+	$.getJSON("server.php", {
+		method : 'getCompareFilters'
+	}, success);	
+}
 
 WSL.api.getPageIndexValues = function(success) {
 	$.getJSON("server.php", {

@@ -296,6 +296,29 @@ switch ($method) {
 		$lang['watt'] 			= _("watt");
 		$data['lang'] = $lang;
 		break;
+	case 'getCompareFilters':
+		$monthYear = $dataAdapter->getYearsMonthCompareFilters();
+		$lang = array();
+		$lang['inverter'] 		= _("inverter");
+		$lang['compare'] 		= _("compare");
+		$lang['to'] 			= _("to");
+		$lang['expected'] 		= _("expected");
+		$data['lang'] = $lang;
+		
+		$inverters = R::findAndExport('Inverter');
+		foreach ($inverters as $inv){
+			$inverter[] = array("name"=>$inv['name'],"id"=>$inv['id']);
+		}
+		
+		$dayData = new DayDataResult();
+		$dayData->month = $monthYear['month'];
+		$dayData->year = $monthYear['year'];
+		$dayData->inverters = $inverter;
+
+		$dayData->success = true;
+		$data['dayData'] = $dayData;
+		
+		break;
 	case 'getCompareGraph':
 		$whichMonth = Common::getValue('whichMonth', 0);
 		$whichYear = Common::getValue('whichYear', 0);
@@ -303,7 +326,7 @@ switch ($method) {
 		$compareYear = Common::getValue('compareYear', 0);
 		$invtnum = Common::getValue('invtnum', 0);
 
-		$monthYear = $dataAdapter->getYearsMonthCompareFilters();
+		
 		$inverters = R::findAndExport('Inverter');
 		foreach ($inverters as $inv){
 			$inverter[] = array("name"=>$inv['name'],"id"=>$inv['id']);
