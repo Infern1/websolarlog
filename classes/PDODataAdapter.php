@@ -1395,10 +1395,10 @@ class PDODataAdapter {
 			$expectedMonthDays =  cal_days_in_month(CAL_GREGORIAN, $compareMonth, date("Y"));
 			
 			// create string to get month percentage
-			$expectedMonthString = 'expected'.strtoupper(date('M', strtotime($compareMonth."/01/".date("Y"))));
+			//$expectedMonthString = 'expected'.strtoupper(date('M', strtotime($compareMonth."/01/".date("Y"))));
 			
 			// get month percentage from config object
-			$expectedPerc = $config->inverters[$invtnum]->$expectedMonthString;
+			$expectedPerc = $config->inverters[$invtnum]->{'expected'.strtoupper(date('M', strtotime($compareMonth."/01/".date("Y"))))};
 
 			//get year expected from config object
 			$expectedkwhYear = $config->inverters[$invtnum]->expectedkwh;
