@@ -1399,16 +1399,11 @@ class PDODataAdapter {
 			// create string to get month percentage
 			$expectedMonthString = 'expected'.strtoupper(date('M', strtotime($compareMonth."/01/".date("Y"))));
 			
-			// get month percentage from config object
-			$expectedPerc = $config->inverters[$invtnum]->$expectedMonthString;
-
 			
-			$inverter = $config->inverters[$invtnum];
+			$inverter = $config->getInverterConfig($invtnum);
 			$expectedPerc = $inverter->$expectedMonthString;
-			
-			//get year expected from config object
-			$expectedkwhYear = $config->inverters[$invtnum]->expectedkwh;
-			
+			$expectedkwhYear = $inverter->expectedkwh;
+
 			// calculate month kWh = (year/100*month perc)
 			$expectedKWhMonth = ($expectedkwhYear / 100)*$expectedPerc;
 
