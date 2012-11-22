@@ -4,5 +4,6 @@ interface DeviceApi {
     public function getData();
     public function getInfo();
     public function syncTime();
+    public function getHistoryData();
 }
 ?>

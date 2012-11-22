@@ -40,11 +40,10 @@ Class Aurora implements DeviceApi {
         }
     }
 
-    /*
-    public function getEnergyInfo() {
-        return $this->execute('-e');
+    public function getHistoryData() {
+    	// Try to retrieve the data of the last 366 days
+        return $this->execute('-k 366 Y 60');
     }
-    */
 
     public function syncTime() {
         return $this->execute('-L');

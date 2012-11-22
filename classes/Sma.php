@@ -40,11 +40,10 @@ Class Sma implements DeviceApi {
         }
     }
 
-    /*
-    public function getEnergyInfo() {
-        return $this->execute('-e');
+    public function getHistoryData() {
+        //return $this->execute('-k');
+        // not supported
     }
-    */
 
     public function syncTime() {
         //return $this->execute('-L');
