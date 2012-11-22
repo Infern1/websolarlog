@@ -1425,6 +1425,8 @@ class PDODataAdapter {
 				"compareMonthDays"=>$compareMonthDays,
 				"compareBeans"=>$this->beansToGraphPoints($expectedBeans),
 				"whichBeans"=>$this->beansToGraphPoints($whichBeans),
+				"expectedMonthString"=>$expectedMonthString,
+				"expectedPerc"=>$expectedPerc,
 				"type"=>$type,
 				"config"=>$config
 				);

@@ -332,6 +332,9 @@ switch ($method) {
 				"compare"=>$lines['compareBeans']->points
 				);
 		$dayData->type = $lines['type'];
+		$dayData->config = $lines['config'];
+		$dayData->expectedMonthString = $lines['expectedMonthString'];
+		$dayData->expectedPerc = $lines['expectedPerc'];
 		$dayData->success = true;
 		$data['dayData'] = $dayData;
 		break;
