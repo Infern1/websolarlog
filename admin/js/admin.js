@@ -454,6 +454,9 @@ function init_updatepage(experimental) {
                             closer: false,
                             sticker: false
                         });
+                        
+                        startUpdaterMonitor(updateNotice, button);
+
                         var data = $(this).parent().serialize();
                         $.post('admin-server.php', data, function(updateresult){
                             console.log(updateresult.result);
@@ -480,6 +483,38 @@ function init_updatepage(experimental) {
         }
     });
 }
+
+function startUpdaterMonitor(updateNotice, button) {
+	$('#content').append('<div id="updaterMonitor"></div>');
+	
+	
+	$.ajax({
+         url : 'js/templates/updater-status.hb',
+         success : function(source) {
+             var template = Handlebars.compile(source);
+             var refreshIntervalId = 0;
+             
+             var monitor = function() {
+            	 $.getJSON("../tmp/update.json", function(data){
+            		 var html = template({'data' : data });
+            		 $('#updaterMonitor').html(html);
+            		 
+            		 if (data.state != 'busy') {
+            			 clearInterval(refreshIntervalId);
+            			 if (updateNotice.pnotify_remove) updateNotice.pnotify_remove();
+            			 button.attr('disabled', false);
+            		 }
+            	 });
+             };
+             
+             refreshIntervalId = setInterval(monitor, 2000); // 2 seconds
+         },
+         dataType : 'text'
+     });
+	
+	
+}
+
 
 function KWHcalc(object, Perc, Month){
 	if ($("#totalKWHProd").val()>=12){

@@ -137,21 +137,18 @@ switch ($settingstype) {
         }
 
         // Copy the files
-    	updaterJsonFile("busy", "applying update", 60);
+    	updaterJsonFile("busy", "applying update", 50);
         HookHandler::getInstance()->fire("onInfo", "Update info: Removing old files and copy new files.");
+        sleep(1); // Sleep 1 second to give system some air
         Updater::copyToLive();
 
         // Everything ok, save version info to db
-        HookHandler::getInstance()->fire("onInfo", "Update ready: " . $version . " (" . $revision . ")");
         $config->version_title = $version;
         $config->version_revision = $revision;
         $adapter->writeConfig($config);
         
-        $status['state'] = "ready";
-        $status['info'] = "Update ready";
-        $status['percentage'] = 100;
-        FileUtil::writeObjectToJsonFile($jsonFilePath, $status);
-
+        HookHandler::getInstance()->fire("onInfo", "Update ready: " . $version . " (" . $revision . ")");
+        updaterJsonFile("ready", "Update ready", 100);
         $data['result'] = true;
         break;
     case 'isLogin':
@@ -321,7 +318,7 @@ try {
 exit();
 
 function updaterJsonFile($state, $info, $percentage) {
-	$jsonFilePath = dirname(__FILE__) . "/update.json";
+	$jsonFilePath = dirname(dirname(__FILE__)) . "/tmp/update.json";
 	$status = array();
 	$status['state'] = $state;
 	$status['info'] = $info;
