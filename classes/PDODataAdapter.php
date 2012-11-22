@@ -1380,12 +1380,11 @@ class PDODataAdapter {
 			$expectedBeans  = $compareBeans;
 			$type = "energy vs energy";
 		}else{
-
 			$beans = $this->readEnergyValues($invtnum, 'month', 1, $whichYear."-".$whichMonth."-1");
-			
+
 			$whichBeans = $beans[0];
 
-			// create
+
 			$lastKWH = $whichBeans[count($whichBeans)]['KWH'];
 			for ($i = count($whichBeans); $i < $whichMonthDays; $i++) {
 				$iWhichDay = $i+1;
@@ -1394,13 +1393,13 @@ class PDODataAdapter {
 			}
 			
 			$expectedMonthDays =  cal_days_in_month(CAL_GREGORIAN, $compareMonth, date("Y"));
+			
 			// create string to get month percentage
-
 			$expectedMonthString = 'expected'.strtoupper(date('M', strtotime($compareMonth."/01/".date("Y"))));
 			
 			// get month percentage from config object
 			$expectedPerc = $config->inverters[$invtnum]->$expectedMonthString;
-			
+
 			//get year expected from config object
 			$expectedkwhYear = $config->inverters[$invtnum]->expectedkwh;
 			
@@ -1426,7 +1425,8 @@ class PDODataAdapter {
 				"compareMonthDays"=>$compareMonthDays,
 				"compareBeans"=>$this->beansToGraphPoints($expectedBeans),
 				"whichBeans"=>$this->beansToGraphPoints($whichBeans),
-				"type"=>$type
+				"type"=>$type,
+				"config"=>$config
 				);
 	}
 

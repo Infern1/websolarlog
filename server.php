@@ -297,22 +297,19 @@ switch ($method) {
 		$data['lang'] = $lang;
 		break;
 	case 'getCompareGraph':
-
 		$whichMonth = Common::getValue('whichMonth', 0);
 		$whichYear = Common::getValue('whichYear', 0);
 		$compareMonth = Common::getValue('compareMonth', 0);
 		$compareYear = Common::getValue('compareYear', 0);
 		$invtnum = Common::getValue('invtnum', 0);
-		
+
 		$monthYear = $dataAdapter->getYearsMonthCompareFilters();
 		$inverters = R::findAndExport('Inverter');
 		foreach ($inverters as $inv){
 			$inverter[] = array("name"=>$inv['name'],"id"=>$inv['id']);
 		}
-				
-		$lines = $dataAdapter->getCompareGraph($invtnum, $whichMonth,$whichYear,$compareMonth,$compareYear);
-		//var_dump($inverters);
 
+		$lines = $dataAdapter->getCompareGraph($invtnum, $whichMonth,$whichYear,$compareMonth,$compareYear);
 		
 		$lang = array();
 		$lang['today'] 			= _("Today");
