@@ -46,7 +46,7 @@ class Config
 	function __construct()
 	{
 		// Disable for production switch to true to get debug logging
-		$this->debugging = false;
+		$this->debugging = true;
 		
 		
 		// ### DATABASE CONFIG

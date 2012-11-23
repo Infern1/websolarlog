@@ -708,7 +708,7 @@ class PDODataAdapter {
 		$inverter->comAddress = $bean->comAddress;
 		$inverter->comLog = $bean->comLog;
 		$inverter->syncTime = $bean->syncTime;
-		$inverter->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $config->pvoutputEnabled;
+		$inverter->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $inverter->pvoutputEnabled;
 		$inverter->pvoutputApikey = $bean->pvoutputApikey;
 		$inverter->pvoutputSystemId = $bean->pvoutputSystemId;
 		$inverter->panels = $this->readPanelsByInverter($inverter->id);
@@ -752,7 +752,7 @@ class PDODataAdapter {
 			$inverter->comAddress = $bean->comAddress;
 			$inverter->comLog = $bean->comLog;
 			$inverter->syncTime = $bean->syncTime;
-			$inverter->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $config->pvoutputEnabled;
+			$inverter->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $inverter->pvoutputEnabled;
 			$inverter->pvoutputApikey = $bean->pvoutputApikey;
 			$inverter->pvoutputSystemId = $bean->pvoutputSystemId;
 			$inverter->panels = $this->readPanelsByInverter($inverter->id);

@@ -148,7 +148,7 @@ class Worker {
                 
                 HookHandler::getInstance()->fire("onHistory", $inverter, $live);
             }
-
+            
             // Info every 12 hours
             if ($isAlive && PeriodHelper::isPeriodJob("InfoJob", 12 * 60)) {
                 sleep(2);
@@ -176,6 +176,11 @@ class Worker {
         $this->dropLock();
 
         R::commit(); // Commit the transaction
+        
+        // This will also run if the inverter is down
+        if (PeriodHelper::isPeriodJob("10minJob", 10)) {
+        	HookHandler::getInstance()->fire("on10minJob");
+        }
 
         $inactiveCheck = new InactiveCheck();
         $inactiveCheck->check();
