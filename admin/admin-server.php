@@ -95,7 +95,6 @@ switch ($settingstype) {
         break;
     case 'updater-go':
     	updaterJsonFile("busy", "preparing", 1);
-    	FileUtil::writeObjectToJsonFile($jsonFilePath, $status);
     	 
     	HookHandler::getInstance()->fire("onInfo", "Starting update");
         $versioninfo = explode("*",Common::getValue("version", "none"));
@@ -226,7 +225,10 @@ switch ($settingstype) {
         $inverter->comAddress = Common::getValue("comAddress");
         $inverter->comLog = Common::getValue("comLog");
         $inverter->syncTime = Common::getValue("syncTime");
-
+        $inverter->pvoutputEnabled = Common::getValue("pvoutputEnabled");
+        $inverter->pvoutputApikey = Common::getValue("pvoutputApikey");
+        $inverter->pvoutputSystemId = Common::getValue("pvoutputSystemId");
+        
         $adapter->writeInverter($inverter);
         break;
     case 'save-panel':
