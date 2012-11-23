@@ -6,14 +6,14 @@ class PvOutputAddon {
 		$beans = $this->getUnsendHistory();
 		HookHandler::getInstance()->fire("onDebug", "beans found: " .  count($beans));
 		foreach ($beans as $live) {
-			HookHandler::getInstance()->fire("onDebug", "inverter id: " .  $live['INV']);
-			$inverter= Session::getConfig()->getInverterConfig($live['INV']);
+			HookHandler::getInstance()->fire("onDebug", "inverter id: " .  $live->INV);
+			$inverter= Session::getConfig()->getInverterConfig($live->INV);
 			if ($inverter->pvoutputEnabled) {
-				$date = date("Ymd", $live['time']);
-				$time = date("h:n", $live['time']);
-				$result = $this->sendStatus($inverter, $date, $time, $live['GP'], $live['KWHT'], $live['GV']);
+				$date = date("Ymd", $live->time);
+				$time = date("h:n", $live->time);
+				$result = $this->sendStatus($inverter, $date, $time, $live->GP, $live->KWHT, $live->GV);
 				if ($result) {
-					$live['pvoutput'] = true;
+					$live->pvoutput = true;
 					R::store($live);
 				}
 				return;
@@ -23,7 +23,7 @@ class PvOutputAddon {
 	
 	private function getUnsendHistory() {
 		$date = mktime(0, 0, 0, date('m'), date('d')-5, date('Y'));
-		$beans =  R::findAndExport( 'history', 'time > :time and (pvoutput is null or pvoutput = "")', array( 'time' => $date));
+		$beans =  R::find( 'history', 'time > :time and (pvoutput is null or pvoutput = "")', array( 'time' => $date));
 		return $beans;
 	}
 	
