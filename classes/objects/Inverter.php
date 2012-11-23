@@ -14,6 +14,7 @@ class Inverter
     public $comAddress;
     public $comLog;
     public $syncTime;
+    public $pvoutputSystemId;
 
     public $expectedJAN;
     public $expectedFEB;

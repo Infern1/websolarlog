@@ -100,6 +100,9 @@ class Session
     	$hookHandler->add("onInverterShutdown", "LoggerAddon.onInverterShutdown");
     	$hookHandler->add("onInverterError", "LoggerAddon.onInverterError");
     	
+    	// PvOutputAddon
+    	$hookHandler->add("onHistory", "PvOutputAddon.onHistory");
+    	
     	$hookHandler->fire("onDebug", "Hooks loaded");
     }
 }

@@ -145,6 +145,8 @@ class Worker {
                     }
 
                 }
+                
+                HookHandler::getInstance()->fire("onHistory", $inverter, $live);
             }
 
             // Info every 12 hours
