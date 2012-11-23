@@ -357,10 +357,10 @@ var WSL = {
 
 	init_misc : function(invtnum, divId) {
 		// Retrieve the error events
-		//ajaxStart();
-		WSL.api.getEvents(invtnum, function(data) {
+		ajaxStart();
+		WSL.api.getMisc(invtnum, function(data) {
 			$.ajax({
-				url : 'js/templates/events.hb',
+				url : 'js/templates/misc.hb',
 				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
@@ -369,6 +369,9 @@ var WSL = {
 					});
 					
 					$(divId).html(html);
+					$( ".accordion" ).accordion({collapsible: true});
+					
+					ajaxReady();
 				},
 				dataType : 'text'
 			});
@@ -1457,9 +1460,9 @@ WSL.api.getPageYearValues = function(date,success) {
 };
 
 
-WSL.api.getEvents = function(invtnum, success) {
+WSL.api.getMisc = function(invtnum, success) {
 	$.getJSON("server.php", {
-		method : 'getEvents',
+		method : 'getMisc',
 		'invtnum' : invtnum,
 	}, success);
 };

@@ -75,11 +75,39 @@ switch ($method) {
 		$data['languages'] = $languages;
 		$data['currentlanguage'] = $user_lang;
 		break;
-	case 'getEvents':
+	case 'getMisc':
 		$noticeEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Notice'));
 		$alarmEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Alarm'));
 		$infoEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Info'));
 
+		
+		//var_dump($config);
+		$slimConfig = array();
+		$slimConfig['lat'] = number_format($config->latitude,2,'.','');
+		$slimConfig['long'] = number_format($config->longitude,2,'.','');
+		
+		foreach ($config->inverters as $inverter){
+			
+			foreach ($inverter->panels as $panel){
+				$panels[] = array(
+						'id'=>$panel->id,
+						'description'=>$panel->description,
+						'roofOrientation'=>$panel->roofOrientation,
+						'roofPitch'=>$panel->roofPitch,
+						'amount'=>$panel->amount,
+						'wp'=>$panel->wp,
+						'totalWp'=>$panel->amount*$panel->wp
+				);
+			}
+				$inverters[] = array(
+					'name'=>$inverter->name,
+					'expectedKWH'=>$inverter->expectedkwh,
+					'plantPower'=>$inverter->plantpower,
+					'panels'=>$panels
+					);
+		}
+		$slimConfig['inverters'] = $inverters;
+		
 		$lang = array();
 		$lang['Time'] = _('Time');
 		$lang['Inv'] = _('Inv');
@@ -90,7 +118,20 @@ switch ($method) {
 		$lang['Alarm'] = _('Alarm');
 		$lang['Info'] = _('Info');
 		$lang['Information'] = _('Information');
+		$lang['plantPower'] = _('plant power');
+		$lang['expected'] = _('expected');
+		$lang['amount'] = _('amount');
+		$lang['wp'] = _('wp');
+		$lang['installedPower'] = _('installed power');
+		$lang['orientation'] = _('orientation');
+		$lang['pitch'] = _('pitch');
+		$lang['power'] = _('power');
+		$lang['mpp'] = _('mpp');
+		$lang['description'] = _('description');
+		$lang['location'] = _('location');
+		
 		$data['lang'] = $lang;
+		$data['slimConfig'] = $slimConfig;
 		$data['noticeEvents'] = $noticeEvents;
 		$data['alarmEvents'] = $alarmEvents;
 		$data['infoEvents'] = $infoEvents;

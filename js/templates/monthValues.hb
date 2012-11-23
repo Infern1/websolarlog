@@ -11,16 +11,17 @@
 		<div class="post">
 			<div id="monthPowerAcc" class="column span-22 last accordion">
 			{{#each data.monthData.data.maxPower}}	
-			<h3>Inv. {{this.INV}}</h3><div class="innerAccordionPeriod">
-    			<div class="column span-4 first">{{../lang.inv}}</div>
-				<div class="column span-3" style="text-align:right;">{{../lang.watt}}</div>
-				<div class="column span-9" style="text-align:center;">{{../lang.date}}</div>
-    			{{#each this}}
-		    		<div class="column span-4 first">{{this.INV}}</div>
-		    		<div class="column span-3" style="text-align:right;">{{this.maxGP}}</div>
-		    		<div class="column span-9" last" style="text-align:right;">{{this.date}}</div>
-			    	{{/each}}
-			   	</div>
+			<h3>Inv. {{this.INV}}</h3>
+				<div class="innerAccordionPeriod">
+	    			<div class="column span-4 first">{{../lang.inv}}</div>
+					<div class="column span-3" style="text-align:right;">{{../lang.watt}}</div>
+					<div class="column span-9" style="text-align:center;">{{../lang.date}}</div>
+    				{{#each this}}
+			    		<div class="column span-4 first">{{this.INV}}</div>
+		    			<div class="column span-3" style="text-align:right;">{{this.maxGP}}</div>
+		    			<div class="column span-9" last" style="text-align:right;">{{this.date}}</div>
+			   		{{/each}}
+				</div>
 		    {{/each}}
 		    </div>
 	    </div>
