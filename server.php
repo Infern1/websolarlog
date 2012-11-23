@@ -118,10 +118,12 @@ switch ($method) {
 		$lang['Alarm'] = _('Alarm');
 		$lang['Info'] = _('Info');
 		$lang['Information'] = _('Information');
-		$lang['plantPower'] = _('plant power');
+		$lang['power'] = _('power');
+		$lang['system'] = _('system');
 		$lang['expected'] = _('expected');
 		$lang['amount'] = _('amount');
-		$lang['wp'] = _('wp');
+		$lang['wp'] = _('Wp');
+		$lang['kWh'] = _('kWh');
 		$lang['installedPower'] = _('installed power');
 		$lang['orientation'] = _('orientation');
 		$lang['pitch'] = _('pitch');
