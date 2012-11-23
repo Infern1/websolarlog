@@ -203,6 +203,8 @@ class PDODataAdapter {
 		$bean->BOOT = $live->BOOT;
 		$bean->KWHT = $live->KWHT;
 		
+		$bean->pvoutput = false;
+		
 		$IP = $live->I1P+$live->I2P;
 		
 		// Prevent division by zero error
