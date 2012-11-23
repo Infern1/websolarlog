@@ -62,8 +62,8 @@ class Worker {
                      * instead of continues polling the inverter during the night we give at a 15 minute break
                     * this will greatly reduce the cpu usage and so less power usage
                     */
-                    echo $tstamp . ": No response and the sun is probably down. Inverter is probably a sleep, waiting for 15 minutes.\n";
-                    sleep(60 * 15);
+                    //echo $tstamp . ": No response and the sun is probably down. Inverter is probably a sleep, waiting for 15 minutes.\n";
+                    sleep(60);
                 } else {
                     echo $tstamp . ": No valid response. Inverter is probably busy or down, waiting for 30 seconds.\n";
                     sleep(30);
