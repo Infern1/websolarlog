@@ -5,7 +5,7 @@ class PvOutputAddon {
 		$live = $args[2]; // Live object
 		
 		// We are only allowed for 5 till 15 minutes
-		if (Session::getConfig()->pvoutputEnabled && PeriodHelper::isPeriodJob("PvOutputJob", 10)) {
+		if ($inverter->pvoutputEnabled && PeriodHelper::isPeriodJob("PvOutputJob", 10)) {
 			$date = date("Ymd", $live->time);
 			$time = date("h:n", $live->time);
 			
@@ -33,7 +33,7 @@ class PvOutputAddon {
 		);
 	
 		// header info
-		$hAPI = "X-Pvoutput-Apikey: " . Session::getConfig()->pvoutputApikey;
+		$hAPI = "X-Pvoutput-Apikey: " . $inverter->pvoutputApikey;
 		$hSYSTEM = "X-Pvoutput-SystemId: " . $inverter->pvoutputSystemId;
 		
 		//$pvoutput = shell_exec('curl -d "d='.$now.'" -d "t='.$time.'" -d "c1=0" -d "v1='.$KWHDtot.'" -d "v2='.$GPtot.'" -d "v5='.$INVT.'" -d "v6='.$GV.'" -H "X-Pvoutput-Apikey: '.$APIKEY.'" -H "X-Pvoutput-SystemId: '.$SYSID.'" http://pvoutput.org/service/r2/addstatus.jsp &');

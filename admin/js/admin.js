@@ -272,6 +272,7 @@ function load_inverter(inverterId) {
                 var html = template({
                     'data' : inv_data
                 });
+                
                 $('#content').html(html);
                 
                 $('#btnInverterSubmit').bind('click', function(){

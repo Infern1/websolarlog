@@ -19,6 +19,9 @@
     <label for="comAddress">RS485 address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" /><br />
     <label for="comLog">Log comm:</label><input type="checkbox" name="comLog" value="1" {{#if data.inverter.comLog}}checked=checked{{/if}}/><br />
     <label for="syncTime">Synchronize time:</label><input type="checkbox" name="syncTime" value="1" {{#if data.inverter.syncTime}}checked=checked{{/if}}/><br />
+    <label for="pvoutputEnabled">PVOutput Enabled:</label><input type="checkbox" name="pvoutputEnabled" value="1" {{#if data.inverter.pvoutputEnabled}}checked=checked{{/if}}/><br />
+    <label for="pvoutputApikey">PVOutput Api key:</label><input type="text" name="pvoutputApikey" value="{{data.inverter.pvoutputApikey}}" /><br />
+    <label for="pvoutputSystemId">PVOutput System id:</label><input type="text" name="pvoutputSystemId" value="{{data.inverter.pvoutputSystemId}}" /><br />
     <button type="button" id="btnInverterSubmit">Save</button>
   </fieldset>
 </form> 
