@@ -40,9 +40,6 @@ class Config
     
     public $adminpasswd;
     
-    public $pvoutputEnabled;
-    public $pvoutputApikey;
-
 	/**
 	 * Constructor
 	 */
@@ -96,8 +93,6 @@ class Config
 		$this->co2kwh = 440; // 440g/kWh is conform europa average
 		
 		$this->adminpasswd = sha1('admin');
-		
-		$this->pvoutputEnabled = false;
 	}
 
 	function getInverterConfig($inverterId) {

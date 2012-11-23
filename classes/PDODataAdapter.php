@@ -590,9 +590,6 @@ class PDODataAdapter {
 		$bean->template = $config->template;
 		$bean->aurorapath = $config->aurorapath;
 		$bean->smagetpath = $config->smagetpath;
-		
-		$bean->pvoutputEnabled = $config->pvoutputEnabled;
-		$bean->pvoutputApikey = $config->pvoutputApikey;
 
 		$bean->co2kwh = $config->co2kwh;
 		
@@ -642,10 +639,6 @@ class PDODataAdapter {
 			$config->smagetpath = ($bean->smagetpath != "") ? $bean->smagetpath : $config->smagetpath;
 
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
-			
-			$config->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $config->pvoutputEnabled;
-			$config->pvoutputApikey = $bean->pvoutputApikey;
-
 			$config->inverters = $this->readInverters();
 			
 			$config->adminpasswd = ($bean->adminpasswd != "") ? $bean->adminpasswd : $config->adminpasswd;
@@ -675,6 +668,8 @@ class PDODataAdapter {
 		$bean->comAddress = $inverter->comAddress;
 		$bean->comLog = $inverter->comLog;
 		$bean->syncTime = $inverter->syncTime;
+		$bean->pvoutputEnabled = $inverter->pvoutputEnabled;
+		$bean->pvoutputApikey = $inverter->pvoutputApikey;
 		$bean->pvoutputSystemId = $inverter->pvoutputSystemId;
 
 		$bean->expectedJAN = $inverter->expectedJAN;
@@ -712,6 +707,8 @@ class PDODataAdapter {
 		$inverter->comAddress = $bean->comAddress;
 		$inverter->comLog = $bean->comLog;
 		$inverter->syncTime = $bean->syncTime;
+		$inverter->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $config->pvoutputEnabled;
+		$inverter->pvoutputApikey = $bean->pvoutputApikey;
 		$inverter->pvoutputSystemId = $bean->pvoutputSystemId;
 		$inverter->panels = $this->readPanelsByInverter($inverter->id);
 
@@ -754,6 +751,8 @@ class PDODataAdapter {
 			$inverter->comAddress = $bean->comAddress;
 			$inverter->comLog = $bean->comLog;
 			$inverter->syncTime = $bean->syncTime;
+			$inverter->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $config->pvoutputEnabled;
+			$inverter->pvoutputApikey = $bean->pvoutputApikey;
 			$inverter->pvoutputSystemId = $bean->pvoutputSystemId;
 			$inverter->panels = $this->readPanelsByInverter($inverter->id);
 

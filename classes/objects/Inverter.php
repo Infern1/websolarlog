@@ -14,6 +14,8 @@ class Inverter
     public $comAddress;
     public $comLog;
     public $syncTime;
+    public $pvoutputEnabled;
+    public $pvoutputApikey;
     public $pvoutputSystemId;
 
     public $expectedJAN;
@@ -47,6 +49,7 @@ class Inverter
         $this->comAddress = 2;
         $this->comLog = false;
         $this->syncTime = false;
+        $this->pvoutputEnabled = false;
         $this->panels = array();
     }
 
