@@ -5,10 +5,11 @@ Session::initialize();
 $template = Session::getConfig()->template;
 require_once("template/" . $template . "/header.php");
 require_once("template/" . $template . "/index.php");
+$date = Common::getValue('date', 0);
 ?>
 	<script type="text/javascript">
     // Make sure the page is loaded
-	WSL.init_details("#details"); // Initial load fast
+	WSL.init_details("#details",'<?php echo $date;?>'); // Initial load fast
 	</script>
 </body>
 </html>

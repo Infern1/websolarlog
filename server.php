@@ -160,6 +160,7 @@ switch ($method) {
 	case 'getDetailsGraph':
 		$lines = $dataAdapter->getDetailsHistory($invtnum,$date);
 
+		//var_dump();
 		$dayData = new DayDataResult();
 		$dayData->data = $lines['details'];
 		$dayData->labels = $lines['labels'];

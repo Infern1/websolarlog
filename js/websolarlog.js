@@ -1020,8 +1020,8 @@ var WSL = {
 		});
 	},
 
-	init_details : function(divId){
-		
+	init_details : function(divId,queryDate){
+	
 		$("#main-middle").prepend('<div id="datePeriodFilter"></div><div id="detailsSwitches"></div><div id="detailsGraph"></div>');
 
 		$.getJSON('server.php?method=getDetailsSwitches', function(data) {
@@ -1052,9 +1052,15 @@ var WSL = {
 					
 					var invtnum = $('#pickerInv').val();
 					//console.log('invtnum:'+invtnum);
-					
+					//console.log('date'+date);
+					//var date=new Date(date);
+					console.log('queryDate'+queryDate);
+					(queryDate!="undefined") ? date = queryDate: date = date;
+
+					console.log(date);
+
 					// get the details graph....
-					WSL.createDetailsGraph(invtnum, divId);
+					WSL.createDetailsGraph(invtnum, divId,date);
 					
 					$(".mainTabContainer").hover(function() {
 			    		$("#pickerFilterDiv").hide();
@@ -1065,20 +1071,20 @@ var WSL = {
 
 					$('#pickerPeriod').live("change",
 							function(){
-						WSL.createDetailsGraph(invtnum, divId);
+						WSL.createDetailsGraph(invtnum, divId,date);
 							}
 					);
 					
 					
 					$('#datepicker').live("change",
 							function(){
-						WSL.createDetailsGraph(invtnum, divId);
+						WSL.createDetailsGraph(invtnum, divId,date);
 							}
 					);
 					
 					$('#pickerInv').live("change",
 							function(){
-						WSL.createDetailsGraph(invtnum, divId);
+						WSL.createDetailsGraph(invtnum, divId,date);
 							}
 					);
 					
@@ -1106,7 +1112,7 @@ var WSL = {
 					    }
 					    $picker.datepicker('setDate', date);
 						var invtnum = $('#pickerInv').val();
-					    WSL.createDetailsGraph(invtnum, divId);
+					    WSL.createDetailsGraph(invtnum, divId,date);
 					});
 					
 					$('#previous').click(function () {
@@ -1126,7 +1132,7 @@ var WSL = {
 					    }
 					    $picker.datepicker('setDate', date);
 						var invtnum = $('#pickerInv').val();
-					    WSL.createDetailsGraph(invtnum, divId);
+					    WSL.createDetailsGraph(invtnum, divId,date);
 					});
 							
 				},
@@ -1137,9 +1143,10 @@ var WSL = {
 	    
 	},
 
-	createDetailsGraph : function(invtnum, divId) {
+	createDetailsGraph : function(invtnum, divId,date) {
 		//console.log(invtnum);
-		var date = $('#datepicker').val();
+		//var date = $('#datepicker').val();
+		console.log(date);
 		$.ajax({
 			url : "server.php?method=getDetailsGraph&invtnum=" + invtnum+"&date="+date,method : 'GET',dataType : 'json',
 			success : function(result) {
