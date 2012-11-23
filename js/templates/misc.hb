@@ -40,7 +40,7 @@
 		<div class="column span-5 first">{{this.name}}</div>
 		<div class="column span-4">{{this.plantPower}}{{../lang.wp}}</div>
 		<div class="column span-4">{{this.expectedKWH}}{{../lang.kwh}}</div>
-		<div class="column span-4"><a href="http://maps.google.com/maps?q={{../data.slimConfig.lat}},+{{../data.slimConfig.long}}+%28You+can+insert+your+text+here%29&iwloc=A&hl=en&z=15">{{../data.slimConfig.lat}}:{{../data.slimConfig.long}}</a></div>
+		<div class="column span-4"><a href="http://maps.google.com/maps?q={{../data.slimConfig.lat}},+{{../data.slimConfig.long}}+%28...%29&iwloc=A&hl=en&z=15" target="_blank">{{../data.slimConfig.lat}}:{{../data.slimConfig.long}}</a></div>
 	</div>
 	<div class="column span-20">
 		{{#each this.panels}}
