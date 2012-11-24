@@ -21,7 +21,7 @@ class PvOutputAddon {
 	}
 	
 	private function getUnsendHistory() {
-		$date = mktime(0, 0, 0, date('m'), date('d')-14, date('Y'));
+		$date = mktime(0, 0, 0, date('m'), date('d')-13, date('Y'));
 		$beans =  R::find( 'history', 'time > :time and (pvoutput is null or pvoutput = "" or pvoutput = 0)', array( 'time' => $date));
 		return $beans;
 	}
