@@ -4,9 +4,7 @@ class PvOutputAddon {
 	// This job will be called every 10 minutes
 	public function onJob($args) {
 		$beans = $this->getUnsendHistory();
-		HookHandler::getInstance()->fire("onDebug", "beans found: " .  count($beans));
 		foreach ($beans as $live) {
-			HookHandler::getInstance()->fire("onDebug", "inverter id: " .  $live->INV);
 			$inverter= Session::getConfig()->getInverterConfig($live->INV);
 			if ($inverter->pvoutputEnabled) {
 				$date = date("Ymd", $live->time);
@@ -59,8 +57,7 @@ class PvOutputAddon {
 			$result = curl_exec($ch);
 			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
-			HookHandler::getInstance()->fire("onDebug", "send to pvoutput: " . print_r($vars, true));
-			HookHandler::getInstance()->fire("onDebug", "curl result: " .  $result);
+			HookHandler::getInstance()->fire("onDebug", "send to pvoutput: " . print_r($vars, true) . " result: " .  $result);
 			if ($httpCode == "200") {
 				return true;
 			}
