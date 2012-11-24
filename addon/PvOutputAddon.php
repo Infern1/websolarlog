@@ -12,14 +12,6 @@ class PvOutputAddon {
 				$date = date("Ymd", $live->time);
 				$time = date("H:i", $live->time);
 				
-				$previousLive = $this->getFirstHistoryRecord($live);
-				
-				$timeDifference = $live->time - $previousLive['time'];
-				
-				HookHandler::getInstance()->fire("onDebug", "bean o:" . $previousLive['id'] . " c:" . $live->id . " t:" . $timeDifference);
-				HookHandler::getInstance()->fire("onDebug", "kwht o:" . $previousLive['KWHT'] . " c:" . $live->KWHT . " t:" . $timeDifference);
-				$kwht = Formulas::calcAveragePower($live->KWHT, $previousLive['KWHT'], $timeDifference, 1);
-				
 				$result = $this->sendStatus($inverter, $date, $time, $live->KWHT, $live->GP, $live->GV);
 				if ($result) {
 					$live->pvoutput = true;
@@ -36,14 +28,6 @@ class PvOutputAddon {
 		return $beans;
 	}
 	
-	private function getFirstHistoryRecord($live) {
-		$arHistory = PDODataAdapter::getInstance()->readHistory($live->INV, $live->time);
-		return reset($arHistory); // Return the first one from the array
-	}
-	
-	/*
-	 * Ik heb hier bewust de oude termen gebruikt vanuit 123 aurora
-	 */
 	private function sendStatus($inverter, $date, $time, $KWHDtot, $GPtot, $GV) {
 		try {
 			$vars = array(
