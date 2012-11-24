@@ -11,7 +11,13 @@ class PvOutputAddon {
 			if ($inverter->pvoutputEnabled) {
 				$date = date("Ymd", $live->time);
 				$time = date("H:i", $live->time);
-				$result = $this->sendStatus($inverter, $date, $time, $live->GP, $live->KWHT, $live->GV);
+				
+				$previousLive = $this->getPreviousHistoryRecord($live);
+				
+				$timeDifference = $live->time - $previousLive['time'];
+				$kwht = Formulas::calcAveragePower($previousLive['KWHT'], $live->KWHT, $timeDifference);
+				
+				$result = $this->sendStatus($inverter, $date, $time, $kwht, $live->GP, $live->GV);
 				if ($result) {
 					$live->pvoutput = true;
 					R::store($live);
@@ -25,6 +31,11 @@ class PvOutputAddon {
 		$date = mktime(0, 0, 0, date('m'), date('d')-7, date('Y'));
 		$beans =  R::find( 'history', 'time > :time and (pvoutput is null or pvoutput = "")', array( 'time' => $date));
 		return $beans;
+	}
+	
+	private function getFirstHistoryRecord($live) {
+		$arHistory = PDODataAdapter::getInstance()->readHistory($live->INV, $live->time);
+		return reset($arr); // Return the first one from the array
 	}
 	
 	/*

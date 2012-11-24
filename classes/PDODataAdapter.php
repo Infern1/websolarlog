@@ -233,9 +233,8 @@ class PDODataAdapter {
 		(!$date)? $date = date('d-m-Y') : $date = $date;
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 		
-		$bean =  R::findAndExport(
-				'history',
-				' INV = :INV AND time > :beginDate AND  time < :endDate ',
+		$bean =  R::findAndExport( 'history',
+				' INV = :INV AND time > :beginDate AND  time < :endDate order by time',
 				array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 		return $bean;
