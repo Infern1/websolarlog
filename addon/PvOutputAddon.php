@@ -35,7 +35,7 @@ class PvOutputAddon {
 	
 	private function getFirstHistoryRecord($live) {
 		$arHistory = PDODataAdapter::getInstance()->readHistory($live->INV, $live->time);
-		return reset($arr); // Return the first one from the array
+		return reset($arHistory); // Return the first one from the array
 	}
 	
 	/*
