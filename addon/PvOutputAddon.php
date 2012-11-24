@@ -16,11 +16,11 @@ class PvOutputAddon {
 				
 				$timeDifference = $live->time - $previousLive['time'];
 				
-				HookHandler::getInstance()->fire("onDebug", "bean " . $previousLive['id'] . " " . $live->id . " " . $timeDifference);
-				HookHandler::getInstance()->fire("onDebug", "kwht " . $previousLive['KWHT'] . " " . $live->KWHT . " " . $timeDifference);
+				HookHandler::getInstance()->fire("onDebug", "bean o:" . $previousLive['id'] . " c:" . $live->id . " t:" . $timeDifference);
+				HookHandler::getInstance()->fire("onDebug", "kwht o:" . $previousLive['KWHT'] . " c:" . $live->KWHT . " t:" . $timeDifference);
 				$kwht = Formulas::calcAveragePower($live->KWHT, $previousLive['KWHT'], $timeDifference, 1);
 				
-				$result = $this->sendStatus($inverter, $date, $time, $kwht, $live->GP, $live->GV);
+				$result = $this->sendStatus($inverter, $date, $time, $live->KWHT, $live->GP, $live->GV);
 				if ($result) {
 					$live->pvoutput = true;
 					R::store($live);
@@ -55,7 +55,7 @@ class PvOutputAddon {
 	                //'v4' => '2000', // Energy Consumption (Watts)
 	                //'v5' => '23.4', // Temperature (Celsius)
 	                'v6' => $GV, // Voltage (volts)
-					'c1' => '0', // Cumulative
+					'c1' => '1', // Cumulative
 					
 			);
 		
