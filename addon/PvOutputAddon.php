@@ -15,7 +15,10 @@ class PvOutputAddon {
 				$previousLive = $this->getFirstHistoryRecord($live);
 				
 				$timeDifference = $live->time - $previousLive['time'];
-				$kwht = Formulas::calcAveragePower($previousLive['KWHT'], $live->KWHT, $timeDifference);
+				
+				HookHandler::getInstance()->fire("onDebug", "bean " . $previousLive['id'] . " " . $live->id . " " . $timeDifference);
+				HookHandler::getInstance()->fire("onDebug", "kwht " . $previousLive['KWHT'] . " " . $live->KWHT . " " . $timeDifference);
+				$kwht = Formulas::calcAveragePower($live->KWHT, $previousLive['KWHT'], $timeDifference, 1);
 				
 				$result = $this->sendStatus($inverter, $date, $time, $kwht, $live->GP, $live->GV);
 				if ($result) {
