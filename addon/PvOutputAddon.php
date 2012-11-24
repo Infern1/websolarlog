@@ -33,7 +33,7 @@ class PvOutputAddon {
 			$vars = array(
 					'd' => $date, // Date
 	                't' =>  $time, // Time
-	                'v1' => $KWHDtot, // Energy Generation (Watt hours)
+	                'v1' => ($KWHDtot * 1000), // Energy Generation (Watt hours)
 	                'v2' => $GPtot, // Power Generation (Watts)
 	                //'v3' => '10000', // Power Consumption (Watt hours)
 	                //'v4' => '2000', // Energy Consumption (Watts)
