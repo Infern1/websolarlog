@@ -79,28 +79,30 @@ class PDODataAdapter {
 		$bean =  R::findOne('live',' INV = :INV ', array(':INV'=>$invtnum));
 
 		$live = new Live();
-		$live->INV = $bean->INV;
-		$live->I1V = $bean->I1V;
-		$live->I1A = $bean->I1A;
-		$live->I1P = $bean->I1P;
-		$live->I1Ratio = $bean->I1Ratio;
-
-		$live->I2V = $bean->I2V;
-		$live->I2A = $bean->I2A;
-		$live->I2P = $bean->I2P;
-		$live->I2Ratio = $bean->I2Ratio;
-
-		$live->GA = $bean->GA;
-		$live->GP = $bean->GP;
-		$live->GV = $bean->GV;
-
-		$live->FRQ = $bean->FRQ;
-		$live->EFF = $bean->EFF;
-		$live->INVT = $bean->INVT;
-
-		$live->time = $bean->time;
-		$live->BOOT = $bean->BOOT;
-		$live->KWHT = $bean->KWHT;
+		if ($bean) {
+			$live->INV = $bean->INV;
+			$live->I1V = $bean->I1V;
+			$live->I1A = $bean->I1A;
+			$live->I1P = $bean->I1P;
+			$live->I1Ratio = $bean->I1Ratio;
+	
+			$live->I2V = $bean->I2V;
+			$live->I2A = $bean->I2A;
+			$live->I2P = $bean->I2P;
+			$live->I2Ratio = $bean->I2Ratio;
+	
+			$live->GA = $bean->GA;
+			$live->GP = $bean->GP;
+			$live->GV = $bean->GV;
+	
+			$live->FRQ = $bean->FRQ;
+			$live->EFF = $bean->EFF;
+			$live->INVT = $bean->INVT;
+	
+			$live->time = $bean->time;
+			$live->BOOT = $bean->BOOT;
+			$live->KWHT = $bean->KWHT;
+		}
 
 		return $live;
 	}
