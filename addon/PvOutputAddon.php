@@ -12,7 +12,7 @@ class PvOutputAddon {
 				$date = date("Ymd", $live->time);
 				$time = date("H:i", $live->time);
 				
-				$previousLive = $this->getPreviousHistoryRecord($live);
+				$previousLive = $this->getFirstHistoryRecord($live);
 				
 				$timeDifference = $live->time - $previousLive['time'];
 				$kwht = Formulas::calcAveragePower($previousLive['KWHT'], $live->KWHT, $timeDifference);
