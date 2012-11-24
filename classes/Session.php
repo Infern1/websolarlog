@@ -103,7 +103,7 @@ class Session
     	// PvOutputAddon
     	$hookHandler->add("on10minJob", "PvOutputAddon.onJob");
     	
-    	$hookHandler->fire("onDebug", "Hooks loaded");
+    	//$hookHandler->fire("onDebug", "Hooks loaded");
     }
 }
 ?>

@@ -178,7 +178,7 @@ class Worker {
         R::commit(); // Commit the transaction
         
         // This will also run if the inverter is down
-        if (PeriodHelper::isPeriodJob("10minJob", 10)) {
+        if (PeriodHelper::isPeriodJob("10minJob", 5)) {
         	HookHandler::getInstance()->fire("on10minJob");
         }
 

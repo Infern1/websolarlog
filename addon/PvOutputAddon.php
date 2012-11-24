@@ -10,7 +10,7 @@ class PvOutputAddon {
 			$inverter= Session::getConfig()->getInverterConfig($live->INV);
 			if ($inverter->pvoutputEnabled) {
 				$date = date("Ymd", $live->time);
-				$time = date("h:n", $live->time);
+				$time = date("H:i", $live->time);
 				$result = $this->sendStatus($inverter, $date, $time, $live->GP, $live->KWHT, $live->GV);
 				if ($result) {
 					$live->pvoutput = true;
