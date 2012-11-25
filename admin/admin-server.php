@@ -16,6 +16,7 @@ switch ($settingstype) {
         $data['co2kwh'] = $config->co2kwh;
         $data['aurorapath'] = $config->aurorapath;
         $data['smagetpath'] = $config->smagetpath;
+        $data['debugmode'] = $config->debugmode;
         break;
     case 'communication';
         $data['comPort'] = $config->comPort;
@@ -189,6 +190,7 @@ switch ($settingstype) {
         $config->co2kwh = Common::getValue("co2kwh");
         $config->aurorapath =Common::getValue("aurorapath");
         $config->smagetpath =Common::getValue("smagetpath");
+        $config->debugmode =Common::getValue("debugmode");
         $adapter->writeConfig($config);
         break;
     case 'save-communication':

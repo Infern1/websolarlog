@@ -56,16 +56,20 @@ class Worker {
 
             if ($live == null) {
                 // Offline ?
-                $tstamp = date("Ymd H:i:s");
                 if (Util::isSunDown($this->config)) {
+                	// Fire an shutDown hook once a day
+                	if (PeriodHelper::isPeriodJob("ShutDownJobINV" . $inverter->id, 20)) {
+                		HookHandler::getInstance()->fire("onInverterShutdown", $inveter);                		
+                	}
+                	
                     /*
                      * instead of continues polling the inverter during the night we give at a 15 minute break
                     * this will greatly reduce the cpu usage and so less power usage
                     */
-                    //echo $tstamp . ": No response and the sun is probably down. Inverter is probably a sleep, waiting for 15 minutes.\n";
+                	HookHandler::getInstance()->fire("onDebug", "No response and the sun is probably down. Inverter is probably a sleep, waiting for 15 minutes.");
                     sleep(60);
                 } else {
-                    echo $tstamp . ": No valid response. Inverter is probably busy or down, waiting for 30 seconds.\n";
+                	HookHandler::getInstance()->fire("onDebug", "No valid response. Inverter is probably busy or down, waiting for 30 seconds.");
                     sleep(30);
                 }
             } else {

@@ -16,7 +16,7 @@ class LoggerAddon {
 	}
 
 	public function onDebug($args) {
-		if (Session::getConfig()->debugging) {
+		if (Session::getConfig()->debugmode) {
 			$message = $args[0] . " - " . $args[1];
 			$this->write2file("debug", $message);
 		}

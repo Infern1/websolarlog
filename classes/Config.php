@@ -33,7 +33,7 @@ class Config
     public $inverters; // Contains an array of inverters
 
     public $co2kwh;
-    public $debugging;
+    public $debugmode;
 
     public $aurorapath; // The path to aurora
     public $smagetpath; // The path to sma-get
@@ -46,7 +46,7 @@ class Config
 	function __construct()
 	{
 		// Disable for production switch to true to get debug logging
-		$this->debugging = true;
+		$this->debugmode = true;
 		
 		
 		// ### DATABASE CONFIG
