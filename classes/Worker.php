@@ -259,10 +259,10 @@ class Worker {
             if ($this->isAlarmDetected($OEvent)) {
 				try {
 	            	if (strpos($OEvent->event, 'Warning') !== false ) {
-		            	HookHandler::getInstance()->fire("onWarning", $OEvent->event);
+		            	HookHandler::getInstance()->fire("onInverterWarning", $OEvent->event);
 	            	}
 	            	if (strpos($OEvent->event, 'Error') !== false ) {
-		            	HookHandler::getInstance()->fire("onError", $OEvent->event);
+		            	HookHandler::getInstance()->fire("onInveterError", $OEvent->event);
 	            	}
 	                $OEvent->alarmSend = true;
 				} catch (Exception $e) {

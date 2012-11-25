@@ -90,6 +90,7 @@ class Session
     	$hookHandler->add("onInverterStartup", "MailAddon.onInverterStartup");
     	$hookHandler->add("onInverterShutdown", "MailAddon.onInverterShutdown");
     	$hookHandler->add("onInverterError", "MailAddon.onInverterError");
+    	$hookHandler->add("onInverterWarning", "MailAddon.onInverterWarning");
     	
     	// LoggerAddon
     	$hookHandler->add("onError", "LoggerAddon.onError");

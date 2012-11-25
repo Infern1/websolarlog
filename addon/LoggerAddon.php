@@ -23,16 +23,23 @@ class LoggerAddon {
 	}
 
 	public function onInverterStartup($args) {
-
+		$message = $args[0] . " - " . $args[1];
+		$this->write2file("debug", $message);
 	}
 
 	public function onInverterShutdown($args) {
-
+		$message = $args[0] . " - " . $args[1];
+		$this->write2file("debug", $message);
 	}
 	
 	public function onInverterError($args) {
 		$message = $args[0] . " - " . $args[1];
 		$this->write2file("error", $message);
+	}
+
+	public function onInverterWarning($args) {
+		$message = $args[0] . " - " . $args[1];
+		$this->write2file("warning", $message);
 	}
 	
 	private function write2file($level, $message) {
