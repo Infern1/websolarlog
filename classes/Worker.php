@@ -57,8 +57,8 @@ class Worker {
             if ($live == null) {
                 // Offline ?
                 if (Util::isSunDown($this->config)) {
-                	// Fire an shutDown hook once a day
-                	if (PeriodHelper::isPeriodJob("ShutDownJobINV" . $inverter->id, 20)) {
+                	// Fire an shutDown hook once a day (20 hours)
+                	if (PeriodHelper::isPeriodJob("ShutDownJobINV" . $inverter->id, (20 * 60))) {
                 		HookHandler::getInstance()->fire("onInverterShutdown", $inveter);                		
                 	}
                 	
@@ -77,17 +77,6 @@ class Worker {
             }
 
             if ($isAlive) {
-                // TODO :: THIS IS FOR TESTING ONLY, WE DONT WANT TOO LOSE ANY DATA!!!
-                try {
-                    $dumpFile = "dumpdata.csv";
-                    $fh = fopen($dumpFile, 'a+');
-                    fwrite($fh, $datareturn . "\n");
-                    fclose($fh);
-                } catch (Exception $e) {
-                    // ignore errors
-                }
-                // /TODO
-
                 // Write the current live value
                 $this->adapter->writeLiveInfo($inverter->id, $live);
 
