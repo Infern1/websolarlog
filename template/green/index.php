@@ -73,7 +73,7 @@
 		<div id="footer">
 			<div id="footer-middle">
 				<div style="display: inline-block;">
-					<a href="https://sourceforge.net/projects/websolarlog/" target="_blank">WebSolarLog [at] sourceforge.net</a>
+					<a href="https://www.websolarlog.com" target="_blank">Check us out [at] WebSolarLog.com</a>
 				</div>
 				<div style="display: inline-block; text-align: right; width: 275px;">
 					<div style="display: inline-block;">JS loadtime:&nbsp;</div>

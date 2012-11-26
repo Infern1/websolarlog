@@ -440,10 +440,11 @@ switch ($method) {
 		$lang['year'] 			= _("Year");
 		$lang['overall'] 		= _("overall");
 		$lang['inv'] 			= _("Inv.");
-		$lang['gridShort'] 		= _("gridShort");
+		$lang['grid'] 		= _("grid");
 		$lang['time'] 			= _("Time");
 		$lang['inverter'] 		= _("Inverter");
 		$lang['power'] 			= _("Power");
+		$lang['w'] 			= _("W");
 		$lang['ratio'] 			= _("ratio");
 		$lang['overallTotal']	= _("overall**");
 		$lang['KWHKWP']			= _("kWh/kWp");

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WSL-Dutch\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-23 16:13+0100\n"
-"PO-Revision-Date: 2012-11-23 16:18+0100\n"
+"POT-Creation-Date: 2012-11-26 15:17+0100\n"
+"PO-Revision-Date: 2012-11-26 15:17+0100\n"
 "Last-Translator: a <a@a.nl>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -17,11 +17,11 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: server.php:43
-#: server.php:250
-#: server.php:292
-#: server.php:329
-#: server.php:379
-#: server.php:434
+#: server.php:253
+#: server.php:295
+#: server.php:332
+#: server.php:382
+#: server.php:437
 msgid "Today"
 msgstr "Vandaag"
 
@@ -31,72 +31,72 @@ msgstr "Gisteren"
 
 #: server.php:45
 #: server.php:51
-#: server.php:185
-#: server.php:302
-#: server.php:303
-#: server.php:436
+#: server.php:188
+#: server.php:305
+#: server.php:306
+#: server.php:439
 msgid "Month"
 msgstr "Maand"
 
 #: server.php:46
 #: server.php:52
-#: server.php:186
-#: server.php:260
-#: server.php:437
+#: server.php:189
+#: server.php:263
+#: server.php:440
 msgid "Year"
 msgstr "Jaar"
 
 #: server.php:49
-#: server.php:183
-#: server.php:188
+#: server.php:186
+#: server.php:191
 msgid "Day"
 msgstr "Dag"
 
 #: server.php:50
-#: server.php:184
-#: server.php:435
+#: server.php:187
+#: server.php:438
 msgid "Week"
 msgstr "Week"
 
 #: server.php:56
-#: server.php:196
-#: server.php:252
-#: server.php:294
-#: server.php:331
-#: server.php:381
+#: server.php:199
+#: server.php:255
+#: server.php:297
+#: server.php:334
+#: server.php:384
 msgid "date"
 msgstr "datum"
 
 #: server.php:57
-#: server.php:198
+#: server.php:201
 msgid "periode"
 msgstr "periode"
 
 #: server.php:58
-#: server.php:199
+#: server.php:202
 msgid "previous"
 msgstr "vorige"
 
 #: server.php:59
-#: server.php:200
+#: server.php:203
 msgid "next"
 msgstr "volgende"
 
 #: server.php:112
-#: server.php:441
+#: server.php:444
 msgid "Time"
 msgstr "Tijd"
 
 #: server.php:113
-#: server.php:255
-#: server.php:297
-#: server.php:333
-#: server.php:383
+#: server.php:258
+#: server.php:300
+#: server.php:336
+#: server.php:386
 msgid "Inv"
 msgstr "Inv."
 
 #: server.php:114
-#: server.php:442
+#: server.php:445
 msgid "Inverter"
 msgstr "Omvormer"
 
@@ -125,285 +125,294 @@ msgid "Information"
 msgstr "Informatie"
 
 #: server.php:121
-msgid "plant power"
-msgstr "Systeem vermogen"
-
-#: server.php:122
-#: server.php:346
-msgid "expected"
-msgstr "verwacht"
-
-#: server.php:123
-msgid "amount"
-msgstr "aantal"
-
-#: server.php:124
-msgid "wp"
-msgstr "wp"
-
-#: server.php:125
-msgid "installed power"
-msgstr "geinstalleerd vermogen"
-
-#: server.php:126
-msgid "orientation"
-msgstr "orientatie"
-
-#: server.php:127
-msgid "pitch"
-msgstr "hoek"
-
-#: server.php:128
+#: server.php:130
 msgid "power"
 msgstr "Vermogen"
 
+#: server.php:122
+msgid "system"
+msgstr "systeem"
+
+#: server.php:123
+#: server.php:349
+msgid "expected"
+msgstr "verwacht"
+
+#: server.php:124
+msgid "amount"
+msgstr "aantal"
+
+#: server.php:125
+msgid "Wp"
+msgstr "Wp"
+
+#: server.php:126
+msgid "kWh"
+msgstr "kWh"
+
+#: server.php:127
+msgid "installed power"
+msgstr "geinstalleerd vermogen"
+
+#: server.php:128
+msgid "orientation"
+msgstr "orientatie"
+
 #: server.php:129
+msgid "pitch"
+msgstr "hoek"
+
+#: server.php:131
 msgid "mpp"
 msgstr "mpp"
 
-#: server.php:130
+#: server.php:132
 msgid "description"
 msgstr "beschrijving"
 
-#: server.php:131
+#: server.php:133
 msgid "location"
 msgstr "locatie"
 
-#: server.php:150
+#: server.php:152
 msgid "cum. Power (W)"
 msgstr "cum. Vermogen(W)"
 
-#: server.php:151
+#: server.php:153
 msgid "avg. Power (W)"
 msgstr "gem. Vermogen (W)"
 
-#: server.php:152
+#: server.php:154
 msgid "harvested (W)"
 msgstr "Opgewekt (W)"
 
-#: server.php:153
+#: server.php:155
 msgid "cumulative (W)"
 msgstr "cumulatief (W)"
 
-#: server.php:154
+#: server.php:156
 msgid "total Energy"
 msgstr "totaal opgewekt vermogen"
 
-#: server.php:168
-#: server.php:211
+#: server.php:171
+#: server.php:214
 msgid "Show or hide graph groups:"
 msgstr "Tonen of verbergen grafiek groepen:"
 
-#: server.php:169
-#: server.php:212
-#: server.php:443
+#: server.php:172
+#: server.php:215
+#: server.php:446
 msgid "Power"
 msgstr "Vermogen"
 
-#: server.php:170
-#: server.php:213
+#: server.php:173
+#: server.php:216
 msgid "Voltage"
 msgstr "Spanning"
 
-#: server.php:171
-#: server.php:214
+#: server.php:174
+#: server.php:217
 msgid "Amps"
 msgstr "Stroom"
 
-#: server.php:172
-#: server.php:215
+#: server.php:175
+#: server.php:218
 msgid "Frequency"
 msgstr "Frequentie"
 
-#: server.php:173
-#: server.php:216
+#: server.php:176
+#: server.php:219
 msgid "Ratio"
 msgstr "Ratio"
 
-#: server.php:174
-#: server.php:217
+#: server.php:177
+#: server.php:220
 msgid "Temperature"
 msgstr "Temperatuur"
 
-#: server.php:175
-#: server.php:218
-#: server.php:419
+#: server.php:178
+#: server.php:221
+#: server.php:422
 msgid "Efficiency"
 msgstr "Efficiëntie"
 
-#: server.php:197
+#: server.php:200
 msgid "inv"
 msgstr "Inv."
 
-#: server.php:251
-#: server.php:293
-#: server.php:330
-#: server.php:380
+#: server.php:254
+#: server.php:296
+#: server.php:333
+#: server.php:383
 msgid "Max Grid Power"
 msgstr "Max Netwerk Vermogen"
 
-#: server.php:253
-#: server.php:295
-msgid "Select period"
-msgstr "Selecteer periode"
-
-#: server.php:254
-#: server.php:296
-#: server.php:332
-#: server.php:382
-msgid "TotalKWh"
-msgstr "Totaal kWh"
-
 #: server.php:256
 #: server.php:298
-#: server.php:334
-#: server.php:384
-msgid "kwh"
-msgstr "kWh"
+msgid "Select period"
+msgstr "Selecteer periode"
 
 #: server.php:257
 #: server.php:299
 #: server.php:335
 #: server.php:385
-msgid "History values"
-msgstr "Geschiedenis"
-
-#: server.php:258
-#: server.php:300
-#: server.php:336
-#: server.php:386
-msgid "loading"
-msgstr "Laden"
+msgid "TotalKWh"
+msgstr "Totaal kWh"
 
 #: server.php:259
 #: server.php:301
 #: server.php:337
 #: server.php:387
+msgid "kwh"
+msgstr "kWh"
+
+#: server.php:260
+#: server.php:302
+#: server.php:338
+#: server.php:388
+msgid "History values"
+msgstr "Geschiedenis"
+
+#: server.php:261
+#: server.php:303
+#: server.php:339
+#: server.php:389
+msgid "loading"
+msgstr "Laden"
+
+#: server.php:262
+#: server.php:304
+#: server.php:340
+#: server.php:390
 msgid "watt"
 msgstr "Watt"
 
-#: server.php:261
+#: server.php:264
 msgid "The values below are grouped by Month of the selected Year"
 msgstr "De onderstaande waardes zijn gegroepeerd op Maand van het geselecteerde Jaar."
 
-#: server.php:304
+#: server.php:307
 msgid "The values below are grouped by Day of the selected Month"
 msgstr "De onderstaande waardes zijn gegroepeerd op Dag van de geselecteerde Maand."
 
-#: server.php:343
+#: server.php:346
 msgid "inverter"
 msgstr "Omvormer"
 
-#: server.php:344
+#: server.php:347
 msgid "compare"
 msgstr "Vergelijk"
 
-#: server.php:345
+#: server.php:348
 msgid "to"
 msgstr "tot"
 
-#: server.php:417
+#: server.php:420
 msgid "DC Power"
 msgstr "DC vermogen"
 
-#: server.php:418
+#: server.php:421
 msgid "AC Power"
 msgstr "AC Vermogen"
 
-#: server.php:427
+#: server.php:430
 msgid "Some Figures*"
 msgstr "Wat getallen*"
 
-#: server.php:428
+#: server.php:431
 msgid "By"
 msgstr "Per"
 
-#: server.php:429
+#: server.php:432
 msgid "status"
 msgstr "status"
 
-#: server.php:430
+#: server.php:433
 msgid "IT"
 msgstr "IT"
 
-#: server.php:431
+#: server.php:434
 msgid "Total"
 msgstr "Totaal"
 
-#: server.php:433
+#: server.php:436
 msgid "Avg. Day"
 msgstr "Gem. dag"
 
-#: server.php:438
+#: server.php:441
 msgid "overall"
 msgstr "Totaal"
 
-#: server.php:439
+#: server.php:442
 msgid "Inv."
 msgstr "Omv."
 
-#: server.php:440
-msgid "gridShort"
-msgstr "net"
+#: server.php:443
+msgid "grid"
+msgstr "netwerk"
 
-#: server.php:444
+#: server.php:447
+msgid "W"
+msgstr "W"
+
+#: server.php:448
 msgid "ratio"
 msgstr "Ratio"
 
-#: server.php:445
+#: server.php:449
 msgid "overall**"
 msgstr "Totaal**"
 
-#: server.php:446
+#: server.php:450
 msgid "kWh/kWp"
 msgstr "kWh/kWp"
 
-#: server.php:448
+#: server.php:452
 msgid "* All figures are in kWh"
 msgstr "* Alle cijfer zijn in kWh"
 
-#: server.php:449
+#: server.php:453
 msgid "** Incl. initial kWh"
 msgstr "** Inclusief initele kWh"
 
-#: admin/admin-server.php:162
-#: admin/admin-server.php:169
-#: admin/admin-server.php:178
+#: admin/admin-server.php:161
+#: admin/admin-server.php:168
+#: admin/admin-server.php:177
 msgid "Validation"
 msgstr "Valideren"
 
-#: admin/admin-server.php:163
+#: admin/admin-server.php:162
 msgid "Old password is invalid:"
 msgstr "Het oude wachtwoord is onjuist:"
 
-#: admin/admin-server.php:170
+#: admin/admin-server.php:169
 msgid "New password should be at least 6 characters"
 msgstr "Het nieuwe wachtwoord moet uit minimaal 6 karakters bestaan"
 
-#: admin/admin-server.php:179
+#: admin/admin-server.php:178
 msgid "New passwords are not the same"
 msgstr "De nieuw ingevoerde wachtwoord zijn niet hetzelfde"
 
-#: admin/admin-server.php:186
+#: admin/admin-server.php:185
 msgid "Success"
 msgstr "Opgeslagen"
 
-#: admin/admin-server.php:187
+#: admin/admin-server.php:186
 msgid "Password successfully changed"
 msgstr "Wachtwoord opgeslagen"
 
-#: classes/PDODataAdapter.php:1200
-#: classes/PDODataAdapter.php:1201
-#: classes/PDODataAdapter.php:1202
-#: classes/PDODataAdapter.php:1203
+#: classes/PDODataAdapter.php:1205
+#: classes/PDODataAdapter.php:1206
+#: classes/PDODataAdapter.php:1207
+#: classes/PDODataAdapter.php:1208
 msgid "Grid"
 msgstr "Net"
 
-#: classes/PDODataAdapter.php:1756
+#: classes/PDODataAdapter.php:1761
 msgid "sleeping"
 msgstr "slaapt"
 
-#: classes/PDODataAdapter.php:1780
+#: classes/PDODataAdapter.php:1785
 msgid "awake"
 msgstr "actief"
 
@@ -430,6 +439,12 @@ msgstr "Overige"
 #: template/green/index.php:84
 msgid "version"
 msgstr "versie"
+
+#~ msgid "plant power"
+#~ msgstr "Systeem vermogen"
+
+#~ msgid "wp"
+#~ msgstr "wp"
 
 #~ msgid "Averages"
 #~ msgstr "Gemiddeld"

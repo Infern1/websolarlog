@@ -10,9 +10,9 @@
 	<div class="column span-2 first">{{lang.inv}}</div>
 	<div class="column span-3 first">{{lang.status}}</div>
 	<div class="column span-3 first">{{lang.time}}</div>
-	<div class="column span-4 first">{{lang.gridShort}}{{lang.power}}</div>
-	<div class="column span-6 first">I1 {{lang.power}} ({{lang.ratio}})</div>
-	<div class="column span-6 first">I2 {{lang.power}} ({{lang.ratio}})</div>
+	<div class="column span-4 first">{{lang.grid}} {{lang.w}}</div>
+	<div class="column span-6 first">I1 {{lang.w}} ({{lang.ratio}})</div>
+	<div class="column span-6 first">I2 {{lang.w}} ({{lang.ratio}})</div>
 	<div class="column span-4 first">{{lang.IT}} {{lang.power}}</div>
 	<div id="indexLiveInverters"></div>
 	<br><br>
