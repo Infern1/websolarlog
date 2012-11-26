@@ -1,7 +1,10 @@
 // calculate the JS parse time //
+/*
+Only for developer purposes
 $.ajaxSetup({
 	cache : false
 });
+*/
 
 function ajaxReady(){
 	$('#reqLoading').hide();
