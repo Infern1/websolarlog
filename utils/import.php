@@ -102,6 +102,7 @@ function parseCsvToEnergy($inverterId, $csv) {
     $energy->time = Util::getUTCdate($fields[0] . "-05:00:00");
     $energy->KWH = $fields[1];
     $energy->KWHT = 0;
+    $energy->co2 = Formulas::CO2kWh($energy->KWH, $config->co2kwh);
 
     return $energy;
 }
