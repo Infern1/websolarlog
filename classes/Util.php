@@ -7,27 +7,45 @@ class Util {
         return $now<($sun_info['sunrise']-$correction) || $now>($sun_info['sunset']+$correction);
     }
 
+    /**
+     * @deprecated
+     */
     public static function getDataDir($invtnum) {
     	$path = dirname(dirname(__FILE__));
         return $path."/data/invt$invtnum";
     }
 
+    /**
+     * @deprecated
+     */
     public static function getLiveTXT($invtnum)  {
     	return self::getDataDir($invtnum) . '/infos/live.txt';
     }
 
+    /**
+     * @deprecated
+     */
     public static function getDailyDataCSV($date,$invtnum)  {
     	return self::getDataDir($invtnum) . '/csv/'.$date.'.csv';
     }
 
+    /**
+     * @deprecated
+     */
     public static function getLastDaysCSV($year,$invtnum)  {
     	return self::getDataDir($invtnum) . '/production/energy'.$year.'.csv';
     }
 
+    /**
+     * @deprecated
+     */
     public static function getErrorFile($invtnum) {
         return self::getDataDir($invtnum) . '/errors/de.err';
     }
 
+    /**
+     * @deprecated
+     */
     public static function getDataLockFile() {
         return dirname(dirname(__FILE__))."/data/lock";
     }

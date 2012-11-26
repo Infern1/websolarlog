@@ -102,7 +102,11 @@ class Session
     	$hookHandler->add("onInverterError", "LoggerAddon.onInverterError");
     	
     	// PvOutputAddon
-    	$hookHandler->add("on10minJob", "PvOutputAddon.onJob");
+    	$hookHandler->add("on1MinJob", "PvOutputAddon.onJob");
+    	
+    	// BasicChecksAddon
+    	$hookHandler->add("on10MinJob", "BasicChecksAddon.on10MinJob");
+    	
     	
     	//$hookHandler->fire("onDebug", "Hooks loaded");
     }

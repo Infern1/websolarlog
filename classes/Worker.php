@@ -25,21 +25,7 @@ class Worker {
         $isAlive = false;
         // Create a lock
         $this->createLock();
-
-        // Check if we are in automode and if the sun is down
-        // AUTOMODE do we still need it?
-        /*
-        if ($AUTOMODE==true && Util::isSunDown($config)) {
-        // Remove live files for all inverters
-        for ($invtnum=1;$invtnum<=$NUMINV;$invtnum++) {
-        if (file_exists(Util::getLiveTXT($invtnum))) {
-        unlink(Util::getLiveTXT($invtnum));
-        }
-        }
-        //sleep (60); // he's alive ?
-        die;
-        }
-        */
+        
         R::begin(); // Start a transaction to speed things up
         foreach ($this->config->inverters as $inverter) {
             // Try to get the selected api class for this inverter
@@ -55,20 +41,18 @@ class Worker {
             $live = AuroraConverter::toLive($datareturn);
 
             if ($live == null) {
-                // Offline ?
+            	// When $live is empty and the sun is down then we probably are down
                 if (Util::isSunDown($this->config)) {
                 	// Fire an shutDown hook once a day (20 hours)
                 	if (PeriodHelper::isPeriodJob("ShutDownJobINV" . $inverter->id, (20 * 60))) {
                 		HookHandler::getInstance()->fire("onInverterShutdown", $inveter);                		
                 	}
                 	
-                    /*
-                     * instead of continues polling the inverter during the night we give at a 15 minute break
-                    * this will greatly reduce the cpu usage and so less power usage
-                    */
-                	HookHandler::getInstance()->fire("onDebug", "No response and the sun is probably down. Inverter is probably a sleep, waiting for 15 minutes.");
-                    sleep(60);
+                    // instead of continues polling the inverter during the night we give at a 2 minute break
+                	HookHandler::getInstance()->fire("onDebug", "No response and the sun is probably down. Inverter is probably a sleep, waiting for 2 minutes.");
+                    sleep(120);
                 } else {
+                	// We shouldn't be down yet, so just wait 30 seconds
                 	HookHandler::getInstance()->fire("onDebug", "No valid response. Inverter is probably busy or down, waiting for 30 seconds.");
                     sleep(30);
                 }
@@ -102,41 +86,37 @@ class Worker {
 
                 // Fist line means inverter awake
                 if(count($arHistory) == 1) {
-                    // log 'Interver awake' to DB
+                    // The interver is awake
                     $OEvent = new Event($inverter->id, time(), 'Notice', 'Inverter awake');
                     $this->adapter->addEvent($inverter->id, $OEvent);
                     HookHandler::getInstance()->fire("onInverterStartup", $OEvent->event);
                 }
 
-
-                // Energy check if every hour, old situation this was every 5 minutes
-                if (PeriodHelper::isPeriodJob("EnergyJob", 5)) {
+                // Energy check every 30 minutes
+                if (PeriodHelper::isPeriodJob("EnergyJob", 30)) {
 
                     // The first hour we dont get much kwh, so wait for at least ten history lines
-                    if (count($arHistory) > 10) {
-                        $first = reset($arHistory);
-                        $last = end($arHistory);
+                    $first = reset($arHistory);
+                    $last = end($arHistory);
 
-                        $productionStart = $first['KWHT'];
-                        $productionEnd = $last['KWHT'];
+                    $productionStart = $first['KWHT'];
+                    $productionEnd = $last['KWHT'];
 
-                        // Check if we passed 100.000kWh
-                        if ($productionEnd < $productionStart) {
-                            $productionEnd += 100000;
-                        }
-                        $production = round($productionEnd - $productionStart, 3);
-
-                        // Set the new values and save it
-                        $energy = new Energy();
-                        $energy->SDTE = $first['SDTE'];
-                        $energy->time = time();
-                        $energy->INV = $inverter->id;
-                        $energy->KWH = $production;
-                        $energy->KWHT = $productionEnd;
-                        $energy->co2 = Formulas::CO2kWh($production, $this->config->co2kwh); // Calculate co2
-                        $this->adapter->addEnergy($inverter->id, $energy);
+                    // Check if we passed 100.000kWh
+                    if ($productionEnd < $productionStart) {
+                        $productionEnd += 100000;
                     }
+                    $production = round($productionEnd - $productionStart, 3);
 
+                    // Set the new values and save it
+                    $energy = new Energy();
+                    $energy->SDTE = $first['SDTE'];
+                    $energy->time = time();
+                    $energy->INV = $inverter->id;
+                    $energy->KWH = $production;
+                    $energy->KWHT = $productionEnd;
+                    $energy->co2 = Formulas::CO2kWh($production, $this->config->co2kwh); // Calculate co2
+                    $this->adapter->addEnergy($inverter->id, $energy);
                 }
                 
                 HookHandler::getInstance()->fire("onHistory", $inverter, $live);
@@ -160,9 +140,6 @@ class Worker {
             }
         }
 
-        // Give cpu a little break, this really improves your cpu time
-        sleep(2);
-
         // free the aurora object
         $this->aurora = null;
 
@@ -170,13 +147,18 @@ class Worker {
 
         R::commit(); // Commit the transaction
         
-        // This will also run if the inverter is down
-        if (PeriodHelper::isPeriodJob("10minJob", 2)) {
-        	HookHandler::getInstance()->fire("on10minJob");
+        // These hooks will also run if the inverter is down
+        if (PeriodHelper::isPeriodJob("1MinJob", 1)) {
+        	HookHandler::getInstance()->fire("on1MinJob");
         }
+        if (PeriodHelper::isPeriodJob("10MinJob", 10)) {
+        	HookHandler::getInstance()->fire("on10MinJob");
+        }
+        if (PeriodHelper::isPeriodJob("1HourJob", 60)) {
+        	HookHandler::getInstance()->fire("on1HourJob");
+        }
+        
 
-        $inactiveCheck = new InactiveCheck();
-        $inactiveCheck->check();
         
         // Make sure te log files are readable and writeable for everyone
         $logPath = dirname(dirname(__FILE__)) . "/log";

@@ -1,7 +1,9 @@
 <?php
 class PvOutputAddon {
-	
-	// This job will be called every 10 minutes
+	/**
+	 * Start the job
+	 * @param mixed $args
+	 */
 	public function onJob($args) {
 		$beans = $this->getUnsendHistory();
 		foreach ($beans as $live) {

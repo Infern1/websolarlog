@@ -1,21 +1,19 @@
- WebSolarLog Version 0.0.2
+ WebSolarLog
  
- Started as an fork off the 123Aurora project. However it became an full rewrite.
+ Started as an fork off the 123Aurora project.
+ However it became an full rewrite.
  
- TODO :: Change readme.txt 
+ Still many thanks for the developers of the 123Aurora project.
  
  ╔═════════════════════════════════════════════════════════════════════════════╗
  ║                                                                             ║
  ║                      - WebSolarLogger -                                     ║
  ║               PHP Charting for Inverters                                    ║
  ║                                                                             ║
- ║             Version     : 0.0.2                                             ║
  ║             Made by     : Marco Frijmann, Martin Diphoorn                   ║
- ║             Last Update : 01/01/2013                                        ║
  ║                                                                             ║
  ╚═════════════════════════════════════════════════════════════════════════════╝
  
  For more information, visit the WebSolarLog wike ──────────────────────────────
+	http://www.websolarlog.com
 	http://sourceforge.net/p/websolarlog/wiki/Home/
-	
-	

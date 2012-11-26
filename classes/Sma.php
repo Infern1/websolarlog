@@ -34,7 +34,7 @@ Class Sma implements DeviceApi {
 
     public function getInfo() {
         if ($this->DEBUG) {
-            return "PowerOne XXXXXX.XXXXXXXX";
+            return "SMA XXXXXX.XXXXXXXX";
         } else {
            return $this->execute('-i');
         }
