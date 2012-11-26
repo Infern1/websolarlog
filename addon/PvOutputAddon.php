@@ -4,6 +4,8 @@ class PvOutputAddon {
 	// This job will be called every 10 minutes
 	public function onJob($args) {
 		$beans = $this->getUnsendHistory();
+		HookHandler::getInstance()->fire("onDebug", "pvoutput: beans count=" . count($beans));
+		
 		foreach ($beans as $live) {
 			$inverter= Session::getConfig()->getInverterConfig($live->INV);
 			if ($inverter->pvoutputEnabled) {
