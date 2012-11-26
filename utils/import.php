@@ -78,6 +78,16 @@ function parseCsvToLive($csv) {
     $live->INVT = $fields[12];
     $live->BOOT = $fields[13];
     $live->KWHT = $fields[14];
+    
+    // Calculate the ratio fields
+    $IP = $live->I1P+$live->I2P;
+    
+    // Prevent division by zero error
+    if (!empty($IP)) {
+    	$live->I1Ratio = ($live->I1P/$IP)*100;
+    	$live->I2Ratio = ($live->I2P/$IP)*100;
+    }
+    
     return $live;
 }
 
