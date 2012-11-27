@@ -6,6 +6,10 @@ class Util {
         $sun_info = date_sun_info((strtotime(date("Ymd"))), $config->latitude , $config->longitude);
         return $now<($sun_info['sunrise']-$correction) || $now>($sun_info['sunset']+$correction);
     }
+    
+    public static function getDataLockFile() {
+    	return dirname(dirname(__FILE__))."/data/lock";
+    }
 
     public static function createLockFile() {
         return touch(self::getDataLockFile());
