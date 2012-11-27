@@ -121,7 +121,7 @@ switch ($settingstype) {
         }
 
         // Do the checkout
-        $url = Updater::$url . "tag/" . $version;
+        $url = Updater::$url . "tags/" . $version;
         $url = ($version == "trunk") ? Updater::$url . "trunk" : $url;
         $data['svnurl'] = $url;
 
