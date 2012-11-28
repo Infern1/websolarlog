@@ -150,7 +150,7 @@ class PDODataAdapter {
 	 * @param int $invtnum
 	 * @return MaxPowerToday
 	 */
-	public function readMaxPowerToday($invtnum, $date) {
+	public function readMaxPowerToday($invtnum, $date=null) {
 		(isset($date)) ? $date = $date : $date = date('d-m-Y');
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 		
