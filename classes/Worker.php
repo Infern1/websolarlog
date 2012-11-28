@@ -140,7 +140,7 @@ class Worker {
             }
         }
 
-        // free the aurora object
+        // free the inverte api object
         $this->aurora = null;
 
         $this->dropLock();
@@ -205,11 +205,17 @@ class Worker {
 
         $alarmFound = false;
         foreach ($event_lines as $line) {
+        	// Aurora error
             $parts = explode(":", $line);
-            if (trim($parts[1]) != "No Alarm") {
+            if (count($parts) > 1 && trim($parts[1]) != "No Alarm") {
                 $alarmFound = true;
                 break;
             }
+        }
+        
+        // SMA
+        if (trim($event->event) == "Fehler -------") {
+        	$alarmFound = false;
         }
 
         return $alarmFound;

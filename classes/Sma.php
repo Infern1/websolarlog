@@ -51,7 +51,7 @@ Class Sma implements DeviceApi {
     }
 
     private function execute($options) {
-        return shell_exec($this->PATH . ' -n' . $this->ADR . ' ' . $options . ' ' . $this->PORT);
+        return shell_exec($this->PATH . ' -n' . $this->ADR . ' ' . $options);
     }
 
 }

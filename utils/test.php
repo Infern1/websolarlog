@@ -7,9 +7,7 @@ $docRoot = dirname(dirname(__FILE__));
 require_once $docRoot . '/admin/classes/classloader.php';
 Session::initialize();
 
-//if (PeriodHelper::isPeriodJob("10minJob", 10)) {
-//	HookHandler::getInstance()->fire("on10minJob");
-//}
+HookHandler::getInstance()->fire("onInverterShutdown", Session::getConfig()->getInverterConfig(1));
 
 $test = new WeatherAddon();
 $config = Session::getConfig();
