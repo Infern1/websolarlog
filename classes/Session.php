@@ -55,6 +55,14 @@ class Session
     }
     
     /**
+     * Retrieves the base path
+     * @return string
+     */
+    public static function getBasePath() {
+    	return dirname(dirname(__FILE__));
+    }
+    
+    /**
      * Set the language to the given language code
      */
     public static function setLanguage() {

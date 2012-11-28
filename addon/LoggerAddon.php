@@ -23,12 +23,12 @@ class LoggerAddon {
 	}
 
 	public function onInverterStartup($args) {
-		$message = $args[0] . " - " . $args[1];
+		$message = $args[0] . " - " . $args[1]->name;
 		$this->write2file("debug", $message);
 	}
 
 	public function onInverterShutdown($args) {
-		$message = $args[0] . " - " . $args[1];
+		$message = $args[0] . " - " . $args[1]->name;
 		$this->write2file("debug", $message);
 	}
 	

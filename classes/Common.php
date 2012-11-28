@@ -202,6 +202,7 @@ class Common
         // $mail->SMTPDebug = true; Use this for testing only
 
         $mail->IsSMTP();  // telling the class to use SMTP
+        $mail->IsHTML(true);
         $mail->Host = $config->smtpServer;
         $mail->Port = $config->smtpPort;
         $mail->FromName = $config->emailFromName;

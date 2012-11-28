@@ -150,13 +150,15 @@ class PDODataAdapter {
 	 * @param int $invtnum
 	 * @return MaxPowerToday
 	 */
-	public function readMaxPowerToday($invtnum) {
-		$bean =  R::findOne('pMaxOTD',
-				' INV = :INV AND SDTE LIKE :date ',
-				array(':INV'=>$invtnum,
-						':date'=> '%'.date('Ymd').'%'
-				)
+	public function readMaxPowerToday($invtnum, $date) {
+		(isset($date)) ? $date = $date : $date = date('d-m-Y');
+		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
+		
+		$bean =  R::findOne( 'pMaxOTD',
+				' INV = :INV AND time > :beginDate AND  time < :endDate order by time',
+				array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
+		
 		return $bean;
 	}
 
