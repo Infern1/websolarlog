@@ -21,11 +21,13 @@ class MailAddon {
 	}
 	
 	public function onInverterStartup($args) {
+		/*
 		$hookname = $args[0];
 		$inverter = $args[1];
 		if (Session::getConfig()->emailReports) {
 			Common::sendMail("WSL :: Startup", "Startup test", Session::getConfig());
 		}
+		*/
 	}
 	
 	public function onInverterShutdown($args) {
