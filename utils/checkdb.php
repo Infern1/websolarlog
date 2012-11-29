@@ -1,5 +1,5 @@
 <?php
-set_time_limit ( 120 ); // 2 minutes
+set_time_limit (0); // No time limt
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
