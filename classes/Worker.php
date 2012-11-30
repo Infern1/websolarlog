@@ -45,7 +45,7 @@ class Worker {
                 if (Util::isSunDown($this->config)) {
                 	// Fire an shutDown hook once a day (20 hours)
                 	if (PeriodHelper::isPeriodJob("ShutDownJobINV" . $inverter->id, (20 * 60))) {
-                		HookHandler::getInstance()->fire("onInverterShutdown", $inveter);                		
+                		HookHandler::getInstance()->fire("onInverterShutdown", $inverter);                		
                 	}
                 	
                     // instead of continues polling the inverter during the night we give at a 2 minute break
