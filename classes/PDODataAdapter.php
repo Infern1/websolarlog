@@ -304,6 +304,7 @@ class PDODataAdapter {
 		$bean->co2 = $energy->co2;
 
 		//Only store the bean when the value
+		$id = -1;
 		if ($energy->KWH > $oldKWH) {
 			$id = R::store($bean,$bean->id);
 		}
