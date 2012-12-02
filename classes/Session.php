@@ -114,9 +114,6 @@ class Session
     	
     	// BasicChecksAddon
     	$hookHandler->add("on10MinJob", "BasicChecksAddon.on10MinJob");
-    	
-    	
-    	//$hookHandler->fire("onDebug", "Hooks loaded");
     }
 }
 ?>

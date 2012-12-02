@@ -236,10 +236,10 @@ class Worker {
             if ($this->isAlarmDetected($OEvent)) {
 				try {
 	            	if (strpos($OEvent->event, 'Warning') !== false ) {
-		            	HookHandler::getInstance()->fire("onInverterWarning", $OEvent->event);
+		            	HookHandler::getInstance()->fire("onInverterWarning", $inverter, nl2br($OEvent->event));
 	            	}
 	            	if (strpos($OEvent->event, 'Error') !== false ) {
-		            	HookHandler::getInstance()->fire("onInveterError", $OEvent->event);
+		            	HookHandler::getInstance()->fire("onInverterError", $inverter, nl2br($OEvent->event));
 	            	}
 	                $OEvent->alarmSend = true;
 				} catch (Exception $e) {
@@ -252,27 +252,7 @@ class Worker {
             }
         }
     }
-    
-    /**
-     * Send an email alert
-     * @param Event $event
-     */
-    private function sendMailAlert($event) {
-    	$subject = "WSL :: Event message";
-    	$body = "Hello, \n\n We have detected an error on your inverter.\n\n";
-    	$body .= $event->event . "\n\n";
-    	$body .= "Please check if everything is alright.\n\n";
-    	$body .= "WebSolarLog";
-    
-    	$result = Common::sendMail($subject, $body, $this->config);
-    	if ( $result === true) {
-    		return true;
-    	} else {
-    		return false;
-    	}
-    }
-
-    
+      
     /**
      * Create the lock
      */

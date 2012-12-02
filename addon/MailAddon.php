@@ -2,21 +2,13 @@
 class MailAddon {
 	public function onError($args) {
 		$subject = "WSL :: Error message";
-		$body = "Hello, \n\n WebSolarLog experienced an error.\n\n";
-		$body .= $args[1] . "\n\n";
-		$body .= "Please check if everything is alright.\n\n";
-		$body .= "WebSolarLog";
-		
+		$body = $this->createSystemEventReport("error", $args[1]);
 		Common::sendMail($subject, $body, Session::getConfig());
 	}
 	
 	public function onWarning($args) {
 		$subject = "WSL :: Warning message";
-		$body = "Hello, \n\n We have detected an warning on your inverter.\n\n";
-		$body .= $args[1] . "\n\n";
-		$body .= "Please check if everything is alright.\n\n";
-		$body .= "WebSolarLog";
-	
+		$body = $this->createSystemEventReport("warning", $args[1]);
 		Common::sendMail($subject, $body, Session::getConfig());
 	}
 	
@@ -44,10 +36,7 @@ class MailAddon {
 	public function onInverterError($args) {
 		if (Session::getConfig()->emailAlarms) {
 			$subject = "WSL :: Error message";
-			$body = "Hello, \n\n We have detected an error on your inverter.\n\n";
-			$body .= $args[1] . "\n\n";
-			$body .= "Please check if everything is alright.\n\n";
-			$body .= "WebSolarLog";
+			$body = $this->createInverterEventReport($args[1], "error", $args[2]);
 			Common::sendMail($subject, $body, Session::getConfig());
 		}	
 	}
@@ -55,13 +44,25 @@ class MailAddon {
 	public function onInverterWarning($args) {
 		if (Session::getConfig()->emailEvents) {
 			$subject = "WSL :: Warning message";
-			$body = "Hello, \n\n We have detected an error on your inverter.\n\n";
-			$body .= $args[1] . "\n\n";
-			$body .= "Please check if everything is alright.\n\n";
-			$body .= "WebSolarLog";
+			$body = $this->createInverterEventReport($args[1], "warning", $args[2]);
 			Common::sendMail($subject, $body, Session::getConfig());
 		}	
 		
+	}
+	
+	private function createInverterEventReport(Inverter $inverter, $eventType, $eventText) {
+		$report = file_get_contents(Session::getBasePath() . "/reports/email/inverterEvent_en.inc");
+		$report = str_replace("{{inverter.name}}", $inverter->name, $report);
+		$report = str_replace("{{event.type}}", $eventType, $report);
+		$report = str_replace("{{event.text}}", $eventText, $report);
+		return $report;
+	}
+	
+	private function createSystemEventReport($eventType, $eventText) {
+		$report = file_get_contents(Session::getBasePath() . "/reports/email/systemEvent_en.inc");
+		$report = str_replace("{{event.type}}", $eventType, $report);
+		$report = str_replace("{{event.text}}", $eventText, $report);
+		return $report;
 	}
 	
 	private function createReport(Inverter $inverter) {
@@ -83,12 +84,11 @@ class MailAddon {
 		$production = round($productionEnd - $productionStart, 3);
 		$maxwatt = round($maxPowerToday->GP, 0);
 		
-		$report = file_get_contents(Session::getBasePath() . "/reports/email/shutdown.inc");
+		$report = file_get_contents(Session::getBasePath() . "/reports/email/inverterShutdown_en.inc");
 		$report = str_replace("{{inverter.name}}", $inverter->name, $report);
 		$report = str_replace("{{totalkwh}}", $production, $report);
 		$report = str_replace("{{maxwatt}}", $maxwatt, $report);
 		$report = str_replace("{{maxtime}}", date('h:n', $maxPowerToday->time), $report);
-		
 		return $report;
 	}
 }
