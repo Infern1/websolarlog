@@ -3,12 +3,19 @@ $(function()
     $.getJSON('admin-server.php?s=isLogin', function(data) {
         if (data.result === true) {
             init_menu();
-            var currentURL = document.URL.split('#');// split on #
-            var currentURL = currentURL[1].split('?'); // remove querystring params
+            var hash = document.URL.split('#');// split on #
+            // go further if there is a split and more than 1 element in the array
+            if(hash.length>1){
+            	var shortcut = hash[1];
+            	if(shortcut.indexOf('?')){
+            		var shortcut = shortcut.split('?'); // remove querystring params
+            		var shortcut = shortcut[0];
+            	}
+            }
             // check if there is a function
-            if(currentURL[0]){
+            if(shortcut){
             	// call the #xxxxxx function // example: '/admin/#backup' load the backup page.
-            	runFunction('init_'+currentURL[0]);
+            	runFunction('init_'+shortcut);
             }else{
             	// else always load the general function
             	init_general(); // First admin item
