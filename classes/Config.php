@@ -40,6 +40,9 @@ class Config
     
     public $adminpasswd;
     
+    public $dropboxKey;
+    public $dropboxSecret;
+    
 	/**
 	 * Constructor
 	 */
@@ -85,6 +88,11 @@ class Config
 		$this->emailEvents = true;
 		$this->emailReports = false;
 
+		// ## DROPBOX
+		$this->dropboxKey = 'phrjcc77h8am0ch';
+		$this->dropboxSecret = 'uxaakmr5iz5x4m4';
+		$this->dropboxCallback = '#backup';
+		
 		$this->template = 'green'; // Default selected template
 
 		$this->aurorapath = 'aurora'; // If in system path this is enough

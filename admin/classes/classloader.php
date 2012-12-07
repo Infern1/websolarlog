@@ -39,9 +39,14 @@ function wsl_autoloader($classname)
     }
 
     // plugins
-    if ($classname === "R" || substr($classname, 0, strlen("RedBean")) === "RedBean") {
+    if ($classname === "R" ||  substr($classname, 0, strlen("RedBean")) === "RedBean") {
         require_once $docRoot."/classes/redbean.php";
         return;
+    }
+    // plugins
+    if ($classname === "Dropbox" ||  substr($classname, 0, strlen("Dropbox")) === "Dropbox") {
+    	require_once $docRoot."/classes/Dropbox.php";
+    	return;
     }
     if (substr($classname, 0, strlen("Model")) === "Model") {
 		// We don't handle Model classes, let RedBean do that

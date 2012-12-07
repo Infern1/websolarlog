@@ -7,6 +7,10 @@ session_start();
 <title>Configuration</title>
 <meta charset="utf-8">
 <link rel="shortcut icon" href="css/images/favicon.ico" />
+<link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+<link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/>
+<!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"/><![endif]-->
+
 <link rel="stylesheet" href="../css/jquery.pnotify.default.css" type="text/css" />
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 <link rel="stylesheet" href="css/main.css" type="text/css" />
@@ -44,6 +48,7 @@ session_start();
 					<li><a href="#" id="btnEmail">eMail</a></li>
 					<li><a href="#" id="btnAdvanced">Advanced</a></li>
 					<li><a href="#" id="btnUpdate">Update</a></li>
+					<li><a href="#" id="btnBackup">Backup</a></li>
 					<li class="nav-end"><a href="#" id="btnTestPage">Test page</a></li>
 				</ul>
 				<div class="cl"></div>

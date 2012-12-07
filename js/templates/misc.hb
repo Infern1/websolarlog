@@ -2,6 +2,14 @@
 <div class="columns"><h3>Misc</h3>
 <br><br>
 <div class="col posts">
+<h3>{{lang.logger}} {{lang.uptime}}:</h3>
+{{data.serverUptime.day}} {{lang.days}},{{data.serverUptime.hour}} {{lang.hours}},{{data.serverUptime.min}} {{lang.mins}}<br>
+<br>
+</div>
+<div class="col posts">
+</div>
+<div class="cl"></div>
+<div class="col posts">
 </div>
 <div class="col posts">
 	<div class="column span-22 last">

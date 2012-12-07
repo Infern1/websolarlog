@@ -3,7 +3,16 @@ $(function()
     $.getJSON('admin-server.php?s=isLogin', function(data) {
         if (data.result === true) {
             init_menu();
-            init_general(); // First admin item
+            var currentURL = document.URL.split('#');// split on #
+            var currentURL = currentURL[1].split('?'); // remove querystring params
+            // check if there is a function
+            if(currentURL[0]){
+            	// call the #xxxxxx function // example: '/admin/#backup' load the backup page.
+            	runFunction('init_'+currentURL[0]);
+            }else{
+            	// else always load the general function
+            	init_general(); // First admin item
+            }
         } else {
             $.ajax({
                 url : 'js/templates/login.hb',
@@ -40,10 +49,20 @@ $(function()
         }
     });
 });
-
 /*
  * Init var/array
  */
+
+
+function runFunction(name, arguments){
+    var fn = window[name];
+    if(typeof fn !== 'function')
+        return;
+
+    fn.apply(window, arguments);
+}
+
+
 var originalPerc=new Array(2,5,7,10,12,14,14,12,10,7,5,2);
 var Perc=[];
 var Month=new Array('jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec');
@@ -130,6 +149,131 @@ function init_menu() {
     $("#btnEmail").bind('click', function() { init_mail(); });
     $("#btnTestPage").bind('click', function() { init_testpage(); });
     $("#btnUpdate").bind('click', function() { init_updatepage(); });
+    $("#btnBackup").bind('click', function() { init_backup(); });
+}
+
+
+
+function init_backup() {
+    $('#sidebar').html("");
+    
+    $.getJSON('admin-server.php?s=dropbox', function(data) {
+    	if (data.available){
+
+
+    	    $.getJSON('admin-server.php?s=dropboxGetFiles', function(data) {
+    	        $.ajax({
+    	            url : 'js/templates/dropboxFiles.hb',
+    	            success : function(source) { 
+    	                var template = Handlebars.compile(source);
+    	                var html = template({
+    	                    'data' : data
+    	                });
+    	                $('#content').html(html);
+
+    		            $('.deleteFile').bind('click', function(){deleteFiles(this);});
+	                    $('#makeBackup').bind('click', function(){makeBackup();});
+	                    $('#dropboxSync').bind('click', function(){dropboxSync();}); 
+    	                
+    	                //dropboxSync(SyncNotice);
+    	            },
+    	            dataType : 'text'
+    	        });
+    	    });
+    	    
+    	    
+    	                         
+    	}else{
+            $.ajax({
+                url : 'js/templates/dropbox.hb',
+                success : function(source) {
+                    var template = Handlebars.compile(source);
+                    var html = template({
+                        'data' : data
+                    });
+                    $('#content').html(html);
+                },
+                dataType : 'text'
+            });
+    	}
+    });
+}
+
+function dropboxSync(notice){
+    var SyncNotice = $.pnotify({
+        title: 'Dropbox',
+        text: 'Syncing files....',
+        nonblock: true,
+        hide: false,
+        closer: false,
+        sticker: false
+    });
+    $.getJSON('admin-server.php?s=dropboxSyncFiles', function(data) {
+        $.ajax({
+        	 async: true,
+        	url : 'js/templates/dropboxFiles.hb',
+            success : function(source) { 
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : data
+                });
+                $('#content').html(html);
+	            $('.deleteFile').bind('click', function(){deleteFiles(this);});
+                $('#makeBackup').bind('click', function(){makeBackup();});
+                $('#dropboxSync').bind('click', function(){dropboxSync();});
+                if (SyncNotice.pnotify_remove) SyncNotice.pnotify_remove();
+            },
+            dataType : 'text'
+        });
+    });
+}
+
+function makeBackup(){
+    var BackupNotice = $.pnotify({
+        title: 'Dropbox',text: 'Backup is running....',nonblock: true,hide: false,closer: false,sticker: false
+    });
+    var data = '';
+    $.post('admin-server.php?s=dropboxMakeBackup',data , function(){
+    	$.getJSON('admin-server.php?s=dropboxGetFiles', data, function(data){
+    		
+            $.ajax({
+           	 async: true,
+           	url : 'js/templates/dropboxFiles.hb',
+               success : function(source) { 
+                   var template = Handlebars.compile(source);
+                   var html = template({
+                       'data' : data
+                   });
+                   $('#content').html(html);
+   	               $('.deleteFile').bind('click', function(){deleteFiles(this);});
+   	               $('#makeBackup').bind('click', function(){makeBackup();});
+   	               $('#dropboxSync').bind('click', function(){dropboxSync();});
+   	            if (BackupNotice.pnotify_remove) BackupNotice.pnotify_remove();
+                   //if (notice.pnotify_remove) notice.pnotify_remove();
+               },
+               dataType : 'text'
+           });
+        });
+    }); 
+}
+
+function deleteFiles(vars){
+
+		var id = vars.id.replace("delete","");
+		var fullPath = $("#path"+id).html();
+
+		$("#file"+id).hide("blind", { direction: "vertical" }, 1000);
+        var SyncNotice = $.pnotify({
+            title: 'Dropbox',
+            text: 'Deleting file....',
+            nonblock: true,
+            hide: false,
+            closer: false,
+            sticker: false
+        });
+        $.post('admin-server.php?s=dropboxDeleteFile',{path: fullPath} , function(){
+            if (SyncNotice.pnotify_remove) SyncNotice.pnotify_remove();
+        });
 }
 
 function init_advanced() {
@@ -145,7 +289,7 @@ function init_advanced() {
                 $('#content').html(html);
                 
                 $('#btnAdvancedSubmit').bind('click', function(){
-                    var data = $(this).parent().parent().serialize();
+                   
                     $.post('admin-server.php', data, function(){
                         $.pnotify({
                             title: 'Saved',

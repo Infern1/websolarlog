@@ -166,5 +166,16 @@ class Util {
     	return $newEvents;
     }
     
+    public static function serverUptime(){
+    
+    	$ut = strtok( exec( "cat /proc/uptime" ), "." );
+    	$days = sprintf( "%2d", ($ut/(3600*24)) );
+    	$hours = sprintf( "%2d", ( ($ut % (3600*24)) / 3600) );
+    	$min = sprintf( "%2d", ($ut % (3600*24) % 3600)/60  );
+    	$sec = sprintf( "%2d", ($ut % (3600*24) % 3600)%60  );
+    	return array( 'day'=>$days, 'hour'=>$hours, 'min'=>$min, 'sec'=>$sec );
+    }
+    
+    
 }
 ?>

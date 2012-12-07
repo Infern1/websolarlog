@@ -78,6 +78,8 @@ try {
 			$noticeEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Notice'));
 			$alarmEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Alarm'));
 			$infoEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Info'));
+			
+			$serverUptime = Util::serverUptime();
 	
 			
 			//var_dump($config);
@@ -130,13 +132,20 @@ try {
 			$lang['mpp'] = _('mpp');
 			$lang['description'] = _('description');
 			$lang['location'] = _('location');
+			$lang['logger'] = _('logger');
+			$lang['uptime'] = _('uptime');
+			$lang['days'] = _('days');
+			$lang['hours'] = _('hours');
+			$lang['mins'] = _('mins');
+
+				
 			
 			$data['lang'] = $lang;
 			$data['slimConfig'] = $slimConfig;
 			$data['noticeEvents'] = $noticeEvents;
 			$data['alarmEvents'] = $alarmEvents;
 			$data['infoEvents'] = $infoEvents;
-			
+			$data['serverUptime'] = $serverUptime;
 			break;
 		case 'getGraphPoints':
 			
