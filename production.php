@@ -12,6 +12,7 @@ require_once("template/" . $template . "/index.php");
 		var invtnum=(!invtnum)?invtnum=1:invtnum=invtnum;
 		WSL.init_production(invtnum,"content"); // Initial load fast
 	});
+	googleAnalyticsJSCodeBlock();
 	</script>
 	
 </body>

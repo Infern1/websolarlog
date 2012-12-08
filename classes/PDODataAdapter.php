@@ -600,6 +600,10 @@ class PDODataAdapter {
 		$bean->smagetpath = $config->smagetpath;
 
 		$bean->co2kwh = $config->co2kwh;
+		
+		$bean->googleAnalytics = $config->googleAnalytics;
+		
+		
 
 		$bean->adminpasswd = $config->adminpasswd;
 
@@ -649,7 +653,9 @@ class PDODataAdapter {
 
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
 			$config->inverters = $this->readInverters();
-				
+			
+			$config->googleAnalytics = $bean->googleAnalytics;
+			
 			$config->adminpasswd = ($bean->adminpasswd != "") ? $bean->adminpasswd : $config->adminpasswd;
 		}
 

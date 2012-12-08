@@ -74,6 +74,12 @@ try {
 			$data['languages'] = $languages;
 			$data['currentlanguage'] = $user_lang;
 			break;
+			
+		case 'googleAnalyticsJSCodeBlock':
+			
+			$data['googleAnalyticsCode'] = $config->googleAnalytics;
+			
+			break;
 		case 'getMisc':
 			$noticeEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Notice'));
 			$alarmEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Alarm'));

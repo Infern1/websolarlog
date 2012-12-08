@@ -16,6 +16,7 @@ require_once("template/" . $template . "/index.php");
 				WSL.createCompareGraph(1,whichMonth,whichYear,compareMonth,compareYear,0);
 			}
 	); // Initial load fast
+	googleAnalyticsJSCodeBlock();
 	</script>
 </body>
 </html>

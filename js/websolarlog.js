@@ -16,6 +16,25 @@ function ajaxStart(){
 	$('.ui-tooltip').remove();
 }
 
+function googleAnalyticsJSCodeBlock(){
+	$.getJSON('server.php?method=googleAnalyticsJSCodeBlock', function(data) {
+		$.ajax({
+			url : 'js/templates/GoogleAnalyticsJSCodeBlock.hb',
+			success : function(source) {
+				var template = Handlebars.compile(source);
+				var html = template({
+					'data' : data
+				});
+				
+				if (data.googleAnalyticsCode != ''){
+					$("body").append(html);
+				}
+			},
+			dataType : 'text'
+		});
+	});
+}
+
 
 beforeLoad = (new Date()).getTime();
 window.onload = pageLoadingTime;

@@ -17,6 +17,7 @@ switch ($settingstype) {
         $data['aurorapath'] = $config->aurorapath;
         $data['smagetpath'] = $config->smagetpath;
         $data['debugmode'] = $config->debugmode;
+        $data['googleAnalytics'] = $config->googleAnalytics;
         break;
     case 'communication';
         $data['comPort'] = $config->comPort;
@@ -191,6 +192,7 @@ switch ($settingstype) {
         $config->aurorapath =Common::getValue("aurorapath");
         $config->smagetpath =Common::getValue("smagetpath");
         $config->debugmode =Common::getValue("debugmode");
+        $config->googleAnalytics = Common::getValue("googleAnalytics");
         $adapter->writeConfig($config);
         break;
     case 'save-communication':

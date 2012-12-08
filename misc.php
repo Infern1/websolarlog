@@ -15,6 +15,7 @@ require_once("template/" . $template . "/index.php");
 		
 
 	});
+	googleAnalyticsJSCodeBlock();
 	</script>
 	
 </body>

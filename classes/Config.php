@@ -43,6 +43,8 @@ class Config
     public $dropboxKey;
     public $dropboxSecret;
     
+    public $googleAnalytics;
+    
 	/**
 	 * Constructor
 	 */

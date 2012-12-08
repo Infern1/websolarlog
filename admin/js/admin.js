@@ -296,7 +296,7 @@ function init_advanced() {
                 $('#content').html(html);
                 
                 $('#btnAdvancedSubmit').bind('click', function(){
-                   
+                	var data = $(this).parent().parent().serialize();
                     $.post('admin-server.php', data, function(){
                         $.pnotify({
                             title: 'Saved',
