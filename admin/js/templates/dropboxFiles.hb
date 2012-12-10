@@ -40,6 +40,7 @@
 <div class="column span-4" style="text-align:right;border-top:1px solid #000;">{{data.totalBackupSize}} MB</div>
 <br><br>
 <div class="clear"></div>
+<input type="hidden" value="0" id="requestActive" />
 <div id="makeBackup" class="column span-5 first icon"><img src="images/lock_go.png"/>Make backup</div>
 <div id="dropboxSync" class="column  span-6 icon" ><img src="images/arrow_refresh.png"/>Sync with dropbox</div>
 <br>

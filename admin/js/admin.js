@@ -207,61 +207,106 @@ function init_backup() {
 }
 
 function dropboxSync(notice){
-    var SyncNotice = $.pnotify({
-        title: 'Dropbox',
-        text: 'Syncing files....',
-        nonblock: true,
-        hide: false,
-        closer: false,
-        sticker: false
-    });
-    $.getJSON('admin-server.php?s=dropboxSyncFiles', function(data) {
-        $.ajax({
-        	 async: true,
-        	url : 'js/templates/dropboxFiles.hb',
-            success : function(source) { 
-                var template = Handlebars.compile(source);
-                var html = template({
-                    'data' : data
-                });
-                $('#content').html(html);
-	            $('.deleteFile').bind('click', function(){deleteFiles(this);});
-                $('#makeBackup').bind('click', function(){makeBackup();});
-                $('#dropboxSync').bind('click', function(){dropboxSync();});
-                if (SyncNotice.pnotify_remove) SyncNotice.pnotify_remove();
-            },
-            dataType : 'text'
-        });
-    });
+    if($('#requestActive').val() == 0){
+    	$('#requestActive').val(1);
+		var SyncNotice = $.pnotify({
+	        title: 'Dropbox',
+	        text: 'Syncing files....',
+	        nonblock: true,
+	        hide: false,
+	        closer: false,
+	        sticker: false
+	    });
+	    $.getJSON('admin-server.php?s=dropboxSyncFiles', function(data) {
+	        $.ajax({
+	        	 async: true,
+	        	url : 'js/templates/dropboxFiles.hb',
+	            success : function(source) { 
+	                var template = Handlebars.compile(source);
+	                var html = template({
+	                    'data' : data
+	                });
+	                $('#content').html(html);
+		            $('.deleteFile').bind('click', function(){deleteFiles(this);});
+	                $('#makeBackup').bind('click', function(){makeBackup();});
+	                $('#dropboxSync').bind('click', function(){dropboxSync();});
+	                if (SyncNotice.pnotify_remove) SyncNotice.pnotify_remove();
+	                $('#requestActive').val(0);
+		   	       var SyncNotice = $.pnotify({
+		   	 	        title: 'Dropbox',
+		   	 	        text: 'Backup ready.',
+		   	 	        nonblock: true,
+		   	 	        hide: true,
+		   	 	        closer: true,
+		   	 	        sticker: false,
+		   	 	        type:'success'
+		   	 	    });
+	            },
+	            dataType : 'text'
+	        });
+	    });
+    }else{
+		var SyncNotice = $.pnotify({
+	        title: 'Dropbox',
+	        text: 'There is a request running.',
+	        nonblock: true,
+	        hide: true,
+	        closer: true,
+	        sticker: false,
+	        type:'error'
+	    });
+    }
 }
 
 function makeBackup(){
-    var BackupNotice = $.pnotify({
-        title: 'Dropbox',text: 'Backup is running....',nonblock: true,hide: false,closer: false,sticker: false
-    });
-    var data = '';
-    $.post('admin-server.php?s=dropboxMakeBackup',data , function(){
-    	$.getJSON('admin-server.php?s=dropboxGetFiles', data, function(data){
-    		
-            $.ajax({
-           	 async: true,
-           	url : 'js/templates/dropboxFiles.hb',
-               success : function(source) { 
-                   var template = Handlebars.compile(source);
-                   var html = template({
-                       'data' : data
-                   });
-                   $('#content').html(html);
-   	               $('.deleteFile').bind('click', function(){deleteFiles(this);});
-   	               $('#makeBackup').bind('click', function(){makeBackup();});
-   	               $('#dropboxSync').bind('click', function(){dropboxSync();});
-   	            if (BackupNotice.pnotify_remove) BackupNotice.pnotify_remove();
-                   //if (notice.pnotify_remove) notice.pnotify_remove();
-               },
-               dataType : 'text'
-           });
-        });
-    }); 
+    if($('#requestActive').val() == 0){
+    	$('#requestActive').val(1);
+	    var BackupNotice = $.pnotify({
+	        title: 'Dropbox',text: 'Backup is running....',nonblock: true,hide: false,closer: false,sticker: false
+	    });
+	    var data = '';
+	    $.post('admin-server.php?s=dropboxMakeBackup',data , function(){
+	    	$.getJSON('admin-server.php?s=dropboxGetFiles', data, function(data){
+	    		
+	            $.ajax({
+	           	 async: true,
+	           	url : 'js/templates/dropboxFiles.hb',
+	               success : function(source) { 
+	                   var template = Handlebars.compile(source);
+	                   var html = template({
+	                       'data' : data
+	                   });
+	                   $('#content').html(html);
+	   	               $('.deleteFile').bind('click', function(){deleteFiles(this);});
+	   	               $('#makeBackup').bind('click', function(){makeBackup();});
+	   	               $('#dropboxSync').bind('click', function(){dropboxSync();});
+	   	               if (BackupNotice.pnotify_remove) BackupNotice.pnotify_remove();
+			   	       var SyncNotice = $.pnotify({
+			   	 	        title: 'Dropbox',
+			   	 	        text: 'Backup ready.',
+			   	 	        nonblock: true,
+			   	 	        hide: true,
+			   	 	        closer: true,
+			   	 	        sticker: false,
+			   	 	        type:'success'
+			   	 	    });
+	   	               $('#requestActive').val(0)
+	               },
+	               dataType : 'text'
+	           });
+	        });
+	    }); 
+    }else{
+		var SyncNotice = $.pnotify({
+	        title: 'Dropbox',
+	        text: 'There is a request running.',
+	        nonblock: true,
+	        hide: true,
+	        closer: true,
+	        sticker: false,
+	        type:'error'
+	    });
+    }
 }
 
 function deleteFiles(vars){

@@ -291,7 +291,15 @@ switch ($settingstype) {
         $config->smtpPassword = Common::getValue("smtpPassword");
         $adapter->writeConfig($config);
         break;
-        
+    case 'sendTweet':
+    	// init hybridauth
+	     // init hybridauth
+	    $hybridauth = new HybridLoader();
+	    
+	    var_dump($hybridauth);
+	    exit();
+	    $twitter = $hybridauth->hybridauth->authenticate( "Twitter" );
+    	break;
     case 'attachDropbox':
     	if(strlen(common::getValue('uid'))==8 && strlen(common::getValue('oauth_token'))==15){
     		$dropbox = new Dropbox();
@@ -368,27 +376,35 @@ switch ($settingstype) {
     	// walkthrough the dropbox files
     	foreach ($data['files'] as $file) {
     		// get the full path of the files (for download needs)
-    		$path = $dropbox->dropbox->media($file->path);
-    		// set fullPath to the files array
-    		$data['files'][$i]->fullPath = $path['body']->url;
     		
-    		//$file->client_mtime = "Tue, 04 Dec 2012 13:00:59 +0000";
-    		// explode client_mtime
-    		$exDateTime = explode(' ',$file->client_mtime);
-    		// re-org timeformat
-    		$client_mtime = $exDateTime[2].' '.$exDateTime[1].' '.$exDateTime[3].' '.$exDateTime[4];
-    		//make timestamp and generate new timesting
-    		$dateTime = strtotime($client_mtime);
-    		// replace client_mtime with new timestring
-    		$data['files'][$i]->client_mtime = $dateTime;
-    		//add a files id to the array
-    		$data['files'][$i]->id = $i;
-    		//add a file number to the array
-    		$data['files'][$i]->num = $i+1;
-    		//lets see if we need to save the file to the database.
-    		$adapter->dropboxSaveFile($data['files'][$i]);
-    		// sum the filesizes for some nice figures
-    		$totalBackupSize += $file->bytes;
+    		try {
+    			$delete = $dropbox->dropbox->delete($path);
+    			if ($delete){
+		    		// set fullPath to the files array
+		    		$data['files'][$i]->fullPath = $path['body']->url;
+		    		
+		    		//$file->client_mtime = "Tue, 04 Dec 2012 13:00:59 +0000";
+		    		// explode client_mtime
+		    		$exDateTime = explode(' ',$file->client_mtime);
+		    		// re-org timeformat
+		    		$client_mtime = $exDateTime[2].' '.$exDateTime[1].' '.$exDateTime[3].' '.$exDateTime[4];
+		    		//make timestamp and generate new timesting
+		    		$dateTime = strtotime($client_mtime);
+		    		// replace client_mtime with new timestring
+		    		$data['files'][$i]->client_mtime = $dateTime;
+		    		//add a files id to the array
+		    		$data['files'][$i]->id = $i;
+		    		//add a file number to the array
+		    		$data['files'][$i]->num = $i+1;
+		    		//lets see if we need to save the file to the database.
+		    		$adapter->dropboxSaveFile($data['files'][$i]);
+		    		// sum the filesizes for some nice figures
+		    		$totalBackupSize += $file->bytes;
+    			}
+    		} catch (Exception $e) {
+    			$totalBackupSize += 0;
+    		}
+    		
     		$i++;
     	}
     	$data['totalBackups'] = $i+1;
@@ -403,14 +419,25 @@ switch ($settingstype) {
     	break;
     case 'dropboxGetFiles':
     	$data =$adapter->dropboxGetFilesFromDB();
+    	
     	$data['success']= true; 
     	break;  
   	
     case 'dropboxDeleteFile':
     	$dropbox = new Dropbox;
     	$path = Common::getValue("path");
-    	if($dropbox->dropbox->delete($path)){
-    		$adapter->dropboxDropFile($path);
+    	
+		// Output the result
+		try {
+			$delete = $dropbox->dropbox->delete($path);
+			if ($delete){
+		    	$adapter->dropboxDropFile($path);
+		    	$data['message'] = "File '$path' is delete from your dropbox.";
+		    	$data['success'] = true;
+		    }
+    	} catch (Exception $e) {
+    		$data['message'] = "File doesn't exists in your dropbox.";
+    		$data['success'] = false;
     	}
     	break;
     case 'send-testemail':
