@@ -310,7 +310,27 @@ switch ($settingstype) {
 		break;
 	case 'attachTwitter':
 
-		$config =  '../classes/Social/hybridauth/config.php';
+		
+
+		$protocol = (!empty($_SERVER['HTTPS'])) ? 'https' : 'http';
+		
+		$callback = $protocol . '://' . $_SERVER['HTTP_HOST'] .'/'. basename(dirname(dirname(__FILE__)));
+		
+		$config = array(
+				// "base_url" the url that point to HybridAuth Endpoint (where the index.php and config.php are found)
+				"base_url" => $callback."/classes/Social/hybridauth/",
+				"providers" => array (
+		
+						"Twitter" => array (
+								"enabled" => true,
+								"keys"    => array ( "key" => "idYGAJncvuakWv0P0HVp7Q", "secret" => "qJilSF1fmxTZOI7M8ixqWfmAPXDYDLwSCPDWfpE0" )
+						)
+				)
+		);
+		
+		
+		
+		//$config =  '../classes/Social/hybridauth/config.php';
 		include('../classes/Social/hybridauth/Hybrid/Auth.php');
 		$current_user_id = 1;
 
@@ -339,8 +359,23 @@ switch ($settingstype) {
 		}
 		break;
 	case 'sendTweet':
+		$protocol = (!empty($_SERVER['HTTPS'])) ? 'https' : 'http';
 		
-		$config =  '../classes/Social/hybridauth/config.php';
+		$callback = $protocol . '://' . $_SERVER['HTTP_HOST'] .'/'. basename(dirname(dirname(__FILE__)));
+		
+		$config = array(
+				// "base_url" the url that point to HybridAuth Endpoint (where the index.php and config.php are found)
+				"base_url" => $callback."/classes/Social/hybridauth/",
+				"providers" => array (
+		
+						"Twitter" => array (
+								"enabled" => true,
+								"keys"    => array ( "key" => "idYGAJncvuakWv0P0HVp7Q", "secret" => "qJilSF1fmxTZOI7M8ixqWfmAPXDYDLwSCPDWfpE0" )
+						)
+				)
+		);
+		
+		//$config =  '../classes/Social/hybridauth/config.php';
 		include('../classes/Social/hybridauth/Hybrid/Auth.php');
 		$current_user_id = 1;
 		// create an instance for Hybridauth with the configuration file path as parameter
