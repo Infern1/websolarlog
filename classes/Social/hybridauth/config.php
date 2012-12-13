@@ -11,9 +11,13 @@
 //	HybridAuth Config file: http://hybridauth.sourceforge.net/userguide/Configuration.html
 // ----------------------------------------------------------------------------------------
 
+
+$protocol = (!empty($_SERVER['HTTPS'])) ? 'https' : 'http';
+$callback = $protocol . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		
 return 
 	array(
-		"base_url" => "http://localhost/websolarlog/trunk/classes/Social/hybridauth/", 
+		"base_url" => $callback."/classes/Social/hybridauth/", 
 
 		"providers" => array ( 
 			// openid providers

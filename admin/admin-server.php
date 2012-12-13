@@ -310,7 +310,6 @@ switch ($settingstype) {
 		break;
 	case 'attachTwitter':
 
-		//unset($_SESSION);
 		$config =  '../classes/Social/hybridauth/config.php';
 		include('../classes/Social/hybridauth/Hybrid/Auth.php');
 		$current_user_id = 1;
@@ -337,7 +336,6 @@ switch ($settingstype) {
 			}
 			$twitter->logout();
 			//
-			
 		}
 		break;
 	case 'sendTweet':
