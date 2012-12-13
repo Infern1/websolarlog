@@ -2050,6 +2050,33 @@ class PDODataAdapter {
 		return $data;
 	}
 
+	public function sotre_hybridauth_session($current_user_id, $hybridauth_session_data,$user_profile){
+		$bean = R::findOne('hybridUsersConnections',' user_id = :user_id',array(':user_id'=>$current_user_id));
+		
+		if(!$bean){
+			$bean = R::dispense('hybridUsersConnections');
 
+			$bean->user_id = $current_user_id;
+			$bean->hybridauth_session = $hybridauth_session_data;
+			$bean->updated_at = strtotime("now");
+			$bean->displayName = $user_profile->displayName;
+
+			//Store the bean
+		
+			$id = R::store($bean);
+		}
+	}
+	
+	function get_sotred_hybridauth_session( $user_id ){
+		$beans = R::findAndExport('hybridUsersConnections',' user_id = :user_id LIMIT 1',array(':user_id'=>$user_id));
+		if ($beans){
+			foreach ($beans as $bean){
+				$sessionData= $bean;
+			}
+		}
+		if($sessionData){
+			return $sessionData;
+		}
+	}
 
 }

@@ -48,6 +48,13 @@ function wsl_autoloader($classname)
     	require_once $docRoot."/classes/Dropbox.php";
     	return;
     }
+    
+    // plugins
+    if ($classname === "Hybrid_Auth" ||  substr($classname, 0, strlen("Hybrid")) === "Hybrid") {
+    	//echo $docRoot."/classes/HybridAuth.php";
+    	require_once $docRoot."/classes/Hybrid/Hybrid_Auth.php";
+    	return;
+    }
     if (substr($classname, 0, strlen("Model")) === "Model") {
 		// We don't handle Model classes, let RedBean do that
         return;

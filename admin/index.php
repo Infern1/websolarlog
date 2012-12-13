@@ -44,12 +44,12 @@ session_start();
 			<div id="navigation">
 				<ul>
 					<li class="nav-start"><a href="#" id="btnGeneral">General</a></li>
-					<li><a href="#" id="btnInverters">Inverters</a></li>
-					<li><a href="#" id="btnEmail">eMail</a></li>
-					<li><a href="#" id="btnAdvanced">Advanced</a></li>
-					<li><a href="#" id="btnUpdate">Update</a></li>
-					<li><a href="#" id="btnBackup">Backup</a></li>
-					<li class="nav-end"><a href="#" id="btnTestPage">Test page</a></li>
+					<li><a href="#inverters" id="btnInverters">Inverters</a></li>
+					<li><a href="#email" id="btnEmail">eMail</a></li>
+					<li><a href="#advanced" id="btnAdvanced">Advanced</a></li>
+					<li><a href="#update" id="btnUpdate">Update</a></li>
+					<li><a href="#backup" id="btnBackup">Backup</a></li>
+					<li class="nav-end"><a href="#testpage" id="btnTestPage">Test page</a></li>
 				</ul>
 				<div class="cl"></div>
 			</div>

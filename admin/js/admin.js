@@ -181,8 +181,6 @@ function init_backup() {
     		            $('.deleteFile').bind('click', function(){deleteFiles(this);});
 	                    $('#makeBackup').bind('click', function(){makeBackup();});
 	                    $('#dropboxSync').bind('click', function(){dropboxSync();}); 
-    	                
-    	                //dropboxSync(SyncNotice);
     	            },
     	            dataType : 'text'
     	        });
@@ -269,7 +267,6 @@ function makeBackup(){
 	    	$.getJSON('admin-server.php?s=dropboxGetFiles', data, function(data){
 	    		
 	            $.ajax({
-	           	 async: true,
 	           	url : 'js/templates/dropboxFiles.hb',
 	               success : function(source) { 
 	                   var template = Handlebars.compile(source);
@@ -338,6 +335,7 @@ function init_advanced() {
                 var html = template({
                     'data' : data
                 });
+                console.log(data);
                 $('#content').html(html);
                 
                 $('#btnAdvancedSubmit').bind('click', function(){
@@ -348,11 +346,35 @@ function init_advanced() {
                             text: 'You\'re changes have been saved.'
                         });
                     });
+                });   
+                
+                $('#sendTweet').bind('click', function(){
+                 	$.pnotify({
+                 		title: 'Twitter',
+                 		text: 'Sending Tweet'
+                 	});
+                	 $.getJSON('admin-server.php?s=sendTweet', function(data) {
+	                	 if(data.tweetSend==1){
+	                      	$.pnotify({
+	                     		title: 'Twitter',
+	                     		text: 'Tweet send! Check your Twitter :)'
+	                     	});
+	                	 }
+	                	 if(data.tweetSend==0){
+		                      $.pnotify({
+		                     	title: 'Twitter',
+		                     	text: 'Something went wrong:<br>'+data.message+'',
+		                     	type: 'error'
+		                    });
+	                	 }
+                     });
                 });
             },
             dataType : 'text'
         });        
     });
+    
+    
 }
 
 function init_general() {
