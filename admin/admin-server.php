@@ -309,28 +309,6 @@ switch ($settingstype) {
 		$adapter->writeConfig($config);
 		break;
 	case 'attachTwitter':
-
-		
-
-		$protocol = (!empty($_SERVER['HTTPS'])) ? 'https' : 'http';
-		
-		$callback = $protocol . '://' . $_SERVER['HTTP_HOST'] .'/'. basename(dirname(dirname(__FILE__)));
-		
-		$config = array(
-				// "base_url" the url that point to HybridAuth Endpoint (where the index.php and config.php are found)
-				"base_url" => $callback."/classes/Social/hybridauth/",
-				"providers" => array (
-		
-						"Twitter" => array (
-								"enabled" => true,
-								"keys"    => array ( "key" => "idYGAJncvuakWv0P0HVp7Q", "secret" => "qJilSF1fmxTZOI7M8ixqWfmAPXDYDLwSCPDWfpE0" )
-						)
-				)
-		);
-		
-		
-		
-		//$config =  '../classes/Social/hybridauth/config.php';
 		include('../classes/Social/hybridauth/Hybrid/Auth.php');
 		$current_user_id = 1;
 
@@ -339,7 +317,7 @@ switch ($settingstype) {
 		if($hybridauth_session_data){
 			$data['message'] = 'Connected';
 		}else{
-			$hybridauth = new Hybrid_Auth( $config );
+			$hybridauth = new Hybrid_Auth( $config->hybridAuth );
 
 			$twitter = $hybridauth->authenticate( "Twitter" );
 
@@ -359,23 +337,6 @@ switch ($settingstype) {
 		}
 		break;
 	case 'sendTweet':
-		$protocol = (!empty($_SERVER['HTTPS'])) ? 'https' : 'http';
-		
-		$callback = $protocol . '://' . $_SERVER['HTTP_HOST'] .'/'. basename(dirname(dirname(__FILE__)));
-		
-		$config = array(
-				// "base_url" the url that point to HybridAuth Endpoint (where the index.php and config.php are found)
-				"base_url" => $callback."/classes/Social/hybridauth/",
-				"providers" => array (
-		
-						"Twitter" => array (
-								"enabled" => true,
-								"keys"    => array ( "key" => "idYGAJncvuakWv0P0HVp7Q", "secret" => "qJilSF1fmxTZOI7M8ixqWfmAPXDYDLwSCPDWfpE0" )
-						)
-				)
-		);
-		
-		//$config =  '../classes/Social/hybridauth/config.php';
 		include('../classes/Social/hybridauth/Hybrid/Auth.php');
 		$current_user_id = 1;
 		// create an instance for Hybridauth with the configuration file path as parameter
@@ -394,7 +355,7 @@ switch ($settingstype) {
 			try{
 				$twitter = $hybridauth->getAdapter( "Twitter" );		
 
-				$indexValues = $adapter->readPageIndexData($config);
+				$indexValues = $adapter->readPageIndexData($config->hybridAuth);
 	
 				$twitter->setUserStatus("Hi all, today we generated ". $indexValues['summary']['totalEnergyToday'][0]['KWH']." kWh. Check it out on: http://bit.ly/QV9DxJ. Grtz! Power by #SunCounter.nl" );
 				$twitter->logout();

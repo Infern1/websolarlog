@@ -176,6 +176,12 @@ class Util {
     	return array( 'day'=>$days, 'hour'=>$hours, 'min'=>$min, 'sec'=>$sec );
     }
     
+    public static function getCallBackURL(){
+    $protocol = (!empty($_SERVER['HTTPS'])) ? 'https' : 'http';
+    
+    return  $protocol . '://' . $_SERVER['HTTP_HOST'] .'/'. basename(dirname(dirname(__FILE__)));
+	}
+    
     
 }
 ?>

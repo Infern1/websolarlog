@@ -44,6 +44,7 @@ class Config
     public $dropboxSecret;
     
     public $googleAnalytics;
+    public $hybridAuth;
     
 	/**
 	 * Constructor
@@ -103,6 +104,22 @@ class Config
 		$this->co2kwh = 440; // 440g/kWh is conform europa average
 		
 		$this->adminpasswd = sha1('admin');
+		
+
+		$callback = Util::getCallBackURL();
+		
+		$this->hybridAuth = array(
+				// "base_url" the url that point to HybridAuth Endpoint (where the index.php and config.php are found)
+				"base_url" => $callback."/classes/Social/hybridauth/",
+				"providers" => array (
+		
+						"Twitter" => array (
+								"enabled" => true,
+								"keys"    => array ( "key" => "idYGAJncvuakWv0P0HVp7Q", "secret" => "qJilSF1fmxTZOI7M8ixqWfmAPXDYDLwSCPDWfpE0" )
+						)
+				)
+		);
+		
 	}
 
 	function getInverterConfig($inverterId) {
