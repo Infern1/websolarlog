@@ -2079,5 +2079,36 @@ class PDODataAdapter {
 			return $sessionData;
 		}
 	}
+	/**
+	 * changeInverterStatus
+	 * 
+	 * @param int $status // 1=active, 0=sleep
+	 * @param int $inverterId // inverter id
+	 * @return array (changed) // if status is changed, array['changed'] = true; 
+	 */
+	function changeInverterStatus($status,$inverterId){
+		// get inverter bean
+		$bean = R::load('inverter',$inverterId);
+
+		// look if we have a bean
+		if (!$bean){
+			$bean = R::dispense('inverter');
+		}
+		// check if we are going to change the inverter status
+		if($bean->status != $status){
+			// oo we are going to change the inverter, so we set it to TRUE
+			$return['changed'] = true;
+			// change the bean to the new status for this inverter
+			$bean->id = $bean->id;
+			$bean->status = $status;
+			
+			//Store the bean with the new inverter status
+			R::store($bean,$bean->id);
+		}else{
+			$return['changed'] = false;
+		}
+
+		return $return;
+	}
 
 }
