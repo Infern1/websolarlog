@@ -47,7 +47,7 @@ class Worker {
                 	//check to see if the inverter is going to sleep.
                     $inverterStatus = $this->adapter->changeInverterStatus(0,$inverter->id);
 	                if($inverterStatus['changed']===true){
-	                	$OEvent = new Event($inverter->id, time(), 'Notice', 'Inverter is going to sleep');
+	                	$OEvent = new Event($inverter->id, time(), 'Notice', 'Inverter is going to sleep (new worker check)');
 	                	$this->adapter->addEvent($inverter->id, $OEvent);
 	                	HookHandler::getInstance()->fire("onInverterShutdown", $OEvent->event);       	
 	                }
@@ -70,7 +70,7 @@ class Worker {
                 // check if the inverter is awaking
                 $inverterStatus = $this->adapter->changeInverterStatus(1,$inverter->id);
                 if($inverterStatus['changed']){
-                	$OEvent = new Event($inverter->id, time(), 'Notice', 'Inverter awake');
+                	$OEvent = new Event($inverter->id, time(), 'Notice', 'Inverter awake (new worker check)');
                 	$this->adapter->addEvent($inverter->id, $OEvent);
                 	HookHandler::getInstance()->fire("onInverterStartup", $OEvent->event);                	
                 }
