@@ -939,6 +939,7 @@ var WSL = {
 	
 	init_production : function(invtnum,divId){
 		WSL.createProductionGraph(invtnum, divId);
+		
 	},
 	
 	createProductionGraph : function(invtnum, divId) {
@@ -988,9 +989,42 @@ var WSL = {
 				var dataDay2 = [];
 				var dataDay3 = [];
 				var dataDay4 = [];
+				var dataTable= [];
 				if (result.dayData) {
 					
+					
+
 					$("#main-middle").prepend('<div id="ProductionGraph"></div>');
+					console.log(result);
+					$.ajax({
+						url : 'js/templates/productionFigures.hb',
+						success : function(source) {
+							var template = Handlebars.compile(source);
+							
+							for (line in result.dayData.data) {
+								var object = result.dayData.data[line];
+								var item = {
+								        "timestamp": object[0],
+								        "har": object[1],
+								        "date": object[2],
+								        "exp": object[3],
+										"diff": object[4],
+										"cumExp": object[5],
+										"cumHar": object[6]
+								};
+								dataTable.push([item]);
+							}
+							var html = template({
+								'data' : dataTable,
+								'lang':result.lang
+							});
+							console.log(dataTable);
+							
+							$('#ProductionGraph').after(html);
+
+						},
+						dataType : 'text',
+					});
 					
 					for (line in result.dayData.data) {
 						var object = result.dayData.data[line];

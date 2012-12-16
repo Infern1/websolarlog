@@ -2086,6 +2086,7 @@ class PDODataAdapter {
 	 * @param int $inverterId // inverter id
 	 * @return array (changed) // if status is changed, array['changed'] = true; 
 	 */
+
 	function changeInverterStatus($status,$inverterId){
 		// get inverter bean
 		$bean = R::load('inverter',$inverterId);

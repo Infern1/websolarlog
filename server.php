@@ -246,8 +246,15 @@ try {
 	
 			$dayData = new DayDataResult();
 			$dayData->data = $lines['energy']->points;
+			$lang['month'] = _('month');
+			$lang['expected'] = _('expected');
+			$lang['harvested'] = _('harvested');
+			$lang['difference'] = _('difference');
+			$lang['cum'] = _('cum.');
 			$dayData->success = true;
+			$data['lang'] = $lang;
 			$data['dayData'] = $dayData;
+			$data['sundown'] = Util::isSunDown($config);
 			break;
 		case 'getPageYearValues':
 			$beans = R::findAndExport('Inverter');
