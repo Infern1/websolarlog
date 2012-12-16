@@ -44,10 +44,19 @@ class Worker {
             	// When $live is empty and the sun is down then we probably are down
                 if (Util::isSunDown($this->config)) {
                 	// Fire an shutDown hook once a day (20 hours)
-                	if (PeriodHelper::isPeriodJob("ShutDownJobINV" . $inverter->id, (20 * 60))) {
+                	//check to see if the inverter is going to sleep.
+                	if (PeriodHelper::isPeriodJob("ShutDownJobINV" . $inverter->id, (2 * 60))) {
                 		HookHandler::getInstance()->fire("onInverterShutdown", $inverter);                		
                 	}
-                	
+
+                	if (PeriodHelper::isPeriodJob("10MinJob", 10)) {
+	                	$inverterStatus = $this->adapter->changeInverterStatus('0',$inverter->id);
+	                	if($inverterStatus['changed']==true){
+	                		$OEvent = new Event($inverter->id, time(), 'Notice', 'Inverter is going to sleep (new worker check)');
+	                		$this->adapter->addEvent($inverter->id, $OEvent);
+	                		HookHandler::getInstance()->fire("onInverterShutdown", $OEvent->event);
+	                	}
+                	}
                     // instead of continues polling the inverter during the night we give at a 2 minute break
                 	HookHandler::getInstance()->fire("onDebug", "No response and the sun is probably down. Inverter is probably a sleep, waiting for 2 minutes.");
                     sleep(120);
@@ -58,9 +67,15 @@ class Worker {
                 }
             } else {
                 $isAlive = true; // The inverter responded
-            }
-
-            if ($isAlive) {
+                // check if the inverter is awaking
+                if (PeriodHelper::isPeriodJob("10MinJob", 10)) {
+	                $inverterStatus = $this->adapter->changeInverterStatus('1',$inverter->id);
+	                if($inverterStatus['changed']==true){
+	                	$OEvent = new Event($inverter->id, time(), 'Notice', 'Inverter awake (new worker check)');
+	                	$this->adapter->addEvent($inverter->id, $OEvent);
+	                	HookHandler::getInstance()->fire("onInverterStartup", $OEvent->event);                	
+	                }
+                }
                 // Write the current live value
                 $this->adapter->writeLiveInfo($inverter->id, $live);
 

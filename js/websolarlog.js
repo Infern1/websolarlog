@@ -1103,7 +1103,7 @@ var WSL = {
 
 
 					// get the details graph....
-					WSL.createDetailsGraph(invtnum, divId,date);
+					//WSL.createDetailsGraph(invtnum, divId,date);
 					
 					$(".mainTabContainer").hover(function() {
 			    		$("#pickerFilterDiv").hide();
