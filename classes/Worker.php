@@ -45,14 +45,7 @@ class Worker {
             if ($live == null) {
             	// When $live is empty and the sun is down then we probably are down
             	if($isSunDown==true){
-	            	if (PeriodHelper::isPeriodJob("10minJob", 10)) {
-	            		$inverterStatus = $this->adapter->changeInverterStatus('0',$inverter->id);
-	            		if($inverterStatus['changed']==true){
-	            			$OEvent = new Event($inverter->id, time(), 'Notice', 'Inverter is going to sleep (new worker check)');
-	            			$this->adapter->addEvent($inverter->id, $OEvent);
-	            			HookHandler::getInstance()->fire("onInverterShutdown", $OEvent->event);
-	            		}
-	            	}
+	            	$changeStateTo = true;
             	}
                 if ($isSunDown) {
                 	// Fire an shutDown hook once a day (20 hours)
@@ -73,6 +66,11 @@ class Worker {
             } else {
                 $isAlive = true; // The inverter responded
                 // check if the inverter is awaking
+
+                if($isSunDown==true){
+                	$changeStateTo = false;
+                }
+                
                 if (PeriodHelper::isPeriodJob("10minJob", 10)) {
 	                $inverterStatus = $this->adapter->changeInverterStatus('1',$inverter->id);
 	                if($inverterStatus['changed']==true){
@@ -166,6 +164,27 @@ class Worker {
         $this->dropLock();
 
         R::commit(); // Commit the transaction
+        
+	    if($changeStateTo===true){
+        	if (PeriodHelper::isPeriodJob("10minJob", 10)) {
+        		$inverterStatus = $this->adapter->changeInverterStatus(1,$inverter->id);
+        		if($inverterStatus['changed']==true){
+        			$OEvent = new Event($inverter->id, time(), 'Notice', 'Inverter is going to sleep (new worker check)');
+        			$this->adapter->addEvent($inverter->id, $OEvent);
+        			HookHandler::getInstance()->fire("onInverterShutdown", $OEvent->event);
+        		}
+        	}
+        }
+        if($changeStateTo===false){
+        	if (PeriodHelper::isPeriodJob("10minJob", 10)) {
+        		$inverterStatus = $this->adapter->changeInverterStatus(0,$inverter->id);
+        		if($inverterStatus['changed']==true){
+        			$OEvent = new Event($inverter->id, time(), 'Notice', 'Inverter is going to sleep (new worker check)');
+        			$this->adapter->addEvent($inverter->id, $OEvent);
+        			HookHandler::getInstance()->fire("onInverterShutdown", $OEvent->event);
+        		}
+        	}
+        }
         
         // These hooks will also run if the inverter is down
         if (PeriodHelper::isPeriodJob("1MinJob", 1)) {
