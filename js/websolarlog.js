@@ -173,11 +173,7 @@ function handleGraphs(request,invtnum){
             }
             WSL.createDayGraph(invtnum, "Today",tab, date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});				                    
         }, 60000); // every minute
-       
     }
-    
-    
-    
 }
 
 
@@ -187,7 +183,7 @@ function populateTabs(){
 			url : 'js/templates/datePeriodFilter.hb',
 			success : function(source) {
 				var template = Handlebars.compile(source);
-			
+
 				var html = template({
 				'data' : data,
 				'lang' : data.lang
@@ -214,8 +210,8 @@ function populateTabs(){
 				
 				
 				$('#next').click(function () {
-				    var $picker = $("#datepicker");
-				    var date=new Date($picker.datepicker('getDate'));
+				    var picker = $("#datepicker");
+				    var date=new Date(picker.datepicker('getDate'));
 				    var splitDate = $('#datepicker').val().split('-');
 				    if($('#pickerPeriod').val()=='Today'){
 				    	date.setDate(date.getDate()+1);	
@@ -228,13 +224,13 @@ function populateTabs(){
 				    	var value = parseInt(splitDate[2])+1;
 				    	date.setFullYear(value);
 				    }
-				    $picker.datepicker('setDate', date);
+				    picker.datepicker('setDate', date);
 				    handleGraphs('picker',invtnum);
 				});
 				
 				$('#previous').click(function () {
-				    var $picker = $("#datepicker");
-				    var date=new Date($picker.datepicker('getDate'));
+				    var picker = $("#datepicker");
+				    var date=new Date(picker.datepicker('getDate'));
 				    var splitDate = $('#datepicker').val().split('-');
 				    if($('#pickerPeriod').val()=='Today'){
 				    	date.setDate(date.getDate()-1);	
@@ -247,7 +243,7 @@ function populateTabs(){
 				    	var value = parseInt(splitDate[2])-1;
 				    	date.setFullYear(value);
 				    }
-				    $picker.datepicker('setDate', date);
+				    picker.datepicker('setDate', date);
 				    handleGraphs('picker',invtnum);
 				});
 				invtnum = $('#pickerInv').val();
@@ -1009,8 +1005,8 @@ var WSL = {
 								        "date": object[2],
 								        "exp": object[3],
 										"diff": object[4],
-										"cumExp": object[5],
-										"cumHar": object[6]
+										"cumExp": object[6],
+										"cumHar": object[5]
 								};
 								dataTable.push([item]);
 							}
@@ -1018,7 +1014,7 @@ var WSL = {
 								'data' : dataTable,
 								'lang':result.lang
 							});
-							console.log(dataTable);
+							//console.log(dataTable);
 							
 							$('#ProductionGraph').after(html);
 
@@ -1106,7 +1102,6 @@ var WSL = {
 					(queryDate!="undefined") ? date = queryDate: date = date;
 
 
-
 					// get the details graph....
 					WSL.createDetailsGraph(invtnum, divId,date);
 					
@@ -1137,6 +1132,7 @@ var WSL = {
 					);
 					
 					
+				
 					
 					$('#next').unbind('click');
 					$('#previous').unbind('click');
@@ -1144,11 +1140,13 @@ var WSL = {
 					
 					
 					$('#next').click(function () {
-					    var $picker = $("#datepicker");
-					    var date=new Date($picker.datepicker('getDate'));
+					    var picker = $("#datepicker");
+					    var date=new Date(picker.datepicker('getDate'));
+					    
 					    var splitDate = $('#datepicker').val().split('-');
 					    if($('#pickerPeriod').val()=='Today'){
-					    	date.setDate(date.getDate()+1);	
+					    	date.setDate(date.getDate()+1);
+					    	
 					    }else if($('#pickerPeriod').val()=='Week'){
 					    	date.setDate(date.getDate()+7);
 					    }else if($('#pickerPeriod').val()=='Month'){
@@ -1157,15 +1155,15 @@ var WSL = {
 					    }else if($('#pickerPeriod').val()=='Year'){
 					    	var value = parseInt(splitDate[2])+1;
 					    	date.setFullYear(value);
-					    }
-					    $picker.datepicker('setDate', date);
-						var invtnum = $('#pickerInv').val();
-					    WSL.createDetailsGraph(invtnum, divId,date);
+					    }					    
+					    picker.datepicker('setDate', date);
+					    var splitDate = $('#datepicker').val().split('-');
+					    WSL.createDetailsGraph(invtnum, divId, splitDate[0]+'-'+splitDate[1]+'-'+splitDate[2]);
 					});
 					
 					$('#previous').click(function () {
-					    var $picker = $("#datepicker");
-					    var date=new Date($picker.datepicker('getDate'));
+					    var picker = $("#datepicker");
+					    var date=new Date(picker.datepicker('getDate'));
 					    var splitDate = $('#datepicker').val().split('-');
 					    if($('#pickerPeriod').val()=='Today'){
 					    	date.setDate(date.getDate()-1);	
@@ -1178,10 +1176,14 @@ var WSL = {
 					    	var value = parseInt(splitDate[2])-1;
 					    	date.setFullYear(value);
 					    }
-					    $picker.datepicker('setDate', date);
-						var invtnum = $('#pickerInv').val();
-					    WSL.createDetailsGraph(invtnum, divId,date);
+					    picker.datepicker('setDate', date);
+					    var splitDate = $('#datepicker').val().split('-');
+					    WSL.createDetailsGraph(invtnum, divId, splitDate[0]+'-'+splitDate[1]+'-'+splitDate[2]);
 					});
+				    //picker.datepicker('setDate', date);
+					var invtnum = $('#pickerInv').val();
+
+				    WSL.createDetailsGraph(invtnum, divId,date);
 							
 				},
 				dataType : 'text'

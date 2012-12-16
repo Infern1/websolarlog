@@ -1,4 +1,3 @@
-
 <table style="width:800px;text-align:left;">
 <tr><td colspan="6">{{lang.showHideGroups}}</td></tr>
 <tr>
