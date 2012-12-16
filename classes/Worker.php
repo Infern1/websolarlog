@@ -44,7 +44,9 @@ class Worker {
             
             if ($live == null) {
             	// When $live is empty and the sun is down then we probably are down
-            	if($isSunDown==true){
+
+            	// we going to set the Inverter state to 1;
+            	if($isSunDown===true){
 	            	$changeStateTo = true;
             	}
                 if ($isSunDown) {
@@ -66,19 +68,12 @@ class Worker {
             } else {
                 $isAlive = true; // The inverter responded
                 // check if the inverter is awaking
-
-                if($isSunDown==true){
+				
+                // we going to set the Inverter state to 0;
+                if($isSunDown===false){
                 	$changeStateTo = false;
                 }
                 
-                if (PeriodHelper::isPeriodJob("10minJob", 10)) {
-	                $inverterStatus = $this->adapter->changeInverterStatus('1',$inverter->id);
-	                if($inverterStatus['changed']==true){
-	                	$OEvent = new Event($inverter->id, time(), 'Notice', 'Inverter awake (new worker check)');
-	                	$this->adapter->addEvent($inverter->id, $OEvent);
-	                	HookHandler::getInstance()->fire("onInverterStartup", $OEvent->event);                	
-	                }
-                }
                 // Write the current live value
                 $this->adapter->writeLiveInfo($inverter->id, $live);
 
