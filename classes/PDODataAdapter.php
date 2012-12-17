@@ -1943,7 +1943,7 @@ class PDODataAdapter {
 			}
 			$totalEnergyBeansOverallKWHKWP= number_format($totalEnergyBeansOverall[0]['sumkWh'] / $sumPlantPower,2,',','');
 		}
-
+		
 		foreach ($config->inverters as $inverter){
 			$initialkwh += (float)$inverter->initialkwh;
 		}
