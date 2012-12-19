@@ -4,46 +4,120 @@ class TwitterAddon {
 	 * Start the job
 	 * @param mixed $args
 	 */
-	
-	function __construct() {
-		$this->adapter = PDODataAdapter::getInstance();
-		$this->config = Session::getConfig();
-	}
-	
-	function __destruct() {
-		$config = null;
-		$adapter = null;
-	}
-	
-	public function Tweet($args) {
-		include('../classes/Social/hybridauth/Hybrid/Auth.php');
-		$current_user_id = 1;
-		// create an instance for Hybridauth with the configuration file path as parameter
-		$hybridauth = new Hybrid_Auth( $this->config->hybridAuth );
 
-		$hybridauth_session_data = $this->adapter->get_sotred_hybridauth_session( $current_user_id );
+	function __construct() {
+		
+		include('../classes/Social/hybridauth/Hybrid/Auth.php');
+		$this->config = Session::getConfig();
+		
+		$url = Util::getCurrentUrl();
+		$url = str_replace("admin/admin-server.php","",$url);
+		
+		$this->configHybridAuth = array(
+				// "base_url" the url that point to HybridAuth Endpoint (where the index.php and config.php are found)
+				"base_url" => $url."classes/Social/hybridauth/",
+				"providers" => array (
+
+						"Twitter" => array (
+								"enabled" => true,
+								"keys"    => array ( "key" => "idYGAJncvuakWv0P0HVp7Q", "secret" => "qJilSF1fmxTZOI7M8ixqWfmAPXDYDLwSCPDWfpE0" )
+						)
+				)
+		);
+		$this->adapter = PDODataAdapter::getInstance();
+		
+		$this->hybridauth = new Hybrid_Auth( $this->configHybridAuth );
+
+		$this->current_user_id = 1;
+		$this->hybridauth_session_data = $this->adapter->get_sotred_hybridauth_session( $this->current_user_id );
+	}
+
+	function __destruct() {
+		$this->config = null;
+		$this->adapter = null;
+	}
+
+	function attachTwitter(){
+		HookHandler::getInstance()->fire("onError", 'Fire(AttachTwitter)');
+		if($this->hybridauth_session_data){
+			$data['message'] = 'Connected';
+		}else{
+
+			$twitter = $this->hybridauth->authenticate( "Twitter" );
+
+			// call Hybrid_Auth::getSessionData() to get stored data
+			$hybridauth_session_data = $this->hybridauth->getSessionData();
+
+
+			$twitter_user_profile = $twitter->getUserProfile();
+			$this->adapter->sotre_hybridauth_session( $this->current_user_id, $hybridauth_session_data,$twitter_user_profile );
+			$hybridauth_session_data = $this->adapter->get_sotred_hybridauth_session( $this->current_user_id );
+
+			if($hybridauth_session_data){
+				$data['message'] = 'Connected';
+			}
+			$twitter->logout();
+			//
+		}
+	}
+
+	function sendTweet(){
+		HookHandler::getInstance()->fire("onError", 'Fire(sendTwitter)');
+		// create an instance for Hybridauth with the configuration file path as parameter
 
 			
 		// get the stored hybridauth data from your storage system
 
 		// then call Hybrid_Auth::restoreSessionData() to get stored data
-		if($hybridauth_session_data){
-			
-			$data = $hybridauth->restoreSessionData( $hybridauth_session_data['hybridauth_session'] );
+		if($this->hybridauth_session_data){
+			HookHandler::getInstance()->fire("onError", '2222');
+			var_dump( $this->hybridauth_session_data);
+			$data = $this->hybridauth->restoreSessionData( $this->hybridauth_session_data['hybridauth_session'] );
 			// call back an instance of Twitter adapter
+			try{
+				$twitter = $this->hybridauth->getAdapter( "Twitter" );
 
-				$twitter = $hybridauth->getAdapter( "Twitter" );		
+				$indexValues = $this->adapter->readPageIndexData($this->config->hybridAuth);
 
-				$indexValues = $adapter->readPageIndexData($this->config->hybridAuth);
-	
 				$twitter->setUserStatus("Hi all, today we generated ". $indexValues['summary']['totalEnergyToday'][0]['KWH']." kWh. Check it out on: http://bit.ly/QV9DxJ. Grtz! Power by #SunCounter.nl" );
 				$twitter->logout();
 				$data['message']='Tweet send';
 				$data['tweetSend']=1;
+			}
+			catch( Exception $e ){
+				
+				
+				HookHandler::getInstance()->fire("onError", var_dump( $this->hybridauth_session_data));
+				HookHandler::getInstance()->fire("onError", $e->getMessage());
+
+			}
+
+		}else{
+			$data['tweetSend']=0;
+			$data['message']= "No credentials available, so Twitter doesn't no how you are and you may not Tweet :| ";
+		}
+	}
+
+	function Tweet($args) {
+		HookHandler::getInstance()->fire("onError", 'Fire(Tweet)');
+		// then call Hybrid_Auth::restoreSessionData() to get stored data
+		if($this->hybridauth_session_data){
+				
+			$data = $this->hybridauth->restoreSessionData( $this->hybridauth_session_data['hybridauth_session'] );
+			// call back an instance of Twitter adapter
+
+			$twitter = $this->hybridauth->getAdapter( "Twitter" );
+
+			$indexValues = $this->adapter->readPageIndexData($this->config->hybridAuth);
+
+			$twitter->setUserStatus("Hi all, today we generated ". $indexValues['summary']['totalEnergyToday'][0]['KWH']." kWh. Check it out on: http://bit.ly/QV9DxJ. Grtz! Power by #SunCounter.nl" );
+			$twitter->logout();
+			$data['message']='Tweet send';
+			$data['tweetSend']=1;
 
 
 		}
-		
+
 	}
-	
+
 }

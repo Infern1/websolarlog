@@ -309,69 +309,13 @@ switch ($settingstype) {
 		$adapter->writeConfig($config);
 		break;
 	case 'attachTwitter':
-		include('../classes/Social/hybridauth/Hybrid/Auth.php');
-		$current_user_id = 1;
-
-		$hybridauth_session_data = $adapter->get_sotred_hybridauth_session( $current_user_id );
-
-		if($hybridauth_session_data){
-			$data['message'] = 'Connected';
-		}else{
-			$hybridauth = new Hybrid_Auth( $config->hybridAuth );
-
-			$twitter = $hybridauth->authenticate( "Twitter" );
-
-			// call Hybrid_Auth::getSessionData() to get stored data
-			$hybridauth_session_data = $hybridauth->getSessionData();
-				
-
-			$twitter_user_profile = $twitter->getUserProfile();
-			$adapter->sotre_hybridauth_session( $current_user_id, $hybridauth_session_data,$twitter_user_profile );
-			$hybridauth_session_data = $adapter->get_sotred_hybridauth_session( $current_user_id );
-
-			if($hybridauth_session_data){
-				$data['message'] = 'Connected';
-			}
-			$twitter->logout();
-			//
-		}
+		$hybridTwitter = new TwitterAddon();
+		$hybridTwitter->attachTwitter();
+		
 		break;
 	case 'sendTweet':
-		include('../classes/Social/hybridauth/Hybrid/Auth.php');
-		$current_user_id = 1;
-		// create an instance for Hybridauth with the configuration file path as parameter
-		$hybridauth = new Hybrid_Auth( $config );	
-		
-		$hybridauth_session_data = $adapter->get_sotred_hybridauth_session( $current_user_id );
-
-			
-		// get the stored hybridauth data from your storage system
-
-		// then call Hybrid_Auth::restoreSessionData() to get stored data
-		if($hybridauth_session_data){
-			
-			$data = $hybridauth->restoreSessionData( $hybridauth_session_data['hybridauth_session'] );
-			// call back an instance of Twitter adapter
-			try{
-				$twitter = $hybridauth->getAdapter( "Twitter" );		
-
-				$indexValues = $adapter->readPageIndexData($config->hybridAuth);
-	
-				$twitter->setUserStatus("Hi all, today we generated ". $indexValues['summary']['totalEnergyToday'][0]['KWH']." kWh. Check it out on: http://bit.ly/QV9DxJ. Grtz! Power by #SunCounter.nl" );
-				$twitter->logout();
-				$data['message']='Tweet send';
-				$data['tweetSend']=1;
-			}
-			catch( Exception $e ){
-				$data['tweetSend']=0;
-				$data['message']= $e->getMessage();
-
-			}
-
-		}else{
-			$data['tweetSend']=0;
-			$data['message']= "No credentials available, so Twitter doesn't no how you are and you may not Tweet :| ";
-		}
+		$hybridTwitter = new TwitterAddon();
+		$hybridTwitter->sendTweet();
 		
 		break;
 	case 'attachDropbox':

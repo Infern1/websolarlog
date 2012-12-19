@@ -41,9 +41,9 @@ textarea { overflow: auto; }
 #navigation { width: 940px; position: relative; }
 #navigation ul { float: left; display: inline; position: relative; }
 #navigation ul li { display: inline; float: left; font-family: Tahoma, arial, sans-serif; font-size: 18px; color: #fff; line-height: 47px; text-shadow: 0 1px #5a8503; }
-#navigation ul li a { position: relative; float: left; height: 52px; color: #fff; background: url(images/nav-item.png) repeat-x 0 0px; width: 126px; text-align: center; }
-#navigation ul li.nav-start a { background: url(images/nav-start.png) no-repeat 0 0; width: 128px; }
-#navigation ul li.nav-end a { background: url(images/nav-end.png) no-repeat right 0; width: 128px; }
+#navigation ul li a { position: relative; float: left; height: 52px; color: #fff; background: url(images/nav-item.png) repeat-x 0 0px; width: 115px; text-align: center; }
+#navigation ul li.nav-start a { background: url(images/nav-start.png) no-repeat 0 0; width: 117px; }
+#navigation ul li.nav-end a { background: url(images/nav-end.png) no-repeat right 0; width: 117px; }
 #navigation ul li a:hover { background-position: 0 -52px; text-decoration: none; color: #daf54f; }
 #navigation ul li.nav-end a:hover { background-position: right -52px; }
 

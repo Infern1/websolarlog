@@ -155,11 +155,32 @@ function init_menu() {
     $("#btnGrid").bind('click', function() { init_grid();});
     $("#btnEmail").bind('click', function() { init_mail(); });
     $("#btnTestPage").bind('click', function() { init_testpage(); });
+    $("#btnTariff").bind('click', function() { init_tariff(); });
     $("#btnUpdate").bind('click', function() { init_updatepage(); });
     $("#btnBackup").bind('click', function() { init_backup(); });
 }
 
 
+function init_tariff(){
+    $('#sidebar').html("");
+    var content = $('#content');
+    content.html('<div id="c_general"></div><div id="c_communication"></div><div id="c_security"></div>'); // Clear old data
+    $.getJSON('admin-server.php?s=get-tariffs', function(data) {
+        $.ajax({
+            url : 'js/templates/tariffs.hb',
+            success : function(source) {
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : data
+                });
+                $('#c_general', content).html(html);
+                
+            },
+            dataType : 'text'
+        });        
+    });
+	
+}
 
 function init_backup() {
     $('#sidebar').html("");
@@ -335,7 +356,7 @@ function init_advanced() {
                 var html = template({
                     'data' : data
                 });
-                console.log(data);
+                
                 $('#content').html(html);
                 
                 $('#btnAdvancedSubmit').bind('click', function(){

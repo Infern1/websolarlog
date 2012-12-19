@@ -29,7 +29,7 @@ class Config
     public $smtpPassword;
 
     public $template;
-
+    public $basePath;
     public $inverters; // Contains an array of inverters
 
     public $co2kwh;
@@ -39,6 +39,9 @@ class Config
     public $smagetpath; // The path to sma-get
     
     public $adminpasswd;
+
+    public $urlDir;
+    public $urlComplete;
     
     public $dropboxKey;
     public $dropboxSecret;
@@ -90,7 +93,7 @@ class Config
 		$this->emailAlarms = true;
 		$this->emailEvents = true;
 		$this->emailReports = false;
-
+		
 		// ## DROPBOX
 		$this->dropboxKey = 'phrjcc77h8am0ch';
 		$this->dropboxSecret = 'uxaakmr5iz5x4m4';
@@ -106,20 +109,6 @@ class Config
 		$this->adminpasswd = sha1('admin');
 		
 
-		$callback = Util::getCallBackURL();
-		
-		$this->hybridAuth = array(
-				// "base_url" the url that point to HybridAuth Endpoint (where the index.php and config.php are found)
-				"base_url" => $callback."/classes/Social/hybridauth/",
-				"providers" => array (
-		
-						"Twitter" => array (
-								"enabled" => true,
-								"keys"    => array ( "key" => "idYGAJncvuakWv0P0HVp7Q", "secret" => "qJilSF1fmxTZOI7M8ixqWfmAPXDYDLwSCPDWfpE0" )
-						)
-				)
-		);
-		
 	}
 
 	function getInverterConfig($inverterId) {

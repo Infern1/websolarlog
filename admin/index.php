@@ -14,6 +14,7 @@ session_start();
 <link rel="stylesheet" href="../css/jquery.pnotify.default.css" type="text/css" />
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 <link rel="stylesheet" href="css/main.css" type="text/css" />
+<link rel="stylesheet" href="../js/jqueryuicss/jquery-ui-custom.css" type="text/css" />
 <script type="text/javascript" src="../js/jquery.min.js"></script>
 <script type="text/javascript" src="../js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="../js/jquery.calculation.min.js"></script>
@@ -47,6 +48,7 @@ session_start();
 					<li><a href="#inverters" id="btnInverters">Inverters</a></li>
 					<li><a href="#email" id="btnEmail">eMail</a></li>
 					<li><a href="#advanced" id="btnAdvanced">Advanced</a></li>
+					<!-- <li><a href="#tariff" id="btnTariff">Tariff</a></li>-->
 					<li><a href="#update" id="btnUpdate">Update</a></li>
 					<li><a href="#backup" id="btnBackup">Backup</a></li>
 					<li class="nav-end"><a href="#testpage" id="btnTestPage">Test page</a></li>

@@ -176,11 +176,41 @@ class Util {
     	return array( 'day'=>$days, 'hour'=>$hours, 'min'=>$min, 'sec'=>$sec );
     }
     
-    public static function getCallBackURL(){
-    $protocol = (!empty($_SERVER['HTTPS'])) ? 'https' : 'http';
+    public static function timeBetweenRange($startDate, $endDate, $todayDate){
+    	$startTimestamp = strtotime($startDate);
+    	$endTimestamp = strtotime($endDate);
+    	$todayTimestamp = strtotime($todayDate);
+
+    	return (($todayTimestamp >= $startTimestamp) && ($todayTimestamp <= $endTimestamp));
+    }
     
-    return  $protocol . '://' . $_SERVER['HTTP_HOST'] .'/'. basename(dirname(dirname(__FILE__)));
-	}
+    
+    public static function getCurrentUrl()
+    {
+    	if(
+    			isset( $_SERVER['HTTPS'] ) && ( $_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1 )
+    			|| 	isset( $_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'
+    	){
+    		$protocol = 'https://';
+    	}
+    	else {
+    		$protocol = 'http://';
+    	}
+    
+    	$url = $protocol . $_SERVER['HTTP_HOST'];
+    
+    	// use port if non default
+    	$url .=
+    	isset( $_SERVER['SERVER_PORT'] )
+    	&&( ($protocol === 'http://' && $_SERVER['SERVER_PORT'] != 80) || ($protocol === 'https://' && $_SERVER['SERVER_PORT'] != 443) )
+    	? ':' . $_SERVER['SERVER_PORT']
+    	: ''
+    	;
+    	$url .= $_SERVER['PHP_SELF'];
+    
+    	// return current url
+    	return $url;
+    }
     
     
 }
