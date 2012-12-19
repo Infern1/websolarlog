@@ -46,7 +46,7 @@ class Worker {
             	// When $live is empty and the sun is down then we probably are down
 
             	// we going to set the Inverter state to 1;
-            	if($isSunDown===true){
+            	if($isSunDown==true){
             		// The sun is NOT Shining, so we set the inverter state to Sleep=False
 	            	$changeStateTo = false;
             	}
@@ -72,7 +72,7 @@ class Worker {
 				
                 // we going to set the Inverter state to 0;
                 // if isSunDown === false (sun is Shining!)
-                if($isSunDown===false){
+                if($isSunDown==false){
                 	// The sun is Shining, so we set the inverter state to Active=True
                 	$changeStateTo = true;
                 }
@@ -164,18 +164,21 @@ class Worker {
         R::commit(); // Commit the transaction
         
 	   
-        if (PeriodHelper::isPeriodJob("10minJob", 10)) {
-        	if ($changeStateTo===false){
+        if (PeriodHelper::isPeriodJob("10MinJob", 10)) {
+        	if ($changeStateTo==false){
         		$state = 0;
         		$message = 'Inverter is going to sleep (new worker check)';
+        		HookHandler::getInstance()->fire("Twitter");
         	}else{
-        		$message = 'Inverter is awaking (new worker check)';
         		$state = 1;
+        		$message = 'Inverter is awaking (new worker check)';
+        		
         	}
-        	$inverterStatus = $this->adapter->changeInverterStatus(State,$inverter->id);
+        	$inverterStatus = $this->adapter->changeInverterStatus($state,$inverter->id);
         	if($inverterStatus['changed']==true){
         		$OEvent = new Event($inverter->id, time(), 'Notice', $message);
         		$this->adapter->addEvent($inverter->id, $OEvent);
+        		
         		HookHandler::getInstance()->fire("onInverterShutdown", $OEvent->event);
         	}
         }

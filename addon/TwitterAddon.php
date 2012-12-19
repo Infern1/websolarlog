@@ -4,14 +4,24 @@ class TwitterAddon {
 	 * Start the job
 	 * @param mixed $args
 	 */
-	public function onJob($args) {
+	
+	function __construct() {
+		$this->adapter = PDODataAdapter::getInstance();
+		$this->config = Session::getConfig();
+	}
+	
+	function __destruct() {
+		$config = null;
+		$adapter = null;
+	}
+	
+	public function Tweet($args) {
 		include('../classes/Social/hybridauth/Hybrid/Auth.php');
 		$current_user_id = 1;
 		// create an instance for Hybridauth with the configuration file path as parameter
-		$config = new Config();
-		$hybridauth = new Hybrid_Auth( $config );	
-		
-		$hybridauth_session_data = $adapter->get_sotred_hybridauth_session( $current_user_id );
+		$hybridauth = new Hybrid_Auth( $this->config->hybridAuth );
+
+		$hybridauth_session_data = $this->adapter->get_sotred_hybridauth_session( $current_user_id );
 
 			
 		// get the stored hybridauth data from your storage system
@@ -24,7 +34,7 @@ class TwitterAddon {
 
 				$twitter = $hybridauth->getAdapter( "Twitter" );		
 
-				$indexValues = $adapter->readPageIndexData($config->hybridAuth);
+				$indexValues = $adapter->readPageIndexData($this->config->hybridAuth);
 	
 				$twitter->setUserStatus("Hi all, today we generated ". $indexValues['summary']['totalEnergyToday'][0]['KWH']." kWh. Check it out on: http://bit.ly/QV9DxJ. Grtz! Power by #SunCounter.nl" );
 				$twitter->logout();
