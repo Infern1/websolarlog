@@ -9,8 +9,8 @@ class BasicChecksAddon {
 	}
 	
 	function __destruct() {
-		$config = null;
-		$adapter = null;
+		$this->config = null;
+		$this->adapter = null;
 	}
 	
 	public function on10MinJob($args) {
