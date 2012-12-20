@@ -168,7 +168,7 @@ class Worker {
         	if ($changeStateTo==false){
         		$state = 0;
         		$message = 'Inverter is going to sleep (new worker check)';
-        		HookHandler::getInstance()->fire("Twitter");
+        		HookHandler::getInstance()->fire("sendTweet");
         	}else{
         		$state = 1;
         		$message = 'Inverter is awaking (new worker check)';
@@ -178,7 +178,6 @@ class Worker {
         	if($inverterStatus['changed']==true){
         		$OEvent = new Event($inverter->id, time(), 'Notice', $message);
         		$this->adapter->addEvent($inverter->id, $OEvent);
-        		
         		HookHandler::getInstance()->fire("onInverterShutdown", $OEvent->event);
         	}
         }

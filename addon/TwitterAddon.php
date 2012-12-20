@@ -63,61 +63,25 @@ class TwitterAddon {
 
 	function sendTweet(){
 		HookHandler::getInstance()->fire("onError", 'Fire(sendTwitter)');
-		// create an instance for Hybridauth with the configuration file path as parameter
-
-			
-		// get the stored hybridauth data from your storage system
-
-		// then call Hybrid_Auth::restoreSessionData() to get stored data
 		if($this->hybridauth_session_data){
 			HookHandler::getInstance()->fire("onError", '2222');
 			var_dump( $this->hybridauth_session_data);
 			$data = $this->hybridauth->restoreSessionData( $this->hybridauth_session_data['hybridauth_session'] );
-			// call back an instance of Twitter adapter
 			try{
 				$twitter = $this->hybridauth->getAdapter( "Twitter" );
-
 				$indexValues = $this->adapter->readPageIndexData($this->config->hybridAuth);
-
 				$twitter->setUserStatus("Hi all, today we generated ". $indexValues['summary']['totalEnergyToday'][0]['KWH']." kWh. Check it out on: http://bit.ly/QV9DxJ. Grtz! Power by #SunCounter.nl" );
 				$twitter->logout();
 				$data['message']='Tweet send';
 				$data['tweetSend']=1;
 			}
 			catch( Exception $e ){
-				
-				
 				HookHandler::getInstance()->fire("onError", var_dump( $this->hybridauth_session_data));
 				HookHandler::getInstance()->fire("onError", $e->getMessage());
-
 			}
-
 		}else{
 			$data['tweetSend']=0;
 			$data['message']= "No credentials available, so Twitter doesn't no how you are and you may not Tweet :| ";
 		}
 	}
-
-	function Tweet($args) {
-		HookHandler::getInstance()->fire("onError", 'Fire(Tweet)');
-		// then call Hybrid_Auth::restoreSessionData() to get stored data
-		if($this->hybridauth_session_data){
-				
-			$data = $this->hybridauth->restoreSessionData( $this->hybridauth_session_data['hybridauth_session'] );
-			// call back an instance of Twitter adapter
-
-			$twitter = $this->hybridauth->getAdapter( "Twitter" );
-
-			$indexValues = $this->adapter->readPageIndexData($this->config->hybridAuth);
-
-			$twitter->setUserStatus("Hi all, today we generated ". $indexValues['summary']['totalEnergyToday'][0]['KWH']." kWh. Check it out on: http://bit.ly/QV9DxJ. Grtz! Power by #SunCounter.nl" );
-			$twitter->logout();
-			$data['message']='Tweet send';
-			$data['tweetSend']=1;
-
-
-		}
-
-	}
-
 }

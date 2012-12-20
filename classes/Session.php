@@ -113,7 +113,7 @@ class Session
     	$hookHandler->add("on1MinJob", "PvOutputAddon.onJob");
     	
     	// TwitterAddon
-    	$hookHandler->add("Tweet", "TwitterAddon.Tweet");
+    	$hookHandler->add("sendTweet", "TwitterAddon.sendTweet");
     	
     	// BasicChecksAddon
     	$hookHandler->add("on10MinJob", "BasicChecksAddon.on10MinJob");
