@@ -101,13 +101,19 @@ class Worker {
                 $arHistory = $this->adapter->readHistory($inverter->id, null);
 
                 // Fist line means inverter awake
+                
+                /**
+                 * 
+                 * Disabled because of the "new" check
+                 * 
                 if(count($arHistory) == 1) {
                     // The interver is awake
                     $OEvent = new Event($inverter->id, time(), 'Notice', 'Inverter awake');
                     $this->adapter->addEvent($inverter->id, $OEvent);
                     HookHandler::getInstance()->fire("onInverterStartup", $OEvent->event);
                 }
-
+                */
+                
                 // Energy check every 30 minutes
                 if (PeriodHelper::isPeriodJob("EnergyJob", 30)) {
 
@@ -162,28 +168,27 @@ class Worker {
         $this->dropLock();
 
         R::commit(); // Commit the transaction
-        
-	   
+
         if (PeriodHelper::isPeriodJob("10MinJob", 10)) {
         	if ($changeStateTo==false){
         		$state = 0;
         		$message = 'Inverter is going to sleep (new worker check)';
-        		HookHandler::getInstance()->fire("sendTweet");
-        	}else{
+        	}
+        	if ($changeStateTo==true){
         		$state = 1;
         		$message = 'Inverter is awaking (new worker check)';
-        		
         	}
         	$inverterStatus = $this->adapter->changeInverterStatus($state,$inverter->id);
         	if($inverterStatus['changed']==true){
+        		if ($changeStateTo==false){
+        			HookHandler::getInstance()->fire("sendTweet");
+        		}
         		$OEvent = new Event($inverter->id, time(), 'Notice', $message);
         		$this->adapter->addEvent($inverter->id, $OEvent);
         		HookHandler::getInstance()->fire("onInverterShutdown", $OEvent->event);
         	}
         }
-        
 
-        
         // These hooks will also run if the inverter is down
         if (PeriodHelper::isPeriodJob("1MinJob", 1)) {
         	HookHandler::getInstance()->fire("on1MinJob");
