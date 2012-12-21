@@ -1613,12 +1613,12 @@ class PDODataAdapter {
 		foreach ($beans as $bean){
 			$cumPower += $bean['KWH'];
 			$points[] = array (mktime(0, 0, 0,date("m",$bean['time']),1,date("Y",$bean['time']))*1000,
-					(float)sprintf("%.2f", $bean['KWH']),
+					floatval($bean['KWH']),
 					"1-".date("m-Y",$bean['time']),
-					(float)$bean['Exp'],
-					(float)$bean['Diff'],
-					(float)$bean['cumExp'],
-					(float)$bean['cumKWH']
+					floatval($bean['Exp']),
+					floatval($bean['Diff']),
+					floatval($bean['cumExp']),
+					floatval($bean['cumKWH'])
 			);
 		}
 
@@ -1646,9 +1646,10 @@ class PDODataAdapter {
 		foreach ($beans as $bean){
 			$cumPower += $bean['KWH'];
 			$points[] = array (Util::getTimestampOfDate(0,0,0, date("d",$bean['time']),date("m",$bean['time']), date("Y",$bean['time']))*1000,
-					(float)sprintf("%.2f", $bean['KWH']),
+					floatval($bean['KWH']),
 					date("Y-m-d",$bean['time']),
-					(float)sprintf("%.2f", $cumPower)
+					floatval($cumPower),
+					$bean['KWH']
 			);
 		}
 
@@ -1674,7 +1675,7 @@ class PDODataAdapter {
 						($time)*1000,
 						0,
 						date("Y-m-d",$time),
-						(float)sprintf("%.2f", $cumPower)
+						floatval($cumPower)
 				);
 			}
 		}
@@ -1945,10 +1946,10 @@ class PDODataAdapter {
 		}
 		
 		foreach ($config->inverters as $inverter){
-			$initialkwh += (float)$inverter->initialkwh;
+			$initialkwh += floatval($inverter->initialkwh);
 		}
 		$tempTotal = 0;
-		$tempTotal = $initialkwh + (float)$totalEnergyBeansOverall[0]['sumkWh'] ;
+		$tempTotal = $initialkwh + floatval($totalEnergyBeansOverall[0]['sumkWh']);
 		$totalEnergyOverallTotal = number_format($tempTotal,2,',','');
 		$totalEnergyOverallTotalKWHKWP =  number_format($totalEnergyOverallTotal / $sumPlantPower,2,',','');
 
