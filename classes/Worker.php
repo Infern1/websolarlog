@@ -43,25 +43,23 @@ class Worker {
             $isSunDown = Util::isSunDown($this->config);
             
             if ($live == null) {
-            	// When $live is empty and the sun is down then we probably are down
-
-            	// we going to set the Inverter state to 1;
+            	// When $live is empty and the sun is down, this inverter is probably sleeping
+            	// we going to set the Inverter state to 0;
             	if($isSunDown==true){
-            		// The sun is NOT Shining, so we set the inverter state to Sleep=False
+            		// The sun is DOWN and NOT Shining, so we set the inverter state to Sleep=False
 	            	$changeStateTo = false;
+	            	// instead of continues polling the inverter during the night we give at a 2 minute break
+	            	HookHandler::getInstance()->fire("onDebug", "No response and the sun is probably down. Inverter is probably a sleep, waiting for 2 minutes.");
+	            	sleep(120);
             	}
-                if ($isSunDown) {
+            	//
+                if ($isSunDown==false) {
+                	// The sun is UP and probably Shinging, this inverter is probably active.
                 	// Fire an shutDown hook once a day (20 hours)
                 	//check to see if the inverter is going to sleep.
                 	if (PeriodHelper::isPeriodJob("ShutDownJobINV" . $inverter->id, (2 * 60))) {
                 		HookHandler::getInstance()->fire("onInverterShutdown", $inverter);                		
                 	}
-
-
-                    // instead of continues polling the inverter during the night we give at a 2 minute break
-                	HookHandler::getInstance()->fire("onDebug", "No response and the sun is probably down. Inverter is probably a sleep, waiting for 2 minutes.");
-                    sleep(120);
-                } else {
                 	// We shouldn't be down yet, so just wait 30 seconds
                 	HookHandler::getInstance()->fire("onDebug", "No valid response. Inverter is probably busy or down, waiting for 30 seconds.");
                     sleep(30);
