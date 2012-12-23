@@ -21,13 +21,15 @@ function googleAnalyticsJSCodeBlock(){
 		$.ajax({
 			url : 'js/templates/GoogleAnalyticsJSCodeBlock.hb',
 			success : function(source) {
-				var template = Handlebars.compile(source);
-				var html = template({
-					'data' : data
-				});
-				
-				if (data.googleAnalyticsCode != ''){
-					$("body").append(html);
+				if (data.success) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					
+					if (data.googleAnalyticsCode != ''){
+						$("body").append(html);
+					}
 				}
 			},
 			dataType : 'text'

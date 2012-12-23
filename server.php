@@ -76,9 +76,11 @@ try {
 			break;
 			
 		case 'googleAnalyticsJSCodeBlock':
-			
-			$data['googleAnalyticsCode'] = $config->googleAnalytics;
-			
+			$data['success'] = false;
+			if (isset($config->googleAnalytics) && $config->googleAnalytics != "") {
+				$data['success'] = true;
+				$data['googleAnalyticsCode'] = $config->googleAnalytics;
+			}
 			break;
 		case 'getMisc':
 			$noticeEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Notice'));
