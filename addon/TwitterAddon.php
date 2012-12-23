@@ -66,7 +66,7 @@ class TwitterAddon {
 			try{
 				$twitter = $this->hybridauth->getAdapter( "Twitter" );
 				$indexValues = $this->adapter->readPageIndexData($this->config->hybridAuth);
-				$twitter->setUserStatus("Hi all, today we generated ". $indexValues['summary']['totalEnergyToday'][0]['KWH']." kWh. Check it out on: http://bit.ly/QV9DxJ. Grtz! Power by #SunCounter.nl" );
+				$twitter->setUserStatus("Hi all, today we generated ". $indexValues['summary']['totalEnergyToday'][0]['KWH']." kWh. Check it out on: http://bit.ly/QV9DxJ. Grtz! #SunCounter.nl" );
 				$twitter->logout();
 				$data['message']='Tweet send';
 				$data['tweetSend']=1;
