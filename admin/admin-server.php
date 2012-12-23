@@ -18,6 +18,8 @@ switch ($settingstype) {
 		$data['smagetpath'] = $config->smagetpath;
 		$data['debugmode'] = $config->debugmode;
 		$data['googleAnalytics'] = $config->googleAnalytics;
+		$data['piwikServerUrl'] = $config->piwikServerUrl;
+		$data['piwikSiteId'] = $config->piwikSiteId;
 		
 		// social
 		$user_id=1;
@@ -210,6 +212,8 @@ switch ($settingstype) {
 		$config->smagetpath =Common::getValue("smagetpath");
 		$config->debugmode =Common::getValue("debugmode");
 		$config->googleAnalytics = Common::getValue("googleAnalytics");
+		$config->piwikServerUrl = Common::getValue("piwikServerUrl");
+		$config->piwikSiteId = Common::getValue("piwikSiteId");
 		$adapter->writeConfig($config);
 		break;
 	case 'save-communication':

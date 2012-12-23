@@ -82,6 +82,14 @@ try {
 				$data['googleAnalyticsCode'] = $config->googleAnalytics;
 			}
 			break;
+		case 'piwikJSCodeBlock':
+			$data['success'] = false;
+			if (isset($config->piwikServerUrl) && $config->piwikServerUrl != "") {
+				$data['success'] = true;
+				$data['piwikServerUrl'] = $config->piwikServerUrl;
+				$data['piwikSiteId'] = $config->piwikSiteId;
+			}
+			break;
 		case 'getMisc':
 			$noticeEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Notice'));
 			$alarmEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Alarm'));

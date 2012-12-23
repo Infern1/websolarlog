@@ -602,8 +602,8 @@ class PDODataAdapter {
 		$bean->co2kwh = $config->co2kwh;
 		
 		$bean->googleAnalytics = $config->googleAnalytics;
-		
-		
+		$bean->piwikServerUrl = $config->piwikServerUrl;
+		$bean->piwikSiteId = $config->piwikSiteId;
 
 		$bean->adminpasswd = $config->adminpasswd;
 
@@ -655,6 +655,8 @@ class PDODataAdapter {
 			$config->inverters = $this->readInverters();
 			
 			$config->googleAnalytics = $bean->googleAnalytics;
+			$config->piwikServerUrl = $bean->piwikServerUrl;
+			$config->piwikSiteId = $bean->piwikSiteId;
 			
 			$config->adminpasswd = ($bean->adminpasswd != "") ? $bean->adminpasswd : $config->adminpasswd;
 		}

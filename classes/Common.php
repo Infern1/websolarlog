@@ -246,6 +246,12 @@ class Common
 
     	return $results;
     }
-
+    
+    public static function getShortUrl($url) {
+    	$ch = curl_init("http://is.gd/create.php?format=simple&url=" . $url);
+    	curl_setopt($ch, CURLOPT_HEADER, 0);
+    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    	return curl_exec($ch);
+    }
 }
 ?>

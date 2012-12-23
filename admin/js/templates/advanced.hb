@@ -7,6 +7,8 @@
     <label for="smagetpath">sma-get path:</label><input type="text" name="smagetpath" value="{{data.smagetpath}}" /><br />
     <label for="debugmode">Debug mode:</label><input type="checkbox" name="debugmode" value="1" {{#if data.debugmode}}checked=checked{{/if}}/><br />
     <label for="googleAnalytics">Google Analytics:</label><input type="text" name="googleAnalytics" value="{{data.googleAnalytics}}" />(XX-00000000-0)<br />
+    <label for="piwikServerUrl">Piwik server url:</label><input type="text" name="piwikServerUrl" value="{{data.piwikServerUrl}}" /><br />
+    <label for="piwikSiteId">Piwik site id:</label><input type="text" name="piwikSiteId" value="{{data.piwikSiteId}}" /><br />
     <button type="button" id="btnAdvancedSubmit">Save</button>
   </fieldset>
 </form> 

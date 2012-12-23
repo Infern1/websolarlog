@@ -47,6 +47,9 @@ class Config
     public $dropboxSecret;
     
     public $googleAnalytics;
+    public $piwikServerUrl;
+    public $piwikSiteId;
+    
     public $hybridAuth;
     
 	/**

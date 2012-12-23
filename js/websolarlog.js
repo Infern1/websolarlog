@@ -18,25 +18,41 @@ function ajaxStart(){
 
 function googleAnalyticsJSCodeBlock(){
 	$.getJSON('server.php?method=googleAnalyticsJSCodeBlock', function(data) {
-		$.ajax({
-			url : 'js/templates/GoogleAnalyticsJSCodeBlock.hb',
-			success : function(source) {
-				if (data.success) {
+		if (data.success) {
+			$.ajax({
+				url : 'js/templates/GoogleAnalyticsJSCodeBlock.hb',
+				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
 						'data' : data
 					});
 					
-					if (data.googleAnalyticsCode != ''){
-						$("body").append(html);
-					}
-				}
-			},
-			dataType : 'text'
-		});
+					$("body").append(html);
+				},
+				dataType : 'text'
+			});
+		}
 	});
 }
 
+function piwikJSCodeBlock(){
+	$.getJSON('server.php?method=piwikJSCodeBlock', function(data) {
+		if (data.success) {
+			$.ajax({
+				url : 'js/templates/PiwikAnalyticsJSCodeBlock.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					
+					$("body").append(html);
+				},
+				dataType : 'text'
+			});
+		}
+	});
+}
 
 beforeLoad = (new Date()).getTime();
 window.onload = pageLoadingTime;

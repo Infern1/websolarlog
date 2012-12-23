@@ -19,6 +19,7 @@ require_once("template/" . $template . "/index.php");
 		
 	});
 	googleAnalyticsJSCodeBlock();
+	//piwikJSCodeBlock();
 	</script>
 	<!-- END Wrapper -->
 </body>
