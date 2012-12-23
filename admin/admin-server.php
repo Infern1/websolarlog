@@ -319,7 +319,7 @@ switch ($settingstype) {
 		
 		break;
 	case 'attachDropbox':
-		if(strlen(common::getValue('uid'))==8 && strlen(common::getValue('oauth_token'))==15){
+		if(strlen(common::getValue('uid'))>6 && strlen(common::getValue('oauth_token'))==15){
 			$dropbox = new Dropbox();
 			$protocol = (!empty($_SERVER['HTTPS'])) ? 'https' : 'http';
 			// /websolarlog/trunk/admin/
