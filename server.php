@@ -74,18 +74,15 @@ try {
 			$data['languages'] = $languages;
 			$data['currentlanguage'] = $user_lang;
 			break;
-			
-		case 'googleAnalyticsJSCodeBlock':
-			$data['success'] = false;
+		case 'analyticsSettings':
+			$data['googleSuccess'] = false;
 			if (isset($config->googleAnalytics) && $config->googleAnalytics != "") {
-				$data['success'] = true;
+				$data['googleSuccess'] = true;
 				$data['googleAnalyticsCode'] = $config->googleAnalytics;
 			}
-			break;
-		case 'piwikJSCodeBlock':
-			$data['success'] = false;
+			$data['piwikSuccess'] = false;
 			if (isset($config->piwikServerUrl) && $config->piwikServerUrl != "") {
-				$data['success'] = true;
+				$data['piwikSuccess'] = true;
 				$data['piwikServerUrl'] = $config->piwikServerUrl;
 				$data['piwikSiteId'] = $config->piwikSiteId;
 			}

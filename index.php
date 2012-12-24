@@ -18,8 +18,7 @@ require_once("template/" . $template . "/index.php");
 		window.setInterval(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");}, 2500); // every 5 seconds
 		
 	});
-	googleAnalyticsJSCodeBlock();
-	//piwikJSCodeBlock();
+	analyticsJSCodeBlock();
 	</script>
 	<!-- END Wrapper -->
 </body>

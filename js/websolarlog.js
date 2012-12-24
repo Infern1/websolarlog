@@ -16,41 +16,29 @@ function ajaxStart(){
 	$('.ui-tooltip').remove();
 }
 
-function googleAnalyticsJSCodeBlock(){
-	$.getJSON('server.php?method=googleAnalyticsJSCodeBlock', function(data) {
-		if (data.success) {
+function analyticsJSCodeBlock() {
+	$.getJSON('server.php?method=analyticsSettings', function(data) {
+		if (data.googleSuccess) {
 			$.ajax({
 				url : 'js/templates/GoogleAnalyticsJSCodeBlock.hb',
 				success : function(source) {
 					var template = Handlebars.compile(source);
-					var html = template({
-						'data' : data
-					});
-					
+					var html = template({'data' : data});
 					$("body").append(html);
-				},
-				dataType : 'text'
+				}, dataType : 'text'
 			});
 		}
-	});
-}
-
-function piwikJSCodeBlock(){
-	$.getJSON('server.php?method=piwikJSCodeBlock', function(data) {
-		if (data.success) {
+		if (data.piwikSuccess) {
 			$.ajax({
 				url : 'js/templates/PiwikAnalyticsJSCodeBlock.hb',
 				success : function(source) {
 					var template = Handlebars.compile(source);
-					var html = template({
-						'data' : data
-					});
-					
+					var html = template({ 'data' : data });
 					$("body").append(html);
-				},
-				dataType : 'text'
+				}, dataType : 'text'
 			});
 		}
+		
 	});
 }
 
