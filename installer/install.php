@@ -1,8 +1,7 @@
 <?php
-require_once '../admin/classes/classloader.php';
 $url = "svn://svn.code.sf.net/p/websolarlog/code/";
 
-$step = Common::getValue("step",0);
+$step = getValue("step",0);
 
 $versions = array();
 if ($step == 0) {
@@ -10,7 +9,7 @@ if ($step == 0) {
 }
 
 if ($step == 1) {
-    $version = Common::getValue('version','',0);
+    $version = getValue('version','',0);
 
     $svnurl = $url;
     if ($version == "trunk") {
@@ -66,11 +65,11 @@ function prepareCheckout() {
     // We need to have an temp folder if it exist we need to remove it
     if (is_dir("temp/export")) {
         ob_flush();
-        Common::rrmdir("temp/export");
+        rrmdir("temp/export");
     }
 
     // Try to create the temp folder
-    Common::checkPath("temp/export");
+    checkPath("temp/export");
 }
 
 function doCheckout($urlsvn) {
@@ -89,13 +88,13 @@ function copyToLive() {
         if (!is_readable($source.'/'.$file) || $file == '.' || $file == '..') continue;
         if (is_dir($source.$file) && !in_array($file, $skipDirs) ) {
             // Remove the target dir before updating it
-            Common::rrmdir($target . $file);
+            rrmdir($target . $file);
 
             // Make sure the target dir is available, always create it
-            Common::checkPath($target . $file);
+            checkPath($target . $file);
 
             // Copy all files over
-            Common::xcopy($source . $file, $target . $file);
+            xcopy($source . $file, $target . $file);
         }
         if (is_file($source.$file))  {
             copy($source . $file, $target . $file);
@@ -109,3 +108,63 @@ function copyToLive() {
 ?>
 </body>
 </html>
+<?php 
+function getValue($name, $default = "", $index = -1)
+{
+	// First try to get the post value
+	if (isset($_POST[$name]) && $_POST[$name] != "") {
+		$value = $_POST[$name];
+	} else {
+		$value = (isset($_GET[$name]) && $_GET[$name] != "") ? $_GET[$name] : $default;
+	}
+
+	if (!is_array($value)) {
+		$value = htmlspecialchars($value);
+	} else {
+		if ($index != -1) {
+			$value = $value[$index];
+			$value = ($value != "") ? $value : $default;
+		}
+	}
+
+	return $value;
+}
+
+function rrmdir($dir) {
+	if (!is_dir($dir)) return; // Only handle dirs that exist
+	foreach(glob($dir . '/*') as $file) {
+		if(is_dir($file)) {
+			rrmdir($file);
+		} else {
+			unlink($file);
+		}
+	}
+	rmdir($dir);
+}
+
+function checkPath($path)
+{
+	// Check if the path is available
+	if (!is_dir($path)) {
+		if (!mkdir($path)) {
+			//echo("Could not create: " . $path);
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function xcopy($src,$dest)
+{
+	foreach  (scandir($src) as $file) {
+		if (!is_readable($src.'/'.$file) || $file == '.' || $file == '..') continue;
+		if (is_dir($src.'/'.$file)) {
+			mkdir($dest . '/' . $file);
+			xcopy($src.'/'.$file, $dest.'/'.$file);
+		} else {
+			copy($src.'/'.$file, $dest.'/'.$file);
+		}
+	}
+}
+?>
