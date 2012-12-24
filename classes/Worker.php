@@ -167,8 +167,10 @@ class Worker {
 
         R::commit(); // Commit the transaction
 
+        HookHandler::getInstance()->fire("onDebug", "before10MinJob");
         if (PeriodHelper::isPeriodJob("10MinJob", 10)) {
         	// I have a feeling that isAlive and changeStateTo have the same value, thats why this debug line
+        	HookHandler::getInstance()->fire("onDebug", "10MinJob");
         	HookHandler::getInstance()->fire("onDebug", "isAlive=" . $isAlive . " / changeStateTo=" . $changeStateTo);
         	
         	if ($changeStateTo==false){
@@ -193,9 +195,11 @@ class Worker {
         if (PeriodHelper::isPeriodJob("1MinJob", 1)) {
         	HookHandler::getInstance()->fire("on1MinJob");
         }
+        /*
         if (PeriodHelper::isPeriodJob("10MinJob", 10)) {
         	HookHandler::getInstance()->fire("on10MinJob");
         }
+        */
         if (PeriodHelper::isPeriodJob("1HourJob", 60)) {
         	HookHandler::getInstance()->fire("on1HourJob");
         }
