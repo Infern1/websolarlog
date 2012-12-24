@@ -625,7 +625,7 @@ class PDODataAdapter {
 
 			$config->title = $bean->title;
 			$config->subtitle = $bean->subtitle;
-			$config->url = $bean->url;
+			$config->url = ($bean->url != "") ? $bean->url : $config->url;;
 			$config->location = $bean->location;
 			$config->latitude = $bean->latitude;
 			$config->longitude = $bean->longitude;
