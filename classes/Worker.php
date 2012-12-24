@@ -186,7 +186,7 @@ class Worker {
         		$OEvent = new Event($inverter->id, time(), 'Notice', $message);
         		$this->adapter->addEvent($inverter->id, $OEvent);
         		if ($changeStateTo==false){
-	        		HookHandler::getInstance()->fire("onInverterShutdown", $OEvent->event);
+	        		HookHandler::getInstance()->fire("onInverterShutdown", $inverter, $OEvent->event);
         		}
         	}
         }
