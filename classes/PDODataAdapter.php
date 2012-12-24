@@ -2086,33 +2086,33 @@ class PDODataAdapter {
 	 * changeInverterStatus
 	 * 
 	 * @param int $status // 1=active, 0=sleep
-	 * @param int $inverterId // inverter id
-	 * @return array (changed) // if status is changed, array['changed'] = true; 
+	 * @param Inverter $inverter // Inverter object
+	 * @return boolean // changed yes or no; 
 	 */
 
-	function changeInverterStatus($state,$inverterId){
+	function changeInverterStatus(Inverter $inverter, $state){
 		// get inverter bean
-		$bean = R::load('inverter',$inverterId);
+		$bean = R::load('inverter', $inverter->id);
 
 		// look if we have a bean
 		if (!$bean){
-			$bean = R::dispense('inverter');
+			// If we can't find the bean there is a serious problem exit!
+			HookHandler::getInstance()->fire("onError", "changeInverterStatus: Could not find inverter bean for id:" . $inverter->id);
+			return null;
 		}
+		
 		// check if we are going to change the inverter status
+		$changed = false;
 		if($bean->state != $state){
 			// oo we are going to change the inverter, so we set it to TRUE
-			$return['changed'] = true;
+			$changed = true;
 			// change the bean to the new status for this inverter
-			//$bean->id = $bean->id;
 			$bean->state = $state;
 			
 			//Store the bean with the new inverter status
 			R::store($bean,$bean->id);
-		}else{
-			$return['changed'] = false;
 		}
-
-		return $return;
+		return $changed;
 	}
 
 }

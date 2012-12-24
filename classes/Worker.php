@@ -168,6 +168,9 @@ class Worker {
         R::commit(); // Commit the transaction
 
         if (PeriodHelper::isPeriodJob("10MinJob", 10)) {
+        	// I have a feeling that isAlive and changeStateTo have the same value, thats why this debug line
+        	HookHandler::getInstance()->fire("onDebug", "isAlive=" . $isAlive . " / changeStateTo=" . $changeStateTo);
+        	
         	if ($changeStateTo==false){
         		$state = 0;
         		$message = 'Inverter is going to sleep (new worker check)';
@@ -176,14 +179,13 @@ class Worker {
         		$state = 1;
         		$message = 'Inverter is awaking (new worker check)';
         	}
-        	$inverterStatus = $this->adapter->changeInverterStatus($state,$inverter->id);
-        	if($inverterStatus['changed']==true){
-        		if ($changeStateTo==false){
-        			HookHandler::getInstance()->fire("sendTweet");
-        		}
+        	$inverterStatusChanged = $this->adapter->changeInverterStatus($inverter, $state);
+        	if ($inverterStatusChanged === true) {
         		$OEvent = new Event($inverter->id, time(), 'Notice', $message);
         		$this->adapter->addEvent($inverter->id, $OEvent);
-        		HookHandler::getInstance()->fire("onInverterShutdown", $OEvent->event);
+        		if ($changeStateTo==false){
+	        		HookHandler::getInstance()->fire("onInverterShutdown", $OEvent->event);
+        		}
         	}
         }
 
