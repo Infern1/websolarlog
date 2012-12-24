@@ -6,6 +6,7 @@ class Config
 
     public $title;
     public $subtitle;
+    public $url;
     public $location;
     public $latitude;
     public $longitude;
@@ -73,6 +74,7 @@ class Config
 		// ### GENERAL
 		$this->title='WebSolarLog';
 		$this->subtitle='--== Sun <-> Energy ==--';
+		$this->url=Common::getDomain();
 		$this->location='Home Sweet Home';
 		$this->latitude = '52.061152';
 		$this->longitude = '4.493330';

@@ -59,6 +59,7 @@ switch ($settingstype) {
 	case 'general':
 		$data['title'] = $config->title;
 		$data['subtitle'] = $config->subtitle;
+		$data['url'] = $config->url;
 		$data['location'] = $config->location;
 		$data['latitude'] = $config->latitude;
 		$data['longitude'] = $config->longitude;
@@ -225,6 +226,7 @@ switch ($settingstype) {
 	case 'save-general':
 		$config->title = Common::getValue("title");
 		$config->subtitle = Common::getValue("subtitle");
+		$config->url = Common::getValue("url");
 		$config->location = Common::getValue("location");
 		$config->latitude = Common::getValue("latitude");
 		$config->longitude = Common::getValue("longitude");

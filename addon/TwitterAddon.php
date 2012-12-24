@@ -59,9 +59,9 @@ class TwitterAddon {
 	}
 
 	function sendTweet(){
-		HookHandler::getInstance()->fire("onError", 'Fire(sendTwitter)');
+		HookHandler::getInstance()->fire("onDebug", 'Fire(sendTwitter)');
 		if($this->hybridauth_session_data){
-			HookHandler::getInstance()->fire("onError", 'Found session data, lets try to Tweet');
+			HookHandler::getInstance()->fire("onDebug", 'Found session data, lets try to Tweet');
 			$data = $this->hybridauth->restoreSessionData( $this->hybridauth_session_data['hybridauth_session'] );
 			try{
 				$twitter = $this->hybridauth->getAdapter( "Twitter" );
@@ -71,7 +71,7 @@ class TwitterAddon {
 				$twitter->logout();
 				$data['message']='Tweet send';
 				$data['tweetSend']=1;
-				HookHandler::getInstance()->fire("onError", 'It looks like we Tweeted for you :D');
+				HookHandler::getInstance()->fire("onDebug", 'It looks like we Tweeted for you :D');
 			}
 			catch( Exception $e ){
 				HookHandler::getInstance()->fire("onError", $e->getMessage());
