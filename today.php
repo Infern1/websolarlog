@@ -19,7 +19,7 @@ require_once("template/" . $template . "/index.php");
     		}
 		);
 	});
-	googleAnalyticsJSCodeBlock();
+	analyticsJSCodeBlock();
 	</script>
 	<!-- END Wrapper -->
 </body>

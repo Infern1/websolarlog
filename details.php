@@ -10,7 +10,7 @@ $date = Common::getValue('date', 0);
 	<script type="text/javascript">
     // Make sure the page is loaded
 	WSL.init_details("#details",'<?php echo $date;?>'); // Initial load fast
-	googleAnalyticsJSCodeBlock();
+	analyticsJSCodeBlock();
 	</script>
 </body>
 </html>
