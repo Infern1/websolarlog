@@ -23,6 +23,7 @@ class Worker {
         */
 
         $isAlive = false;
+        $changeStateTo = null;
         // Create a lock
         $this->createLock();
         
@@ -167,10 +168,8 @@ class Worker {
 
         R::commit(); // Commit the transaction
 
-        HookHandler::getInstance()->fire("onDebug", "before10MinJob");
         if (PeriodHelper::isPeriodJob("10MinJob", 10)) {
         	// I have a feeling that isAlive and changeStateTo have the same value, thats why this debug line
-        	HookHandler::getInstance()->fire("onDebug", "10MinJob");
         	HookHandler::getInstance()->fire("onDebug", "isAlive=" . $isAlive . " / changeStateTo=" . $changeStateTo);
         	
         	if ($changeStateTo==false){
