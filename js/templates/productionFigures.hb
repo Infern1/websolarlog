@@ -1,12 +1,12 @@
-<div style="display: table;">
+
 	<div style="display:table-cell;">
 		<div id="columns" style="display:table-cell; width:100%;">
 			<div id="todayPosts">
 				<div class="columns">
 					<h3>Year production</h3>
 					<div class="col posts">
-					<div class="column span-30">
-						<div class="column span-2 first">{{lang.month}}</div>
+					<div class="column span-31">
+						<div class="column span-3 first">{{lang.month}}</div>
 						<div class="column span-5" style="text-align:right;">{{lang.expected}}</div>
 						<div class="column span-5" style="text-align:right;">{{lang.harvested}}</div>
 						<div class="column span-5" style="text-align:right;">{{lang.difference}}*</div>
@@ -15,7 +15,7 @@
 						<div class="cl"></div>
 						{{#each data}}
 							{{#each this}}
-						<div class="column span-2 first">{{this.date}}</div>
+						<div class="column span-3 first">{{this.date}}</div>
 						<div class="column span-5" style="text-align:right;">{{this.exp}}</div>
 						<div class="column span-5" style="text-align:right;">{{this.har}}</div>
 						<div class="column span-5" style="text-align:right;">{{this.diff}}</div>
