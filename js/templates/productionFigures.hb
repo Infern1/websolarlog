@@ -5,13 +5,14 @@
 				<div class="columns">
 					<h3>Year production</h3>
 					<div class="col posts">
-					<div class="column span-31">
+					<div class="column span-36">
 						<div class="column span-3 first">{{lang.month}}</div>
 						<div class="column span-5" style="text-align:right;">{{lang.expected}}</div>
 						<div class="column span-5" style="text-align:right;">{{lang.harvested}}</div>
 						<div class="column span-5" style="text-align:right;">{{lang.difference}}*</div>
 						<div class="column span-5" style="text-align:right;">{{lang.cum}} {{lang.harvested}}</div>
-						<div class="column span-5 last" style="text-align:right;">{{lang.cum}} {{lang.expected}}</div>
+						<div class="column span-5" style="text-align:right;">{{lang.cum}} {{lang.expected}}</div>
+						<div class="column span-5 last" style="text-align:right;">{{lang.cum}} {{lang.difference}}</div>
 						<div class="cl"></div>
 						{{#each data}}
 							{{#each this}}
@@ -20,7 +21,8 @@
 						<div class="column span-5" style="text-align:right;">{{this.har}}</div>
 						<div class="column span-5" style="text-align:right;">{{this.diff}}</div>
 						<div class="column span-5" style="text-align:right;">{{this.cumExp}}</div>
-						<div class="column span-5 last" style="text-align:right;">{{this.cumHar}}</div>
+						<div class="column span-5" style="text-align:right;">{{this.cumHar}}</div>
+						<div class="column span-5 last" style="text-align:right;">{{this.cumDiff}}</div>
 							{{/each}}
 						{{/each}}
 					</div>

@@ -652,7 +652,7 @@ class PDODataAdapter {
 			$config->template = ($bean->template != "") ? $bean->template : $config->template;
 			$config->aurorapath = ($bean->aurorapath != "") ? $bean->aurorapath : $config->aurorapath;
 			$config->smagetpath = ($bean->smagetpath != "") ? $bean->smagetpath : $config->smagetpath;
-
+			
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
 			$config->inverters = $this->readInverters();
 			
@@ -1515,6 +1515,7 @@ class PDODataAdapter {
 					}
 					$cumKWH += 0;
 					$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
+					$newBean[$i]['cumDiff']=number_format($cumKWH-$cumExp,0,',','');
 					$newBean[$i]['what'] = 'prepend';
 				}else{
 						
@@ -1528,6 +1529,7 @@ class PDODataAdapter {
 
 					$cumKWH += $beans[$ii]['KWH'];
 					$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
+					$newBean[$i]['cumDiff']=number_format($cumKWH-$cumExp,0,',','');
 					$newBean[$i]['what'] = 'apprepend';
 					$ii++;
 				}
@@ -1622,7 +1624,8 @@ class PDODataAdapter {
 					floatval($bean['Exp']),
 					floatval($bean['Diff']),
 					floatval($bean['cumExp']),
-					floatval($bean['cumKWH'])
+					floatval($bean['cumKWH']),
+					floatval($bean['cumDiff'])
 			);
 		}
 

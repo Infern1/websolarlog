@@ -1012,7 +1012,8 @@ var WSL = {
 								        "exp": object[3],
 										"diff": object[4],
 										"cumExp": object[6],
-										"cumHar": object[5]
+										"cumHar": object[5],
+										"cumDiff": object[7]
 								};
 								dataTable.push([item]);
 							}
