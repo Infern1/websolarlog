@@ -348,6 +348,7 @@ function deleteFiles(vars){
 
 function init_advanced() {
     $('#sidebar').html("");
+    
     $.getJSON('admin-server.php?s=advanced', function(data) {
         $.ajax({
             url : 'js/templates/advanced.hb',
@@ -394,9 +395,8 @@ function init_advanced() {
             dataType : 'text'
         });        
     });
-    
-    
 }
+
 
 function init_general() {
     $('#sidebar').html("");
@@ -412,6 +412,29 @@ function init_general() {
                 });
                 $('#c_general', content).html(html);
                 
+                $('#btnSetLatLong').bind('click',function(){
+                	$('#content').append('<div id="mapsDialog"></div>');
+					var lat = $("input[name=latitude]").val();
+					var long = $("input[name=longitude]").val();
+	               	 $.ajax({
+	         	 		url : 'js/templates/gmaps.hb',
+	         	 		success : function(source) {
+	         	 			var template = Handlebars.compile(source);
+	                        var html = template({
+	                        	'lat' : lat,
+	                            'long': long
+	                        });
+	         	 			$('#mapsDialog').html(html);
+	         	 			$('#btnGeneralMapsOk').bind('click', function(){
+	         	 				$("input[name=latitude]").val($('#mapsLat').val());
+	        					$("input[name=longitude]").val($('#mapsLong').val());
+	        					$("#btnGeneralSubmit").trigger("click");
+	        					$("#dialog-modal").dialog('close'); 
+	                        });
+	         	 		},
+	         	 		dataType : 'text'
+	         	 	});
+                });
                 $('#btnGeneralSubmit').bind('click', function(){
                     var data = $(this).parent().parent().serialize();
                     $.post('admin-server.php', data, function(){

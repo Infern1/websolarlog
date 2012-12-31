@@ -109,3 +109,12 @@ form fieldset button {
 	padding-top:6px;
 	cursor: pointer;
 }
+
+#mapcanvas{
+	height:330px;width:400px;position:absolute;top:140px;left:0;
+}
+
+
+#btnSetLatLong{
+	top:-14px;position:relative;
+}
