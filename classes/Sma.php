@@ -31,6 +31,11 @@ Class Sma implements DeviceApi {
             return trim($this->execute('-d'));
         }
     }
+    
+    public function getLiveData() {
+    	$data = $this->getData();
+    	return AuroraConverter::toLive($data);
+    }
 
     public function getInfo() {
         if ($this->DEBUG) {

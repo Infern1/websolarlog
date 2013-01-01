@@ -219,8 +219,7 @@ class PDODataAdapter {
 
 		//Store the bean
 		$id = R::store($bean);
-		return $id;
-
+		return $bean;
 	}
 
 	/**

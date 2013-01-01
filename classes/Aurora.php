@@ -31,6 +31,11 @@ Class Aurora implements DeviceApi {
             return trim($this->execute('-c -T ' . $this->COMOPTION . ' -d0 -e'));
         }
     }
+    
+    public function getLiveData() {
+    	$data = $this->getData();
+    	return AuroraConverter::toLive($data);
+    }
 
     public function getInfo() {
         if ($this->DEBUG) {
