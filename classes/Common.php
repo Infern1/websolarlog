@@ -71,7 +71,7 @@ class Common
      */
     public static function getDomain()
     {
-        return $_SERVER['HTTP_HOST'];
+        return isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null ;
     }
 
     /**
