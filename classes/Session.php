@@ -103,7 +103,7 @@ class Session
     	// LoggerAddon
     	$hookHandler->add("onError", "LoggerAddon.onError");
     	$hookHandler->add("onWarning", "LoggerAddon.onWarning");
-    	$hookHandler->add("onInfo", "LoggerAddon.onInfo");
+    	//$hookHandler->add("onInfo", "LoggerAddon.onInfo");
     	$hookHandler->add("onDebug", "LoggerAddon.onDebug");
     	$hookHandler->add("onInverterStartup", "LoggerAddon.onInverterStartup");
     	$hookHandler->add("onInverterShutdown", "LoggerAddon.onInverterShutdown");
