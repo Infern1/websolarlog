@@ -55,7 +55,26 @@ Class Aurora implements DeviceApi {
     }
 
     private function execute($options) {
-        return shell_exec($this->PATH . ' -a' . $this->ADR . ' ' . $options . ' ' . $this->PORT);
+        $cmd = $this->PATH . ' -a' . $this->ADR . ' ' . $options . ' ' . $this->PORT;
+        //return shell_exec($cmd);
+        
+        $proc=proc_open($cmd,
+        		array(
+        				array("pipe","r"),
+        				array("pipe","w"),
+        				array("pipe","w")
+        		),
+        		$pipes);
+        $stdout = stream_get_contents($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+        
+        if ($stderr != "") {
+        	echo ("error found: " . $stderr . "\n");
+        }
+        proc_close($proc);
+        
+        //print stream_get_contents($pipes[1]);
+        return trim($stdout);
     }
 }
 ?>
