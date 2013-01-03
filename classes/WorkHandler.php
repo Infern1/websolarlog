@@ -77,8 +77,11 @@ class WorkHandler {
 		// Check if there are alarms
 		if ($live != null && PeriodHelper::isPeriodJob("EventJob", 2)) {
 			$alarm = $api->getAlarms();
-			if (trim($alarm) != "" && $this->isAlarmDetected($alarm)) {
-				HookHandler::getInstance()->fire("onAlarm", $inverter, $alarm);
+			if (trim($alarm) != "") { 
+				$event = new Event($inverter->id, time(), 'Alarm', Util::formatEvent($alarm));
+				if ($this->isAlarmDetected($event)) {
+					HookHandler::getInstance()->fire("onAlarm", $inverter, $event);
+				}
 			}
 		}
 	}
