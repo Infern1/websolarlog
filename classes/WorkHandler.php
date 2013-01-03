@@ -36,6 +36,7 @@ class WorkHandler {
 	}
 	
 	private function handleInverter(Inverter $inverter) {
+		echo("handleInverter for " . $inverter->name . "\n");
 		// Get the api we need to use
 		$api = $this->getInverterApi($inverter);
 		
@@ -43,21 +44,25 @@ class WorkHandler {
 		$live = $api->getLiveData();
 		
 		// Fire the hook that will handle the live data
-		HookHandler::getInstance()->fire("onLiveData", $inverter, $live);
+		if ($live != null) {
+			HookHandler::getInstance()->fire("onLiveData", $inverter, $live);
+		} else {
+			HookHandler::getInstance()->fire("onNoLiveData", $inverter);
+		}
 		
 		// Fire the hook that will handle the history data
 		if ($live != null && PeriodHelper::isPeriodJob("HistoryJob", 5)) {
-			HookHandler::fire("onHistory", $inverter, $live);
+			HookHandler::getInstance()->fire("onHistory", $inverter, $live);
 		}
 		
 		// Fire the hook that will handle the energy data
 		// if we are live we will fire every 30 minutes
 		if ($live != null && PeriodHelper::isPeriodJob("EnergyJob", 30)) {
-			HookHandler::fire("onEnergy", $inverter);
+			HookHandler::getInstance()->fire("onEnergy", $inverter);
 		}
 		// if we are not live we will fire every 120 minutes
 		if ($live == null && PeriodHelper::isPeriodJob("EnergyJob", 120)) {
-			HookHandler::fire("onEnergy", $inverter);
+			HookHandler::getInstance()->fire("onEnergy", $inverter);
 		}
 		
 		// Fire the hook that will handle the information requests
@@ -65,7 +70,15 @@ class WorkHandler {
 			sleep(2); // Don't spam the inverter with requests
 			$info = $api->getInfo();
 			if (trim($info) != "") {
-				HookHandler::fire("onInfo", $inverter, $info);
+				HookHandler::getInstance()->fire("onInfo", $inverter, $info);
+			}
+		}
+		
+		// Check if there are alarms
+		if ($live != null && PeriodHelper::isPeriodJob("EventJob", 2)) {
+			$alarm = $api->getAlarms();
+			if (trim($alarm) != "" && $this->isAlarmDetected($alarm)) {
+				HookHandler::getInstance()->fire("onAlarm", $inverter, $alarm);
 			}
 		}
 	}
@@ -84,4 +97,31 @@ class WorkHandler {
 		}
 		return $api;
 	}
+	
+	/**
+     * Check if the line is filled with an real alarm
+     * @param Event $event
+     * @return boolean
+     */
+    private function isAlarmDetected($event) {
+        $event_text = trim($event->event);
+        $event_lines = explode("\n", $event_text);
+
+        $alarmFound = false;
+        foreach ($event_lines as $line) {
+        	// Aurora error
+            $parts = explode(":", $line);
+            if (count($parts) > 1 && trim($parts[1]) != "No Alarm") {
+                $alarmFound = true;
+                break;
+            }
+        }
+        
+        // SMA
+        if (trim($event->event) == "Fehler -------") {
+        	$alarmFound = false;
+        }
+
+        return $alarmFound;
+    }
 }

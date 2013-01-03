@@ -117,6 +117,17 @@ class Session
     	
     	// BasicChecksAddon
     	$hookHandler->add("on10MinJob", "BasicChecksAddon.on10MinJob");
+    	
+    	// NEW Work Handler hooks
+    	$hookHandler->add("onLiveData", "CoreAddon.onLiveData");
+    	$hookHandler->add("onHistory", "CoreAddon.onHistory");
+    	$hookHandler->add("onEnergy", "CoreAddon.onEnergy");
+    	$hookHandler->add("onInfo", "CoreAddon.onInfo");
+    	$hookHandler->add("onAlarm", "CoreAddon.onAlarm");
+    	
+    	$hookHandler->add("onNewLiveData", "BasicChecksAddon.onNewLive");
+    	$hookHandler->add("onNoLiveData", "BasicChecksAddon.onNoLiveData");
+    	$hookHandler->add("onRegularJob", "BasicChecksAddon.on10MinJob");
     }
 }
 ?>

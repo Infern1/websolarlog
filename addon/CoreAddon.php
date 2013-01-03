@@ -22,18 +22,13 @@ class CoreAddon {
 		$live = $args[2];
 		
 		if ($inverter == null) {
-			HookHandler::fire("onError", "CoreAddon::onLiveDate() inverter == null");
-			return;
-		}
-		
-		if ($live == null) {
-			HookHandler::fire("onDebug", "CoreAddon::onLiveDate() live == null");
+			HookHandler::fire("onError", "CoreAddon::onLiveData() inverter == null");
 			return;
 		}
 		
 		// Save the live information
 		$this->adapter->writeLiveInfo($inverter->id, $live);
-		HookHandler::fire("newLiveInfo", $inverter, $live);
+		HookHandler::fire("newLiveData", $inverter, $live);
 		
 		// Check the Max value
 		$this->checkMaxPowerValue($inverter, $live);
@@ -96,6 +91,30 @@ class CoreAddon {
 	}
 	
 	/**
+	 * Handle hook onAlarm
+	 * @param unknown $args
+	 */
+	public function onAlarm($args) {
+		$inverter = $args[1];
+		$alarm = $args[2];
+		
+		try {
+			if (strpos($alarm->event, 'Warning') !== false ) {
+				HookHandler::getInstance()->fire("onInverterWarning", $inverter, nl2br($alarm->event));
+			}
+			if (strpos($alarm->event, 'Error') !== false ) {
+				HookHandler::getInstance()->fire("onInverterError", $inverter, nl2br($alarm->event));
+			}
+			$alarm->alarmSend = true;
+		} catch (Exception $e) {
+			$alarm->alarmSend = false;
+			HookHandler::getInstance()->fire("onError", $e->getMessage());
+		}
+		$this->adapter->addEvent($inverter->id, $alarm);
+		HookHandler::fire("newAlarm", $inverter, $alarm);		
+	}
+	
+	/**
 	 * Check if the live value is higher then the saved value
 	 * if true, then save it
 	 * @param Inverter $inverter
@@ -117,4 +136,6 @@ class CoreAddon {
 			HookHandler::fire("newMaxPowerToday", $inverter, $Ompt);
 		}
 	}
+	
+	
 }

@@ -13,6 +13,21 @@ class BasicChecksAddon {
 		$this->adapter = null;
 	}
 	
+	public function onLiveData($args) {
+		$_SESSION['liveCounter'] = 0;
+	}
+	public function onNoLiveData($args) {
+		echo ("onNoLiveData");
+		$_SESSION['liveCounter'] = isset($_SESSION['liveCounter']) ? $_SESSION['liveCounter'] + 1 : 0;
+		if ($_SESSION['liveCounter'] == 10) {
+			echo("down");
+			// We are seriously down!
+			if(Util::isSunDown($this->config)) {
+				echo("sun is also down");
+			}			
+		}
+	}
+	
 	public function on10MinJob($args) {
 		$this->InactiveCheck();	
 	}
