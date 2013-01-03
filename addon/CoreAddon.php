@@ -22,13 +22,13 @@ class CoreAddon {
 		$live = $args[2];
 		
 		if ($inverter == null) {
-			HookHandler::fire("onError", "CoreAddon::onLiveData() inverter == null");
+			HookHandler::getInstance()->fire("onError", "CoreAddon::onLiveData() inverter == null");
 			return;
 		}
 		
 		// Save the live information
 		$this->adapter->writeLiveInfo($inverter->id, $live);
-		HookHandler::fire("newLiveData", $inverter, $live);
+		HookHandler::getInstance()->getInstance()->fire("newLiveData", $inverter, $live);
 		
 		// Check the Max value
 		$this->checkMaxPowerValue($inverter, $live);
@@ -42,7 +42,7 @@ class CoreAddon {
 		$inverter = $args[1];
 		$live = $args[2];
 		$history = $this->adapter->addHistory($inverter->id, $live);
-		HookHandler::fire("newHistory", $inverter, $history);
+		HookHandler::getInstance()->fire("newHistory", $inverter, $history);
 	}
 	
 	
@@ -73,7 +73,7 @@ class CoreAddon {
 		$energy->co2 = Formulas::CO2kWh($production, $this->config->co2kwh); // Calculate co2
 		$this->adapter->addEnergy($inverter->id, $energy);
 		
-		HookHandler::fire("newEnergy", $inverter, $energy);
+		HookHandler::getInstance()->fire("newEnergy", $inverter, $energy);
 	}
 	
 	/**
@@ -87,7 +87,7 @@ class CoreAddon {
 		// Write InverterInfo (firmware,model,etc) to DB
 		$event = new Event($inverter->id, time(), 'Info', $info);
 		$this->adapter->addEvent($inverter->id, $event);
-		HookHandler::fire("newInfo", $inverter, $event);		
+		HookHandler::getInstance()->fire("newInfo", $inverter, $event);		
 	}
 	
 	/**
@@ -111,7 +111,7 @@ class CoreAddon {
 			HookHandler::getInstance()->fire("onError", $e->getMessage());
 		}
 		$this->adapter->addEvent($inverter->id, $alarm);
-		HookHandler::fire("newAlarm", $inverter, $alarm);		
+		HookHandler::getInstance()->fire("newAlarm", $inverter, $alarm);		
 	}
 	
 	/**
@@ -133,7 +133,7 @@ class CoreAddon {
 			$Ompt->time = Util::getUTCdate($live->SDTE);
 			$Ompt->GP = $GP2;
 			$this->adapter->writeMaxPowerToday($inverter->id, $Ompt);
-			HookHandler::fire("newMaxPowerToday", $inverter, $Ompt);
+			HookHandler::getInstance()->fire("newMaxPowerToday", $inverter, $Ompt);
 		}
 	}
 	
