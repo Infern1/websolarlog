@@ -11,11 +11,12 @@ require_once("template/" . $template . "/index.php");
 	var whichYear = '<?php echo date("Y");?>';
 	var compareMonth = '<?php echo date("m");?>';
 	var compareYear = '<?php echo date("Y");?>';
-	WSL.init_compare(1,"#content",
-			function(){
-				WSL.createCompareGraph(1,whichMonth,whichYear,compareMonth,compareYear,0);
-			}
-	); // Initial load fast
+	$(function(){
+		var invtnum=(!invtnum)?invtnum=1:invtnum=invtnum;
+		WSL.init_compare(invtnum,"#content");
+	});
+
+	 // Initial load fast
 	analyticsJSCodeBlock();
 	</script>
 </body>

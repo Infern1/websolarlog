@@ -416,6 +416,12 @@ try {
 			$lang['historyValues'] 	= _("History values");
 			$lang['loading'] 		= _("loading")."...";
 			$lang['watt'] 			= _("watt");
+			
+			$lang['month'] = _('month');
+			$lang['expected'] = _('expected');
+			$lang['harvested'] = _('harvested');
+			$lang['difference'] = _('difference');
+				
 			$data['lang'] = $lang;
 			
 			$dayData = new DayDataResult();
@@ -424,7 +430,9 @@ try {
 			$dayData->inverters = $inverter;
 			$dayData->data = array(
 					"which"=>$lines['whichBeans']->points,
-					"compare"=>$lines['compareBeans']->points
+					"compare"=>$lines['compareBeans']->points,
+					"diff"=>$lines['whichCompareDiff']
+					
 					);
 			$dayData->type = $lines['type'];
 			$dayData->config = $lines['config'];

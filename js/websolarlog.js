@@ -997,7 +997,7 @@ var WSL = {
 					
 
 					$("#main-middle").prepend('<div id="ProductionGraph"></div>');
-					console.log(result);
+					//console.log(result);
 					$.ajax({
 						url : 'js/templates/productionFigures.hb',
 						success : function(source) {
@@ -1335,9 +1335,9 @@ var WSL = {
 
 	},
 
-	init_compare : function( invtnum,divId, fnFinish) {
+	init_compare : function( invtnum,divId ) {
 		ajaxStart();
-		
+		var dataTable= []; 
 		// initialize languages selector on the given div
 	    $.getJSON('server.php?method=getCompareFilters&type=today', function(data) {
 			$.ajax({
@@ -1349,7 +1349,9 @@ var WSL = {
 						'lang' : data.lang
 					});
 					$(divId).html(html);
-					fnFinish.call();
+					
+					WSL.createCompareGraph(invtnum,whichMonth,whichYear,compareMonth,compareYear,0);
+
 					ajaxReady();
 					
 				},
@@ -1375,6 +1377,7 @@ var WSL = {
 	},
 
 	createCompareGraph : function(invtnum,whichMonth,whichYear,compareMonth,compareYear,type) {
+
 		$('#whichMonth').val(whichMonth);
 		$('#whichYear').val(whichYear);
 		$('#compareMonth').val(compareMonth);
@@ -1419,7 +1422,7 @@ var WSL = {
 	            },
 				highlighter : {tooltipContentEditor: tooltipCompareEditor,show : true}
 		};
-		
+
 		$.ajax({
 			url : "server.php?method=getCompareGraph&invtnum=" + invtnum+'&whichMonth=' + whichMonth+'&whichYear=' + whichYear+'&compareMonth=' + compareMonth+'&compareYear=' + compareYear,
 			method : 'GET',
@@ -1429,16 +1432,36 @@ var WSL = {
 				if (result.dayData.data) {
 					var dataDay1 = [];
 					var dataDay2 = [];
+					var compareTable = [];
+					var whichTable = [];
 					for (line in result.dayData.data.compare) {
 						var object = result.dayData.data.compare[line];
+						console.log(object);
 						dataDay1.push([  object[0], object[1], object[2] ]);
+						
+							var item = {
+							        "timestamp": object[0],
+							        "har": object[1],
+							        "date": object[2],
+							        "displayKWH":object[3],
+							};
+							compareTable.push([item]);
+						
 					}
 					for (line in result.dayData.data.which) {
 						var object = result.dayData.data.which[line];
 						dataDay2.push([  object[0], object[1], object[2] ]);
+						var item = {
+						        "timestamp": object[0],
+						        "har": object[1],
+						        "date": object[2],
+						        "displayKWH":object[3],
+						};
+						whichTable.push([item]);
+					
 					}
 					
-					$("#compareFilter").append('<div id="compareGraph"></div>');
+					$("#content").append('<div id="compareGraph"></div>');
 					$("#compareGraph").height(350);
 					$("#compareGraph").width(830);
 
@@ -1455,6 +1478,27 @@ var WSL = {
 					
     				handle = $.jqplot("compareGraph", [ dataDay2, dataDay1], graphOptions);
     				handle.replot();
+    				console.log(result.lang);
+    				$.ajax({
+						url : 'js/templates/compareFigures.hb',
+						success : function(source) {
+							var template = Handlebars.compile(source);
+							console.log(compareTable);
+							var html = template({
+								'compare' :  compareTable,
+								'which' :  whichTable,
+								'diff' : result.dayData.data.diff,
+								'lang': result.lang
+							});
+							
+							
+							
+							$('#content').append(html);
+							
+						},
+						dataType : 'text',
+					});
+					
 				}
 			}
 		});
