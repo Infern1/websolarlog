@@ -1338,6 +1338,8 @@ var WSL = {
 	init_compare : function( invtnum,divId ) {
 		ajaxStart();
 		var dataTable= []; 
+
+		
 		// initialize languages selector on the given div
 	    $.getJSON('server.php?method=getCompareFilters&type=today', function(data) {
 			$.ajax({
@@ -1377,7 +1379,7 @@ var WSL = {
 	},
 
 	createCompareGraph : function(invtnum,whichMonth,whichYear,compareMonth,compareYear,type) {
-
+		
 		$('#whichMonth').val(whichMonth);
 		$('#whichYear').val(whichYear);
 		$('#compareMonth').val(compareMonth);
@@ -1462,6 +1464,7 @@ var WSL = {
 					}
 					
 					$("#content").append('<div id="compareGraph"></div>');
+					$('#content').append('<div id="compareFigures"></div>');
 					$("#compareGraph").height(350);
 					$("#compareGraph").width(830);
 
@@ -1493,7 +1496,7 @@ var WSL = {
 							
 							
 							
-							$('#content').append(html);
+							$('#compareFigures').html(html);
 							
 						},
 						dataType : 'text',

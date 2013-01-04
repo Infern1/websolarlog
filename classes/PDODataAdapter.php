@@ -1391,6 +1391,7 @@ class PDODataAdapter {
 					$iWhichDay = $i+1;
 					$whichBeans[$i]['time'] = strtotime($compareYear."/".$compareMonth."/".$iWhichDay);
 					$whichBeans[$i]['KWH'] = sprintf("%01.2f",(float)$lastKWH);
+					$whichBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$lastKWH);
 				}
 					
 				// get Compare beans
@@ -1402,9 +1403,11 @@ class PDODataAdapter {
 					$iExpectedDay = $i+1;
 					$compareBeans[$i]['time'] = strtotime($compareYear."/".$compareMonth."/".$iExpectedDay);
 					$compareBeans[$i]['KWH'] = sprintf("%01.2f",(float)$lastKWH);
+					$compareBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$lastKWH);
 				}
 				// move compareBeans to expectedBeans, so we pass it to JSON.
 				$expectedBeans  = $compareBeans;
+				$diff = $this->getDiffCompare($whichBeans,$expectedBeans);
 				$type = "energy vs energy";
 			}else{
 				// harvested data.....
