@@ -140,7 +140,7 @@ class Worker {
                     $this->adapter->addEnergy($inverter->id, $energy);
                 }
                 
-                HookHandler::getInstance()->fire("onHistory", $inverter, $live);
+                HookHandler::getInstance()->fire("newHistory", $inverter, $live);
             }
             
             // Info every 12 hours
