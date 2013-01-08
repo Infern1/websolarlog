@@ -48,8 +48,12 @@ window.onload = pageLoadingTime;
 function pageLoadingTime() {
 	afterLoad = (new Date()).getTime();
 	secondes = (afterLoad - beforeLoad) / 1000;
-	document.getElementById("JSloadingtime").innerHTML = secondes;
+	document.getElementById("JSloadingtime").innerHTML = secondes;	
 }
+
+
+
+
 
 var graphDay = null;
 var dataDay = [];
@@ -362,19 +366,19 @@ var WSL = {
 						//////////////////
 						////////////////////////////////////////
 						var gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ],gaugeGPOptions);
-						gaugeGP.series[0].data = [ [ 'W',data.IndexValues.sum.GP ] ];
-						gaugeGP.series[0].label = data.IndexValues.sum.GP;
-						document.title = '('+ data.IndexValues.sum.GP+ ' W) WebSolarLog';
+						gaugeGP.series[0].data = [ [ 'W',data.sumInverters.GP ] ];
+						gaugeGP.series[0].label = data.sumInverters.GP;
+						document.title = '('+ data.sumInverters.GP+ ' W) WebSolarLog';
 						gaugeGP.replot();
 						
 						var gaugeIP = $.jqplot('gaugeIP', [ [ 0.1 ] ],gaugeIPOptions);
-						gaugeIP.series[0].data = [ [ 'W',data.IndexValues.sum.IP ] ];
-						gaugeIP.series[0].label = data.IndexValues.sum.IP;
+						gaugeIP.series[0].data = [ [ 'W',data.sumInverters.IP ] ];
+						gaugeIP.series[0].label = data.sumInverters.IP;
 						gaugeIP.replot();
 						
 						var gaugeEFF = $.jqplot('gaugeEFF', [ [ 0.1 ] ],gaugeEFFOptions);
-						gaugeEFF.series[0].data = [ [ 'W',data.IndexValues.sum.EFF] ];
-						gaugeEFF.series[0].label = data.IndexValues.sum.EFF+' %';
+						gaugeEFF.series[0].data = [ [ 'W',data.sumInverters.EFF] ];
+						gaugeEFF.series[0].label = data.sumInverters.EFF+' %';
 						gaugeEFF.replot();
 						ajaxReady();
 					},

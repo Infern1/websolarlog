@@ -598,6 +598,7 @@ class PDODataAdapter {
 		$bean->template = $config->template;
 		$bean->aurorapath = $config->aurorapath;
 		$bean->smagetpath = $config->smagetpath;
+		$bean->smartmeterpath = $config->smartmeterpath;
 
 		$bean->co2kwh = $config->co2kwh;
 		
@@ -651,6 +652,7 @@ class PDODataAdapter {
 			$config->template = ($bean->template != "") ? $bean->template : $config->template;
 			$config->aurorapath = ($bean->aurorapath != "") ? $bean->aurorapath : $config->aurorapath;
 			$config->smagetpath = ($bean->smagetpath != "") ? $bean->smagetpath : $config->smagetpath;
+			$config->smartmeterpath = ($bean->smartmeterpath != "") ? $bean->smartmeterpath : $config->smartmeterpath;
 			
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
 			$config->inverters = $this->readInverters();
@@ -1789,7 +1791,7 @@ class PDODataAdapter {
 	 */
 	public function readPageIndexLiveValues($config) {
 		// summary live data
-		$list = array();
+		$inverters = array();
 		$GP  = 0;
 		$I1P = 0;
 		$I2P = 0;
@@ -1857,20 +1859,20 @@ class PDODataAdapter {
 			$IP  += $live->IP;
 			$EFF += $live->EFF;
 				
-			$list['inverters'][] = $oInverter;
+			$inverters[] = $oInverter;
 				
 		}
 
-
-		($GP<1000)? $list['sum']['GP'] = number_format($GP,1,'.','') : $list['sum']['GP'] = number_format($GP,0,'','');
-		($I1P<1000)? $list['sum']['I1P'] = number_format($I1P,1,'.','') : $list['sum']['I1P'] = number_format($I1P,0,'','');
-		($I2P<1000)? $list['sum']['I2P'] = number_format($I2P,1,'.','') : $list['sum']['I2P'] = number_format($I2P,0,'','');
-		($IP<1000)? $list['sum']['IP'] = number_format($IP,1,'.','') : $list['sum']['IP'] = number_format($IP,0,'','');
-		($EFF<100)? $list['sum']['EFF'] = number_format($EFF,1,'.','') : $list['sum']['EFF'] = number_format($EFF,0,'','');
+		$sum = array();
+		($GP<1000)? $sum['GP'] = number_format($GP,1,'.','') : $list['sum']['GP'] = number_format($GP,0,'','');
+		($I1P<1000)? $sum['I1P'] = number_format($I1P,1,'.','') : $list['sum']['I1P'] = number_format($I1P,0,'','');
+		($I2P<1000)? $sum['I2P'] = number_format($I2P,1,'.','') : $list['sum']['I2P'] = number_format($I2P,0,'','');
+		($IP<1000)? $sum['IP'] = number_format($IP,1,'.','') : $list['sum']['IP'] = number_format($IP,0,'','');
+		($EFF<100)? $sum['EFF'] = number_format($EFF,1,'.','') : $list['sum']['EFF'] = number_format($EFF,0,'','');
 		$oInverter = array();
 		//$totals = array("day"=>$KWHTD,"week"=>$KWHTW,"month"=>$KWHTM);
 
-		return $list;
+		return array('inverters'=>$inverters,'sum'=>$sum);
 	}
 
 	/**

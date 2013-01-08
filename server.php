@@ -458,7 +458,8 @@ try {
 			$lang['Efficiency'] 	= _("Efficiency");
 			
 			$data['lang'] = $lang;
-			$data['IndexValues'] = $indexValues;
+			$data['inverters'] = $indexValues['inverters'];
+			$data['sumInverters'] = $indexValues['sum'];
 			break;
 		case 'getPageIndexValues':
 			$indexValues = $dataAdapter->readPageIndexData($config);
