@@ -1,4 +1,4 @@
-{{#each data.IndexValues.inverters}}
+{{#each data.inverters}}
 <div class="column span-5 first tooltip" title="{{this.live.name}}">{{this.live.name}}</div>
 <div class="column span-3 tooltip" title="{{this.live.status}}">{{this.live.status}}</div>
 <div class="column span-3 tooltip" title="{{this.live.INV}}">{{this.live.time}}</div>
