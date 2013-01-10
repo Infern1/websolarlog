@@ -36,7 +36,7 @@ class WorkHandler {
 	}
 	
 	private function handleInverter(Inverter $inverter) {
-		echo("handleInverter for " . $inverter->name . "\n");
+		//echo("handleInverter for " . $inverter->name . "\n");
 		// Get the api we need to use
 		$api = $this->getInverterApi($inverter);
 		

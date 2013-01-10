@@ -17,14 +17,17 @@ class BasicChecksAddon {
 		$_SESSION['liveCounter'] = 0;
 	}
 	public function onNoLiveData($args) {
-		echo ("onNoLiveData");
+		$inverter = $args[1];
 		$_SESSION['liveCounter'] = isset($_SESSION['liveCounter']) ? $_SESSION['liveCounter'] + 1 : 0;
 		if ($_SESSION['liveCounter'] == 10) {
-			echo("down");
-			// We are seriously down!
+			// Are we seriously down?
 			if(Util::isSunDown($this->config)) {
-				echo("sun is also down");
-			}			
+				HookHandler::getInstance()->fire("onInverterShutDown", $inverter);
+			} else {
+				// Probably temporarely down, check again
+				HookHandler::getInstance()->fire("onInverterError", $inverter, "Inverter seems to be down");
+				$_SESSION['liveCounter'] == 0;
+			}		
 		}
 	}
 	
