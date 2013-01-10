@@ -22,7 +22,8 @@ class BasicChecksAddon {
 		if ($_SESSION['liveCounter'] == 10) {
 			// Are we seriously down?
 			if(Util::isSunDown($this->config)) {
-				HookHandler::getInstance()->fire("onInverterShutDown", $inverter);
+				echo("fire: onInverterShutdown! \n");
+				HookHandler::getInstance()->fire("onInverterShutdown", $inverter);
 			} else {
 				// Probably temporarely down, check again
 				HookHandler::getInstance()->fire("onInverterError", $inverter, "Inverter seems to be down");
