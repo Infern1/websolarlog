@@ -187,25 +187,21 @@ class Util {
     
     public static function getCurrentUrl()
     {
-    	if(
-    			isset( $_SERVER['HTTPS'] ) && ( $_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1 )
-    			|| 	isset( $_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'
+    	if( isset( $_SERVER['HTTPS'] ) && ( $_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1 )
+    		|| 	isset( $_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'
     	){
     		$protocol = 'https://';
-    	}
-    	else {
+    	} else {
     		$protocol = 'http://';
     	}
     
-    	$url = $protocol . $_SERVER['HTTP_HOST'];
+    	$url = $protocol . isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : "www.suncounter.nl";
     
     	// use port if non default
-    	$url .=
-    	isset( $_SERVER['SERVER_PORT'] )
-    	&&( ($protocol === 'http://' && $_SERVER['SERVER_PORT'] != 80) || ($protocol === 'https://' && $_SERVER['SERVER_PORT'] != 443) )
-    	? ':' . $_SERVER['SERVER_PORT']
-    	: ''
-    	;
+    	$url .= isset( $_SERVER['SERVER_PORT'] )
+    		&&( ($protocol === 'http://' && $_SERVER['SERVER_PORT'] != 80) || ($protocol === 'https://' && $_SERVER['SERVER_PORT'] != 443) )
+    		? ':' . $_SERVER['SERVER_PORT']
+    		: '';
     	$url .= $_SERVER['PHP_SELF'];
     
     	// return current url
