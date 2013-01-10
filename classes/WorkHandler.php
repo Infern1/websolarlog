@@ -19,7 +19,11 @@ class WorkHandler {
 		// Handle every inverter in its own transaction
 		R::begin(); // Start a transaction to speed things up
 		foreach ($this->config->inverters as $inverter) {
-			$this->handleInverter($inverter);
+			try {
+				$this->handleInverter($inverter);				
+			} catch (Exception $e) {
+				HookHandler::getInstance()->fire("onError", $inverter, $e->getMessage());
+			}
 		}
 		R::commit(); // Commit the transaction
 		
