@@ -14,16 +14,25 @@ class BasicChecksAddon {
 	}
 	
 	public function onLiveData($args) {
+		if ($_SESSION['liveCounter'] > 0) {
+			if ($this->adapter->changeInverterStatus($inverter, 1)) {
+				echo("fire: onInverterStartup! \n");
+				HookHandler::getInstance()->fire("onInverterStartup", $inverter);
+			}
+		}
 		$_SESSION['liveCounter'] = 0;
 	}
+	
 	public function onNoLiveData($args) {
 		$inverter = $args[1];
 		$_SESSION['liveCounter'] = isset($_SESSION['liveCounter']) ? $_SESSION['liveCounter'] + 1 : 0;
 		if ($_SESSION['liveCounter'] == 10) {
 			// Are we seriously down?
 			if(Util::isSunDown($this->config)) {
-				echo("fire: onInverterShutdown! \n");
-				HookHandler::getInstance()->fire("onInverterShutdown", $inverter);
+				if ($this->adapter->changeInverterStatus($inverter, 0)) {
+					echo("fire: onInverterShutdown! \n");
+					HookHandler::getInstance()->fire("onInverterShutdown", $inverter);
+				}
 			} else {
 				// Probably temporarely down, check again
 				HookHandler::getInstance()->fire("onInverterError", $inverter, "Inverter seems to be down");
