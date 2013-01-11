@@ -1864,14 +1864,12 @@ class PDODataAdapter {
 		}
 
 		$sum = array();
-		($GP<1000)? $sum['GP'] = number_format($GP,1,'.','') : $list['sum']['GP'] = number_format($GP,0,'','');
-		($I1P<1000)? $sum['I1P'] = number_format($I1P,1,'.','') : $list['sum']['I1P'] = number_format($I1P,0,'','');
-		($I2P<1000)? $sum['I2P'] = number_format($I2P,1,'.','') : $list['sum']['I2P'] = number_format($I2P,0,'','');
-		($IP<1000)? $sum['IP'] = number_format($IP,1,'.','') : $list['sum']['IP'] = number_format($IP,0,'','');
-		($EFF<100)? $sum['EFF'] = number_format($EFF,1,'.','') : $list['sum']['EFF'] = number_format($EFF,0,'','');
-		$oInverter = array();
-		//$totals = array("day"=>$KWHTD,"week"=>$KWHTW,"month"=>$KWHTM);
-
+		$sum['GP'] = ($GP<1000) ? number_format($GP,1,'.','') : number_format($GP,0,'','');
+		$sum['I1P'] = ($I1P<1000) ? number_format($I1P,1,'.','') : number_format($I1P,0,'','');
+		$sum['I2P'] = ($I2P<1000) ? number_format($I2P,1,'.','') : number_format($I2P,0,'','');
+		$sum['IP'] = ($IP<1000) ? number_format($IP,1,'.','') : number_format($IP,0,'','');
+		$sum['EFF'] = ($EFF<100) ? number_format($EFF,1,'.','') : number_format($EFF,0,'','');
+		
 		return array('inverters'=>$inverters,'sum'=>$sum);
 	}
 
