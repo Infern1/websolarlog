@@ -77,10 +77,10 @@ class CoreAddon {
 	}
 	
 	/**
-	 * Handle hook onInfo
+	 * Handle hook onInverterInfo
 	 * @param unknown $args
 	 */
-	public function onInfo($args) {
+	public function onInverterInfo($args) {
 		$inverter = $args[1];
 		$info = $args[2];
 		
@@ -91,10 +91,10 @@ class CoreAddon {
 	}
 	
 	/**
-	 * Handle hook onAlarm
+	 * Handle hook onInverterAlarm
 	 * @param unknown $args
 	 */
-	public function onAlarm($args) {
+	public function onInverterAlarm($args) {
 		$inverter = $args[1];
 		$alarm = $args[2];
 		

@@ -64,7 +64,7 @@ class HookHandler {
 	        		$result = $object->$methodname(func_get_args());
         		} catch (Exception $e) {
         			try {
-        				$this->fire('onError', "Error in hook " . $classmethod . " error: " . $e->getMessage());
+        				$this->fire('onError', "Error in hook " . $callback . " error: " . $e->getMessage());
 	        		} catch (Exception $ignore) {}
         		}
         	} else {

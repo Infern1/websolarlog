@@ -74,7 +74,7 @@ class WorkHandler {
 			sleep(2); // Don't spam the inverter with requests
 			$info = $api->getInfo();
 			if (trim($info) != "") {
-				HookHandler::getInstance()->fire("onInfo", $inverter, $info);
+				HookHandler::getInstance()->fire("onInverterInfo", $inverter, $info);
 			}
 		}
 		
@@ -84,7 +84,7 @@ class WorkHandler {
 			if (trim($alarm) != "") { 
 				$event = new Event($inverter->id, time(), 'Alarm', Util::formatEvent($alarm));
 				if ($this->isAlarmDetected($event)) {
-					HookHandler::getInstance()->fire("onAlarm", $inverter, $event);
+					HookHandler::getInstance()->fire("onInverterAlarm", $inverter, $event);
 				}
 			}
 		}

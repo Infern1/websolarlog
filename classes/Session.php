@@ -123,8 +123,8 @@ class Session
     	$hookHandler->add("onHistory", "CoreAddon.onHistory");
     	$hookHandler->add("onEnergy", "CoreAddon.onEnergy"); // Will run also if inverter is down
     	$hookHandler->add("newHistory", "CoreAddon.onEnergy"); // Update on every new History
-    	$hookHandler->add("onInfo", "CoreAddon.onInfo");
-    	$hookHandler->add("onAlarm", "CoreAddon.onAlarm");
+    	$hookHandler->add("onInverterInfo", "CoreAddon.onInverterInfo");
+    	$hookHandler->add("onInverterAlarm", "CoreAddon.onInverterAlarm");
     	
     	$hookHandler->add("onNewLiveData", "BasicChecksAddon.onNewLive");
     	$hookHandler->add("onNoLiveData", "BasicChecksAddon.onNoLiveData");
