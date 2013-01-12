@@ -18,7 +18,7 @@ Class Aurora implements DeviceApi {
     	if ($this->DEBUG) {
     		return "W2223424".rand(0,9);
     	} else {
-    		return $this->execute('-A');
+    		return $this->execute('-A -Y 10');
     	}
 
     }
@@ -41,13 +41,13 @@ Class Aurora implements DeviceApi {
         if ($this->DEBUG) {
             return "PowerOne XXXXXX.XXXXXXXX";
         } else {
-           return $this->execute('-p -n -f -g -m -v');
+           return $this->execute('-p -n -f -g -m -v -Y 10');
         }
     }
 
     public function getHistoryData() {
     	// Try to retrieve the data of the last 366 days
-        return $this->execute('-k 366 Y 60');
+        return $this->execute('-k 366 -Y 60');
     }
 
     public function syncTime() {
@@ -68,9 +68,12 @@ Class Aurora implements DeviceApi {
         $stdout = stream_get_contents($pipes[1]);
         $stderr = stream_get_contents($pipes[2]);
         
+        /*
+        hide errors
         if ($stderr != "") {
         	echo ("error found: " . $stderr . "\n");
         }
+        */
         proc_close($proc);
         
         //print stream_get_contents($pipes[1]);
