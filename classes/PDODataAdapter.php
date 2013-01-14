@@ -691,6 +691,7 @@ class PDODataAdapter {
 		$bean->pvoutputEnabled = $inverter->pvoutputEnabled;
 		$bean->pvoutputApikey = $inverter->pvoutputApikey;
 		$bean->pvoutputSystemId = $inverter->pvoutputSystemId;
+		$bean->state = $inverter->state;
 
 		$bean->expectedJAN = $inverter->expectedJAN;
 		$bean->expectedFEB = $inverter->expectedFEB;
@@ -731,6 +732,7 @@ class PDODataAdapter {
 		$inverter->pvoutputApikey = $bean->pvoutputApikey;
 		$inverter->pvoutputSystemId = $bean->pvoutputSystemId;
 		$inverter->panels = $this->readPanelsByInverter($inverter->id);
+		$inverter->state = $bean->state;
 
 		$inverter->expectedJAN = $bean->expectedJAN;
 		$inverter->expectedFEB = $bean->expectedFEB;

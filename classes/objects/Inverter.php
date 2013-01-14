@@ -17,6 +17,7 @@ class Inverter
     public $pvoutputEnabled;
     public $pvoutputApikey;
     public $pvoutputSystemId;
+    public $state;
 
     public $expectedJAN;
     public $expectedFEB;
@@ -51,6 +52,7 @@ class Inverter
         $this->syncTime = false;
         $this->pvoutputEnabled = false;
         $this->panels = array();
+        $this->state = 0;
     }
 
     function getApi($config) {

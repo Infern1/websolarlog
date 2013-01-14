@@ -47,8 +47,8 @@ class Session
     }
     
     private static $config;
-    public static function getConfig() {
-    	if (!isset(self::$config) || self::$config == null) {
+    public static function getConfig($reload=false) {
+    	if (!isset(self::$config) || self::$config == null || $reload == true) {
     		self::$config = PDODataAdapter::getInstance()->readConfig();
     	}
     	return self::$config;

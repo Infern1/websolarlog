@@ -14,12 +14,28 @@ if($pid->isAlreadyRunning) {
 	exit;
 }
 
-$worker = new Worker();
-$worker->start();
+$useNewWorker = false;
 
-//$workHandler = new WorkHandler();
-//while (true) {
-//	$workHandler->start();
-//	sleep(2);
-//}
+if ($useNewWorker) {
+	$workHandler = new WorkHandler();
+	$count = 0;
+	while (true) {
+		if (count > 60) {
+			$workHandler = null;
+			$workHandler = new WorkHandler();
+		}
+		try {
+			$workHandler->start();
+		} catch (Exception $e) {
+			echo ($e->getMessage());
+		}
+		$count++;
+		sleep(2);
+		
+	}
+} else {
+	$worker = new Worker();
+	$worker->start();
+	
+}
 ?>

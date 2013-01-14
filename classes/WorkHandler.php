@@ -5,7 +5,7 @@ class WorkHandler {
 	
 	function __construct() {
 		// Initialize objects
-		$this->config = Session::getConfig();
+		$this->config = Session::getConfig(true);
 	}
 	
 	function __destruct() {

@@ -14,13 +14,17 @@ class BasicChecksAddon {
 	}
 	
 	public function onLiveData($args) {
-		if ($_SESSION['liveCounter'] > 0) {
+		$inverter = $args[1];
+		$inverter = new Inverter();
+		
+		// Check if the sun is up and the inverter is down
+		if(!Util::isSunDown($this->config) && $inverter->state != 1) {
 			if ($this->adapter->changeInverterStatus($inverter, 1)) {
 				echo("fire: onInverterStartup! \n");
 				HookHandler::getInstance()->fire("onInverterStartup", $inverter);
-			}
+				$inverter->state = 1;
+			}			
 		}
-		$_SESSION['liveCounter'] = 0;
 	}
 	
 	public function onNoLiveData($args) {
