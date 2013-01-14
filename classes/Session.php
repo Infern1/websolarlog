@@ -126,7 +126,7 @@ class Session
     	$hookHandler->add("onInverterInfo", "CoreAddon.onInverterInfo");
     	$hookHandler->add("onInverterAlarm", "CoreAddon.onInverterAlarm");
     	
-    	$hookHandler->add("onNewLiveData", "BasicChecksAddon.onNewLive");
+    	$hookHandler->add("newLiveData", "BasicChecksAddon.onNewLive");
     	$hookHandler->add("onNoLiveData", "BasicChecksAddon.onNoLiveData");
     	$hookHandler->add("onRegularJob", "BasicChecksAddon.on10MinJob");
     }

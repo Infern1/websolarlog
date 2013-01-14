@@ -15,7 +15,6 @@ class BasicChecksAddon {
 	
 	public function onNewLive($args) {
 		$inverter = $args[1];
-		$inverter = new Inverter();
 		
 		// Check if the sun is up and the inverter is down
 		if(!Util::isSunDown($this->config) && $inverter->state != 1) {
