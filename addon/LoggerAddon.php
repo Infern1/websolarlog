@@ -33,12 +33,12 @@ class LoggerAddon {
 	}
 	
 	public function onInverterError($args) {
-		$message = $args[0] . " - " . $args[1];
+		$message = $args[0] . " - " . $args[1]->name . " - " . $args[2];
 		$this->write2file("error", $message);
 	}
 
 	public function onInverterWarning($args) {
-		$message = $args[0] . " - " . $args[1];
+		$message = $args[0] . " - " . $args[1]->name . " - " . $args[2];
 		$this->write2file("warning", $message);
 	}
 	
