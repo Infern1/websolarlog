@@ -20,9 +20,10 @@ if ($useNewWorker) {
 	$workHandler = new WorkHandler();
 	$count = 0;
 	while (true) {
-		if (count > 60) {
+		if ($count > 60) {
 			$workHandler = null;
 			$workHandler = new WorkHandler();
+			$count = 0;
 		}
 		try {
 			$workHandler->start();
