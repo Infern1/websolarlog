@@ -13,7 +13,7 @@ class BasicChecksAddon {
 		$this->adapter = null;
 	}
 	
-	public function onLiveData($args) {
+	public function onNewLive($args) {
 		$inverter = $args[1];
 		$inverter = new Inverter();
 		
