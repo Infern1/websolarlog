@@ -28,20 +28,28 @@ class BasicChecksAddon {
 	
 	public function onNoLiveData($args) {
 		$inverter = $args[1];
-		$_SESSION['liveCounter'] = isset($_SESSION['liveCounter']) ? $_SESSION['liveCounter'] + 1 : 0;
-		if ($_SESSION['liveCounter'] == 10) {
+		$liveCounter = (integer) (isset($_SESSION['noLiveCounter']) ? $_SESSION['noLiveCounter'] : 0);
+		$liveCounter++;
+		if ($liveCounter == 10) {
 			// Are we seriously down?
 			if(Util::isSunDown($this->config)) {
 				if ($this->adapter->changeInverterStatus($inverter, 0)) {
 					echo("fire: onInverterShutdown! \n");
 					HookHandler::getInstance()->fire("onInverterShutdown", $inverter);
+					$inverter->state = 0;
 				}
 			} else {
 				// Probably temporarely down, check again
 				HookHandler::getInstance()->fire("onInverterError", $inverter, "Inverter seems to be down");
-				$_SESSION['liveCounter'] == 0;
+				$liveCounter = 0;
 			}		
 		}
+		// Reset the counter if we are still live and the counter > 15
+		if ($inverter->state = 1 && $liveCounter > 15) {
+				$liveCounter = 0;			
+		}
+		
+		$_SESSION['noLiveCounter'] = $liveCounter;
 	}
 	
 	public function on10MinJob($args) {
