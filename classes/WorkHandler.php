@@ -22,7 +22,7 @@ class WorkHandler {
 			try {
 				$this->handleInverter($inverter);				
 			} catch (Exception $e) {
-				HookHandler::getInstance()->fire("onError", $inverter, $e->getMessage());
+				HookHandler::getInstance()->fire("onInverterError", $inverter, $e->getMessage());
 			}
 		}
 		R::commit(); // Commit the transaction
