@@ -24,13 +24,20 @@ class BasicChecksAddon {
 				$inverter->state = 1;
 			}			
 		}
+		
+		if (isset($_SESSION['noLiveCounter'])) {
+			unset($_SESSION['noLiveCounter']);
+		}
 	}
 	
 	public function onNoLiveData($args) {
+		/**
+		 * TODO :: This should be inverter specific, when it stable, convert it to an array mapping
+		 */
 		$inverter = $args[1];
 		$liveCounter = (integer) (isset($_SESSION['noLiveCounter']) ? $_SESSION['noLiveCounter'] : 0);
 		$liveCounter++;
-		if ($liveCounter == 10) {
+		if ($liveCounter == 60) {
 			// Are we seriously down?
 			if(Util::isSunDown($this->config)) {
 				if ($this->adapter->changeInverterStatus($inverter, 0)) {
@@ -45,7 +52,7 @@ class BasicChecksAddon {
 			}		
 		}
 		// Reset the counter if we are still live and the counter > 15
-		if ($inverter->state = 1 && $liveCounter > 15) {
+		if ($inverter->state = 1 && $liveCounter > 70) {
 				$liveCounter = 0;			
 		}
 		
