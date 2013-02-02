@@ -1,90 +1,81 @@
 #!/bin/bash
 # WebSolarLog start and stop script
 
-SOURCE="${BASH_SOURCE[0]}"
-DIR="$( dirname "$SOURCE" )"
-EPOCH=`date +%s`
-
-while [ -h "$SOURCE" ]
-do 
-  SOURCE="$(readlink "$SOURCE")"
-  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
-  DIR="$( cd -P "$( dirname "$SOURCE"  )" && pwd )"
-done
-DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-WWWDIR="$( dirname "$DIR" )"
-
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PIDFOLDER="/tmp"
+PHPSCRIPTNAME="worker.php"
 PHP=$(which php)
+NOHUP=$(which nohup)
+LOGFILE=$SCRIPTDIR"/workerNew.log"
+
+cd $SCRIPTDIR
+
+RESULT="NO"
+is_running(){
+        RESULT="NO"
+        if [ ! -f $PIDFOLDER"/"$PHPSCRIPTNAME".pid" ] 
+        then
+          return
+        fi
+
+        kill -0 `cat $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` 2> /dev/null
+        if [ "$?" -eq "1" ]
+        then
+          return
+        fi
+
+        RESULT="YES"
+}
 
 looping ()
 { 
-while [ "true" ] # To infinity ... and beyond!
-do
-#Check if the lock file is too old
-find $WWWDIR"/data/lock" -mmin +2 -delete 2> /dev/null
-
-if [ ! -f $WWWDIR"/data/lock" ] # Port lock
-then
-  $PHP $WWWDIR"/scripts/worker.php" >> $WWWDIR/worker.log 2>&1
-fi
-sleep 0.5
-done
+	while [ "true" ] # To infinity ... and beyond!
+	do
+		is_running
+		if [ "$RESULT" = 'NO' ]
+		then
+		        echo "not running, starting"
+		        $NOHUP $PHP $PHPSCRIPTNAME >> $LOGFILE &
+		fi
+        sleep 10 # Wait for 10 seconds
+	done
 }
 
-
+is_running
 case $1 in
-setup)
-
-   if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 1>&2
-   echo "Aborting.."; exit 1;
-   fi
-
-   if [ -e "/usr/bin/wsl" ]
-   then
-     rm /usr/bin/wsl
-   fi
-  ln -s "$WWWDIR"/scripts/wsl.sh /usr/bin/wsl
-  chmod 770 "$WWWDIR"/scripts/wsl.sh "$WWWDIR"/scripts/worker.php
-  chmod 770 "$WWWDIR"/scripts/wsl.sh "$WWWDIR"/scripts/wsl.sh
-
-;;
 start)
-
-   if [ ! -e "/usr/bin/wsl" ]
-    then
-      $WWWDIR"/scripts/wsl.sh setup" >> $WWWDIR/setup.log 2>&1
-    fi
-
-    if [ ! -f /var/lock/wsl.lock ]; then
-        touch /var/lock/wsl.lock
+	if [ "$RESULT" = 'YES' ]
+	then
+        echo "WebSolarLog is already started"
+    else
         looping &
         echo "Starting WebSolarLog.."
-    else
-        echo "WebSolarLog is already started"
     fi
 ;;
 stop)
-
-    if [ -f /var/lock/wsl.lock ]; then
-    kill `ps -ef | grep 'wsl.sh start' | grep -v grep | awk '{ print $2 }'`
-    rm /var/lock/wsl.lock
-        if [ -f $WWWDIR'/data/lock' ]; then
-        echo "Cleanup port lock"
-        rm $WWWDIR'/data/lock'
-        fi
-        echo "WebSolarLog stopped"
-    else
-        echo "WebSolarLog was already stopped"
-    fi
+	if [ "$RESULT" = 'YES' ]
+	then
+		kill `cat $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` 2> /dev/null
+	else
+		echo "WebSolarLog is not running"
+	fi
+	kill `pgrep wsl.sh` &
+	exit 0
+;;
+status)
+	if [ "$RESULT" = 'YES' ]
+	then
+		echo "WebSolarLog is running"
+	else
+		echo "WebSolarLog is not running"
+	fi
+	exit 0
 ;;
 *)
-
-clear
-pathtosrv=`pwd`
-echo "Welcome to WebSolarLog
-
-Usage : simply run as root $pathtosrv/wsl.sh { start | stop }"
+	echo .
+	echo "Welcome to WebSolarLog
+	echo .
+	echo Usage : simply run as root $SCRIPTDIR/wsl.sh { start | stop | status }"
 ;;
 esac
 exit 0

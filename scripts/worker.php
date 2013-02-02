@@ -14,7 +14,7 @@ if($pid->isAlreadyRunning) {
 	exit;
 }
 
-$useNewWorker = false;
+$useNewWorker = true;
 
 if ($useNewWorker) {
 	$workHandler = new WorkHandler();
