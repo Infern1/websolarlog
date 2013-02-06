@@ -195,7 +195,7 @@ class Util {
     		$protocol = 'http://';
     	}
     
-    	$url = $protocol . isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : "www.suncounter.nl";
+    	$url = $protocol . (isset($_SERVER['HTTP_HOST']) === true ? $_SERVER['HTTP_HOST'] : "www.suncounter.nl");
     
     	// use port if non default
     	$url .= isset( $_SERVER['SERVER_PORT'] )
