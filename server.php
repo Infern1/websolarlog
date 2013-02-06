@@ -492,6 +492,13 @@ try {
 			$data['lang'] = $lang;
 			$data['IndexValues'] = $indexValues;
 			break;
+		case "fireHook":
+			$hookname = Common::getValue("name", "");
+			if ($hookname != "") {
+				echo ("Fire hook: " . $hookname);
+				HookHandler::getInstance()->fire($hookname);
+			}
+			break;
 		default:
 			break;
 	}

@@ -129,6 +129,10 @@ class Session
     	$hookHandler->add("newLiveData", "BasicChecksAddon.onNewLive");
     	$hookHandler->add("onNoLiveData", "BasicChecksAddon.onNoLiveData");
     	$hookHandler->add("onRegularJob", "BasicChecksAddon.on10MinJob");
+    	
+    	// fire from frontend
+    	$hookHandler->add("checkEnergy", "EnergyCheckAddon.checkEnergy");
+    	
     }
 }
 ?>
