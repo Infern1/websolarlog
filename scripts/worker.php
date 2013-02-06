@@ -20,7 +20,7 @@ if ($useNewWorker) {
 	$workHandler = new WorkHandler();
 	$count = 0;
 	while (true) {
-		if ($count > 60) {
+		if ($count > 40) {
 			checkPauseAndRestart();
 			$workHandler = null;
 			$workHandler = new WorkHandler();
@@ -47,7 +47,6 @@ function checkPauseAndRestart() {
 		while ($config->pauseWorker) {
 			sleep(10);
 			$config = Session::getConfig(true);
-			echo("Worker paused");
 		}
 	}
 	if ($config->restartWorker) {
