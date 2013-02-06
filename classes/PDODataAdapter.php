@@ -607,6 +607,9 @@ class PDODataAdapter {
 		$bean->piwikSiteId = $config->piwikSiteId;
 
 		$bean->adminpasswd = $config->adminpasswd;
+		
+		$bean->pauseWorker = $config->pauseWorker;
+		$bean->restartWorker = $config->restartWorker;
 
 		//Store the bean
 		R::store($bean);
@@ -662,6 +665,9 @@ class PDODataAdapter {
 			$config->piwikSiteId = $bean->piwikSiteId;
 			
 			$config->adminpasswd = ($bean->adminpasswd != "") ? $bean->adminpasswd : $config->adminpasswd;
+			
+			$config->pauseWorker = ($bean->pauseWorker != "") ? $bean->pauseWorker : $config->pauseWorker;
+			$config->restartWorker = ($bean->restartWorker != "") ? $bean->restartWorker : $config->restartWorker;
 		}
 
 		return $config;

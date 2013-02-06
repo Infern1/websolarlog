@@ -152,6 +152,9 @@ switch ($settingstype) {
 		$url = ($version == "trunk") ? Updater::$url . "trunk" : $url;
 		$data['svnurl'] = $url;
 
+		// Set the worker on pause, so we won't have conflicts or errors
+		$config->pauseWorker = true;
+		$adapter->writeConfig($config);
 
 		updaterJsonFile("busy", "retrieving update", 10);
 		HookHandler::getInstance()->fire("onInfo", "Update info: Starting checkout of " . $url);
@@ -162,7 +165,7 @@ switch ($settingstype) {
 			$data['result'] = false;
 			break;
 		}
-
+		
 		// Copy the files
 		updaterJsonFile("busy", "applying update", 50);
 		HookHandler::getInstance()->fire("onInfo", "Update info: Removing old files and copy new files.");
@@ -172,6 +175,8 @@ switch ($settingstype) {
 		// Everything ok, save version info to db
 		$config->version_title = $version;
 		$config->version_revision = $revision;
+		$config->restartWorker = true;
+		$config->pauseWorker = false;
 		$adapter->writeConfig($config);
 
 		HookHandler::getInstance()->fire("onInfo", "Update ready: " . $version . " (" . $revision . ")");

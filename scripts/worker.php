@@ -21,6 +21,7 @@ if ($useNewWorker) {
 	$count = 0;
 	while (true) {
 		if ($count > 60) {
+			checkPauseAndRestart();
 			$workHandler = null;
 			$workHandler = new WorkHandler();
 			$count = 0;
@@ -39,4 +40,21 @@ if ($useNewWorker) {
 	$worker->start();
 	
 }
+
+function checkPauseAndRestart() {
+	$config = Session::getConfig(true);
+	if ($config->pauseWorker) {
+		while ($config->pauseWorker) {
+			sleep(10);
+			$config = Session::getConfig(true);
+			echo("Worker paused");
+		}
+	}
+	if ($config->restartWorker) {
+		$config->restartWorker = false;
+		PDODataAdapter::getInstance()->writeConfig($config);
+		sleep (2);
+		exit("Restarting worker");
+	}
+} 
 ?>

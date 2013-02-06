@@ -54,6 +54,9 @@ class Config
     
     public $hybridAuth;
     
+    public $pauseWorker;
+    public $restartWorker;
+    
 	/**
 	 * Constructor
 	 */
@@ -114,7 +117,8 @@ class Config
 		
 		$this->adminpasswd = sha1('admin');
 		
-
+		$this->pauseWorker = false;
+		$this->restartWorker = false;
 	}
 
 	function getInverterConfig($inverterId) {
