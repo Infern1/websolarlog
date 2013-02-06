@@ -5,10 +5,16 @@ require_once("classes/classloader.php");
 Session::initialize();
 
 
+
 $config = Session::getConfig();
 $adapter = PDODataAdapter::getInstance();
 // Retrieve action params
 $settingstype = Common::getValue("s", null);
+
+// Security check
+if (!Session::isLogin() && $settingstype != 'login' && $settingstype != 'isLogin') {
+	exit("not allowed");
+}	
 
 $data = array();
 switch ($settingstype) {
