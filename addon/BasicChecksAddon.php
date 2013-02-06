@@ -47,7 +47,9 @@ class BasicChecksAddon {
 				}
 			} else {
 				// Probably temporarely down, check again
-				HookHandler::getInstance()->fire("onInverterError", $inverter, "Inverter seems to be down");
+				if (PeriodHelper::isPeriodJob("ShutDownJobINV" . $inverter->id, (2 * 60))) {
+					HookHandler::getInstance()->fire("onInverterError", $inverter, "Inverter seems to be down");
+				}
 				$liveCounter = 0;
 			}		
 		}
