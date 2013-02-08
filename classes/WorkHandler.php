@@ -17,15 +17,16 @@ class WorkHandler {
 		$dataAdapter = PDODataAdapter::getInstance(); // Only need the initialisation for the transaction support
 		
 		// Handle every inverter in its own transaction
-		R::begin(); // Start a transaction to speed things up
 		foreach ($this->config->inverters as $inverter) {
 			try {
+				R::begin(); // Start a transaction to speed things up
 				$this->handleInverter($inverter);				
+				R::commit(); // Commit the transaction
 			} catch (Exception $e) {
+				R::rollback();
 				HookHandler::getInstance()->fire("onInverterError", $inverter, $e->getMessage());
 			}
 		}
-		R::commit(); // Commit the transaction
 		
 		// These hooks will also run if the inverter is down
 		if (PeriodHelper::isPeriodJob("fastJob", 1)) {
