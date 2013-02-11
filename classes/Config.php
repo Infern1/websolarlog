@@ -34,6 +34,7 @@ class Config
     public $inverters; // Contains an array of inverters
 
     public $co2kwh;
+    public $co2gas;
     public $debugmode;
 
     public $aurorapath; // The path to aurora
@@ -114,6 +115,7 @@ class Config
 		$this->smagetpath = 'sma_get'; // If in system path this is enough
 		
 		$this->co2kwh = 440; // 440g/kWh is conform europa average
+		$this->co2kwh = 2200; // 440g/kWh is conform europa average
 		
 		$this->adminpasswd = sha1('admin');
 		

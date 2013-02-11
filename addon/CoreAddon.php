@@ -20,61 +20,70 @@ class CoreAddon {
 	public function onLiveData($args) {
 		$inverter = $args[1];
 		$live = $args[2];
-		
+	
 		if ($inverter == null) {
 			HookHandler::getInstance()->fire("onError", "CoreAddon::onLiveData() inverter == null");
 			return;
 		}
-		
+	
 		// Save the live information
 		$this->adapter->writeLiveInfo($inverter->id, $live);
 		HookHandler::getInstance()->getInstance()->fire("newLiveData", $inverter, $live);
-		
+	
 		// Check the Max value
 		$this->checkMaxPowerValue($inverter, $live);
 	}
 	
+
+
 	/**
 	 * Handle hook onHistory
 	 * @param unknown $args
 	 */
 	public function onHistory($args) {
+		//echo "CoreAddon onHistory";
 		$inverter = $args[1];
 		$live = $args[2];
-		$history = $this->adapter->addHistory($inverter->id, $live);
-		HookHandler::getInstance()->fire("newHistory", $inverter, $history);
+		$timestamp = $args[3];
+		$this->adapter->addHistory($inverter->id, $live,$timestamp);
+		hookHandler::getInstance()->fire("newHistory", $inverter, $timestamp);
 	}
 	
 	
+
+
 	public function onEnergy($args) {
+		//echo "CoreAddon onEnergy";
+		//var_dump($args);
 		$inverter = $args[1];
-		
+	
 		$arHistory = $this->adapter->readHistory($inverter->id, null);
-		
+	
 		$first = reset($arHistory);
 		$last = end($arHistory);
-		
+	
 		$productionStart = $first['KWHT'];
 		$productionEnd = $last['KWHT'];
-		
+	
 		// Check if we passed 100.000kWh
 		if ($productionEnd < $productionStart) {
 			$productionEnd += 100000;
 		}
 		$production = round($productionEnd - $productionStart, 3);
-		
+	
 		// Set the new values and save it
 		$energy = new Energy();
 		$energy->SDTE = $first['SDTE'];
-		$energy->time = time();
+		$energy->time = $args[2];
 		$energy->INV = $inverter->id;
 		$energy->KWH = $production;
 		$energy->KWHT = $productionEnd;
 		$energy->co2 = Formulas::CO2kWh($production, $this->config->co2kwh); // Calculate co2
 		$this->adapter->addEnergy($inverter->id, $energy);
-		
 		HookHandler::getInstance()->fire("newEnergy", $inverter, $energy);
 	}
+	
+
 	
 	/**
 	 * Handle hook onInverterInfo

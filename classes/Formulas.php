@@ -57,7 +57,7 @@ class Formulas
     	return round((((($kiloWattHourStart-$kiloWattHourStop) * 3600) / $timeDifference) * 1000), $decimals);
     }
     
-    
+
     /**
      * Calculates the average power over a given time
      * @param $kiloWattHourStart
@@ -72,8 +72,26 @@ class Formulas
     	}else {
     		$CO2 = number_format(($CO2),1, ",", "")." Kg";
     	}
-    	
-    	 return $CO2;
+    	 
+    	return $CO2;
+    }
+
+    /**
+     * Calculates the average power over a given time
+     * @param $kiloWattHourStart
+     * @param $kiloWattHourStop
+     * @param $timeDifference
+     * @param $decimals
+     */
+    public static function CO2gas($litreGas, $ConfigCO2gas, $decimals = 1) {
+    	$CO2=(($litreGas/1000)*$ConfigCO2gas);
+    	if ($CO2>1000) {
+    		$CO2 = number_format(($CO2/1000), 3, ",", "")." Tonnes";
+    	}else {
+    		$CO2 = number_format(($CO2),1, ",", "")." Kg";
+    	}
+    	 
+    	return $CO2;
     }
     
     

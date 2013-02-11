@@ -120,8 +120,18 @@ class Session
     	
     	// NEW Work Handler hooks
     	$hookHandler->add("onLiveData", "CoreAddon.onLiveData");
+    	$hookHandler->add("onLiveSmartMeterData", "SmartMeterAddon.onLiveSmartMeterData");
+    	
     	$hookHandler->add("onHistory", "CoreAddon.onHistory");
+    	$hookHandler->add("onSmartMeterHistory", "SmartMeterAddon.onSmartMeterHistory");
+    	
     	$hookHandler->add("onEnergy", "CoreAddon.onEnergy"); // Will run also if inverter is down
+    	$hookHandler->add("onSmartMeterEnergy", "SmartMeterAddon.onSmartMeterEnergy"); // Will run at 00:00
+    	
+    	
+    	$hookHandler->add("GraphDayPoints", "SmartMeterAddon.GraphDayPoints"); // Will run at 00:00
+    	
+    	
     	$hookHandler->add("newHistory", "CoreAddon.onEnergy"); // Update on every new History
     	$hookHandler->add("onInverterInfo", "CoreAddon.onInverterInfo");
     	$hookHandler->add("onInverterAlarm", "CoreAddon.onInverterAlarm");

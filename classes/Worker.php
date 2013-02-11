@@ -21,7 +21,6 @@ class Worker {
         /*
          * Start main script
         */
-
         $isAlive = false;
         $changeStateTo = null;
         // Create a lock
@@ -37,7 +36,7 @@ class Worker {
             }
 
             $datareturn = $this->aurora->getData();
-
+            
             // Convert datareturn to live object
             $live = AuroraConverter::toLive($datareturn);
 

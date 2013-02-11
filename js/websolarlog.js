@@ -1,10 +1,10 @@
 // calculate the JS parse time //
-/*
-Only for developer purposes
+
+//Only for developer purposes
 $.ajaxSetup({
 	cache : false
 });
-*/
+
 
 function ajaxReady(){
 	$('#reqLoading').hide();
@@ -45,6 +45,7 @@ function analyticsJSCodeBlock() {
 beforeLoad = (new Date()).getTime();
 window.onload = pageLoadingTime;
 
+
 function pageLoadingTime() {
 	afterLoad = (new Date()).getTime();
 	secondes = (afterLoad - beforeLoad) / 1000;
@@ -53,7 +54,9 @@ function pageLoadingTime() {
 
 
 
-
+function is_array(input){
+    return typeof(input)=='object'&&(input instanceof Array);
+  }
 
 var graphDay = null;
 var dataDay = [];
@@ -64,14 +67,48 @@ var alreadyFetched = [];
 var currentGraphHandler;
 var todayTimerHandler;
 
-
-function tooltipContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
-	var returned = ""; 
-	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Energy:"+ plot.series[1].data[pointIndex][1]+ " W<br>"+bold[1];
-	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " W<br>"+bold[1];
-	returned += "Date:"+ plot.series[0].data[pointIndex][2]+"";
+function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot,series	) {
+	
+	
+	var returned = "";
+	if(is_array(plot.series[0].data[pointIndex])==true){
+		( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " W<br>"+bold[1]; //0
+	}
+	if(is_array(plot.series[1].data[pointIndex])==true){
+		( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Energy:"+ plot.series[1].data[pointIndex][1]+ " W<br>"+bold[1];//1
+	}
+	if(is_array(plot.series[2].data[pointIndex])==true){
+		var smoothGasLineLength = plot.series[2].data.length-1;
+		var GasLineLength = plot.series[7].data.length;
+		var multiply = GasLineLength/smoothGasLineLength;
+		pointIndex2 = Math.ceil((multiply*pointIndex) * 1) / 1;
+		//console.log(""+GasLineLength+"/"+smoothGasLineLength+"="+multiply+ "*"+pointIndex+"="+pointIndex*multiply+" round("+pointIndex2+")");
+		( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Gas:"+ plot.series[7].data[pointIndex2][1]+ " l<br>"+bold[1];//2
+	}
+	if(is_array(plot.series[2].data[pointIndex])==true){
+	( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Gas2: "+ plot.series[2].data[pointIndex][1]+ " l<br>"+bold[1];//2
+	}
+	if(is_array(plot.series[3].data[pointIndex])==true){
+		( seriesIndex == 3 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"low Usage:"+ plot.series[3].data[pointIndex][1]+ " W<br>"+bold[1];//3
+	}
+	if(is_array(plot.series[4].data[pointIndex])==true){
+		( seriesIndex == 4 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"high Usage:"+ plot.series[4].data[pointIndex][1]+ " W<br>"+bold[1];//4
+	}
+	if(is_array(plot.series[5].data[pointIndex])==true){
+		( seriesIndex == 5 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"low Return:"+ plot.series[5].data[pointIndex][1]+ " W<br>"+bold[1];//5
+	}
+	if(is_array(plot.series[6].data[pointIndex])==true){
+		( seriesIndex == 6 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"high Return:"+ plot.series[6].data[pointIndex][1]+ " W<br>"+bold[1];//6
+	}
+	if(is_array(plot.series[7].data[pointIndex])==true){
+		( seriesIndex == 7 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"gas dummy:"+ plot.series[7].data[pointIndex][1]+ " l<br>"+bold[1];//6
+	}
+	if(is_array(plot.series[3].data[pointIndex])==true){
+		returned += "Date:"+ plot.series[3].data[pointIndex][2]+"";
+	}
 	return returned;
 }
+
 
 function tooltipPeriodContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = ""; 
@@ -149,8 +186,8 @@ function handleGraphs(request,invtnum){
 	
 
 	if (currentGraphHandler){
-    	$("#graph"+tab+"Content").html('<div id="loading">loading...</div>');
     	currentGraphHandler.destroy();
+    	$("#graph"+tab+"Content").html('<div id="loading">loading...</div>');
     }
     if (todayTimerHandler){
         window.clearInterval(todayTimerHandler);
@@ -178,11 +215,12 @@ function handleGraphs(request,invtnum){
     if (tab == "Today" && $('#lastCall').val() == 'normal') {
         todayTimerHandler = window.setInterval(function(){
             if (currentGraphHandler){
-                $("#graph"+tab+"Content").html('<div id="loading">loading...</div>');
                 currentGraphHandler.destroy();
+                $("#graph"+tab+"Content").empty();
+                $("#graph"+tab+"Content").html('<div id="loading">refreshing graph...</div>');
             }
             WSL.createDayGraph(invtnum, "Today",tab, date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});				                    
-        }, 60000); // every minute
+        }, 90000); // every minute
     }
 }
 
@@ -264,6 +302,10 @@ function populateTabs(){
     });
 }
 
+var gaugeGP;
+var gaugeIP;
+var gaugeEFF;
+
 
 // WSL class
 var WSL = {
@@ -298,18 +340,11 @@ var WSL = {
 		// initialize languages selector on the given div
 		ajaxStart();
 		WSL.api.getPageIndexLiveValues(function(data) {
-				$.ajax({
-					url : 'js/templates/liveInverters.hb',
-					success : function(source) {
-						var template = Handlebars.compile(source);
-						var html = template({
-							'data' : data,
-							'lang':data.lang
-						});
-						$(divId).html(html);
+
+
 						
-						var GP = 3600 / 10;
-						var gaugeGPOptions = {
+						GP = 3600 / 10;
+						gaugeGPOptions = {
 							title : data.lang.ACPower,
 							grid : {
 								background : '#FFF'
@@ -328,8 +363,8 @@ var WSL = {
 								}
 							}
 						};
-							var IP = 3600 / 10;
-							var gaugeIPOptions = {
+						IP = 3600 / 10;
+						gaugeIPOptions = {
 								title : data.lang.DCPower,
 								grid : {
 									background : '#FFF'
@@ -345,8 +380,8 @@ var WSL = {
 									}
 								}
 							};
-							var EFF = 100 / 10;
-							var gaugeEFFOptions = {
+						EFF = 100 / 10;
+						gaugeEFFOptions = {
 								title : data.lang.Efficiency,
 								grid : {
 									background : '#FFF'
@@ -363,23 +398,52 @@ var WSL = {
 								}
 							};
 						
+
+				delete data;
+				$.ajax({
+					url : 'js/templates/liveInverters.hb',
+					success : function(source) {
+						var template = Handlebars.compile(source);
+						var html = template({
+							'data' : data,
+							'lang':data.lang
+						});
+						$(divId).html(html);
+						
+						
 						//////////////////
 						////////////////////////////////////////
-						var gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ],gaugeGPOptions);
+
+						if(gaugeGP){
+							//console.log('gauge destroy');
+							gaugeGP.destroy();
+						}
+						$('#gaugeGP').empty();
+						gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ],gaugeGPOptions);
 						gaugeGP.series[0].data = [ [ 'W',data.sumInverters.GP ] ];
 						gaugeGP.series[0].label = data.sumInverters.GP;
 						document.title = '('+ data.sumInverters.GP+ ' W) WebSolarLog';
 						gaugeGP.replot();
 						
-						var gaugeIP = $.jqplot('gaugeIP', [ [ 0.1 ] ],gaugeIPOptions);
+						if(gaugeIP){
+							gaugeIP.destroy();
+						}
+						$('#gaugeIP').empty(); 
+						gaugeIP = $.jqplot('gaugeIP', [ [ 0.1 ] ],gaugeIPOptions);
 						gaugeIP.series[0].data = [ [ 'W',data.sumInverters.IP ] ];
 						gaugeIP.series[0].label = data.sumInverters.IP;
 						gaugeIP.replot();
 						
-						var gaugeEFF = $.jqplot('gaugeEFF', [ [ 0.1 ] ],gaugeEFFOptions);
+						if(gaugeEFF){
+							gaugeEFF.destroy();
+						}
+						$('#gaugeEFF').empty(); 
+						gaugeEFF = $.jqplot('gaugeEFF', [ [ 0.1 ] ],gaugeEFFOptions);
 						gaugeEFF.series[0].data = [ [ 'W',data.sumInverters.EFF] ];
 						gaugeEFF.series[0].label = data.sumInverters.EFF+' %';
 						gaugeEFF.replot();
+
+
 						ajaxReady();
 					},
 					dataType : 'text',
@@ -507,7 +571,7 @@ var WSL = {
 	},
 
 	init_PageIndexAddContainers : function (divId,sideBar){
-		ajaxStart();
+		
 		WSL.api.getPageIndexValues(function(data) {
 			ajaxStart();
 			$.ajax({
@@ -519,7 +583,7 @@ var WSL = {
 						'lang' : data.lang
 					});
 					$(divId).html(html);
-					ajaxReady();
+			
 				},
 				dataType : 'text',
 			});	
@@ -530,6 +594,7 @@ var WSL = {
                     type: 'error'
                 });
 			}
+			
 			$.ajax({
 				url : 'js/templates/totalValues.hb',
 				success : function(source) {
@@ -780,68 +845,101 @@ var WSL = {
 	createDayGraph : function(invtnum, getDay, tab,date ,fnFinish) {
 		ajaxStart();
 		
+
+
+		
 		$.ajax({
-			url : "server.php?method=getGraphPoints&type="+ getDay +"&date="+ date +"&invtnum=" + invtnum,
+			url : "server.php?method=getGraphDayPoints&type="+ getDay +"&date="+ date +"&invtnum=" + invtnum,
 			method : 'GET',
 			dataType : 'json',
 			success : function(result) {
-				
-				////////////////////////////////////////
-				/////////////
+
+				// add a custom tick formatter, so that you don't have to include the entire date renderer library.
+				$.jqplot.DateTickFormatter = function(format, val) {
+				    // for some reason, format isn't being passed through properly, so just going to hard code for purpose of this jsfiddle
+				    val = (new Date(val)).getTime();
+				    format = '%H:%M';
+				    return $.jsDate.strftime(val, format);
+				};
 				
 				var graphOptions = {
-						series : [ {label:result.lang.cumPowerW,yaxis:'yaxis',showMarker:false},{label:result.lang.avgPowerW,yaxis:'y2axis'}],
-						axesDefaults : {useSeriesColor: true, tickRenderer : $.jqplot.CanvasAxisTickRenderer,},
-						animate: true,
-						legend : {
+					seriesDefaults: {
+						rendererOptions: {smooth: true},showMarker:false,autoscale:true,
+					},
+					series : [],
+					axesDefaults : {
+						useSeriesColor: true,
+						labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+					},
+					animate: true,
+					legend : {
 						show : true,
 						location:"nw",
 						renderer: $.jqplot.EnhancedLegendRenderer,
-							 rendererOptions: {seriesToggle: 'normal',}
-						}, 
-						
-						axes : {
-							xaxis : {
-								label : '',
-								labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-								renderer : $.jqplot.DateAxisRenderer,
-								tickInterval : '3600', // 1 hour
-								tickOptions : {angle : -30,formatString : '%H:%M'}
-							},
-							yaxis : {
-								label : result.lang.cumPowerW,min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer
-							},
-							y2axis : {
-								label : result.lang.avgPowerW,min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer
-							}
-						}, 
-						seriesDefaults: {
-					          rendererOptions: {smooth: true}
-					      },
-						highlighter : {
-							tooltipContentEditor: tooltipContentEditor,show : true,yvalues:4,tooltipLocation:'n'
-						},
-						cursor : {
-							show : false
-						}
-					};
-				
-				/////////////
-				////////////////////////////////////////
-				
-				var dataDay1 = [];
-				var dataDay2 = [];
-				if (result.dayData) {
-    				for (line in result.dayData.data) {;
-    					var object = result.dayData.data[line];
-    					dataDay1.push([ object[0], object[1],object[3] ]);
-    					dataDay2.push([ object[0], object[2],object[3] ]);
-    				} 
+						rendererOptions: {
+			                seriesToggle: 'normal',
+			            },
+					}, 
+					axes : {}, 
+					highlighter : {
+						tooltipContentEditor: tooltipTodayContentEditor,show : true,tooltipLocation:'n',
+					},
+					cursor : {
+						show : false
+					}
+				};
+				seriesData=[]; 
 
-    				if (dataDay1[0]) {
-    				    graphOptions.axes.xaxis.min = dataDay1[0][0];
-    				}
-    				handle = $.jqplot('graph' + tab + 'Content', [ dataDay1,dataDay2 ], graphOptions);
+				var json = [];
+				if (result.dayData) {
+					for (line in result.dayData.graph.points) {
+						var json = [];
+						for (values in result.dayData.graph.points[line]) {
+							json.push([result.dayData.graph.points[line][values][0],result.dayData.graph.points[line][values][1]]);
+						}
+						seriesData.push(json);
+					}
+					graphOptions.legend.labels = result.dayData.graph.labels;
+					
+					for(axes in result.dayData.graph.axes){
+						if(result.dayData.graph.axes[axes]['renderer']=='DateAxisRenderer'){
+							result.dayData.graph.axes[axes]['renderer'] = $.jqplot.DateAxisRenderer;
+						}
+						if(result.dayData.graph.axes[axes]['tickRenderer']=='CanvasAxisTickRenderer'){
+							result.dayData.graph.axes[axes]['tickRenderer'] = $.jqplot.CanvasAxisTickRenderer;
+						}
+						if(result.dayData.graph.axes[axes]['labelRenderer']=='CanvasAxisLabelRenderer'){
+							result.dayData.graph.axes[axes]['labelRenderer'] = $.jqplot.CanvasAxisLabelRenderer;
+						}
+						if(result.dayData.graph.axes[axes]['formatter']=='DayDateTickFormatter'){
+							result.dayData.graph.axes[axes]['labelRenderer'] = $.jqplot.DayDateTickFormatter;
+						}
+						
+					}
+
+					
+
+					graphOptions.axes = result.dayData.graph.axes;
+					//console.log('axes');
+					//console.log(graphOptions.axes);
+					graphOptions.axes.xaxis.min = result.dayData.timestamp.beginDate*1000;
+					graphOptions.axes.xaxis.max = result.dayData.timestamp.endDate*1000;
+					graphOptions.series = result.dayData.graph.series;
+					//console.log('series');
+					//console.log(graphOptions.series);
+					$('#graph' + tab + 'Content').empty();
+	    			handle = $.jqplot('graph' + tab + 'Content',  seriesData	 , graphOptions);
+
+    				delete dataDay1;
+    				delete dataDay2;
+    				delete dataDay3;
+    				delete dataDay4;
+    				delete dataDay5;
+    				delete dataDay6;
+    				delete dataDay7;
+    				delete dataDay8;
+    				delete graphOptions;
+
     				mytitle = 
     					$('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+
     							result.lang.totalEnergy+': ' + result.dayData.valueKWHT +
@@ -853,11 +951,8 @@ var WSL = {
 			}
 		});
 	},
-
 	createPeriodGraph : function(invtnum, type, count, date,divId, fnFinish) {
 		ajaxStart();
-
-		
 		$.ajax({
 			url : "server.php?method=getGraphPoints&type=" + type + "&count=" + count  +"&date="+ date + "&invtnum=" + invtnum,
 			method : 'GET',
@@ -874,6 +969,16 @@ var WSL = {
 					i +=1;
 				}
 
+
+				// add a custom tick formatter, so that you don't have to include the entire date renderer library.
+				$.jqplot.DateTickFormatter = function(format, val) {
+				    // for some reason, format isn't being passed through properly, so just going to hard code for purpose of this jsfiddle
+				    val = (new Date(val)).getTime();
+				    format = '%b %#d';
+				    return $.jsDate.strftime(val, format);
+				};
+
+				
 				var graphDayPeriodOptions = {
 						
 						series : [
@@ -913,11 +1018,16 @@ var WSL = {
 						xaxis : {
 							labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
 							renderer : $.jqplot.DateAxisRenderer,
-							angle : -30,
+							tickRenderer: $.jqplot.CanvasAxisTickRenderer,
 							tickOptions : {
-								formatString : '%d-%m'
+								angle:-20
 							}
 						},
+						/*
+						r/ray('label'=>'','renderer'=>'DateAxisRenderer',
+								'tickRenderer'=>'CanvasAxisTickRenderer','labelRenderer'=>'CanvasAxisLabelRenderer',
+								'tickInterval'=>3600,'tickOptions'=>array('formatter'=>'DefaultTickFormatter','angle'=>-45)
+						*/
 						yaxis : {
 							label : result.lang.harvested,
 							min : 0,
@@ -947,45 +1057,10 @@ var WSL = {
 		WSL.createProductionGraph(invtnum, divId);
 		
 	},
-	
+
 	createProductionGraph : function(invtnum, divId) {
 		ajaxStart();
-		var graphOptions = {
-			series : [
-			          {label:'Harvested(kWh)',yaxis:'yaxis',renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
-			          {label:'Expected(kWh)',yaxis:'y2axis',renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
-			          {label:'Cum. Expected(kWh)',yaxis:'y3axis',renderer:$.jqplot.LineRenderer, pointLabels: {show: false}},
-			          {label:'Cum. Harvested(kWh)',yaxis:'y4axis',renderer:$.jqplot.LineRenderer, pointLabels: {show: false}},
-		    ],
-			axesDefaults : {useSeriesColor: true, },
-			legend : {
-				show : true,
-				location:"nw",
-				 renderer: $.jqplot.EnhancedLegendRenderer,
-				 rendererOptions: {
-	                // set to true to replot when toggling series on/off
-	                // set to an options object to pass in replot options.
-	                seriesToggle: 'normal',
-	                // seriesToggleReplot: {resetAxes: true}
-	            }
-			}, 
-		    seriesDefaults:{rendererOptions: {barMargin: 40,barWidth:10}},
-			axes : {
-				xaxis : {labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,tickInterval:'1 month',tickOptions : {angle : -50}},
-				yaxis : {label : 'Harvested(kWh)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
-				y2axis : {label : 'Expected(kWh)',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
-				y3axis : {label : 'Cum. Expected(kWh)',min : 0,max: 3000,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
-				y4axis : {label : 'Cum. Harvested(kWh)',min : 0,max: 3000,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
-				y5axis : {label : '',min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,show:false},
-			},
-			highlighter : {
-				tooltipContentEditor: tooltipProductionContentEditor,
-				show : true,
-				tooltipLocation:'n'
-			},
-			cursor : {show : false}
-		};
-		
+
 		$.ajax({
 			url : "server.php?method=getProductionGraph&invtnum=" + invtnum,
 			method : 'GET',
@@ -996,6 +1071,7 @@ var WSL = {
 				var dataDay3 = [];
 				var dataDay4 = [];
 				var dataTable= [];
+				var ticksTable= [];
 				if (result.dayData) {
 					
 					
@@ -1008,19 +1084,20 @@ var WSL = {
 							var template = Handlebars.compile(source);
 							
 							for (line in result.dayData.data) {
-								var object = result.dayData.data[line];
+								var data = result.dayData.data[line];
 								var item = {
-								        "timestamp": object[0],
-								        "har": object[1],
-								        "date": object[2],
-								        "exp": object[3],
-										"diff": object[4],
-										"cumExp": object[6],
-										"cumHar": object[5],
-										"cumDiff": object[7]
+								        "har": data[0],
+								        "date": data[1],
+								        "exp": data[2],
+										"diff": data[3],
+										"cumExp": data[4],
+										"cumHar": data[5],
+										"cumDiff": data[6]
 								};
+								//console.log(item);
 								dataTable.push([item]);
 							}
+
 							var html = template({
 								'data' : dataTable,
 								'lang':result.lang
@@ -1033,30 +1110,130 @@ var WSL = {
 						dataType : 'text',
 					});
 					
+					ticksTable.push("0");
+					var monthTable=[];
 					for (line in result.dayData.data) {
 						var object = result.dayData.data[line];
-						dataDay1.push([  object[0], object[1], object[2] ]);
-						dataDay2.push([  object[0], object[3], object[2] ]);
-						dataDay3.push([  object[0], object[5], object[2] ]);
-						dataDay4.push([  object[0], object[6], object[2] ]);
+						//monthTable.push(result.dayData.ticks[line]);
+						dataDay1.push(object[0] );
+						dataDay2.push(object[2] );
+						dataDay3.push(object[4] );
+						dataDay4.push(object[5] );
 					}
+					ticksTable.push("13");
 					
-    				if (dataDay1[0][0]) {
-    				    graphOptions.axes.xaxis.min = dataDay1[0][0];
-    				}
+					var graphOptions = {
+							series : [
+							          {label:'Harvested(kWh)',yaxis:'yaxis', pointLabels: {show: false},
+							        	  renderer: $.jqplot.BarRenderer,
+											
+									        rendererOptions: {
+									            barPadding: 5,      // number of pixels between adjacent bars in the same
+									                                // group (same category or bin).
+									            barMargin: 5,      // number of pixels between adjacent groups of bars.
+									            barDirection: 'vertical', // vertical or horizontal.
+									            barWidth: 15,     // width of the bars.  null to calculate automatically.
+									            shadowOffset: 2,    // offset from the bar edge to stroke the shadow.
+									            shadowDepth: 5,     // nuber of strokes to make for the shadow.
+									            shadowAlpha: 0.2,   // transparency of the shadow.
+									        },
+									        min:0,
+							          },
+							          {label:'Expected(kWh)',yaxis:'y2axis',pointLabels: {show: false},
+							        	  renderer: $.jqplot.BarRenderer,
+											
+									        rendererOptions: {
+									            barPadding: 5,      // number of pixels between adjacent bars in the same
+									                                // group (same category or bin).
+									            barMargin: 5,      // number of pixels between adjacent groups of bars.
+									            barDirection: 'vertical', // vertical or horizontal.
+									            barWidth: 15,     // width of the bars.  null to calculate automatically.
+									            shadowOffset: 2,    // offset from the bar edge to stroke the shadow.
+									            shadowDepth: 5,     // nuber of strokes to make for the shadow.
+									            shadowAlpha: 0.2,   // transparency of the shadow.
+									        },
+									        min:0,
+									  },
+							          {label:'Cum. Expected(kWh)',yaxis:'y3axis',renderer:$.jqplot.LineRenderer, pointLabels: {show: false}},
+							          {label:'Cum. Harvested(kWh)',yaxis:'y4axis',renderer:$.jqplot.LineRenderer, pointLabels: {show: false}},
+						    ],
+
+						    legend: {
+						        show: true,
+						        location: 'nw',     // compass direction, nw, n, ne, e, se, s, sw, w.
+						        xoffset: 12,        // pixel offset of the legend box from the x (or x2) axis.
+						        yoffset: 12,        // pixel offset of the legend box from the y (or y2) axis.
+						    },
+
+						
+							axes : {
+								xaxis: {
+									
+								       show: true,    // wether or not to renderer the axis.  Determined automatically.
+								        pad: 1,       // a factor multiplied by the data range on the axis to give the
+								                        // axis range so that data points don't fall on the edges of the axis.
+								        ticks: [],      // a 1D [val1, val2, ...], or 2D [[val, label], [val, label], ...]
+								                        // array of ticks to use.  Computed automatically.
+								        numberTicks: ticksTable,
+								        ticks: ticksTable,
+								        renderer: $.jqplot.CategoryAxisRenderer,  // renderer to use to draw the axis,
+								        labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+								        tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+								        rendererOptions: {},    // options to pass to the renderer.  LinearAxisRenderer
+								                                // has no options,
+								        tickOptions: {
+								            mark: 'outside',    // Where to put the tick mark on the axis
+								                                // 'outside', 'inside' or 'cross',
+								            showMark: true,
+								            showGridline: true, // wether to draw a gridline (across the whole grid) at this tick,
+								            markSize: 4,        // length the tick will extend beyond the grid in pixels.  For
+								                                // 'cross', length will be added above and below the grid boundary,
+								            show: true,         // wether to show the tick (mark and label),
+								            showLabel: true,    // wether to show the text label at the tick,
+								            formatString: '',   // format string to use with the axis tick formatter
+								        },
+								        showTicks: true,        // wether or not to show the tick labels,
+								        showTickMarks: true,    // wether or not to show the tick marks
+							        },
+								yaxis :  {
+									label:'Harvested(kWh)',
+									min:0,
+									labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+								},
+
+								
+								y2axis : {label:'Expected(kWh)',
+									min:0,
+									labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+
+								},
+								y3axis : {label:'Cum. Expected(kWh)',min:0,labelRenderer: $.jqplot.CanvasAxisLabelRenderer,},
+								y4axis : {label:'Cum. Harvested(kWh)',min:0,labelRenderer: $.jqplot.CanvasAxisLabelRenderer,},
+							},
+
+							highlighter : {
+								tooltipContentEditor: tooltipProductionContentEditor,
+								show : true,
+								tooltipLocation:'n'
+							},
+							cursor:{show:false},
+
+						};
+						
+    				
     				var harvested = [];
     				var expected = [];
     				for (var i=0; i<dataDay1.length; i++) {
     				    // Iterates over numeric indexes from 0 to 5, as
 						// everyone expects
-    					harvested.push(dataDay1[i][1]);
+    					harvested.push(dataDay1[i]);
     				}
     				var maxHarvested = Math.max.apply(Math, harvested);
 
     				for (var i=0; i<dataDay2.length; i++) {
     				    // Iterates over numeric indexes from 0 to 5, as
 						// everyone expects
-    					expected[i] = dataDay2[i][1];
+    					expected[i] = dataDay2[i];
     				}
     				var maxExpected = Math.max.apply(Math, expected);
 
@@ -1065,12 +1242,19 @@ var WSL = {
     				graphOptions.axes.yaxis.max = maxAxesValue+axesMargin;
     				graphOptions.axes.y2axis.max = maxAxesValue+axesMargin;
 
-    				maxAxesValue = Math.max(Math.round(dataDay3[11][1]/100)*100,Math.round(dataDay4[11][1]/100)*100);
+    				maxAxesValue = Math.max(Math.round(dataDay3[11]/100)*100,Math.round(dataDay4[11]/100)*100);
     				var axesMargin = Math.round(maxAxesValue/100)*10;
     				graphOptions.axes.y3axis.max = maxAxesValue+axesMargin;
     				graphOptions.axes.y4axis.max = maxAxesValue+axesMargin;
+    				//graphOptions.axes.xaxis = ticksTable;
+
+					graphOptions.axes.xaxis.min = 0;
+					graphOptions.axes.xaxis.max = 13;
+    				
+    				
     				$("#ProductionGraph").height(450);
-    				handle = $.jqplot("ProductionGraph", [ dataDay1 , dataDay2, dataDay3, dataDay4], graphOptions);
+
+    				handle = $.jqplot("ProductionGraph", [ dataDay1,dataDay2,dataDay3,dataDay4], graphOptions);
 
     				ajaxReady();
 				}
@@ -1249,7 +1433,8 @@ var WSL = {
 								tickOptions : {
 									formatString: '%d'
 								},
-								rendererOptions: {barMargin: 40,barWidth:10},pointLabels: {show: false},},
+								pointLabels: {show: false},
+								},
 							axes : {xaxis : {label : '',labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,tickInterval : '3600', /*1 hour*/ 
 								tickOptions : {angle : -30,formatString : '%H:%M'}},
 								yaxis : {label:lang.P,min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer,autoscale:true,tickOptions:{formatString:'%.0f'}},
@@ -1298,7 +1483,7 @@ var WSL = {
     				
 
     				handle = $.jqplot("detailsGraph",seriesData, graphOptions).destroy();
-    				handle = null;
+    				delete handle;
     				handle = $.jqplot("detailsGraph",seriesData, graphOptions);
     				
     				$('table.jqplot-table-legend').attr('class', 'jqplot-table-legend-custom');
@@ -1443,12 +1628,12 @@ var WSL = {
 					for (line in result.dayData.data.compare) {
 						var object = result.dayData.data.compare[line];
 						console.log(object);
-						dataDay1.push([  object[0], object[1], object[2] ]);
+						dataDay1.push([  object[0], object[2], object[3] ]);
 						
 							var item = {
 							        "timestamp": object[0],
-							        "har": object[1],
-							        "date": object[2],
+							        "har": object[2],
+							        "date": object[1],
 							        "displayKWH":object[3],
 							};
 							compareTable.push([item]);
@@ -1456,11 +1641,11 @@ var WSL = {
 					}
 					for (line in result.dayData.data.which) {
 						var object = result.dayData.data.which[line];
-						dataDay2.push([  object[0], object[1], object[2] ]);
+						dataDay2.push([  object[0], object[2], object[3] ]);
 						var item = {
 						        "timestamp": object[0],
-						        "har": object[1],
-						        "date": object[2],
+						        "har": object[2],
+						        "date": object[1],
 						        "displayKWH":object[3],
 						};
 						whichTable.push([item]);
@@ -1482,15 +1667,15 @@ var WSL = {
 					graphOptions.axes.xaxis.min = result.dayData.data.compare[0][0];
 					
 					graphOptions.axes.yaxis.min = 0;
-					
+					//console.log(dataDay2, dataDay1);
     				handle = $.jqplot("compareGraph", [ dataDay2, dataDay1], graphOptions);
     				handle.replot();
-    				console.log(result.lang);
+    				//console.log(result.lang);
     				$.ajax({
 						url : 'js/templates/compareFigures.hb',
 						success : function(source) {
 							var template = Handlebars.compile(source);
-							console.log(compareTable);
+							//console.log(compareTable);
 							var html = template({
 								'compare' :  compareTable,
 								'which' :  whichTable,

@@ -22,6 +22,7 @@ switch ($settingstype) {
 		$data['co2kwh'] = $config->co2kwh;
 		$data['aurorapath'] = $config->aurorapath;
 		$data['smagetpath'] = $config->smagetpath;
+		$data['smartmeterpath'] = $config->smartmeterpath;
 		$data['debugmode'] = $config->debugmode;
 		$data['googleAnalytics'] = $config->googleAnalytics;
 		$data['piwikServerUrl'] = $config->piwikServerUrl;
@@ -222,6 +223,7 @@ switch ($settingstype) {
 		$config->co2kwh = Common::getValue("co2kwh");
 		$config->aurorapath =Common::getValue("aurorapath");
 		$config->smagetpath =Common::getValue("smagetpath");
+		$config->smartmeterpath =Common::getValue("smartmeterpath");
 		$config->debugmode =Common::getValue("debugmode");
 		$config->googleAnalytics = Common::getValue("googleAnalytics");
 		$config->piwikServerUrl = Common::getValue("piwikServerUrl");
@@ -254,12 +256,15 @@ switch ($settingstype) {
 		}
 		$inverter->name = Common::getValue("name");
 		$inverter->description = Common::getValue("description");
+		$inverter->liveOnFrontend = Common::getValue("liveOnFrontend");
+		$inverter->graphOnFrontend = Common::getValue("graphOnFrontend");
 		$inverter->initialkwh = Common::getValue("initialkwh");
 		$inverter->expectedkwh = Common::getValue("expectedkwh");
 		$inverter->plantpower = Common::getValue("plantpower");
 		$inverter->heading = Common::getValue("heading");
 		$inverter->correctionFactor = Common::getValue("correctionFactor");
 		$inverter->deviceApi = Common::getValue("deviceApi");
+		$inverter->type = Common::getValue("deviceType");
 		$inverter->comAddress = Common::getValue("comAddress");
 		$inverter->comLog = Common::getValue("comLog");
 		$inverter->syncTime = Common::getValue("syncTime");

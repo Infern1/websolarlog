@@ -207,6 +207,26 @@ class Util {
     	// return current url
     	return $url;
     }
+
+    public static function telegramStringLineToInterUsage($string,$input){
+    	$pattern = "/\((.*)\)/";
+    	preg_match_all($pattern,$string,$match);
+    	$value="";
+    	if($input=="kWh"){
+    		$value = str_replace("*kWh","",str_replace(".","",$match[1]));
+    		$value = ltrim($value[0],0);
+    	}
+    	if($input=="kW"){
+    		$value = str_replace("*kW","",str_replace(".","",$match[1]));
+    		$value = $value[0]."0";
+    	}
+    	if($input=="m3"){
+    		$value = str_replace("m3","",str_replace(".","",$match[1]));
+    		$value = ltrim($value[0],0);
+    	}
+    
+    	return $value." ";
+    }
     
     
 }

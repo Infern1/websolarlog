@@ -1,5 +1,6 @@
 <div id="pickerFilterDiv">
 {{lang.inv}}:<select id="pickerInv">
+<option value="">All</option>
 {{#each data.inverters}}<option value="{{this.id}}">{{this.name}}</option>{{/each}}
 </select>
 {{lang.periode}}:

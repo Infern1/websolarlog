@@ -38,14 +38,14 @@
 		<!-- Navigation -->
 		<div id="navigation">
 			<ul>
-				<li class="nav-start"><a title="Dashboard" href="index.php"><?php echo _("Dashboard");?></a></li>
-				<li><a title="Today" href="today.php"><?php echo _("Day");?></a></li>
-				<li><a title="Month" href="month.php"><?php echo _("Month");?></a></li>
-				<li><a title="Year" href="year.php"><?php echo _("Year");?></a></li>
-				<li><a title="Details" href="details.php"><?php echo _("Details");?></a></li>
-				<li><a title="Compare" href="compare.php"><?php echo _("Compare");?></a></li>
-				<li><a title="Production" href="production.php"><?php echo _("Production");?></a></li>
-				<li class="nav-end"><a title="Misc" href="misc.php"><?php echo _("Other");?></a></li>
+				<li id="mDashboard" class="nav-start"><a title="Dashboard" href="index.php"><?php echo _("Dashboard");?></a></li>
+				<li id="mToday"><a title="Today" href="today.php"><?php echo _("Day");?></a></li>
+				<li id="mMonth"><a title="Month" href="month.php"><?php echo _("Month");?></a></li>
+				<li id="mYear"><a title="Year" href="year.php"><?php echo _("Year");?></a></li>
+				<li id="mDetails"><a title="Details" href="details.php"><?php echo _("Details");?></a></li>
+				<li id="mCompare"><a title="Compare" href="compare.php"><?php echo _("Compare");?></a></li>
+				<li id="mProduction"><a title="Production" href="production.php"><?php echo _("Production");?></a></li>
+				<li id="mMisc" class="nav-end"><a title="Misc" href="misc.php"><?php echo _("Other");?></a></li>
 			</ul>
 			<div class="cl"></div>
 		</div>
@@ -73,7 +73,7 @@
 		<div id="footer">
 			<div id="footer-middle">
 				<div style="display: inline-block;">
-					<a href="https://www.websolarlog.com" target="_blank">Check us out [at] WebSolarLog.com</a>
+					<a href="http://www.websolarlog.com" target="_blank">Check us out [at] WebSolarLog.com</a>
 				</div>
 				<div style="display: inline-block; text-align: right; width: 275px;">
 					<div style="display: inline-block;">JS loadtime:&nbsp;</div>
@@ -84,7 +84,9 @@
 						<?php echo _("version") ?>:&nbsp;<?php echo($config->version_title . " (build " . $config->version_revision . ")") ?>
 					</div>
 				</div>
+			<div style="text-align: center;">The SolarData Logger for: PowerOne, SMA, Effekta and the Dutch SmartMeter.</div>	
 			</div>
+			
 		</div>
 		<!-- END Footer -->
 	</div>

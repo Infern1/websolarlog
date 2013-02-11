@@ -5,6 +5,9 @@
     <legend>Inverter: {{data.inverter.name}}</legend>
     <label for="name">name:</label><input type="text" name="name" value="{{data.inverter.name}}" /><br />
     <label for="description">description:</label><input type="text" name="description" value="{{data.inverter.description}}" /><br />
+    <label for="liveOnFrontend">Show livedata@frontend:</label><input type="checkbox" name="liveOnFrontend" value="1" {{#if data.inverter.liveOnFrontend}}checked=checked{{/if}}/><br />
+    <label for="graphOnFrontend">Show history@graph:</label><input type="checkbox" name="graphOnFrontend" value="1" {{#if data.inverter.graphOnFrontend}}checked=checked{{/if}}/><br />
+    
     <label for="initialkwh">initial kWh:</label><input type="text" name="initialkwh" value="{{data.inverter.initialkwh}}" /><br />
     <label for="expectedkwh">expected kWh:</label><input type="text" name="expectedkwh" value="{{data.inverter.expectedkwh}}" /><br />
     <label for="plantpower">plant power:</label><input type="text" name="plantpower" value="{{data.inverter.plantpower}}" readonly="true" /> Calculated by the panels<br />
@@ -14,6 +17,13 @@
         <select name="deviceApi">
             <option value="AURORA" {{#if_eq data.inverter.deviceApi compare="AURORA"}}selected=selected{{/if_eq}}>Aurora</option>
             <option value="SMA-RS485" {{#if_eq data.inverter.deviceApi compare="SMA-RS485"}}selected=selected{{/if_eq}}>SMA RS485</option>
+            <option value="SmartMeter" {{#if_eq data.inverter.deviceApi compare="DutchSmartMeter"}}selected=selected{{/if_eq}}>Smart Meter</option>
+        </select>
+        <br />
+    <label for="comAddress">Device Type:</label>
+            <select name="deviceType">
+            <option value="production" {{#if_eq data.inverter.type compare="production"}}selected=selected{{/if_eq}}>Production</option>
+            <option value="metering" {{#if_eq data.inverter.type compare="metering"}}selected=selected{{/if_eq}}>Metering</option>
         </select>
         <br />
     <label for="comAddress">RS485 address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" /><br />

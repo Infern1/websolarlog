@@ -4,7 +4,10 @@ class Inverter
 {
     public $id;
     public $deviceApi;
+    public $type;
     public $name;
+    public $liveOnFrontend;
+    public $graphOnFrontend;
     public $description;
     public $initialkwh;
     public $expectedkwh;
@@ -56,12 +59,19 @@ class Inverter
     }
 
     function getApi($config) {
+    	//echo "\r\n getApi\r\n";
+    	//echo "\r\nApifound:".$this->deviceApi."\r\n";
         if ($this->deviceApi == "AURORA") {
             return new Aurora($config->aurorapath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
         }
-        if ($this->deviceApi == "SMA-RS485") {
-            return new Sma($config->smagetpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
-        }
+    	    if ($this->deviceApi == "SMA-RS485") {
+	    	return new Sma($config->smagetpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    }
+	    if ($this->deviceApi == "DutchSmartMeter") {
+	    	//echo "\r\nMake DutchSmartMeter object\r\n";
+	    	return new SmartMeter($config->smartmeterpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    }
+	        
     }
 }
 ?>

@@ -160,14 +160,16 @@ try {
 			$data['infoEvents'] = $infoEvents;
 			$data['serverUptime'] = $serverUptime;
 			break;
-		case 'getGraphPoints':
-			
-			$lines = $dataAdapter->getGraphPoint(1, $type, $date);
+		case 'getGraphDayPoints':
+
+			$lines = $dataAdapter->getGraphDayPoint($invtnum, $type, $date);
 			$dayData = new DayDataResult();
-			$dayData->data = $lines->points;
-			$dayData->valueKWHT = $lines->KWHT;
-			$dayData->KWHTUnit = $lines->KWHTUnit;
-			$dayData->KWHKWP = $lines->KWHKWP;
+			$dayData->graph = $lines['graph'];
+			$dayData->timestamp = Util::getBeginEndDate('day', 1,date ("Y-m-d")	);
+			
+			$dayData->valueKWHT = $lines['lastDay']->KWHT;
+			$dayData->KWHTUnit = $lines['lastDay']->KWHTUnit;
+			$dayData->KWHKWP = $lines['lastDay']->KWHKWP;
 			$dayData->success = true;
 			$lang = array();
 			$lang['cumPowerW'] = _('cum. Power (W)');
@@ -178,6 +180,25 @@ try {
 			$data['lang'] = $lang;
 			$data['dayData'] = $dayData;
 			break;
+			
+			case 'getGraphPoints':
+					
+				$lines = $dataAdapter->getGraphPoint(1, $type, $date);
+				$dayData = new DayDataResult();
+				$dayData->data = $lines->points;
+				$dayData->valueKWHT = $lines->KWHT;
+				$dayData->KWHTUnit = $lines->KWHTUnit;
+				$dayData->KWHKWP = $lines->KWHKWP;
+				$dayData->success = true;
+				$lang = array();
+				$lang['cumPowerW'] = _('cum. Power (W)');
+				$lang['avgPowerW'] = _('avg. Power (W)');
+				$lang['harvested'] = _('harvested (W)');
+				$lang['cumulative'] = _('cumulative (W)');
+				$lang['totalEnergy'] = _('total Energy');
+				$data['lang'] = $lang;
+				$data['dayData'] = $dayData;
+				break;
 		case 'getDetailsGraph':
 			$lines = $dataAdapter->getDetailsHistory($invtnum,$date);
 	
@@ -213,7 +234,9 @@ try {
 			}
 	
 			foreach ($config->inverters as $inverter){
-				 $data['inverters'][] = array('id'=>$inverter->id,'name'=>$inverter->name);
+				if($inverter->graphOnFrontend){
+					$data['inverters'][] = array('id'=>$inverter->id,'name'=>$inverter->name);
+				}
 			}
 	
 			$lang = array();
@@ -253,6 +276,7 @@ try {
 	
 			$dayData = new DayDataResult();
 			$dayData->data = $lines['energy']->points;
+			$dayData->ticks = $lines['energy']->ticks;
 			$lang['month'] = _('month');
 			$lang['expected'] = _('expected');
 			$lang['harvested'] = _('harvested');

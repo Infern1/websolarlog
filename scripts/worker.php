@@ -19,7 +19,7 @@ $useNewWorker = true;
 if ($useNewWorker) {
 	$workHandler = new WorkHandler();
 	$count = 0;
-	while (true) {
+	while ($count < 60) {
 		if ($count > 30) {
 			checkPauseAndRestart();
 			$workHandler = null;

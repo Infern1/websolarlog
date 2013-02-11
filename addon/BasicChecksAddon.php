@@ -19,7 +19,7 @@ class BasicChecksAddon {
 		// Check if the sun is up and the inverter is down
 		if(!Util::isSunDown($this->config) && $inverter->state != 1) {
 			if ($this->adapter->changeInverterStatus($inverter, 1)) {
-				echo("fire: onInverterStartup! \n");
+				//echo("fire: onInverterStartup! \n");
 				HookHandler::getInstance()->fire("onInverterStartup", $inverter);
 				$inverter->state = 1;
 			}			
@@ -41,7 +41,7 @@ class BasicChecksAddon {
 			// Are we seriously down?
 			if(Util::isSunDown($this->config)) {
 				if ($this->adapter->changeInverterStatus($inverter, 0)) {
-					echo("fire: onInverterShutdown! \n");
+					//echo("fire: onInverterShutdown! \n");
 					HookHandler::getInstance()->fire("onInverterShutdown", $inverter);
 					$inverter->state = 0;
 				}
