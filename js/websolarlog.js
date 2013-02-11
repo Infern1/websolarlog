@@ -892,39 +892,43 @@ var WSL = {
 
 				var json = [];
 				if (result.dayData) {
-					for (line in result.dayData.graph.points) {
-						var json = [];
-						for (values in result.dayData.graph.points[line]) {
-							json.push([result.dayData.graph.points[line][values][0],result.dayData.graph.points[line][values][1]]);
+					if (result.dayData.graph) {
+						for (line in result.dayData.graph.points) {
+							var json = [];
+							for (values in result.dayData.graph.points[line]) {
+								json.push([result.dayData.graph.points[line][values][0],result.dayData.graph.points[line][values][1]]);
+							}
+							seriesData.push(json);
 						}
-						seriesData.push(json);
+						graphOptions.legend.labels = result.dayData.graph.labels;
+
+						for(axes in result.dayData.graph.axes){
+							if(result.dayData.graph.axes[axes]['renderer']=='DateAxisRenderer'){
+								result.dayData.graph.axes[axes]['renderer'] = $.jqplot.DateAxisRenderer;
+							}
+							if(result.dayData.graph.axes[axes]['tickRenderer']=='CanvasAxisTickRenderer'){
+								result.dayData.graph.axes[axes]['tickRenderer'] = $.jqplot.CanvasAxisTickRenderer;
+							}
+							if(result.dayData.graph.axes[axes]['labelRenderer']=='CanvasAxisLabelRenderer'){
+								result.dayData.graph.axes[axes]['labelRenderer'] = $.jqplot.CanvasAxisLabelRenderer;
+							}
+							if(result.dayData.graph.axes[axes]['formatter']=='DayDateTickFormatter'){
+								result.dayData.graph.axes[axes]['labelRenderer'] = $.jqplot.DayDateTickFormatter;
+							}
+							
+						}
+
+						graphOptions.axes = result.dayData.graph.axes;
+						//console.log('axes');
+						//console.log(graphOptions.axes);
+						graphOptions.axes.xaxis.min = result.dayData.timestamp.beginDate*1000;
+						graphOptions.axes.xaxis.max = result.dayData.timestamp.endDate*1000;
+						graphOptions.series = result.dayData.graph.series;
 					}
-					graphOptions.legend.labels = result.dayData.graph.labels;
 					
-					for(axes in result.dayData.graph.axes){
-						if(result.dayData.graph.axes[axes]['renderer']=='DateAxisRenderer'){
-							result.dayData.graph.axes[axes]['renderer'] = $.jqplot.DateAxisRenderer;
-						}
-						if(result.dayData.graph.axes[axes]['tickRenderer']=='CanvasAxisTickRenderer'){
-							result.dayData.graph.axes[axes]['tickRenderer'] = $.jqplot.CanvasAxisTickRenderer;
-						}
-						if(result.dayData.graph.axes[axes]['labelRenderer']=='CanvasAxisLabelRenderer'){
-							result.dayData.graph.axes[axes]['labelRenderer'] = $.jqplot.CanvasAxisLabelRenderer;
-						}
-						if(result.dayData.graph.axes[axes]['formatter']=='DayDateTickFormatter'){
-							result.dayData.graph.axes[axes]['labelRenderer'] = $.jqplot.DayDateTickFormatter;
-						}
-						
-					}
 
 					
 
-					graphOptions.axes = result.dayData.graph.axes;
-					//console.log('axes');
-					//console.log(graphOptions.axes);
-					graphOptions.axes.xaxis.min = result.dayData.timestamp.beginDate*1000;
-					graphOptions.axes.xaxis.max = result.dayData.timestamp.endDate*1000;
-					graphOptions.series = result.dayData.graph.series;
 					//console.log('series');
 					//console.log(graphOptions.series);
 					$('#graph' + tab + 'Content').empty();

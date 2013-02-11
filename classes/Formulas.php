@@ -59,41 +59,44 @@ class Formulas
     
 
     /**
-     * Calculates the average power over a given time
-     * @param $kiloWattHourStart
-     * @param $kiloWattHourStop
-     * @param $timeDifference
+     * Calculates the amount of co2 for the specified kwh
+     * @param $kiloWattHour
+     * @param $configCO2KWH
      * @param $decimals
+     * @return string
      */
-    public static function CO2kWh($kiloWattHour, $ConfigCO2KWH, $decimals = 1) {
-    	$CO2=(($kiloWattHour/1000)*$ConfigCO2KWH);
-    	if ($CO2>1000) {
-    		$CO2 = number_format(($CO2/1000), 3, ",", "")." Tonnes";
-    	}else {
-    		$CO2 = number_format(($CO2),1, ",", "")." Kg";
-    	}
-    	 
-    	return $CO2;
+    public static function CO2kWh($kiloWattHour, $configCO2KWH, $decimals = 1) {
+    	return self::calculateCO2($kiloWattHour, $configCO2KWH, $decimals);
     }
 
     /**
-     * Calculates the average power over a given time
-     * @param $kiloWattHourStart
-     * @param $kiloWattHourStop
-     * @param $timeDifference
+     * Calculates the amount of co2 for the specified liter gas
+     * @param $litreGas
+     * @param $configCO2gas
      * @param $decimals
+     * @return string
      */
-    public static function CO2gas($litreGas, $ConfigCO2gas, $decimals = 1) {
-    	$CO2=(($litreGas/1000)*$ConfigCO2gas);
+    public static function CO2gas($litreGas, $configCO2gas, $decimals = 1) {
+    	return self::calculateCO2($litreGas, $configCO2gas, $decimals);
+    }
+
+    /**
+     * Calculate the co2 based on amount and ratio
+     * @param $amount
+     * @param $ratio
+     * @param $decimals
+     * @return string
+     */
+    private static function calculateCO2($amount, $ratio, $decimals = 1) {
+    	$CO2=(($amount/1000)*$ratio);
     	if ($CO2>1000) {
     		$CO2 = number_format(($CO2/1000), 3, ",", "")." Tonnes";
     	}else {
     		$CO2 = number_format(($CO2),1, ",", "")." Kg";
     	}
-    	 
+    	
     	return $CO2;
     }
-    
     
 }
 

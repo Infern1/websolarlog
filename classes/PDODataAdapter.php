@@ -906,21 +906,22 @@ class PDODataAdapter {
 	 */
 	public function readTablesPeriodValues($invtnum, $table, $type, $startDate){
 		$count = 0;
-			// get the begin and end date/time
-			$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
-			if ($invtnum > 0){
-				$energyBeans = R::getAll("
-						SELECT strftime ( '%H:%M:%S %d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date,*
-						FROM '".$table."'
-						WHERE INV = :INV AND time > :beginDate AND  time < :endDate
-						ORDER BY time",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
-			}else{
-				$energyBeans = R::getAll("
-						SELECT strftime ( '%H:%M:%S %d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date,*
-						FROM '".$table."'
-						WHERE time > :beginDate AND  time < :endDate
-						ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
-			}
+		
+		// get the begin and end date/time
+		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
+		if ($invtnum > 0){
+			$energyBeans = R::getAll("
+					SELECT strftime ( '%H:%M:%S %d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date,*
+					FROM '".$table."'
+					WHERE INV = :INV AND time > :beginDate AND  time < :endDate
+					ORDER BY time",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+		}else{
+			$energyBeans = R::getAll("
+					SELECT strftime ( '%H:%M:%S %d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date,*
+					FROM '".$table."'
+					WHERE time > :beginDate AND  time < :endDate
+					ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+		}
 		
 		return $energyBeans;
 	}
@@ -1615,17 +1616,22 @@ class PDODataAdapter {
 	 * @return array($beginDate, $endDate);
 	 */
 	public function getGraphDayPoint($invtnum,$type, $startDate){
-		
 		($type == 'today')?$type='day':$type=$type;
 		$beans = $this->readTablesPeriodValues($invtnum, 'history', $type, $startDate);
-		echo $beans;
+		//echo $beans;
 		$beans = $this->DayBeansToGraphPoints($beans,'history');
-
+		
 		$hookBeans = HookHandler::getInstance()->fire("GraphDayPoints",$invtnum,$startDate,$type);
 		
-
+		
 		$array = array();
-		$array['graph'] = array_merge_recursive($beans->graph,$hookBeans->graph);
+		if(is_array($hookBeans)){
+			//echo 'ARRAY';
+			$array['graph'] = array_merge_recursive($beans->graph,$hookBeans->graph);
+		}else{
+			//echo 'GEEN array';
+			$array['graph'] = $beans->graph;
+		}
 		$array['lastDay']=$beans;
 		$array['lastDay']->graph=null;
 		return $array;

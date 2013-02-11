@@ -56,6 +56,7 @@ class CoreAddon {
 		//echo "CoreAddon onEnergy";
 		//var_dump($args);
 		$inverter = $args[1];
+		$timestamp = $args[2];
 	
 		$arHistory = $this->adapter->readHistory($inverter->id, null);
 	
@@ -74,7 +75,7 @@ class CoreAddon {
 		// Set the new values and save it
 		$energy = new Energy();
 		$energy->SDTE = $first['SDTE'];
-		$energy->time = $args[2];
+		$energy->time = $timestamp;
 		$energy->INV = $inverter->id;
 		$energy->KWH = $production;
 		$energy->KWHT = $productionEnd;

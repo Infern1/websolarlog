@@ -51,6 +51,7 @@ class HookHandler {
     	// Get the name off the hook
     	$name = func_get_arg(0);
     	
+    	$result = array();
         foreach($this->getCallbacks($name) as $callback) {
         	// Callback should be an class with an method seperated by an .
         	$classmethod = explode (".",$callback);
@@ -61,7 +62,12 @@ class HookHandler {
         	if (method_exists($object, $methodname)) {
         		// Handle any exception thrown by an hook
         		try {
-	        		return $object->$methodname(func_get_args());
+        			// we cannot use return here, ass we break the hook after the first entry!
+        			// Maybe fill an array with results off the hooks?
+	        		$hookResult = $object->$methodname(func_get_args());
+	        		if ($hookResult) {
+	        			$result[] = array("name"=>$name,"result"=>$hookResult);
+	        		}
         		} catch (Exception $e) {
         			try {
         				$this->fire('onError', "Error in hook " . $callback . " error: " . $e->getMessage());
@@ -71,5 +77,12 @@ class HookHandler {
         		// Log handling?
         	}
         }
+        if (count($result) == 1) {
+        	$first = reset($result);
+        	return $first["result"];
+        } 
+
+        return $result;
+        
     }
 }
