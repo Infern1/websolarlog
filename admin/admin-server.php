@@ -30,7 +30,8 @@ switch ($settingstype) {
 		
 		// social
 		$user_id=1;
-		$twitter = $adapter->get_hybridauth_session($user_id);
+		$type='Twitter';
+		$twitter = $adapter->get_hybridauth_session($user_id,$type);
 
 		if($twitter){
 			$social = new Social();
@@ -345,6 +346,22 @@ switch ($settingstype) {
 		$hybridTwitter = new TwitterAddon();
 		$hybridTwitter->sendTweet();
 		
+		break;
+	case 'attachFacebook':
+		$hybridFacebook = new FacebookAddon();
+		$hybridFacebook->attachFacebook();
+	
+		break;
+	
+	case 'detachFacebook':
+		$hybridFacebook = new FacebookAddon();
+		$hybridFacebook->detachFacebook();
+	
+		break;
+	case 'sendFacebook':
+		$hybridFacebook = new FacebookAddon();
+		$hybridFacebook->sendFacebook();
+	
 		break;
 	case 'attachDropbox':
 		if(strlen(common::getValue('uid'))>6 && strlen(common::getValue('oauth_token'))==15){

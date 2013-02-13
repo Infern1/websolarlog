@@ -1868,6 +1868,7 @@ class PDODataAdapter {
 
 				$oInverter = 	array();
 
+				
 				if(Util::isSunDown(Session::getConfig())){
 					$live = new Live();
 					$live->name = $inverter->name;
@@ -1892,35 +1893,41 @@ class PDODataAdapter {
 					$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$inverter->id));
 
 					$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
+					
+					$GP  += $liveBean['GP'];
+					$I1P += $liveBean['I1P'];
+					$I2P += $liveBean['I2P'];
+					$IP  += $ITP;
+					$EFF += $liveBean['EFF'];
+					
 
 					$live = new Live();
 					$live->name = $inverter->name;
 					$live->status = _('awake');
 					$live->time = date("H:i:s",$liveBean['time']);
 					$live->INV = $liveBean['INV'];
-					$live->GP = number_format($liveBean['GP'],0,',','');
-					$live->GA = number_format($liveBean['GA'],0,',','');
-					$live->GV = number_format($liveBean['GV'],0,',','');
-					$live->I1P = number_format($liveBean['I1P'],2,',','');
-					$live->I1A = number_format($liveBean['I1A'],2,',','');
-					$live->I1V = number_format($liveBean['I1V'],2,',','');
-					$live->I1Ratio = number_format($liveBean['I1Ratio'],2,',','');
-					$live->I2P = number_format($liveBean['I2P'],2,',','');
-					$live->I2A = number_format($liveBean['I2A'],2,',','');
-					$live->I2V = number_format($liveBean['I2V'],2,',','');
-					$live->I2Ratio = number_format($liveBean['I2Ratio'],2,',','');
-
-					$live->IP = number_format($ITP,2,',','');
-					$live->EFF = number_format($liveBean['EFF'],2,',','');
+					$live->GP = ($liveBean['GP']<1000) ? number_format($liveBean['GP'],1,'.','') : number_format($liveBean['GP'],0,'','');
+					$live->GA = ($liveBean['GA']<1000) ? number_format($liveBean['GA'],1,'.','') : number_format($liveBean['GA'],0,'','');
+					$live->GV = ($liveBean['GV']<1000) ? number_format($liveBean['GV'],1,'.','') : number_format($liveBean['GV'],0,'','');
+					
+					$live->I1P = ($liveBean['I1P']<1000) ? number_format($liveBean['I1P'],1,'.','') : number_format($liveBean['I1P'],0,'','');
+					$live->I1A = ($liveBean['I1A']<1000) ? number_format($liveBean['I1A'],1,'.','') : number_format($liveBean['I1A'],0,'','');
+					$live->I1V = ($liveBean['I1V']<1000) ? number_format($liveBean['I1V'],1,'.','') : number_format($liveBean['I1V'],0,'','');
+					$live->I1Ratio = ($liveBean['I1Ratio']<1000) ? number_format($liveBean['I1Ratio'],1,'.','') : number_format($liveBean['I1Ratio'],0,'','');
+					
+					$live->I2P = ($liveBean['I2P']<1000) ? number_format($liveBean['I2P'],1,'.','') : number_format($liveBean['I2P'],0,'','');
+					$live->I2A = ($liveBean['I2A']<1000) ? number_format($liveBean['I2A'],1,'.','') : number_format($liveBean['I2A'],0,'','');
+					$live->I2V = ($liveBean['I2V']<1000) ? number_format($liveBean['I2V'],1,'.','') : number_format($liveBean['I2V'],0,'','');
+					$live->I2Ratio = ($liveBean['I2Ratio']<1000) ? number_format($liveBean['I2Ratio'],1,'.','') : number_format($liveBean['I2Ratio'],0,'','');
+					
+					$live->IP = ($liveBean['IP']<1000) ? number_format($liveBean['IP'],1,'.','') : number_format($liveBean['IP'],0,'','');
+					$live->EFF = ($liveBean['EFF']<1000) ? number_format($liveBean['EFF'],1,'.','') : number_format($liveBean['EFF'],0,'','');
+					
 				}
+
 				$oInverter["id"] = $liveBean['INV'];
 				$oInverter["currentTime"] = time();
 				$oInverter["live"] = $live;
-				$GP  += $live->GP;
-				$I1P += $live->I1P;
-				$I2P += $live->I2P;
-				$IP  += $live->IP;
-				$EFF += $live->EFF;
 
 				$inverters[] = $oInverter;
 			}
@@ -1967,7 +1974,7 @@ class PDODataAdapter {
 				$avgEnergyBeansToday= number_format(0,3,',','');
 				$totalEnergyBeansToday[]['KWH']=0;
 			}else{
-				$totalEnergyBeansTodayKWHKWP= number_format(($totalEnergyBeansToday[0]['KWH'] / $sumPlantPower),4,',','');
+				$totalEnergyBeansTodayKWHKWP= number_format(($totalEnergyBeansToday[0]['KWH'] / $sumPlantPower),3,',','');
 				for ($i = 0; $i < count($maxPowerBeansToday); $i++) {
 					$maxPowerBeansToday[$i]['sumkWh'] = number_format($maxPowerBeansToday[$i]['sumkWh'],2,',','');
 					$avgEnergyBeansToday= number_format($totalEnergyBeansToday[$i]['KWH'],3,',','');
@@ -2197,7 +2204,7 @@ class PDODataAdapter {
 	 */
 	function get_hybridauth_session( $user_id,$type ){
 		$sessionData = '';
-		$beans = R::findAndExport('hybridUsersConnections',' user_id = :user_id LIMIT 1',array(':user_id'=>$user_id));
+		$beans = R::findAndExport('hybridUsersConnections',' user_id = :user_id and type = ":type" LIMIT 1',array(':user_id'=>$user_id,':type'=>type));
 		if ($beans){
 			foreach ($beans as $bean){
 				$sessionData= $bean;
