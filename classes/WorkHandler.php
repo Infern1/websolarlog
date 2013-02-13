@@ -53,55 +53,39 @@ class WorkHandler {
 		$live = $api->getLiveData();
 				
 		// Fire the hook that will handle the live data
-		if($inverter->type == "production"){
-			if ($live != null) {
-				HookHandler::getInstance()->fire("onLiveData", $inverter, $live);
-			} else {
-				HookHandler::getInstance()->fire("onNoLiveData", $inverter);
-			}
-		}elseif($inverter->type == "metering"){
-			if ($live != null) {
-				HookHandler::getInstance()->fire("onLiveSmartMeterData", $inverter, $live);
-			} else {
-				HookHandler::getInstance()->fire("onNoLiveData", $inverter);
-			}
+		switch ($inverter->type) {
+			case "production":
+				$this->handleProductionDevice($inverter, $live, $timestamp);
+				break;
+			case "metering":
+				$this->handleMeteringDevice($inverter, $live, $timestamp);
+				break;
+			default:
+				echo("ProductType " . $inverter->type . " is not supported by the worker");
+				break;
+		}
+	}
+	
+	private function handleProductionDevice($inverter, $live, $timestamp) {
+		if ($live != null) {
+			HookHandler::getInstance()->fire("onLiveData", $inverter, $live);
+		} else {
+			HookHandler::getInstance()->fire("onNoLiveData", $inverter);
 		}
 
 		// Fire the hook that will handle the history data
-		if($inverter->type == "production"){
-			if ($live != null && PeriodHelper::isPeriodJob("HistoryJob", 5)) {
-				HookHandler::getInstance()->fire("onHistory", $inverter, $live, $timestamp);
-			}
-		}
-
-
-		// Fire the hook that will handle the history data
-		if($inverter->type == "metering"){
-			if ($live != null && PeriodHelper::isPeriodJob("HistorySmartMeterJob", 5)) {
-				HookHandler::getInstance()->fire("onSmartMeterHistory", $inverter, $live, $timestamp);
-			}
-		}
-
-
-
-		// Fire the hook that will handle the energy data
-		// if we are live we will fire every 30 minutes
-		if($inverter->type == "metering"){
-			if ($live != null && PeriodHelper::isPeriodJob("EnergySmartMeterJob", 10)) {
-				HookHandler::getInstance()->fire("onSmartMeterEnergy", $inverter,$timestamp);
-			}
+		if ($live != null && PeriodHelper::isPeriodJob("HistoryJob", 5)) {
+			HookHandler::getInstance()->fire("onHistory", $inverter, $live, $timestamp);
 		}
 
 		// Fire the hook that will handle the energy data
 		// if we are live we will fire every 30 minutes
-		if($inverter->type == "production"){
-			if ($live != null && PeriodHelper::isPeriodJob("EnergyJob", 30)) {
-				HookHandler::getInstance()->fire("onEnergy", $inverter,$timestamp);
-			}
-			// if we are not live we will fire every 120 minutes
-			if ($live == null && PeriodHelper::isPeriodJob("EnergyJob", 120)) {
-				HookHandler::getInstance()->fire("onEnergy", $inverter,$timestamp);
-			}
+		if ($live != null && PeriodHelper::isPeriodJob("EnergyJob", 30)) {
+			HookHandler::getInstance()->fire("onEnergy", $inverter,$timestamp);
+		}
+		// if we are not live we will fire every 120 minutes
+		if ($live == null && PeriodHelper::isPeriodJob("EnergyJob", 120)) {
+			HookHandler::getInstance()->fire("onEnergy", $inverter,$timestamp);
 		}
 
 		// Fire the hook that will handle the information requests
@@ -122,6 +106,25 @@ class WorkHandler {
 					HookHandler::getInstance()->fire("onInverterAlarm", $inverter, $event);
 				}
 			}
+		}
+	}
+	
+	private function handleMeteringDevice($inverter, $live, $timestamp) {
+		if ($live != null) {
+			HookHandler::getInstance()->fire("onLiveSmartMeterData", $inverter, $live);
+		} else {
+			HookHandler::getInstance()->fire("onNoLiveData", $inverter);
+		}
+
+		// Fire the hook that will handle the history data
+		if ($live != null && PeriodHelper::isPeriodJob("HistorySmartMeterJob", 5)) {
+			HookHandler::getInstance()->fire("onSmartMeterHistory", $inverter, $live, $timestamp);
+		}
+
+		// Fire the hook that will handle the energy data
+		// if we are live we will fire every 30 minutes
+		if ($live != null && PeriodHelper::isPeriodJob("EnergySmartMeterJob", 10)) {
+			HookHandler::getInstance()->fire("onSmartMeterEnergy", $inverter,$timestamp);
 		}
 	}
 
