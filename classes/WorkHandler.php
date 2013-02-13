@@ -51,6 +51,7 @@ class WorkHandler {
 
 		// Retrieve the inverter data
 		$live = $api->getLiveData();
+		HookHandler::getInstance()->fire("onInverterError", $inverter, var_dump($live));
 		
 		// Fire the hook that will handle the live data
 		if($inverter->type == "production"){

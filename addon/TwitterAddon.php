@@ -27,30 +27,30 @@ class TwitterAddon {
 		$this->adapter = PDODataAdapter::getInstance();
 		
 		$this->hybridauth = new Hybrid_Auth( $this->configHybridAuth );
-
+		$this->type = 'Twitter';
 		$this->current_user_id = 1;
-		$this->hybridauth_session_data = $this->adapter->get_sotred_hybridauth_session( $this->current_user_id );
+		$this->hybridauth_session_data = $this->adapter->get_hybridauth_session( $this->current_user_id );
 	}
 
 	function __destruct() {
 		$this->config = null;
 		$this->adapter = null;
 	}
-	
-	
+
+
 	function attachTwitter(){
 		HookHandler::getInstance()->fire("onError", 'Fire(AttachTwitter)');
 		if($this->hybridauth_session_data){
 			$data['message'] = 'Connected';
 		}else{
-
+	
 			$twitter = $this->hybridauth->authenticate( "Twitter" );
 			$hybridauth_session_data = $this->hybridauth->getSessionData();
-
+	
 			$twitter_user_profile = $twitter->getUserProfile();
-			$this->adapter->sotre_hybridauth_session( $this->current_user_id, $hybridauth_session_data,$twitter_user_profile );
-			$hybridauth_session_data = $this->adapter->get_sotred_hybridauth_session( $this->current_user_id );
-
+			$this->adapter->save_hybridauth_session( $this->current_user_id, $hybridauth_session_data,$twitter_user_profile, $this->type );
+			$hybridauth_session_data = $this->adapter->get_hybridauth_session( $this->current_user_id );
+	
 			if($hybridauth_session_data){
 				$data['message'] = 'Connected';
 			}
@@ -58,6 +58,23 @@ class TwitterAddon {
 		}
 	}
 
+
+	function detachTwitter(){
+		HookHandler::getInstance()->fire("onError", 'Fire(DetachTwitter)');
+
+			$twitter = $this->hybridauth->authenticate( "Twitter" );
+			$hybridauth_session_data = $this->hybridauth->getSessionData();
+	
+			$twitter_user_profile = $twitter->getUserProfile();
+			
+			$detached = $this->adapter->remove_hybridauth_session( $this->current_user_id,$this->type);
+
+			if($detached){
+				$data['message'] = 'Detached';
+			}
+			$twitter->logout();
+	}
+	
 	function sendTweet(){
 		$config = Session::getConfig();
 		HookHandler::getInstance()->fire("onDebug", 'Fire(sendTwitter)');

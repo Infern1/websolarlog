@@ -30,7 +30,7 @@ class SmartMeterAddon {
 	public function onSmartMeterEnergy($args) {
 		$inverter = $args[1];
 	
-		$arHistory = $this->adapter->readSmartMeterHistory($inverter->id, null);
+		$arHistory = $this->readSmartMeterHistory($inverter->id, null);
 	
 		if(count($arHistory)>1){
 			$first = reset($arHistory);

@@ -208,6 +208,7 @@ class Util {
     	return $url;
     }
 
+    
     public static function telegramStringLineToInterUsage($string,$input){
     	$pattern = "/\((.*)\)/";
     	preg_match_all($pattern,$string,$match);

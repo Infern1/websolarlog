@@ -30,7 +30,7 @@ switch ($settingstype) {
 		
 		// social
 		$user_id=1;
-		$twitter = $adapter->get_sotred_hybridauth_session($user_id);
+		$twitter = $adapter->get_hybridauth_session($user_id);
 
 		if($twitter){
 			$social = new Social();
@@ -334,6 +334,12 @@ switch ($settingstype) {
 		$hybridTwitter = new TwitterAddon();
 		$hybridTwitter->attachTwitter();
 		
+		break;
+		
+	case 'detachTwitter':
+		$hybridTwitter = new TwitterAddon();
+		$hybridTwitter->detachTwitter();
+	
 		break;
 	case 'sendTweet':
 		$hybridTwitter = new TwitterAddon();

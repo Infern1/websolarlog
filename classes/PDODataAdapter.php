@@ -1618,18 +1618,15 @@ class PDODataAdapter {
 	public function getGraphDayPoint($invtnum,$type, $startDate){
 		($type == 'today')?$type='day':$type=$type;
 		$beans = $this->readTablesPeriodValues($invtnum, 'history', $type, $startDate);
-		//echo $beans;
 		$beans = $this->DayBeansToGraphPoints($beans,'history');
 		
 		$hookBeans = HookHandler::getInstance()->fire("GraphDayPoints",$invtnum,$startDate,$type);
 		
 		
 		$array = array();
-		if(is_array($hookBeans)){
-			//echo 'ARRAY';
+		if($hookBeans != null && is_array($hookBeans->graph)){
 			$array['graph'] = array_merge_recursive($beans->graph,$hookBeans->graph);
 		}else{
-			//echo 'GEEN array';
 			$array['graph'] = $beans->graph;
 		}
 		$array['lastDay']=$beans;
@@ -1965,24 +1962,23 @@ class PDODataAdapter {
 		if($type == "today" || $type == "day" || $type == "all"){
 			$totalEnergyBeansToday = $this->readTablesPeriodValues(0, "energy", "today", date("d-m-Y"));
 			$maxPowerBeansToday = $this->readTablesPeriodValues(0, "pMaxOTD", "today", date("d-m-Y"));
-			//$totalEnergyBeansTodayKWHWKP = $totalEnergyBeansToday/$sumPlantPower;
-
+			
 			if (count ( $maxPowerBeansToday )==0 ){
 				$avgEnergyBeansToday= number_format(0,3,',','');
-				$totalEnergyBeansToday[]['KWH']=number_format(0,3,',','');
+				$totalEnergyBeansToday[]['KWH']=0;
 			}else{
+				$totalEnergyBeansTodayKWHKWP= number_format(($totalEnergyBeansToday[0]['KWH'] / $sumPlantPower),4,',','');
 				for ($i = 0; $i < count($maxPowerBeansToday); $i++) {
 					$maxPowerBeansToday[$i]['sumkWh'] = number_format($maxPowerBeansToday[$i]['sumkWh'],2,',','');
 					$avgEnergyBeansToday= number_format($totalEnergyBeansToday[$i]['KWH'],3,',','');
-					$totalEnergyBeansToday[$i]['KWH'] =number_format($totalEnergyBeansToday[$i]['KWH'],3,',','');
+					$totalEnergyBeansToday[$i]['KWH'] = number_format($totalEnergyBeansToday[$i]['KWH'],3,',','');
 				}
 
 			}
-			$totalEnergyBeansTodayKWHKWP= number_format($totalEnergyBeansToday[0]['sumkWh'] / $sumPlantPower,2,',','');
+			
 			if(count ( $maxPowerBeansToday )==0 ){
 				$maxPowerBeansToday[]['GP']="0";
 			}
-
 		}
 
 		if($type == "week" || $type == "all"){
@@ -2047,13 +2043,13 @@ class PDODataAdapter {
 			}
 			$totalEnergyBeansOverallKWHKWP= number_format($totalEnergyBeansOverall[0]['sumkWh'] / $sumPlantPower,2,',','');
 		}
+		
 
 		foreach ($config->inverters as $inverter){
 			$initialkwh += floatval($inverter->initialkwh);
 		}
 		$tempTotal = 0;
-		$tempTotal = $initialkwh + floatval($totalEnergyBeansOverall[0]['sumkWh']);
-		$totalEnergyOverallTotal = number_format($tempTotal,2,',','');
+		$totalEnergyOverallTotal = number_format($initialkwh + floatval($totalEnergyBeansOverall[0]['sumkWh']),2,',','');
 		$totalEnergyOverallTotalKWHKWP =  number_format($totalEnergyOverallTotal / $sumPlantPower,2,',','');
 
 
@@ -2154,7 +2150,29 @@ class PDODataAdapter {
 		return $data;
 	}
 
-	public function sotre_hybridauth_session($current_user_id, $hybridauth_session_data,$user_profile){
+	
+	
+	public function remove_hybridauth_session($current_user_id, $type){
+	
+		$bean =  R::findOne('hybridUsersConnections',
+				' user_id = :user_id AND type :type ',
+				array(':user_id'=>$current_user_id,
+						':type'=> $type
+				)
+		);
+		R::trash( $bean );
+		
+	}
+	
+	/**
+	 * 
+	 * @param unknown $current_user_id  = id of user
+	 * @param unknown $hybridauth_session_data  = Session data
+	 * @param unknown $user_profile = user profile
+	 * @param unknown $type = Twitter/Facebook
+	 */
+	
+	public function save_hybridauth_session($current_user_id, $hybridauth_session_data,$user_profile,$type){
 		$bean = R::findOne('hybridUsersConnections',' user_id = :user_id',array(':user_id'=>$current_user_id));
 
 		if(!$bean){
@@ -2171,7 +2189,13 @@ class PDODataAdapter {
 		}
 	}
 
-	function get_sotred_hybridauth_session( $user_id ){
+	/**
+	 * 
+	 * @param int $user_id = id of user
+	 * @param str $type = Twitter/Facebook
+	 * @return Ambigous <multitype:, multitype:NULL >
+	 */
+	function get_hybridauth_session( $user_id,$type ){
 		$sessionData = '';
 		$beans = R::findAndExport('hybridUsersConnections',' user_id = :user_id LIMIT 1',array(':user_id'=>$user_id));
 		if ($beans){

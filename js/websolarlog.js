@@ -2,7 +2,7 @@
 
 //Only for developer purposes
 $.ajaxSetup({
-	cache : false
+	cache : true
 });
 
 
