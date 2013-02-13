@@ -110,7 +110,7 @@ class Session
     	$hookHandler->add("onInverterError", "LoggerAddon.onInverterError");
     	
     	// PvOutputAddon
-    	$hookHandler->add("on1MinJob", "PvOutputAddon.onJob");
+    	$hookHandler->add("onFastJob", "PvOutputAddon.onJob");
     	
     	// TwitterAddon
     	$hookHandler->add("onInverterShutdown", "TwitterAddon.sendTweet");
