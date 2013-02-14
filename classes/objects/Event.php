@@ -16,7 +16,4 @@ class Event {
         $this->alarmSend = false;
     }
 }
-
-
 ?>
-

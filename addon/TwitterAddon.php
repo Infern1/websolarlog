@@ -29,7 +29,7 @@ class TwitterAddon {
 		$this->hybridauth = new Hybrid_Auth( $this->configHybridAuth );
 		$this->type = 'Twitter';
 		$this->current_user_id = 1;
-		$this->hybridauth_session_data = $this->adapter->get_hybridauth_session( $this->current_user_id,$type );
+		$this->hybridauth_session_data = $this->adapter->get_hybridauth_session( $this->current_user_id, $this->type);
 	}
 
 	function __destruct() {

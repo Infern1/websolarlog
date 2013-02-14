@@ -5,7 +5,4 @@ class MaxPowerToday {
     public $time;
     public $GP;
 }
-
-
 ?>
-
