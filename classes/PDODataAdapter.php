@@ -2179,8 +2179,8 @@ class PDODataAdapter {
 	 * @param unknown $type = Twitter/Facebook
 	 */
 	
-	public function save_hybridauth_session($current_user_id, $hybridauth_session_data,$user_profile,$type){
-		$bean = R::findOne('hybridUsersConnections',' user_id = :user_id',array(':user_id'=>$current_user_id));
+	public function save_hybridauth_session($current_user_id, $hybridauth_session_data,$user_profile, $type){
+		$bean = R::findOne('hybridUsersConnections',' user_id = :user_id and type = ":type" LIMIT 1',array(':user_id'=>$user_id,':type'=>$type));
 
 		if(!$bean){
 			$bean = R::dispense('hybridUsersConnections');
@@ -2189,6 +2189,7 @@ class PDODataAdapter {
 			$bean->hybridauth_session = $hybridauth_session_data;
 			$bean->updated_at = strtotime("now");
 			$bean->displayName = $user_profile->displayName;
+			$bean->type= $type;
 
 			//Store the bean
 
