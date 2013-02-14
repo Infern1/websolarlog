@@ -2180,7 +2180,7 @@ class PDODataAdapter {
 	 */
 	
 	public function save_hybridauth_session($current_user_id, $hybridauth_session_data,$user_profile, $type){
-		$bean = R::findOne('hybridUsersConnections',' user_id = :user_id and type = ":type" LIMIT 1',array(':user_id'=>$user_id,':type'=>$type));
+		$bean = R::findOne('hybridUsersConnections',' user_id = :user_id and type = :type LIMIT 1',array(':user_id'=>$current_user_id,':type'=>$type));
 
 		if(!$bean){
 			$bean = R::dispense('hybridUsersConnections');
@@ -2203,9 +2203,9 @@ class PDODataAdapter {
 	 * @param str $type = Twitter/Facebook
 	 * @return Ambigous <multitype:, multitype:NULL >
 	 */
-	function get_hybridauth_session( $user_id,$type ){
+	function get_hybridauth_session( $user_id, $type ){
 		$sessionData = '';
-		$beans = R::findAndExport('hybridUsersConnections',' user_id = :user_id and type = ":type" LIMIT 1',array(':user_id'=>$user_id,':type'=>$type));
+		$beans = R::findAndExport('hybridUsersConnections',' user_id = :user_id and type = :type LIMIT 1',array(':user_id'=>$user_id,':type'=>$type));
 		if ($beans){
 			foreach ($beans as $bean){
 				$sessionData= $bean;
