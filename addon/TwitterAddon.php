@@ -39,7 +39,7 @@ class TwitterAddon {
 
 
 	function attachTwitter(){
-		HookHandler::getInstance()->fire("onError", 'Fire(AttachTwitter)');
+		HookHandler::getInstance()->fire("onDebug", 'Fire(AttachTwitter)');
 		if($this->hybridauth_session_data){
 			$data['message'] = 'Connected';
 		}else{
@@ -60,7 +60,7 @@ class TwitterAddon {
 
 
 	function detachTwitter(){
-		HookHandler::getInstance()->fire("onError", 'Fire(DetachTwitter)');
+		HookHandler::getInstance()->fire("onDebug", 'Fire(DetachTwitter)');
 
 			$twitter = $this->hybridauth->authenticate( "Twitter" );
 			$hybridauth_session_data = $this->hybridauth->getSessionData();
