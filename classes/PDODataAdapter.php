@@ -2204,7 +2204,7 @@ class PDODataAdapter {
 	 */
 	function get_hybridauth_session( $user_id,$type ){
 		$sessionData = '';
-		$beans = R::findAndExport('hybridUsersConnections',' user_id = :user_id and type = ":type" LIMIT 1',array(':user_id'=>$user_id,':type'=>type));
+		$beans = R::findAndExport('hybridUsersConnections',' user_id = :user_id and type = ":type" LIMIT 1',array(':user_id'=>$user_id,':type'=>$type));
 		if ($beans){
 			foreach ($beans as $bean){
 				$sessionData= $bean;
