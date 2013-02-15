@@ -47,13 +47,14 @@ function checkPauseAndRestart() {
 		while ($config->pauseWorker) {
 			sleep(5);
 			$config = Session::getConfig(true);
+			echo("Worker paused\n");
 		}
 	}
 	if ($config->restartWorker) {
 		$config->restartWorker = false;
 		PDODataAdapter::getInstance()->writeConfig($config);
 		sleep (1);
-		exit("Restarting worker");
+		exit("Restarting worker\n");
 	}
 } 
 ?>
