@@ -32,7 +32,7 @@ if ($useNewWorker) {
 			echo ($e->getMessage());
 		}
 		$count++;
-		sleep(2);
+		sleep(1);
 		
 	}
 } else {
@@ -45,14 +45,14 @@ function checkPauseAndRestart() {
 	$config = Session::getConfig(true);
 	if ($config->pauseWorker) {
 		while ($config->pauseWorker) {
-			sleep(10);
+			sleep(5);
 			$config = Session::getConfig(true);
 		}
 	}
 	if ($config->restartWorker) {
 		$config->restartWorker = false;
 		PDODataAdapter::getInstance()->writeConfig($config);
-		sleep (2);
+		sleep (1);
 		exit("Restarting worker");
 	}
 } 
