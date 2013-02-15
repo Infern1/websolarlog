@@ -61,6 +61,7 @@ class SmartMeterConverter
 				$live->liveReturn = Util::telegramStringLineToInterUsage($data[9],"kW");
 			}
 			// Current Gas usage
+			$data[17] = trim($data[17], "\r"); // Strip off the carriage return given by the ISKRA
 			if(substr($data[17], 0, 1)=="(" && substr($data[17], -1)==")"){
 				$live->gasUsage = Util::telegramStringLineToInterUsage($data[17],"m3");
 			}
