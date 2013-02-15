@@ -80,7 +80,7 @@ Class SmartMeterRemote implements DeviceApi {
     		echo("Error: Could not create socket: " . socket_strerror($socket) . "\n");
     		return;
     	}
-    	if (!@socket_set_option($socket,SOL_SOCKET, SO_RCVTIMEO, array("sec"=>5, "usec"=>0))) {
+    	if (!@socket_set_option($socket,SOL_SOCKET, SO_RCVTIMEO, array("sec"=>15, "usec"=>0))) {
     		echo("Warning: Could not set socket timeout: " . socket_strerror($socket) . "\n");
     	}
     	if (!@socket_connect($socket, $server, $address[1])) {
