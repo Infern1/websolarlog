@@ -71,6 +71,7 @@ Class SmartMeterRemote implements DeviceApi {
         //return shell_exec('sudo python3 '.$this->PATH.' /dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0');
     	$server = "192.168.77.132"; //my server
     	$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+    	socket_set_option($socket,SOL_SOCKET, SO_RCVTIMEO, array("sec"=>5, "usec"=>0));
     	socket_connect($socket, $server, 9090);
     	$result = socket_read($socket, '1024');
     	socket_close($socket);
