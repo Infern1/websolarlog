@@ -71,6 +71,10 @@ class Inverter
 	    	//echo "\r\nMake DutchSmartMeter object\r\n";
 	    	return new SmartMeter($config->smartmeterpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
 	    }
+	    if ($this->deviceApi == "DutchSmartMeterRemote") {
+	    	//echo "\r\nMake DutchSmartMeterRemote object\r\n";
+	    	return new SmartMeterRemote($config->smartmeterpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    }
 	        
     }
 }
