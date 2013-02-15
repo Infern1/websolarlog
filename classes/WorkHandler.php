@@ -55,10 +55,10 @@ class WorkHandler {
 		// Fire the hook that will handle the live data
 		switch ($inverter->type) {
 			case "production":
-				$this->handleProductionDevice($inverter, $live, $timestamp);
+				$this->handleProductionDevice($inverter, $api, $live, $timestamp);
 				break;
 			case "metering":
-				$this->handleMeteringDevice($inverter, $live, $timestamp);
+				$this->handleMeteringDevice($inverter, $api, $live, $timestamp);
 				break;
 			default:
 				echo("ProductType " . $inverter->type . " is not supported by the worker");
@@ -66,7 +66,7 @@ class WorkHandler {
 		}
 	}
 	
-	private function handleProductionDevice($inverter, $live, $timestamp) {
+	private function handleProductionDevice($inverter, $api, $live, $timestamp) {
 		if ($live != null) {
 			HookHandler::getInstance()->fire("onLiveData", $inverter, $live);
 		} else {
@@ -109,7 +109,7 @@ class WorkHandler {
 		}
 	}
 	
-	private function handleMeteringDevice($inverter, $live, $timestamp) {
+	private function handleMeteringDevice($inverter, $api, $live, $timestamp) {
 		if ($live != null) {
 			HookHandler::getInstance()->fire("onLiveSmartMeterData", $inverter, $live);
 		} else {
