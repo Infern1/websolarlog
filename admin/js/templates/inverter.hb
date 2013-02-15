@@ -21,13 +21,13 @@
             <option value="DutchSmartMeterRemote" {{#if_eq data.inverter.deviceApi compare="DutchSmartMeterRemote"}}selected=selected{{/if_eq}}>Dutch Smart Meter Remote</option>
         </select>
         <br />
-    <label for="comAddress">Device Type:</label>
+    <label for="deviceType">Device Type:</label>
             <select name="deviceType">
             <option value="production" {{#if_eq data.inverter.type compare="production"}}selected=selected{{/if_eq}}>Production</option>
             <option value="metering" {{#if_eq data.inverter.type compare="metering"}}selected=selected{{/if_eq}}>Metering</option>
         </select>
         <br />
-    <label for="comAddress">RS485 address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" /><br />
+    <label for="comAddress">(RS485/IP) address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" /><br />
     <label for="comLog">Log comm:</label><input type="checkbox" name="comLog" value="1" {{#if data.inverter.comLog}}checked=checked{{/if}}/><br />
     <label for="syncTime">Synchronize time:</label><input type="checkbox" name="syncTime" value="1" {{#if data.inverter.syncTime}}checked=checked{{/if}}/><br />
     <label for="pvoutputEnabled">PVOutput Enabled:</label><input type="checkbox" name="pvoutputEnabled" value="1" {{#if data.inverter.pvoutputEnabled}}checked=checked{{/if}}/><br />
