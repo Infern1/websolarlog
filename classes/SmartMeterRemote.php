@@ -68,11 +68,19 @@ Class SmartMeterRemote implements DeviceApi {
     }
 
     private function execute() {    	
-        //return shell_exec('sudo python3 '.$this->PATH.' /dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0');
-    	$server = "192.168.77.132"; //my server
+    	$server = $this->ADR; //my server
     	$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-    	socket_set_option($socket,SOL_SOCKET, SO_RCVTIMEO, array("sec"=>5, "usec"=>0));
-    	socket_connect($socket, $server, 9090);
+    	if ($socket < 0) {
+    		echo("Error: Could not create socket: " . socket_strerror($socket) . "\n");
+    		return;
+    	}
+    	if (!@socket_set_option($socket,SOL_SOCKET, SO_RCVTIMEO, array("sec"=>5, "usec"=>0))) {
+    		echo("Warning: Could not set socket timeout: " . socket_strerror($socket) . "\n");
+    	}
+    	if (!@socket_connect($socket, $server, $this->PORT)) {
+    		echo("Error: Could not create connection: " . socket_strerror($socket) . "\n");
+    		return;
+    	}
     	$result = socket_read($socket, '1024');
     	socket_close($socket);
     	return $result;
