@@ -31,6 +31,18 @@ class SmartMeterAddon {
 		$inverter = $args[1];
 	
 		$arHistory = $this->readSmartMeterHistory($inverter->id, null);
+		
+		// Initialize the variables we dont want errors in the logs
+		$gasUsage = 0;
+		$highReturn = 0;
+		$lowReturn = 0;
+		$highUsage = 0;
+		$lowUsage = 0;
+		$gasUsageEnd = 0;
+		$highReturnEnd = 0;
+		$lowReturnEnd = 0;
+		$highUsageEnd = 0;
+		$lowUsageEnd = 0;
 	
 		if(count($arHistory)>1){
 			$first = reset($arHistory);
@@ -61,14 +73,7 @@ class SmartMeterAddon {
 				$lowReturn = $lowReturnEnd - $lowReturnStart;
 				$highUsage = $highUsageEnd - $highUsageStart;
 				$lowUsage = $lowUsageEnd - $lowUsageStart;
-			}else{
-				$gasUsage = 0;
-				$highReturn = 0;
-				$lowReturn = 0;
-				$highUsage = 0;
-				$lowUsage = 0;
-			}
-	
+			}	
 	
 			// Set the new values and save it
 			$energy = new EnergySmartMeter();
