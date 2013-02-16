@@ -36,7 +36,7 @@ if ($useNewWorker) {
 		
 	}
 	echo (date("Ymd His") . "\tAuto restart worker\n");
-	
+	exit;
 } else {
 	$worker = new Worker();
 	$worker->start();
