@@ -313,6 +313,7 @@ class SmartMeterAddon {
 	
 		$live = new LiveSmartMeter();
 		if ($bean) {
+			$live->invtnum = $bean->invtnum;
 			$live->liveGas = $bean->liveGas;
 			$live->gasUsage = $bean->gasUsage;
 			$live->highReturn = $bean->highReturn;
@@ -326,7 +327,6 @@ class SmartMeterAddon {
 	
 		return $live;
 	}
-	
 	
 	
 	/**
