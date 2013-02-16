@@ -70,21 +70,22 @@ Class SmartMeterRemote implements DeviceApi {
     private function execute() {
     	$address = explode(":", $this->ADR);
 		if (count($address) != 2) {
-			echo("Error: wrong address given " . $address);
+			$error = "Error: wrong address given " . $address;
+    		HookHandler::getInstance()->fire("onInverterError", $inverter, $error);
 			return;
 		}
     	
     	$server = $address[0]; //my server
     	$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
     	if ($socket < 0) {
-    		echo("Error: Could not create socket: " . socket_strerror(socket_last_error($socket)) . "\n");
+    		HookHandler::getInstance()->fire("onInverterError", $inverter, "Could not create socket: " . socket_strerror(socket_last_error($socket)));
     		return;
     	}
     	if (!@socket_set_option($socket,SOL_SOCKET, SO_RCVTIMEO, array("sec"=>15, "usec"=>0))) {
-    		echo("Warning: Could not set socket timeout: " . socket_strerror(socket_last_error($socket)) . "\n");
+    		HookHandler::getInstance()->fire("onInverterWarning", $inverter, "Could not set socket timeout: " . socket_strerror(socket_last_error($socket)));
     	}
     	if (!@socket_connect($socket, $server, $address[1])) {
-    		echo("Error: Could not create connection: " . socket_strerror(socket_last_error($socket)) . "\n");
+    		HookHandler::getInstance()->fire("onInverterError", $inverter, "Could not create connection: " . socket_strerror(socket_last_error($socket)));
     		return;
     	}
     	$result = socket_read($socket, '1024');
