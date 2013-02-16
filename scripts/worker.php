@@ -19,8 +19,8 @@ $useNewWorker = true;
 if ($useNewWorker) {
 	$workHandler = new WorkHandler();
 	$count = 0;
-	while ($count < 60) {
-		if ($count > 30) {
+	while ($count < 3000) {
+		if ($count % 10 == 0) {
 			checkPauseAndRestart();
 			$workHandler = null;
 			$workHandler = new WorkHandler();
@@ -35,6 +35,8 @@ if ($useNewWorker) {
 		sleep(1);
 		
 	}
+	echo (date("Ymd His") . "\tAuto restart worker\n");
+	
 } else {
 	$worker = new Worker();
 	$worker->start();
