@@ -10,6 +10,7 @@ class LiveSmartMeter {
 	public $lowReturn;
 	public $liveUsage;
 	public $liveReturn;
+	public $liveEnergy;
 	public $gasUsage;
 }
 
