@@ -24,7 +24,18 @@ class SmartMeterAddon {
 		$timestamp = $args[3];
 		//var_dump($live);
 		$this->addSmartMeterHistory($inverter->id, $live,$timestamp);
+		
 		HookHandler::getInstance()->fire("newHistory", $inverter, $timestamp);
+		
+		// We are live, but db things offline
+		if ($inverter->state == 0) {
+			$this->adapter->changeInverterStatus($inverter, 1);
+			$inverter->state == 1;
+		}
+		$sessionKey = 'noLiveCounter-' . $inverter->id;
+		if (isset($_SESSION[$sessionKey])) {
+			unset($_SESSION[$sessionKey]);
+		}
 	}
 	
 	public function onSmartMeterEnergy($args) {
@@ -306,7 +317,7 @@ class SmartMeterAddon {
 	/**
 	 * read the live info from an file
 	 * @param int $invtnum
-	 * @return Live
+	 * @return LiveSmartMeter
 	 */
 	public function readLiveSmartMeterInfo($invtnum) {
 		$bean =  R::findOne('liveSmartMeter',' invtnum = :invtnum ', array(':invtnum'=>$invtnum));
@@ -322,7 +333,7 @@ class SmartMeterAddon {
 			$live->lowUsage = $bean->lowUsage;
 			$live->liveReturn = $bean->liveReturn;
 			$live->liveUsage = $bean->liveUsage;
-	
+			$live->liveEnergy = intval($live->liveUsage) - intval($live->liveReturn);
 		}
 	
 		return $live;
