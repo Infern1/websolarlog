@@ -24,7 +24,6 @@ if ($useNewWorker) {
 			checkPauseAndRestart();
 			$workHandler = null;
 			$workHandler = new WorkHandler();
-			$count = 0;
 		}
 		try {
 			$workHandler->start();
