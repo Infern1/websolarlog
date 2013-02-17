@@ -40,13 +40,14 @@ class BasicChecksAddon {
 			// Are we seriously down?
 			if(Util::isSunDown($this->config)) {
 				if ($this->adapter->changeInverterStatus($inverter, 0)) {
-					//echo("fire: onInverterShutdown! \n");
-					HookHandler::getInstance()->fire("onInverterShutdown", $inverter);
-					$inverter->state = 0;
+					if (PeriodHelper::isPeriodJob("ShutDownJobINV-" . $inverter->id, (2 * 60))) {
+						HookHandler::getInstance()->fire("onInverterShutdown", $inverter);
+						$inverter->state = 0;
+					}
 				}
 			} else {
 				// Probably temporarely down, check again
-				if (PeriodHelper::isPeriodJob("ShutDownJobINV" . $inverter->id, (2 * 60))) {
+				if (PeriodHelper::isPeriodJob("ShutDownJobErrorINV-" . $inverter->id, 60)) {
 					HookHandler::getInstance()->fire("onInverterError", $inverter, "Inverter seems to be down");
 				}
 				$liveCounter = 0;
