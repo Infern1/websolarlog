@@ -7,6 +7,10 @@ class Util {
         return $now<($sun_info['sunrise']-$correction) || $now>($sun_info['sunset']+$correction);
     }
     
+    public static function getSunInfo($config) {
+    	return date_sun_info((strtotime(date("Ymd"))), $config->latitude , $config->longitude);
+    }
+    
     public static function getDataLockFile() {
     	return dirname(dirname(__FILE__))."/data/lock";
     }

@@ -35,6 +35,7 @@ class Config
 
     public $co2kwh;
     public $co2gas;
+    public $co2CompensationTrees;
     public $debugmode;
 
     public $aurorapath; // The path to aurora
@@ -115,8 +116,8 @@ class Config
 		$this->smagetpath = 'sma_get'; // If in system path this is enough
 		
 		$this->co2kwh = 440; // 440g/kWh is conform europa average
-		$this->co2kwh = 2200; // 440g/kWh is conform europa average
-		
+		$this->co2gas = 2200; // 2200g/m3 natural gas is conform europa average
+		$this->co2CompensationTree = 27; // 27g Co2 is what a average tree consume a day
 		$this->adminpasswd = sha1('admin');
 		
 		$this->pauseWorker = false;

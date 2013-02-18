@@ -84,7 +84,23 @@
 						<?php echo _("version") ?>:&nbsp;<?php echo($config->version_title . " (build " . $config->version_revision . ")") ?>
 					</div>
 				</div>
-			<div style="text-align: center;">The SolarData Logger for: PowerOne, SMA, Effekta and the Dutch SmartMeter.</div>	
+			<div style="text-align: left;align:center;">
+			<hr style="background-color:#8BC32B;height:10px;margin:0 0 3px;">
+			<div style="float:left; width:180px;margin-left:;">
+			WebSolarLog:<br/>
+			<a href="http://www.websolarlog.com/" target="_blank" class="leftFooter">WebSolarLog.com</a><br/>
+			<a href="http://www.websolarlog.com/index.php/help-support/" target="_blank" class="leftFooter">Support Group</a><br/>
+			<a href="http://demo.websolarlog.com" target="_blank" class="leftFooter">Demo</a><br/>
+			<a href="http://www.websolarlog.com/index.php/development/" target="_blank" class="leftFooter">Development</a><br/>
+			</div>
+			<div style="float:left; width:180px;">
+			Supported device:<br/>
+			<a href="http://www.PowerOne.com/" target="_blank" class="leftFooter">PowerOne</a> <a href="http://www.curtronics.com/Solar/AuroraData.html" target="_blank">(Curtronics)</a><br/>
+			<a href="http://www.sma.de/en/products/overview.html" target="_blank" class="leftFooter">SMA</a> <a href="http://code.google.com/p/sma-get/" target="_blank">(SMA-get)</a><br/>
+			<a href="http://www.Effekta.com" target="_blank" class="leftFooter">Effekta</a> (software)<br/>
+			<a href="http://www.websolarlog.com/" target="_blank" class="leftFooter">Dutch SmartMeter</a> (software)<br/>
+			</div>
+			<div class="cl"></div>
 			</div>
 			
 		</div>

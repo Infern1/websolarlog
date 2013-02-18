@@ -165,7 +165,7 @@ try {
 			$lines = $dataAdapter->getGraphDayPoint($invtnum, $type, $date);
 			$dayData = new DayDataResult();
 			$dayData->graph = $lines['graph'];
-			$dayData->timestamp = Util::getBeginEndDate('day', 1,date ("Y-m-d")	);
+			
 			
 			$dayData->valueKWHT = $lines['lastDay']->KWHT;
 			$dayData->KWHTUnit = $lines['lastDay']->KWHTUnit;
@@ -443,8 +443,11 @@ try {
 			
 			$lang['month'] = _('month');
 			$lang['expected'] = _('expected');
+			$lang['CumHarvested'] = _('cum.')." "._('harvested');
+			$lang['CumExpected'] = _('cum.')." "._('expected');
 			$lang['harvested'] = _('harvested');
 			$lang['difference'] = _('difference');
+			$lang['CumDifference'] =  _('cum.')." "._('difference');
 				
 			$data['lang'] = $lang;
 			
@@ -459,7 +462,6 @@ try {
 					
 					);
 			$dayData->type = $lines['type'];
-			$dayData->config = $lines['config'];
 			$dayData->expectedMonthString = $lines['expectedMonthString'];
 			$dayData->expectedPerc = $lines['expectedPerc'];
 			$dayData->success = true;

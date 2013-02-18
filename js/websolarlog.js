@@ -920,13 +920,15 @@ var WSL = {
 
 						graphOptions.axes = result.dayData.graph.axes;
 						//console.log('axes');
-						//console.log(graphOptions.axes);
-						graphOptions.axes.xaxis.min = result.dayData.timestamp.beginDate*1000;
-						graphOptions.axes.xaxis.max = result.dayData.timestamp.endDate*1000;
+						//console.log(graphOptions.axes.xaxis);
+						graphOptions.axes.xaxis.min = result.dayData.graph.timestamp.beginDate*1000;
+						graphOptions.axes.xaxis.max = result.dayData.graph.timestamp.endDate*1000;
 						graphOptions.series = result.dayData.graph.series;
 					}
 					
-
+					
+					
+							
 					
 
 					//console.log('series');
@@ -934,6 +936,17 @@ var WSL = {
 					$('#graph' + tab + 'Content').empty();
 	    			handle = $.jqplot('graph' + tab + 'Content',  seriesData	 , graphOptions);
 
+	    			for (line in result.dayData.graph.metaData.hideSeries.label) {
+						for (serie in handle.series){
+							//console.log();
+							if(result.dayData.graph.metaData.hideSeries.label[line] == graphOptions.series[serie].label){
+								handle.series[serie].show = false;
+								
+							}
+						}
+					}
+	    			handle.replot();
+	    			
     				delete dataDay1;
     				delete dataDay2;
     				delete dataDay3;
@@ -1631,7 +1644,7 @@ var WSL = {
 					var whichTable = [];
 					for (line in result.dayData.data.compare) {
 						var object = result.dayData.data.compare[line];
-						console.log(object);
+						//console.log(object);
 						dataDay1.push([  object[0], object[2], object[3] ]);
 						
 							var item = {
@@ -1639,23 +1652,26 @@ var WSL = {
 							        "har": object[2],
 							        "date": object[1],
 							        "displayKWH":object[3],
+							        "harvested":object[4],
 							};
 							compareTable.push([item]);
 						
 					}
 					for (line in result.dayData.data.which) {
 						var object = result.dayData.data.which[line];
+						//console.log(object);
 						dataDay2.push([  object[0], object[2], object[3] ]);
+						
 						var item = {
 						        "timestamp": object[0],
 						        "har": object[2],
 						        "date": object[1],
 						        "displayKWH":object[3],
+						        "harvested": object[4],
 						};
 						whichTable.push([item]);
 					
 					}
-					
 					$("#content").append('<div id="compareGraph"></div>');
 					$('#content').append('<div id="compareFigures"></div>');
 					$("#compareGraph").height(350);
@@ -1687,7 +1703,7 @@ var WSL = {
 								'lang': result.lang
 							});
 							
-							
+							//console.log('aa');
 							
 							$('#compareFigures').html(html);
 							

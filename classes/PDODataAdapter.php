@@ -474,13 +474,15 @@ class PDODataAdapter {
 	 *
 	 * @param unknown_type $beans
 	 */
-	public function DayBeansToGraphPoints($beans,$table){
+	public function DayBeansToGraphPoints($beans,$table,$graph){
+		$config = Session::getConfig();
+		
 		$i=0;
 		$firstBean = array();
 		$preBean = array();
-		$graph = array();
-		$KWHT = 0;
 
+		$KWHT = 0;
+		$lastDays = new LastDays();
 		
 			foreach ($beans as $bean){
 				if ($i==0){
@@ -493,41 +495,25 @@ class PDODataAdapter {
 				$cumPower = round(($bean['KWHT']-$firstBean['KWHT'])*1000,0);
 				// 09/30/2010 00:00:00
 				$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,0,0);
-				//$points['cumPower'][] = array ( date ("d/m/Y H:i:s" , $UTCdate ),$cumPower,date("H:i, d-m-Y",$bean['time']));
-				//$points['avgPower'][] = array ( date ("d/m/Y H:i:s" , $UTCdate ),$avgPower,date("H:i, d-m-Y",$bean['time']));
-				$graph['points']['cumPower'][] = array (  $UTCdate*1000 ,$cumPower,date("H:i, d-m-Y",$bean['time']));
-				$graph['points']['avgPower'][] = array (  $UTCdate*1000 ,$avgPower,date("H:i, d-m-Y",$bean['time']));
+				$graph->points['cumPower'][] = array (  $UTCdate*1000 ,$cumPower,date("H:i, d-m-Y",$bean['time']));
+				$graph->points['avgPower'][] = array (  $UTCdate*1000 ,$avgPower,date("H:i, d-m-Y",$bean['time']));
 				$preBeanUTCdate = $bean['time'];
 				$preBean = $bean;
 				$i++;
 			}
-			
-			//$graph['labels'][] = 'Cum. Power(W)';
-			//$graph['labels'][] = 'Avg. Power(W)';
-			
+
+			if($i>0){
+
 			$plantPower = $this->readPlantPower();
 			$kWhkWp = number_format(($cumPower/1000) / ($plantPower/1000),2,',','');
+			
 			if($cumPower >= 1000){
 				$cumPower = number_format($cumPower /=1000,2,',','');
 				$cumPowerUnit = "kWh";
 			}else{
 				$cumPowerUnit = "W";
 			}
-			$graph['series'][] = array('label'=>'Cum. Power(W)','yaxis'=>'yaxis');
-			$graph['series'][] = array('label'=>'Avg. Power(W)','yaxis'=>'y2axis');
-			
-			/*
-			{label:result.lang.cumPowerW,yaxis:'yaxis',showMarker:false,autoscale:true,},
-			{label:result.lang.avgPowerW,yaxis:'y2axis',showMarker:false,autoscale:true,},
-			*/
-			
-			
-			$graph['axes']['xaxis'] = array('label'=>'','renderer'=>'DateAxisRenderer',
-					'tickRenderer'=>'CanvasAxisTickRenderer','labelRenderer'=>'CanvasAxisLabelRenderer',
-					'tickInterval'=>3600,'tickOptions'=>array('formatter'=>'DayDateTickFormatter','angle'=>-45));
-			$graph['axes']['yaxis']  = array('label'=>'Cum. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-			$graph['axes']['y2axis'] = array('label'=>'Avg. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-			
+
 			/*
 				xaxis : {label : '',tickRenderer:$.jqplot.CanvasAxisTickRenderer,
 					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,
@@ -538,13 +524,26 @@ class PDODataAdapter {
 				y2axis : {label : result.lang.cumPowerW,min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
 			*/
 			
-			$lastDays = new LastDays();
-			$lastDays->KWHT=$cumPower;
-			$lastDays->KWHTUnit=$cumPowerUnit;
-			$lastDays->KWHKWP=$kWhkWp;
-		
-		$lastDays->graph = $graph;
-		return $lastDays;
+			//set timestamp to overrule standard timestamp
+			$timestamp = Util::getSunInfo($config);
+			$graph->timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
+			
+			$graph->metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
+			
+			
+			
+			$graph->series[] = array('label'=>'Cum. Power(W)','yaxis'=>'yaxis');
+			$graph->series[] = array('label'=>'Avg. Power(W)','yaxis'=>'y2axis');
+			
+			$graph->axes['yaxis']  = array('label'=>'Cum. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+			$graph->axes['y2axis'] = array('label'=>'Avg. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+			
+			//$graph->metaData['hideSeries'] = array('label'=>array('Cum. Power(W)'));
+			
+			
+			}
+
+			return $graph;
 	}
 
 
@@ -1443,7 +1442,9 @@ class PDODataAdapter {
 			}else{
 				// harvested data.....
 				$beans = $this->readEnergyValues($invtnum, 'month', 1, $whichYear."-".$whichMonth."-1");
+				//var_dump($beans);
 				$whichBeans = $beans[0];
+				//get last kwh value
 				$lastKWH = $whichBeans[count($whichBeans)-1]['KWH'];
 
 				// complete array to days of month and fill it with the last KWH value
@@ -1452,8 +1453,8 @@ class PDODataAdapter {
 					$whichBeans[$i]['time'] = strtotime(date("Y")."/".$whichMonth."/".$iWhichDay);
 					$whichBeans[$i]['KWH'] = (float)$lastKWH;
 					$whichBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$lastKWH);
+					$whichBeans[$i]['harvested'] =  0;
 				}
-				//var_dump($whichBeans);
 				// create string to get month percentage
 				$expectedMonthString = 'expected'.strtoupper(date('M', strtotime($compareMonth."/01/".date("Y"))));
 
@@ -1473,12 +1474,14 @@ class PDODataAdapter {
 					$expectedBeans[$i]['time'] = strtotime(date("Y")."/".$compareMonth."/".$iCompareDay);
 					$expectedBeans[$i]['KWH'] =  (float)number_format((float)$expectedBeans[$i-1]['KWH']+(float)$expectedKwhPerDay,2,'.','');
 					$expectedBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$expectedBeans[$i-1]['KWH']+(float)$expectedKwhPerDay);
+					$expectedBeans[$i]['harvested'] = (float)number_format((float)$expectedKwhPerDay,2,'.','');  
 				}
 				//var_dump($expectedBeans);
 				$type = "energy vs expected";
 				$diff = $this->getDiffCompare($whichBeans,$expectedBeans);
 			}
 		}
+		
 		return array(
 				"expectedKWhMonth"=>$expectedKWhMonth,
 				"expectedkwhYear"=>$expectedkwhYear,
@@ -1503,13 +1506,16 @@ class PDODataAdapter {
 		if($whichCount>=$expectedCount){
 			for ($i = 0; $i < $whichCount; $i++) {
 				$diffCalc = $whichBeans[$i]['KWH']-$expectedBeans[$i]['KWH'];
-				$diff[] = array("diff"=>sprintf("%01.2f",(float)$diffCalc));
+				$diffHarvestedCalc = $whichBeans[$i]['harvested']-$expectedBeans[$i]['harvested'];
+				
+				$diff[] = array("diff"=>sprintf("%01.2f",(float)$diffCalc),"diffHar"=>$diffHarvestedCalc);
 			}
 		}else{
 			for ($i = 0; $i < $expectedCount; $i++) {
-
 				$diffCalc = $whichBeans[$i]['KWH']-$expectedBeans[$i]['KWH'];
-				$diff[] = array("diff"=>sprintf("%01.2f",(float)$diffCalc));
+				$diffHarvestedCalc = $whichBeans[$i]['harvested']-$expectedBeans[$i]['harvested'];
+				
+				$diff[] = array("diff"=>sprintf("%01.2f",(float)$diffCalc),"diffHar"=>$diffHarvestedCalc);
 			}
 
 		}
@@ -1617,23 +1623,73 @@ class PDODataAdapter {
 	 */
 	public function getGraphDayPoint($invtnum,$type, $startDate){
 		($type == 'today')?$type='day':$type=$type;
+		$graph = new Graph();
+		
+		
 		$beans = $this->readTablesPeriodValues($invtnum, 'history', $type, $startDate);
-		$beans = $this->DayBeansToGraphPoints($beans,'history');
 		
-		$hookBeans = HookHandler::getInstance()->fire("GraphDayPoints",$invtnum,$startDate,$type);
+		$graph->axes['xaxis'] = array('label'=>'','renderer'=>'DateAxisRenderer',
+				'tickRenderer'=>'CanvasAxisTickRenderer','labelRenderer'=>'CanvasAxisLabelRenderer',
+				'tickInterval'=>3600,'tickOptions'=>array('formatter'=>'DayDateTickFormatter','angle'=>-45));
 		
+		$graph = $this->DayBeansToGraphPoints($beans,'history',$graph);		
 		
-		$array = array();
-		if($hookBeans != null && is_array($hookBeans->graph)){
-			$array['graph'] = array_merge_recursive($beans->graph,$hookBeans->graph);
-		}else{
-			$array['graph'] = $beans->graph;
+		$hookGraph = HookHandler::getInstance()->fire("GraphDayPoints",$invtnum,$startDate,$type);
+
+		foreach ($hookGraph->axes as $key => $value){
+			$graph->axes[$key] = $value;
+		}	
+		
+		foreach($hookGraph->series as $series){
+			$graph->series[] = $series;
 		}
-		$array['lastDay']=$beans;
-		$array['lastDay']->graph=null;
+
+		foreach ($hookGraph->points as $key => $value){
+			$graph->points[$key] = $value;
+		}
+
+		if($hookGraph->timestamp!=null){
+			$graph->timestamp = $hookGraph->timestamp;
+		}
+		
+		
+		if($hookGraph->metaData != null){			
+			$graph->metaData= array_merge_recursive($graph->metaData,$hookGraph->metaData);
+		}
+		$array['graph'] = $graph; 
+
+
 		return $array;
 	}
+	
+	
+	public function mergePointArrays($beans,$hookBeans){
+		$array = array();
+		$config = Session::getConfig();
 
+		if(is_array($hookBeans->graph['timestamp'])){
+			$array['timestamp'] = $hookBeans->graph['timestamp'];
+		}
+ 
+		if( $beans->graph['points']!=null AND $hookBeans->graph['points']!=null){
+			//echo "both Points Beans en HookBeans";
+			$array['graph'] = array_merge_recursive($beans->graph,$hookBeans->graph);
+		}elseif($beans != null && is_array($beans->graph['points'])){
+			//echo "Points Beans";
+			$array['graph'] = $beans->graph;
+		}elseif($hookBeans != null && is_array($hookBeans->graph['points'])){
+			//echo "Points hookBeans";
+			$array['graph'] = $hookBeans->graph;
+		}else{
+			//echo 'niets';
+			$array['graph'] = array();
+		}
+		
+		
+
+		
+		return $array;
+	}
 
 	/**
 	 * return a array with GraphPoints
@@ -1673,7 +1729,8 @@ class PDODataAdapter {
 					mktime(0, 0, 0,date("m",$bean['time']),date("d",$bean['time']),date("Y",$bean['time']))*1000,
 					date("d-m-Y",$bean['time']),
 					$bean['KWH'],
-					$bean['displayKWH']
+					$bean['displayKWH'],
+					$bean['harvested']
 			);
 			
 			
@@ -1796,7 +1853,7 @@ class PDODataAdapter {
 	 *
 	 */
 	public function readEnergyValues($invtnum, $type, $count, $startDate){
-		$config = new Config;
+		$config = Session::getConfig();
 		$energyBeans = $this->readTablesPeriodValues($invtnum, "energy", $type,$startDate);
 		$Energy = array();
 
@@ -1805,6 +1862,7 @@ class PDODataAdapter {
 			$energyBean['KWH'] = (float)$energyBean['KWH'];
 			$Energy['INV'] =  $energyBean['INV'];
 			$Energy['KWHKWP'] = number_format($energyBean['KWH'] / ($invConfig->plantpower/1000),2,',','');
+			$Energy['harvested'] = number_format((float)$energyBean['KWH'],2,'.','');
 			$Energy['KWH'] += number_format((float)$energyBean['KWH'],2,'.','');
 				
 			$cum +=$energyBean['KWH'];
