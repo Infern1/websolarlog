@@ -961,8 +961,8 @@ var WSL = {
 
     				mytitle = 
     					$('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+
-    							result.lang.totalEnergy+': ' + result.dayData.metaData.KWH.cumPower +
-    							' '+result.dayData.metaData.KWH.KWHTUnit+' ('+result.dayData.metaData.KWH.KWHKWP+' kWh/kWp)</div>').insertAfter('#graph' + 
+    							result.lang.totalEnergy+': ' + result.dayData.graph.metaData.KWH.cumPower +
+    							' '+result.dayData.graph.metaData.KWH.KWHTUnit+' ('+result.dayData.graph.metaData.KWH.KWHKWP+' kWh/kWp)</div>').insertAfter('#graph' + 
     									getDay + ' .jqplot-grid-canvas');
     				fnFinish.call(this, handle);
     				ajaxReady();
