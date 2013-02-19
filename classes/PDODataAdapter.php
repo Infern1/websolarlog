@@ -503,43 +503,29 @@ class PDODataAdapter {
 			}
 
 			if($i>0){
+				$plantPower = $this->readPlantPower();
+				$kWhkWp = number_format(($cumPower/1000) / ($plantPower/1000),2,',','');
+				
+				if($cumPower >= 1000){
+					$cumPower = number_format($cumPower /=1000,2,',','');
+					$cumPowerUnit = "kWh";
+				}else{
+					$cumPowerUnit = "W";
+				}
+				//set timestamp to overrule standard timestamp
+				$timestamp = Util::getSunInfo($config);
+				$graph->timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
+				
+				$graph->metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
 
-			$plantPower = $this->readPlantPower();
-			$kWhkWp = number_format(($cumPower/1000) / ($plantPower/1000),2,',','');
-			
-			if($cumPower >= 1000){
-				$cumPower = number_format($cumPower /=1000,2,',','');
-				$cumPowerUnit = "kWh";
-			}else{
-				$cumPowerUnit = "W";
-			}
-
-			/*
-				xaxis : {label : '',tickRenderer:$.jqplot.CanvasAxisTickRenderer,
-					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,renderer : $.jqplot.DateAxisRenderer,
-					tickInterval : '3600', // 1 hour
-					tickOptions : {angle : -90,formatString : '%H:%M'},
-				},
-				yaxis : {label : result.lang.avgPowerW,min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
-				y2axis : {label : result.lang.cumPowerW,min : 0,labelRenderer : $.jqplot.CanvasAxisLabelRenderer},
-			*/
-			
-			//set timestamp to overrule standard timestamp
-			$timestamp = Util::getSunInfo($config);
-			$graph->timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
-			
-			$graph->metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
-			
-			
-			
-			$graph->series[] = array('label'=>'Cum. Power(W)','yaxis'=>'yaxis');
-			$graph->series[] = array('label'=>'Avg. Power(W)','yaxis'=>'y2axis');
-			
-			$graph->axes['yaxis']  = array('label'=>'Cum. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-			$graph->axes['y2axis'] = array('label'=>'Avg. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-			
-			//$graph->metaData['hideSeries'] = array('label'=>array('Cum. Power(W)'));
-			
+				$graph->series[] = array('label'=>'Cum. Power(W)','yaxis'=>'yaxis');
+				$graph->series[] = array('label'=>'Avg. Power(W)','yaxis'=>'y2axis');
+				
+				$graph->axes['yaxis']  = array('label'=>'Cum. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+				$graph->axes['y2axis'] = array('label'=>'Avg. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+				
+				//$graph->metaData['hideSeries']= array();
+				$graph->metaData['hideSeries']= array();
 			
 			}
 
@@ -1653,8 +1639,8 @@ class PDODataAdapter {
 		}
 		
 		
-		if($hookGraph->metaData != null){			
-			$graph->metaData= array_merge_recursive($graph->metaData,$hookGraph->metaData);
+		if($hookGraph->metaData != null){
+			$graph->metaData= array_merge_recursive((array)$hookGraph->metaData,(array)$graph->metaData);
 		}
 		$array['graph'] = $graph; 
 
@@ -2031,6 +2017,7 @@ class PDODataAdapter {
 			if (count ( $maxPowerBeansToday )==0 ){
 				$avgEnergyBeansToday= number_format(0,3,',','');
 				$totalEnergyBeansToday[]['KWH']=0;
+				$totalEnergyBeansTodayKWHKWP = number_format('0,000',3,',','');
 			}else{
 				$totalEnergyBeansTodayKWHKWP= number_format(($totalEnergyBeansToday[0]['KWH'] / $sumPlantPower),3,',','');
 				for ($i = 0; $i < count($maxPowerBeansToday); $i++) {
@@ -2053,7 +2040,6 @@ class PDODataAdapter {
 			for ($i = 0; $i < count($totalEnergyBeansWeek); $i++) {
 				$totalEnergyBeansWeek[$i]['sumkWh'] = number_format($totalEnergyBeansWeek[$i]['sumkWh'],2,',','');
 			}
-
 			$totalEnergyBeansWeekKWHKWP= number_format($totalEnergyBeansWeek[0]['sumkWh'] / $sumPlantPower,2,',','');
 
 		}
