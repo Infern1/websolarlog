@@ -7,6 +7,7 @@ $.ajaxSetup({
 
 
 function ajaxReady(){
+    $('#contentLoading').remove();
 	$('#reqLoading').hide();
 	$( '.tooltip' ).tooltip({});
 }
@@ -14,6 +15,7 @@ function ajaxReady(){
 function ajaxStart(){
 	$('#reqLoading').show();
 	$('.ui-tooltip').remove();
+	 
 }
 
 function analyticsJSCodeBlock() {

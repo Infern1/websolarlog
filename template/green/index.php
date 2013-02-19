@@ -55,7 +55,9 @@
 			<div id="main-top"></div>
 			<div id="main-middle">
 				<!-- Content -->
-				<div id="content"></div>
+				<div id="content">
+				<div id="contentLoading" style="margin-left:50%"><br><img src="template/green/css/images/contentLoading.gif"/></div>
+				</div>
 				<!-- END Content -->
 				<!-- Sidebar -->
 				<div id="sidebar"></div>
