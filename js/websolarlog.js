@@ -871,14 +871,20 @@ var WSL = {
 						useSeriesColor: true,
 						labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
 					},
-					animate: true,
+
 					legend : {
 						show : true,
 						location:"nw",
 						renderer: $.jqplot.EnhancedLegendRenderer,
 						rendererOptions: {
 			                seriesToggle: 'normal',
+                            numberColumns:1, 
+                            disableIEFading: false ,
 			            },
+			            
+			            
+
+			            
 					}, 
 					axes : {}, 
 					highlighter : {
@@ -924,24 +930,20 @@ var WSL = {
 						graphOptions.axes.xaxis.min = result.dayData.graph.timestamp.beginDate*1000;
 						graphOptions.axes.xaxis.max = result.dayData.graph.timestamp.endDate*1000;
 						graphOptions.series = result.dayData.graph.series;
+						
+
+						
 					}
 					
-					
-					
-							
-					
 
-					//console.log('series');
-					//console.log(graphOptions.series);
 					$('#graph' + tab + 'Content').empty();
 	    			handle = $.jqplot('graph' + tab + 'Content',  seriesData	 , graphOptions);
-
+					
 	    			for (line in result.dayData.graph.metaData.hideSeries.label) {
 						for (serie in handle.series){
-							//console.log();
 							if(result.dayData.graph.metaData.hideSeries.label[line] == graphOptions.series[serie].label){
-								handle.series[serie].show = false;
-								
+								//console.log(graphOptions.series[serie].label);
+								//handle.series[serie].show = false;
 							}
 						}
 					}
@@ -959,8 +961,8 @@ var WSL = {
 
     				mytitle = 
     					$('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+
-    							result.lang.totalEnergy+': ' + result.dayData.valueKWHT +
-    							' '+result.dayData.KWHTUnit+' ('+result.dayData.KWHKWP+' kWh/kWp)</div>').insertAfter('#graph' + 
+    							result.lang.totalEnergy+': ' + result.dayData.metaData.KWH.cumPower +
+    							' '+result.dayData.metaData.KWH.KWHTUnit+' ('+result.dayData.metaData.KWH.KWHKWP+' kWh/kWp)</div>').insertAfter('#graph' + 
     									getDay + ' .jqplot-grid-canvas');
     				fnFinish.call(this, handle);
     				ajaxReady();
