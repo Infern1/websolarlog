@@ -58,7 +58,7 @@ class Session
     		$config = new Config();
     		// Get dbase settings
     		$dbconfig = self::loadConfigFile('database');
-    		if (dbconfig != null && isset($dbconfig['database'])) {
+    		if ($dbconfig != null && isset($dbconfig['database'])) {
     			$section = $dbconfig['database'];
     			if (is_array($section)) {
     				$config->dbDSN = $section['dsn'];
