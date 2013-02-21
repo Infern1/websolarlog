@@ -1,5 +1,5 @@
 <?php
-$url = "svn://svn.code.sf.net/p/websolarlog/code/";
+$url = "http://svn.code.sf.net/p/websolarlog/code/";
 
 $step = getValue("step",0);
 
@@ -28,6 +28,10 @@ if ($step == 1) {
 
         // Cleanup
         prepareCheckout();
+        
+        // Check if database folder exists
+        checkPath("database");
+        
         echo ("Update done <br />");
         exit();
     } else {
@@ -79,7 +83,7 @@ function doCheckout($urlsvn) {
 
 function copyToLive() {
     // We dont want to copy everything, so specify which dirs we dont want
-    $skipDirs = Array( "data", "database", "updater", "scripts" );
+    $skipDirs = Array( "data","database","installer" );
     $source = "temp/export/";
     $target = "../";
 
@@ -100,10 +104,6 @@ function copyToLive() {
             copy($source . $file, $target . $file);
         }
     }
-
-    // We skipped the update folder, but we want to update the update script
-    copy($source . "updater/update.php", $target . "updater/update.php");
-
 }
 ?>
 </body>
