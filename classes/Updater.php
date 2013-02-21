@@ -1,6 +1,6 @@
 <?php
 class Updater {
-    public static $url = "svn://svn.code.sf.net/p/websolarlog/code/";
+    public static $url = "http://svn.code.sf.net/p/websolarlog/code/";
     public static $problems = array();
     public static $basepath = "../tmp";
 
