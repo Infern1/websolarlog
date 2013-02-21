@@ -75,8 +75,7 @@ class Config
 		$this->debugmode = false;
 		
 		// ### DATABASE CONFIG
-		$this->basepath = dirname(dirname(__FILE__));
-		$this->dbDSN= 'sqlite:' . $this->basepath.'/database/wsl.sdb';
+		$this->dbDSN= 'sqlite:' . Session::getBasePath() .'/database/wsl.sdb';
 		$this->dbUser='';
 		$this->dbPassword='';
 
@@ -128,11 +127,18 @@ class Config
 	}
 	
 	public function getDatabaseUser() {
-		return $dbUser;
+		return $this->dbUser;
+	}
+	public function setDatabaseUser($user) {
+		$this->dbUser = $user;
 	}
 	
 	public function getDatabasePassword() {
-		return $dbPassword;		
+		return $this->dbPassword;		
+	}
+
+	public function setDatabasePassword($password) {
+		$this->dbPassword = $password;		
 	}
 
 	function getInverterConfig($inverterId) {

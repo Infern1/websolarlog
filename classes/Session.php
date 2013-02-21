@@ -56,7 +56,16 @@ class Session
     public static function getConfig($reload=false,$usedb=true) {
     	if (!$usedb) {
     		$config = new Config();
-    		// Get settings from file
+    		// Get dbase settings
+    		$dbconfig = self::loadConfigFile('database');
+    		if (dbconfig != null) {
+    			$section = $dbconfig['database'];
+    			if (is_array($section)) {
+    				$config->dbDSN = $section['dsn'];
+    				$config->setDatabaseUser($section['username']);
+    				$config->setDatabasePassword($section['password']);
+    			}
+    		}
     		return $config;
     	}
     	
@@ -64,6 +73,41 @@ class Session
     		self::$config = PDODataAdapter::getInstance()->readConfig();
     	}
     	return self::$config;
+    }
+    
+    /**
+     * Tries to load an config file
+     * @param unknown $name
+     * @return NULL|multitype:
+     */
+    public static function loadConfigFile($name) {
+    	$path = self::getConfigPath($name . ".conf.php");
+    	if ($path == null) {
+    		// No settings available
+    		return null;
+    	}
+    	return parse_ini_file($path,true);
+    }
+    
+    /**
+     * Retrieves the configpath for the filename,
+     * if filename is given, but doesn't exist it returns null
+     * If no file is give the config folder is returned
+     * @param string $filename
+     * @return NULL|string
+     */
+    public static function getConfigPath($filename = null) {
+    	$configPath = self::getBasePath() . "/config";
+    	
+    	if ($filename == null) {
+    		return $configPath;
+    	}
+    	
+    	if (file_exists($configPath . "/" . $filename)) {
+    		return $configPath . "/" . $filename;
+    	}
+    	
+    	return null;
     }
     
     /**
