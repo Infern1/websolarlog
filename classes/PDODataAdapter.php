@@ -13,7 +13,7 @@ class PDODataAdapter {
 
 
 	function __construct() {
-		$config = new Config; // We dont need data from dbase
+		$config = Session::getConfig(false, false); // We dont need data from dbase
 		if ($config->getDatabaseUser() != "" && $config->getDatabasePassword() != "") {
 			R::setup($config->dbDSN, $config->getDatabaseUser(), $config->getDatabasePassword());
 		} else {

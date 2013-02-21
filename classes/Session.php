@@ -47,7 +47,19 @@ class Session
     }
     
     private static $config;
-    public static function getConfig($reload=false) {
+    /**
+     * 
+     * @param string $reload reload the settings from the database
+     * @param string $usedb use the database (we dont want this for the database settings
+     * @return Config
+     */
+    public static function getConfig($reload=false,$usedb=true) {
+    	if (!$usedb) {
+    		$config = new Config();
+    		// Get settings from file
+    		return $config;
+    	}
+    	
     	if (!isset(self::$config) || self::$config == null || $reload == true) {
     		self::$config = PDODataAdapter::getInstance()->readConfig();
     	}
