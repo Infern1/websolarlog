@@ -129,3 +129,9 @@ span.read-more a { font-family: Tahoma, arial, sans-serif; font-weight: bold; co
 .tabs-bottom .ui-tabs-nav { position: absolute !important; left: 0; bottom: 0; right:0; padding: 0 0.2em 0.2em 0; }
 .tabs-bottom .ui-tabs-nav li { margin-top: -2px !important; margin-bottom: 1px !important; border-top: none; border-bottom-width: 1px; }
 .ui-tabs-selected { margin-top: -3px !important; }
+
+
+#contentLoading {
+    width: 50%;
+    margin: 0px auto;
+}

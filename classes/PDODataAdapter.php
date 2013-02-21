@@ -474,7 +474,7 @@ class PDODataAdapter {
 	 *
 	 * @param unknown_type $beans
 	 */
-	public function DayBeansToGraphPoints($beans,$table,$graph){
+	public function DayBeansToGraphPoints($beans,$graph,$startDate){
 		$config = Session::getConfig();
 		
 		$i=0;
@@ -513,13 +513,13 @@ class PDODataAdapter {
 					$cumPowerUnit = "W";
 				}
 				//set timestamp to overrule standard timestamp
-				$timestamp = Util::getSunInfo($config);
+				$timestamp = Util::getSunInfo($config,$startDate);
 				$graph->timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
 				
 				$graph->metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
 
 				$graph->series[] = array('label'=>'Cum. Power(W)','yaxis'=>'yaxis');
-				$graph->series[] = array('label'=>'Avg. Power(W)','yaxis'=>'y2axis');
+				$graph->series[] = array('label'=>'Avg. Power(W)','yaxis'=>'yaxis');
 				
 				$graph->axes['yaxis']  = array('label'=>'Cum. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 				$graph->axes['y2axis'] = array('label'=>'Avg. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
@@ -1618,7 +1618,7 @@ class PDODataAdapter {
 				'tickRenderer'=>'CanvasAxisTickRenderer','labelRenderer'=>'CanvasAxisLabelRenderer',
 				'tickInterval'=>3600,'tickOptions'=>array('formatter'=>'DayDateTickFormatter','angle'=>-45));
 		
-		$graph = $this->DayBeansToGraphPoints($beans,'history',$graph);		
+		$graph = $this->DayBeansToGraphPoints($beans,$graph,$startDate);		
 		
 		$hookGraph = HookHandler::getInstance()->fire("GraphDayPoints",$invtnum,$startDate,$type);
 

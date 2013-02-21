@@ -352,7 +352,7 @@ class SmartMeterAddon {
 		R::trash( $bean );
 	}
 	
-	public function DayBeansToGraphPoints($beans){
+	public function DayBeansToGraphPoints($beans,$startDate){
 		$graph = new Graph();
 		/*
 		 * Generate Graph Point and series
@@ -402,7 +402,7 @@ class SmartMeterAddon {
 		$graph->series[] = array('label'=>'Low Return(W)','yaxis'=>'y4axis');
 		$graph->series[] = array('label'=>'High Return(W)' ,'yaxis'=>'y4axis');
 
-		$graph->timestamp = Util::getBeginEndDate('day', 1,date ("Y-m-d")	);
+		$graph->timestamp = Util::getBeginEndDate('day', 1,$startDate);
 		
 		$graph->axes['y3axis'] = array('label'=>'Usage (W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 		$graph->axes['y4axis'] = array('label'=>'Return (W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
@@ -426,10 +426,13 @@ class SmartMeterAddon {
 	 * @param date $labels[] = 'High Power(W)';$startDate ("Y-m-d") ("1900-12-31"), when no date given, the date of today is used.
 	 * @return array($beginDate, $endDate);
 	 */
+	// Hook fired with ("GraphDayPoints",$invtnum,$startDate,$type);
 	public function GraphDayPoints($args){
 
 		($args[3] == 'today')?$type='day':$type=$args[3];
-		$beans = $this->DayBeansToGraphPoints($this->adapter->readTablesPeriodValues($args[1], 'historySmartMeter', $type, $args[2]));
+		$beans = $this->adapter->readTablesPeriodValues($args[1], 'historySmartMeter', $type, $args[2]);
+		//echo $args[2];
+		$beans = $this->DayBeansToGraphPoints($beans,$args[2]);
 		//var_dump($beans);
 		return $beans;
 	}

@@ -53,10 +53,10 @@
 		<!-- Main -->
 		<div id="main">
 			<div id="main-top"></div>
-			<div id="main-middle">
+			<div id="main-middle"><div id="contentLoading"><br><img src="template/green/css/images/contentLoading.gif"/></div>
 				<!-- Content -->
 				<div id="content">
-				<div id="contentLoading" style="margin-left:50%"><br><img src="template/green/css/images/contentLoading.gif"/></div>
+				
 				</div>
 				<!-- END Content -->
 				<!-- Sidebar -->

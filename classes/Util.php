@@ -7,8 +7,17 @@ class Util {
         return $now<($sun_info['sunrise']-$correction) || $now>($sun_info['sunset']+$correction);
     }
     
-    public static function getSunInfo($config) {
-    	return date_sun_info((strtotime(date("Ymd"))), $config->latitude , $config->longitude);
+    public static function getSunInfo($config,$startDate) {
+    	
+    	$startDate= strtotime($startDate);
+    	
+    	if($startDate == null){
+    		$startDate = strtotime(date("Ymd"));
+    	}else{
+    		$startDate = strtotime(date("Y",$startDate)."".date("m",$startDate)."".date("d",$startDate));
+    	}
+
+    	return date_sun_info((strtotime($startDate)), $config->latitude , $config->longitude);
     }
     
     public static function getDataLockFile() {
@@ -95,7 +104,7 @@ class Util {
 
     /**
      * return the begin and end date for a given period for a given date.
-     * @param date $startDate ("Y-m-d") ("1900-12-31"), when no date given, the date of today is used.
+     * @param date $startDate ("d-m-Y") ("31-12-1900"), when no date given, the date of today is used.
      * @param str $type options are: (to)day, yesterday,week,month,year
      * @param int $count multiplies the day's,weeks,months,year
      * @return array($beginDate, $endDate);

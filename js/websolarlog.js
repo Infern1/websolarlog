@@ -18,6 +18,17 @@ function ajaxStart(){
 	 
 }
 
+jQuery.fn.center = function () {
+	$this = $(this);
+	var w = $($this.parent());
+	this.css({
+		'position':'absolute',
+		'top':Math.abs(((w.height() - this.outerHeight()) / 2) + w.scrollTop()),
+		'left':Math.abs(((w.width() - this.outerWidth()) / 2) + w.scrollLeft())
+	});
+	return this;
+}
+
 function analyticsJSCodeBlock() {
 	$.getJSON('server.php?method=analyticsSettings', function(data) {
 		if (data.googleSuccess) {
@@ -40,13 +51,11 @@ function analyticsJSCodeBlock() {
 				}, dataType : 'text'
 			});
 		}
-		
 	});
 }
 
 beforeLoad = (new Date()).getTime();
 window.onload = pageLoadingTime;
-
 
 function pageLoadingTime() {
 	afterLoad = (new Date()).getTime();
@@ -54,11 +63,9 @@ function pageLoadingTime() {
 	document.getElementById("JSloadingtime").innerHTML = secondes;	
 }
 
-
-
 function is_array(input){
-    return typeof(input)=='object'&&(input instanceof Array);
-  }
+	return typeof(input)=='object'&&(input instanceof Array);
+}
 
 var graphDay = null;
 var dataDay = [];
@@ -70,8 +77,6 @@ var currentGraphHandler;
 var todayTimerHandler;
 
 function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot,series	) {
-	
-	
 	var returned = "";
 	if(is_array(plot.series[0].data[pointIndex])==true){
 		( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " W<br>"+bold[1]; //0
@@ -84,7 +89,6 @@ function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot,series	) {
 		var GasLineLength = plot.series[7].data.length;
 		var multiply = GasLineLength/smoothGasLineLength;
 		pointIndex2 = Math.ceil((multiply*pointIndex) * 1) / 1;
-		//console.log(""+GasLineLength+"/"+smoothGasLineLength+"="+multiply+ "*"+pointIndex+"="+pointIndex*multiply+" round("+pointIndex2+")");
 		( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Gas:"+ plot.series[7].data[pointIndex2][1]+ " l<br>"+bold[1];//2
 	}
 	if(is_array(plot.series[2].data[pointIndex])==true){
@@ -186,10 +190,10 @@ function handleGraphs(request,invtnum){
 	
 	var date = $('#datepicker').val();
 	
-
 	if (currentGraphHandler){
     	currentGraphHandler.destroy();
-    	$("#graph"+tab+"Content").html('<div id="loading">loading...</div>');
+    	$("#graph"+tab+"Content").html('<div id="loading" style="width:1px;height:20px;">loading...</div>');
+    	$("#loading").center();
     }
     if (todayTimerHandler){
         window.clearInterval(todayTimerHandler);
@@ -199,10 +203,9 @@ function handleGraphs(request,invtnum){
     	$('#lastCall').val('picker');
     	period= $('#pickerPeriod').val();
     	if (period == "Today") {
-
     		WSL.createDayGraph(invtnum, period, tab,date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}else{
-
+    		
     		WSL.createPeriodGraph(invtnum, period,1 ,date, "graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}    
     }else{
@@ -294,9 +297,10 @@ function populateTabs(){
 				    	date.setFullYear(value);
 				    }
 				    picker.datepicker('setDate', date);
+				    
 				    handleGraphs('picker',invtnum);
 				});
-				invtnum = $('#pickerInv').val();
+				
 		    	handleGraphs('standard',invtnum);
 			},
 			dataType : 'text'
@@ -411,13 +415,8 @@ var WSL = {
 							'lang':data.lang
 						});
 						$(divId).html(html);
-						
-						
-						//////////////////
-						////////////////////////////////////////
 
 						if(gaugeGP){
-							//console.log('gauge destroy');
 							gaugeGP.destroy();
 						}
 						$('#gaugeGP').empty();
@@ -569,6 +568,7 @@ var WSL = {
 				dataType : 'text',
 			});
 		});
+		
 		return true;
 	},
 
@@ -610,7 +610,9 @@ var WSL = {
 				},
 				dataType : 'text',
 			});
+			WSL.init_PageIndexLiveValues("#indexLiveInverters"); // Initial load fast
 		});
+		
 	},
 	
 	
@@ -847,9 +849,6 @@ var WSL = {
 	createDayGraph : function(invtnum, getDay, tab,date ,fnFinish) {
 		ajaxStart();
 		
-
-
-		
 		$.ajax({
 			url : "server.php?method=getGraphDayPoints&type="+ getDay +"&date="+ date +"&invtnum=" + invtnum,
 			method : 'GET',
@@ -873,28 +872,18 @@ var WSL = {
 						useSeriesColor: true,
 						labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
 					},
-
 					legend : {
 						show : true,
 						location:"nw",
 						renderer: $.jqplot.EnhancedLegendRenderer,
 						rendererOptions: {
-			                seriesToggle: 'normal',
-                            numberColumns:1, 
-                            disableIEFading: false ,
-			            },
-			            
-			            
-
-			            
+			                seriesToggle: 'normal',numberColumns:1, disableIEFading: false ,},
 					}, 
 					axes : {}, 
 					highlighter : {
 						tooltipContentEditor: tooltipTodayContentEditor,show : true,tooltipLocation:'n',
 					},
-					cursor : {
-						show : false
-					}
+					cursor : {show : false}
 				};
 				seriesData=[]; 
 
@@ -923,43 +912,35 @@ var WSL = {
 							if(result.dayData.graph.axes[axes]['formatter']=='DayDateTickFormatter'){
 								result.dayData.graph.axes[axes]['labelRenderer'] = $.jqplot.DayDateTickFormatter;
 							}
-							
 						}
-
 						graphOptions.axes = result.dayData.graph.axes;
-						//console.log('axes');
-						//console.log(graphOptions.axes.xaxis);
 						graphOptions.axes.xaxis.min = result.dayData.graph.timestamp.beginDate*1000;
 						graphOptions.axes.xaxis.max = result.dayData.graph.timestamp.endDate*1000;
 						graphOptions.series = result.dayData.graph.series;
-						
-
-						
 					}
-					
-
 					$('#graph' + tab + 'Content').empty();
+					handle = null;
+					delete handle;
 	    			handle = $.jqplot('graph' + tab + 'Content',  seriesData	 , graphOptions);
-					
-	    			for (line in result.dayData.graph.metaData.hideSeries.label) {
-						for (serie in handle.series){
-							if(result.dayData.graph.metaData.hideSeries.label[line] == graphOptions.series[serie].label){
-								//console.log(graphOptions.series[serie].label);
-								//handle.series[serie].show = false;
+
+	    			// iterator to keep track on the legenda items
+	    			i = 1;
+    				// walkthrough legenda
+	    			$('tr.jqplot-table-legend').each(function() {
+	    				$this = $(this);
+		    			// walkthrough array with hidden lines
+	    				for (line in result.dayData.graph.metaData.hideSeries.label) {
+	    					// if legenda.text is equal to hideSeries text; Click this legenda item to hide is
+		    				if($this.text() == result.dayData.graph.metaData.hideSeries.label[line]){
+		    					// CLICK!!
+		    					$('.jqplot-table-legend tr:nth-child('+i+') td:nth-child(1)').click();
 							}
-						}
-					}
-	    			handle.replot();
+	    				}	
+	    				// UP the legenda item iterator
+		    			i = i +1;
+	    			});
 	    			
-    				delete dataDay1;
-    				delete dataDay2;
-    				delete dataDay3;
-    				delete dataDay4;
-    				delete dataDay5;
-    				delete dataDay6;
-    				delete dataDay7;
-    				delete dataDay8;
-    				delete graphOptions;
+    				delete seriesData,graphOptions;
 
     				mytitle = 
     					$('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+
@@ -984,7 +965,6 @@ var WSL = {
 				var i = 0;
 				for (line in result.dayData.data) {
 					var object = result.dayData.data[line];
-					// alert(object);
 					dayData1.push([ object[0], object[1], object[2]]);
 					dayData2.push([ object[0], object[3], object[2]]);
 					i +=1;
@@ -1093,12 +1073,9 @@ var WSL = {
 				var dataDay4 = [];
 				var dataTable= [];
 				var ticksTable= [];
+				
 				if (result.dayData) {
-					
-					
-
 					$("#main-middle").prepend('<div id="ProductionGraph"></div>');
-					//console.log(result);
 					$.ajax({
 						url : 'js/templates/productionFigures.hb',
 						success : function(source) {
@@ -1115,7 +1092,6 @@ var WSL = {
 										"cumHar": data[5],
 										"cumDiff": data[6]
 								};
-								//console.log(item);
 								dataTable.push([item]);
 							}
 
@@ -1123,10 +1099,7 @@ var WSL = {
 								'data' : dataTable,
 								'lang':result.lang
 							});
-							//console.log(dataTable);
-							
 							$('#ProductionGraph').after(html);
-
 						},
 						dataType : 'text',
 					});
@@ -1274,7 +1247,8 @@ var WSL = {
     				
     				
     				$("#ProductionGraph").height(450);
-
+					handle = null;
+					delete handle;
     				handle = $.jqplot("ProductionGraph", [ dataDay1,dataDay2,dataDay3,dataDay4], graphOptions);
 
     				ajaxReady();
@@ -1346,16 +1320,13 @@ var WSL = {
 						WSL.createDetailsGraph(invtnum, divId,date);
 							}
 					);
-					
-					
-				
-					
+
 					$('#next').unbind('click');
 					$('#previous').unbind('click');
 					$('#pickerPeriod').unbind('click');
-					
-					
+
 					$('#next').click(function () {
+						
 					    var picker = $("#datepicker");
 					    var date=new Date(picker.datepicker('getDate'));
 					    
@@ -1376,7 +1347,7 @@ var WSL = {
 					    var splitDate = $('#datepicker').val().split('-');
 					    WSL.createDetailsGraph(invtnum, divId, splitDate[0]+'-'+splitDate[1]+'-'+splitDate[2]);
 					});
-					
+
 					$('#previous').click(function () {
 					    var picker = $("#datepicker");
 					    var date=new Date(picker.datepicker('getDate'));
@@ -1394,6 +1365,7 @@ var WSL = {
 					    }
 					    picker.datepicker('setDate', date);
 					    var splitDate = $('#datepicker').val().split('-');
+
 					    WSL.createDetailsGraph(invtnum, divId, splitDate[0]+'-'+splitDate[1]+'-'+splitDate[2]);
 					});
 				    //picker.datepicker('setDate', date);
@@ -1648,22 +1620,19 @@ var WSL = {
 					var whichTable = [];
 					for (line in result.dayData.data.compare) {
 						var object = result.dayData.data.compare[line];
-						//console.log(object);
 						dataDay1.push([  object[0], object[2], object[3] ]);
-						
-							var item = {
-							        "timestamp": object[0],
-							        "har": object[2],
-							        "date": object[1],
-							        "displayKWH":object[3],
-							        "harvested":object[4],
-							};
-							compareTable.push([item]);
-						
+						var item = {
+						        "timestamp": object[0],
+						        "har": object[2],
+						        "date": object[1],
+						        "displayKWH":object[3],
+						        "harvested":object[4],
+						};
+						compareTable.push([item]);
+					
 					}
 					for (line in result.dayData.data.which) {
 						var object = result.dayData.data.which[line];
-						//console.log(object);
 						dataDay2.push([  object[0], object[2], object[3] ]);
 						
 						var item = {
@@ -1674,7 +1643,6 @@ var WSL = {
 						        "harvested": object[4],
 						};
 						whichTable.push([item]);
-					
 					}
 					$("#content").append('<div id="compareGraph"></div>');
 					$('#content').append('<div id="compareFigures"></div>');
@@ -1691,26 +1659,21 @@ var WSL = {
 					graphOptions.axes.xaxis.min = result.dayData.data.compare[0][0];
 					
 					graphOptions.axes.yaxis.min = 0;
-					//console.log(dataDay2, dataDay1);
+
     				handle = $.jqplot("compareGraph", [ dataDay2, dataDay1], graphOptions);
     				handle.replot();
-    				//console.log(result.lang);
+
     				$.ajax({
 						url : 'js/templates/compareFigures.hb',
 						success : function(source) {
 							var template = Handlebars.compile(source);
-							//console.log(compareTable);
 							var html = template({
 								'compare' :  compareTable,
 								'which' :  whichTable,
 								'diff' : result.dayData.data.diff,
 								'lang': result.lang
 							});
-							
-							//console.log('aa');
-							
 							$('#compareFigures').html(html);
-							
 						},
 						dataType : 'text',
 					});

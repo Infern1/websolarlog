@@ -5,6 +5,4 @@ class Social {
     public $FacebookDisplayName;
     public $FacebookAttached;
 }
-
-
 ?>
