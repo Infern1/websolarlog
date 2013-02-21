@@ -1,6 +1,12 @@
 <?php
 class Config
 {
+	// Database connection string
+	public $dbDSN;
+	// These are private, else they can be exported to json, use getters to get the values
+	private $dbUser;
+	private $dbPassword;
+	
     public $version_title;
     public $version_revision;
 
@@ -59,6 +65,7 @@ class Config
     public $pauseWorker;
     public $restartWorker;
     
+    
 	/**
 	 * Constructor
 	 */
@@ -67,15 +74,11 @@ class Config
 		// Disable for production switch to true to get debug logging
 		$this->debugmode = false;
 		
-		
 		// ### DATABASE CONFIG
 		$this->basepath = dirname(dirname(__FILE__));
-		$this->dbType='sqlite';
-		$this->dbHost= $this->basepath.'/database/wsl.sdb';
-		$this->dbDatabase='wsl';
-		$this->dbUser='wsl';
-		$this->dbPassword='wsl';
-		$this->dbPort='0';
+		$this->dbDSN= 'sqlite:' . $this->basepath.'/database/wsl.sdb';
+		$this->dbUser='';
+		$this->dbPassword='';
 
 		// ### GENERAL
 		$this->title='WebSolarLog';
@@ -122,6 +125,14 @@ class Config
 		
 		$this->pauseWorker = false;
 		$this->restartWorker = false;
+	}
+	
+	public function getDatabaseUser() {
+		return $dbUser;
+	}
+	
+	public function getDatabasePassword() {
+		return $dbPassword;		
 	}
 
 	function getInverterConfig($inverterId) {

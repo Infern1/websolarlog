@@ -14,7 +14,12 @@ class PDODataAdapter {
 
 	function __construct() {
 		$config = new Config; // We dont need data from dbase
-		R::setup('sqlite:'.$config->dbHost );
+		if ($config->getDatabaseUser() != "" && $config->getDatabasePassword() != "") {
+			R::setup($config->dbDSN, $config->getDatabaseUser(), $config->getDatabasePassword());
+		} else {
+			R::setup($config->dbDSN);			
+		}
+		
 		R::debug(false);
 		R::setStrictTyping(false);
 	}
@@ -266,23 +271,6 @@ class PDODataAdapter {
 		);
 		return count($bean);
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	/**
 	 * write the max power today to the file
@@ -2021,7 +2009,7 @@ class PDODataAdapter {
 			}else{
 				$totalEnergyBeansTodayKWHKWP= number_format(($totalEnergyBeansToday[0]['KWH'] / $sumPlantPower),3,',','');
 				for ($i = 0; $i < count($maxPowerBeansToday); $i++) {
-					$maxPowerBeansToday[$i]['sumkWh'] = number_format($maxPowerBeansToday[$i]['sumkWh'],2,',','');
+					//$maxPowerBeansToday[$i]['sumkWh'] = number_format($maxPowerBeansToday[$i]['sumkWh'],2,',','');
 					$avgEnergyBeansToday= number_format($totalEnergyBeansToday[$i]['KWH'],3,',','');
 					$totalEnergyBeansToday[$i]['KWH'] = number_format($totalEnergyBeansToday[$i]['KWH'],3,',','');
 				}
