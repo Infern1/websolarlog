@@ -30,7 +30,8 @@ if ($step == 1) {
         prepareCheckout();
         
         // Check if database folder exists
-        checkPath("database");
+        checkPath("../database");
+        checkPath("../log");
         
         echo ("Update done <br />");
         exit();
