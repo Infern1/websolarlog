@@ -2070,7 +2070,11 @@ class PDODataAdapter {
 					$totalEnergyBeansMonth[0]['sumkWh'] = number_format('0',2,',','');
 				}
 			}
-			$totalEnergyBeansMonthKWHKWP= number_format($totalEnergyBeansMonth[0]['sumkWh'] / $sumPlantPower,2,',','');
+			if($totalEnergyBeansMonth[0]['sumkWh']>0){
+				$totalEnergyBeansMonthKWHKWP= number_format($totalEnergyBeansMonth[0]['sumkWh'] / $sumPlantPower,2,',','');
+			}else{
+				$totalEnergyBeansMonthKWHKWP= number_format('0',2,',','');
+			}
 		}
 
 		if($type == "year" || $type == "all"){
@@ -2082,12 +2086,20 @@ class PDODataAdapter {
 				}
 			}else{
 				$totalEnergyBeansYear = R::getAll("SELECT COUNT(kwh) as countkWh,MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh,strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit));
-				$avgEnergyBeansYear = number_format($totalEnergyBeansYear[0]['sumkWh']/$totalEnergyBeansYear[0]['countkWh'],2,',','');
+				if($totalEnergyBeansYear[0]['sumkWh']>0){
+					$avgEnergyBeansYear = number_format($totalEnergyBeansYear[0]['sumkWh']/$totalEnergyBeansYear[0]['countkWh'],2,',','');
+				}else{
+					$avgEnergyBeansYear = number_format('0',2,',','');
+				}
 				for ($i = 0; $i < count($totalEnergyBeansYear); $i++) {
 					$totalEnergyBeansYear[$i]['sumkWh'] = number_format($totalEnergyBeansYear[$i]['sumkWh'],2,',','');
 				}
 			}
-			$totalEnergyBeansYearKWHKWP= number_format($totalEnergyBeansYear[0]['sumkWh'] / $sumPlantPower,2,',','');
+			if($totalEnergyBeansYear[0]['sumkWh']>0){
+				$totalEnergyBeansYearKWHKWP= number_format($totalEnergyBeansYear[0]['sumkWh'] / $sumPlantPower,2,',','');
+			}else{
+				$totalEnergyBeansYearKWHKWP= number_format('0',2,',','');
+			}
 		}
 
 		if($type == "overall" || $type == "all"){
@@ -2099,12 +2111,24 @@ class PDODataAdapter {
 				}
 			}else{
 				$totalEnergyBeansOverall = R::getAll("SELECT COUNT(kwh) as countkWh, MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy order by time limit 0,:limit",array(':limit'=>$limit));
-				$avgEnergyBeansOverall = number_format($totalEnergyBeansOverall[0]['sumkWh']/$totalEnergyBeansOverall[0]['countkWh'],2,',','');
+				
+				if($totalEnergyBeansOverall[0]['sumkWh']>0){
+					$avgEnergyBeansOverall = number_format($totalEnergyBeansOverall[0]['sumkWh']/$totalEnergyBeansOverall[0]['countkWh'],2,',','');
+				}else{
+					$avgEnergyBeansOverall = number_format('0',2,',','');
+				}
+				
 				for ($i = 0; $i < count($totalEnergyBeansOverall); $i++) {
 					$totalEnergyBeansOverall[$i]['sumkWh'] = number_format($totalEnergyBeansOverall[$i]['sumkWh'],2,',','');
 				}
 			}
-			$totalEnergyBeansOverallKWHKWP= number_format($totalEnergyBeansOverall[0]['sumkWh'] / $sumPlantPower,2,',','');
+			if($totalEnergyBeansOverall[0]['sumkWh'] >0){
+				$totalEnergyBeansOverallKWHKWP= number_format($totalEnergyBeansOverall[0]['sumkWh'] / $sumPlantPower,2,',','');
+			}else{
+				$totalEnergyBeansOverallKWHKWP= number_format('0',2,',','');
+			}
+			
+			
 		}
 		
 
@@ -2113,7 +2137,11 @@ class PDODataAdapter {
 		}
 		$tempTotal = 0;
 		$totalEnergyOverallTotal = number_format($initialkwh + floatval($totalEnergyBeansOverall[0]['sumkWh']),2,',','');
-		$totalEnergyOverallTotalKWHKWP =  number_format($totalEnergyOverallTotal / $sumPlantPower,2,',','');
+		if($totalEnergyOverallTotal>0){
+			$totalEnergyOverallTotalKWHKWP =  number_format($totalEnergyOverallTotal / $sumPlantPower,2,',','');
+		}else{
+			$totalEnergyOverallTotalKWHKWP =  number_format('0',2,',','');
+		}
 
 
 		$energy = array(
