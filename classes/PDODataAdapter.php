@@ -2069,13 +2069,16 @@ class PDODataAdapter {
 
 		if($type == "week" || $type == "all"){
 			$totalEnergyBeansWeek = R::getAll("SELECT COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%Y%W' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY date ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit));
-			$avgEnergyBeansWeek = number_format($totalEnergyBeansWeek[0]['sumkWh']/$totalEnergyBeansWeek[0]['countkWh'],2,',','');
-
-			for ($i = 0; $i < count($totalEnergyBeansWeek); $i++) {
-				$totalEnergyBeansWeek[$i]['sumkWh'] = number_format($totalEnergyBeansWeek[$i]['sumkWh'],2,',','');
+			if(count($totalEnergyBeansWeek)>0){
+				$avgEnergyBeansWeek = number_format($totalEnergyBeansWeek[0]['sumkWh']/$totalEnergyBeansWeek[0]['countkWh'],2,',','');
+	
+				for ($i = 0; $i < count($totalEnergyBeansWeek); $i++) {
+					$totalEnergyBeansWeek[$i]['sumkWh'] = number_format($totalEnergyBeansWeek[$i]['sumkWh'],2,',','');
+				}
+				$totalEnergyBeansWeekKWHKWP= number_format($totalEnergyBeansWeek[0]['sumkWh'] / $sumPlantPower,2,',','');
+			}else{
+				$totalEnergyBeansWeekKWHKWP= number_format('0',2,',','');
 			}
-			$totalEnergyBeansWeekKWHKWP= number_format($totalEnergyBeansWeek[0]['sumkWh'] / $sumPlantPower,2,',','');
-
 		}
 
 		if($type == "month" ||  $type == "all"){
