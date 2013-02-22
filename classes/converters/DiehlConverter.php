@@ -22,7 +22,7 @@ class DiehlConverter
 			        $live->time = strtotime(date("d-m-Y H:i:s"));
 			        if($values->path == 'eNEXUS_0066[s:17,t:1]' ){ $live->I1A = ($values->value);}
 			        if($values->path == 'eNEXUS_0055[s:17,t:1]'){ $live->I1V = ($values->value);}
-			        if($values->path == 'eNEXUS_0064[s:17,t:1]'){ $live->I1P = ($values->value);}
+			        if($values->path == 'eNEXUS_0065[s:17,t:1]'){ $live->I1P = ($values->value);}
 			        if($values->path == 'eNEXUS_0066[s:17,t:1,p:1]'){ $live->GA = ($values->value);}
 			        if($values->path == 'eNEXUS_0064[s:17,t:1,p:1]'){ $live->GP = ($values->value);}
         			if($values->path == 'eNEXUS_0009[s:17,t:1,p:1]'){ $live->GV =($values->value);}
