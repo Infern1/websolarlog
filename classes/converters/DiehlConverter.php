@@ -26,7 +26,7 @@ class DiehlConverter
 			        if($values->path == 'eNEXUS_0066[s:17,t:1,p:1]'){ $live->GA = ($values->value);}
 			        if($values->path == 'eNEXUS_0064[s:17,t:1,p:1]'){ $live->GP = ($values->value);}
         			if($values->path == 'eNEXUS_0009[s:17,t:1,p:1]'){ $live->GV =($values->value);}
-        			if($values->path == 'eNEXUS_0043[s:1,t:17]'){ $live->KWHT =($values->value);}
+        			if($values->path == 'eNEXUS_0043[s:17,t:1]'){ $live->KWHT =($values->value);}
         			if($live->GP > 0 AND $live->I1P > 0){
 	        			$live->EFF = ($live->GP / $live->I1P)*100;
         			}
