@@ -5,7 +5,7 @@
 </head>
 <body>
 <?php
-$data_string = '{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0063[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0049[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0050[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0065[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0051[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0052","datatype":"INT16U"},{"path":"eNEXUS_0053","datatype":"INT16U"},{"path":"eNEXUS_0066[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0055[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0064[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0056","datatype":"INT16U"},{"path":"eNEXUS_0057","datatype":"INT16U"},{"path":"eNEXUS_0058","datatype":"INT32U"},{"path":"eNEXUS_0066[s:17,t:1,p:1]","datatype":"INT32U"},{"path":"eNEXUS_0066[s:17,t:1,p:2]","datatype":"INT32U"},{"path":"eNEXUS_0066[s:17,t:1,p:3]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1,p:1]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1,p:2]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1,p:3]","datatype":"INT32U"},{"path":"eNEXUS_0009[s:17,t:1,p:1]","datatype":"INT16U"},{"path":"eNEXUS_0009[s:17,t:1,p:2]","datatype":"INT16U"},{"path":"eNEXUS_0009[s:17,t:1,p:3]","datatype":"INT16U"}],"id":0}:';
+$data_string = '{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0043[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0063[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0049[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0050[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0065[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0051[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0052","datatype":"INT16U"},{"path":"eNEXUS_0053","datatype":"INT16U"},{"path":"eNEXUS_0066[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0055[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0064[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0056","datatype":"INT16U"},{"path":"eNEXUS_0057","datatype":"INT16U"},{"path":"eNEXUS_0058","datatype":"INT32U"},{"path":"eNEXUS_0066[s:17,t:1,p:1]","datatype":"INT32U"},{"path":"eNEXUS_0066[s:17,t:1,p:2]","datatype":"INT32U"},{"path":"eNEXUS_0066[s:17,t:1,p:3]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1,p:1]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1,p:2]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1,p:3]","datatype":"INT32U"},{"path":"eNEXUS_0009[s:17,t:1,p:1]","datatype":"INT16U"},{"path":"eNEXUS_0009[s:17,t:1,p:2]","datatype":"INT16U"},{"path":"eNEXUS_0009[s:17,t:1,p:3]","datatype":"INT16U"}],"id":0}:';
 $ch = curl_init();
 echo $_REQUEST[$_GET];
 curl_setopt($ch, CURLOPT_URL, $_GET['a']);
@@ -101,6 +101,7 @@ echo "<table border='1'>";
 foreach (json_decode($output) as $key => $value){
 	if(is_array($value)){
 		foreach ($value as $keys => $values){
+			if($values->path == 'eNEXUS_0043[s:17,t:1]'){ echo "<tr><td>KWHT</td><td>".($values->value/10)."</td></tr>"; }
 			if($values->path == 'eNEXUS_0063[s:17,t:1]'){ echo "<tr><td>DC current</td><td>".($values->value/1000)."A</td></tr>"; }
 			if($values->path == 'eNEXUS_0049[s:17,t:1]'){ echo "<tr><td>DC current</td><td>".($values->value/1000)."A</td></tr>"; }
 			if($values->path == 'eNEXUS_0050[s:17,t:1]'){ echo "<tr><td>DC voltage:</td><td>".($values->value/10)."</td></tr>"; }
@@ -131,6 +132,33 @@ foreach (json_decode($output) as $key => $value){
 }
 echo "<tr><td>DC->AC efficiency:</td><td>".round((($outputPower/$inputPower)*100),2)."%</td></tr>";
 echo "<table>";
+
+
+$data_string = '{"jsonrpc":"2.0","method":"GetEventPage","params":[1,"2013-02-21 23:59:59",0,14],"id":0}';
+$ch = curl_init();
+echo $_REQUEST[$_GET];
+curl_setopt($ch, CURLOPT_URL, $_GET['a']);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//curl_setopt($ch, CURLOPT_COOKIEFILE, '/tmp/diehl.txt');
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+'Content-Type: application/json',
+'Content-Length: ' . strlen($data_string))
+);
+$output = curl_exec($ch);
+$info = curl_getinfo($ch);
+curl_close($ch);
+
+var_dump($output);
+
+
 ?>
+
+
+
+
+
 </body>
 </html>

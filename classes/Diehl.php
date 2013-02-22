@@ -6,12 +6,21 @@ Class Diehl implements DeviceApi {
     private $DEBUG;
     private $PATH;
 
+    
+    
+    /**
+     * 
+     * Alot of JSON requests and Responses from the Diehl inverter.
+     * 
+     **/
+    
+    
     /**
 		***************
 		Page:
 			Statistics
 		Form Data:
-			{"jsonrpc":"2.0","method":"GetPowerLog","params":[1,17,"2013-02-14 00:00:00","kWh","1h",168],"id":0}:
+			{"jsonrpc":"2.0","method":"GetPowerLog","params":[1,17,"2013-02-14 00:00:00","kWh","1h",168],"id":0}
 		response:
 			{
 			"jsonrpc":	"2.0",
@@ -32,7 +41,7 @@ Class Diehl implements DeviceApi {
 		Page:
 			Statistics
 		Form Data:
-			{"jsonrpc":"2.0","method":"GetPowerLog","params":[1,17,"2012-03-01 00:00:00","kWh","1mnd",12],"id":0}:
+			{"jsonrpc":"2.0","method":"GetPowerLog","params":[1,17,"2012-03-01 00:00:00","kWh","1mnd",12],"id":0}
 		response:
 			{
 			"jsonrpc":	"2.0",
@@ -54,7 +63,7 @@ Class Diehl implements DeviceApi {
 		Page:
 			Statistics; auto updater?!
 		Form Data:
-			{"jsonrpc":"2.0","method":"GetPowerLog","params":[1,17,"2013-02-21 00:00:00","kWh","15min",34.6],"id":0}:
+			{"jsonrpc":"2.0","method":"GetPowerLog","params":[1,17,"2013-02-21 00:00:00","kWh","15min",34.6],"id":0}
 		response:	
 			{
 				"jsonrpc":	"2.0",
@@ -75,11 +84,11 @@ Class Diehl implements DeviceApi {
 		Page:
 			Eventlog
 		Form Data:
-			{"jsonrpc":"2.0","method":"GetEventPage","params":[1,"2013-02-21 23:59:59",1,14],"id":0}:
+			{"jsonrpc":"2.0","method":"GetEventPage","params":[1,"2013-02-21 23:59:59",1,14],"id":0}
 			***Other date
-			{"jsonrpc":"2.0","method":"GetEventPage","params":[1,"2013-02-01 23:59:59",1,14],"id":0}:
+			{"jsonrpc":"2.0","method":"GetEventPage","params":[1,"2013-02-01 23:59:59",1,14],"id":0}
 			***Other page 3 selected in page selector:
-			{"jsonrpc":"2.0","method":"GetEventPage","params":[1,"2013-02-01 23:59:59",3,14],"id":0}:
+			{"jsonrpc":"2.0","method":"GetEventPage","params":[1,"2013-02-01 23:59:59",3,14],"id":0}
 		response:	
 			{
 				"jsonrpc":	"2.0",
@@ -105,7 +114,7 @@ Class Diehl implements DeviceApi {
 		Page:
 			Status->Plant
 		Form Data:
-			{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0056","datatype":"INT16U"}],"id":0}:
+			{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0056","datatype":"INT16U"}],"id":0}
 		response:	
 			{
 				"jsonrpc":	"2.0",
@@ -121,7 +130,7 @@ Class Diehl implements DeviceApi {
 		Page:
 			Status->Plant (this is a second request on the same page)
 		Form Data:
-			{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0061[s:1,t:17]","datatype":"INT8U"},{"path":"eNEXUS_0035[s:1,t:17]","datatype":"SERIALNO"},{"path":"eNEXUS_0060[s:1]","datatype":"STRING32"},{"path":"eNEXUS_0002[s:1,t:17]","datatype":"INT8U"},{"path":"eNEXUS_0001[s:1,t:17]","datatype":"INT8U"},{"path":"eNEXUS_0010[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0040[s:1,t:17,u:4]","datatype":"INT32U"},{"path":"eNEXUS_0041[s:1,t:17,u:4]","datatype":"INT32U"},{"path":"eNEXUS_0043[s:1,t:17,u:4]","datatype":"INT32U"}],"id":0}:
+			{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0061[s:1,t:17]","datatype":"INT8U"},{"path":"eNEXUS_0035[s:1,t:17]","datatype":"SERIALNO"},{"path":"eNEXUS_0060[s:1]","datatype":"STRING32"},{"path":"eNEXUS_0002[s:1,t:17]","datatype":"INT8U"},{"path":"eNEXUS_0001[s:1,t:17]","datatype":"INT8U"},{"path":"eNEXUS_0010[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0040[s:1,t:17,u:4]","datatype":"INT32U"},{"path":"eNEXUS_0041[s:1,t:17,u:4]","datatype":"INT32U"},{"path":"eNEXUS_0043[s:1,t:17,u:4]","datatype":"INT32U"}],"id":0}
 		response:	
 			{
 				"jsonrpc":	"2.0",
@@ -160,7 +169,7 @@ Class Diehl implements DeviceApi {
 		Page:
 			Home
 		Form Data:
-			{"jsonrpc":"2.0","method":"GetPowerLog","params":[1,17,"2013-02-21 00:00:00","kWh","15min",37.93333333333333],"id":0}:
+			{"jsonrpc":"2.0","method":"GetPowerLog","params":[1,17,"2013-02-21 00:00:00","kWh","15min",37.93333333333333],"id":0}
 		response:
 			{
 				"jsonrpc":	"2.0",
@@ -182,7 +191,7 @@ Class Diehl implements DeviceApi {
 		Page:
 			Home
 		Form Data:
-			{"jsonrpc":"2.0","method":"GetPowerLog","params":[1,17,"2013-02-01 00:00:00","kWh","1day",21],"id":0}:
+			{"jsonrpc":"2.0","method":"GetPowerLog","params":[1,17,"2013-02-01 00:00:00","kWh","1day",21],"id":0}
 		response:
 			{
 				"jsonrpc":	"2.0",
@@ -203,7 +212,7 @@ Class Diehl implements DeviceApi {
 		Page:
 			Home
 		Form Data:
-			{"jsonrpc":"2.0","method":"GetPowerLog","params":[1,17,"2013-01-01 00:00:00","kWh","1mnd",2],"id":0}:
+			{"jsonrpc":"2.0","method":"GetPowerLog","params":[1,17,"2013-01-01 00:00:00","kWh","1mnd",2],"id":0}
 		response:
 			{
 				"jsonrpc":	"2.0",
@@ -224,7 +233,7 @@ Class Diehl implements DeviceApi {
 		Page:
 			Home
 		Form Data:
-			{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0001[s:17,t:1]","datatype":"INT8U"},{"path":"eNEXUS_0002[s:17,t:1]","datatype":"INT8U"},{"path":"eNEXUS_0003[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0004[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0013[s:17,t:1]","datatype":"INT32S"},{"path":"eNEXUS_0014[s:17,t:1]","datatype":"INT32S"},{"path":"eNEXUS_0015[s:17,t:1]","datatype":"INT32S"},{"path":"eNEXUS_0015[s:17,t:1]","datatype":"INT32S"},{"path":"eNEXUS_0016","datatype":"Date"},{"path":"eNEXUS_0017","datatype":"Time"},{"path":"eNEXUS_0018","datatype":"STRING32"}],"id":0}:
+			{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0001[s:17,t:1]","datatype":"INT8U"},{"path":"eNEXUS_0002[s:17,t:1]","datatype":"INT8U"},{"path":"eNEXUS_0003[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0004[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0013[s:17,t:1]","datatype":"INT32S"},{"path":"eNEXUS_0014[s:17,t:1]","datatype":"INT32S"},{"path":"eNEXUS_0015[s:17,t:1]","datatype":"INT32S"},{"path":"eNEXUS_0015[s:17,t:1]","datatype":"INT32S"},{"path":"eNEXUS_0016","datatype":"Date"},{"path":"eNEXUS_0017","datatype":"Time"},{"path":"eNEXUS_0018","datatype":"STRING32"}],"id":0}
 		response:
 			{
 				"jsonrpc":	"2.0",
@@ -280,7 +289,7 @@ Class Diehl implements DeviceApi {
 Page:
 	Home
 Form Data:
-	{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0063[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0006[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0064[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0065[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0011[s:17,t:1]","datatype":"INT32U"}],"id":0}:
+	{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0063[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0006[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0064[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0065[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0011[s:17,t:1]","datatype":"INT32U"}],"id":0}
 response:
 	{
 		"jsonrpc":	"2.0",
@@ -321,30 +330,36 @@ response:
 
     public function getAlarms() {
     	if ($this->DEBUG) {
-    		return "W2223424".rand(0,9);
+    		//return "W2223424".rand(0,9);
+    		return "";
     	} else {
-    		return $this->execute('-A -Y 10');
+    		//$jsonRequest = '{"jsonrpc":"2.0","method":"GetEventPage","params":[1,"2013-02-21 23:59:59",1,14],"id":0}:';
+    		// At this moment we can't process the Event response from the Diehl 
+    		return "";
+    		//return $this->execute($jsonRequest);
     	}
 
     }
 
     public function getData() {
         if ($this->DEBUG) {
-            //return $this->execute('-b -c -T ' . $this->COMOPTION . ' -d0 -e 2>'. Util::getErrorFile($this->INVTNUM));
-            return date("Ymd")."-11:11:11 233.188904 6.021501 1404.147217 234.981598 5.776632 1357.402222 242.095657 10.767704 2585.816406 59.966419 93.636436 68.472496 41.846001 3.230 8441.378 0.000 8384.237 12519.938 14584.0 84 236.659 OK";
+        	// JSON return
+            return '{"jsonrpc":"2.0","result":[{"path":"eNEXUS_0043[s:1,t:17,u:4]","value":"11394"}, {"path":"eNEXUS_0063[s:17,t:1]","value":"394"}, {"path":"eNEXUS_0049[s:17,t:1]","value":"394"}, {"path":"eNEXUS_0050[s:17,t:1]","value":"3537"}, {"path":"eNEXUS_0065[s:17,t:1]","value":"139"}, {"path":"eNEXUS_0051[s:17,t:1]","value":"139"}, {"path":"eNEXUS_0052","value":"0"}, {"path":"eNEXUS_0053","value":"0"}, {"path":"eNEXUS_0066[s:17,t:1]","value":"493"}, {"path":"eNEXUS_0055[s:17,t:1]","value":"2333"}, {"path":"eNEXUS_0064[s:17,t:1]","value":"115"}, {"path":"eNEXUS_0056","value":"1"}, {"path":"eNEXUS_0057","value":"1"}, {"path":"eNEXUS_0058","value":"2000"}, {"path":"eNEXUS_0066[s:17,t:1,p:1]","value":"493"}, {"path":"eNEXUS_0066[s:17,t:1,p:2]","value":"0"}, {"path":"eNEXUS_0066[s:17,t:1,p:3]","value":"0"}, {"path":"eNEXUS_0064[s:17,t:1,p:1]","value":"115"}, {"path":"eNEXUS_0064[s:17,t:1,p:2]","value":"0"}, {"path":"eNEXUS_0064[s:17,t:1,p:3]","value":"0"}, {"path":"eNEXUS_0009[s:17,t:1,p:1]","value":"2333"}, {"path":"eNEXUS_0009[s:17,t:1,p:2]","value":"0"}, {"path":"eNEXUS_0009[s:17,t:1,p:3]","value":"0"}],"Id":0}';
         } else {
-            return trim($this->execute('-c -T ' . $this->COMOPTION . ' -d0 -e'));
+        	$jsonRequest = '{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0043[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0063[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0049[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0050[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0065[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0051[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0052","datatype":"INT16U"},{"path":"eNEXUS_0053","datatype":"INT16U"},{"path":"eNEXUS_0066[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0055[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0064[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0056","datatype":"INT16U"},{"path":"eNEXUS_0057","datatype":"INT16U"},{"path":"eNEXUS_0058","datatype":"INT32U"},{"path":"eNEXUS_0066[s:17,t:1,p:1]","datatype":"INT32U"},{"path":"eNEXUS_0066[s:17,t:1,p:2]","datatype":"INT32U"},{"path":"eNEXUS_0066[s:17,t:1,p:3]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1,p:1]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1,p:2]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1,p:3]","datatype":"INT32U"},{"path":"eNEXUS_0009[s:17,t:1,p:1]","datatype":"INT16U"},{"path":"eNEXUS_0009[s:17,t:1,p:2]","datatype":"INT16U"},{"path":"eNEXUS_0009[s:17,t:1,p:3]","datatype":"INT16U"}],"id":0}:';
+        																		
+            return trim($this->execute($jsonRequest));
         }
     }
     
     public function getLiveData() {
     	$data = $this->getData();
-    	return AuroraConverter::toLive($data);
+    	return DiehlConverter::toLive($data);
     }
 
     public function getInfo() {
         if ($this->DEBUG) {
-            return "PowerOne XXXXXX.XXXXXXXX";
+           return "PowerOne XXXXXX.XXXXXXXX";
         } else {
            return $this->execute('-p -n -f -g -m -v -Y 10');
         }
@@ -352,7 +367,7 @@ response:
 
     public function getHistoryData() {
     	// Try to retrieve the data of the last 366 days
-        return $this->execute('-k 366 -Y 60');
+        //return $this->execute('-k 366 -Y 60');
     }
 
     public function syncTime() {
@@ -360,29 +375,20 @@ response:
     }
 
     private function execute($options) {
-        $cmd = $this->PATH . ' -a' . $this->ADR . ' ' . $options . ' ' . $this->PORT;
-        //return shell_exec($cmd);
-        
-        $proc=proc_open($cmd,
-        		array(
-        				array("pipe","r"),
-        				array("pipe","w"),
-        				array("pipe","w")
-        		),
-        		$pipes);
-        $stdout = stream_get_contents($pipes[1]);
-        $stderr = stream_get_contents($pipes[2]);
-        
-        /*
-        hide errors
-        if ($stderr != "") {
-        	echo ("error found: " . $stderr . "\n");
-        }
-        */
-        proc_close($proc);
-        
-        //print stream_get_contents($pipes[1]);
-        return trim($stdout);
+        $ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, "http://".$this->ADR."/rpc/GetPowerLog");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $options);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		    'Content-Type: application/json',
+		    'Content-Length: ' . strlen($options))
+		);
+		$output = curl_exec($ch);
+		$info = curl_getinfo($ch);
+		curl_close($ch);
+        return trim($output);
     }
 }
 ?>

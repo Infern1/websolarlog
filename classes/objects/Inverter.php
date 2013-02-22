@@ -59,20 +59,19 @@ class Inverter
     }
 
     function getApi($config) {
-    	//echo "\r\n getApi\r\n";
-    	//echo "\r\nApifound:".$this->deviceApi."\r\n";
         if ($this->deviceApi == "AURORA") {
             return new Aurora($config->aurorapath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
         }
-    	    if ($this->deviceApi == "SMA-RS485") {
+		if ($this->deviceApi == "SMA-RS485") {
 	    	return new Sma($config->smagetpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
 	    }
+	    if ($this->deviceApi == "Diehl-ethernet") {
+	    	return new Diehl($config->smagetpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    }
 	    if ($this->deviceApi == "DutchSmartMeter") {
-	    	//echo "\r\nMake DutchSmartMeter object\r\n";
 	    	return new SmartMeter($config->smartmeterpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
 	    }
-	    if ($this->deviceApi == "DutchSmartMeterRemote") {
-	    	//echo "\r\nMake DutchSmartMeterRemote object\r\n";
+    	if ($this->deviceApi == "DutchSmartMeterRemote") {
 	    	return new SmartMeterRemote($config->smartmeterpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
 	    }
 	        

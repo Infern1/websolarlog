@@ -327,16 +327,56 @@ class PDODataAdapter {
 	 * @param Event $event
 	 */
 	public function addEvent($invtnum, Event $event) {
-		$bean = R::dispense('event');
+		
+		// Check if we need to deal this event as a Diehl Event
+		if($event->number > 0){
+			// there is a number, so we have to deal this as a Diehl Inverter!
 
-		$bean->INV = $invtnum;
-		$bean->SDTE = $event->SDTE;
-		$bean->time = $event->time;
-		$bean->Event = $event->event;
-		$bean->Type = $event->type;
-		$bean->alarmSend = $event->alarmSend;
-		$id = R::store($bean);
+			// check if the event already exists
+			if(count($this->checkEventExists($event->number,$event->event)==0)){
+				// set the number
+				$bean->number = $event->number;
+				
+				// convert from Diehl "timestamp" (2013-02-20 09:23:39) to unix timestamp
+				if(strlen($event->time)==19){
+					$event->time = strtotime($event->time);
+				}
+				
+				// Event was NOT found in the table, so we can add it..
+				$EventExists = false;
+			}else{
+				//// Event was FOUND in the table, so we can add it..
+				$EventExists = true;
+			}
+		}else{
+			// No need to check and just add the record
+			$EventExists = false;
+		}
+		
+		//check if $EventExists==false
+		if(!$EventExists){
+			// we may add the event :)
+			$bean = R::dispense('event');
+			$bean->INV = $invtnum;
+			$bean->SDTE = $event->SDTE;
+			$bean->time = $event->time;
+			$bean->Event = $event->event;
+			$bean->Type = $event->type;
+			$bean->alarmSend = $event->alarmSend;
+			$id = R::store($bean);
+		}
 
+	}
+	
+	/**
+	 * Diehl 
+	 */
+	public function checkEventExists($number,$event){
+		$bean = R::getAll('select * from event where number = :number and event = :event  LIMIT 2 ',
+				array(':number'=>$number,':event'=>$event)
+		);
+		
+		return $bean;
 	}
 
 

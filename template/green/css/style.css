@@ -21,8 +21,8 @@ textarea { overflow: auto; }
 #header { position: relative; padding: 41px 0 21px 29px; width: 911px; }
 
 #logo { width: 193px; font-size: 40px; }
-#logo a { display: block; width: 193px; height: 36px; color: #8FC32B; text-shadow: white 1px 1px 5px;} 
-#logo a:hover { display: block; width: 193px; height: 36px; text-decoration: none; text-shadow: yellow 1px 1px 5px;} 
+#logo a { display: block; width: 550px; height: 36px; color: #8FC32B; text-shadow: white 1px 1px 5px;} 
+#logo a:hover { display: block; width: 550px; height: 36px; text-decoration: none; text-shadow: yellow 1px 1px 5px;} 
 
 #subLogo { width: 193px; font-size: 20px; }
 #subLogo a { display: block; width: 700px; height: 20px; color: #8FC32B; text-shadow: white 1px 1px 4px;} 

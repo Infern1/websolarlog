@@ -167,9 +167,9 @@ try {
 			$dayData->graph = $lines['graph'];
 			
 			
-			$dayData->valueKWHT = $lines['lastDay']->KWHT;
-			$dayData->KWHTUnit = $lines['lastDay']->KWHTUnit;
-			$dayData->KWHKWP = $lines['lastDay']->KWHKWP;
+			//$dayData->valueKWHT = $lines['lastDay']->KWHT;
+			//$dayData->KWHTUnit = $lines['lastDay']->KWHTUnit;
+			//$dayData->KWHKWP = $lines['lastDay']->KWHKWP;
 			$dayData->success = true;
 			$lang = array();
 			$lang['cumPowerW'] = _('cum. Power (W)');
