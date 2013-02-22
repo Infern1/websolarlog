@@ -327,44 +327,15 @@ class PDODataAdapter {
 	 * @param Event $event
 	 */
 	public function addEvent($invtnum, Event $event) {
-		
-		// Check if we need to deal this event as a Diehl Event
-		if($event->number > 0){
-			// there is a number, so we have to deal this as a Diehl Inverter!
+		$bean = R::dispense('event');
 
-			// check if the event already exists
-			if(count($this->checkEventExists($event->number,$event->event)==0)){
-				// set the number
-				$bean->number = $event->number;
-				
-				// convert from Diehl "timestamp" (2013-02-20 09:23:39) to unix timestamp
-				if(strlen($event->time)==19){
-					$event->time = strtotime($event->time);
-				}
-				
-				// Event was NOT found in the table, so we can add it..
-				$EventExists = false;
-			}else{
-				//// Event was FOUND in the table, so we can add it..
-				$EventExists = true;
-			}
-		}else{
-			// No need to check and just add the record
-			$EventExists = false;
-		}
-		
-		//check if $EventExists==false
-		if(!$EventExists){
-			// we may add the event :)
-			$bean = R::dispense('event');
-			$bean->INV = $invtnum;
-			$bean->SDTE = $event->SDTE;
-			$bean->time = $event->time;
-			$bean->Event = $event->event;
-			$bean->Type = $event->type;
-			$bean->alarmSend = $event->alarmSend;
-			$id = R::store($bean);
-		}
+		$bean->INV = $invtnum;
+		$bean->SDTE = $event->SDTE;
+		$bean->time = $event->time;
+		$bean->Event = $event->event;
+		$bean->Type = $event->type;
+		$bean->alarmSend = $event->alarmSend;
+		$id = R::store($bean);
 
 	}
 	
@@ -2090,9 +2061,13 @@ class PDODataAdapter {
 				}
 			}else{
 				$totalEnergyBeansMonth = R::getAll("SELECT INV,COUNT(kwh) as countkWh, MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit));
-				$avgEnergyBeansMonth = number_format($totalEnergyBeansMonth[0]['sumkWh']/$totalEnergyBeansMonth[0]['countkWh'],2,',','');
-				for ($i = 0; $i < count($avgEnergyBeansMonth); $i++) {
-					$totalEnergyBeansMonth[$i]['sumkWh'] = number_format($totalEnergyBeansMonth[$i]['sumkWh'],2,',','');
+				if(count($totalEnergyBeansMonth)>0){
+					$avgEnergyBeansMonth = number_format($totalEnergyBeansMonth[0]['sumkWh']/$totalEnergyBeansMonth[0]['countkWh'],2,',','');
+					for ($i = 0; $i < count($avgEnergyBeansMonth); $i++) {
+						$totalEnergyBeansMonth[$i]['sumkWh'] = number_format($totalEnergyBeansMonth[$i]['sumkWh'],2,',','');
+					}
+				}else{
+					$totalEnergyBeansMonth[0]['sumkWh'] = number_format('0',2,',','');
 				}
 			}
 			$totalEnergyBeansMonthKWHKWP= number_format($totalEnergyBeansMonth[0]['sumkWh'] / $sumPlantPower,2,',','');
