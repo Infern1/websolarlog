@@ -770,9 +770,10 @@ class PDODataAdapter {
 		$inverter->expectedDEC = $bean->expectedDEC;
 
 		$inverter->plantpower = 0;
-		foreach ($inverter->panels as $panel) {
-			//$panel = new Panel();
-			$inverter->plantpower += ($panel->amount * $panel->wp);
+		if ($inverter->panels != null && is_array($inverter->panels)) {
+			foreach ($inverter->panels as $panel) {
+				$inverter->plantpower += ($panel->amount * $panel->wp);
+			}
 		}
 
 		return $inverter;
