@@ -2,7 +2,7 @@
 # WebSolarLog start and stop script
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PIDFOLDER="/tmp"
+PIDFOLDER=$SCRIPTDIR
 PHPSCRIPTNAME="worker.php"
 PHP=$(which php)
 NOHUP=$(which nohup)

@@ -8,7 +8,7 @@ require_once $docRoot . '/admin/classes/classloader.php';
 Session::initialize();
 
 // Check if there is already an worker running
-$pid = new Pid('/tmp');
+$pid = new Pid(dirname(__FILE__));
 if($pid->isAlreadyRunning) {
 	echo "Already running.\n";
 	exit;
