@@ -1657,12 +1657,15 @@ class PDODataAdapter {
 			$graph->axes[$key] = $value;
 		}	
 		
+		
 		foreach($hookGraph->series as $series){
 			$graph->series[] = $series;
 		}
-
-		foreach ($hookGraph->points as $key => $value){
-			$graph->points[$key] = $value;
+		
+		if($hookGraph->points!=null){
+			foreach ($hookGraph->points as $key => $value){
+				$graph->points[$key] = $value;
+			}
 		}
 
 		if($hookGraph->timestamp!=null){
