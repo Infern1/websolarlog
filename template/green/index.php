@@ -103,12 +103,18 @@
 			<a href="http://www.websolarlog.com/" target="_blank" class="leftFooter">Dutch SmartMeter</a> (software)<br/>
 			</div>
 
-			<div style="float:left; width:250px;">
-			Solar Inverter Demos:<br/>
-			<span class="leftFooter">Demo of a PowerOne Inverter with RS485<br/></span>
-			<span class="leftFooter">Demo of a SMA Inverter RS485 or BlueTooth<br/></span>
-			<span class="leftFooter">Demo of a Effekta Inverter with RS485<br/></span>
-			<a href="http://diehl-inverter-demo.websolarlog.com/" target="_blank" class="leftFooter">Demo of a Diehl Inverter</a><br/>
+			<div style="float:left; width:200px;">
+			Solar Inverter Logger Demos:<br/>
+			<span class="leftFooter">PowerOne Inverter (RS485)<br/></span>
+			<span class="leftFooter">SMA Inverter (RS485/BlueTooth)<br/></span>
+			<span class="leftFooter">Effekta Inverter (RS485)<br/></span>
+			<a href="http://diehl-inverter-demo.websolarlog.com/" target="_blank" class="leftFooter">Diehl Inverter (Ethernet)</a><br/>
+			</div>
+			
+			
+			<div style="float:left; width:200px;">
+			Misc.:<br/>
+			<a href="http://pvoutput.org/listteam.jsp?tid=602">Join PVoutput team WebSolarLog</a><br/>
 			</div>
 			<div class="cl"></div>
 			</div>
