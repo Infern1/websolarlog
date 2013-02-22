@@ -30,7 +30,7 @@ class DiehlConverter
         			// if GP(GridPower) AND I1P (MPP 1 Power) is bigger than 0
         			if($live->GP > 0 AND $live->I1P > 0){
         				// We can calculate the Efficienty DC>AC in %
-	        			$live->EFF = ($live->GP / $live->I1P)*100;
+	        			$live->EFF = ( $live->I1P/$live->GP)*100;
         			}
         		}
         	}
