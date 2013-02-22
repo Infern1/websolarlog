@@ -1,8 +1,6 @@
 <?php
 error_reporting(E_ALL);
 
-define('checkaccess', TRUE);
-
 $docRoot = dirname(dirname(__FILE__));
 require_once $docRoot . '/admin/classes/classloader.php';
 Session::initialize();
@@ -14,33 +12,27 @@ if($pid->isAlreadyRunning) {
 	exit;
 }
 
-$useNewWorker = true;
-
-if ($useNewWorker) {
-	$workHandler = new WorkHandler();
-	$count = 0;
-	while ($count < 3000) {
-		if ($count % 10 == 0) {
-			checkPauseAndRestart();
-			$workHandler = null;
-			$workHandler = new WorkHandler();
-		}
-		try {
-			$workHandler->start();
-		} catch (Exception $e) {
-			echo ($e->getMessage());
-		}
-		$count++;
-		sleep(1);
-		
+// Start the main loop
+$workHandler = new WorkHandler();
+$count = 0;
+while ($count < 3000) {
+	if ($count % 10 == 0) {
+		checkPauseAndRestart();
+		$workHandler = null;
+		$workHandler = new WorkHandler();
 	}
-	echo (date("Ymd His") . "\tAuto restart worker\n");
-	exit;
-} else {
-	$worker = new Worker();
-	$worker->start();
+	try {
+		$workHandler->start();
+	} catch (Exception $e) {
+		echo ($e->getMessage());
+	}
+	$count++;
+	sleep(1);
 	
 }
+echo (date("Ymd His") . "\tAuto restart worker\n");
+exit;
+
 
 function checkPauseAndRestart() {
 	$config = Session::getConfig(true);
