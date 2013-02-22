@@ -503,7 +503,11 @@ class PDODataAdapter {
 
 			if($i>0){
 				$plantPower = $this->readPlantPower();
-				$kWhkWp = number_format(($cumPower/1000) / ($plantPower/1000),2,',','');
+				if($cumPower>0 AND $plantPower>0){
+					$kWhkWp = number_format(($cumPower/1000) / ($plantPower/1000),2,',','');
+				}else{
+					$kWhkWp = number_format(0,2,',','');
+				}
 				
 				if($cumPower >= 1000){
 					$cumPower = number_format($cumPower /=1000,2,',','');
@@ -1941,7 +1945,11 @@ class PDODataAdapter {
 				}else{
 					$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$inverter->id));
 
-					$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
+					if($liveBean['I1P']>0 AND $liveBean['I2P']==0){
+						$ITP = round($liveBean['I1P'],2);
+					}else{
+						$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
+					}
 					
 					$GP  += $liveBean['GP'];
 					$I1P += $liveBean['I1P'];
