@@ -75,6 +75,7 @@ class PDODataAdapter {
 
 		$bean->BOOT = $live->BOOT;
 		$bean->KWHT = $live->KWHT;
+		$bean->IP = $IP;
 
 		//Store the bean
 		$id = R::store($bean,$bean->id);
@@ -113,6 +114,7 @@ class PDODataAdapter {
 			$live->time = $bean->time;
 			$live->BOOT = $bean->BOOT;
 			$live->KWHT = $bean->KWHT;
+			$live->IP = $bean->IP;
 		}
 
 		return $live;
@@ -1656,35 +1658,6 @@ class PDODataAdapter {
 
 		return $array;
 	}
-	
-	
-	public function mergePointArrays($beans,$hookBeans){
-		$array = array();
-		$config = Session::getConfig();
-
-		if(is_array($hookBeans->graph['timestamp'])){
-			$array['timestamp'] = $hookBeans->graph['timestamp'];
-		}
- 
-		if( $beans->graph['points']!=null AND $hookBeans->graph['points']!=null){
-			//echo "both Points Beans en HookBeans";
-			$array['graph'] = array_merge_recursive($beans->graph,$hookBeans->graph);
-		}elseif($beans != null && is_array($beans->graph['points'])){
-			//echo "Points Beans";
-			$array['graph'] = $beans->graph;
-		}elseif($hookBeans != null && is_array($hookBeans->graph['points'])){
-			//echo "Points hookBeans";
-			$array['graph'] = $hookBeans->graph;
-		}else{
-			//echo 'niets';
-			$array['graph'] = array();
-		}
-		
-		
-
-		
-		return $array;
-	}
 
 	/**
 	 * return a array with GraphPoints
@@ -1956,7 +1929,6 @@ class PDODataAdapter {
 					$I2P += $liveBean['I2P'];
 					$IP  += $ITP;
 					$EFF += $liveBean['EFF'];
-					
 
 					$live = new Live();
 					$live->name = $inverter->name;
@@ -1976,10 +1948,8 @@ class PDODataAdapter {
 					$live->I2A = ($liveBean['I2A']<1000) ? number_format($liveBean['I2A'],1,'.','') : number_format($liveBean['I2A'],0,'','');
 					$live->I2V = ($liveBean['I2V']<1000) ? number_format($liveBean['I2V'],1,'.','') : number_format($liveBean['I2V'],0,'','');
 					$live->I2Ratio = ($liveBean['I2Ratio']<1000) ? number_format($liveBean['I2Ratio'],1,'.','') : number_format($liveBean['I2Ratio'],0,'','');
-					
 					$live->IP = ($liveBean['IP']<1000) ? number_format($liveBean['IP'],1,'.','') : number_format($liveBean['IP'],0,'','');
 					$live->EFF = ($liveBean['EFF']<1000) ? number_format($liveBean['EFF'],1,'.','') : number_format($liveBean['EFF'],0,'','');
-					
 				}
 
 				$oInverter["id"] = $liveBean['INV'];
@@ -1996,7 +1966,6 @@ class PDODataAdapter {
 		$sum['I2P'] = ($I2P<1000) ? number_format($I2P,1,'.','') : number_format($I2P,0,'','');
 		$sum['IP'] = ($IP<1000) ? number_format($IP,1,'.','') : number_format($IP,0,'','');
 		$sum['EFF'] = ($EFF<100) ? number_format($EFF,1,'.','') : number_format($EFF,0,'','');
-
 		return array('inverters'=>$inverters,'sum'=>$sum);
 	}
 

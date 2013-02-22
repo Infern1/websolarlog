@@ -25,6 +25,7 @@ class Live {
     public $INVT;
     public $BOOT;
     public $KWHT;
+    public $IP;
     
     public $pvoutput;
 }

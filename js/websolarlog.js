@@ -78,39 +78,58 @@ var todayTimerHandler;
 
 function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot,series	) {
 	var returned = "";
+	seriesCount = plot.series.length-1;
 	if(is_array(plot.series[0].data[pointIndex])==true){
 		( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " W<br>"+bold[1]; //0
 	}
 	if(is_array(plot.series[1].data[pointIndex])==true){
 		( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Energy:"+ plot.series[1].data[pointIndex][1]+ " W<br>"+bold[1];//1
 	}
-	if(is_array(plot.series[2].data[pointIndex])==true){
-		var smoothGasLineLength = plot.series[2].data.length-1;
-		var GasLineLength = plot.series[7].data.length;
-		var multiply = GasLineLength/smoothGasLineLength;
-		pointIndex2 = Math.ceil((multiply*pointIndex) * 1) / 1;
-		( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Gas:"+ plot.series[7].data[pointIndex2][1]+ " l<br>"+bold[1];//2
+	
+	if(seriesCount >= 2){
+		if(is_array(plot.series[2].data[pointIndex])==true){
+			var smoothGasLineLength = plot.series[2].data.length-1;
+			var GasLineLength = plot.series[7].data.length;
+			var multiply = GasLineLength/smoothGasLineLength;
+			pointIndex2 = Math.ceil((multiply*pointIndex) * 1) / 1;
+			( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Gas:"+ plot.series[7].data[pointIndex2][1]+ " l<br>"+bold[1];//2
+		}
 	}
-	if(is_array(plot.series[2].data[pointIndex])==true){
-	( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Gas2: "+ plot.series[2].data[pointIndex][1]+ " l<br>"+bold[1];//2
+	if(seriesCount >= 2){
+		if(is_array(plot.series[2].data[pointIndex])==true){
+		( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Gas2: "+ plot.series[2].data[pointIndex][1]+ " l<br>"+bold[1];//2
+		}
 	}
-	if(is_array(plot.series[3].data[pointIndex])==true){
-		( seriesIndex == 3 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"low Usage:"+ plot.series[3].data[pointIndex][1]+ " W<br>"+bold[1];//3
+	if(seriesCount >= 3){
+		if(is_array(plot.series[3].data[pointIndex])==true){
+			( seriesIndex == 3 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"low Usage:"+ plot.series[3].data[pointIndex][1]+ " W<br>"+bold[1];//3
+		}
 	}
-	if(is_array(plot.series[4].data[pointIndex])==true){
-		( seriesIndex == 4 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"high Usage:"+ plot.series[4].data[pointIndex][1]+ " W<br>"+bold[1];//4
+	if(seriesCount >= 4){
+		if(is_array(plot.series[4].data[pointIndex])==true){
+			( seriesIndex == 4 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"high Usage:"+ plot.series[4].data[pointIndex][1]+ " W<br>"+bold[1];//4
+		}
 	}
-	if(is_array(plot.series[5].data[pointIndex])==true){
-		( seriesIndex == 5 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"low Return:"+ plot.series[5].data[pointIndex][1]+ " W<br>"+bold[1];//5
+	if(seriesCount >= 5){
+		if(is_array(plot.series[5].data[pointIndex])==true){
+			( seriesIndex == 5 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"low Return:"+ plot.series[5].data[pointIndex][1]+ " W<br>"+bold[1];//5
+		}
 	}
-	if(is_array(plot.series[6].data[pointIndex])==true){
-		( seriesIndex == 6 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"high Return:"+ plot.series[6].data[pointIndex][1]+ " W<br>"+bold[1];//6
+	if(seriesCount >= 6){
+		if(is_array(plot.series[6].data[pointIndex])==true){
+			( seriesIndex == 6 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"high Return:"+ plot.series[6].data[pointIndex][1]+ " W<br>"+bold[1];//6
+		}
 	}
-	if(is_array(plot.series[7].data[pointIndex])==true){
-		( seriesIndex == 7 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"gas dummy:"+ plot.series[7].data[pointIndex][1]+ " l<br>"+bold[1];//6
+	if(seriesCount >= 7){
+		if(is_array(plot.series[7].data[pointIndex])==true){
+			( seriesIndex == 7 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"gas dummy:"+ plot.series[7].data[pointIndex][1]+ " l<br>"+bold[1];//6
+		}
 	}
-	if(is_array(plot.series[3].data[pointIndex])==true){
-		returned += "Date:"+ plot.series[3].data[pointIndex][2]+"";
+
+	if(seriesCount >= 1){
+		if(is_array(plot.series[1].data[pointIndex])==true){
+			//returned += "Date:"+ plot.series[1].data[pointIndex][2]+"";
+		}
 	}
 	return returned;
 }
