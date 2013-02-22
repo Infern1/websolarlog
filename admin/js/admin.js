@@ -538,13 +538,15 @@ function load_inverter(inverterId) {
                 $('#content').html(html);
                 
                 $('#btnInverterSubmit').bind('click', function(){
+                	$('#btnInverterSubmit').attr("disabled", "disabled");
                     var data = $(this).parent().parent().serialize();
-                    $.post('admin-server.php', data, function(){
-                        init_inverters(inverterId);                        
+                    $.post('admin-server.php', data, function(result){
+                        init_inverters(result.id);                        
                         $.pnotify({
                             title: 'Saved',
                             text: 'You\'re changes have been saved.'
                         });
+                        $('#btnInverterSubmit').removeAttr("disabled");
                     });
                 });
                 

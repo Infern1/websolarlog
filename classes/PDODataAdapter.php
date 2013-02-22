@@ -701,8 +701,9 @@ class PDODataAdapter {
 		return $config;
 	}
 	/**
-	 *
+	 * Create or update an inverter object
 	 * @param Inverter $inverter
+	 * @return the id off the saved inverter
 	 */
 	public function writeInverter(Inverter $inverter) {
 		// Only save the object self not the arrays
@@ -746,8 +747,10 @@ class PDODataAdapter {
 		$bean->expectedDEC = $inverter->expectedDEC;
 
 		//Store the bean
-		R::store($bean);
+		$id = R::store($bean,$bean->id);
+		return $id;
 	}
+	
 	/**
 	 *
 	 * @param unknown_type $id

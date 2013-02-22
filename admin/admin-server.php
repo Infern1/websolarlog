@@ -273,7 +273,7 @@ switch ($settingstype) {
 		$inverter->pvoutputApikey = Common::getValue("pvoutputApikey");
 		$inverter->pvoutputSystemId = Common::getValue("pvoutputSystemId");
 
-		$adapter->writeInverter($inverter);
+		$data['id'] = $adapter->writeInverter($inverter);
 		break;
 	case 'save-panel':
 		$id = Common::getValue("id");
