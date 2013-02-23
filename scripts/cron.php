@@ -8,7 +8,7 @@ require_once $docRoot . '/admin/classes/classloader.php';
 Session::initialize();
 
 $workHandler = new WorkHandler();
-while ($startTime - time() < 55) {
+while (time() - $startTime < 55) {
 	try {
 		$workHandler->start();
 	} catch (Exception $e) {
