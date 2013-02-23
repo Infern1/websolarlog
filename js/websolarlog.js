@@ -80,10 +80,10 @@ function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot,series	) {
 	var returned = "";
 	seriesCount = plot.series.length-1;
 	if(is_array(plot.series[0].data[pointIndex])==true){
-		( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum.: "+ plot.series[0].data[pointIndex][1]+ " W<br>"+bold[1]; //0
+		returned += tooltipTodayContentEditorLine("Cum.",plot.series[0].data[pointIndex][1],"W", ( seriesIndex == 0 ));
 	}
 	if(is_array(plot.series[1].data[pointIndex])==true){
-		( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Energy:"+ plot.series[1].data[pointIndex][1]+ " W<br>"+bold[1];//1
+		returned += tooltipTodayContentEditorLine("Energy",plot.series[1].data[pointIndex][1],"W", ( seriesIndex == 1 ));
 	}
 	
 	if(seriesCount >= 2){
@@ -92,37 +92,37 @@ function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot,series	) {
 			var GasLineLength = plot.series[7].data.length;
 			var multiply = GasLineLength/smoothGasLineLength;
 			pointIndex2 = Math.ceil((multiply*pointIndex) * 1) / 1;
-			( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Gas:"+ plot.series[7].data[pointIndex2][1]+ " l<br>"+bold[1];//2
+			returned += tooltipTodayContentEditorLine("Gas",plot.series[7].data[pointIndex2][1],"L", ( seriesIndex == 2 ));
 		}
 	}
 	if(seriesCount >= 2){
 		if(is_array(plot.series[2].data[pointIndex])==true){
-		( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Gas2: "+ plot.series[2].data[pointIndex][1]+ " l<br>"+bold[1];//2
+			returned += tooltipTodayContentEditorLine("Gas2",plot.series[2].data[pointIndex][1],"L", ( seriesIndex == 2 ));
 		}
 	}
 	if(seriesCount >= 3){
 		if(is_array(plot.series[3].data[pointIndex])==true){
-			( seriesIndex == 3 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"low Usage:"+ plot.series[3].data[pointIndex][1]+ " W<br>"+bold[1];//3
+			returned += tooltipTodayContentEditorLine("High usage",plot.series[3].data[pointIndex][1],"W", ( seriesIndex == 3 ));
 		}
 	}
 	if(seriesCount >= 4){
 		if(is_array(plot.series[4].data[pointIndex])==true){
-			( seriesIndex == 4 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"high Usage:"+ plot.series[4].data[pointIndex][1]+ " W<br>"+bold[1];//4
+			returned += tooltipTodayContentEditorLine("Low usage",plot.series[4].data[pointIndex][1],"W", ( seriesIndex == 4 ));
 		}
 	}
 	if(seriesCount >= 5){
 		if(is_array(plot.series[5].data[pointIndex])==true){
-			( seriesIndex == 5 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"low Return:"+ plot.series[5].data[pointIndex][1]+ " W<br>"+bold[1];//5
+			returned += tooltipTodayContentEditorLine("High return",plot.series[5].data[pointIndex][1],"W", ( seriesIndex == 5 ));
 		}
 	}
 	if(seriesCount >= 6){
 		if(is_array(plot.series[6].data[pointIndex])==true){
-			( seriesIndex == 6 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"high Return:"+ plot.series[6].data[pointIndex][1]+ " W<br>"+bold[1];//6
+			returned += tooltipTodayContentEditorLine("Low return",plot.series[6].data[pointIndex][1],"W", ( seriesIndex == 6 ));
 		}
 	}
 	if(seriesCount >= 7){
 		if(is_array(plot.series[7].data[pointIndex])==true){
-			( seriesIndex == 7 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"gas dummy:"+ plot.series[7].data[pointIndex][1]+ " l<br>"+bold[1];//6
+			returned += tooltipTodayContentEditorLine("Gas dummy",plot.series[7].data[pointIndex][1],"L", ( seriesIndex == 7 ));
 		}
 	}
 
@@ -134,6 +134,13 @@ function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot,series	) {
 	return returned;
 }
 
+function tooltipTodayContentEditorLine(label, value, sign, isBold) {
+	bold = (isBold) ? ['<b>','</b>'] : bold=['','']; 
+	line = bold[0] + '<span class="jqplot_hl_label">' + label + ":" + "</span>" 
+				   + '<span class="jqplot_hl_value">' + value + "</span>"
+				   + '<span class="jqplot_hl_sign">' + sign + "</span>" + bold[1] + "<br />";
+	return line;
+}
 
 function tooltipPeriodContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = ""; 
@@ -884,25 +891,27 @@ var WSL = {
 				
 				var graphOptions = {
 					seriesDefaults: {
-						rendererOptions: {smooth: true},showMarker:false,autoscale:true,
+						rendererOptions: {smooth: true},
+						showMarker:false,
+						autoscale:true
 					},
 					series : [],
 					axesDefaults : {
 						useSeriesColor: true,
-						labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+						labelRenderer : $.jqplot.CanvasAxisLabelRenderer
 					},
 					legend : {
 						show : true,
 						location:"nw",
 						renderer: $.jqplot.EnhancedLegendRenderer,
 						rendererOptions: {
-			                seriesToggle: 'normal',numberColumns:1, disableIEFading: false ,},
+			                seriesToggle: 'normal',numberColumns: 1, disableIEFading: false }
 					}, 
 					axes : {}, 
-					highlighter : {
-						tooltipContentEditor: tooltipTodayContentEditor,show : true,tooltipLocation:'n',
+					highlighter :{
+						tooltipContentEditor: tooltipTodayContentEditor, show: true,tooltipLocation: 'n'
 					},
-					cursor : {show : false}
+					cursor : {zoom: true, show: true, showTooltip:false, style: 'default'}
 				};
 				seriesData=[]; 
 
