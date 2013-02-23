@@ -1,7 +1,26 @@
 <?php
 class DiehlConverter
 {
-
+	const _I1A		= 'eNEXUS_0066[s:17,t:1,p:1]';//MPP1 Amps
+	const _I1V		= 'eNEXUS_0009[s:17,t:1,p:1]';//MPP1 Volt
+	const _I1P		= 'eNEXUS_0064[s:17,t:1,p:1]';//MPP1 Power
+	
+	const _I2A		= 'eNEXUS_0066[s:17,t:1,p:2]';//MPP2 Amps
+	const _I2V		= 'eNEXUS_0009[s:17,t:1,p:2]';//MPP2 Volt
+	const _I2P		= 'eNEXUS_0064[s:17,t:1,p:2]';//MPP2 Power
+		
+	const _I3A		= 'eNEXUS_0066[s:17,t:1,p:3]';//MPP3 Amps
+	const _I3V		= 'eNEXUS_0009[s:17,t:1,p:3]';//MPP3 Volt
+	const _I3P		= 'eNEXUS_0064[s:17,t:1,p:3]';//MPP3 Power
+	
+	const _GA 		= 'eNEXUS_0066[s:17,t:1]'; //Grid Amps
+	const _GP		= 'eNEXUS_0064[s:17,t:1]'; //Grid Volt
+	const _GV		= 'eNEXUS_0055[s:17,t:1]'; //Grid Power
+	
+	const _FRQ		= 'eNEXUS_0046[s:1,t:17]'; // Frequency
+	const _INVT		= 'eNEXUS_0045[s:1,t:17]'; // Inverter Temperatur
+	const _KWHT		= 'eNEXUS_0043[s:17,t:1]'; // kWhTotal
+	
     /**
      * Converts the result of getData to an Live object
      * @param string $inputLine
@@ -13,24 +32,37 @@ class DiehlConverter
         if ($inputLine == null || trim($inputLine) == "") {
             return null;
         }
-
         $live = new Live();
         $live->type = 'production';
         foreach (json_decode($inputLine) as $key => $value){
         	if(is_array($value)){
         		foreach ($value as $keys => $values){
 			        $live->time = strtotime(date("d-m-Y H:i:s"));
-			        if($values->path == 'eNEXUS_0049[s:17,t:1]' AND $values->value>0){ $live->I1A = ($values->value/1000);}
-			        if($values->path == 'eNEXUS_0050[s:17,t:1]' AND $values->value>0){ $live->I1V = ($values->value);}
-			        if($values->path == 'eNEXUS_0065[s:17,t:1]' AND $values->value>0){ $live->I1P = ($values->value);}
-			        if($values->path == 'eNEXUS_0066[s:17,t:1,p:1]' AND $values->value>0){ $live->GA = ($values->value/1000);}
-			        if($values->path == 'eNEXUS_0064[s:17,t:1,p:1]' AND $values->value>0){ $live->GP = ($values->value);}
-        			if($values->path == 'eNEXUS_0009[s:17,t:1,p:1]' AND $values->value>0){ $live->GV =($values->value);}
-        			if($values->path == 'eNEXUS_0043[s:17,t:1]' AND $values->value>0){ $live->KWHT =($values->value/10);}
+					
+			        if($values->path == self::_I1A AND $values->value>0){ $live->I1A = ($values->value/1000);}
+			        if($values->path == self::_I1V AND $values->value>0){ $live->I1V = ($values->value/10);}
+			        if($values->path == self::_I1P AND $values->value>0){ $live->I1P = ($values->value);}
+
+			        if($values->path == self::_I2A AND $values->value>0){ $live->I2A = ($values->value/1000);}
+			        if($values->path == self::_I2V AND $values->value>0){ $live->I2V = ($values->value/10);}
+			        if($values->path == self::_I2P AND $values->value>0){ $live->I2P = ($values->value);}
+
+			        if($values->path == self::_I3A AND $values->value>0){ $live->I3A = ($values->value/1000);}
+			        if($values->path == self::_I3V AND $values->value>0){ $live->I3V = ($values->value/10);}
+			        if($values->path == self::_I3P AND $values->value>0){ $live->I3P = ($values->value);}
+
+			        if($values->path == self::_GA AND $values->value>0){ $live->GA = ($values->value/1000);}
+			        if($values->path == self::_GP AND $values->value>0){ $live->GP = ($values->value);}
+        			if($values->path == self::_GV AND $values->value>0){ $live->GV =($values->value/10);}
+        			if($values->path == self::_FRQ AND $values->value>0){ $live->FRQ =($values->value/10);}
+        			if($values->path == self::_INVT AND $values->value>0){ $live->INVT =($values->value/10);}
+        			
+        			if($values->path == self::_KWHT AND $values->value>0){ $live->KWHT =($values->value/10);}
+        			
         			// if GP(GridPower) AND I1P (MPP 1 Power) is bigger than 0
         			if($live->GP > 0 AND $live->I1P > 0){
         				// We can calculate the Efficienty DC>AC in %
-	        			$live->EFF = ( $live->I1P/$live->GP)*100;
+	        			$live->EFF = ($live->GP/$live->I1P)*100;
         			}
         		}
         	}

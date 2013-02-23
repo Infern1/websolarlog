@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: WSL-Dutch\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-12-15 22:37+0100\n"
-"PO-Revision-Date: 2012-12-15 22:44+0100\n"
+"PO-Revision-Date: 2013-02-22 21:07+0100\n"
 "Last-Translator: a <a@a.nl>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -181,7 +181,7 @@ msgstr "logger"
 
 #: server.php:142
 msgid "uptime"
-msgstr "uuptime"
+msgstr "uptime"
 
 #: server.php:143
 msgid "days"
@@ -406,7 +406,7 @@ msgstr "kWh/kWp"
 
 #: server.php:472
 msgid "* All figures are in kWh"
-msgstr "* Alle cijfer zijn in kWh"
+msgstr "* Alle cijfers zijn in kWh"
 
 #: server.php:473
 msgid "** Incl. initial kWh"

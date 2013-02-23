@@ -285,15 +285,27 @@ Class Diehl implements DeviceApi {
 			}
 		
 		
+		Page:
+			Status>Overview>Plant from dropdown
+		Form Data:
+			{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0005[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0006[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0007[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0008[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0009[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0046[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0012[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0010[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0040[s:1,t:17,n:4]","datatype":"INT32U"},{"path":"eNEXUS_0041[s:1,t:17,n:4]","datatype":"INT32U"},{"path":"eNEXUS_0042[s:1,t:17,n:4]","datatype":"INT32U"},{"path":"eNEXUS_0043[s:1,t:17,n:4]","datatype":"INT32U"},{"path":"eNEXUS_0082[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0045[s:1,t:17]","datatype":"INT16S"},{"path":"eNEXUS_0011[s:1,t:17]","datatype":"INT32U"},{"path":"eNEXUS_0040[s:1,t:17,n:5]","datatype":"INT32U"},{"path":"eNEXUS_0041[s:1,t:17,n:5]","datatype":"INT32U"},{"path":"eNEXUS_0042[s:1,t:17,n:5]","datatype":"INT32U"},{"path":"eNEXUS_0043[s:1,t:17,n:5]","datatype":"INT32U"},{"path":"eNEXUS_0044[s:1,t:17]","datatype":"STRING"},{"path":"eNEXUS_0040[s:1,t:17,n:6]","datatype":"INT32U"},{"path":"eNEXUS_0041[s:1,t:17,n:6]","datatype":"INT32U"},{"path":"eNEXUS_0042[s:1,t:17,n:6]","datatype":"INT32U"},{"path":"eNEXUS_0043[s:1,t:17,n:6]","datatype":"INT32U"},{"path":"eNEXUS_0040[s:1,t:17,n:9]","datatype":"INT32U"},{"path":"eNEXUS_0041[s:1,t:17,n:9]","datatype":"INT32U"},{"path":"eNEXUS_0042[s:1,t:17,n:9]","datatype":"INT32U"},{"path":"eNEXUS_0043[s:1,t:17,n:9]","datatype":"INT32U"}],"id":0}:
+		Response:
 		
-Page:
-	Home
-Form Data:
-	{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0063[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0006[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0064[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0065[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0011[s:17,t:1]","datatype":"INT32U"}],"id":0}
-response:
-	{
-		"jsonrpc":	"2.0",
-		"result":	[{
+		
+		
+		
+		
+		
+		
+		
+		Page:
+			Home
+		Form Data:
+			{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0063[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0006[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0064[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0065[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0011[s:17,t:1]","datatype":"INT32U"}],"id":0}
+		response:
+			{
+			"jsonrpc":	"2.0",
+			"result":	[{
 				"path":	"eNEXUS_0063[s:17,t:1]",
 				"value":	"509"
 			}, {

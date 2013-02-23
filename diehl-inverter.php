@@ -109,18 +109,20 @@ foreach (json_decode($output) as $key => $value){
 			if($values->path == 'eNEXUS_0051[s:17,t:1]'){ echo "<tr><td>DC avg. Power</td><td>".$values->value."</td></tr>"; }
 			if($values->path == 'eNEXUS_0052'){ echo "<tr><td>Alarm count:</td><td>".$values->value."??</td></tr>"; }
 			if($values->path == 'eNEXUS_0053'){ echo "<tr><td>Warnings count:</td><td>".$values->value."??</td></tr>"; }
+			
+			
 			if($values->path == 'eNEXUS_0066[s:17,t:1]'){ echo "<tr><td>AC Current:</td><td>".($values->value/1000)."A</td></tr>"; }
 			if($values->path == 'eNEXUS_0055[s:17,t:1]'){ echo "<tr><td>AC Voltage:</td><td>".($values->value/10)."V</td></tr>"; }
 			if($values->path == 'eNEXUS_0064[s:17,t:1]'){ echo "<tr><td>AC Power:</td><td>".$values->value."W</td></tr>"; }
-			if($values->path == 'eNEXUS_0066[s:17,t:1,p:1]'){ echo "<tr><td>AC L1Output current:</td><td>".($values->value/1000)."A</td></tr>"; }
-			if($values->path == 'eNEXUS_0066[s:17,t:1,p:2]'){ echo "<tr><td>AC L2Output current:</td><td>".$values->value."</td></tr>"; }
-			if($values->path == 'eNEXUS_0066[s:17,t:1,p:3]'){ echo "<tr><td>AC L3Output current:</td><td>".$values->value."</td></tr>"; }
-			if($values->path == 'eNEXUS_0064[s:17,t:1,p:1]'){ echo "<tr><td>AC L1Output power:</td><td>".($values->value)."W</td></tr>"; $outputPower = $values->value;}
-			if($values->path == 'eNEXUS_0064[s:17,t:1,p:2]'){ echo "<tr><td>AC L2Output power:</td><td>".$values->value."</td></tr>"; }
-			if($values->path == 'eNEXUS_0064[s:17,t:1,p:3]'){ echo "<tr><td>AC L3Output power:</td><td>".$values->value."</td></tr>"; }
-			if($values->path == 'eNEXUS_0009[s:17,t:1,p:1]'){ echo "<tr><td>AC L1Output voltage:</td><td>".($values->value/10)."V</td></tr>"; }
-			if($values->path == 'eNEXUS_0009[s:17,t:1,p:2]'){ echo "<tr><td>AC L2Output voltage:</td><td>".$values->value."</td></tr>"; }
-			if($values->path == 'eNEXUS_0009[s:17,t:1,p:3]'){ echo "<tr><td>AC L3Output voltage:</td><td>".$values->value."</td></tr>"; }
+			if($values->path == 'eNEXUS_0066[s:17,t:1,p:1]'){ echo "<tr><td>DC MPP1 current:</td><td>".($values->value/1000)."A</td></tr>"; }
+			if($values->path == 'eNEXUS_0066[s:17,t:1,p:2]'){ echo "<tr><td>DC MPP2 current:</td><td>".$values->value."</td></tr>"; }
+			if($values->path == 'eNEXUS_0066[s:17,t:1,p:3]'){ echo "<tr><td>DC MPP3 current:</td><td>".$values->value."</td></tr>"; }
+			if($values->path == 'eNEXUS_0064[s:17,t:1,p:1]'){ echo "<tr><td>DC MPP1 power:</td><td>".($values->value)."W</td></tr>"; $outputPower = $values->value;}
+			if($values->path == 'eNEXUS_0064[s:17,t:1,p:2]'){ echo "<tr><td>DC MPP2 power:</td><td>".$values->value."</td></tr>"; }
+			if($values->path == 'eNEXUS_0064[s:17,t:1,p:3]'){ echo "<tr><td>DC MPP3 power:</td><td>".$values->value."</td></tr>"; }
+			if($values->path == 'eNEXUS_0009[s:17,t:1,p:1]'){ echo "<tr><td>DC MPP1 voltage:</td><td>".($values->value/10)."V</td></tr>"; }
+			if($values->path == 'eNEXUS_0009[s:17,t:1,p:2]'){ echo "<tr><td>DC MPP2 voltage:</td><td>".$values->value."</td></tr>"; }
+			if($values->path == 'eNEXUS_0009[s:17,t:1,p:3]'){ echo "<tr><td>DC MPP3 voltage:</td><td>".$values->value."</td></tr>"; }
 			if($values->path == 'eNEXUS_0056'){ echo "<tr><td>Number of inverters:</td><td>".$values->value."</td></tr>"; }
 			if($values->path == 'eNEXUS_0057'){ echo "<tr><td>Number of active inverters:</td><td>".$values->value."</td></tr>"; }
 			if($values->path == 'eNEXUS_0058'){ echo "<tr><td>Plant power capacity:</td><td>".$values->value."W</td></tr>"; }
