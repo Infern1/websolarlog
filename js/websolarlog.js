@@ -79,6 +79,7 @@ var todayTimerHandler;
 function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot,series	) {
 	var returned = "";
 	seriesCount = plot.series.length-1;
+	
 	if(is_array(plot.series[0].data[pointIndex])==true){
 		returned += tooltipTodayContentEditorLine("Cum.",plot.series[0].data[pointIndex][1],"W", ( seriesIndex == 0 ));
 	}
@@ -118,17 +119,6 @@ function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot,series	) {
 	if(seriesCount >= 6){
 		if(is_array(plot.series[6].data[pointIndex])==true){
 			returned += tooltipTodayContentEditorLine("Low return",plot.series[6].data[pointIndex][1],"W", ( seriesIndex == 6 ));
-		}
-	}
-	if(seriesCount >= 7){
-		if(is_array(plot.series[7].data[pointIndex])==true){
-			returned += tooltipTodayContentEditorLine("Gas dummy",plot.series[7].data[pointIndex][1],"L", ( seriesIndex == 7 ));
-		}
-	}
-
-	if(seriesCount >= 1){
-		if(is_array(plot.series[1].data[pointIndex])==true){
-			//returned += "Date:"+ plot.series[1].data[pointIndex][2]+"";
 		}
 	}
 	return returned;
