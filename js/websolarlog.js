@@ -134,19 +134,12 @@ function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot,series	) {
 	return returned;
 }
 
-function tooltipTodayContentEditorLine(label, value, sign, isBold) {
-	bold = (isBold) ? ['<b>','</b>'] : bold=['','']; 
-	line = bold[0] + '<span class="jqplot_hl_label">' + label + ":" + "</span>" 
-				   + '<span class="jqplot_hl_value">' + value + "</span>"
-				   + '<span class="jqplot_hl_sign">' + sign + "</span>" + bold[1] + "<br />";
-	return line;
-}
 
 function tooltipPeriodContentEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = ""; 
-	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Energy:"+ plot.series[0].data[pointIndex][1]+ " kWh<br>"+bold[1];
-	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Cum.: "+ plot.series[1].data[pointIndex][1]+ " kWh<br>"+bold[1];
-	returned += "Date:"+ plot.series[1].data[pointIndex][2]+"";
+	returned += tooltipDefaultLine("Energy", plot.series[0].data[pointIndex][1], "kWh", ( seriesIndex == 0 ));
+	returned += tooltipDefaultLine("Energy", plot.series[1].data[pointIndex][1], "kWh", ( seriesIndex == 1 ));
+	returned += tooltipDefaultLine("Date", plot.series[1].data[pointIndex][2], "", ( seriesIndex == 1 ));
 	return returned;
 }
 
@@ -156,37 +149,37 @@ function tooltipProductionContentEditor(str, seriesIndex, pointIndex, plot,serie
 	var yearDiff_add = "";
 	var diff = plot.series[0].data[pointIndex][1] - plot.series[1].data[pointIndex][1];
 	
-	
 	var yearDiff = plot.series[3].data[pointIndex][1] - plot.series[2].data[pointIndex][1];
 	(diff>0)? diff_add = '+': diff_add = diff_add ;
 	(yearDiff>0)? yearDiff_add = '+': yearDiff_add = yearDiff_add ;
-	( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Harvested:"+ plot.series[0].data[pointIndex][1]+" kWh<br>"+bold[1];
-	( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"Expected: "+ plot.series[1].data[pointIndex][1] +" kWh<br>"+bold[1];
-	returned += "This month: "+diff_add+""+ diff +" kWh<br>";
-	( seriesIndex == 3 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum. Harvested:"+plot.series[3].data[pointIndex][1]+" kWh<br>"+bold[1];
-	( seriesIndex == 2 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"Cum. Expected: "+plot.series[2].data[pointIndex][1]+" kWh<br>"+bold[1];
-	
-	returned += "This year: "+ yearDiff_add +""+ yearDiff +" kWh<br>";
+	returned += tooltipProductionContentEditorLine("Harvested", plot.series[0].data[pointIndex][1],"kWh", ( seriesIndex == 0 ));
+	returned += tooltipProductionContentEditorLine("Expected", plot.series[1].data[pointIndex][1],"kWh", ( seriesIndex == 1 ));
+	returned += tooltipProductionContentEditorLine("This month", diff_add+""+ diff,"kWh", false);
+	returned += tooltipProductionContentEditorLine("Cum. Harvested", plot.series[3].data[pointIndex][1],"kWh", ( seriesIndex == 3 ));
+	returned += tooltipProductionContentEditorLine("Cum. Expected", plot.series[2].data[pointIndex][1],"kWh", ( seriesIndex == 2 ));
+	returned += tooltipProductionContentEditorLine("This year", yearDiff_add +""+ yearDiff,"kWh", false);
 	return returned;
+}
+
+if (!String.prototype.trim) {
+	String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
 }
 
 function tooltipCompareEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = "";
 	
-	
 	if($.isArray(plot.series[0].data[pointIndex])){
-		( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+""+ plot.series[1].label +": "+ plot.series[1].data[pointIndex][1]+" kWh<br>"+bold[1];
-		( seriesIndex == 0 ) ? bold=["<b>","</b>"] : bold=["",""];returned += bold[0]+"date: "+ plot.series[1].data[pointIndex][2]+" <br>"+bold[1];
+		returned += tooltipCompareEditorLine(plot.series[1].label, plot.series[1].data[pointIndex][1],"kWh", ( seriesIndex == 0 ));
+		returned += tooltipCompareEditorLine("date", plot.series[1].data[pointIndex][2]," ", ( seriesIndex == 0 ));
 	}else{
-		returned += "<br>Expected: No data available for "+ plot.series[1].data[pointIndex][2]+"<br>";
+		returned += tooltipCompareEditorLine("Expected", "No data available for " + plot.series[1].data[pointIndex][2]," ", ( seriesIndex == 0 ));
 	}
 	
 	if($.isArray(plot.series[1].data[pointIndex])){
-		( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+""+ plot.series[0].label +": "+ plot.series[0].data[pointIndex][1] +" kWh<br>"+bold[1];
-		( seriesIndex == 1 ) ? bold=["<b>","</b>"] : bold=["",""]; returned += bold[0]+"date: "+ plot.series[0].data[pointIndex][2]+" <br>"+bold[1];
-	
+		returned += tooltipCompareEditorLine(plot.series[0].label, plot.series[0].data[pointIndex][1],"kWh", ( seriesIndex == 1 ));
+		returned += tooltipCompareEditorLine("date", plot.series[0].data[pointIndex][2]," ", ( seriesIndex == 1 ));
 	}else{
-		returned += "<br>Harvested: No data available for "+plot.series[0].data[pointIndex][2];
+		returned += tooltipCompareEditorLine("Harvested", "No data available for " + plot.series[0].data[pointIndex][2]," ", ( seriesIndex == 1 ));
 	}
 
 	return returned;
@@ -195,6 +188,26 @@ function tooltipCompareEditor(str, seriesIndex, pointIndex, plot,series	) {
 function tooltipDetailsContentEditor(str, seriesIndex, pointIndex, plot,series	){
 	var returned = ""; 
 	return returned;	
+}
+
+function tooltipTodayContentEditorLine(label, value, sign, isBold) {
+	return tooltipDefaultLine(label, value, sign, isBold);
+}
+
+function tooltipProductionContentEditorLine(label, value, sign, isBold) {
+	return tooltipDefaultLine(label, value, sign, isBold);		
+}
+
+function tooltipCompareEditorLine(label, value, sign, isBold) {
+	return tooltipDefaultLine(label, value, sign, isBold);	
+}
+
+function tooltipDefaultLine(label, value, sign, isBold) {
+	bold = (isBold) ? ['<b>','</b>'] : bold=['','']; 
+	line = bold[0] + '<span class="jqplot_hl_label">' + label + ":" + "</span>" 
+				   + '<span class="jqplot_hl_value">' + value + "</span>"
+				   + '<span class="jqplot_hl_sign">' + sign + "</span>" + bold[1] + "<br />";
+	return line;
 }
 
 
