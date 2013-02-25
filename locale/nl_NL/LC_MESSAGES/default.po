@@ -410,7 +410,7 @@ msgstr "* Alle cijfers zijn in kWh"
 
 #: server.php:473
 msgid "** Incl. initial kWh"
-msgstr "** Inclusief initele kWh"
+msgstr "** Inclusief initiële kWh"
 
 #: admin/admin-server.php:180
 #: admin/admin-server.php:187
@@ -477,32 +477,3 @@ msgstr "Overige"
 msgid "version"
 msgstr "versie"
 
-#~ msgid "plant power"
-#~ msgstr "Systeem vermogen"
-
-#~ msgid "wp"
-#~ msgstr "wp"
-
-#~ msgid "Averages"
-#~ msgstr "Gemiddeld"
-
-#~ msgid "Select the month"
-#~ msgstr "Selecteer de maand"
-
-#~ msgid "The values below are grouped by"
-#~ msgstr "Onderstaande waardes zijn gegroepeerd op"
-
-#~ msgid "overall*"
-#~ msgstr "Totaal*"
-
-#~ msgid "Custom"
-#~ msgstr "Aangepast"
-
-#~ msgid "year"
-#~ msgstr "year"
-
-#~ msgid "today"
-#~ msgstr "Today"
-
-#~ msgid "week"
-#~ msgstr "week"

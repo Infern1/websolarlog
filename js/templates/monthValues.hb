@@ -13,13 +13,13 @@
 			{{#each data.monthData.data.maxPower}}	
 			<h3>Inv. {{this.INV}}</h3>
 				<div class="innerAccordionPeriod">
-	    			<div class="column span-4 first">{{../lang.inv}}</div>
-					<div class="column span-3" style="text-align:right;">{{../lang.watt}}</div>
-					<div class="column span-9" style="text-align:center;">{{../lang.date}}</div>
+	    			<div class="column span-5 first">{{../lang.inv}}</div>
+					<div class="column span-4" style="text-align:right;">{{../lang.watt}}</div>
+					<div class="column span-8" style="text-align:center;">{{../lang.date}}</div>
     				{{#each this}}
-			    		<div class="column span-4 first">{{this.INV}}</div>
-		    			<div class="column span-3" style="text-align:right;">{{this.maxGP}}</div>
-		    			<div class="column span-9" last" style="text-align:right;">{{this.date}}</div>
+			    		<div class="column span-5 first">{{this.INV}}</div>
+		    			<div class="column span-4" style="text-align:right;">{{this.maxGP}}</div>
+		    			<div class="column span-8" last" style="text-align:right;">{{this.date}}</div>
 			   		{{/each}}
 				</div>
 		    {{/each}}
@@ -36,14 +36,14 @@
 			{{#each data.monthData.data.maxEnergy}}
 	    		<h3 style="margin:0px;">Inv. 1</h3>
 	    		<div class="innerAccordionPeriod">
-    				<div class="column span-4 first">{{../lang.inv}}</div>
-					<div class="column span-3" style="text-align:right;">{{../lang.kwh}}</div>
-					<div class="column span-9" style="text-align:center;">{{../lang.date}}</div>
+    				<div class="column span-5 first">{{../lang.inv}}</div>
+					<div class="column span-4" style="text-align:right;">{{../lang.kwh}}</div>
+					<div class="column span-8" style="text-align:center;">{{../lang.date}}</div>
 		
     				{{#each this}}
-		    			<div class="column span-4 first">{{this.INV}}</div>
-			    		<div class="column span-3" style="text-align:right;">{{this.KWH}}</div>
-			    		<div class="column span-9" last" style="text-align:right;">{{this.date}}</div>
+		    			<div class="column span-5 first">{{this.INV}}</div>
+			    		<div class="column span-4" style="text-align:right;">{{this.KWH}}</div>
+			    		<div class="column span-8" last" style="text-align:right;">{{this.date}}</div>
 				    {{/each}}
 			   	</div>
 		    {{/each}}

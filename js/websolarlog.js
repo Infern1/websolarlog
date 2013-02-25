@@ -1,10 +1,7 @@
-// calculate the JS parse time //
-
 //Only for developer purposes
 $.ajaxSetup({
 	cache : true
 });
-
 
 function ajaxReady(){
     $('#contentLoading').remove();
@@ -202,22 +199,20 @@ function tooltipDefaultLine(label, value, sign, isBold) {
 
 
 function handleGraphs(request,invtnum){
-
+	// set inverter
 	invtnum = $('#pickerInv').val();
-
-	
-
 	// get activated Tab;
 	var tabSelected = $('#tabs').tabs('option', 'selected');
 	// set type to Today
 	var tab='Today';
+	// set date
+	var date = $('#datepicker').val();
+	
 	(tabSelected == 0)? tab= 'Today' : tab=tab;
 	(tabSelected == 1)? tab= 'Yesterday' : tab=tab;
 	(tabSelected == 2)? tab= 'Month' : tab=tab;
 	(tabSelected == 3)? tab= 'Year'	: tab=tab;
 	var period = tab;
-	
-	var date = $('#datepicker').val();
 	
 	if (currentGraphHandler){
     	currentGraphHandler.destroy();
@@ -266,10 +261,7 @@ function populateTabs(){
 			success : function(source) {
 				var template = Handlebars.compile(source);
 
-				var html = template({
-				'data' : data,
-				'lang' : data.lang
-				});
+				var html = template({'data' : data,'lang' : data.lang});
 				$('#pickerFilter').html(html);
 				
 				var invtnum = $('#pickerInv').val();
@@ -378,108 +370,104 @@ var WSL = {
 
 
 						
-						GP = 3600 / 10;
-						gaugeGPOptions = {
-							title : data.lang.ACPower,
-							grid : {
-								background : '#FFF'
-							},
-							seriesDefaults : {
-								renderer : $.jqplot.MeterGaugeRenderer,
-								rendererOptions : {
-									min : 0,
-									max : GP * 10,
-									padding : 0,
-									intervals : [ GP, GP * 2, GP * 3, GP * 4, GP * 5,
-											GP * 6, GP * 7, GP * 8, GP * 9, GP * 10 ],
-									intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
-											'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
-											'#4BFE78', '#0AFE47', '#01F33E' ]
-								}
-							}
-						};
-						IP = 3600 / 10;
-						gaugeIPOptions = {
-								title : data.lang.DCPower,
-								grid : {
-									background : '#FFF'
-								},
-								seriesDefaults : {
-									renderer : $.jqplot.MeterGaugeRenderer,
-									rendererOptions : {
-										min : 0,
-										max : IP * 10,
-										padding : 0,
-										intervals : [ IP, IP * 2, IP * 3, IP * 4, IP * 5, IP * 6, IP * 7, IP * 8, IP * 9, IP * 10 ],
-										intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8','#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95','#4BFE78', '#0AFE47', '#01F33E' ]
-									}
-								}
-							};
-						EFF = 100 / 10;
-						gaugeEFFOptions = {
-								title : data.lang.Efficiency,
-								grid : {
-									background : '#FFF'
-								},
-								seriesDefaults : {
-									renderer : $.jqplot.MeterGaugeRenderer,
-									rendererOptions : {
-										min : 0,
-										max : EFF * 10,
-										padding : 0,
-										intervals : [ EFF, EFF * 2, EFF * 3, EFF * 4, EFF * 5,EFF * 6, EFF * 7, EFF * 8, EFF * 9, EFF * 10 ],
-										intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8','#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95','#4BFE78', '#0AFE47', '#01F33E' ]
-									}
-								}
-							};
-						
+		GP = 3600 / 10;
+		gaugeGPOptions = {
+			title : data.lang.ACPower,
+			grid : {
+				background : '#FFF'
+			},
+			seriesDefaults : {
+				renderer : $.jqplot.MeterGaugeRenderer,
+				rendererOptions : {
+					min : 0,
+					max : GP * 10,
+					padding : 0,
+					intervals : [ GP, GP * 2, GP * 3, GP * 4, GP * 5,
+							GP * 6, GP * 7, GP * 8, GP * 9, GP * 10 ],
+					intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
+							'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
+							'#4BFE78', '#0AFE47', '#01F33E' ]
+				}
+			}
+		};
+		IP = 3600 / 10;
+		gaugeIPOptions = {
+				title : data.lang.DCPower,
+				grid : {
+					background : '#FFF'
+				},
+				seriesDefaults : {
+					renderer : $.jqplot.MeterGaugeRenderer,
+					rendererOptions : {
+						min : 0,
+						max : IP * 10,
+						padding : 0,
+						intervals : [ IP, IP * 2, IP * 3, IP * 4, IP * 5, IP * 6, IP * 7, IP * 8, IP * 9, IP * 10 ],
+						intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8','#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95','#4BFE78', '#0AFE47', '#01F33E' ]
+					}
+				}
+			};
+		EFF = 100 / 10;
+		gaugeEFFOptions = {
+				title : data.lang.Efficiency,
+				grid : {
+					background : '#FFF'
+				},
+				seriesDefaults : {
+					renderer : $.jqplot.MeterGaugeRenderer,
+					rendererOptions : {
+						min : 0,
+						max : EFF * 10,
+						padding : 0,
+						intervals : [ EFF, EFF * 2, EFF * 3, EFF * 4, EFF * 5,EFF * 6, EFF * 7, EFF * 8, EFF * 9, EFF * 10 ],
+						intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8','#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95','#4BFE78', '#0AFE47', '#01F33E' ]
+					}
+				}
+			};
 
-				delete data;
-				$.ajax({
-					url : 'js/templates/liveInverters.hb',
-					success : function(source) {
-						var template = Handlebars.compile(source);
-						var html = template({
-							'data' : data,
-							'lang':data.lang
-						});
-						$(divId).html(html);
+			delete data;
+			$.ajax({
+				url : 'js/templates/liveInverters.hb',
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data,
+						'lang':data.lang
+					});
+					$(divId).html(html);
 
-						if(gaugeGP){
-							gaugeGP.destroy();
-						}
-						$('#gaugeGP').empty();
-						gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ],gaugeGPOptions);
-						gaugeGP.series[0].data = [ [ 'W',data.sumInverters.GP ] ];
-						gaugeGP.series[0].label = data.sumInverters.GP;
-						document.title = '('+ data.sumInverters.GP+ ' W) WebSolarLog';
-						gaugeGP.replot();
-						
-						if(gaugeIP){
-							gaugeIP.destroy();
-						}
-						$('#gaugeIP').empty(); 
-						gaugeIP = $.jqplot('gaugeIP', [ [ 0.1 ] ],gaugeIPOptions);
-						gaugeIP.series[0].data = [ [ 'W',data.sumInverters.IP ] ];
-						gaugeIP.series[0].label = data.sumInverters.IP;
-						gaugeIP.replot();
-						
-						if(gaugeEFF){
-							gaugeEFF.destroy();
-						}
-						$('#gaugeEFF').empty(); 
-						gaugeEFF = $.jqplot('gaugeEFF', [ [ 0.1 ] ],gaugeEFFOptions);
-						gaugeEFF.series[0].data = [ [ 'W',data.sumInverters.EFF] ];
-						gaugeEFF.series[0].label = data.sumInverters.EFF+' %';
-						gaugeEFF.replot();
+					if(gaugeGP){
+						gaugeGP.destroy();
+					}
+					$('#gaugeGP').empty();
+					gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ],gaugeGPOptions);
+					gaugeGP.series[0].data = [ [ 'W',data.sumInverters.GP ] ];
+					gaugeGP.series[0].label = data.sumInverters.GP;
+					document.title = '('+ data.sumInverters.GP+ ' W) WebSolarLog';
+					gaugeGP.replot();
+					
+					if(gaugeIP){
+						gaugeIP.destroy();
+					}
+					$('#gaugeIP').empty(); 
+					gaugeIP = $.jqplot('gaugeIP', [ [ 0.1 ] ],gaugeIPOptions);
+					gaugeIP.series[0].data = [ [ 'W',data.sumInverters.IP ] ];
+					gaugeIP.series[0].label = data.sumInverters.IP;
+					gaugeIP.replot();
+					
+					if(gaugeEFF){
+						gaugeEFF.destroy();
+					}
+					$('#gaugeEFF').empty(); 
+					gaugeEFF = $.jqplot('gaugeEFF', [ [ 0.1 ] ],gaugeEFFOptions);
+					gaugeEFF.series[0].data = [ [ 'W',data.sumInverters.EFF] ];
+					gaugeEFF.series[0].label = data.sumInverters.EFF+' %';
+					gaugeEFF.replot();
 
-
-						ajaxReady();
-					},
-					dataType : 'text',
-				});
-
-
+					ajaxReady();
+				},
+				dataType : 'text',
+			});
 		});
 	},
 
@@ -583,13 +571,8 @@ var WSL = {
 					
 					$('#tabs').tabs({
 					    show: function(event, ui) {
-					    	//invtnum = $('#pickerInv').val();
-					    	//handleGraphs('standard',invtnum);
-					    	
-					    	
 					    	// populate the tabs:
 					    	populateTabs();
-					    	
 					    }
 					});
 					success.call();
@@ -597,7 +580,6 @@ var WSL = {
 				dataType : 'text',
 			});
 		});
-		
 		return true;
 	},
 
@@ -614,7 +596,6 @@ var WSL = {
 						'lang' : data.lang
 					});
 					$(divId).html(html);
-			
 				},
 				dataType : 'text',
 			});	
@@ -669,8 +650,7 @@ var WSL = {
 
 	init_PageMonthValues : function(monthValues,periodList) {
 		ajaxStart();
-		
-		
+
 		if($('#datePickerPeriod').val()){
 			var completeDate = "01-"+$('#datePickerPeriod').val();
 		}else{
@@ -688,11 +668,9 @@ var WSL = {
 						'data' : data,
 						'lang' : data.lang
 					});
-
 					$(monthValues).html(html);
 
 				    $(function() {
-
 				        $( ".accordion" ).accordion({collapsible: true});
 				        $( ".accordion" ).accordion({collapsible: true});
 				    });
@@ -712,15 +690,12 @@ var WSL = {
 							        dateFormat: 'mm-yy',
 							        changeMonth: true,
 							        changeYear: true,
-							        //showButtonPanel: true,
-
 							        onClose: function(dateText, inst) {
 							            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
 							            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
 							            //new Date(year, month, day) // W3schools
 							            $(this).val($.datepicker.formatDate('mm-yy', new Date(year, month, 1)));
 										WSL.init_PageMonthValues("#columns","#periodList"); // Initial load fast
-										
 							        }
 								});
 					            //new Date(year, month, day) // W3schools
@@ -730,46 +705,33 @@ var WSL = {
 							        dateFormat: 'mm-yy',
 							        changeMonth: true,
 							        changeYear: true,
-							        //showButtonPanel: true,
-
 							        onClose: function(dateText, inst) {
 							            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
 							            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-							            
 							            //new Date(year, month, day) // W3schools
 							            $(this).val($.datepicker.formatDate('mm-yy', new Date(year, month, 1)));
 										WSL.init_PageMonthValues("#columns","#periodList"); // Initial load fast
 							        }
 								});
-								
-
 								pickerDate = pickerDate.split('-'); // 01-2012 (month-year)
 								pickerDate[0] = pickerDate[0]-1;
 					            //new Date(year, month, day) // W3schools
 								$("#datePickerPeriod").datepicker('setDate', new Date(pickerDate[1],pickerDate[0],1));
-
 							}
-							 $("#datePickerPeriod").focus(function () {
-								 $(".ui-datepicker-calendar").hide();
-								 
-							        
-							        $("#ui-datepicker-div").position({
-							            my: "center top",
-							            at: "center bottom",
-							            of: $(this)
-							        });
+							$("#datePickerPeriod").focus(function () {
+								$(".ui-datepicker-calendar").hide();
+								$("#ui-datepicker-div").position({
+									my: "center top",
+									at: "center bottom",
+							        of: $(this)
 							    });
+							});
 						},
 						dataType : 'text',
 					});
-					
-				    
-				    
 				},
 				dataType : 'text',
 			});
-			
-			
 		});
 		ajaxReady();
 	},
@@ -789,15 +751,12 @@ var WSL = {
 			$.ajax({
 				url : 'js/templates/yearValues.hb',
 				success : function(source) {
-
 					var template = Handlebars.compile(source);
 					var html = template({
 						'data' : data,
 						'lang' : data.lang
 					});
-
 					$(yearValues).html(html);
-
 				    $(function() {
 				        $( ".accordion" ).accordion({collapsible: true});
 				        $( ".accordion" ).accordion({collapsible: true});
@@ -813,13 +772,10 @@ var WSL = {
 							$('#pageYearDateFilter').html(html);
 
 							if(!pickerDate){
-
 								$("#datePickerPeriod").datepicker({
 							        dateFormat: 'yy',
 							        changeMonth: false,
 							        changeYear: true,
-							        //showButtonPanel: true,
-
 							        onClose: function(dateText, inst) {
 							            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
 							            //new Date(year, month, day) // W3schools
@@ -829,25 +785,19 @@ var WSL = {
 								});
 								$("#datePickerPeriod").datepicker('setDate', new Date());
 							}else{
-
 								$("#datePickerPeriod").datepicker({
 							        dateFormat: 'yy',
 							        changeMonth: false,
 							        changeYear: true,
-							        //showButtonPanel: true,
-
 							        onClose: function(dateText, inst) {
 							            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
 							            //new Date(year, month, day)
 							            $(this).val($.datepicker.formatDate('yy', new Date(year, 1, 1)));
 										WSL.init_PageYearValues("#columns","#periodList"); // Initial load fast
-
 							        }
 								});
-
 					            //new Date(year, month, day)
 								$("#datePickerPeriod").datepicker('setDate', new Date(pickerDate,1,1));
-
 							}
 							 $("#datePickerPeriod").focus(function () {
 							        $(".ui-datepicker-calendar").hide();
@@ -863,13 +813,9 @@ var WSL = {
 						},
 						dataType : 'text',
 					});
-				    
 				},
 				dataType : 'text',
 			});
-			
-			
-			
 		});
 		ajaxReady();
 	},
@@ -883,7 +829,6 @@ var WSL = {
 			method : 'GET',
 			dataType : 'json',
 			success : function(result) {
-
 				// add a custom tick formatter, so that you don't have to include the entire date renderer library.
 				$.jqplot.DateTickFormatter = function(format, val) {
 				    // for some reason, format isn't being passed through properly, so just going to hard code for purpose of this jsfiddle
@@ -912,7 +857,10 @@ var WSL = {
 					}, 
 					axes : {}, 
 					highlighter :{
-						tooltipContentEditor: tooltipTodayContentEditor, show: true,tooltipLocation: 'n'
+						tooltipContentEditor: tooltipTodayContentEditor, show: true,tooltipLocation: 'n',
+						fadeTooltip:true,
+						tooltipFadeSpeed: 300,
+						tooltipAxes:'both',
 					},
 					cursor : {zoom: true, show: true, showTooltip:false, style: 'default'}
 				};
@@ -1000,8 +948,6 @@ var WSL = {
 					dayData2.push([ object[0], object[3], object[2]]);
 					i +=1;
 				}
-
-
 				// add a custom tick formatter, so that you don't have to include the entire date renderer library.
 				$.jqplot.DateTickFormatter = function(format, val) {
 				    // for some reason, format isn't being passed through properly, so just going to hard code for purpose of this jsfiddle
@@ -1009,10 +955,7 @@ var WSL = {
 				    format = '%b %#d';
 				    return $.jsDate.strftime(val, format);
 				};
-
-				
 				var graphDayPeriodOptions = {
-						
 						series : [
 						          {label:result.lang.harvested,yaxis:'yaxis',showMarker:false,renderer:$.jqplot.BarRenderer, pointLabels: {show: false}},
 						          {label:result.lang.cumulative,yaxis:'y2axis', pointLabels: {show: false}}
@@ -1055,11 +998,6 @@ var WSL = {
 								angle:-20
 							}
 						},
-						/*
-						r/ray('label'=>'','renderer'=>'DateAxisRenderer',
-								'tickRenderer'=>'CanvasAxisTickRenderer','labelRenderer'=>'CanvasAxisLabelRenderer',
-								'tickInterval'=>3600,'tickOptions'=>array('formatter'=>'DefaultTickFormatter','angle'=>-45)
-						*/
 						yaxis : {
 							label : result.lang.harvested,
 							min : 0,
@@ -1072,9 +1010,6 @@ var WSL = {
 						}
 					}
 				};
-
-				
-				
 				graphDayPeriodOptions.axes.xaxis.min = result.dayData.data[0][2];
 				graphDayPeriodOptions.axes.xaxis.max = result.dayData.data[i-1][2];
 				var plot = $.jqplot(divId, [ dayData1,dayData2 ], graphDayPeriodOptions).destroy();
@@ -1087,7 +1022,6 @@ var WSL = {
 	
 	init_production : function(invtnum,divId){
 		WSL.createProductionGraph(invtnum, divId);
-		
 	},
 
 	createProductionGraph : function(invtnum, divId) {
@@ -1111,7 +1045,6 @@ var WSL = {
 						url : 'js/templates/productionFigures.hb',
 						success : function(source) {
 							var template = Handlebars.compile(source);
-							
 							for (line in result.dayData.data) {
 								var data = result.dayData.data[line];
 								var item = {
@@ -1125,7 +1058,6 @@ var WSL = {
 								};
 								dataTable.push([item]);
 							}
-
 							var html = template({
 								'data' : dataTable,
 								'lang':result.lang
@@ -1146,12 +1078,10 @@ var WSL = {
 						dataDay4.push(object[5] );
 					}
 					ticksTable.push("13");
-					
 					var graphOptions = {
 							series : [
 							          {label:'Harvested(kWh)',yaxis:'yaxis', pointLabels: {show: false},
 							        	  renderer: $.jqplot.BarRenderer,
-											
 									        rendererOptions: {
 									            barPadding: 5,      // number of pixels between adjacent bars in the same
 									                                // group (same category or bin).
@@ -1166,7 +1096,6 @@ var WSL = {
 							          },
 							          {label:'Expected(kWh)',yaxis:'y2axis',pointLabels: {show: false},
 							        	  renderer: $.jqplot.BarRenderer,
-											
 									        rendererOptions: {
 									            barPadding: 5,      // number of pixels between adjacent bars in the same
 									                                // group (same category or bin).
@@ -1182,18 +1111,14 @@ var WSL = {
 							          {label:'Cum. Expected(kWh)',yaxis:'y3axis',renderer:$.jqplot.LineRenderer, pointLabels: {show: false}},
 							          {label:'Cum. Harvested(kWh)',yaxis:'y4axis',renderer:$.jqplot.LineRenderer, pointLabels: {show: false}},
 						    ],
-
 						    legend: {
 						        show: true,
 						        location: 'nw',     // compass direction, nw, n, ne, e, se, s, sw, w.
 						        xoffset: 12,        // pixel offset of the legend box from the x (or x2) axis.
 						        yoffset: 12,        // pixel offset of the legend box from the y (or y2) axis.
 						    },
-
-						
 							axes : {
 								xaxis: {
-									
 								       show: true,    // wether or not to renderer the axis.  Determined automatically.
 								        pad: 1,       // a factor multiplied by the data range on the axis to give the
 								                        // axis range so that data points don't fall on the edges of the axis.
@@ -1225,8 +1150,6 @@ var WSL = {
 									min:0,
 									labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
 								},
-
-								
 								y2axis : {label:'Expected(kWh)',
 									min:0,
 									labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
@@ -1235,14 +1158,12 @@ var WSL = {
 								y3axis : {label:'Cum. Expected(kWh)',min:0,labelRenderer: $.jqplot.CanvasAxisLabelRenderer,},
 								y4axis : {label:'Cum. Harvested(kWh)',min:0,labelRenderer: $.jqplot.CanvasAxisLabelRenderer,},
 							},
-
 							highlighter : {
 								tooltipContentEditor: tooltipProductionContentEditor,
 								show : true,
 								tooltipLocation:'n'
 							},
 							cursor:{show:false},
-
 						};
 						
     				
@@ -1254,7 +1175,6 @@ var WSL = {
     					harvested.push(dataDay1[i]);
     				}
     				var maxHarvested = Math.max.apply(Math, harvested);
-
     				for (var i=0; i<dataDay2.length; i++) {
     				    // Iterates over numeric indexes from 0 to 5, as
 						// everyone expects
@@ -1271,17 +1191,13 @@ var WSL = {
     				var axesMargin = Math.round(maxAxesValue/100)*10;
     				graphOptions.axes.y3axis.max = maxAxesValue+axesMargin;
     				graphOptions.axes.y4axis.max = maxAxesValue+axesMargin;
-    				//graphOptions.axes.xaxis = ticksTable;
-
 					graphOptions.axes.xaxis.min = 0;
 					graphOptions.axes.xaxis.max = 13;
-    				
-    				
+
     				$("#ProductionGraph").height(450);
 					handle = null;
 					delete handle;
     				handle = $.jqplot("ProductionGraph", [ dataDay1,dataDay2,dataDay3,dataDay4], graphOptions);
-
     				ajaxReady();
 				}
 			}
@@ -1289,9 +1205,7 @@ var WSL = {
 	},
 
 	init_details : function(divId,queryDate){
-	
 		$("#main-middle").prepend('<div id="datePeriodFilter"></div><div id="detailsSwitches"></div><div id="detailsGraph"></div>');
-
 		$.getJSON('server.php?method=getDetailsSwitches', function(data) {
 			$.ajax({
 				url : 'js/templates/detailsSwitches.hb',
@@ -1317,54 +1231,40 @@ var WSL = {
 						'lang' : data.lang
 					});
 					$('#datePeriodFilter').html(html);
-					
 					var invtnum = $('#pickerInv').val();
-
 					(queryDate!="undefined") ? date = queryDate: date = date;
 
-
-					// get the details graph....
-					//WSL.createDetailsGraph(invtnum, divId,date);
-					
 					$(".mainTabContainer").hover(function() {
 			    		$("#pickerFilterDiv").hide();
 			    		$( "#datepicker" ).datepicker("hide");
 					}, function() {
 						$("#pickerFilterDiv").show();
 					});
-
 					$('#pickerPeriod').live("change",
-							function(){
-						WSL.createDetailsGraph(invtnum, divId,date);
-							}
+						function(){
+							WSL.createDetailsGraph(invtnum, divId,date);
+						}
 					);
-					
-					
 					$('#datepicker').live("change",
-							function(){
-						WSL.createDetailsGraph(invtnum, divId,date);
-							}
+						function(){
+							WSL.createDetailsGraph(invtnum, divId,date);
+						}
 					);
-					
 					$('#pickerInv').live("change",
-							function(){
-						WSL.createDetailsGraph(invtnum, divId,date);
-							}
+						function(){
+							WSL.createDetailsGraph(invtnum, divId,date);
+						}
 					);
-
 					$('#next').unbind('click');
 					$('#previous').unbind('click');
 					$('#pickerPeriod').unbind('click');
 
 					$('#next').click(function () {
-						
 					    var picker = $("#datepicker");
 					    var date=new Date(picker.datepicker('getDate'));
-					    
 					    var splitDate = $('#datepicker').val().split('-');
 					    if($('#pickerPeriod').val()=='Today'){
 					    	date.setDate(date.getDate()+1);
-					    	
 					    }else if($('#pickerPeriod').val()=='Week'){
 					    	date.setDate(date.getDate()+7);
 					    }else if($('#pickerPeriod').val()=='Month'){
@@ -1399,23 +1299,15 @@ var WSL = {
 
 					    WSL.createDetailsGraph(invtnum, divId, splitDate[0]+'-'+splitDate[1]+'-'+splitDate[2]);
 					});
-				    //picker.datepicker('setDate', date);
 					var invtnum = $('#pickerInv').val();
-
 				    WSL.createDetailsGraph(invtnum, divId,date);
-							
 				},
 				dataType : 'text'
 			});
-			
 	    });
-	    
 	},
 
 	createDetailsGraph : function(invtnum, divId,date) {
-
-		//var date = $('#datepicker').val();
-
 		$.ajax({
 			url : "server.php?method=getDetailsGraph&invtnum=" + invtnum+"&date="+date,method : 'GET',dataType : 'json',
 			success : function(result) {
@@ -1450,8 +1342,7 @@ var WSL = {
 				          {yaxis:'y6axis'},// 13
 				          {yaxis:'y6axis'}// 13
 				          ],
-							axesDefaults : {useSeriesColor: true },legend : {show: true, location: 's', placement: 'outsideGrid',renderer: $.jqplot.EnhancedLegendRenderer,rendererOptions: {seriesToggle: 'normal',numberRows: 3,// seriesToggleReplot:
-																																																									// {resetAxes:["yaxis"]}
+							axesDefaults : {useSeriesColor: true },legend : {show: true, location: 's', placement: 'outsideGrid',renderer: $.jqplot.EnhancedLegendRenderer,rendererOptions: {seriesToggle: 'normal',numberRows: 3,// seriesToggleReplot: {resetAxes:["yaxis"]}
 							}}, 
 							seriesDefaults:{
 								tickOptions : {
@@ -1471,8 +1362,6 @@ var WSL = {
 							},
 							highlighter : {tooltipContentEditor: tooltipDetailsContentEditor,show : true}
 					};
-
-
 					var maxP = result.dayData.max.P;
 					graphOptions.axes.yaxis.max = maxP+((maxP/100)*10);
 					graphOptions.axes.y7axis.max = maxP+((maxP/100)*10);
@@ -1544,15 +1433,12 @@ var WSL = {
 					ajaxReady();
 				}
 			}
-		});	
-
+		});
 	},
 
 	init_compare : function( invtnum,divId ) {
 		ajaxStart();
 		var dataTable= []; 
-
-		
 		// initialize languages selector on the given div
 	    $.getJSON('server.php?method=getCompareFilters&type=today', function(data) {
 			$.ajax({
@@ -1564,11 +1450,8 @@ var WSL = {
 						'lang' : data.lang
 					});
 					$(divId).html(html);
-					
 					WSL.createCompareGraph(invtnum,whichMonth,whichYear,compareMonth,compareYear,0);
-
 					ajaxReady();
-					
 				},
 				dataType : 'text',
 			});
@@ -1592,7 +1475,6 @@ var WSL = {
 	},
 
 	createCompareGraph : function(invtnum,whichMonth,whichYear,compareMonth,compareYear,type) {
-		
 		$('#whichMonth').val(whichMonth);
 		$('#whichYear').val(whichYear);
 		$('#compareMonth').val(compareMonth);
@@ -1600,42 +1482,42 @@ var WSL = {
 		(type==0) ? compareYear=0 : compareYear=compareYear;
 		$('#compareYear').val(compareYear);
 		var graphOptions = {
-				series:[
-				        {xaxis:'x2axis',renderer:$.jqplot.LineRenderer},
-				        {xaxis:'xaxis',renderer:$.jqplot.LineRenderer},
-				        {label:'', xaxis:'yaxis',renderer:$.jqplot.LineRenderer}
+			series:[
+			        {xaxis:'x2axis',renderer:$.jqplot.LineRenderer},
+			        {xaxis:'xaxis',renderer:$.jqplot.LineRenderer},
+			        {label:'', xaxis:'yaxis',renderer:$.jqplot.LineRenderer}
 				        ],
-	          axesDefaults: {useSeriesColor: true,
-	              tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
-	              tickOptions: {
-	                angle: -30,
-	                fontSize: '10pt'
-	              }
-	          },
-				legend : {
-					show: true, location: 's', placement: 'outsideGrid',
-					renderer: $.jqplot.EnhancedLegendRenderer,
-					rendererOptions: {
-						seriesToggle: 'normal',
-						numberRows: 1,
-				}}, 
-				seriesDefaults:{rendererOptions: {barMargin: 10,barWidth:10},pointLabels: {show: false},},				
-	            axes: {
-	                xaxis: {
-						labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-						renderer : $.jqplot.DateAxisRenderer,
-						angle : -30,
-						tickOptions : {formatString : '%d-%m'}
-	                },
-	                x2axis: {
-						labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-						renderer : $.jqplot.DateAxisRenderer,
-						angle : -30,
-						tickOptions : {formatString : '%d-%m'}
-	                },
-	                yaxis: {}
-	            },
-				highlighter : {tooltipContentEditor: tooltipCompareEditor,show : true}
+			  axesDefaults: {useSeriesColor: true,
+			      tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+			      tickOptions: {
+			        angle: -30,
+			        fontSize: '10pt'
+			      }
+			  },
+			legend : {
+				show: true, location: 's', placement: 'outsideGrid',
+				renderer: $.jqplot.EnhancedLegendRenderer,
+				rendererOptions: {
+					seriesToggle: 'normal',
+					numberRows: 1,
+			}}, 
+			seriesDefaults:{rendererOptions: {barMargin: 10,barWidth:10},pointLabels: {show: false},},				
+            axes: {
+                xaxis: {
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+					renderer : $.jqplot.DateAxisRenderer,
+					angle : -30,
+					tickOptions : {formatString : '%d-%m'}
+                },
+                x2axis: {
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+					renderer : $.jqplot.DateAxisRenderer,
+					angle : -30,
+					tickOptions : {formatString : '%d-%m'}
+                },
+                yaxis: {}
+            },
+			highlighter : {tooltipContentEditor: tooltipCompareEditor,show : true}
 		};
 
 		$.ajax({
@@ -1643,7 +1525,6 @@ var WSL = {
 			method : 'GET',
 			dataType : 'json',
 			success : function(result) {
-
 				if (result.dayData.data) {
 					var dataDay1 = [];
 					var dataDay2 = [];
@@ -1660,12 +1541,10 @@ var WSL = {
 						        "harvested":object[4],
 						};
 						compareTable.push([item]);
-					
 					}
 					for (line in result.dayData.data.which) {
 						var object = result.dayData.data.which[line];
 						dataDay2.push([  object[0], object[2], object[3] ]);
-						
 						var item = {
 						        "timestamp": object[0],
 						        "har": object[2],
@@ -1714,8 +1593,6 @@ var WSL = {
 		});
 	}
 };
-
-
 // api class
 WSL.api.getHistoryValues = function(success) {
 	$.getJSON("server.php", {
@@ -1769,14 +1646,12 @@ WSL.api.getPageMonthValues = function(date,success) {
 	}, success);
 };
 
-
 WSL.api.getPageYearValues = function(date,success) {
 	$.getJSON("server.php", {
 		method : 'getPageYearValues',
 		'date': date,
 	}, success);
 };
-
 
 WSL.api.getMisc = function(invtnum, success) {
 	$.getJSON("server.php", {
@@ -1790,8 +1665,6 @@ WSL.api.getInvInfo = function(success) {
 		method : 'getInvInfo'
 	}, success);
 };
-
-
 
 WSL.api.getInverters = function(success) {
     $.getJSON("server.php", {

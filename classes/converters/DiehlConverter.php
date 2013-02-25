@@ -1,10 +1,13 @@
 <?php
 class DiehlConverter
 {
-	const _I1A		= 'eNEXUS_0066[s:17,t:1,p:1]';//MPP1 Amps
-	const _I1V		= 'eNEXUS_0009[s:17,t:1,p:1]';//MPP1 Volt
-	const _I1P		= 'eNEXUS_0064[s:17,t:1,p:1]';//MPP1 Power
 	
+
+	const _I1A		= 'eNEXUS_0005[s:1,t:17]';//MPP1 Amps
+	const _I1V		= 'eNEXUS_0006[s:1,t:17]';//MPP1 Volt
+	const _I1P		= 'eNEXUS_0007[s:1,t:17]';//MPP1 Power
+	
+	/*
 	const _I2A		= 'eNEXUS_0066[s:17,t:1,p:2]';//MPP2 Amps
 	const _I2V		= 'eNEXUS_0009[s:17,t:1,p:2]';//MPP2 Volt
 	const _I2P		= 'eNEXUS_0064[s:17,t:1,p:2]';//MPP2 Power
@@ -12,14 +15,16 @@ class DiehlConverter
 	const _I3A		= 'eNEXUS_0066[s:17,t:1,p:3]';//MPP3 Amps
 	const _I3V		= 'eNEXUS_0009[s:17,t:1,p:3]';//MPP3 Volt
 	const _I3P		= 'eNEXUS_0064[s:17,t:1,p:3]';//MPP3 Power
+	*/
 	
-	const _GA 		= 'eNEXUS_0066[s:17,t:1]'; //Grid Amps
-	const _GP		= 'eNEXUS_0064[s:17,t:1]'; //Grid Volt
-	const _GV		= 'eNEXUS_0055[s:17,t:1]'; //Grid Power
+	const _GA 		= 'eNEXUS_0008[s:1,t:17]'; //Grid Amps
+	const _GV		= 'eNEXUS_0009[s:1,t:17]'; //Grid Power
+	const _GP		= 'eNEXUS_0010[s:1,t:17]'; //Grid Volt
+	
 	
 	const _FRQ		= 'eNEXUS_0046[s:1,t:17]'; // Frequency
-	const _INVT		= 'eNEXUS_0045[s:1,t:17]'; // Inverter Temperatur
-	const _KWHT		= 'eNEXUS_0043[s:17,t:1]'; // kWhTotal
+	const _INVT		= 'eNEXUS_0045[s:1,t:17]'; // Inverter Temperature
+	const _KWHT		= 'eNEXUS_0043[s:1,t:17,n:4]'; // kWhTotal
 	
     /**
      * Converts the result of getData to an Live object
@@ -38,11 +43,11 @@ class DiehlConverter
         	if(is_array($value)){
         		foreach ($value as $keys => $values){
 			        $live->time = strtotime(date("d-m-Y H:i:s"));
-					
-			        if($values->path == self::_I1A AND $values->value>0){ $live->I1A = ($values->value/1000);}
+				    if($values->path == self::_I1A AND $values->value>0){ $live->I1A = ($values->value/1000);}
 			        if($values->path == self::_I1V AND $values->value>0){ $live->I1V = ($values->value/10);}
 			        if($values->path == self::_I1P AND $values->value>0){ $live->I1P = ($values->value);}
-
+					/*
+					 * 
 			        if($values->path == self::_I2A AND $values->value>0){ $live->I2A = ($values->value/1000);}
 			        if($values->path == self::_I2V AND $values->value>0){ $live->I2V = ($values->value/10);}
 			        if($values->path == self::_I2P AND $values->value>0){ $live->I2P = ($values->value);}
@@ -50,7 +55,8 @@ class DiehlConverter
 			        if($values->path == self::_I3A AND $values->value>0){ $live->I3A = ($values->value/1000);}
 			        if($values->path == self::_I3V AND $values->value>0){ $live->I3V = ($values->value/10);}
 			        if($values->path == self::_I3P AND $values->value>0){ $live->I3P = ($values->value);}
-
+					*
+					*/
 			        if($values->path == self::_GA AND $values->value>0){ $live->GA = ($values->value/1000);}
 			        if($values->path == self::_GP AND $values->value>0){ $live->GP = ($values->value);}
         			if($values->path == self::_GV AND $values->value>0){ $live->GV =($values->value/10);}

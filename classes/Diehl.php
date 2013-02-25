@@ -356,9 +356,26 @@ Class Diehl implements DeviceApi {
     public function getData() {
         if ($this->DEBUG) {
         	// JSON return
-            return '{"jsonrpc":"2.0","result":[{"path":"eNEXUS_0043[s:17,t:1]","value":"11394"}, {"path":"eNEXUS_0063[s:17,t:1]","value":"394"}, {"path":"eNEXUS_0049[s:17,t:1]","value":"394"}, {"path":"eNEXUS_0050[s:17,t:1]","value":"3537"}, {"path":"eNEXUS_0065[s:17,t:1]","value":"139"}, {"path":"eNEXUS_0051[s:17,t:1]","value":"139"}, {"path":"eNEXUS_0052","value":"0"}, {"path":"eNEXUS_0053","value":"0"}, {"path":"eNEXUS_0066[s:17,t:1]","value":"493"}, {"path":"eNEXUS_0055[s:17,t:1]","value":"2333"}, {"path":"eNEXUS_0064[s:17,t:1]","value":"115"}, {"path":"eNEXUS_0056","value":"1"}, {"path":"eNEXUS_0057","value":"1"}, {"path":"eNEXUS_0058","value":"2000"}, {"path":"eNEXUS_0066[s:17,t:1,p:1]","value":"493"}, {"path":"eNEXUS_0066[s:17,t:1,p:2]","value":"0"}, {"path":"eNEXUS_0066[s:17,t:1,p:3]","value":"0"}, {"path":"eNEXUS_0064[s:17,t:1,p:1]","value":"115"}, {"path":"eNEXUS_0064[s:17,t:1,p:2]","value":"0"}, {"path":"eNEXUS_0064[s:17,t:1,p:3]","value":"0"}, {"path":"eNEXUS_0009[s:17,t:1,p:1]","value":"2333"}, {"path":"eNEXUS_0009[s:17,t:1,p:2]","value":"0"}, {"path":"eNEXUS_0009[s:17,t:1,p:3]","value":"0"}],"Id":0}';
+            return '{"jsonrpc":"2.0","result":[{"path":"eNEXUS_0043[s:17,t:1]","value":"11394"}, 
+            {"path":"eNEXUS_0063[s:17,t:1]","value":"394"}, {"path":"eNEXUS_0049[s:17,t:1]","value":"394"}, 
+            {"path":"eNEXUS_0050[s:17,t:1]","value":"3537"}, {"path":"eNEXUS_0065[s:17,t:1]","value":"139"}, 
+            {"path":"eNEXUS_0051[s:17,t:1]","value":"139"}, {"path":"eNEXUS_0052","value":"0"}, 
+            {"path":"eNEXUS_0053","value":"0"}, {"path":"eNEXUS_0066[s:17,t:1]","value":"493"},
+             {"path":"eNEXUS_0055[s:17,t:1]","value":"2333"},{"path":"eNEXUS_0064[s:17,t:1]","value":"115"},
+             {"path":"eNEXUS_0056","value":"1"},{"path":"eNEXUS_0057","value":"1"},
+             {"path":"eNEXUS_0058","value":"2000"},{"path":"eNEXUS_0066[s:17,t:1,p:1]","value":"493"},
+             {"path":"eNEXUS_0066[s:17,t:1,p:2]","value":"0"}, {"path":"eNEXUS_0066[s:17,t:1,p:3]","value":"0"},
+             {"path":"eNEXUS_0064[s:17,t:1,p:1]","value":"115"},{"path":"eNEXUS_0064[s:17,t:1,p:2]","value":"0"},
+               {"path":"eNEXUS_0064[s:17,t:1,p:3]","value":"0"},{"path":"eNEXUS_0009[s:17,t:1,p:1]","value":"2333"},
+                 {"path":"eNEXUS_0009[s:17,t:1,p:2]","value":"0"},{"path":"eNEXUS_0009[s:17,t:1,p:3]","value":"0"}],"Id":0}';
         } else {
-        	$jsonRequest = '{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0043[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0063[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0049[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0050[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0065[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0051[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0052","datatype":"INT16U"},{"path":"eNEXUS_0053","datatype":"INT16U"},{"path":"eNEXUS_0066[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0055[s:17,t:1]","datatype":"INT16U"},{"path":"eNEXUS_0064[s:17,t:1]","datatype":"INT32U"},{"path":"eNEXUS_0056","datatype":"INT16U"},{"path":"eNEXUS_0057","datatype":"INT16U"},{"path":"eNEXUS_0058","datatype":"INT32U"},{"path":"eNEXUS_0066[s:17,t:1,p:1]","datatype":"INT32U"},{"path":"eNEXUS_0066[s:17,t:1,p:2]","datatype":"INT32U"},{"path":"eNEXUS_0066[s:17,t:1,p:3]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1,p:1]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1,p:2]","datatype":"INT32U"},{"path":"eNEXUS_0064[s:17,t:1,p:3]","datatype":"INT32U"},{"path":"eNEXUS_0009[s:17,t:1,p:1]","datatype":"INT16U"},{"path":"eNEXUS_0009[s:17,t:1,p:2]","datatype":"INT16U"},{"path":"eNEXUS_0009[s:17,t:1,p:3]","datatype":"INT16U"}],"id":0}';        																		
+        	$jsonRequest = '{"jsonrpc":"2.0","method":"GeteNexusData","params":[
+{"path":"eNEXUS_0006[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0007[s:1,t:17]","datatype":"INT16U"},
+{"path":"eNEXUS_0005[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0008[s:1,t:17]","datatype":"INT16U"},
+{"path":"eNEXUS_0009[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0011[s:1,t:17]","datatype":"INT32U"},
+{"path":"eNEXUS_0010[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0043[s:1,t:17,n:4]","datatype":"INT32U"},
+{"path":"eNEXUS_0046[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0045[s:1,t:17]","datatype":"INT16S"}		
+],"id":0}:';
             return trim($this->execute($jsonRequest));
         }
     }
