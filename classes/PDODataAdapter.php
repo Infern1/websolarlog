@@ -280,8 +280,12 @@ class PDODataAdapter {
 	 * @param MaxPowerToday $mpt
 	 */
 	public function addEnergy($invtnum, Energy $energy) {
+		(!$date)? $date = date('d-m-Y') : $date = $date;
+		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
+		
 		$bean =  R::findOne('energy',
-				' INV = :INV AND SDTE LIKE :date ',array(':INV'=>$invtnum,':date'=> '%'.date('Ymd').'%')
+				' INV = :INV AND time > :beginDate AND  time < :endDate ',
+				array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 		$oldKWH = 0;
 		if (!$bean){
