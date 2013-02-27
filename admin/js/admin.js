@@ -249,11 +249,13 @@ function dropboxSync(notice){
 		            $('.deleteFile').bind('click', function(){deleteFiles(this);});
 	                $('#makeBackup').bind('click', function(){makeBackup();});
 	                $('#dropboxSync').bind('click', function(){dropboxSync();});
-	                if (SyncNotice.pnotify_remove) SyncNotice.pnotify_remove();
+	                
+	                
 	                $('#requestActive').val(0);
+		   	       
 		   	       var SyncNotice = $.pnotify({
 		   	 	        title: 'Dropbox',
-		   	 	        text: 'Backup ready.',
+		   	 	        text: 'Sync ready.',
 		   	 	        nonblock: true,
 		   	 	        hide: true,
 		   	 	        closer: true,
@@ -262,7 +264,7 @@ function dropboxSync(notice){
 		   	 	    });
 	            },
 	            dataType : 'text'
-	        });
+	        }).done(function() { SyncNotice.pnotify_remove(); });
 	    });
     }else{
 		var SyncNotice = $.pnotify({

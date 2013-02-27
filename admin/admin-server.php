@@ -389,11 +389,17 @@ switch ($settingstype) {
 		$dropbox = new Dropbox;
 		$config = Session::getConfig();
 
+		/* not needed till we can switch DB-engines
 		$dbName = explode('/',$config->dbHost);
 		$dbName = explode('.',$dbName[count($dbName)-1]);
 		$backupFileName = $dbName[0].'_'.date('Ymd').''.date('His').'.backup';
-
-		$data['dropboxResponse']= $dropbox->dropbox->putFile($config->dbHost, $backupFileName);
+		*/
+		
+		$dbName = 'wsl';
+		$backupFileName = $dbName.'_'.date('Ymd').''.date('His').'.backup';
+		
+		$dbPath = '../database/wsl.sdb';
+		$data['dropboxResponse']= $dropbox->dropbox->putFile($dbPath, $backupFileName);
 		//var_dump($data['dropboxResponse']);
 		$path = $dropbox->dropbox->media($data['dropboxResponse']['body']->path);
 		$data['files'][0]->fullPath = $path['body']->url;
@@ -426,6 +432,7 @@ switch ($settingstype) {
 			
 		//get all the dropbox files
 		$meta = $dropbox->dropbox->metaData();
+		//var_dump($meta);
 		$data['success'] = true;
 		//we only need the file content
 		$data['files'] = $meta['body']->contents;
@@ -438,35 +445,29 @@ switch ($settingstype) {
 
 		// walkthrough the dropbox files
 		foreach ($data['files'] as $file) {
-			// get the full path of the files (for download needs)
 
-			try {
-				$delete = $dropbox->dropbox->delete($path);
-				if ($delete){
-					// set fullPath to the files array
-					$data['files'][$i]->fullPath = $path['body']->url;
+			// set fullPath to the files array
+			$data['files'][$i]->fullPath = $path['body']->url;
 
-					//$file->client_mtime = "Tue, 04 Dec 2012 13:00:59 +0000";
-					// explode client_mtime
-					$exDateTime = explode(' ',$file->client_mtime);
-					// re-org timeformat
-					$client_mtime = $exDateTime[2].' '.$exDateTime[1].' '.$exDateTime[3].' '.$exDateTime[4];
-					//make timestamp and generate new timesting
-					$dateTime = strtotime($client_mtime);
-					// replace client_mtime with new timestring
-					$data['files'][$i]->client_mtime = $dateTime;
-					//add a files id to the array
-					$data['files'][$i]->id = $i;
-					//add a file number to the array
-					$data['files'][$i]->num = $i+1;
-					//lets see if we need to save the file to the database.
-					$adapter->dropboxSaveFile($data['files'][$i]);
-					// sum the filesizes for some nice figures
-					$totalBackupSize += $file->bytes;
-				}
-			} catch (Exception $e) {
-				$totalBackupSize += 0;
-			}
+			//$file->client_mtime = "Tue, 04 Dec 2012 13:00:59 +0000";
+			// explode client_mtime
+			$exDateTime = explode(' ',$file->client_mtime);
+			// re-org timeformat
+			$client_mtime = $exDateTime[2].' '.$exDateTime[1].' '.$exDateTime[3].' '.$exDateTime[4];
+			//make timestamp and generate new timesting
+			$dateTime = strtotime($client_mtime);
+			// replace client_mtime with new timestring
+			$data['files'][$i]->client_mtime = $dateTime;
+			//add a files id to the array
+			$data['files'][$i]->id = $i;
+			//add a file number to the array
+			$data['files'][$i]->num = $i+1;
+			//lets see if we need to save the file to the database.
+			$adapter->dropboxSaveFile($data['files'][$i]);
+			// sum the filesizes for some nice figures
+			$totalBackupSize += $file->bytes;
+
+
 
 			$i++;
 		}

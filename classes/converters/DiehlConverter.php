@@ -60,7 +60,7 @@ class DiehlConverter
 			        if($values->path == self::_GA AND $values->value>0){ $live->GA = ($values->value/1000);}
 			        if($values->path == self::_GP AND $values->value>0){ $live->GP = ($values->value);}
         			if($values->path == self::_GV AND $values->value>0){ $live->GV =($values->value/10);}
-        			if($values->path == self::_FRQ AND $values->value>0){ $live->FRQ =($values->value/10);}
+        			if($values->path == self::_FRQ AND $values->value>0){ $live->FRQ =($values->value/100);}
         			if($values->path == self::_INVT AND $values->value>0){ $live->INVT =($values->value/100);}
         			
         			if($values->path == self::_KWHT AND $values->value>0){ $live->KWHT =($values->value/1000);}

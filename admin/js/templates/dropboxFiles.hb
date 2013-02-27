@@ -2,24 +2,24 @@
   <input type="hidden" name="s" value="XXXXX" />
   <fieldset>
     <legend>Dropbox</legend>
-    <div class="column span-33">
+    <div class="column span-40">
     We can use Dropbox for backup the stats of WSL.<br>
     Below you see the files that are in the dropbox app folder of you dropbox.
     	<div id="dropboxFileInfo"></div>
     	<div class="column span-2 first">##</div>
-    	<div class="column span-11">Filename</div>
+    	<div class="column span-10">Filename</div>
     	<div class="column span-7">Datetime</div>
-		<div class="column span-4" style="text-align:right;">Size</div>
+		<div class="column span-3" style="text-align:right;">Size</div>
 		<div class="column span-4 last">Actions</div>
-		<div style="overflow-y: scroll; height:312px;" class="column span-32 last" id="dropboxFilesContainter">
+		<div style="overflow-y: scroll; height:312px;overflow-x:hidden;" class="column span-28 last" id="dropboxFilesContainter">
 		{{#each data.files}}
 
 		{{#if_eq ../data.noData compare="0"}}
-		<div class="column span-31" id="file{{id}}">
+		<div class="column span-28" id="file{{id}}">
 			<div class="column span-2 first">{{num}}</div>
-			<div class="column span-11" id="path{{id}}">{{path}}</div>
+			<div class="column span-10" id="path{{id}}">{{path}}</div>
 			<div class="column span-7">{{client_mtime}}</div>
-			<div class="column span-4" style="text-align:right;">{{size}} MB</div>
+			<div class="column span-3" style="text-align:right;">{{size}} MB</div>
 			<div class="column span-4 last">
 				<a href="{{fullPath}}"><img src="images/page_white_put.png" id="download{{id}}" class="icon downloadFile" title="Download:{{path}}"/></a>&nbsp;|&nbsp; 
 				<img src="images/page_white_delete.png" id="delete{{id}}" class="icon deleteFile" title="Permanent Delete:{{path}}"/>
