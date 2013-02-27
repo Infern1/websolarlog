@@ -182,13 +182,9 @@ try {
 			break;
 			
 			case 'getGraphPoints':
-					
 				$lines = $dataAdapter->getGraphPoint(1, $type, $date);
 				$dayData = new DayDataResult();
 				$dayData->data = $lines->points;
-				$dayData->valueKWHT = $lines->KWHT;
-				$dayData->KWHTUnit = $lines->KWHTUnit;
-				$dayData->KWHKWP = $lines->KWHKWP;
 				$dayData->success = true;
 				$lang = array();
 				$lang['cumPowerW'] = _('cum. Power (W)');
@@ -223,6 +219,7 @@ try {
 			$data['dayData'] = $dayData;
 			break;
 		case 'getPeriodFilter':
+			$dayData = new DayDataResult();
 			$options = array();
 			if($type=="all" ){
 				$options[] =array( "value" => "Today","name"=> _("Day"));
@@ -245,7 +242,8 @@ try {
 			$lang['periode'] = _('periode');
 			$lang['previous'] = _('previous');
 			$lang['next'] = _('next');
-	
+			
+			
 			$dayData->success = true;
 			$data['lang'] = $lang;
 			$data['options'] = $options;
@@ -253,8 +251,8 @@ try {
 			
 			break;
 		case 'getDetailsSwitches':
-	
-				$lang = array();
+			$dayData = new DayDataResult();
+			$lang = array();
 			$lang['showHideGroups'] = _('Show or hide graph groups:');
 			$lang['P'] = _('Power');
 			$lang['V'] = _('Voltage');
