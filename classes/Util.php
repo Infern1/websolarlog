@@ -221,6 +221,21 @@ class Util {
     	return $url;
     }
 
+    /**
+     * Retrieves the languages selected in the browser
+     * @return Array of languages
+     */
+    public static function getBrowserDefaultLanguage() {
+    	$languages = explode(",", $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+    	
+    	// Strip off the ; part
+    	$cleanLanguages = array();
+    	foreach ($languages as $language) {
+    		$tmpLanguage = explode(";", $language);
+    		$cleanLanguages[] = $tmpLanguage[0];
+    	}
+    	return $cleanLanguages;
+    }
     
     public static function telegramStringLineToInterUsage($string,$input){
     	$pattern = "/\((.*)\)/";
