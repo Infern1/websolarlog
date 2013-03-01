@@ -1,10 +1,10 @@
 <?php
 class Util {
 
-    public static function isSunDown($config, $correction=300) {
+    public static function isSunDown($config, $correction=600) {
         $now = strtotime(date("Ymd H:i"));
         $sun_info = date_sun_info((strtotime(date("Ymd"))), $config->latitude , $config->longitude);
-        return $now<($sun_info['sunrise']-$correction) || $now>($sun_info['sunset']+$correction);
+        return $now<($sun_info['sunrise']+$correction) || $now>($sun_info['sunset']-$correction);
     }
     
     public static function getSunInfo($config,$startDate) {
