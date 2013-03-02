@@ -1,24 +1,40 @@
 <?php
-$url = "http://svn.code.sf.net/p/websolarlog/code/";
+$url = "http://svn.code.sf.net/p/websolarlog/code/tags/";
+
+// Check if php-svn module has been installed
+if (!function_exists("svn_ls") || !is_writable("..")) {
+?>
+<p>We could not continue with the installer</p>
+<p>Check the following on your system:</p>
+<ul>
+	<li>Make sure that all files and folder are writable by php.</li>
+    <li>Make sure you have installed php-svn (apt-get install php5-svn on debian/ubuntu)</li>
+</ul>
+<?php 
+	exit();
+}
 
 $step = getValue("step",0);
+$experimental = getValue("experimantal", false);
 
 $versions = array();
 if ($step == 0) {
-    $versions = svn_ls($url . "tags");
+	$tags = svn_ls($url);
+	foreach ($tags as $tag) {
+		if ($experimental) {
+			$versions[] = array('name'=>$tag['name'],'revision'=>$tag['created_rev'],'experimental'=>true);
+		} else {
+			if (startsWith($tag['name'], "release") || startsWith($tag['name'], "stable")) {
+				$versions[] = array('name'=>$tag['name'],'revision'=>$tag['created_rev'], 'experimental'=>false);
+			}
+		}
+	}
 }
 
 if ($step == 1) {
     $version = getValue('version','',0);
-
-    $svnurl = $url;
-    if ($version == "trunk") {
-        $svnurl .= "trunk";
-    } else {
-        $svnurl .= "tags/" . $version;
-    }
+    $svnurl = $url . $version;
     echo ($svnurl);
-
 
     prepareCheckout();
     $export_result = doCheckout($svnurl);
@@ -58,7 +74,6 @@ if ($step == 1) {
         echo('<li><input type="checkbox" name="version[]" value="'.$name.'"/>'.$name.'</li>');
     }
 ?>
-    <li><input type="checkbox" name="version[]" value="trunk">trunk - development release</li>
 </ul>
 <button type="submit">Updaten</button>
 </form>
@@ -167,5 +182,11 @@ function xcopy($src,$dest)
 			copy($src.'/'.$file, $dest.'/'.$file);
 		}
 	}
+}
+
+function startsWith($haystack, $needle)
+{
+	$length = strlen($needle);
+	return (substr($haystack, 0, $length) === $needle);
 }
 ?>
