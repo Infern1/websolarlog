@@ -477,6 +477,7 @@ try {
 			break;
 		case 'getPageIndexLiveValues':
 			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
+			// get the summedMaxPower of today
 			$sumMaxPowerToday = $dataAdapter->sumMaxPowerToday();
 			// sumMaxPowerToday+10% and roundup to the nearest 100
 			$gaugeMaxPower = ceil( ($sumMaxPowerToday[0]['sumGP']*1.1) / 100 ) * 100;
