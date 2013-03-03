@@ -477,12 +477,17 @@ try {
 			break;
 		case 'getPageIndexLiveValues':
 			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
+			$sumMaxPowerToday = $dataAdapter->sumMaxPowerToday();
+			// sumMaxPowerToday+10% and roundup to the nearest 100
+			$gaugeMaxPower = ceil( ($sumMaxPowerToday[0]['sumGP']*1.1) / 100 ) * 100;
+			
 			$lang['DCPower'] 		= _("DC Power");
 			$lang['ACPower'] 		= _("AC Power");
 			$lang['Efficiency'] 	= _("Efficiency");
 			
 			$data['lang'] = $lang;
 			$data['inverters'] = $indexValues['inverters'];
+			$data['sumMaxPower'] = $gaugeMaxPower;
 			$data['sumInverters'] = $indexValues['sum'];
 			break;
 		case 'getPageIndexValues':

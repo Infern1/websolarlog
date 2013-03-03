@@ -2327,4 +2327,21 @@ class PDODataAdapter {
 		R::store($bean,$bean->id);
 		return true;
 	}
+	
+	/**
+	 *
+	 * @return Ambigous <multitype:, unknown>
+	 */
+	
+	function sumMaxPowerToday(){
+	
+		$beginEndDate = Util::getBeginEndDate('today', 1);
+		return R::getAll("
+					SELECT  SUM(GP) AS sumGP
+					FROM 'pMaxOTD'
+					WHERE time > :beginDate AND  time < :endDate",
+				array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+	}
+	
+	
 }

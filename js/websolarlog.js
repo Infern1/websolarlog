@@ -368,14 +368,10 @@ var WSL = {
 		ajaxStart();
 		WSL.api.getPageIndexLiveValues(function(data) {
 
-
-						
-		GP = 3600 / 10;
+		GP = data.sumMaxPower/10;
 		gaugeGPOptions = {
 			title : data.lang.ACPower,
-			grid : {
-				background : '#FFF'
-			},
+			grid : {background : '#FFF'},
 			seriesDefaults : {
 				renderer : $.jqplot.MeterGaugeRenderer,
 				rendererOptions : {
@@ -384,18 +380,14 @@ var WSL = {
 					padding : 0,
 					intervals : [ GP, GP * 2, GP * 3, GP * 4, GP * 5,
 							GP * 6, GP * 7, GP * 8, GP * 9, GP * 10 ],
-					intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
-							'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
-							'#4BFE78', '#0AFE47', '#01F33E' ]
+					intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8','#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95','#4BFE78', '#0AFE47', '#01F33E' ]
 				}
 			}
 		};
-		IP = 3600 / 10;
+		IP = data.sumMaxPower/10;
 		gaugeIPOptions = {
 				title : data.lang.DCPower,
-				grid : {
-					background : '#FFF'
-				},
+				grid : {background : '#FFF'},
 				seriesDefaults : {
 					renderer : $.jqplot.MeterGaugeRenderer,
 					rendererOptions : {
@@ -410,9 +402,7 @@ var WSL = {
 		EFF = 100 / 10;
 		gaugeEFFOptions = {
 				title : data.lang.Efficiency,
-				grid : {
-					background : '#FFF'
-				},
+				grid : {background : '#FFF'},
 				seriesDefaults : {
 					renderer : $.jqplot.MeterGaugeRenderer,
 					rendererOptions : {
@@ -486,7 +476,6 @@ var WSL = {
 					
 					$(divId).html(html);
 					$( ".accordion" ).accordion({collapsible: true});
-					
 					ajaxReady();
 				},
 				dataType : 'text'
@@ -553,10 +542,7 @@ var WSL = {
 		});
 	},
 
-
-	
 	init_tabs : function(page, divId, success) {
-		
 		// initialize languages selector on the given div
 		WSL.api.getTabs(page, function(data) {
 			$.ajax({
@@ -606,7 +592,6 @@ var WSL = {
                     type: 'error'
                 });
 			}
-			
 			$.ajax({
 				url : 'js/templates/totalValues.hb',
 				success : function(source) {
@@ -622,7 +607,6 @@ var WSL = {
 			});
 			WSL.init_PageIndexLiveValues("#indexLiveInverters"); // Initial load fast
 		});
-		
 	},
 	
 	
