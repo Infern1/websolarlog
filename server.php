@@ -480,8 +480,9 @@ try {
 			// get the summedMaxPower of today
 			$sumMaxPowerToday = $dataAdapter->sumMaxPowerToday();
 			// sumMaxPowerToday+10% and roundup to the nearest 100
-			$gaugeMaxPower = ceil( ($sumMaxPowerToday[0]['sumGP']*1.1) / 100 ) * 100;
-			
+			($sumMaxPowerToday[0]['sumGP']<=0) ? $sumGP = 1 : $sumGP = $sumGP;
+			$gaugeMaxPower = ceil( ($sumGP*1.1) / 100 ) * 100;
+
 			$lang['DCPower'] 		= _("DC Power");
 			$lang['ACPower'] 		= _("AC Power");
 			$lang['Efficiency'] 	= _("Efficiency");
