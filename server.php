@@ -479,9 +479,11 @@ try {
 			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
 			// get the summedMaxPower of today
 			$sumMaxPowerToday = $dataAdapter->sumMaxPowerToday();
-			// sumMaxPowerToday+10% and roundup to the nearest 100
-			($sumMaxPowerToday[0]['sumGP']<=0) ? $sumGP = 1 : $sumGP = $sumGP;
-			$gaugeMaxPower = ceil( ($sumGP*1.1) / 100 ) * 100;
+			$sumGP = $sumMaxPowerToday[0]['sumGP'];
+			//if sumGP <= 0 (at nighttime) then we set the gauge to the nearest X00
+			($sumGP<=0) ? $sumGP = 1 : $sumGP = $sumGP;
+			// sumMaxPowerToday+10% and roundup to the nearest 200
+			$gaugeMaxPower = ceil( ($sumGP*1.1) / 200 ) * 200;
 
 			$lang['DCPower'] 		= _("DC Power");
 			$lang['ACPower'] 		= _("AC Power");
@@ -549,7 +551,7 @@ exit();
  * Some basic functions
  */
 
-
+/*
 function tricsv($var) {
 	return !is_dir($var)&& preg_match('/.*\.csv/', $var);
 }
@@ -567,5 +569,5 @@ function getTimeStamp($text) {
 
 	// Convert to epoch date
 	return strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$second);
-}
+}*/
 ?>
