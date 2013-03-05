@@ -84,40 +84,32 @@ function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot,series	) {
 		returned += tooltipTodayContentEditorLine("Energy",plot.series[1].data[pointIndex][1],"W", ( seriesIndex == 1 ));
 	}
 	
-	if(seriesCount >= 2){
+
+	//if(seriesCount >= 2){
 		if(is_array(plot.series[2].data[pointIndex])==true){
-			var smoothGasLineLength = plot.series[2].data.length-1;
-			var GasLineLength = plot.series[7].data.length;
-			var multiply = GasLineLength/smoothGasLineLength;
-			pointIndex2 = Math.ceil((multiply*pointIndex) * 1) / 1;
-			returned += tooltipTodayContentEditorLine("Gas",plot.series[7].data[pointIndex2][1],"L", ( seriesIndex == 2 ));
+			returned += tooltipTodayContentEditorLine("Gas",plot.series[2].data[pointIndex][1],"L", ( seriesIndex == 2 ));
 		}
-	}
-	if(seriesCount >= 2){
-		if(is_array(plot.series[2].data[pointIndex])==true){
-			returned += tooltipTodayContentEditorLine("Gas2",plot.series[2].data[pointIndex][1],"L", ( seriesIndex == 2 ));
-		}
-	}
-	if(seriesCount >= 3){
+	//}
+	//if(seriesCount >= 3){
 		if(is_array(plot.series[3].data[pointIndex])==true){
 			returned += tooltipTodayContentEditorLine("High usage",plot.series[3].data[pointIndex][1],"W", ( seriesIndex == 3 ));
 		}
-	}
-	if(seriesCount >= 4){
+	//}
+	//if(seriesCount >= 4){
 		if(is_array(plot.series[4].data[pointIndex])==true){
 			returned += tooltipTodayContentEditorLine("Low usage",plot.series[4].data[pointIndex][1],"W", ( seriesIndex == 4 ));
 		}
-	}
-	if(seriesCount >= 5){
+	//}
+	//if(seriesCount >= 5){
 		if(is_array(plot.series[5].data[pointIndex])==true){
 			returned += tooltipTodayContentEditorLine("High return",plot.series[5].data[pointIndex][1],"W", ( seriesIndex == 5 ));
 		}
-	}
-	if(seriesCount >= 6){
+	//}
+	//if(seriesCount >= 6){
 		if(is_array(plot.series[6].data[pointIndex])==true){
 			returned += tooltipTodayContentEditorLine("Low return",plot.series[6].data[pointIndex][1],"W", ( seriesIndex == 6 ));
 		}
-	}
+	//}
 	return returned;
 }
 
@@ -155,16 +147,16 @@ if (!String.prototype.trim) {
 function tooltipCompareEditor(str, seriesIndex, pointIndex, plot,series	) { 
 	var returned = "";
 	
-	if($.isArray(plot.series[0].data[pointIndex])){
-		returned += tooltipCompareEditorLine(plot.series[1].label, plot.series[1].data[pointIndex][1],"kWh", ( seriesIndex == 0 ));
-		returned += tooltipCompareEditorLine("date", plot.series[1].data[pointIndex][2]," ", ( seriesIndex == 0 ));
+	if($.isArray(plot.series[1].data[pointIndex])){
+		returned += tooltipCompareEditorLine(plot.series[1].label, plot.series[1].data[pointIndex][1],"kWh", ( seriesIndex == 1 ));
+		returned += tooltipCompareEditorLine("date", timeConverter(plot.series[1].data[pointIndex][0]," date+'-'+month+'-'+year ;")," ", ( seriesIndex == 1 ));
 	}else{
 		returned += tooltipCompareEditorLine("Expected", "No data available for " + plot.series[1].data[pointIndex][2]," ", ( seriesIndex == 0 ));
 	}
 	
-	if($.isArray(plot.series[1].data[pointIndex])){
-		returned += tooltipCompareEditorLine(plot.series[0].label, plot.series[0].data[pointIndex][1],"kWh", ( seriesIndex == 1 ));
-		returned += tooltipCompareEditorLine("date", plot.series[0].data[pointIndex][2]," ", ( seriesIndex == 1 ));
+	if($.isArray(plot.series[0].data[pointIndex])){
+		returned += tooltipCompareEditorLine(plot.series[0].label, plot.series[0].data[pointIndex][1],"kWh", ( seriesIndex == 0 ));
+		returned += tooltipCompareEditorLine("date", timeConverter(plot.series[0].data[pointIndex][0]," date+'-'+month+'-'+year ;")," ", ( seriesIndex == 0 ));
 	}else{
 		returned += tooltipCompareEditorLine("Harvested", "No data available for " + plot.series[0].data[pointIndex][2]," ", ( seriesIndex == 1 ));
 	}
@@ -197,6 +189,20 @@ function tooltipDefaultLine(label, value, sign, isBold) {
 	return line;
 }
 
+
+function timeConverter(timestamp,format){
+	 var a = new Date(timestamp);
+	 var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+	     var year = a.getFullYear();
+	     var month_name = months[a.getMonth()];
+	     var month = a.getMonth()+1;
+	     var date = a.getDate();
+	     var hour = a.getHours();
+	     var min = a.getMinutes();
+	     var sec = a.getSeconds();
+	     var time = eval(format);
+	     return time;
+	 }
 
 function handleGraphs(request,invtnum){
 	// set inverter
