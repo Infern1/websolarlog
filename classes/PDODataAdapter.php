@@ -1901,7 +1901,7 @@ class PDODataAdapter {
 				if(Util::isSunDown(Session::getConfig())){
 					$live = new Live();
 					$live->name = $inverter->name;
-					$live->status = _('sleeping');
+					$live->status = 'offline';
 					$live->time = date("H:i:s");
 					$live->INV = $inverter->id;
 					$live->GP = number_format(0,0,',','');
@@ -1918,6 +1918,8 @@ class PDODataAdapter {
 
 					$live->IP = number_format(0,2,',','');
 					$live->EFF = number_format(0,2,',','');
+					$live->trend = _("equal");
+					$live->avgPower = number_format(0,2,',','');
 				}else{
 					$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$inverter->id));
 
@@ -1935,7 +1937,7 @@ class PDODataAdapter {
 
 					$live = new Live();
 					$live->name = $inverter->name;
-					$live->status = _('awake');
+					$live->status = 'online';
 					$live->time = date("H:i:s",$liveBean['time']);
 					$live->INV = $liveBean['INV'];
 					$live->GP = ($liveBean['GP']<1000) ? number_format($liveBean['GP'],1,'.','') : number_format($liveBean['GP'],0,'','');
@@ -1953,6 +1955,10 @@ class PDODataAdapter {
 					$live->I2Ratio = ($liveBean['I2Ratio']<1000) ? number_format($liveBean['I2Ratio'],1,'.','') : number_format($liveBean['I2Ratio'],0,'','');
 					$live->IP = ($liveBean['IP']<1000) ? number_format($liveBean['IP'],1,'.','') : number_format($liveBean['IP'],0,'','');
 					$live->EFF = ($liveBean['EFF']<1000) ? number_format($liveBean['EFF'],1,'.','') : number_format($liveBean['EFF'],0,'','');
+					
+					$avgPower = $this->getAvgPower($inverter->id);
+					$live->trend = $avgPower['trend'];
+					$live->avgPower = $avgPower['avgPower'];
 				}
 
 				$oInverter["id"] = $liveBean['INV'];
@@ -2333,15 +2339,37 @@ class PDODataAdapter {
 	 * @return Ambigous <multitype:, unknown>
 	 */
 	
-	function sumMaxPowerToday(){
+	        function getAvgPower($deviceNum=0){
+                $recentBegin = time()-400;
+                $recentEnd = time();
+
+                $pastBegin = time()-800;
+                $pastEnd = time()-400;
+                if ($deviceNum > 0){
+                        $queryWhere = " inv = ". $deviceNum ." AND ";
+                }else{
+                        $queryWhere = "";
+                }
+                $query = "SELECT  avg(GP) AS avgGP FROM 'history' WHERE ".$queryWhere." time > :begin AND  time < :end ORDER BY time DESC";
+
+                $avgRecent =  R::getAll($query,array(':begin'=>$recentBegin,':end'=>$recentEnd));
+                $avgPast   =  R::getAll($query,array(':begin'=>$pastBegin,':end'=>$pastEnd));
+
+                $average['recent'] = $avgRecent[0]['avgGP'];
+                $average['past'] = $avgPast[0]['avgGP'];
+
+                if($average['recent']>$average['past']){
+                        $average['trend'] = _("up");
+                }elseif($average['recent']<$average['past']){
+                        $average['trend'] = _("down");
+                }else{
+                        $average['trend'] = _("equal");
+                }
+
+                return $average;
+        }
+
 	
-		$beginEndDate = Util::getBeginEndDate('today', 1);
-		return R::getAll("
-					SELECT  SUM(GP) AS sumGP
-					FROM 'pMaxOTD'
-					WHERE time > :beginDate AND  time < :endDate",
-				array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
-	}
 	
 	
 }

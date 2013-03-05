@@ -26,6 +26,8 @@ class Live {
     public $BOOT;
     public $KWHT;
     public $IP;
+    public $trend;
+    public $avgPower;
     
     public $pvoutput;
 }

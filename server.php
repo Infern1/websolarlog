@@ -16,7 +16,6 @@ try {
 	// Retrieve action params
 	$method = $_GET['method'];
 	
-	
 	// Set headers for JSON response
 	header('Cache-Control: no-cache, must-revalidate');
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
@@ -33,8 +32,7 @@ try {
 	$type = Common::getValue('type', 0);
 	$date = Common::getValue('date', 0);
 	$year = Common::getValue('year', 0);
-	
-	
+
 	switch ($method) {
 		case 'getTabs':
 			// TODO :: Move to json file or something???
@@ -91,34 +89,30 @@ try {
 			$noticeEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Notice'));
 			$alarmEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Alarm'));
 			$infoEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Info'));
-			
 			$serverUptime = Util::serverUptime();
-	
-			
-			//var_dump($config);
+
 			$slimConfig = array();
 			$slimConfig['lat'] = number_format($config->latitude,2,'.','');
 			$slimConfig['long'] = number_format($config->longitude,2,'.','');
 			
 			foreach ($config->inverters as $inverter){
-				
 				foreach ($inverter->panels as $panel){
 					$panels[] = array(
-							'id'=>$panel->id,
-							'description'=>$panel->description,
-							'roofOrientation'=>$panel->roofOrientation,
-							'roofPitch'=>$panel->roofPitch,
-							'amount'=>$panel->amount,
-							'wp'=>$panel->wp,
-							'totalWp'=>$panel->amount*$panel->wp
+						'id'=>$panel->id,
+						'description'=>$panel->description,
+						'roofOrientation'=>$panel->roofOrientation,
+						'roofPitch'=>$panel->roofPitch,
+						'amount'=>$panel->amount,
+						'wp'=>$panel->wp,
+						'totalWp'=>$panel->amount*$panel->wp
 					);
 				}
-					$inverters[] = array(
-						'name'=>$inverter->name,
-						'expectedKWH'=>$inverter->expectedkwh,
-						'plantPower'=>$inverter->plantpower,
-						'panels'=>$panels
-						);
+				$inverters[] = array(
+					'name'=>$inverter->name,
+					'expectedKWH'=>$inverter->expectedkwh,
+					'plantPower'=>$inverter->plantpower,
+					'panels'=>$panels
+				);
 			}
 			$slimConfig['inverters'] = $inverters;
 			
@@ -151,8 +145,6 @@ try {
 			$lang['hours'] = _('hours');
 			$lang['mins'] = _('mins');
 
-				
-			
 			$data['lang'] = $lang;
 			$data['slimConfig'] = $slimConfig;
 			$data['noticeEvents'] = $noticeEvents;
@@ -161,15 +153,9 @@ try {
 			$data['serverUptime'] = $serverUptime;
 			break;
 		case 'getGraphDayPoints':
-
 			$lines = $dataAdapter->getGraphDayPoint($invtnum, $type, $date);
 			$dayData = new DayDataResult();
 			$dayData->graph = $lines['graph'];
-			
-			
-			//$dayData->valueKWHT = $lines['lastDay']->KWHT;
-			//$dayData->KWHTUnit = $lines['lastDay']->KWHTUnit;
-			//$dayData->KWHKWP = $lines['lastDay']->KWHKWP;
 			$dayData->success = true;
 			$lang = array();
 			$lang['cumPowerW'] = _('cum. Power (W)');
@@ -180,25 +166,23 @@ try {
 			$data['lang'] = $lang;
 			$data['dayData'] = $dayData;
 			break;
-			
-			case 'getGraphPoints':
-				$lines = $dataAdapter->getGraphPoint(1, $type, $date);
-				$dayData = new DayDataResult();
-				$dayData->data = $lines->points;
-				$dayData->success = true;
-				$lang = array();
-				$lang['cumPowerW'] = _('cum. Power (W)');
-				$lang['avgPowerW'] = _('avg. Power (W)');
-				$lang['harvested'] = _('harvested (W)');
-				$lang['cumulative'] = _('cumulative (W)');
-				$lang['totalEnergy'] = _('total Energy');
-				$data['lang'] = $lang;
-				$data['dayData'] = $dayData;
-				break;
+		case 'getGraphPoints':
+			$lines = $dataAdapter->getGraphPoint(1, $type, $date);
+			$dayData = new DayDataResult();
+			$dayData->data = $lines->points;
+			$dayData->success = true;
+			$lang = array();
+			$lang['cumPowerW'] = _('cum. Power (W)');
+			$lang['avgPowerW'] = _('avg. Power (W)');
+			$lang['harvested'] = _('harvested (W)');
+			$lang['cumulative'] = _('cumulative (W)');
+			$lang['totalEnergy'] = _('total Energy');
+			$data['lang'] = $lang;
+			$data['dayData'] = $dayData;
+			break;
 		case 'getDetailsGraph':
 			$lines = $dataAdapter->getDetailsHistory($invtnum,$date);
-	
-			//var_dump();
+			
 			$dayData = new DayDataResult();
 			$dayData->data = $lines['details'];
 			$dayData->labels = $lines['labels'];
@@ -235,20 +219,16 @@ try {
 					$data['inverters'][] = array('id'=>$inverter->id,'name'=>$inverter->name);
 				}
 			}
-	
 			$lang = array();
 			$lang['date'] = _('date');
 			$lang['inv'] = _('inv');
 			$lang['periode'] = _('periode');
 			$lang['previous'] = _('previous');
 			$lang['next'] = _('next');
-			
-			
 			$dayData->success = true;
 			$data['lang'] = $lang;
 			$data['options'] = $options;
 			$data['dayData'] = $dayData;
-			
 			break;
 		case 'getDetailsSwitches':
 			$dayData = new DayDataResult();
@@ -269,7 +249,6 @@ try {
 		case 'getProductionGraph':
 			(!$year)?$year=date("Y"):$year=$year;
 			(!$invtnum)?$invtnum=1:$invtnum=$invtnum;
-	
 			$lines = $dataAdapter->getYearSumPowerPerMonth($invtnum, $date);
 	
 			$dayData = new DayDataResult();
@@ -291,14 +270,12 @@ try {
 			$energy=array();
 			$maxPower=array();
 			$minMaxEnergyYear=array();
-	
 			foreach ($beans as $inverter){
 				$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($inverter['id'],$date);
 				$energy[] = $dataAdapter->getYearEnergyPerMonth($inverter['id'],$date);
 				$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($inverter['id'],$date);
 				$maxMinEnergyYear[] = $dataAdapter->getMaxMinEnergyYear($inverter['id'],$date);
 			}
-	
 			$lang = array();
 			$lang['today'] 			= _("Today");
 			$lang['maxGridPower'] 	= _("Max Grid Power");
@@ -314,7 +291,6 @@ try {
 			$lang['valuesGroupedByMonthYearText'] = _("The values below are grouped by Month of the selected Year");
 	
 			$data['lang'] = $lang;
-			
 			$dayData = new DayDataResult();
 			$dayData->data = array(
 					"maxPower"=>$maxPower,
@@ -337,9 +313,9 @@ try {
 	
 			$dayData = new DayDataResult();
 			$dayData->data = array(
-					"maxPower"=>$maxPower,
-					"maxEnergy"=>$maxEnergy,
-					"minMaxEnergy"=>$minMaxEnergyMonth
+				"maxPower"=>$maxPower,
+				"maxEnergy"=>$maxEnergy,
+				"minMaxEnergy"=>$minMaxEnergyMonth
 			);
 			$lang = array();
 			$lang['today'] 			= _("Today");
@@ -419,8 +395,6 @@ try {
 			$compareMonth = Common::getValue('compareMonth', 0);
 			$compareYear = Common::getValue('compareYear', 0);
 			$invtnum = Common::getValue('invtnum', 0);
-	
-			
 			$inverters = R::findAndExport('Inverter');
 			foreach ($inverters as $inv){
 				$inverter[] = array("name"=>$inv['name'],"id"=>$inv['id']);
@@ -429,16 +403,15 @@ try {
 			$lines = $dataAdapter->getCompareGraph($invtnum, $whichMonth,$whichYear,$compareMonth,$compareYear);
 			
 			$lang = array();
-			$lang['today'] 			= _("Today");
-			$lang['maxGridPower'] 	= _("Max Grid Power");
-			$lang['date'] 			= _("date");
-			$lang['totalKWh'] 		= _("TotalKWh");
-			$lang['inv'] 			= _("Inv");
-			$lang['kwh'] 			= _("kwh");
-			$lang['historyValues'] 	= _("History values");
-			$lang['loading'] 		= _("loading")."...";
-			$lang['watt'] 			= _("watt");
-			
+			$lang['today'] = _("Today");
+			$lang['maxGridPower'] = _("Max Grid Power");
+			$lang['date'] = _("date");
+			$lang['totalKWh'] = _("TotalKWh");
+			$lang['inv'] = _("Inv");
+			$lang['kwh'] = _("kwh");
+			$lang['historyValues'] = _("History values");
+			$lang['loading'] = _("loading")."...";
+			$lang['watt'] = _("watt");
 			$lang['month'] = _('month');
 			$lang['expected'] = _('expected');
 			$lang['CumHarvested'] = _('cum.')." "._('harvested');
@@ -446,19 +419,17 @@ try {
 			$lang['harvested'] = _('harvested');
 			$lang['difference'] = _('difference');
 			$lang['CumDifference'] =  _('cum.')." "._('difference');
-				
 			$data['lang'] = $lang;
-			
+
 			$dayData = new DayDataResult();
 			$dayData->month = $monthYear['month'];
 			$dayData->year = $monthYear['year'];
 			$dayData->inverters = $inverter;
 			$dayData->data = array(
-					"which"=>$lines['whichBeans']->points,
-					"compare"=>$lines['compareBeans']->points,
-					"diff"=>$lines['whichCompareDiff']
-					
-					);
+				"which"=>$lines['whichBeans']->points,
+				"compare"=>$lines['compareBeans']->points,
+				"diff"=>$lines['whichCompareDiff']
+			);
 			$dayData->type = $lines['type'];
 			$dayData->expectedMonthString = $lines['expectedMonthString'];
 			$dayData->expectedPerc = $lines['expectedPerc'];
@@ -478,20 +449,24 @@ try {
 		case 'getPageIndexLiveValues':
 			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
 			// get the summedMaxPower of today
-			$sumMaxPowerToday = $dataAdapter->sumMaxPowerToday();
-			$sumGP = $sumMaxPowerToday[0]['sumGP'];
+			$avgGP = $dataAdapter->getAvgPower();
 			//if sumGP <= 0 (at nighttime) then we set the gauge to the nearest X00
-			($sumGP<=0) ? $sumGP = 1 : $sumGP = $sumGP;
+			($avgGP['recent']<=0) ? $avgGPRecent = 1 : $avgGPRecent = $avgGP['recent'];
 			// sumMaxPowerToday+10% and roundup to the nearest 200
-			$gaugeMaxPower = ceil( ($sumGP*1.1) / 200 ) * 200;
-
-			$lang['DCPower'] 		= _("DC Power");
-			$lang['ACPower'] 		= _("AC Power");
-			$lang['Efficiency'] 	= _("Efficiency");
+		
+			$gaugeMaxPower = ceil( ( ($avgGPRecent*1.1)+100) / 100 ) * 100;
+		
+			$lang['DCPower'] = _("DC Power");
+			$lang['ACPower'] = _("AC Power");
+			$lang['Efficiency'] = _("Efficiency");
+			$lang['offline'] = _("offline");
+			$lang['online'] = _("online");
+			$lang['standby'] = _("standby");
 			
 			$data['lang'] = $lang;
 			$data['inverters'] = $indexValues['inverters'];
-			$data['sumMaxPower'] = $gaugeMaxPower;
+			$data['avgPower'] = $gaugeMaxPower;
+			$data['avgPowerTrend'] = $avgGP['trend'];
 			$data['sumInverters'] = $indexValues['sum'];
 			break;
 		case 'getPageIndexValues':
@@ -502,7 +477,6 @@ try {
 			$lang['status']			= _("status");
 			$lang['IT'] 			= _("IT");
 			$lang['total'] 			= _("Total");
-			
 			$lang['AvgDay']	 	= _("Avg. Day");
 			$lang['today'] 			= _("Today");
 			$lang['week'] 			= _("Week");
@@ -535,8 +509,6 @@ try {
 		default:
 			break;
 	}
-	
-	
 	echo json_encode($data);
 } catch (Exception $e) {
 	$data = array();
@@ -544,30 +516,5 @@ try {
 	$data["message"] = $e->getMessage();
 	echo json_encode($data);
 }
-
 exit();
-
-/*
- * Some basic functions
- */
-
-/*
-function tricsv($var) {
-	return !is_dir($var)&& preg_match('/.*\.csv/', $var);
-}
-
-
-function getTimeStamp($text) {
-	// 20120623-05:16:00
-	$rawdatetime = explode('-', $text);
-	$year = substr($rawdatetime[0], 0, 4);
-	$month = substr($rawdatetime[0], 4, 2);
-	$day = substr($rawdatetime[0], 6, 2);
-	$hour = substr($rawdatetime[1], 0, 2);
-	$minute = substr($rawdatetime[1], 3, 2);
-	$second = substr($rawdatetime[1], 6, 2);
-
-	// Convert to epoch date
-	return strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$second);
-}*/
 ?>
