@@ -7,8 +7,8 @@
  * - POST
  * - GET
  * - DELETE
- * - HEAD
- * - OPTIONS
+ * - HEAD*
+ * - OPTIONS*
  * - TRACE* 
  * - CONNECT*
  * 
@@ -47,9 +47,11 @@ class ApiController
 	 * @param $index
 	 */
 	public function routeRequest($method, $request) {
+		if ($request == "" || $request == "/" || $request == "//") {
+			return array("error"=>"Invalid request");
+		}
 		
 		$requestPath = array_values($request); // Copy orignal array, we dont want to modify it
-		
 		$classname = array_shift($requestPath) . "Rest"; // Get the first entry and remove it from the array
 		
 		// Create the first object
@@ -66,14 +68,13 @@ class ApiController
 			// Check if it exists
 			if (trim($methodObject) === "" || !method_exists($object, $propertyName)) {
 				if (!method_exists($object, $method)) {
-					return "This restfull service does not support this method";					
+					return array("error"=>"This restfull service does not support this method");					
 				}
 				return $object->$method($request, $requestPath);
 			}
 			
 			$object = $object->$propertyName();
 			array_shift($requestPath);
-			
 		}
 		
 		return null;
