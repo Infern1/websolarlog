@@ -9,8 +9,8 @@
 <div class="column span-5" style="text-align:right;">{{lang.expected}}</div>
 <div class="column span-5" style="text-align:right;">{{lang.harvested}}</div>
 <div class="column span-5" style="text-align:right;">{{lang.difference}}*</div>
-<div class="column span-5" style="text-align:right;">{{lang.cum}} {{lang.harvested}}</div>
 <div class="column span-5" style="text-align:right;">{{lang.cum}} {{lang.expected}}</div>
+<div class="column span-5" style="text-align:right;">{{lang.cum}} {{lang.harvested}}</div>
 <div class="column span-5 last" style="text-align:right;">{{lang.cum}} {{lang.difference}}</div>
 <div class="cl"></div>
 {{#each data}}
