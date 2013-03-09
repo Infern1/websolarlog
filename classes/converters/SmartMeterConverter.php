@@ -13,8 +13,15 @@ class SmartMeterConverter
 		if (count($inputArray) == 0 || !is_array($inputArray)) {
 			return null;
 		}
+		
+		// Remove empty lines from the result
+		$data = array();
+		foreach ($inputArray as &$line) {
+			if (!empty($line)) {
+				$data[] = $line;
+			}
+		}
 
-		$data = $inputArray;
 		// Check if the record is okay
 		if (!empty($data[19]) && trim($data[19]) != "!") {
 			//echo "\r\ntoLiveSmartMeter: null\r\n";
