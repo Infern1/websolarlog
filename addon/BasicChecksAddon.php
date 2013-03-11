@@ -32,33 +32,46 @@ class BasicChecksAddon {
 	
 	public function onNoLiveData($args) {
 		$inverter = $args[1];
-		$sessionKey = 'noLiveCounter-' . $inverter->id;
 		
-		$liveCounter = (integer) (isset($_SESSION[$sessionKey]) ? $_SESSION[$sessionKey] : 0);
-		$liveCounter++;
-		if ($liveCounter == 30) {
-			// Are we seriously down?
-			if(Util::isSunDown($this->config)) {
-				if ($this->adapter->changeInverterStatus($inverter, 0)) {
-					if (PeriodHelper::isPeriodJob("ShutDownJobINV-" . $inverter->id, (2 * 60))) {
-						HookHandler::getInstance()->fire("onInverterShutdown", $inverter);
-						$inverter->state = 0;
+		// detect if the server is down
+		$offline = false;
+		if ($inverter->getState() == 1  ) {
+			// we are offline
+			$offline = true;
+		}		
+		if ($inverter->getState() == 0  ) {
+			$sessionKey = 'noLiveCounter-' . $inverter->id;
+			
+			$liveCounter = (integer) (isset($_SESSION[$sessionKey]) ? $_SESSION[$sessionKey] : 0);
+			$liveCounter++;
+			if ($liveCounter == 30) {
+				// Are we seriously down?
+				if(Util::isSunDown($this->config)) {
+					$offline = true;
+				} else {
+					// Probably temporarely down, check again
+					if (PeriodHelper::isPeriodJob("ShutDownJobErrorINV-" . $inverter->id, 60)) {
+						HookHandler::getInstance()->fire("onInverterError", $inverter, "Inverter seems to be down");
 					}
-				}
-			} else {
-				// Probably temporarely down, check again
-				if (PeriodHelper::isPeriodJob("ShutDownJobErrorINV-" . $inverter->id, 60)) {
-					HookHandler::getInstance()->fire("onInverterError", $inverter, "Inverter seems to be down");
-				}
-				$liveCounter = 0;
-			}		
-		}
-		// Reset the counter if we are still live and the counter > 30
-		if ($inverter->state = 1 && $liveCounter > 30) {
-				$liveCounter = 0;			
+					$liveCounter = 0;
+				}		
+			}
+			// Reset the counter if we are still live and the counter > 30
+			if ($inverter->state = 1 && $liveCounter > 30) {
+					$liveCounter = 0;			
+			}
+			
+			$_SESSION[$sessionKey] = $liveCounter;
 		}
 		
-		$_SESSION[$sessionKey] = $liveCounter;
+		if ($offline) {
+			if ($this->adapter->changeInverterStatus($inverter, 0)) {
+				if (PeriodHelper::isPeriodJob("ShutDownJobINV-" . $inverter->id, (2 * 60))) {
+					HookHandler::getInstance()->fire("onInverterShutdown", $inverter);
+					$inverter->state = 0;
+				}
+			}
+		}
 	}
 	
 	public function on10MinJob($args) {

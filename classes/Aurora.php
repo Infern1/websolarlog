@@ -13,6 +13,13 @@ Class Aurora implements DeviceApi {
         $this->DEBUG = $debug;
         $this->PATH = $path;
     }
+    
+    /**
+     * @see DeviceApi::getState()
+     */
+    public function getState() {
+    	return 0; // Try to detect, as it will die when offline
+    }
 
     public function getAlarms() {
     	if ($this->DEBUG) {
