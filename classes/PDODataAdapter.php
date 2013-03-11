@@ -17,9 +17,9 @@ class PDODataAdapter {
 		if ($config->getDatabaseUser() != "" && $config->getDatabasePassword() != "") {
 			R::setup($config->dbDSN, $config->getDatabaseUser(), $config->getDatabasePassword());
 		} else {
-			R::setup($config->dbDSN);			
+			R::setup($config->dbDSN);
 		}
-		
+
 		R::debug(false);
 		R::setStrictTyping(false);
 	}
@@ -28,11 +28,11 @@ class PDODataAdapter {
 		//print "Destroying " . $this->name . "\n";
 	}
 
-	
+
 	public static function setProcessTime($timestamp=null){
 		($timestamp) ? $this->ProcessTime = $timestamp : $ $this->ProcessTime=time();
 	}
-	
+
 	/**
 	 * write the live info to the file
 	 * @param int $invtnum
@@ -281,7 +281,7 @@ class PDODataAdapter {
 	 */
 	public function addEnergy($invtnum, Energy $energy) {
 		$beginEndDate = Util::getBeginEndDate('day', 1,date('d-m-Y'));
-		
+
 		$bean =  R::findOne('energy',
 				' INV = :INV AND time > :beginDate AND  time < :endDate ',
 				array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
@@ -343,15 +343,15 @@ class PDODataAdapter {
 		$id = R::store($bean);
 
 	}
-	
+
 	/**
-	 * Diehl 
+	 * Diehl
 	 */
 	public function checkEventExists($number,$event){
 		$bean = R::getAll('select * from event where number = :number and event = :event  LIMIT 2 ',
 				array(':number'=>$number,':event'=>$event)
 		);
-		
+
 		return $bean;
 	}
 
@@ -480,64 +480,64 @@ class PDODataAdapter {
 	 */
 	public function DayBeansToGraphPoints($beans,$graph,$startDate){
 		$config = Session::getConfig();
-		
+
 		$i=0;
 		$firstBean = array();
 		$preBean = array();
 
 		$KWHT = 0;
 		$lastDays = new LastDays();
-		
-			foreach ($beans as $bean){
-				if ($i==0){
-					$firstBean = $bean;
-					$preBean = $bean;
-					$preBeanUTCdate = $bean['time'];
-				}
-				$UTCdate = $bean['time'];
-				$UTCtimeDiff = $UTCdate - $preBeanUTCdate;
-				$cumPower = round(($bean['KWHT']-$firstBean['KWHT'])*1000,0);
-				// 09/30/2010 00:00:00
-				$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,0,0);
-				$graph->points['cumPower'][] = array (  $UTCdate*1000 ,$cumPower,date("H:i, d-m-Y",$bean['time']));
-				$graph->points['avgPower'][] = array (  $UTCdate*1000 ,$avgPower,date("H:i, d-m-Y",$bean['time']));
-				$preBeanUTCdate = $bean['time'];
+
+		foreach ($beans as $bean){
+			if ($i==0){
+				$firstBean = $bean;
 				$preBean = $bean;
-				$i++;
+				$preBeanUTCdate = $bean['time'];
+			}
+			$UTCdate = $bean['time'];
+			$UTCtimeDiff = $UTCdate - $preBeanUTCdate;
+			$cumPower = round(($bean['KWHT']-$firstBean['KWHT'])*1000,0);
+			// 09/30/2010 00:00:00
+			$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,0,0);
+			$graph->points['cumPower'][] = array (  $UTCdate*1000 ,$cumPower,date("H:i, d-m-Y",$bean['time']));
+			$graph->points['avgPower'][] = array (  $UTCdate*1000 ,$avgPower,date("H:i, d-m-Y",$bean['time']));
+			$preBeanUTCdate = $bean['time'];
+			$preBean = $bean;
+			$i++;
+		}
+
+		if($i>0){
+			$plantPower = $this->readPlantPower();
+			if($cumPower>0 AND $plantPower>0){
+				$kWhkWp = number_format(($cumPower/1000) / ($plantPower/1000),2,',','');
+			}else{
+				$kWhkWp = number_format(0,2,',','');
 			}
 
-			if($i>0){
-				$plantPower = $this->readPlantPower();
-				if($cumPower>0 AND $plantPower>0){
-					$kWhkWp = number_format(($cumPower/1000) / ($plantPower/1000),2,',','');
-				}else{
-					$kWhkWp = number_format(0,2,',','');
-				}
-				
-				if($cumPower >= 1000){
-					$cumPower = number_format($cumPower /=1000,2,',','');
-					$cumPowerUnit = "kWh";
-				}else{
-					$cumPowerUnit = "W";
-				}
-				//set timestamp to overrule standard timestamp
-				$timestamp = Util::getSunInfo($config,$startDate);
-				$graph->timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
-				
-				$graph->metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
-
-				$graph->series[] = array('label'=>'Cum. Power(W)','yaxis'=>'yaxis');
-				$graph->series[] = array('label'=>'Avg. Power(W)','yaxis'=>'yaxis');
-				
-				$graph->axes['yaxis']  = array('label'=>'Cum. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-				$graph->axes['y2axis'] = array('label'=>'Avg. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-				
-				//$graph->metaData['hideSeries']= array();
-				$graph->metaData['hideSeries']= array();
-			
+			if($cumPower >= 1000){
+				$cumPower = number_format($cumPower /=1000,2,',','');
+				$cumPowerUnit = "kWh";
+			}else{
+				$cumPowerUnit = "W";
 			}
+			//set timestamp to overrule standard timestamp
+			$timestamp = Util::getSunInfo($config,$startDate);
+			$graph->timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
 
-			return $graph;
+			$graph->metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
+
+			$graph->series[] = array('label'=>'Cum. Power(W)','yaxis'=>'yaxis');
+			$graph->series[] = array('label'=>'Avg. Power(W)','yaxis'=>'yaxis');
+
+			$graph->axes['yaxis']  = array('label'=>'Cum. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+			$graph->axes['y2axis'] = array('label'=>'Avg. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+
+			//$graph->metaData['hideSeries']= array();
+			$graph->metaData['hideSeries']= array();
+				
+		}
+
+		return $graph;
 	}
 
 
@@ -615,7 +615,7 @@ class PDODataAdapter {
 		$bean->piwikSiteId = $config->piwikSiteId;
 
 		$bean->adminpasswd = $config->adminpasswd;
-		
+
 		$bean->pauseWorker = $config->pauseWorker;
 		$bean->restartWorker = $config->restartWorker;
 
@@ -664,16 +664,16 @@ class PDODataAdapter {
 			$config->aurorapath = ($bean->aurorapath != "") ? $bean->aurorapath : $config->aurorapath;
 			$config->smagetpath = ($bean->smagetpath != "") ? $bean->smagetpath : $config->smagetpath;
 			$config->smartmeterpath = ($bean->smartmeterpath != "") ? $bean->smartmeterpath : $config->smartmeterpath;
-				
+
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
 			$config->inverters = $this->readInverters();
-				
+
 			$config->googleAnalytics = $bean->googleAnalytics;
 			$config->piwikServerUrl = $bean->piwikServerUrl;
 			$config->piwikSiteId = $bean->piwikSiteId;
-				
+
 			$config->adminpasswd = ($bean->adminpasswd != "") ? $bean->adminpasswd : $config->adminpasswd;
-			
+				
 			$config->pauseWorker = ($bean->pauseWorker != "") ? $bean->pauseWorker : $config->pauseWorker;
 			$config->restartWorker = ($bean->restartWorker != "") ? $bean->restartWorker : $config->restartWorker;
 		}
@@ -712,6 +712,7 @@ class PDODataAdapter {
 		$bean->pvoutputApikey = $inverter->pvoutputApikey;
 		$bean->pvoutputSystemId = $inverter->pvoutputSystemId;
 		$bean->state = $inverter->state;
+		$bean->refreshTime = $inverter->refreshTime;
 
 		$bean->expectedJAN = $inverter->expectedJAN;
 		$bean->expectedFEB = $inverter->expectedFEB;
@@ -730,7 +731,7 @@ class PDODataAdapter {
 		$id = R::store($bean,$bean->id);
 		return $id;
 	}
-	
+
 	/**
 	 *
 	 * @param unknown_type $id
@@ -756,8 +757,9 @@ class PDODataAdapter {
 		$inverter->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $inverter->pvoutputEnabled;
 		$inverter->pvoutputApikey = $bean->pvoutputApikey;
 		$inverter->pvoutputSystemId = $bean->pvoutputSystemId;
-		$inverter->panels = $this->readPanelsByInverter($inverter->id);
 		$inverter->state = $bean->state;
+		$inverter->refreshTime = ($bean->refreshTime != "") ? $bean->refreshTime : $inverter->refreshTime;
+		$inverter->panels = $this->readPanelsByInverter($inverter->id);
 
 		$inverter->expectedJAN = $bean->expectedJAN;
 		$inverter->expectedFEB = $bean->expectedFEB;
@@ -805,6 +807,8 @@ class PDODataAdapter {
 			$inverter->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $inverter->pvoutputEnabled;
 			$inverter->pvoutputApikey = $bean->pvoutputApikey;
 			$inverter->pvoutputSystemId = $bean->pvoutputSystemId;
+			$inverter->state = $bean->state;
+			$inverter->refreshTime = ($bean->refreshTime != "") ? $bean->refreshTime : $inverter->refreshTime;
 			$inverter->panels = $this->readPanelsByInverter($inverter->id);
 
 			$inverter->expectedJAN = $bean->expectedJAN;
@@ -903,7 +907,7 @@ class PDODataAdapter {
 	 */
 	public function readTablesPeriodValues($invtnum, $table, $type, $startDate){
 		$count = 0;
-		
+
 		// get the begin and end date/time
 		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
 		if ($invtnum > 0){
@@ -919,7 +923,7 @@ class PDODataAdapter {
 					WHERE time > :beginDate AND  time < :endDate
 					ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
-		
+
 		return $energyBeans;
 	}
 
@@ -1421,7 +1425,7 @@ class PDODataAdapter {
 					$whichBeans[$i]['KWH'] = sprintf("%01.2f",(float)$lastKWH);
 					$whichBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$lastKWH);
 				}
-				
+
 				// get Compare beans
 				$beans = $this->readEnergyValues($invtnum, 'month', 1, $compareYear."-".$compareMonth."-1");
 				$compareBeans = $beans[0];
@@ -1472,14 +1476,14 @@ class PDODataAdapter {
 					$expectedBeans[$i]['time'] = strtotime(date("Y")."/".$compareMonth."/".$iCompareDay);
 					$expectedBeans[$i]['KWH'] =  (float)number_format((float)$expectedBeans[$i-1]['KWH']+(float)$expectedKwhPerDay,2,'.','');
 					$expectedBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$expectedBeans[$i-1]['KWH']+(float)$expectedKwhPerDay);
-					$expectedBeans[$i]['harvested'] = (float)number_format((float)$expectedKwhPerDay,2,'.','');  
+					$expectedBeans[$i]['harvested'] = (float)number_format((float)$expectedKwhPerDay,2,'.','');
 				}
 				//var_dump($expectedBeans);
 				$type = "energy vs expected";
 				$diff = $this->getDiffCompare($whichBeans,$expectedBeans);
 			}
 		}
-		
+
 		return array(
 				"expectedKWhMonth"=>$expectedKWhMonth,
 				"expectedkwhYear"=>$expectedkwhYear,
@@ -1505,14 +1509,14 @@ class PDODataAdapter {
 			for ($i = 0; $i < $whichCount; $i++) {
 				$diffCalc = $whichBeans[$i]['KWH']-$expectedBeans[$i]['KWH'];
 				$diffHarvestedCalc = $whichBeans[$i]['harvested']-$expectedBeans[$i]['harvested'];
-				
+
 				$diff[] = array("diff"=>sprintf("%01.2f",(float)$diffCalc),"diffHar"=>$diffHarvestedCalc);
 			}
 		}else{
 			for ($i = 0; $i < $expectedCount; $i++) {
 				$diffCalc = $whichBeans[$i]['KWH']-$expectedBeans[$i]['KWH'];
 				$diffHarvestedCalc = $whichBeans[$i]['harvested']-$expectedBeans[$i]['harvested'];
-				
+
 				$diff[] = array("diff"=>sprintf("%01.2f",(float)$diffCalc),"diffHar"=>$diffHarvestedCalc);
 			}
 
@@ -1622,27 +1626,27 @@ class PDODataAdapter {
 	public function getGraphDayPoint($invtnum,$type, $startDate){
 		($type == 'today')?$type='day':$type=$type;
 		$graph = new Graph();
-		
-		
+
+
 		$beans = $this->readTablesPeriodValues($invtnum, 'history', $type, $startDate);
-		
+
 		$graph->axes['xaxis'] = array('label'=>'','renderer'=>'DateAxisRenderer',
 				'tickRenderer'=>'CanvasAxisTickRenderer','labelRenderer'=>'CanvasAxisLabelRenderer',
 				'tickInterval'=>3600,'tickOptions'=>array('formatter'=>'DayDateTickFormatter','angle'=>-45));
-		
-		$graph = $this->DayBeansToGraphPoints($beans,$graph,$startDate);		
-		
+
+		$graph = $this->DayBeansToGraphPoints($beans,$graph,$startDate);
+
 		$hookGraph = HookHandler::getInstance()->fire("GraphDayPoints",$invtnum,$startDate,$type);
 
 		foreach ($hookGraph->axes as $key => $value){
 			$graph->axes[$key] = $value;
-		}	
-		
-		
+		}
+
+
 		foreach($hookGraph->series as $series){
 			$graph->series[] = $series;
 		}
-		
+
 		if($hookGraph->points!=null){
 			foreach ($hookGraph->points as $key => $value){
 				$graph->points[$key] = $value;
@@ -1652,12 +1656,12 @@ class PDODataAdapter {
 		if($hookGraph->timestamp!=null){
 			$graph->timestamp = $hookGraph->timestamp;
 		}
-		
-		
+
+
 		if($hookGraph->metaData != null){
 			$graph->metaData= array_merge_recursive((array)$hookGraph->metaData,(array)$graph->metaData);
 		}
-		$array['graph'] = $graph; 
+		$array['graph'] = $graph;
 
 
 		return $array;
@@ -1683,7 +1687,7 @@ class PDODataAdapter {
 			return $this->PeriodBeansToGraphPoints($beans,$type,$startDate);
 		}
 	}
-	
+
 
 	/**
 	 * return a array that can be understand by JQplot
@@ -1704,8 +1708,8 @@ class PDODataAdapter {
 					$bean['displayKWH'],
 					$bean['harvested']
 			);
-			
-			
+				
+				
 		}
 		//number_format($cumPower,2,'.',''),
 		// if no data was found, create 1 dummy point for the graph to render
@@ -1835,7 +1839,7 @@ class PDODataAdapter {
 			$Energy['KWHKWP'] = number_format($energyBean['KWH'] / ($invConfig->plantpower/1000),2,',','');
 			$Energy['harvested'] = number_format((float)$energyBean['KWH'],2,'.','');
 			$Energy['KWH'] += number_format((float)$energyBean['KWH'],2,'.','');
-				
+
 			$cum +=$energyBean['KWH'];
 			$Energy['displayKWH'] = sprintf("%01.2f",(float)$cum);
 			$Energy['CO2'] =Formulas::CO2kWh($energyBean['KWH'],$config->co2kwh);
@@ -1897,7 +1901,7 @@ class PDODataAdapter {
 
 				$oInverter = 	array();
 
-				
+
 				if(Util::isSunDown(Session::getConfig())){
 					$live = new Live();
 					$live->name = $inverter->name;
@@ -1928,7 +1932,7 @@ class PDODataAdapter {
 					}else{
 						$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
 					}
-					
+						
 					$GP  += $liveBean['GP'];
 					$I1P += $liveBean['I1P'];
 					$I2P += $liveBean['I2P'];
@@ -1943,19 +1947,19 @@ class PDODataAdapter {
 					$live->GP = ($liveBean['GP']<1000) ? number_format($liveBean['GP'],1,'.','') : number_format($liveBean['GP'],0,'','');
 					$live->GA = ($liveBean['GA']<1000) ? number_format($liveBean['GA'],1,'.','') : number_format($liveBean['GA'],0,'','');
 					$live->GV = ($liveBean['GV']<1000) ? number_format($liveBean['GV'],1,'.','') : number_format($liveBean['GV'],0,'','');
-					
+						
 					$live->I1P = ($liveBean['I1P']<1000) ? number_format($liveBean['I1P'],1,'.','') : number_format($liveBean['I1P'],0,'','');
 					$live->I1A = ($liveBean['I1A']<1000) ? number_format($liveBean['I1A'],1,'.','') : number_format($liveBean['I1A'],0,'','');
 					$live->I1V = ($liveBean['I1V']<1000) ? number_format($liveBean['I1V'],1,'.','') : number_format($liveBean['I1V'],0,'','');
 					$live->I1Ratio = ($liveBean['I1Ratio']<1000) ? number_format($liveBean['I1Ratio'],1,'.','') : number_format($liveBean['I1Ratio'],0,'','');
-					
+						
 					$live->I2P = ($liveBean['I2P']<1000) ? number_format($liveBean['I2P'],1,'.','') : number_format($liveBean['I2P'],0,'','');
 					$live->I2A = ($liveBean['I2A']<1000) ? number_format($liveBean['I2A'],1,'.','') : number_format($liveBean['I2A'],0,'','');
 					$live->I2V = ($liveBean['I2V']<1000) ? number_format($liveBean['I2V'],1,'.','') : number_format($liveBean['I2V'],0,'','');
 					$live->I2Ratio = ($liveBean['I2Ratio']<1000) ? number_format($liveBean['I2Ratio'],1,'.','') : number_format($liveBean['I2Ratio'],0,'','');
 					$live->IP = ($liveBean['IP']<1000) ? number_format($liveBean['IP'],1,'.','') : number_format($liveBean['IP'],0,'','');
 					$live->EFF = ($liveBean['EFF']<1000) ? number_format($liveBean['EFF'],1,'.','') : number_format($liveBean['EFF'],0,'','');
-					
+						
 					$avgPower = $this->getAvgPower($inverter->id);
 					$live->trend = $avgPower['trend'];
 					$live->avgPower = $avgPower['avgPower'];
@@ -2004,7 +2008,7 @@ class PDODataAdapter {
 		if($type == "today" || $type == "day" || $type == "all"){
 			$totalEnergyBeansToday = $this->readTablesPeriodValues(0, "energy", "today", date("d-m-Y"));
 			$maxPowerBeansToday = $this->readTablesPeriodValues(0, "pMaxOTD", "today", date("d-m-Y"));
-			
+				
 			if (count ( $maxPowerBeansToday )==0 ){
 				$avgEnergyBeansToday= number_format(0,3,',','');
 				$totalEnergyBeansToday[]['KWH']=0;
@@ -2018,7 +2022,7 @@ class PDODataAdapter {
 				}
 
 			}
-			
+				
 			if(count ( $maxPowerBeansToday )==0 ){
 				$maxPowerBeansToday[]['GP']="0";
 			}
@@ -2028,7 +2032,7 @@ class PDODataAdapter {
 			$totalEnergyBeansWeek = R::getAll("SELECT COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%Y%W' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY date ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit));
 			if(count($totalEnergyBeansWeek)>0){
 				$avgEnergyBeansWeek = number_format($totalEnergyBeansWeek[0]['sumkWh']/$totalEnergyBeansWeek[0]['countkWh'],2,',','');
-	
+
 				for ($i = 0; $i < count($totalEnergyBeansWeek); $i++) {
 					$totalEnergyBeansWeek[$i]['sumkWh'] = number_format($totalEnergyBeansWeek[$i]['sumkWh'],2,',','');
 				}
@@ -2097,13 +2101,13 @@ class PDODataAdapter {
 				}
 			}else{
 				$totalEnergyBeansOverall = R::getAll("SELECT COUNT(kwh) as countkWh, MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy order by time limit 0,:limit",array(':limit'=>$limit));
-				
+
 				if($totalEnergyBeansOverall[0]['sumkWh']>0){
 					$avgEnergyBeansOverall = number_format($totalEnergyBeansOverall[0]['sumkWh']/$totalEnergyBeansOverall[0]['countkWh'],2,',','');
 				}else{
 					$avgEnergyBeansOverall = number_format('0',2,',','');
 				}
-				
+
 				for ($i = 0; $i < count($totalEnergyBeansOverall); $i++) {
 					$totalEnergyBeansOverall[$i]['sumkWh'] = number_format($totalEnergyBeansOverall[$i]['sumkWh'],2,',','');
 				}
@@ -2113,10 +2117,10 @@ class PDODataAdapter {
 			}else{
 				$totalEnergyBeansOverallKWHKWP= number_format('0',2,',','');
 			}
-			
-			
+				
+				
 		}
-		
+
 
 		foreach ($config->inverters as $inverter){
 			$initialkwh += floatval($inverter->initialkwh);
@@ -2227,10 +2231,10 @@ class PDODataAdapter {
 		return $data;
 	}
 
-	
-	
+
+
 	public function remove_hybridauth_session($current_user_id, $type){
-	
+
 		$bean =  R::findOne('hybridUsersConnections',
 				' user_id = :user_id AND type :type ',
 				array(':user_id'=>$current_user_id,
@@ -2238,17 +2242,17 @@ class PDODataAdapter {
 				)
 		);
 		R::trash( $bean );
-		
+
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param unknown $current_user_id  = id of user
 	 * @param unknown $hybridauth_session_data  = Session data
 	 * @param unknown $user_profile = user profile
 	 * @param unknown $type = Twitter/Facebook
 	 */
-	
+
 	public function save_hybridauth_session($current_user_id, $hybridauth_session_data,$user_profile, $type){
 		$bean = R::findOne('hybridUsersConnections',' user_id = :user_id and type = :type LIMIT 1',array(':user_id'=>$current_user_id,':type'=>$type));
 
@@ -2268,7 +2272,7 @@ class PDODataAdapter {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param int $user_id = id of user
 	 * @param str $type = Twitter/Facebook
 	 * @return Ambigous <multitype:, multitype:NULL >
@@ -2311,7 +2315,7 @@ class PDODataAdapter {
 			$changed = true;
 			// change the bean to the new status for this inverter
 			$bean->state = $state;
-				
+
 			//Store the bean with the new inverter status
 			R::store($bean,$bean->id);
 		}
@@ -2324,7 +2328,6 @@ class PDODataAdapter {
 	 * @param Inverter $inverter // Inverter object
 	 * @return boolean // changed true;
 	 */
-
 	function setDeviceType(Inverter $inverter){
 		// get inverter bean
 		$bean = R::load('inverter', $inverter->id);
@@ -2333,43 +2336,39 @@ class PDODataAdapter {
 		R::store($bean,$bean->id);
 		return true;
 	}
-	
+
 	/**
 	 *
 	 * @return Ambigous <multitype:, unknown>
 	 */
-	
-	        function getAvgPower($deviceNum=0){
-                $recentBegin = time()-400;
-                $recentEnd = time();
 
-                $pastBegin = time()-800;
-                $pastEnd = time()-400;
-                if ($deviceNum > 0){
-                        $queryWhere = " inv = ". $deviceNum ." AND ";
-                }else{
-                        $queryWhere = "";
-                }
-                $query = "SELECT  avg(GP) AS avgGP FROM 'history' WHERE ".$queryWhere." time > :begin AND  time < :end ORDER BY time DESC";
+	function getAvgPower($deviceNum=0){
+		$recentBegin = time()-400;
+		$recentEnd = time();
 
-                $avgRecent =  R::getAll($query,array(':begin'=>$recentBegin,':end'=>$recentEnd));
-                $avgPast   =  R::getAll($query,array(':begin'=>$pastBegin,':end'=>$pastEnd));
+		$pastBegin = time()-800;
+		$pastEnd = time()-400;
+		if ($deviceNum > 0){
+			$queryWhere = " inv = ". $deviceNum ." AND ";
+		}else{
+			$queryWhere = "";
+		}
+		$query = "SELECT  avg(GP) AS avgGP FROM 'history' WHERE ".$queryWhere." time > :begin AND  time < :end ORDER BY time DESC";
 
-                $average['recent'] = $avgRecent[0]['avgGP'];
-                $average['past'] = $avgPast[0]['avgGP'];
+		$avgRecent =  R::getAll($query,array(':begin'=>$recentBegin,':end'=>$recentEnd));
+		$avgPast   =  R::getAll($query,array(':begin'=>$pastBegin,':end'=>$pastEnd));
 
-                if($average['recent']>$average['past']){
-                        $average['trend'] = _("up");
-                }elseif($average['recent']<$average['past']){
-                        $average['trend'] = _("down");
-                }else{
-                        $average['trend'] = _("equal");
-                }
+		$average['recent'] = $avgRecent[0]['avgGP'];
+		$average['past'] = $avgPast[0]['avgGP'];
 
-                return $average;
-        }
+		if($average['recent']>$average['past']){
+			$average['trend'] = _("up");
+		}elseif($average['recent']<$average['past']){
+			$average['trend'] = _("down");
+		}else{
+			$average['trend'] = _("equal");
+		}
 
-	
-	
-	
+		return $average;
+	}
 }
