@@ -150,31 +150,33 @@ class Session
      * @param unknown $arBrowserLanguages
      */
     public static function supportedLanguages($arBrowserLanguages) {
-    	// Go through all languages send by the browser
-    	foreach ($arBrowserLanguages as $language) {
-    		// First convert - to an _
-    		$language = str_replace("-", "_", $language);
-    		$languageParts = explode("_", $language);
-
-    		// Convert to our folder style
-    		$language = strtolower($languageParts[0]) . ((count($languageParts) == 2) ? "_" . strtoupper($languageParts[1]) : "");
-    		$languageParts = explode("_", $language);
-    		
-    		// Check if the full language dir is available
-    		if (is_dir(self::getBasePath() . "/locale/" . $language)) {
-    			return $language;
-    		}
-    		// Check if the first part off the language dir is available (nl-NL)
-    		if (is_dir(self::getBasePath() . "/locale/" . $languageParts[0])) {
-    			return $languageParts[0];
-    		}
-    		// Check if the language size is 2 characters and if lowercase_uppercase exists
-    		if (strlen($language) == 2) {
-	    		$combinedLanguage = strtolower($language) . "_" . strtoupper($language);
-	    		if (is_dir(self::getBasePath() . "/locale/" . $combinedLanguage)) {
-	    			return $combinedLanguage;
+    	if (is_array($arBrowserLanguages)) {
+	    	// Go through all languages send by the browser
+	    	foreach ($arBrowserLanguages as $language) {
+	    		// First convert - to an _
+	    		$language = str_replace("-", "_", $language);
+	    		$languageParts = explode("_", $language);
+	
+	    		// Convert to our folder style
+	    		$language = strtolower($languageParts[0]) . ((count($languageParts) == 2) ? "_" . strtoupper($languageParts[1]) : "");
+	    		$languageParts = explode("_", $language);
+	    		
+	    		// Check if the full language dir is available
+	    		if (is_dir(self::getBasePath() . "/locale/" . $language)) {
+	    			return $language;
 	    		}
-    		}
+	    		// Check if the first part off the language dir is available (nl-NL)
+	    		if (is_dir(self::getBasePath() . "/locale/" . $languageParts[0])) {
+	    			return $languageParts[0];
+	    		}
+	    		// Check if the language size is 2 characters and if lowercase_uppercase exists
+	    		if (strlen($language) == 2) {
+		    		$combinedLanguage = strtolower($language) . "_" . strtoupper($language);
+		    		if (is_dir(self::getBasePath() . "/locale/" . $combinedLanguage)) {
+		    			return $combinedLanguage;
+		    		}
+	    		}
+	    	}
     	}
     	return "en"; // English is the default
     }
