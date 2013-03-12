@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 
 $docRoot = dirname(dirname(__FILE__));
-require_once $docRoot . '/admin/classes/classloader.php';
+require_once $docRoot . '/classes/classloader.php';
 Session::initialize();
 
 // Check if there is already an worker running
