@@ -26,11 +26,11 @@ $alarmUpdateRate = 15 * 60; // every quarter
 
 // Create the inverter jobs
 foreach (Session::getConfig()->inverters as $device) {
-	QueueServer::getInstance()->add(new QueueItem(time(), "deviceHandler.handleLive", array($device), true, $device->refreshTime));
-	QueueServer::getInstance()->add(new QueueItem($historyStartTime, "deviceHandler.handleHistory", array($device), true, $historyUpdateRate));
-	QueueServer::getInstance()->add(new QueueItem($energyStartTime, "deviceHandler.handleEnergy", array($device), true, $energyUpdateRate));
-	QueueServer::getInstance()->add(new QueueItem($infoStartTime, "deviceHandler.handleInfo", array($device), true, $infoUpdateRate));
-	QueueServer::getInstance()->add(new QueueItem($alarmStartTime, "deviceHandler.handleAlarm", array($device), true, $alarmUpdateRate));
+	QueueServer::getInstance()->add(new QueueItem(time(), "DeviceHandler.handleLive", array($device), true, $device->refreshTime));
+	QueueServer::getInstance()->add(new QueueItem($historyStartTime, "DeviceHandler.handleHistory", array($device), true, $historyUpdateRate));
+	QueueServer::getInstance()->add(new QueueItem($energyStartTime, "DeviceHandler.handleEnergy", array($device), true, $energyUpdateRate));
+	QueueServer::getInstance()->add(new QueueItem($infoStartTime, "DeviceHandler.handleInfo", array($device), true, $infoUpdateRate));
+	QueueServer::getInstance()->add(new QueueItem($alarmStartTime, "DeviceHandler.handleAlarm", array($device), true, $alarmUpdateRate));
 }
 
 // Start the queue server

@@ -758,7 +758,7 @@ class PDODataAdapter {
 		$inverter->pvoutputApikey = $bean->pvoutputApikey;
 		$inverter->pvoutputSystemId = $bean->pvoutputSystemId;
 		$inverter->state = $bean->state;
-		$inverter->refreshTime = ($bean->refreshTime != "") ? $bean->refreshTime : $inverter->refreshTime;
+		$inverter->refreshTime = (isset($bean->refreshTime) && $bean->refreshTime != "") ? $bean->refreshTime : $inverter->refreshTime;
 		$inverter->panels = $this->readPanelsByInverter($inverter->id);
 
 		$inverter->expectedJAN = $bean->expectedJAN;
@@ -808,7 +808,7 @@ class PDODataAdapter {
 			$inverter->pvoutputApikey = $bean->pvoutputApikey;
 			$inverter->pvoutputSystemId = $bean->pvoutputSystemId;
 			$inverter->state = $bean->state;
-			$inverter->refreshTime = ($bean->refreshTime != "") ? $bean->refreshTime : $inverter->refreshTime;
+			$inverter->refreshTime = (isset($bean->refreshTime) && $bean->refreshTime != "") ? $bean->refreshTime : $inverter->refreshTime;
 			$inverter->panels = $this->readPanelsByInverter($inverter->id);
 
 			$inverter->expectedJAN = $bean->expectedJAN;
