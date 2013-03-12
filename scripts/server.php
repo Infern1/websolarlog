@@ -33,6 +33,9 @@ foreach (Session::getConfig()->inverters as $device) {
 	QueueServer::getInstance()->add(new QueueItem($alarmStartTime, "deviceHandler.handleAlarm", array($device), true, $alarmUpdateRate));
 }
 
+// Start the queue server
+QueueServer::getInstance()->start();
+
 /**
  * Creates an job on a fix time every day
  * @param $hour
