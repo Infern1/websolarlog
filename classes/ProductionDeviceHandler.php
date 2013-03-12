@@ -36,7 +36,7 @@ class ProductionDeviceHandler {
 		$alarm = trim($device->getApi(Session::getConfig())->getAlarms());
 		if ($alarm != "") {
 			$event = new Event($device->id, time(), 'Alarm', Util::formatEvent($alarm));
-			if ($this->isAlarmDetected($event)) {
+			if (self::isAlarmDetected($event)) {
 				HookHandler::getInstance()->fire("onInverterAlarm", $device, $event);
 			}
 		}
@@ -48,7 +48,7 @@ class ProductionDeviceHandler {
 	 * @param Event $event
 	 * @return boolean
 	 */
-	private function isAlarmDetected($event) {
+	private static function isAlarmDetected($event) {
 		$event_text = trim($event->event);
 		$event_lines = explode("\n", $event_text);
 	
