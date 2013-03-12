@@ -226,6 +226,11 @@ class Util {
      * @return Array of languages
      */
     public static function getBrowserDefaultLanguage() {
+    	if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+    		// Probably run from server/worker script
+    		return null;
+    	}
+    	
     	$languages = explode(",", $_SERVER['HTTP_ACCEPT_LANGUAGE']);
     	
     	// Strip off the ; part
