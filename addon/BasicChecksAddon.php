@@ -35,11 +35,11 @@ class BasicChecksAddon {
 		
 		// detect if the server is down
 		$offline = false;
-		if ($inverter->getState() == 1  ) {
+		if ($inverter->state == 1  ) {
 			// we are offline
 			$offline = true;
 		}		
-		if ($inverter->getState() == 0  ) {
+		if ($inverter->state == 0  ) {
 			$sessionKey = 'noLiveCounter-' . $inverter->id;
 			
 			$liveCounter = (integer) (isset($_SESSION[$sessionKey]) ? $_SESSION[$sessionKey] : 0);
