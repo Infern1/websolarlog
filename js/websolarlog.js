@@ -374,7 +374,7 @@ var WSL = {
 		ajaxStart();
 		WSL.api.getPageIndexLiveValues(function(data) {
 
-		GP = data.avgPower/10;
+		GP = data.maxGauges/10;
 		gaugeGPOptions = {
 			title : data.lang.ACPower,
 			grid : {background : '#FFF'},
@@ -390,7 +390,7 @@ var WSL = {
 				}
 			}
 		};
-		IP = data.avgPower/10;
+		IP = data.maxGauges/10;
 		gaugeIPOptions = {
 				title : data.lang.DCPower,
 				grid : {background : '#FFF'},

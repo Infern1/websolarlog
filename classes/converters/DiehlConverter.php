@@ -1,7 +1,8 @@
 <?php
 class DiehlConverter
 {
-	
+	const _Status	= 'eNEXUS_0001[s:1,t:17]';//Status
+	const _Mode		= 'eNEXUS_0002[s:1,t:17]';//Mode
 
 	const _I1A		= 'eNEXUS_0005[s:1,t:17]';//MPP1 Amps
 	const _I1V		= 'eNEXUS_0006[s:1,t:17]';//MPP1 Volt
@@ -25,6 +26,61 @@ class DiehlConverter
 	const _FRQ		= 'eNEXUS_0046[s:1,t:17]'; // Frequency
 	const _INVT		= 'eNEXUS_0045[s:1,t:17]'; // Inverter Temperature
 	const _KWHT		= 'eNEXUS_0043[s:1,t:17,n:4]'; // kWhTotal
+	
+	/**
+	 * Converter the JSON mode response to a WSL status 
+	 * 
+	 * @param unknown $inputLine
+	 * @return NULL|unknown
+	 */
+	public static function toStatus($inputLine){
+		// Check if the input line is valid
+		if ($inputLine == null || trim($inputLine) == "") {
+			return null;
+		}
+		
+		// loop through reponse
+		foreach (json_decode($inputLine) as $key => $value){
+			// if value == array
+			if(is_array($value)){
+				// loop through value
+				foreach ($value as $keys => $values){
+					// if value == _mode 
+					if($values->path == self::_Mode AND $values->value != ''){
+						// set mode  
+						if($values->value == 0){
+							$mode = 1; // offline
+							return $mode;
+						}elseif($values->value == 1){
+							$mode = 9; // online
+							return $mode;
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	
+	/*
+	 * At this moment we don't use the Status of the Dhiel (normal,error,warning,etc)
+	 * 
+	public static function toStatus($inputLine){
+		// Check if the input line is valid
+		if ($inputLine == null || trim($inputLine) == "") {
+			return null;
+		}
+	
+		foreach (json_decode($inputLine) as $key => $value){
+			if(is_array($value)){
+				foreach ($value as $keys => $values){
+					if($values->path == self::_Status AND $values->value != ''){ $mode['status'] = $values->value;}
+				}
+			}
+		}
+		return $mode;
+	}
+	*/
 	
     /**
      * Converts the result of getData to an Live object

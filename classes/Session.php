@@ -244,6 +244,12 @@ class Session
     	
     	// fire from frontend
     	$hookHandler->add("checkEnergy", "EnergyCheckAddon.checkEnergy");
+
+    	// Statistics
+    	$hookHandler->add("onFastJob", "CacheAddon.averagePower");
+    	$hookHandler->add("onFastJob", "CacheAddon.EnergyValues");
+    	
+    	
     	
     }
 }

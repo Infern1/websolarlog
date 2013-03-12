@@ -448,14 +448,13 @@ try {
 			break;
 		case 'getPageIndexLiveValues':
 			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
-			// get the summedMaxPower of today
-			$avgGP = $dataAdapter->getAvgPower();
-			//if sumGP <= 0 (at nighttime) then we set the gauge to the nearest X00
+			
+			// Get Gauge Max
+			$avgGP = $dataAdapter->getAvgPower('panels');
 			($avgGP['recent']<=0) ? $avgGPRecent = 1 : $avgGPRecent = $avgGP['recent'];
-			// sumMaxPowerToday+10% and roundup to the nearest 200
-		
 			$gaugeMaxPower = ceil( ( ($avgGPRecent*1.1)+100) / 100 ) * 100;
-		
+
+			
 			$lang['DCPower'] = _("DC Power");
 			$lang['ACPower'] = _("AC Power");
 			$lang['Efficiency'] = _("Efficiency");
@@ -465,8 +464,7 @@ try {
 			
 			$data['lang'] = $lang;
 			$data['inverters'] = $indexValues['inverters'];
-			$data['avgPower'] = $gaugeMaxPower;
-			$data['avgPowerTrend'] = $avgGP['trend'];
+			$data['maxGauges'] = $gaugeMaxPower;
 			$data['sumInverters'] = $indexValues['sum'];
 			break;
 		case 'getPageIndexValues':

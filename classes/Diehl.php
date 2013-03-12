@@ -331,7 +331,14 @@ Class Diehl implements DeviceApi {
 			
 			
      */
-    
+    /**
+     * 
+     * @param unknown $path
+     * @param unknown $address
+     * @param unknown $port
+     * @param unknown $comoption
+     * @param unknown $debug
+     */
     function __construct($path, $address, $port, $comoption, $debug) {
         $this->ADR = $address;
         $this->PORT = $port;
@@ -339,18 +346,26 @@ Class Diehl implements DeviceApi {
         $this->DEBUG = $debug;
         $this->PATH = $path;
     }
+    
+    /**
+     * We use the getState to get the Diehl operation mode (online,offline,stanby,etc)
+     * @return Device specific Convertered Mode array
+     */
+    public function getState(){
+    	$jsonRequest = '{"jsonrpc":"2.0","method":"GeteNexusData","params":[{"path":"eNEXUS_0002[s:1,t:17]","datatype":"INT8U"}],"id":0}:';
+    	$data =trim($this->execute($jsonRequest));
+    	return DiehlConverter::toMode($data);
+    }
 
     public function getAlarms() {
     	if ($this->DEBUG) {
-    		//return "W2223424".rand(0,9);
     		return "";
     	} else {
+    		// At this moment we can't process the Event response from the Diehl
     		//$jsonRequest = '{"jsonrpc":"2.0","method":"GetEventPage","params":[1,"2013-02-21 23:59:59",1,14],"id":0}:';
-    		// At this moment we can't process the Event response from the Diehl 
-    		return "";
     		//return $this->execute($jsonRequest);
+    		return "";    		
     	}
-
     }
 
     public function getData() {
@@ -361,28 +376,31 @@ Class Diehl implements DeviceApi {
             {"path":"eNEXUS_0050[s:17,t:1]","value":"3537"}, {"path":"eNEXUS_0065[s:17,t:1]","value":"139"}, 
             {"path":"eNEXUS_0051[s:17,t:1]","value":"139"}, {"path":"eNEXUS_0052","value":"0"}, 
             {"path":"eNEXUS_0053","value":"0"}, {"path":"eNEXUS_0066[s:17,t:1]","value":"493"},
-             {"path":"eNEXUS_0055[s:17,t:1]","value":"2333"},{"path":"eNEXUS_0064[s:17,t:1]","value":"115"},
-             {"path":"eNEXUS_0056","value":"1"},{"path":"eNEXUS_0057","value":"1"},
-             {"path":"eNEXUS_0058","value":"2000"},{"path":"eNEXUS_0066[s:17,t:1,p:1]","value":"493"},
-             {"path":"eNEXUS_0066[s:17,t:1,p:2]","value":"0"}, {"path":"eNEXUS_0066[s:17,t:1,p:3]","value":"0"},
-             {"path":"eNEXUS_0064[s:17,t:1,p:1]","value":"115"},{"path":"eNEXUS_0064[s:17,t:1,p:2]","value":"0"},
-               {"path":"eNEXUS_0064[s:17,t:1,p:3]","value":"0"},{"path":"eNEXUS_0009[s:17,t:1,p:1]","value":"2333"},
-                 {"path":"eNEXUS_0009[s:17,t:1,p:2]","value":"0"},{"path":"eNEXUS_0009[s:17,t:1,p:3]","value":"0"}],"Id":0}';
+            {"path":"eNEXUS_0055[s:17,t:1]","value":"2333"},{"path":"eNEXUS_0064[s:17,t:1]","value":"115"},
+            {"path":"eNEXUS_0056","value":"1"},{"path":"eNEXUS_0057","value":"1"},
+            {"path":"eNEXUS_0058","value":"2000"},{"path":"eNEXUS_0066[s:17,t:1,p:1]","value":"493"},
+            {"path":"eNEXUS_0066[s:17,t:1,p:2]","value":"0"}, {"path":"eNEXUS_0066[s:17,t:1,p:3]","value":"0"},
+            {"path":"eNEXUS_0064[s:17,t:1,p:1]","value":"115"},{"path":"eNEXUS_0064[s:17,t:1,p:2]","value":"0"},
+            {"path":"eNEXUS_0064[s:17,t:1,p:3]","value":"0"},{"path":"eNEXUS_0009[s:17,t:1,p:1]","value":"2333"},
+            {"path":"eNEXUS_0009[s:17,t:1,p:2]","value":"0"},{"path":"eNEXUS_0009[s:17,t:1,p:3]","value":"0"}],"Id":0}';
         } else {
         	$jsonRequest = '{"jsonrpc":"2.0","method":"GeteNexusData","params":[
-{"path":"eNEXUS_0006[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0007[s:1,t:17]","datatype":"INT16U"},
-{"path":"eNEXUS_0005[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0008[s:1,t:17]","datatype":"INT16U"},
-{"path":"eNEXUS_0009[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0011[s:1,t:17]","datatype":"INT32U"},
-{"path":"eNEXUS_0010[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0043[s:1,t:17,n:4]","datatype":"INT32U"},
-{"path":"eNEXUS_0046[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0045[s:1,t:17]","datatype":"INT16S"}		
-],"id":0}:';
+			{"path":"eNEXUS_0006[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0007[s:1,t:17]","datatype":"INT16U"},
+			{"path":"eNEXUS_0005[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0008[s:1,t:17]","datatype":"INT16U"},
+			{"path":"eNEXUS_0009[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0011[s:1,t:17]","datatype":"INT32U"},
+			{"path":"eNEXUS_0010[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0043[s:1,t:17,n:4]","datatype":"INT32U"},
+			{"path":"eNEXUS_0046[s:1,t:17]","datatype":"INT16U"},{"path":"eNEXUS_0045[s:1,t:17]","datatype":"INT16S"}],"id":0}:';
             return trim($this->execute($jsonRequest));
         }
     }
-    
+
+
+    /**
+     * 
+     * @return Ambigous <Live, NULL>
+     */
     public function getLiveData() {
     	$data = $this->getData();
-    	//var_dump($data);
     	return DiehlConverter::toLive($data);
     }
 

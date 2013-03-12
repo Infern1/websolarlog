@@ -1870,17 +1870,107 @@ class PDODataAdapter {
 		}
 		return array($maxPowerDay);
 	}
+
 	/**
 	 *
 	 */
 	public function readPageIndexData($config) {
 		// summary live data
 		$list = array();
-		$readMaxPowerValues = $this->getMaxTotalEnergyValues(0,"all");
-		$list['summary'] = $readMaxPowerValues;
+		$list['summary'] = $this->readCache(1,"index","periodFigures",0,"");
+	
 		return $list;
 	}
+	/**
+	 *
+	 * @param string $group
+	 * @param string $page
+	 * @param string $module
+	 * @return unknown|Ambigous <multitype:, unknown>
+	 */
+	
+	//(1,"index","live",$inverter->id,"trend");
+	
+	public function readCache($group="",$page="",$module="",$inverterId=0,$key=""){
+		$where = array();
+		//
+		// build Query finds
+		//
+			
+		//
+		//    $module
+		//
+		//check if we are looking for a $module
+		if ($module != ""){
+			(stristr($module, '%')!='')?$findLike = ' LIKE ' : $findLike = '=';
+			$where[] = " module ".$findLike." '". $module ."' ";
+		}
+		//check if we need to add a 'AND'
+		($where[count($where)-1]!='' AND $where[count($where)-1]!=' AND ')? $where[] = ' AND ' : $where = $where;
+		
+		//
+		//    $page
+		//
+		//check if we are looking for a $page
+		if ($page != ""){
+			(stristr($page, '%')!='')?$findLike = ' LIKE ' : $findLike = '=';
+			$where[] = " page ".$findLike." '". $page."' ";
+		}
+		// check if we need to add a 'AND'
+		($where[count($where)-1]!='' AND $where[count($where)-1]!=' AND ')? $where[] = ' AND ' : $where = $where;
 
+		//
+		//    $inverterId
+		//
+		//check if we are looking for a $page
+		if ($inverterId != ""){
+			$where[] = " key LIKE '%-". $inverterId."' ";
+		}
+		//check if we need to add a 'AND'
+		($where[count($where)-1]!='' AND $where[count($where)-1]!=' AND ')? $where[] = ' AND ' : $where = $where;
+		
+		
+		//
+		//    $inverterId
+		//
+		//check if we are looking for a $page
+		if ($inverterId != ""){
+			$where[] = " key like '". $key."-%' ";
+		}
+		
+		//when we end with a " AND ", we pop it of.
+		(end($where)==" AND ")?  array_pop($where) : $where = $where;
+
+		//convert the array in a string
+		foreach ($where as $value) {
+			$whereString = $whereString." ".$value;
+		}
+		
+		//make the query
+		$query = "SELECT key,value,page,module FROM 'cache' WHERE ".$whereString." ORDER BY key ASC";
+		
+		//run the query
+		$cached =  R::getAll($query);
+
+		//when we want to group the data, we do it here
+		if($group!=''){
+			// loop through all the items
+			foreach ($cached as $cache){
+				//split them
+				preg_match_all('/((?:^|[A-Z])[a-z]+)/',$cache['key'],$camleKeys);
+				//group the values by there Camle Key
+				$grouped[$camleKeys[$group][0]][] = $cache['value'];
+			}
+			// return the grouped array
+			return $grouped;
+		}else{
+			// return the plain db array
+			return $cached;
+		}
+	}
+	
+	
+	
 	/**
 	 *
 	 */
@@ -1959,9 +2049,10 @@ class PDODataAdapter {
 					$live->I2Ratio = ($liveBean['I2Ratio']<1000) ? number_format($liveBean['I2Ratio'],1,'.','') : number_format($liveBean['I2Ratio'],0,'','');
 					$live->IP = ($liveBean['IP']<1000) ? number_format($liveBean['IP'],1,'.','') : number_format($liveBean['IP'],0,'','');
 					$live->EFF = ($liveBean['EFF']<1000) ? number_format($liveBean['EFF'],1,'.','') : number_format($liveBean['EFF'],0,'','');
-						
-					$avgPower = $this->getAvgPower($inverter->id);
-					$live->trend = $avgPower['trend'];
+					//var_dump($this->readCache("","index","live",$inverter->id,"trend"));
+					
+					$avgPower = $this->readCache("","index","live",$inverter->id,"trend");
+					$live->trend = $avgPower[0]['value'];
 					$live->avgPower = $avgPower['avgPower'];
 				}
 
@@ -2339,36 +2430,80 @@ class PDODataAdapter {
 
 	/**
 	 *
-	 * @return Ambigous <multitype:, unknown>
+	 * @param string $type (options: panels, average) default = panels
+	 * @param unknown $deviceNum
 	 */
-
-	function getAvgPower($deviceNum=0){
-		$recentBegin = time()-400;
-		$recentEnd = time();
-
-		$pastBegin = time()-800;
-		$pastEnd = time()-400;
-		if ($deviceNum > 0){
-			$queryWhere = " inv = ". $deviceNum ." AND ";
-		}else{
-			$queryWhere = "";
+	function getAvgPower($type='panels',$deviceNum=0){
+		$config = Session::getConfig();
+	
+	
+	
+		switch ($type) {
+			case 'panels':
+				$average['recent'] = $this->readPlantPower();
+				break;
+			case 'average':
+	
+				$recentBegin = time()-400;
+				$recentEnd = time();
+	
+				$pastBegin = time()-800;
+				$pastEnd = time()-400;
+				if ($deviceNum > 0){
+					$queryWhere = " inv = ". $deviceNum ." AND ";
+				}else{
+					$queryWhere = "";
+				}
+				$query = "SELECT  avg(GP) AS avgGP FROM 'history' WHERE ".$queryWhere." time > :begin AND  time < :end ORDER BY time DESC";
+	
+				$avgRecent =  R::getAll($query,array(':begin'=>$recentBegin,':end'=>$recentEnd));
+				$avgPast   =  R::getAll($query,array(':begin'=>$pastBegin,':end'=>$pastEnd));
+	
+				$average['recent'] = $avgRecent[0]['avgGP'];
+				$average['past'] = $avgPast[0]['avgGP'];
+	
+				if($average['recent']>$average['past']){
+					$average['trend'] = _("up");
+				}elseif($average['recent']<$average['past']){
+					$average['trend'] = _("down");
+				}else{
+					$average['trend'] = _("equal");
+				}
+	
+				break;
+			default:
+				break;
 		}
-		$query = "SELECT  avg(GP) AS avgGP FROM 'history' WHERE ".$queryWhere." time > :begin AND  time < :end ORDER BY time DESC";
-
-		$avgRecent =  R::getAll($query,array(':begin'=>$recentBegin,':end'=>$recentEnd));
-		$avgPast   =  R::getAll($query,array(':begin'=>$pastBegin,':end'=>$pastEnd));
-
-		$average['recent'] = $avgRecent[0]['avgGP'];
-		$average['past'] = $avgPast[0]['avgGP'];
-
-		if($average['recent']>$average['past']){
-			$average['trend'] = _("up");
-		}elseif($average['recent']<$average['past']){
-			$average['trend'] = _("down");
-		}else{
-			$average['trend'] = _("equal");
-		}
-
 		return $average;
 	}
+	
+	
+
+	/**
+	 *
+	 * @param string $type (options: panels, average) default = panels
+	 * @param unknown $deviceNum
+	 */
+	function getPowerTrend($deviceNum=0){
+		$config = Session::getConfig();
+		$average = $this->readCache(1,"index","live",$deviceNum,"");
+		return $average;
+	}
+	
+	
+	public function saveCache(Cache $cache){
+		$bean = R::findone('cache',' key = :key ', array( ":key"=> $cache->key));
+		if (!$bean){
+			$bean = R::dispense('cache');
+		}
+		$bean->key = $cache->key;
+		$bean->value = $cache->value;
+		$bean->module = $cache->module;
+		$bean->page = $cache->page;
+		$bean->timestamp = $cache->timestamp;
+		$id = R::store($bean,$bean->id);
+	}
+	
+	
+	
 }
