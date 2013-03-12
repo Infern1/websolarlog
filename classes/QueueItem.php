@@ -30,14 +30,16 @@ class QueueItem {
 		$this->classmethod = $classmethod;
 		$this->arguments = $arguments;
 		$this->requeue = $requeue;
-		$this->requeueTime;
+		$this->requeueTime = $requeueTime;
 	}
 	
 	/**
 	 * Throws QueueItemValidationException if something is wrong
 	 */
 	public function validate() {
-		
+		if ($this->requeue && $this->requeueTime < 1) {
+			echo ("Warning invalid requeueTime! \n");
+		}
 	}
 	
 	/**

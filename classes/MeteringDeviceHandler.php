@@ -3,7 +3,7 @@ class MeteringDeviceHandler {
 	
 	public static function handleLive(QueueItem $item, Inverter $device) {
 		// Get the api we need to use
-		$api = $inverter->getApi(Session::getConfig());
+		$api = $device->getApi(Session::getConfig());
 		
 		// Retrieve the inverter data
 		$live = $api->getLiveData();
