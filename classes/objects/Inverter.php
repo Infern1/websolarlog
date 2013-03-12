@@ -21,6 +21,7 @@ class Inverter
     public $pvoutputApikey;
     public $pvoutputSystemId;
     public $state;
+    public $refreshTime;
 
     public $expectedJAN;
     public $expectedFEB;
@@ -56,6 +57,7 @@ class Inverter
         $this->pvoutputEnabled = false;
         $this->panels = array();
         $this->state = 0;
+        $this->refreshTime = 2;
     }
 
     function getApi($config) {
