@@ -1943,6 +1943,7 @@ class PDODataAdapter {
 		(end($where)==" AND ")?  array_pop($where) : $where = $where;
 
 		//convert the array in a string
+		$whereString = "";
 		foreach ($where as $value) {
 			$whereString = $whereString." ".$value;
 		}
