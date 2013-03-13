@@ -3,36 +3,37 @@
       	middleWorld = new google.maps.LatLng ({{lat}},{{long}});
         var mapOptions = {zoom: 9,center: middleWorld,mapTypeId: google.maps.MapTypeId.ROADMAP};
         if (map == undefined){
-        var map = new google.maps.Map(document.getElementById('mapcanvas'),mapOptions);
-  		marker = new google.maps.Marker ({position: middleWorld,
+        	var map = new google.maps.Map(document.getElementById('mapcanvas'),mapOptions);
+  			marker = new google.maps.Marker ({position: middleWorld,
   		
-		labelContent: "Selected by you",labelAnchor: new google.maps.Point(22, 0),
-		labelClass: "labels", // the CSS class for the label
-		labelStyle: {opacity: 0.75}});
+			labelContent: "Selected by you",labelAnchor: new google.maps.Point(22, 0),
+			labelClass: "labels", // the CSS class for the label
+			labelStyle: {opacity: 0.75}});
        
-   		marker.setMap (map);
-   		marker.setDraggable (true);
+	   		marker.setMap (map);
+   			marker.setDraggable (true);
 
 
-    	var pinColor = "00ff00";
-    	var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,new google.maps.Size(21, 34),new google.maps.Point(0,0),new google.maps.Point(10, 34));
-		var pinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",new google.maps.Size(40, 37),new google.maps.Point(0, 0),new google.maps.Point(12, 35));
+    		var pinColor = "00ff00";
+    		var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,new google.maps.Size(21, 34),new google.maps.Point(0,0),new google.maps.Point(10, 34));
+			var pinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",new google.maps.Size(40, 37),new google.maps.Point(0, 0),new google.maps.Point(12, 35));
 	
-		shadowMarker = new google.maps.Marker({position: new google.maps.LatLng(0,0), map: map,icon: pinImage,shadow: pinShadow,});
-	    shadowMarker.setPosition(middleWorld);
+			shadowMarker = new google.maps.Marker({position: new google.maps.LatLng(0,0), map: map,icon: pinImage,shadow: pinShadow,});
+	    	shadowMarker.setPosition(middleWorld);
 		
-		google.maps.event.addListener(marker, "dragend", function(event) {
+			google.maps.event.addListener(marker, "dragend", function(event) {
 				var point = marker.getPosition();
+				//alert(point.lat());
 				map.panTo(point);
-				$('#hiddenLat').val(point.Ya);
-				$('#hiddenLong').val(point.Za);
+				$('#hiddenLat').val(point.lat());
+				$('#hiddenLong').val(point.lng());
 				var round = $("#roundLatLong").val();
-				$('#mapsLat').val(Math.round(point.Ya*round)/round);
-				$('#mapsLong').val(Math.round(point.Za*round)/round);
+				$('#mapsLat').val(Math.round(point.lat()*round)/round);
+				$('#mapsLong').val(Math.round(point.lng()*round)/round);
 				var newLatLng = new google.maps.LatLng($('#mapsLat').val(),$('#mapsLong').val());
 				shadowMarker.setPosition(newLatLng);
         	});
-      		}
+      	}
       	}
       	function loadScript(){
        		var script = document.createElement('script');
@@ -66,8 +67,8 @@
 	</script>
 	
 <div id="dialog-modal" title="Set location for sun calculations">
-<input type="hidden" value="{{lat}}" id="hiddenLat"/>
-<input type="hidden" value="{{long}}" id="hiddenLong"/>
+<input type="text" value="{{lat}}" id="hiddenLat"/>
+<input type="text" value="{{long}}" id="hiddenLong"/>
     <div class="column span-15">
 		<div class="column span-3 first">latitude</div>
 		<div class="column span-3"><input disabled="disabled" type="text" value="{{lat}}" id="mapsLat" style="width:130px;"/></div>

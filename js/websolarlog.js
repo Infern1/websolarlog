@@ -611,7 +611,7 @@ var WSL = {
 				},
 				dataType : 'text',
 			});
-			WSL.init_PageIndexLiveValues("#indexLiveInverters"); // Initial load fast
+			//WSL.init_PageIndexLiveValues("#indexLiveInverters"); // Initial load fast
 		});
 	},
 	
