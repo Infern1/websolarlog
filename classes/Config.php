@@ -14,6 +14,7 @@ class Config
     public $subtitle;
     public $url;
     public $location;
+    public $gaugeMaxType;
     public $latitude;
     public $longitude;
     public $timezone;
@@ -83,6 +84,7 @@ class Config
 		$this->title='WebSolarLog';
 		$this->subtitle='--== Sun <-> Energy ==--';
 		$this->url=Common::getDomain();
+		$this->gaugeMaxType = 'panels';
 		$this->location='Home Sweet Home';
 		$this->latitude = '52.061152';
 		$this->longitude = '4.493330';

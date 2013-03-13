@@ -580,6 +580,7 @@ class PDODataAdapter {
 		$bean->title = $config->title;
 		$bean->subtitle = $config->subtitle;
 		$bean->url = $config->url;
+		$bean->gaugeMaxType = $config->gaugeMaxType;
 		$bean->location = $config->location;
 		$bean->latitude = $config->latitude;
 		$bean->longitude = $config->longitude;
