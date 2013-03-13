@@ -450,7 +450,7 @@ try {
 			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
 			
 			// Get Gauge Max
-			$avgGP = $dataAdapter->getAvgPower('panels');
+			$avgGP = $dataAdapter->getAvgPower($config->gaugeMaxType);
 			($avgGP['recent']<=0) ? $avgGPRecent = 1 : $avgGPRecent = $avgGP['recent'];
 			$gaugeMaxPower = ceil( ( ($avgGPRecent*1.1)+100) / 100 ) * 100;
 
