@@ -90,26 +90,32 @@ class QueueServer {
 	
 	// Process the job 
 	private function process(QueueItem $item) {
-		// execute
-		$classmethod = explode (".",$item->classmethod);
-		$classname = $classmethod[0];
-		$methodname = $classmethod[1];
-		
-		$parameters = array();
-		$parameters[] = $item;
-		$parameters = array_merge($parameters, $item->arguments);
-
-		if ($classname == "HookHandler") {
-			$object = HookHandler::getInstance();
-		} else {
-			$object = new $classname();
-		}
-		$object->$methodname($parameters);
-		
-		// do we need to requeue this item?
-		if ($item->requeue) {
-			$item->time = $item->getNextTime();
-			$this->add($item);
+		try {
+			R::begin(); // Every queuItem has its own database transaction
+			$classmethod = explode (".",$item->classmethod);
+			$classname = $classmethod[0];
+			$methodname = $classmethod[1];
+			
+			$parameters = array();
+			$parameters[] = $item;
+			$parameters = array_merge($parameters, $item->arguments);
+	
+			if ($classname == "HookHandler") {
+				$object = HookHandler::getInstance();
+			} else {
+				$object = new $classname();
+			}
+			$object->$methodname($parameters);
+			
+			// do we need to requeue this item?
+			if ($item->requeue) {
+				$item->time = $item->getNextTime();
+				$this->add($item);
+			}
+			R::commit(); // Commit the transaction
+		} catch (Exception $e) {
+			R::rollback();
+			HookHandler::getInstance()->fire("onError", "QueueItem $item->classmethod had an error: " . $e->getMessage());
 		}
 	}
 }
