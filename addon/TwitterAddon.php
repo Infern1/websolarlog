@@ -7,7 +7,7 @@ class TwitterAddon {
 
 	function __construct() {
 		
-		include('../classes/Social/hybridauth/Hybrid/Auth.php');
+		include_once('../classes/Social/hybridauth/Hybrid/Auth.php');
 		$this->config = Session::getConfig();
 		
 		$url = Util::getCurrentUrl();
