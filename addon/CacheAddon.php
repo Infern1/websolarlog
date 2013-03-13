@@ -41,6 +41,7 @@ class CacheAddon {
 	public function averagePower($args) {
 		$timestamp = time();
 		foreach ($this->config->inverters as $inverter) {
+			$deviceNum = $inverter->id;
 			
 			$recentBegin = time()-400;
 			$recentEnd = time();
