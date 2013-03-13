@@ -90,8 +90,6 @@ class HookHandler {
      */
     public function fireFromQueue() {
     	$args = func_get_args();
-    	$queueItem = array_shift($args); // Remove the first item (QueueItem) from the array
-    	$methodName = "fire";
-    	$this->fire($args[0]); // Pass it on 
+    	$this->fire($args[0][1]); // Pass it on 
     }
 }
