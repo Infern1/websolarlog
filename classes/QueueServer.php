@@ -99,7 +99,7 @@ class QueueServer {
 		$parameters[] = $item;
 		$parameters = array_merge($parameters, $item->arguments);
 
-		if ($methodname == "HookHandler") {
+		if ($classname == "HookHandler") {
 			$object = HookHandler::getInstance();
 		} else {
 			$object = new $classname();
