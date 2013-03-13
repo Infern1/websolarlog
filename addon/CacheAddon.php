@@ -14,24 +14,26 @@ class CacheAddon {
 	}
 	
 	public function EnergyValues(){
-		$invnum = 0;
+		$invnum = 1;
 		
 		$energyArray = $this->adapter->getMaxTotalEnergyValues($invnum,'all');
 		ksort($energyArray);
 		
 		$timestamp = time();
 		foreach ($energyArray as $key=>$value){
-			//set Cache Object
-			$cache = new Cache();
-			$cache->key = $key.'-'.$invnum;
-			$cache->value = $value;
-			$cache->module = 'periodFigures';
-			$cache->page = 'index';
-			$cache->timestamp = $timestamp;
-			
-			//save cache
-			$this->adapter->saveCache($cache);
-			/////////////////////////
+			if (!is_array($value)) {
+				//set Cache Object
+				$cache = new Cache();
+				$cache->key = $key.'-'.$invnum;
+				$cache->value = $value;
+				$cache->module = 'periodFigures';
+				$cache->page = 'index';
+				$cache->timestamp = $timestamp;
+				
+				//save cache
+				$this->adapter->saveCache($cache);
+				/////////////////////////
+			}
 		}
 	}
 	
