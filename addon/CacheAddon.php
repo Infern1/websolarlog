@@ -20,7 +20,6 @@ class CacheAddon {
 		ksort($energyArray);
 		
 		$timestamp = time();
-		R::begin();
 		foreach ($energyArray as $key=>$value){
 			//set Cache Object
 			$cache = new Cache();
@@ -34,7 +33,6 @@ class CacheAddon {
 			$this->adapter->saveCache($cache);
 			/////////////////////////
 		}
-		R::commit();
 	}
 	
 	
