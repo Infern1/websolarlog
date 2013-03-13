@@ -420,11 +420,9 @@ class PDODataAdapter {
 	 */
 	public function readDailyData($date, $invtnum) {
 		$bean =  R::findAndExport(
-				'history',
-				' INV = :INV AND SDTE like :date ',
-				array(':INV'=>$invtnum,
-						':date'=> '%'.$date.'%'
-				)
+				 'history',
+				 ' INV = :INV AND SDTE like :date ',
+				 array(':INV'=>$invtnum,':date'=> '%'.$date.'%')
 		);
 
 		$points = $this->DayBeansToDataArray($bean);
@@ -466,7 +464,6 @@ class PDODataAdapter {
 		$lastDays = new LastDays();
 		$lastDays->points=$points[0];
 		return $lastDays;
-
 	}
 
 
@@ -531,10 +528,7 @@ class PDODataAdapter {
 
 			$graph->axes['yaxis']  = array('label'=>'Cum. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->axes['y2axis'] = array('label'=>'Avg. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-
-			//$graph->metaData['hideSeries']= array();
 			$graph->metaData['hideSeries']= array();
-				
 		}
 
 		return $graph;
@@ -543,7 +537,8 @@ class PDODataAdapter {
 
 
 	/**
-	 *
+	 * 
+	 * @return number
 	 */
 	function readPlantPower(){
 
@@ -2225,32 +2220,50 @@ class PDODataAdapter {
 		}else{
 			$totalEnergyOverallTotalKWHKWP =  number_format('0',2,',','');
 		}
-
-
+		
 		$energy = array(
-				"maxPowerToday"=>$maxPowerBeansToday,
-				"totalEnergyToday"=>$totalEnergyBeansToday,
-				"avgEnergyToday"=>$avgEnergyBeansToday,
-				"totalEnergyBeansTodayKWHKWP"=>$totalEnergyBeansTodayKWHKWP,
+				"todayMaxPower"=>$maxPowerBeansToday[0]['GP'],				
+				"todayMaxPowerTime"=>$maxPowerBeansToday[0]['time'],
+				"todayDays"=>1,
+				"todayAvgKwh"=>$avgEnergyBeansToday,
+				"todayKwhKwp"=>$totalEnergyBeansTodayKWHKWP,
 
-				"totalEnergyWeek"=>$totalEnergyBeansWeek,
-				"avgEnergyWeek"=>$avgEnergyBeansWeek,
-				"totalEnergyBeansWeekKWHKWP"=>$totalEnergyBeansWeekKWHKWP,
+				"weekMaxPower"=>$totalEnergyBeansWeek[0]['kWh'],
+				"weekMaxPowerTime"=>$totalEnergyBeansWeek[0]['time'],
+				"weekDays"=>$totalEnergyBeansWeek[0]['countkWh'],
+				"weekSumKwh"=>$totalEnergyBeansWeek[0]['sumkWh'],
+				"weekAvgKwh"=>$avgEnergyBeansWeek,
+				"weekKwhKwp"=>$totalEnergyBeansWeekKWHKWP,
 
-				"totalEnergyMonth"=>$totalEnergyBeansMonth,
-				"avgEnergyMonth"=>$avgEnergyBeansMonth,
-				"totalEnergyBeansMonthKWHKWP"=>$totalEnergyBeansMonthKWHKWP,
+				"monthMaxPower"=>$totalEnergyBeansMonth[0]['kWh'],
+				"monthMaxPowerTime"=>$totalEnergyBeansMonth[0]['time'],
+				"monthDays"=>$totalEnergyBeansMonth[0]['countkWh'],
+				"monthSumKwh"=>$totalEnergyBeansMonth[0]['sumkWh'],
+				"monthAvgKwh"=>$avgEnergyBeansMonth,
+				"monthKwhKwp"=>$totalEnergyBeansMonthKWHKWP,
 
-				"totalEnergyYear"=>$totalEnergyBeansYear,
-				"avgEnergyYear"=>$avgEnergyBeansYear,
-				"totalEnergyBeansYearKWHKWP"=>$totalEnergyBeansYearKWHKWP,
-
-				"totalEnergyOverall"=>$totalEnergyBeansOverall,
-				"avgEnergyOverall"=>$avgEnergyBeansOverall,
-				"totalEnergyBeansOverallKWHKWP"=>$totalEnergyBeansOverallKWHKWP,
-				"initialkwh" => $initialkwh,
-				"totalEnergyOverallTotal"=> $totalEnergyOverallTotal,
-				"totalEnergyBeansOverallTotalKWHKWP"=>$totalEnergyOverallTotalKWHKWP
+				"yearMaxPower"=>$totalEnergyBeansYear[0]['kWh'],
+				"yearMaxPowerTime"=>$totalEnergyBeansYear[0]['time'],
+				"yearDays"=>$totalEnergyBeansYear[0]['countkWh'],
+				"yearSumKwh"=>$totalEnergyBeansYear[0]['sumkWh'],
+				"yearAvgKwh"=>$avgEnergyBeansYear,
+				"yearKwhKwp"=>$totalEnergyBeansYearKWHKWP,
+				
+				"overallMaxPower"=>$totalEnergyBeansOverall[0]['kWh'],
+				"overallMaxPowerTime"=>$totalEnergyBeansOverall[0]['time'],
+				"overallDays"=>$totalEnergyBeansOverall[0]['countkWh'],
+				"overallSumKwh"=>$totalEnergyBeansOverall[0]['sumkWh'],
+				"overallAvgKwh"=>$avgEnergyBeansOverall,
+				"overallKwhKwp"=>$totalEnergyBeansOverallKWHKWP,
+								 
+				"totalMaxPower"=>$totalEnergyOverallTotal,
+				"totalMaxPowerTime"=>"0",
+				"totalDays"=>$totalEnergyOverallTotal[0]['countkWh'],
+				"totalSumKwh"=>$totalEnergyOverallTotal[0]['sumkWh'],
+				"totalAvgKwh"=>$avgEnergyOverallTotal,
+				"totalKwhKwp"=>$totalEnergyOverallTotalKWHKWP,
+							   
+				"initialKwh" => $initialkwh,
 		);
 		return $energy;
 	}
@@ -2437,9 +2450,7 @@ class PDODataAdapter {
 	 */
 	function getAvgPower($type='panels',$deviceNum=0){
 		$config = Session::getConfig();
-	
-	
-	
+
 		switch ($type) {
 			case 'panels':
 				$average['recent'] = $this->readPlantPower();
