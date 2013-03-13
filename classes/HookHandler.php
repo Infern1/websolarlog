@@ -84,10 +84,14 @@ class HookHandler {
 
         return $result;
     }
-    
+    /**
+     * Pass the hookname on to the fire 
+     * TODO :: Support for more paramters
+     */
     public function fireFromQueue() {
     	$args = func_get_args();
     	$queueItem = array_shift($args); // Remove the first item (QueueItem) from the array
-    	$this->fire($args); // Pass it on 
+    	$methodName = "fire";
+    	$this->fire($args[0]); // Pass it on 
     }
 }
