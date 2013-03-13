@@ -94,11 +94,16 @@ class QueueServer {
 		$classmethod = explode (".",$item->classmethod);
 		$classname = $classmethod[0];
 		$methodname = $classmethod[1];
-		$object = new $classname();
 		
 		$parameters = array();
 		$parameters[] = $item;
 		$parameters = array_merge($parameters, $item->arguments);
+
+		if ($methodname == "HookHandler") {
+			$object = HookHandler::getInstance();
+		} else {
+			$object = new $classname();
+		}
 		$object->$methodname($parameters);
 		
 		// do we need to requeue this item?
