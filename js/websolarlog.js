@@ -250,7 +250,7 @@ function handleGraphs(request,invtnum){
     if (tab == "Today" && $('#lastCall').val() == 'normal') {
         todayTimerHandler = window.setInterval(function(){
             WSL.createDayGraph(invtnum, "Today",tab, date ,currentGraphHandler,function(handler) {currentGraphHandler = handler;$("#loading").remove();});				                    
-        }, 5000); // every minute
+        }, 90000); // every minute
     }
 }
 
