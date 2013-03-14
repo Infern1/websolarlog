@@ -368,7 +368,7 @@ var WSL = {
 		// initialize languages selector on the given div
 		ajaxStart();
 		WSL.api.getPageIndexLiveValues(function(data) {
-
+			
 		GP = data.maxGauges/10;
 		gaugeGPOptions = {
 			title : data.lang.ACPower,
@@ -570,9 +570,10 @@ var WSL = {
 		return true;
 	},
 
-	init_PageIndexAddContainers : function (divId,sideBar){
-		
-		WSL.api.getPageIndexValues(function(data) {
+	
+	
+	init_PageLiveValues : function (divId){
+		WSL.api.init_PageLiveValues(function(data) {
 			ajaxStart();
 			$.ajax({
 				url : 'js/templates/liveValues.hb',
@@ -585,14 +586,12 @@ var WSL = {
 					$(divId).html(html);
 				},
 				dataType : 'text',
-			});	
-			if (typeof data.result != "undefined" && data.result != 'true') {
-				$.pnotify({
-                    title: 'Error',
-                    text: data.message,
-                    type: 'error'
-                });
-			}
+			});
+		});
+	},
+	
+	init_PageIndexTotalValues:function(sideBar){
+		WSL.api.getPageIndexTotalValues(function(data) {
 			$.ajax({
 				url : 'js/templates/totalValues.hb',
 				success : function(source) {
@@ -606,10 +605,10 @@ var WSL = {
 				},
 				dataType : 'text',
 			});
-			//WSL.init_PageIndexLiveValues("#indexLiveInverters"); // Initial load fast
+			
 		});
+
 	},
-	
 	
 	init_PageTodayValues : function(todayValues,success) {
 		ajaxStart();
@@ -1627,6 +1626,22 @@ WSL.api.getCompareFilters = function(succes){
 		method : 'getCompareFilters'
 	}, success);	
 }
+
+
+
+WSL.api.getPageIndexTotalValues = function(success) {
+	$.getJSON("server.php", {
+		method : 'getPageIndexTotalValues',
+	}, success);
+};
+
+
+WSL.api.init_PageLiveValues = function(success) {
+	$.getJSON("server.php", {
+		method : 'getPageLiveValues',
+	}, success);
+};
+
 
 WSL.api.getPageIndexValues = function(success) {
 	$.getJSON("server.php", {

@@ -11,11 +11,12 @@ require_once("template/" . $template . "/index.php");
 	$(function(){
 		WSL.init_tabs("index","#main-middle",
 			function(){
-				WSL.init_PageIndexAddContainers("#content","#sidebar"); // Initial load fast
+				WSL.init_PageLiveValues("#content"); // Initial load fast
+				WSL.init_PageIndexTotalValues("#sidebar");
     		}
 		),			
 		window.setInterval(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");}, 2500); // every 5 seconds
-		
+		window.setInterval(function(){WSL.init_PageIndexTotalValues("#sidebar");}, 60000); // every 5 seconds		
 	});
 	analyticsJSCodeBlock();
 	</script>

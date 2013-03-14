@@ -446,29 +446,7 @@ try {
 			$dayData->success = true;
 			$data['dayData'] = $dayData;
 			break;
-		case 'getPageIndexLiveValues':
-			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
-			
-			// Get Gauge Max
-			$avgGP = $dataAdapter->getAvgPower($config->gaugeMaxType);
-			($avgGP['recent']<=0) ? $avgGPRecent = 1 : $avgGPRecent = $avgGP['recent'];
-			$gaugeMaxPower = ceil( ( ($avgGPRecent*1.1)+100) / 100 ) * 100;
-
-			
-			$lang['DCPower'] = _("DC Power");
-			$lang['ACPower'] = _("AC Power");
-			$lang['Efficiency'] = _("Efficiency");
-			$lang['offline'] = _("offline");
-			$lang['online'] = _("online");
-			$lang['standby'] = _("standby");
-			
-			$data['lang'] = $lang;
-			$data['inverters'] = $indexValues['inverters'];
-			$data['maxGauges'] = $gaugeMaxPower;
-			$data['sumInverters'] = $indexValues['sum'];
-			break;
-		case 'getPageIndexValues':
-			$indexValues = $dataAdapter->readPageIndexData($config);
+		case 'getPageLiveValues':
 			$lang = array();
 			$lang['someFigures'] 	= _("Some Figures*");
 			$lang['by']			 	= _("By");
@@ -490,12 +468,53 @@ try {
 			$lang['ratio'] 			= _("ratio");
 			$lang['overallTotal']	= _("overall**");
 			$lang['KWHKWP']			= _("kWh/kWp");
-			
 			$lang['allFiguresAreInKWH']= _("* All figures are in kWh");
 			$lang['overallTotalText']= _("** Incl. initial kWh");
 			
+			$lang['offline'] = _("offline");
+			$lang['online'] = _("online");
+			$lang['standby'] = _("standby");
+			
 			$data['lang'] = $lang;
+			
+			break;
+		case 'getPageIndexLiveValues':
+			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
+			$lang['DCPower'] = _("DC Power");
+			$lang['ACPower'] = _("AC Power");
+			$lang['Efficiency'] = _("Efficiency");
+			// Get Gauge Max
+			$avgGP = $dataAdapter->getAvgPower($config->gaugeMaxType);
+			($avgGP['recent']<=0) ? $avgGPRecent = 1 : $avgGPRecent = $avgGP['recent'];
+			$gaugeMaxPower = ceil( ( ($avgGPRecent*1.1)+100) / 100 ) * 100;
+			$data['lang'] = $lang;
+			$data['inverters'] = $indexValues['inverters'];
+			$data['maxGauges'] = $gaugeMaxPower;
+			$data['sumInverters'] = $indexValues['sum'];
+			break;
+		case 'getPageIndexTotalValues':
+			$lang = array();
+			$lang['someFigures'] 	= _("Some Figures*");
+			$lang['by']			 	= _("By");
+
+			$lang['total'] 			= _("Total");
+			$lang['AvgDay']	 	= _("Avg. Day");
+			$lang['today'] 			= _("Today");
+			$lang['week'] 			= _("Week");
+			$lang['month'] 			= _("Month");
+			$lang['year'] 			= _("Year");
+			$lang['overall'] 		= _("overall");
+
+			$lang['ratio'] 			= _("ratio");
+			$lang['overallTotal']	= _("overall**");
+			$lang['KWHKWP']			= _("kWh/kWp");
+			$lang['allFiguresAreInKWH']= _("* All figures are in kWh");
+			$lang['overallTotalText']= _("** Incl. initial kWh");
+
+				
+			$indexValues = $dataAdapter->readPageIndexData($config);
 			$data['IndexValues'] = $indexValues;
+			$data['lang'] = $lang;
 			break;
 		case "fireHook":
 			$hookname = Common::getValue("name", "");
