@@ -233,7 +233,7 @@ function handleGraphs(request,invtnum){
     	$('#lastCall').val('picker');
     	period= $('#pickerPeriod').val();
     	if (period == "Today") {
-    		WSL.createDayGraph(invtnum, period, tab,date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    		WSL.createDayGraph(invtnum, "Today",tab, date ,currentGraphHandler,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}else{
     		
     		WSL.createPeriodGraph(invtnum, period,1 ,date, "graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
@@ -241,7 +241,7 @@ function handleGraphs(request,invtnum){
     }else{
     	$('#lastCall').val('normal');
     	if (tab == "Today" || tab == "Yesterday") {
-    		WSL.createDayGraph(invtnum, period, tab,date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
+    		WSL.createDayGraph(invtnum, "Today",tab, date ,currentGraphHandler,function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}else{
     		WSL.createPeriodGraph(invtnum, period,1 , date,"graph"+tab+"Content" , function(handler) {currentGraphHandler = handler;$("#loading").remove();});
     	}
@@ -249,13 +249,8 @@ function handleGraphs(request,invtnum){
     // Refresh only the Today tab
     if (tab == "Today" && $('#lastCall').val() == 'normal') {
         todayTimerHandler = window.setInterval(function(){
-            if (currentGraphHandler){
-                currentGraphHandler.destroy();
-                $("#graph"+tab+"Content").empty();
-                $("#graph"+tab+"Content").html('<div id="loading">refreshing graph...</div>');
-            }
-            WSL.createDayGraph(invtnum, "Today",tab, date ,function(handler) {currentGraphHandler = handler;$("#loading").remove();});				                    
-        }, 90000); // every minute
+            WSL.createDayGraph(invtnum, "Today",tab, date ,currentGraphHandler,function(handler) {currentGraphHandler = handler;$("#loading").remove();});				                    
+        }, 5000); // every minute
     }
 }
 
@@ -811,49 +806,51 @@ var WSL = {
 	},
 
 	
-	createDayGraph : function(invtnum, getDay, tab,date ,fnFinish) {
+	createDayGraph : function(invtnum, getDay, tab,date ,currentHandler, fnFinish) {
 		ajaxStart();
-		
+
+		var graphOptions = {
+				seriesDefaults: {
+					rendererOptions: {smooth: true},
+					showMarker:false,
+					autoscale:true
+				},
+				series : [],
+				axesDefaults : {
+					useSeriesColor: true,
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer
+				},
+				legend : {
+					show : true,
+					location:"nw",
+					renderer: $.jqplot.EnhancedLegendRenderer,
+					rendererOptions: {
+		                seriesToggle: 'normal',numberColumns: 1, disableIEFading: false }
+				}, 
+				axes : {}, 
+				highlighter :{
+					tooltipContentEditor: tooltipTodayContentEditor, show: true,tooltipLocation: 'n',
+					fadeTooltip:true,
+					tooltipFadeSpeed: 300,
+					tooltipAxes:'both',
+				},
+				cursor : {zoom: true, show: true, showTooltip:false, style: 'default'}
+			};
+		$.jqplot.DateTickFormatter = function(format, val) {
+		    // for some reason, format isn't being passed through properly, so just going to hard code for purpose of this jsfiddle
+		    val = (new Date(val)).getTime();
+		    format = '%H:%M';
+		    return $.jsDate.strftime(val, format);
+		};
 		$.ajax({
 			url : "server.php?method=getGraphDayPoints&type="+ getDay +"&date="+ date +"&invtnum=" + invtnum,
 			method : 'GET',
 			dataType : 'json',
 			success : function(result) {
 				// add a custom tick formatter, so that you don't have to include the entire date renderer library.
-				$.jqplot.DateTickFormatter = function(format, val) {
-				    // for some reason, format isn't being passed through properly, so just going to hard code for purpose of this jsfiddle
-				    val = (new Date(val)).getTime();
-				    format = '%H:%M';
-				    return $.jsDate.strftime(val, format);
-				};
+
 				
-				var graphOptions = {
-					seriesDefaults: {
-						rendererOptions: {smooth: true},
-						showMarker:false,
-						autoscale:true
-					},
-					series : [],
-					axesDefaults : {
-						useSeriesColor: true,
-						labelRenderer : $.jqplot.CanvasAxisLabelRenderer
-					},
-					legend : {
-						show : true,
-						location:"nw",
-						renderer: $.jqplot.EnhancedLegendRenderer,
-						rendererOptions: {
-			                seriesToggle: 'normal',numberColumns: 1, disableIEFading: false }
-					}, 
-					axes : {}, 
-					highlighter :{
-						tooltipContentEditor: tooltipTodayContentEditor, show: true,tooltipLocation: 'n',
-						fadeTooltip:true,
-						tooltipFadeSpeed: 300,
-						tooltipAxes:'both',
-					},
-					cursor : {zoom: true, show: true, showTooltip:false, style: 'default'}
-				};
+
 				seriesData=[]; 
 
 				var json = [];
@@ -887,7 +884,22 @@ var WSL = {
 						graphOptions.axes.xaxis.max = result.dayData.graph.timestamp.endDate*1000;
 						graphOptions.series = result.dayData.graph.series;
 					}
-					$('#graph' + tab + 'Content').empty();
+					
+					var seriesHidden=[];
+					// loop through all hidden 
+		            $('td.jqplot-series-hidden').each(function() {
+	    				$this = $(this);
+	    				if($this.text()!=''){
+	    					seriesHidden.push($this.text());
+	    				}
+	    			});
+			
+		            if (currentGraphHandler){
+		                currentGraphHandler.destroy();
+		                $("#graph"+tab+"Content").empty();
+		                $("#graph"+tab+"Content").html('<div id="loading">refreshing graph...</div>');
+		            }
+
 					handle = null;
 					delete handle;
 	    			handle = $.jqplot('graph' + tab + 'Content',  seriesData	 , graphOptions);
@@ -900,10 +912,17 @@ var WSL = {
 		    			// walkthrough array with hidden lines
 	    				for (line in result.dayData.graph.metaData.hideSeries.label) {
 	    					// if legenda.text is equal to hideSeries text; Click this legenda item to hide is
-		    				if($this.text() == result.dayData.graph.metaData.hideSeries.label[line]){
-		    					// CLICK!!
-		    					$('.jqplot-table-legend tr:nth-child('+i+') td:nth-child(1)').click();
-							}
+	    					if (seriesHidden.length>0){
+			    				if($this.text() == seriesHidden[line]){
+			    					// CLICK!!
+			    					$('.jqplot-table-legend tr:nth-child('+i+') td:nth-child(1)').click();
+								}
+	    					}else{
+			    				if($this.text() == result.dayData.graph.metaData.hideSeries.label[line]){
+			    					// CLICK!!
+			    					$('.jqplot-table-legend tr:nth-child('+i+') td:nth-child(1)').click();
+								}
+	    					}
 	    				}	
 	    				// UP the legenda item iterator
 		    			i = i +1;

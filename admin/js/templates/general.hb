@@ -11,8 +11,8 @@
     
     <label for="gaugeMax">Gauge Max Type:</label>
     <select name="gaugeMaxType">
-      <option value="panels" {{#if_eq data.gaugeMaxType compare="none"}}selected=selected{{/if_eq}}>Static(panels)</option>
-      <option value="average" {{#if_eq data.gaugeMaxType compare="ssl"}}selected=selected{{/if_eq}}>Dynamic(avg. power)</option>
+      <option value="panels" {{#if_eq data.gaugeMaxType compare="panels"}}selected=selected{{/if_eq}}>Static(panels)</option>
+      <option value="average" {{#if_eq data.gaugeMaxType compare="average"}}selected=selected{{/if_eq}}>Dynamic(avg. power)</option>
     </select><br />
     
     <label for="timezone">timezone: </label>
