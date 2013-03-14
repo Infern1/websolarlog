@@ -2514,9 +2514,6 @@ class PDODataAdapter {
 		$bean->module = $cache->module;
 		$bean->page = $cache->page;
 		$bean->timestamp = $cache->timestamp;
-		$id = R::store($bean,$bean->id);
+		$id = R::store($bean);
 	}
-	
-	
-	
 }

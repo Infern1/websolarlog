@@ -18,6 +18,9 @@ class ProductionDeviceHandler {
 	
 	public static function handleHistory(QueueItem $item, Inverter $device) {
 		$live = PDODataAdapter::getInstance()->readLiveInfo($device->id);
+		// Set the time to this job time
+		$live->time = $item->time;
+		$live->SDTE = date("Ymd-H:i:s", $item->time);
 		HookHandler::getInstance()->fire("onHistory", $device, $live, $item->time);
 	}
 
