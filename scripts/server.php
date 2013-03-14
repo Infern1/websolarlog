@@ -46,6 +46,9 @@ $slowJobStartTime = time() + 6;
 $slowJobUpdateRate = 60 * 60; // Every hour
 QueueServer::getInstance()->add(new QueueItem($slowJobStartTime, "HookHandler.fireFromQueue", array("onSlowJob"), true, $slowJobUpdateRate));
 
+// Add job to refresh the config object every 2 minutes
+QueueServer::getInstance()->add(new QueueItem(time() + 120, "DeviceHandler.refreshConfig", "", true, 120));
+
 // Start the queue server
 QueueServer::getInstance()->start();
 

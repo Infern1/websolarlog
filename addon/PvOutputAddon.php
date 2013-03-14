@@ -24,7 +24,7 @@ class PvOutputAddon {
 	
 	private function getUnsendHistory() {
 		$date = mktime(0, 0, 0, date('m'), date('d')-13, date('Y'));
-		$beans =  R::find( 'history', 'time > :time and (pvoutput is null or pvoutput = "" or pvoutput = 0)', array( 'time' => $date));
+		$beans =  R::find( 'history', 'time > :time and (pvoutput is null or pvoutput = "" or pvoutput = 0) order by time ASC', array( 'time' => $date));
 		return $beans;
 	}
 	
@@ -32,7 +32,7 @@ class PvOutputAddon {
 		try {
 			$vars = array(
 					'd' => $date, // Date
-	                't' =>  $time, // Time
+	                't' => $time, // Time
 	                'v1' => ($KWHDtot * 1000), // Energy Generation (Watt hours)
 	                'v2' => $GPtot, // Power Generation (Watts)
 	                //'v3' => '10000', // Power Consumption (Watt hours)

@@ -3,7 +3,7 @@ class DeviceHandler {
 	
 	public function handleLive($args) {
 		$item = $args[0];
-		$device = $args[1];
+		$device = $this->getFreshDevice($args[1]);
 
 		switch ($device->type) {
 			case "production":
@@ -20,7 +20,7 @@ class DeviceHandler {
 	
 	public function handleHistory($args) {
 		$item = $args[0];
-		$device = $args[1];
+		$device = $this->getFreshDevice($args[1]);
 		
 		switch ($device->type) {
 			case "production":
@@ -37,7 +37,7 @@ class DeviceHandler {
 
 	public function handleEnergy($args) {
 		$item = $args[0];
-		$device = $args[1];
+		$device = $this->getFreshDevice($args[1]);
 		
 		switch ($device->type) {
 			case "production":
@@ -54,7 +54,7 @@ class DeviceHandler {
 
 	public function handleInfo($args) {
 		$item = $args[0];
-		$device = $args[1];
+		$device = $this->getFreshDevice($args[1]);
 		
 		switch ($device->type) {
 			case "production":
@@ -71,7 +71,7 @@ class DeviceHandler {
 
 	public function handleAlarm($args) {
 		$item = $args[0];
-		$device = $args[1];
+		$device = $this->getFreshDevice($args[1]);
 		
 		switch ($device->type) {
 			case "production":
@@ -84,6 +84,24 @@ class DeviceHandler {
 				echo("DeviceType " . $device->type . " does not support handle alarm");
 				break;
 		}			
+	}
+
+	/**
+	 * We need to get the device from the config else we keep talking to
+	 * the device object set during the start off the queueServer
+	 * @param Inveter $inverter
+	 * @return Inverter
+	 */
+	public function getFreshDevice(Inveter $inverter) {
+		return Session::getConfig()->getInverterConfig($inverter->id);
+	}
+	
+	/**
+	 * This method will be called from the queueServer to refresh the loaded config
+	 * So we can be sure we are talking to latest settings and devices
+	 */
+	public function refreshConfig() {
+		Session::getConfig(true);
 	}
 }
 ?>
