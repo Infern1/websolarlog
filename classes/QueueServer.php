@@ -98,7 +98,11 @@ class QueueServer {
 			
 			$parameters = array();
 			$parameters[] = $item;
-			$parameters = array_merge($parameters, $item->arguments);
+			if (is_array($item->arguments)) {
+				$parameters = array_merge($parameters, $item->arguments);
+			} elseif (trim($item->arguments)) {
+				$parameters = array_merge($parameters, array($item->arguments));
+			}
 	
 			if ($classname == "HookHandler") {
 				$object = HookHandler::getInstance();
