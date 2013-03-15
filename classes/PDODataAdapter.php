@@ -1873,6 +1873,7 @@ class PDODataAdapter {
 	public function readPageIndexData($config) {
 		// summary live data
 		$list = array();
+		
 		$list['summary'] = $this->readCache(1,"index","periodFigures",0,"");
 	
 		return $list;
@@ -2223,34 +2224,34 @@ class PDODataAdapter {
 		
 		$energy = array(
 				"todayMaxPower"=>$maxPowerBeansToday[0]['GP'],				
-				"todayMaxPowerTime"=>$maxPowerBeansToday[0]['time'],
+				"todayMaxPowerTime"=>$maxPowerBeansToday[0]['date'],
 				"todayDays"=>1,
 				"todayAvgKwh"=>$avgEnergyBeansToday,
 				"todayKwhKwp"=>$totalEnergyBeansTodayKWHKWP,
 
 				"weekMaxPower"=>$totalEnergyBeansWeek[0]['kWh'],
-				"weekMaxPowerTime"=>$totalEnergyBeansWeek[0]['time'],
+				"weekMaxPowerTime"=>$totalEnergyBeansWeek[0]['date'],
 				"weekDays"=>$totalEnergyBeansWeek[0]['countkWh'],
 				"weekSumKwh"=>$totalEnergyBeansWeek[0]['sumkWh'],
 				"weekAvgKwh"=>$avgEnergyBeansWeek,
 				"weekKwhKwp"=>$totalEnergyBeansWeekKWHKWP,
 
 				"monthMaxPower"=>$totalEnergyBeansMonth[0]['kWh'],
-				"monthMaxPowerTime"=>$totalEnergyBeansMonth[0]['time'],
+				"monthMaxPowerTime"=>$totalEnergyBeansMonth[0]['date'],
 				"monthDays"=>$totalEnergyBeansMonth[0]['countkWh'],
 				"monthSumKwh"=>$totalEnergyBeansMonth[0]['sumkWh'],
 				"monthAvgKwh"=>$avgEnergyBeansMonth,
 				"monthKwhKwp"=>$totalEnergyBeansMonthKWHKWP,
 
 				"yearMaxPower"=>$totalEnergyBeansYear[0]['kWh'],
-				"yearMaxPowerTime"=>$totalEnergyBeansYear[0]['time'],
+				"yearMaxPowerTime"=>$totalEnergyBeansYear[0]['date'],
 				"yearDays"=>$totalEnergyBeansYear[0]['countkWh'],
 				"yearSumKwh"=>$totalEnergyBeansYear[0]['sumkWh'],
 				"yearAvgKwh"=>$avgEnergyBeansYear,
 				"yearKwhKwp"=>$totalEnergyBeansYearKWHKWP,
 				
 				"overallMaxPower"=>$totalEnergyBeansOverall[0]['kWh'],
-				"overallMaxPowerTime"=>$totalEnergyBeansOverall[0]['time'],
+				"overallMaxPowerTime"=>$totalEnergyBeansOverall[0]['date'],
 				"overallDays"=>$totalEnergyBeansOverall[0]['countkWh'],
 				"overallSumKwh"=>$totalEnergyBeansOverall[0]['sumkWh'],
 				"overallAvgKwh"=>$avgEnergyBeansOverall,
@@ -2260,11 +2261,11 @@ class PDODataAdapter {
 				"totalMaxPowerTime"=>"0",
 				"totalDays"=>$totalEnergyOverallTotal[0]['countkWh'],
 				"totalSumKwh"=>$totalEnergyOverallTotal[0]['sumkWh'],
-				"totalAvgKwh"=>$avgEnergyOverallTotal,
 				"totalKwhKwp"=>$totalEnergyOverallTotalKWHKWP,
 							   
 				"initialKwh" => $initialkwh,
 		);
+		var_dump($energy);
 		return $energy;
 	}
 
