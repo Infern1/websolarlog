@@ -85,7 +85,7 @@ class TwitterAddon {
 				$twitter = $this->hybridauth->getAdapter( "Twitter" );
 				$indexValues = $this->adapter->readPageIndexData($this->config->hybridAuth);
 				$url = Common::getShortUrl($config->url);
-				$twitter->setUserStatus("Today we generated ". $indexValues['summary']['totalEnergyToday'][0]['KWH']." kWh. Check out: " . $url . " #SunCounter" );
+				$twitter->setUserStatus("Today we generated ". $indexValues['summary']['today'][0]." kWh. Check out: " . $url . " #SunCounter" );
 				$twitter->logout();
 				$data['message']='Tweet send';
 				$data['tweetSend']=1;
