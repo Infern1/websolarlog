@@ -2101,7 +2101,7 @@ class PDODataAdapter {
 			if (count ( $maxPowerBeansToday )==0 ){
 				$avgEnergyBeansToday= number_format(0,3,',','');
 				$totalEnergyBeansToday[]['KWH']=0;
-				$totalEnergyBeansTodayKWHKWP = number_format('0,000',3,',','');
+				$totalEnergyBeansTodayKWHKWP = number_format('0.000',3,',','');
 			}else{
 				$totalEnergyBeansTodayKWHKWP= number_format(($totalEnergyBeansToday[0]['KWH'] / $sumPlantPower),3,',','');
 				for ($i = 0; $i < count($maxPowerBeansToday); $i++) {
