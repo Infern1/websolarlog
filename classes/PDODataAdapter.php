@@ -2265,7 +2265,6 @@ class PDODataAdapter {
 							   
 				"initialKwh" => $initialkwh,
 		);
-		var_dump($energy);
 		return $energy;
 	}
 
