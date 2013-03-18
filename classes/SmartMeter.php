@@ -74,8 +74,8 @@ Class SmartMeter implements DeviceApi {
         // not supported
     }
 
-    private function execute() {    	
-        return shell_exec('sudo python3 '.$this->PATH.' /dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0');
-    }
+	    private function execute() {    	
+	        return shell_exec('sudo python3 '.$this->PATH.'');
+	    }
 }
 ?>
