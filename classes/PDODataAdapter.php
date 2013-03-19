@@ -78,7 +78,7 @@ class PDODataAdapter {
 		$bean->IP = $IP;
 
 		//Store the bean
-		$id = R::store($bean,$bean->id);
+		$id = R::store($bean);
 		return $id;
 	}
 
@@ -158,7 +158,7 @@ class PDODataAdapter {
 		$bean->GP = $mpt->GP;
 
 		//Store the bean
-		$id = R::store($bean,$bean->id);
+		$id = R::store($bean);
 		return $id;
 	}
 
@@ -302,7 +302,7 @@ class PDODataAdapter {
 		//Only store the bean when the value
 		$id = -1;
 		if ($energy->KWH > $oldKWH) {
-			$id = R::store($bean,$bean->id);
+			$id = R::store($bean);
 		}
 		return $id;
 	}
@@ -320,7 +320,7 @@ class PDODataAdapter {
 		$bean->KWH = $energy->KWH;
 		$bean->KWHT = $energy->KWHT;
 		$bean->co2 = $energy->co2;
-		$id = R::store($bean,$bean->id);
+		$id = R::store($bean);
 		return $id;
 	}
 
@@ -724,7 +724,7 @@ class PDODataAdapter {
 		$bean->expectedDEC = $inverter->expectedDEC;
 
 		//Store the bean
-		$id = R::store($bean,$bean->id);
+		$id = R::store($bean);
 		return $id;
 	}
 
@@ -1873,7 +1873,6 @@ class PDODataAdapter {
 	public function readPageIndexData($config) {
 		// summary live data
 		$list = array();
-		
 		$list['summary'] = $this->readCache(1,"index","periodFigures",0,"");
 	
 		return $list;
@@ -2259,8 +2258,6 @@ class PDODataAdapter {
 								 
 				"totalMaxPower"=>$totalEnergyOverallTotal,
 				"totalMaxPowerTime"=>"0",
-				"totalDays"=>$totalEnergyOverallTotal[0]['countkWh'],
-				"totalSumKwh"=>$totalEnergyOverallTotal[0]['sumkWh'],
 				"totalKwhKwp"=>$totalEnergyOverallTotalKWHKWP,
 							   
 				"initialKwh" => $initialkwh,
@@ -2423,7 +2420,7 @@ class PDODataAdapter {
 			$bean->state = $state;
 
 			//Store the bean with the new inverter status
-			R::store($bean,$bean->id);
+			R::store($bean);
 		}
 		return $changed;
 	}
@@ -2439,7 +2436,7 @@ class PDODataAdapter {
 		$bean = R::load('inverter', $inverter->id);
 		$bean->type = "production";
 		//Store the bean with the new inverter type
-		R::store($bean,$bean->id);
+		R::store($bean);
 		return true;
 	}
 
