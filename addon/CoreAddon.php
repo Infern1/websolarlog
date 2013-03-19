@@ -41,12 +41,15 @@ class CoreAddon {
 	 * @param unknown $args
 	 */
 	public function onHistory($args) {
-		//echo "CoreAddon onHistory";
 		$inverter = $args[1];
 		$live = $args[2];
 		$timestamp = $args[3];
-		$this->adapter->addHistory($inverter->id, $live,$timestamp);
-		hookHandler::getInstance()->fire("newHistory", $inverter, $timestamp);
+
+		// Only add history when the inverter is live
+		if ($inverter->state == 1) {
+			$this->adapter->addHistory($inverter->id, $live,$timestamp);
+			hookHandler::getInstance()->fire("newHistory", $inverter, $timestamp);
+		}
 	}
 	
 	
