@@ -115,7 +115,7 @@ class QueueServer {
 			if ($item->requeue) {
 				$item->time = $item->getNextTime();
 				$this->add($item);
-				echo ("Requeue item: " . $item->classmethod . " time: " + date("ymd h:i:s", $time));
+				echo ("Requeue item: " . $item->classmethod . " time: " + date("ymd h:i:s", $item->time));
 			}
 			R::commit(); // Commit the transaction
 		} catch (Exception $e) {
