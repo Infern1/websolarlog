@@ -218,7 +218,7 @@ class Session
     	$hookHandler->add("onInverterShutdown", "TwitterAddon.sendTweet");
     	
     	// BasicChecksAddon
-    	$hookHandler->add("on10MinJob", "BasicChecksAddon.on10MinJob");
+    	$hookHandler->add("onRegularJob", "BasicChecksAddon.on10MinJob");
     	
     	// NEW Work Handler hooks
     	$hookHandler->add("onLiveData", "CoreAddon.onLiveData");

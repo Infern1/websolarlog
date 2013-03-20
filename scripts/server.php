@@ -16,10 +16,10 @@ $historyStartTime = time() + 1; // Make a round starting like 12:00, 12:10
 $historyUpdateRate = 5 * 60; // 5 minute refreshrate
 
 $energyStartTime = time() + 2; // Make a round starting like 12:00, 12:10
-$energyUpdateRate = 10 * 60; // 5 minute refreshrate
+$energyUpdateRate = 10 * 60; // 10 minute refreshrate
 
 $infoStartTime = createOnceADayJob("12", "00"); // Only run at 12:00
-$infoUpdateRate = 24 * 60 * 60; // 5 minute refreshrate
+$infoUpdateRate = 24 * 60 * 60; // add 24 hours
 
 $alarmStartTime = time() + 3; 
 $alarmUpdateRate = 15 * 60; // every quarter
@@ -63,8 +63,10 @@ function createOnceADayJob($hour, $minute){
 	$today = strtotime($today_text);
 	$tomorrow = strtotime($today_text . ' +24 hour');
 	if ($today > time()) {
+		echo("today: " + $today);
 		return $today;
 	}
+	echo("tomorrow: " + $tomorrow);
 	return $tomorrow;
 }
 ?>
