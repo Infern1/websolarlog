@@ -1370,7 +1370,7 @@ var WSL = {
 											});
 
 							delete seriesData, graphOptions;
-							if(result.dayData.graph.metaData.KWH.cumPower>0){
+							if( typeof(result.dayData.graph.metaData.KWH) !== "undefined"){
 								mytitle = $(
 									'<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'
 											+ result.lang.totalEnergy
