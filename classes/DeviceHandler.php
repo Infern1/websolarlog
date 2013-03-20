@@ -75,10 +75,10 @@ class DeviceHandler {
 		
 		switch ($device->type) {
 			case "production":
-				ProductionDeviceHandler::handleInfo($item, $device);
+				ProductionDeviceHandler::handleAlarm($item, $device);
 				break;
 			case "metering":
-				MeteringDeviceHandler::handleInfo($item, $device);
+				MeteringDeviceHandler::handleAlarm($item, $device);
 				break;
 			default:
 				echo("DeviceType " . $device->type . " does not support handle alarm");
