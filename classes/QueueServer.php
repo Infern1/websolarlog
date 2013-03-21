@@ -11,20 +11,15 @@ class QueueServer {
 	}
 	
 	// Class
-	private $config;
-	private $dataAdapter;
 	private $queue;
 
 	function __construct() {
 		// Initialize objects
-		$this->config = Session::getConfig(true);
-		$this->dataAdapter = PDODataAdapter::getInstance(); // Only need the initialisation for the transaction support
 		$this->queue = array();
 	}
 	
 	function __destruct() {
 		// Release objects
-		$this->config = null;
 		$this->sync();
 		$this->queue = null;
 	}

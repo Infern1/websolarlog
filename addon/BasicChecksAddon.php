@@ -32,14 +32,15 @@ class BasicChecksAddon {
 	
 	public function onNoLiveData($args) {
 		$inverter = $args[1];
+		$deviceApi = getApi(Session::getConfig());
 		
 		// detect if the server is down
 		$offline = false;
-		if ($inverter->state == 1  ) {
+		if ($deviceApi->getState() == 1  ) {
 			// we are offline
 			$offline = true;
 		}		
-		if ($inverter->state == 0  ) {
+		if ($deviceApi->getState() == 0  ) {
 			$sessionKey = 'noLiveCounter-' . $inverter->id;
 			
 			$liveCounter = (integer) (isset($_SESSION[$sessionKey]) ? $_SESSION[$sessionKey] : 0);
