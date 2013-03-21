@@ -602,6 +602,7 @@ class PDODataAdapter {
 		$bean->template = $config->template;
 		$bean->aurorapath = $config->aurorapath;
 		$bean->smagetpath = $config->smagetpath;
+		$bean->smaspotpath = $config->smaspotpath;
 		$bean->smartmeterpath = $config->smartmeterpath;
 
 		$bean->co2kwh = $config->co2kwh;
@@ -659,6 +660,7 @@ class PDODataAdapter {
 			$config->template = ($bean->template != "") ? $bean->template : $config->template;
 			$config->aurorapath = ($bean->aurorapath != "") ? $bean->aurorapath : $config->aurorapath;
 			$config->smagetpath = ($bean->smagetpath != "") ? $bean->smagetpath : $config->smagetpath;
+			$config->smaspotpath = ($bean->smaspotpath != "") ? $bean->smaspotpath : $config->smaspotpath;
 			$config->smartmeterpath = ($bean->smartmeterpath != "") ? $bean->smartmeterpath : $config->smartmeterpath;
 
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
@@ -1655,6 +1657,9 @@ class PDODataAdapter {
 
 
 		if($hookGraph->metaData != null){
+			if(count($graph->metaData['hideSeries']['label'])== count($graph->series)){
+				$graph->metaData['hideSeries']=null;
+			}
 			$graph->metaData= array_merge_recursive((array)$hookGraph->metaData,(array)$graph->metaData);
 		}
 		$array['graph'] = $graph;
@@ -2494,7 +2499,7 @@ class PDODataAdapter {
 	 * @param string $type (options: panels, average) default = panels
 	 * @param unknown $deviceNum
 	 */
-	function getPowerTrend($deviceNum=0){
+	public function getPowerTrend($deviceNum=0){
 		$config = Session::getConfig();
 		$average = $this->readCache(1,"index","live",$deviceNum,"");
 		return $average;
@@ -2513,4 +2518,19 @@ class PDODataAdapter {
 		$bean->timestamp = $cache->timestamp;
 		$id = R::store($bean);
 	}
+	
+	public function checkDefaultPassword(){
+		$bean = R::findAndExport('config');
+		//below is the default SHA1() hash for "admin"
+		//d033e22ae348aeb5660fc2140aec35850c4da997
+		if($bean[1]['adminpasswd']=='d033e22ae348aeb5660fc2140aec35850c4da997'){
+			//We have a default password....
+			return true;
+		}else{
+			//We do NOT have a default password
+			return false;
+		}
+	} 
+	
+	
 }

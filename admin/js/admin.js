@@ -1,3 +1,32 @@
+$.ajaxSetup({
+	complete: function(xhr) {
+			//see if we have a JSON and parse it.
+			try {
+				var pass = $.parseJSON(xhr.responseText).pass;
+				// if pass == false (we check if there a default password)
+				if(pass==true){
+					if(typeof $('.ui-pnotify-title').html()== "undefined"){
+						$.pnotify.defaults.delay = 20000;
+						$.pnotify({
+			   	 	        title: 'Security Warning!',
+			   	 	        text: 'We detected the Default Password.<br>This is a big security issue. We advice you to change it into a strong password.',
+			   	 	        nonblock: true,
+			   	 	        hide: true,
+			   	 	        closer: true,
+			   	 	        sticker: false,
+			   	 	        type:'error'
+			   	 	        	
+			   	 	    });
+						update_timer_display();
+					}
+				}
+			}catch (e) {
+			    // not json
+			}		
+		
+	}
+});
+
 $(function()
 {
     $.getJSON('admin-server.php?s=isLogin', function(data) {

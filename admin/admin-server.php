@@ -14,7 +14,9 @@ $settingstype = Common::getValue("s", null);
 // Security check
 if (!Session::isLogin() && $settingstype != 'login' && $settingstype != 'isLogin') {
 	exit("not allowed");
-}	
+}else{
+	$pass = $adapter->checkDefaultPassword();
+}
 
 $data = array();
 switch ($settingstype) {
@@ -22,6 +24,7 @@ switch ($settingstype) {
 		$data['co2kwh'] = $config->co2kwh;
 		$data['aurorapath'] = $config->aurorapath;
 		$data['smagetpath'] = $config->smagetpath;
+		$data['smaspotpath'] = $config->smaspotpath;
 		$data['smartmeterpath'] = $config->smartmeterpath;
 		$data['debugmode'] = $config->debugmode;
 		$data['googleAnalytics'] = $config->googleAnalytics;
@@ -225,6 +228,7 @@ switch ($settingstype) {
 		$config->co2kwh = Common::getValue("co2kwh");
 		$config->aurorapath =Common::getValue("aurorapath");
 		$config->smagetpath =Common::getValue("smagetpath");
+		$config->smaspotpath =Common::getValue("smaspotpath");
 		$config->smartmeterpath =Common::getValue("smartmeterpath");
 		$config->debugmode =Common::getValue("debugmode");
 		$config->googleAnalytics = Common::getValue("googleAnalytics");
@@ -522,6 +526,9 @@ switch ($settingstype) {
 	case 'test':
 		$data['test'] = checkSQLite();
 		break;
+}
+if($pass){
+	$data['pass']=$pass;	
 }
 
 // Set headers for JSON response
