@@ -32,7 +32,7 @@ class BasicChecksAddon {
 	
 	public function onNoLiveData($args) {
 		$inverter = $args[1];
-		$deviceApi = getApi(Session::getConfig());
+		$deviceApi = $inverter->getApi(Session::getConfig());
 		
 		// detect if the server is down
 		$offline = false;
