@@ -5,6 +5,7 @@
     <label for="co2kwh">co2-kwh:</label><input type="text" name="co2kwh" value="{{data.co2kwh}}"/><br />
     <label for="aurorapath">aurora path:</label><input type="text" name="aurorapath" value="{{data.aurorapath}}" /><br />
     <label for="smagetpath">sma-get path:</label><input type="text" name="smagetpath" value="{{data.smagetpath}}" /><br />
+    <label for="smaspotpath">sma-spot path:</label><input type="text" name="smaspotpath" value="{{data.smaspotpath}}" />BlueTooth<br />
     <label for="smartmeterpath">smartmeter path:</label><input type="text" name="smartmeterpath" value="{{data.smartmeterpath}}" /><br />
     <label for="debugmode">Debug mode:</label><input type="checkbox" name="debugmode" value="1" {{#if data.debugmode}}checked=checked{{/if}}/><br />
     <label for="googleAnalytics">Google Analytics:</label><input type="text" name="googleAnalytics" value="{{data.googleAnalytics}}" />(XX-00000000-0)<br />
