@@ -47,7 +47,7 @@ class CoreAddon {
 
 		// Only add history when the inverter is live
 		if ($inverter->state == 1) {
-			$this->adapter->addHistory($inverter->id, $live,$timestamp);
+			$this->adapter->addHistory($inverter->id, $live, $timestamp);
 			hookHandler::getInstance()->fire("newHistory", $inverter, $timestamp);
 		}
 	}

@@ -22,9 +22,7 @@ class ProductionDeviceHandler {
 			$live = PDODataAdapter::getInstance()->readLiveInfo($device->id);
 			if (time() - $live->time > 30 * 60 ) {
 				// We don't want to create an history item for an live record older then 30 minutes
-				echo("History blocked: live record to old! live->time = " . date("Y/m/d H:i:s", $live->time ));
-				var_dump(debug_backtrace());
-				echo("End dump");
+				HookHandler::getInstance()->fire("onDebug", "History blocked: live record to old! live->time = " . date("Y/m/d H:i:s", $live->time ));
 			} else {
 				// Set the time to this job time
 				$live->time = $item->time;
