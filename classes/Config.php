@@ -47,6 +47,7 @@ class Config
 
     public $aurorapath; // The path to aurora
     public $smagetpath; // The path to sma-get
+    public $smaspotpath; // The path to sma-spot
     public $smartmeterpath;
     
     public $adminpasswd;
