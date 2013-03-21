@@ -20,10 +20,17 @@ class ProductionDeviceHandler {
 		// Only create history when the device is online
 		if ($device->state == 1) {
 			$live = PDODataAdapter::getInstance()->readLiveInfo($device->id);
-			// Set the time to this job time
-			$live->time = $item->time;
-			$live->SDTE = date("Ymd-H:i:s", $item->time);
-			HookHandler::getInstance()->fire("onHistory", $device, $live, $item->time);
+			if (time() - $live->time > 30 * 60 ) {
+				// We don't want to create an history item for an live record older then 30 minutes
+				echo("History blocked: live record to old! live->time = " . date("Y/m/d H:i:s", $live->time ));
+				var_dump(debug_backtrace());
+				echo("End dump");
+			} else {
+				// Set the time to this job time
+				$live->time = $item->time;
+				$live->SDTE = date("Ymd-H:i:s", $item->time);
+				HookHandler::getInstance()->fire("onHistory", $device, $live, $item->time);
+			}
 		}
 	}
 
