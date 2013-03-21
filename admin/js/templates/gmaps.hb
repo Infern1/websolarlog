@@ -67,8 +67,8 @@
 	</script>
 	
 <div id="dialog-modal" title="Set location for sun calculations">
-<input type="text" value="{{lat}}" id="hiddenLat"/>
-<input type="text" value="{{long}}" id="hiddenLong"/>
+<input type="hidden" value="{{lat}}" id="hiddenLat"/>
+<input type="hidden" value="{{long}}" id="hiddenLong"/>
     <div class="column span-15">
 		<div class="column span-3 first">latitude</div>
 		<div class="column span-3"><input disabled="disabled" type="text" value="{{lat}}" id="mapsLat" style="width:130px;"/></div>
