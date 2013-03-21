@@ -12,10 +12,10 @@ if($pid->isAlreadyRunning) {
 	exit;
 }
 
-$historyStartTime = time() + 1; // Make a round starting like 12:00, 12:10
 $historyUpdateRate = 5 * 60; // 5 minute refreshrate
+$historyStartTime = createTimeForWholeInterval($historyUpdateRate); // TODO :: Make a round starting like 12:00, 12:10
 
-$energyStartTime = time() + 2; // Make a round starting like 12:00, 12:10
+$energyStartTime = time() + 2; // TODO :: Make a round starting like 12:00, 12:10
 $energyUpdateRate = 10 * 60; // 10 minute refreshrate
 
 $infoStartTime = createOnceADayJob("12", "00"); // Only run at 12:00
@@ -63,10 +63,13 @@ function createOnceADayJob($hour, $minute){
 	$today = strtotime($today_text);
 	$tomorrow = strtotime($today_text . ' +24 hour');
 	if ($today > time()) {
-		echo("today: " + $today);
 		return $today;
 	}
-	echo("tomorrow: " + $tomorrow);
 	return $tomorrow;
+}
+
+
+function createTimeForWholeInterval($interval) {
+	return time() + $interval - (time() % $interval);
 }
 ?>
