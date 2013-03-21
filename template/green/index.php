@@ -69,6 +69,7 @@
 				</div>
 			</div>
 			<div id="main-bottom"></div>
+			<div id="smartMeterLive"></div>
 		</div>
 		<!-- END Main -->
 		<!-- Footer -->
@@ -114,7 +115,7 @@
 			
 			<div style="float:left; width:200px;">
 			Misc.:<br/>
-			<a href="http://pvoutput.org/listteam.jsp?tid=602">Join PVoutput team WebSolarLog</a><br/>
+			<a href="http://pvoutput.org/listteam.jsp?tid=602" target="_blank">Join PVoutput team WebSolarLog</a><br/>
 			</div>
 			<div class="cl"></div>
 			</div>
