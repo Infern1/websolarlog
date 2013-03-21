@@ -13,16 +13,16 @@ if($pid->isAlreadyRunning) {
 }
 
 $historyUpdateRate = 5 * 60; // 5 minute refreshrate
-$historyStartTime = createTimeForWholeInterval($historyUpdateRate); // TODO :: Make a round starting like 12:00, 12:10
+$historyStartTime = createTimeForWholeInterval($historyUpdateRate);
 
-$energyStartTime = time() + 2; // TODO :: Make a round starting like 12:00, 12:10
 $energyUpdateRate = 10 * 60; // 10 minute refreshrate
+$energyStartTime = createTimeForWholeInterval($energyUpdateRate);
 
-$infoStartTime = createOnceADayJob("12", "00"); // Only run at 12:00
 $infoUpdateRate = 24 * 60 * 60; // add 24 hours
+$infoStartTime = createOnceADayJob("12", "00"); // Only run at 12:00
 
-$alarmStartTime = time() + 3; 
 $alarmUpdateRate = 15 * 60; // every quarter
+$alarmStartTime = createTimeForWholeInterval($alarmUpdateRate);
 
 // Create the inverter jobs
 foreach (Session::getConfig()->inverters as $device) {
@@ -34,20 +34,20 @@ foreach (Session::getConfig()->inverters as $device) {
 }
 
 
-$fastJobStartTime = time() + 4;
 $fastJobUpdateRate = 60; // Every minute
+$fastJobStartTime = createTimeForWholeInterval($fastJobUpdateRate);
 QueueServer::getInstance()->add(new QueueItem($fastJobStartTime, "HookHandler.fireFromQueue", array("onFastJob"), true, $fastJobUpdateRate));
 
-$regularJobStartTime = time() + 5;
 $regularJobUpdateRate = 30 * 60; // Every 30 minutes
+$regularJobStartTime = createTimeForWholeInterval($regularJobUpdateRate);
 QueueServer::getInstance()->add(new QueueItem($regularJobStartTime, "HookHandler.fireFromQueue", array("onRegularJob"), true, $regularJobUpdateRate));
 
-$slowJobStartTime = time() + 6;
 $slowJobUpdateRate = 60 * 60; // Every hour
+$slowJobStartTime = createTimeForWholeInterval($slowJobUpdateRate);
 QueueServer::getInstance()->add(new QueueItem($slowJobStartTime, "HookHandler.fireFromQueue", array("onSlowJob"), true, $slowJobUpdateRate));
 
 // Add job to refresh the config object every 2 minutes
-QueueServer::getInstance()->add(new QueueItem(time() + 120, "DeviceHandler.refreshConfig", "", true, 120));
+QueueServer::getInstance()->add(new QueueItem(createTimeForWholeInterval(120), "DeviceHandler.refreshConfig", "", true, 120));
 
 // Start the queue server
 QueueServer::getInstance()->start();
@@ -68,8 +68,12 @@ function createOnceADayJob($hour, $minute){
 	return $tomorrow;
 }
 
-
+/**
+ * Creates an time based on the first coming interval
+ * @param unknown $interval
+ * @return number
+ */
 function createTimeForWholeInterval($interval) {
-	return time() + $interval - (time() % $interval);
+	return (time() + $interval) - (time() % $interval);
 }
 ?>
