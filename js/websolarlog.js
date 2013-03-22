@@ -111,7 +111,7 @@ var todayTimerHandler;
 function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot, series) {
 	var returned = "";
 	seriesCount = plot.series.length - 1;
-	console.log(plot);
+	//console.log(plot);
 	if (is_array(plot.series[0].data[pointIndex]) == true) {
 		returned += tooltipTodayContentEditorLine("Cum.",plot.series[0].data[pointIndex][1], "W", (seriesIndex == 0));
 	}
@@ -745,7 +745,7 @@ var WSL = {
 
 	init_PageIndexTotalValues : function(sideBar) {
 		WSL.api.getPageIndexTotalValues(function(data) {
-			console.log('total2');
+			//console.log('total2');
 			$.ajax({
 				url : 'js/templates/totalValues.hb',
 				beforeSend : function(xhr) {
