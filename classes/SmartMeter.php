@@ -74,8 +74,8 @@ Class SmartMeter implements DeviceApi {
         // not supported
     }
 
-	    private function execute() {    	
-	        return shell_exec('sudo python3 '.$this->PATH.'');
-	    }
+    private function execute() {    	
+        return shell_exec('sudo python3 '.$this->PATH.'');
+    }
 }
 ?>

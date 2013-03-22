@@ -5,12 +5,24 @@
 
 ; remove the comments from the settings and fill in your database setup
 ; check this url for database settings: http://redbeanphp.com/manual/compatible
-;[example-database]
-;dsn="mysql:host=localhost;dbname=websolarlog"
-;username=
-;password=
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; below is a example
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;; [example-database]
+;;;;; dsn="mysql:host=localhost;dbname=websolarlog"
+;;;;; username="root"
+;;;;; password="RQ0T"
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-; Do not remove anything below this line
+;;;;; Remove the ;'s and replace the XXXXXX with your host, dbname and credentials
+;[database]
+;dsn="mysql:host=XXXXXX;dbname=XXXXXX"
+;username="XXXXXX"
+;password="XXXXXX"
+
+
+;;;;; Do not remove anything below this line
 ;*/
 ;?>

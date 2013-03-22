@@ -492,6 +492,10 @@ try {
 			$data['maxGauges'] = $gaugeMaxPower;
 			$data['sumInverters'] = $indexValues['sum'];
 			break;
+		case 'getPageIndexBlurLiveValues':
+			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
+			$data['sumInverters'] = $indexValues['sum'];
+			break;
 		case 'getPageIndexTotalValues':
 			$lang = array();
 			$lang['someFigures'] 	= _("Some Figures*");
@@ -522,6 +526,9 @@ try {
 				echo ("Fire hook: " . $hookname);
 				HookHandler::getInstance()->fire($hookname);
 			}
+			break;
+		case "test":
+			$data['test']='test';
 			break;
 		default:
 			break;

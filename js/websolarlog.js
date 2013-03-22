@@ -3,21 +3,18 @@ var ajax = $.ajaxSetup({
 	cache : true
 });
 
-function getWindowState(overrideWindowState) {
-	if (overrideWindowState == true) {
-		var abortAjaxCalls = false;
-	} else {
-		$(window).blur(function() {
-			var abortAjaxCalls = true;
-		});
-		$(window).focus(function() {
-			var abortAjaxCalls = false;
-		});
-	}
-	return abortAjaxCalls;
+var windowState = true;
+
+$(window).blur(function() {
+	windowState = false;
+});
+$(window).focus(function() {
+	windowState = true;
+});
+
+function activeWindow() {
+	return windowState;
 }
-
-
 
 function ajaxAbort(xhr) {
 	xhr.abort();
@@ -54,8 +51,7 @@ function analyticsJSCodeBlock() {
 			$.ajax({
 				url : 'js/templates/GoogleAnalyticsJSCodeBlock.hb',
 				beforeSend : function(xhr) {
-					abortAjaxCalls = getWindowState(false);
-					if (abortAjaxCalls == true) {
+					if (activeWindow() == false) {
 						ajaxAbort(xhr);
 					}
 				},
@@ -73,8 +69,7 @@ function analyticsJSCodeBlock() {
 			$.ajax({
 				url : 'js/templates/PiwikAnalyticsJSCodeBlock.hb',
 				beforeSend : function(xhr) {
-					abortAjaxCalls = getWindowState(false);
-					if (abortAjaxCalls == true) {
+					if (activeWindow() == false) {
 						ajaxAbort(xhr);
 					}
 				},
@@ -116,44 +111,37 @@ var todayTimerHandler;
 function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot, series) {
 	var returned = "";
 	seriesCount = plot.series.length - 1;
-
+	console.log(plot);
 	if (is_array(plot.series[0].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("Cum.",
-				plot.series[0].data[pointIndex][1], "W", (seriesIndex == 0));
+		returned += tooltipTodayContentEditorLine("Cum.",plot.series[0].data[pointIndex][1], "W", (seriesIndex == 0));
 	}
 	if (is_array(plot.series[1].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("Energy",
-				plot.series[1].data[pointIndex][1], "W", (seriesIndex == 1));
+		returned += tooltipTodayContentEditorLine("Energy",plot.series[1].data[pointIndex][1], "W" + pointIndex,(seriesIndex == 1));
 	}
 
 	// if(seriesCount >= 2){
 	if (is_array(plot.series[2].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("Gas",
-				plot.series[2].data[pointIndex][1], "L", (seriesIndex == 2));
+		returned += tooltipTodayContentEditorLine("Gas",plot.series[2].data[pointIndex][1], "L", (seriesIndex == 2));
 	}
 	// }
 	// if(seriesCount >= 3){
 	if (is_array(plot.series[3].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("High usage",
-				plot.series[3].data[pointIndex][1], "W", (seriesIndex == 3));
+		returned += tooltipTodayContentEditorLine("High usage",plot.series[3].data[pointIndex][1], "W", (seriesIndex == 3));
 	}
 	// }
 	// if(seriesCount >= 4){
 	if (is_array(plot.series[4].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("Low usage",
-				plot.series[4].data[pointIndex][1], "W", (seriesIndex == 4));
+		returned += tooltipTodayContentEditorLine("Low usage",plot.series[4].data[pointIndex][1], "W", (seriesIndex == 4));
 	}
 	// }
 	// if(seriesCount >= 5){
 	if (is_array(plot.series[5].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("High return",
-				plot.series[5].data[pointIndex][1], "W", (seriesIndex == 5));
+		returned += tooltipTodayContentEditorLine("High return",plot.series[5].data[pointIndex][1], "W", (seriesIndex == 5));
 	}
 	// }
 	// if(seriesCount >= 6){
 	if (is_array(plot.series[6].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("Low return",
-				plot.series[6].data[pointIndex][1], "W", (seriesIndex == 6));
+		returned += tooltipTodayContentEditorLine("Low return",plot.series[6].data[pointIndex][1], "W", (seriesIndex == 6));
 	}
 	// }
 	return returned;
@@ -161,12 +149,9 @@ function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot, series) {
 
 function tooltipPeriodContentEditor(str, seriesIndex, pointIndex, plot, series) {
 	var returned = "";
-	returned += tooltipDefaultLine("Energy",
-			plot.series[0].data[pointIndex][1], "kWh", (seriesIndex == 0));
-	returned += tooltipDefaultLine("Energy",
-			plot.series[1].data[pointIndex][1], "kWh", (seriesIndex == 1));
-	returned += tooltipDefaultLine("Date", plot.series[1].data[pointIndex][2],
-			"", (seriesIndex == 1));
+	returned += tooltipDefaultLine("Energy",plot.series[0].data[pointIndex][1], "kWh", (seriesIndex == 0));
+	returned += tooltipDefaultLine("Energy",plot.series[1].data[pointIndex][1], "kWh", (seriesIndex == 1));
+	returned += tooltipDefaultLine("Date", plot.series[1].data[pointIndex][2],"", (seriesIndex == 1));
 	return returned;
 }
 
@@ -175,25 +160,17 @@ function tooltipProductionContentEditor(str, seriesIndex, pointIndex, plot,
 	var returned = "";
 	var diff_add = '';
 	var yearDiff_add = "";
-	var diff = plot.series[0].data[pointIndex][1]
-			- plot.series[1].data[pointIndex][1];
+	var diff = plot.series[0].data[pointIndex][1]- plot.series[1].data[pointIndex][1];
 
-	var yearDiff = plot.series[3].data[pointIndex][1]
-			- plot.series[2].data[pointIndex][1];
+	var yearDiff = plot.series[3].data[pointIndex][1]- plot.series[2].data[pointIndex][1];
 	(diff > 0) ? diff_add = '+' : diff_add = diff_add;
 	(yearDiff > 0) ? yearDiff_add = '+' : yearDiff_add = yearDiff_add;
-	returned += tooltipProductionContentEditorLine("Harvested",
-			plot.series[0].data[pointIndex][1], "kWh", (seriesIndex == 0));
-	returned += tooltipProductionContentEditorLine("Expected",
-			plot.series[1].data[pointIndex][1], "kWh", (seriesIndex == 1));
-	returned += tooltipProductionContentEditorLine("This month", diff_add + ""
-			+ diff, "kWh", false);
-	returned += tooltipProductionContentEditorLine("Cum. Harvested",
-			plot.series[3].data[pointIndex][1], "kWh", (seriesIndex == 3));
-	returned += tooltipProductionContentEditorLine("Cum. Expected",
-			plot.series[2].data[pointIndex][1], "kWh", (seriesIndex == 2));
-	returned += tooltipProductionContentEditorLine("This year", yearDiff_add
-			+ "" + yearDiff, "kWh", false);
+	returned += tooltipProductionContentEditorLine("Harvested",plot.series[0].data[pointIndex][1], "kWh", (seriesIndex == 0));
+	returned += tooltipProductionContentEditorLine("Expected",plot.series[1].data[pointIndex][1], "kWh", (seriesIndex == 1));
+	returned += tooltipProductionContentEditorLine("This month", diff_add + ""+ diff, "kWh", false);
+	returned += tooltipProductionContentEditorLine("Cum. Harvested",plot.series[3].data[pointIndex][1], "kWh", (seriesIndex == 3));
+	returned += tooltipProductionContentEditorLine("Cum. Expected",plot.series[2].data[pointIndex][1], "kWh", (seriesIndex == 2));
+	returned += tooltipProductionContentEditorLine("This year", yearDiff_add+ "" + yearDiff, "kWh", false);
 	return returned;
 }
 
@@ -351,8 +328,7 @@ function populateTabs() {
 		$.ajax({
 			url : 'js/templates/datePeriodFilter.hb',
 			beforeSend : function(xhr) {
-				abortAjaxCalls = getWindowState(false);
-				if (abortAjaxCalls == true) {
+				if (activeWindow() == false) {
 					ajaxAbort(xhr);
 				}
 			},
@@ -445,8 +421,7 @@ var WSL = {
 			$.ajax({
 				url : 'js/templates/historyValues.hb',
 				beforeSend : function(xhr) {
-					abortAjaxCalls = getWindowState(false);
-					if (abortAjaxCalls == true) {
+					if (activeWindow() == false) {
 						ajaxAbort(xhr);
 					}
 				},
@@ -470,137 +445,143 @@ var WSL = {
 		// initialize languages selector on the given div
 		ajaxStart();
 
-		abortAjaxCalls = getWindowState(false);
-		if (abortAjaxCalls == true) {
+		if (activeWindow() == false) {
 			WSL.api.getPageIndexBlurLiveValues(function(data) {
-				document.title = '!(' + data.sumInverters.GP+ ' W) WebSolarLog';
+				document.title = '!(' + data.sumInverters.GP
+						+ ' W) WebSolarLog';
 			});
-		}else{
+		} else {
+			WSL.api
+					.getPageIndexLiveValues(function(data) {
 
-		
-			WSL.api.getPageIndexLiveValues(function(data) {
-
-			GP = data.maxGauges / 10;
-			gaugeGPOptions = {
-				title : data.lang.ACPower,
-				grid : {
-					background : '#FFF'
-				},
-				seriesDefaults : {
-					renderer : $.jqplot.MeterGaugeRenderer,
-					rendererOptions : {
-						min : 0,
-						max : GP * 10,
-						padding : 0,
-						intervals : [ GP, GP * 2, GP * 3, GP * 4, GP * 5,
-								GP * 6, GP * 7, GP * 8, GP * 9, GP * 10 ],
-						intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
-								'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
-								'#4BFE78', '#0AFE47', '#01F33E' ]
-					}
-				}
-			};
-			IP = data.maxGauges / 10;
-			gaugeIPOptions = {
-				title : data.lang.DCPower,
-				grid : {
-					background : '#FFF'
-				},
-				seriesDefaults : {
-					renderer : $.jqplot.MeterGaugeRenderer,
-					rendererOptions : {
-						min : 0,
-						max : IP * 10,
-						padding : 0,
-						intervals : [ IP, IP * 2, IP * 3, IP * 4, IP * 5,
-								IP * 6, IP * 7, IP * 8, IP * 9, IP * 10 ],
-						intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
-								'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
-								'#4BFE78', '#0AFE47', '#01F33E' ]
-					}
-				}
-			};
-			EFF = 100 / 10;
-			gaugeEFFOptions = {
-				title : data.lang.Efficiency,
-				grid : {
-					background : '#FFF'
-				},
-				seriesDefaults : {
-					renderer : $.jqplot.MeterGaugeRenderer,
-					rendererOptions : {
-						min : 0,
-						max : EFF * 10,
-						padding : 0,
-						intervals : [ EFF, EFF * 2, EFF * 3, EFF * 4, EFF * 5,
-								EFF * 6, EFF * 7, EFF * 8, EFF * 9, EFF * 10 ],
-						intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
-								'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
-								'#4BFE78', '#0AFE47', '#01F33E' ]
-					}
-				}
-			};
-
-			delete data;
-
-			$.ajax({
-						url : 'js/templates/liveInverters.hb',
-						beforeSend : function(xhr) {
-							abortAjaxCalls = getWindowState(false);
-							if (abortAjaxCalls == true) {
-								
-								ajaxAbort(xhr);
+						GP = data.maxGauges / 10;
+						gaugeGPOptions = {
+							title : data.lang.ACPower,
+							grid : {
+								background : '#FFF'
+							},
+							seriesDefaults : {
+								renderer : $.jqplot.MeterGaugeRenderer,
+								rendererOptions : {
+									min : 0,
+									max : GP * 10,
+									padding : 0,
+									intervals : [ GP, GP * 2, GP * 3, GP * 4,
+											GP * 5, GP * 6, GP * 7, GP * 8,
+											GP * 9, GP * 10 ],
+									intervalColors : [ '#F9FFFB', '#EAFFEF',
+											'#CAFFD8', '#B5FFC8', '#A3FEBA',
+											'#8BFEA8', '#72FE95', '#4BFE78',
+											'#0AFE47', '#01F33E' ]
+								}
 							}
-						},
-						success : function(source) {
-							var template = Handlebars.compile(source);
-							var html = template({
-								'data' : data,
-								'lang' : data.lang
-							});
-							$(divId).html(html);
-
-							if (gaugeGP) {
-								gaugeGP.destroy();
+						};
+						IP = data.maxGauges / 10;
+						gaugeIPOptions = {
+							title : data.lang.DCPower,
+							grid : {
+								background : '#FFF'
+							},
+							seriesDefaults : {
+								renderer : $.jqplot.MeterGaugeRenderer,
+								rendererOptions : {
+									min : 0,
+									max : IP * 10,
+									padding : 0,
+									intervals : [ IP, IP * 2, IP * 3, IP * 4,
+											IP * 5, IP * 6, IP * 7, IP * 8,
+											IP * 9, IP * 10 ],
+									intervalColors : [ '#F9FFFB', '#EAFFEF',
+											'#CAFFD8', '#B5FFC8', '#A3FEBA',
+											'#8BFEA8', '#72FE95', '#4BFE78',
+											'#0AFE47', '#01F33E' ]
+								}
 							}
-							$('#gaugeGP').empty();
-							gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ],
-									gaugeGPOptions);
-							gaugeGP.series[0].data = [ [ 'W',
-									data.sumInverters.GP ] ];
-							gaugeGP.series[0].label = data.sumInverters.GP;
-							document.title = '(' + data.sumInverters.GP
-									+ ' W) WebSolarLog';
-							gaugeGP.replot();
-
-							if (gaugeIP) {
-								gaugeIP.destroy();
+						};
+						EFF = 100 / 10;
+						gaugeEFFOptions = {
+							title : data.lang.Efficiency,
+							grid : {
+								background : '#FFF'
+							},
+							seriesDefaults : {
+								renderer : $.jqplot.MeterGaugeRenderer,
+								rendererOptions : {
+									min : 0,
+									max : EFF * 10,
+									padding : 0,
+									intervals : [ EFF, EFF * 2, EFF * 3,
+											EFF * 4, EFF * 5, EFF * 6, EFF * 7,
+											EFF * 8, EFF * 9, EFF * 10 ],
+									intervalColors : [ '#F9FFFB', '#EAFFEF',
+											'#CAFFD8', '#B5FFC8', '#A3FEBA',
+											'#8BFEA8', '#72FE95', '#4BFE78',
+											'#0AFE47', '#01F33E' ]
+								}
 							}
-							$('#gaugeIP').empty();
-							gaugeIP = $.jqplot('gaugeIP', [ [ 0.1 ] ],
-									gaugeIPOptions);
-							gaugeIP.series[0].data = [ [ 'W',
-									data.sumInverters.IP ] ];
-							gaugeIP.series[0].label = data.sumInverters.IP;
-							gaugeIP.replot();
+						};
 
-							if (gaugeEFF) {
-								gaugeEFF.destroy();
-							}
-							$('#gaugeEFF').empty();
-							gaugeEFF = $.jqplot('gaugeEFF', [ [ 0.1 ] ],
-									gaugeEFFOptions);
-							gaugeEFF.series[0].data = [ [ 'W',
-									data.sumInverters.EFF ] ];
-							gaugeEFF.series[0].label = data.sumInverters.EFF
-									+ ' %';
-							gaugeEFF.replot();
+						delete data;
 
-							ajaxReady();
-						},
-						dataType : 'text',
+						$
+								.ajax({
+									url : 'js/templates/liveInverters.hb',
+									beforeSend : function(xhr) {
+										if (activeWindow() == false) {
+											ajaxAbort(xhr);
+										}
+									},
+									success : function(source) {
+										var template = Handlebars
+												.compile(source);
+										var html = template({
+											'data' : data,
+											'lang' : data.lang
+										});
+										$(divId).html(html);
+
+										if (gaugeGP) {
+											gaugeGP.destroy();
+										}
+										$('#gaugeGP').empty();
+										gaugeGP = $.jqplot('gaugeGP',
+												[ [ 0.1 ] ], gaugeGPOptions);
+										gaugeGP.series[0].data = [ [ 'W',
+												data.sumInverters.GP ] ];
+										gaugeGP.series[0].label = data.sumInverters.GP;
+										document.title = '('
+												+ data.sumInverters.GP
+												+ ' W) WebSolarLog';
+										gaugeGP.replot();
+
+										if (gaugeIP) {
+											gaugeIP.destroy();
+										}
+										$('#gaugeIP').empty();
+										gaugeIP = $.jqplot('gaugeIP',
+												[ [ 0.1 ] ], gaugeIPOptions);
+										gaugeIP.series[0].data = [ [ 'W',
+												data.sumInverters.IP ] ];
+										gaugeIP.series[0].label = data.sumInverters.IP;
+										gaugeIP.replot();
+
+										if (gaugeEFF) {
+											gaugeEFF.destroy();
+										}
+										$('#gaugeEFF').empty();
+										gaugeEFF = $.jqplot('gaugeEFF',
+												[ [ 0.1 ] ], gaugeEFFOptions);
+										gaugeEFF.series[0].data = [ [ 'W',
+												data.sumInverters.EFF ] ];
+										gaugeEFF.series[0].label = data.sumInverters.EFF
+												+ ' %';
+										gaugeEFF.replot();
+
+										ajaxReady();
+									},
+									dataType : 'text',
+								});
 					});
-		});
 		}
 	},
 
@@ -611,8 +592,7 @@ var WSL = {
 			$.ajax({
 				url : 'js/templates/misc.hb',
 				beforeSend : function(xhr) {
-					abortAjaxCalls = getWindowState(false);
-					if (abortAjaxCalls == true) {
+					if (activeWindow() == false) {
 						ajaxAbort(xhr);
 					}
 				},
@@ -642,8 +622,7 @@ var WSL = {
 				$.ajax({
 					url : 'js/templates/plantinfo.hb',
 					beforeSend : function(xhr) {
-						abortAjaxCalls = getWindowState(false);
-						if (abortAjaxCalls == true) {
+						if (activeWindow() == false) {
 							ajaxAbort(xhr);
 						}
 					},
@@ -669,8 +648,7 @@ var WSL = {
 			$.ajax({
 				url : 'js/templates/menu.hb',
 				beforeSend : function(xhr) {
-					abortAjaxCalls = getWindowState(false);
-					if (abortAjaxCalls == true) {
+					if (activeWindow() == false) {
 						ajaxAbort(xhr);
 					}
 				},
@@ -693,8 +671,7 @@ var WSL = {
 			$.ajax({
 				url : 'js/templates/languageselect.hb',
 				beforeSend : function(xhr) {
-					abortAjaxCalls = getWindowState(false);
-					if (abortAjaxCalls == true) {
+					if (activeWindow() == false) {
 						ajaxAbort(xhr);
 					}
 				},
@@ -717,8 +694,7 @@ var WSL = {
 			$.ajax({
 				url : 'js/templates/tabs.hb',
 				beforeSend : function(xhr) {
-					abortAjaxCalls = getWindowState(false);
-					if (abortAjaxCalls == true) {
+					if (activeWindow() == false) {
 						ajaxAbort(xhr);
 					}
 				},
@@ -750,8 +726,7 @@ var WSL = {
 			$.ajax({
 				url : 'js/templates/liveValues.hb',
 				beforeSend : function(xhr) {
-					abortAjaxCalls = getWindowState(false);
-					if (abortAjaxCalls == true) {
+					if (activeWindow() == false) {
 						ajaxAbort(xhr);
 					}
 				},
@@ -770,11 +745,11 @@ var WSL = {
 
 	init_PageIndexTotalValues : function(sideBar) {
 		WSL.api.getPageIndexTotalValues(function(data) {
+			console.log('total2');
 			$.ajax({
 				url : 'js/templates/totalValues.hb',
 				beforeSend : function(xhr) {
-					abortAjaxCalls = getWindowState(false);
-					if (abortAjaxCalls == true) {
+					if (activeWindow() == false) {
 						ajaxAbort(xhr);
 					}
 				},
@@ -799,9 +774,8 @@ var WSL = {
 			$.ajax({
 				url : 'js/templates/todayValues.hb',
 				beforeSend : function(xhr) {
-					abortAjaxCalls = getWindowState(false);
-					if (abortAjaxCalls == true) {
-						ajaxAbort(xhr);
+					if (activeWindow() == false) {
+						ajaxAbort(xhr, '');
 					}
 				},
 				success : function(source) {
@@ -839,9 +813,8 @@ var WSL = {
 									.ajax({
 										url : 'js/templates/monthValues.hb',
 										beforeSend : function(xhr) {
-											abortAjaxCalls = getWindowState(false);
-											if (abortAjaxCalls == true) {
-												ajaxAbort(xhr);
+											if (activeWindow() == false) {
+												ajaxAbort(xhr, '');
 											}
 										},
 										success : function(source) {
@@ -867,9 +840,9 @@ var WSL = {
 														url : 'js/templates/pageDateFilter.hb',
 														beforeSend : function(
 																xhr) {
-															abortAjaxCalls = getWindowState(false);
-															if (abortAjaxCalls == true) {
-																ajaxAbort(xhr);
+															if (activeWindow() == false) {
+																ajaxAbort(xhr,
+																		'');
 															}
 														},
 														success : function(
@@ -883,7 +856,6 @@ var WSL = {
 															$(
 																	'#pageMonthDateFilter')
 																	.html(html);
-
 															if (!pickerDate) {
 																$(
 																		"#datePickerPeriod")
@@ -921,8 +893,8 @@ var WSL = {
 																								.init_PageMonthValues(
 																										"#columns",
 																										"#periodList"); // Initial
-																														// load
-																														// fast
+																						// load
+																						// fast
 																					}
 																				});
 																// new
@@ -971,13 +943,13 @@ var WSL = {
 																								.init_PageMonthValues(
 																										"#columns",
 																										"#periodList"); // Initial
-																														// load
-																														// fast
+																						// load
+																						// fast
 																					}
 																				});
 																pickerDate = pickerDate
 																		.split('-'); // 01-2012
-																						// (month-year)
+																// (month-year)
 																pickerDate[0] = pickerDate[0] - 1;
 																// new
 																// Date(year,
@@ -1037,9 +1009,8 @@ var WSL = {
 									.ajax({
 										url : 'js/templates/yearValues.hb',
 										beforeSend : function(xhr) {
-											abortAjaxCalls = getWindowState(false);
-											if (abortAjaxCalls == true) {
-												ajaxAbort(xhr);
+											if (activeWindow() == false) {
+												ajaxAbort(xhr, '');
 											}
 										},
 										success : function(source) {
@@ -1063,9 +1034,9 @@ var WSL = {
 														url : 'js/templates/pageDateFilter.hb',
 														beforeSend : function(
 																xhr) {
-															abortAjaxCalls = getWindowState(false);
-															if (abortAjaxCalls == true) {
-																ajaxAbort(xhr);
+															if (activeWindow() == false) {
+																ajaxAbort(xhr,
+																		'');
 															}
 														},
 														success : function(
@@ -1114,8 +1085,8 @@ var WSL = {
 																								.init_PageYearValues(
 																										"#columns",
 																										"#periodList"); // Initial
-																														// load
-																														// fast
+																						// load
+																						// fast
 																					}
 																				});
 																$(
@@ -1155,8 +1126,8 @@ var WSL = {
 																								.init_PageYearValues(
 																										"#columns",
 																										"#periodList"); // Initial
-																														// load
-																														// fast
+																						// load
+																						// fast
 																					}
 																				});
 																// new
@@ -1261,9 +1232,8 @@ var WSL = {
 					url : "server.php?method=getGraphDayPoints&type=" + getDay
 							+ "&date=" + date + "&invtnum=" + invtnum,
 					beforeSend : function(xhr) {
-						abortAjaxCalls = getWindowState(false);
-						if (abortAjaxCalls == true) {
-							ajaxAbort(xhr);
+						if (activeWindow() == false) {
+							ajaxAbort(xhr, '');
 						}
 					},
 					method : 'GET',
@@ -1370,18 +1340,21 @@ var WSL = {
 											});
 
 							delete seriesData, graphOptions;
-							if( typeof(result.dayData.graph.metaData.KWH) !== "undefined"){
+							if (typeof (result.dayData.graph.metaData.KWH) !== "undefined") {
 								mytitle = $(
-									'<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'
-											+ result.lang.totalEnergy
-											+ ': '
-											+ result.dayData.graph.metaData.KWH.cumPower
-											+ ' '
-											+ result.dayData.graph.metaData.KWH.KWHTUnit
-											+ ' ('
-											+ result.dayData.graph.metaData.KWH.KWHKWP
-											+ ' kWh/kWp)</div>').insertAfter(
-									'#graph' + getDay + ' .jqplot-grid-canvas');
+										'<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'
+												+ result.lang.totalEnergy
+												+ ': '
+												+ result.dayData.graph.metaData.KWH.cumPower
+												+ ' '
+												+ result.dayData.graph.metaData.KWH.KWHTUnit
+												+ ' ('
+												+ result.dayData.graph.metaData.KWH.KWHKWP
+												+ ' kWh/kWp)</div>')
+										.insertAfter(
+												'#graph'
+														+ getDay
+														+ ' .jqplot-grid-canvas');
 							}
 							fnFinish.call(this, handle);
 							ajaxReady();
@@ -1397,9 +1370,8 @@ var WSL = {
 							+ "&count=" + count + "&date=" + date + "&invtnum="
 							+ invtnum,
 					beforeSend : function(xhr) {
-						abortAjaxCalls = getWindowState(false);
-						if (abortAjaxCalls == true) {
-							ajaxAbort(xhr);
+						if (activeWindow() == false) {
+							ajaxAbort(xhr, '');
 						}
 					},
 					method : 'GET',
@@ -1523,15 +1495,13 @@ var WSL = {
 
 	createProductionGraph : function(invtnum, divId) {
 		ajaxStart();
-
 		$
 				.ajax({
 					url : "server.php?method=getProductionGraph&invtnum="
 							+ invtnum,
 					beforeSend : function(xhr) {
-						abortAjaxCalls = getWindowState(false);
-						if (abortAjaxCalls == true) {
-							ajaxAbort(xhr);
+						if (activeWindow() == false) {
+							ajaxAbort(xhr, '');
 						}
 					},
 					method : 'GET',
@@ -1550,9 +1520,8 @@ var WSL = {
 							$.ajax({
 								url : 'js/templates/productionFigures.hb',
 								beforeSend : function(xhr) {
-									abortAjaxCalls = getWindowState(false);
-									if (abortAjaxCalls == true) {
-										ajaxAbort(xhr);
+									if (activeWindow() == false) {
+										ajaxAbort(xhr, '');
 									}
 								},
 								success : function(source) {
@@ -1600,27 +1569,27 @@ var WSL = {
 									renderer : $.jqplot.BarRenderer,
 									rendererOptions : {
 										barPadding : 5, // number of pixels
-														// between adjacent bars
-														// in the same
+										// between adjacent bars
+										// in the same
 										// group (same category or bin).
 										barMargin : 5, // number of pixels
-														// between adjacent
-														// groups of bars.
+										// between adjacent
+										// groups of bars.
 										barDirection : 'vertical', // vertical
-																	// or
-																	// horizontal.
+										// or
+										// horizontal.
 										barWidth : 15, // width of the bars.
-														// null to calculate
-														// automatically.
+										// null to calculate
+										// automatically.
 										shadowOffset : 2, // offset from the
-															// bar edge to
-															// stroke the
-															// shadow.
+										// bar edge to
+										// stroke the
+										// shadow.
 										shadowDepth : 5, // nuber of strokes
-															// to make for the
-															// shadow.
+										// to make for the
+										// shadow.
 										shadowAlpha : 0.2, // transparency of
-															// the shadow.
+									// the shadow.
 									},
 									min : 0,
 								}, {
@@ -1632,27 +1601,27 @@ var WSL = {
 									renderer : $.jqplot.BarRenderer,
 									rendererOptions : {
 										barPadding : 5, // number of pixels
-														// between adjacent bars
-														// in the same
+										// between adjacent bars
+										// in the same
 										// group (same category or bin).
 										barMargin : 5, // number of pixels
-														// between adjacent
-														// groups of bars.
+										// between adjacent
+										// groups of bars.
 										barDirection : 'vertical', // vertical
-																	// or
-																	// horizontal.
+										// or
+										// horizontal.
 										barWidth : 15, // width of the bars.
-														// null to calculate
-														// automatically.
+										// null to calculate
+										// automatically.
 										shadowOffset : 2, // offset from the
-															// bar edge to
-															// stroke the
-															// shadow.
+										// bar edge to
+										// stroke the
+										// shadow.
 										shadowDepth : 5, // nuber of strokes
-															// to make for the
-															// shadow.
+										// to make for the
+										// shadow.
 										shadowAlpha : 0.2, // transparency of
-															// the shadow.
+									// the shadow.
 									},
 									min : 0,
 								}, {
@@ -1673,86 +1642,86 @@ var WSL = {
 								legend : {
 									show : true,
 									location : 'nw', // compass direction,
-														// nw, n, ne, e, se, s,
-														// sw, w.
+									// nw, n, ne, e, se, s,
+									// sw, w.
 									xoffset : 12, // pixel offset of the
-													// legend box from the x (or
-													// x2) axis.
+									// legend box from the x (or
+									// x2) axis.
 									yoffset : 12, // pixel offset of the
-													// legend box from the y (or
-													// y2) axis.
+								// legend box from the y (or
+								// y2) axis.
 								},
 								axes : {
 									xaxis : {
 										show : true, // wether or not to
-														// renderer the axis.
-														// Determined
-														// automatically.
+										// renderer the axis.
+										// Determined
+										// automatically.
 										pad : 1, // a factor multiplied by
-													// the data range on the
-													// axis to give the
+										// the data range on the
+										// axis to give the
 										// axis range so that data points don't
 										// fall on the edges of the axis.
 										ticks : [], // a 1D [val1, val2, ...],
-													// or 2D [[val, label],
-													// [val, label], ...]
+										// or 2D [[val, label],
+										// [val, label], ...]
 										// array of ticks to use. Computed
 										// automatically.
 										numberTicks : ticksTable,
 										ticks : ticksTable,
 										renderer : $.jqplot.CategoryAxisRenderer, // renderer
-																					// to
-																					// use
-																					// to
-																					// draw
-																					// the
-																					// axis,
+										// to
+										// use
+										// to
+										// draw
+										// the
+										// axis,
 										labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
 										tickRenderer : $.jqplot.CanvasAxisTickRenderer,
 										rendererOptions : {}, // options to
-																// pass to the
-																// renderer.
-																// LinearAxisRenderer
+										// pass to the
+										// renderer.
+										// LinearAxisRenderer
 										// has no options,
 										tickOptions : {
 											mark : 'outside', // Where to put
-																// the tick mark
-																// on the axis
+											// the tick mark
+											// on the axis
 											// 'outside', 'inside' or 'cross',
 											showMark : true,
 											showGridline : true, // wether to
-																	// draw a
-																	// gridline
-																	// (across
-																	// the whole
-																	// grid) at
-																	// this
-																	// tick,
+											// draw a
+											// gridline
+											// (across
+											// the whole
+											// grid) at
+											// this
+											// tick,
 											markSize : 4, // length the tick
-															// will extend
-															// beyond the grid
-															// in pixels. For
+											// will extend
+											// beyond the grid
+											// in pixels. For
 											// 'cross', length will be added
 											// above and below the grid
 											// boundary,
 											show : true, // wether to show
-															// the tick (mark
-															// and label),
+											// the tick (mark
+											// and label),
 											showLabel : true, // wether to
-																// show the text
-																// label at the
-																// tick,
+											// show the text
+											// label at the
+											// tick,
 											formatString : '', // format string
-																// to use with
-																// the axis tick
-																// formatter
+										// to use with
+										// the axis tick
+										// formatter
 										},
 										showTicks : true, // wether or not to
-															// show the tick
-															// labels,
+										// show the tick
+										// labels,
 										showTickMarks : true, // wether or not
-																// to show the
-																// tick marks
+									// to show the
+									// tick marks
 									},
 									yaxis : {
 										label : 'Harvested(kWh)',
@@ -1841,9 +1810,8 @@ var WSL = {
 			$.ajax({
 				url : 'js/templates/detailsSwitches.hb',
 				beforeSend : function(xhr) {
-					abortAjaxCalls = getWindowState(false);
-					if (abortAjaxCalls == true) {
-						ajaxAbort(xhr);
+					if (activeWindow() == false) {
+						ajaxAbort(xhr, '');
 					}
 				},
 				success : function(source) {
@@ -1866,9 +1834,8 @@ var WSL = {
 									.ajax({
 										url : 'js/templates/datePeriodFilter.hb',
 										beforeSend : function(xhr) {
-											abortAjaxCalls = getWindowState(false);
-											if (abortAjaxCalls == true) {
-												ajaxAbort(xhr);
+											if (activeWindow() == false) {
+												ajaxAbort(xhr, '');
 											}
 										},
 										success : function(source) {
@@ -2054,9 +2021,8 @@ var WSL = {
 					method : 'GET',
 					dataType : 'json',
 					beforeSend : function(xhr) {
-						abortAjaxCalls = getWindowState(false);
-						if (abortAjaxCalls == true) {
-							ajaxAbort(xhr);
+						if (activeWindow() == false) {
+							ajaxAbort(xhr, '');
 						}
 					},
 					success : function(result) {
@@ -2134,7 +2100,7 @@ var WSL = {
 									rendererOptions : {
 										seriesToggle : 'normal',
 										numberRows : 3,// seriesToggleReplot:
-														// {resetAxes:["yaxis"]}
+									// {resetAxes:["yaxis"]}
 									}
 								},
 								seriesDefaults : {
@@ -2286,8 +2252,8 @@ var WSL = {
 													if ($(this).is(':checked')) {
 														for ( var i = 0; i < handle.series.length; i++) {
 															handle.series[i].show = true; // i is
-																							// an
-																							// integer
+															// an
+															// integer
 														}
 														$('[type="checkbox"]')
 																.attr(
@@ -2296,8 +2262,8 @@ var WSL = {
 													} else {
 														for ( var i = 0; i < handle.series.length; i++) {
 															handle.series[i].show = false; // i is
-																							// an
-																							// integer
+															// an
+															// integer
 														}
 														$('[type="checkbox"]')
 																.attr(
@@ -2308,14 +2274,14 @@ var WSL = {
 													if ($(this).is(':checked')) {
 														for ( var i = 0; i < switches[this.id].length; i++) {
 															handle.series[switches[this.id][i]].show = true; // i is
-																												// an
-																												// integer
+															// an
+															// integer
 														}
 													} else {
 														for ( var i = 0; i < switches[this.id].length; i++) {
 															handle.series[switches[this.id][i]].show = false; // i is
-																												// an
-																												// integer
+															// an
+															// integer
 														}
 													}
 												}
@@ -2339,9 +2305,8 @@ var WSL = {
 			$.ajax({
 				url : 'js/templates/compareFilters.hb',
 				beforeSend : function(xhr) {
-					abortAjaxCalls = getWindowState(false);
-					if (abortAjaxCalls == true) {
-						ajaxAbort(xhr);
+					if (activeWindow() == false) {
+						ajaxAbort(xhr, '');
 					}
 				},
 				success : function(source) {
@@ -2468,16 +2433,10 @@ var WSL = {
 			}
 		};
 
-		$
-				.ajax({
-					url : "server.php?method=getCompareGraph&invtnum="
-							+ invtnum + '&whichMonth=' + whichMonth
-							+ '&whichYear=' + whichYear + '&compareMonth='
-							+ compareMonth + '&compareYear=' + compareYear,
+		$.ajax({url : "server.php?method=getCompareGraph&invtnum="+ invtnum + '&whichMonth=' + whichMonth+ '&whichYear=' + whichYear + '&compareMonth='+ compareMonth + '&compareYear=' + compareYear,
 					beforeSend : function(xhr) {
-						abortAjaxCalls = getWindowState(false);
-						if (abortAjaxCalls == true) {
-							ajaxAbort(xhr);
+						if (activeWindow() == false) {
+							ajaxAbort(xhr, '');
 						}
 					},
 					method : 'GET',
@@ -2490,8 +2449,7 @@ var WSL = {
 							var whichTable = [];
 							for (line in result.dayData.data.compare) {
 								var object = result.dayData.data.compare[line];
-								dataDay1
-										.push([ object[0], object[2], object[3] ]);
+								dataDay1.push([ object[0], object[2], object[3] ]);
 								var item = {
 									"timestamp" : object[0],
 									"har" : object[2],
@@ -2503,8 +2461,7 @@ var WSL = {
 							}
 							for (line in result.dayData.data.which) {
 								var object = result.dayData.data.which[line];
-								dataDay2
-										.push([ object[0], object[2], object[3] ]);
+								dataDay2.push([ object[0], object[2], object[3] ]);
 								var item = {
 									"timestamp" : object[0],
 									"har" : object[2],
@@ -2514,46 +2471,30 @@ var WSL = {
 								};
 								whichTable.push([ item ]);
 							}
-							$("#content").append(
-									'<div id="compareGraph"></div>');
-							$('#content').append(
-									'<div id="compareFigures"></div>');
+							$("#content").append('<div id="compareGraph"></div>');
+							$('#content').append('<div id="compareFigures"></div>');
 							$("#compareGraph").height(350);
 							$("#compareGraph").width(830);
 
-							graphOptions.axes.x2axis.label = $(
-									"#whichMonth option:selected").text()
-									+ ' '
-									+ $("#whichYear option:selected").text();
-							graphOptions.axes.xaxis.label = $(
-									"#compareMonth option:selected").text()
-									+ ' '
-									+ $("#compareYear option:selected").text();
+							graphOptions.axes.x2axis.label = $("#whichMonth option:selected").text()+ ' '+ $("#whichYear option:selected").text();
+							graphOptions.axes.xaxis.label = $("#compareMonth option:selected").text()+ ' '+ $("#compareYear option:selected").text();
 
-							graphOptions.series[0].label = $(
-									"#whichMonth option:selected").text()
-									+ ' '
-									+ $("#whichYear option:selected").text();
-							graphOptions.series[1].label = $(
-									"#compareMonth option:selected").text()
-									+ ' '
-									+ $("#compareYear option:selected").text();
+							graphOptions.series[0].label = $("#whichMonth option:selected").text()+ ' '+ $("#whichYear option:selected").text();
+							graphOptions.series[1].label = $("#compareMonth option:selected").text()+ ' '+ $("#compareYear option:selected").text();
 
 							graphOptions.axes.x2axis.min = result.dayData.data.which[0][0];
 							graphOptions.axes.xaxis.min = result.dayData.data.compare[0][0];
 
 							graphOptions.axes.yaxis.min = 0;
 
-							handle = $.jqplot("compareGraph", [ dataDay2,
-									dataDay1 ], graphOptions);
+							handle = $.jqplot("compareGraph", [ dataDay2,dataDay1 ], graphOptions);
 							handle.replot();
 
 							$.ajax({
 								url : 'js/templates/compareFigures.hb',
 								beforeSend : function(xhr) {
-									abortAjaxCalls = getWindowState(false);
-									if (abortAjaxCalls == true) {
-										ajaxAbort(xhr);
+									if (activeWindow() == false) {
+										ajaxAbort(xhr, '');
 									}
 								},
 								success : function(source) {
@@ -2574,132 +2515,122 @@ var WSL = {
 				});
 	}
 };
-// api class
-WSL.api.getHistoryValues = function(success) {
-	$.getJSON("server.php", {
-		method : 'getHistoryValues',
-	}, success);
-};
 
-WSL.api.getTabs = function(page, success) {
-	$.getJSON("server.php", {
-		method : 'getTabs',
-		'page' : page,
-	}, success);
-};
-
-WSL.api.getCompare = function(success) {
-	$.getJSON("server.php", {
-		method : 'getCompareGraph'
-	}, success);
-};
-
-WSL.api.getCompareFilters = function(succes) {
-	$.getJSON("server.php", {
-		method : 'getCompareFilters'
-	}, success);
-}
-
-WSL.api.getPageIndexTotalValues = function(success) {
-	$.getJSON("server.php", {
-		method : 'getPageIndexTotalValues',
+/**
+ * 
+ * @param url = $.ajax request URL
+ * @param dataType = $.ajax dataType (default: Intelligent Guess (xml, json, script, or html))
+ * @param success = Success function
+ * @param runOnBlur = should this request run on Blur?
+ */
+function wslGetJSON(url,dataType,success,runOnBlur){
+	$.ajax({
+		url: url, 
+		dataType : dataType,
 		beforeSend : function(xhr) {
-			abortAjaxCalls = getWindowState(false);
-			if (abortAjaxCalls == true) {
+			if (activeWindow() == runOnBlur) {
 				ajaxAbort(xhr);
 			}
 		},
-	}, success);
+		success : function(data){
+			success(data);
+		}
+	});
+}
+
+
+// api class
+WSL.api.getHistoryValues = function(success) {
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getHistoryValues','json',success,false);
+};
+
+WSL.api.getTabs = function(page, success) {
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getTabs&page='+page,'json',success,false);
+};
+
+WSL.api.getCompare = function(success) {
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getCompareGraph','json',success,false);
+};
+
+WSL.api.getCompareFilters = function(succes) {
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getCompareFilters','json',success,false);
+}
+
+WSL.api.getPageIndexTotalValues = function(success) {
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getPageIndexTotalValues','json',success,false);
 };
 
 WSL.api.init_PageLiveValues = function(success) {
-	$.getJSON("server.php", {
-		method : 'getPageLiveValues',
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getPageLiveValues','json',success,false);
 };
 
 WSL.api.getPageIndexValues = function(success) {
-	$.getJSON("server.php", {
-		method : 'getPageIndexValues',
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getPageIndexValues','json',success,false);
 };
 
-
-
 WSL.api.getPageIndexBlurLiveValues = function(success) {
-	$.getJSON("server.php", {
-		method : 'getPageIndexBlurLiveValues',
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getPageIndexBlurLiveValues','json',success,false);
 };
 
 WSL.api.getPageIndexLiveValues = function(success) {
-	$.getJSON("server.php", {
-		method : 'getPageIndexLiveValues',
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getPageIndexLiveValues','json',success,false);
 };
 
 WSL.api.getPageTodayValues = function(success) {
-	$.getJSON("server.php", {
-		method : 'getPageTodayValues',
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getPageTodayValues','json',success,false);
 };
 
 WSL.api.getPageMonthValues = function(date, success) {
-
-	$.getJSON("server.php", {
-		method : 'getPageMonthValues',
-		'date' : date,
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getPageMonthValues&date='+date,'json',success,false);
 };
 
 WSL.api.getPageYearValues = function(date, success) {
-	$.getJSON("server.php", {
-		method : 'getPageYearValues',
-		'date' : date,
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getPageYearValues&date='+date,'json',success,false);
 };
 
 WSL.api.getMisc = function(invtnum, success) {
-	$.getJSON("server.php", {
-		method : 'getMisc',
-		'invtnum' : invtnum,
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getMisc&invtnum='+invtnum,'json',success,false);
 };
 
 WSL.api.getInvInfo = function(success) {
-	$.getJSON("server.php", {
-		method : 'getInvInfo'
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getInvInfo&invtnum='+invtnum,'json',success,false);
 };
 
 WSL.api.getInverters = function(success) {
-	$.getJSON("server.php", {
-		method : 'getInverters'
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getInverters','json',success,false);
 };
 
 WSL.api.getLiveData = function(invtnum, success) {
-	$.getJSON("server.php", {
-		method : 'getLiveData',
-		'invtnum' : invtnum,
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getLiveData&invtnum='+invtnum,'json',success,false);
 };
 
 WSL.api.getPlantInfo = function(invtnum, success) {
-	$.getJSON("server.php", {
-		method : 'getPlantInfo',
-		'invtnum' : invtnum,
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getPlantInfo&invtnum='+invtnum,'json',success,false);
 };
 
 WSL.api.getLanguages = function(success) {
-	$.getJSON("server.php", {
-		method : 'getLanguages'
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getLanguages','json',success,false);
 };
 
 WSL.api.getMenu = function(success) {
-	$.getJSON("server.php", {
-		method : 'getMenu'
-	}, success);
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('server.php?method=getMenu','json',success,false);
 };
