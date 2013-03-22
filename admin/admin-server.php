@@ -14,8 +14,6 @@ $settingstype = Common::getValue("s", null);
 // Security check
 if (!Session::isLogin() && $settingstype != 'login' && $settingstype != 'isLogin') {
 	exit("not allowed");
-}else{
-	$pass = $adapter->checkDefaultPassword();
 }
 
 $data = array();
@@ -527,6 +525,11 @@ switch ($settingstype) {
 		$data['test'] = checkSQLite();
 		break;
 }
+
+if(Session::isLogin()){
+	$pass = $adapter->checkDefaultPassword();
+}
+
 if($pass){
 	$data['pass']=$pass;	
 }
