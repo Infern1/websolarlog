@@ -85,8 +85,22 @@ ExportDayDataToCSV()
 startTime = 51308A30 -> 01/03/2013 12:00:00
 ExportMonthDataToCSV()
 Done.";
+            
         } else {
-            return trim($this->execute('-v'));
+			 /*
+			 SMAspot [-scan] [-d#] [-v#] [-ad#] [-am#] [-cfgX.Y] [-u]
+			 -scan   Scan for bluetooth enabled SMA inverters.
+			 -d#     Set debug level: 0-5 (0=none, default=2)
+			 -v#     Set verbose output level: 0-5 (0=none, default=2)
+			 -ad#    Set #days for archived daydata: 0-90
+			         0=disabled, 1=today (default), ...
+			 -am#    Set #months for archived monthdata: 0-60
+			         0=disabled, 1=current month (default), ...
+			 -cfgX.Y Set alternative config file to X.Y (multiple inverters)
+			 -u      Upload to online monitoring system (see config file)
+			 -finq   Force Inquiry (Inquire inverter also during the night) 
+			  */
+			  return trim($this->execute('-v -finq'));
         }
     }
     
