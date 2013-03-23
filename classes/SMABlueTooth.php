@@ -10,7 +10,7 @@ Class SMABlueTooth implements DeviceApi {
         $this->ADR = $address;
         $this->PORT = $port;
         $this->COMOPTION = $comoption;
-        $this->DEBUG = true;
+        $this->DEBUG = $debug;
         $this->PATH = $path;
     }
     
