@@ -445,9 +445,9 @@ var WSL = {
 		// initialize languages selector on the given div
 		ajaxStart();
 
-		if (activeWindow() == false) {
+		if (activeWindow() == true) {
 			WSL.api.getPageIndexBlurLiveValues(function(data) {
-				document.title = '!(' + data.sumInverters.GP
+				document.title = '(' + data.sumInverters.GP
 						+ ' W) WebSolarLog';
 			});
 		} else {
