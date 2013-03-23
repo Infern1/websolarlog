@@ -62,7 +62,7 @@ Energy Production:
         Operation Time: 293.55h
         Feed-In Time  : 255.86h
 DC Spot Data:
-        String 1 Pdc: 102.237kW - Udc:  27.84V - Idc:121.891A
+        String 1 Pdc:   0.421kW - Udc: 291.20V - Idc:  1.450A
         String 2 Pdc:   0.000kW - Udc:   0.00V - Idc:  0.000A
 AC Spot Data:
         Phase 1 Pac :   0.217kW - Uac: 233.79V - Iac:  0.929A

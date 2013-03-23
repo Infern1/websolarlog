@@ -15,82 +15,72 @@ class SMABlueToothConverter
         }
 
         // Split on a serie of spaces (not one)
-        $data = preg_split("/\n/",$inputLine);
-		var_dump($data);
+        $dataSplit = preg_split("/\n/",$inputLine);
+
+		foreach ($dataSplit as $value) {
+			// remove the connection tries from the array
+			if(substr($value,0,10) != 'Connecting'){
+		    	$data[] = $value;
+			}
+		}
+
         // Check if the record is okay
         if (trim($data[count($data)-1]) != "Done.") {
             return null;
         }
-
         $live = new Live();
         $live->type = 'production';
-        if (!empty ($data[14])) {
-        	$live->time = trim(substr($data[14],14,22));
+        if (!empty ($data[13])) {
+        	$live->time = trim(substr($data[13],14,22));
         }
-        if (!empty ($data[22])) {
-        	$live->status = trim(substr($data[22],20,2));
+        if (!empty ($data[21])) {
+        	$live->status = trim(substr($data[21],20,2));
+        }
+        if (!empty ($data[23])) {
+        	$live->KWHDay = trim(substr($data[23],8,6));
         }
         if (!empty ($data[24])) {
-        	$live->KWHDay = trim(substr($data[24],15,6));
+            $live->KWHT = trim(substr($data[24],8,8));
         }
-        if (!empty ($data[25])) {
-            $live->KWHT = trim(substr($data[25],15,8));
+        
+        if (!empty ($data[28])) {
+            $live->I1V = trim(substr($data[28],47,6));
+        }
+        if (!empty ($data[28])) {
+            $live->I1A = trim(substr($data[28],31,7));
+        }
+        if (!empty ($data[28])) {
+            $live->I1P = trim(substr($data[28],16,6))*1000;
         }
         
         if (!empty ($data[29])) {
-            $live->I1V = trim(substr($data[29],22,7));
+            $live->I2V = trim(substr($data[29],47,6));
         }
         if (!empty ($data[29])) {
-            $live->I1A = trim(substr($data[29],38,7));
+            $live->I2A = trim(substr($data[29],31,7));
         }
         if (!empty ($data[29])) {
-            $live->I1P = trim(substr($data[29],53,7));
+            $live->I2P = trim(substr($data[29],16,6))*1000;
         }
         
-        if (!empty ($data[30])) {
-            $live->I2V = trim(substr($data[30],22,7));
+        if (!empty ($data[31])) {
+            $live->GV = trim(substr($data[31],32,6));
         }
-        if (!empty ($data[30])) {
-            $live->I2A = trim(substr($data[30],38,7));
-        }
-        if (!empty ($data[30])) {
-            $live->I2P = trim(substr($data[30],53,7));
+        if (!empty ($data[31])) {
+            $live->GA = trim(substr($data[31],46,7));
         }
         
-        if (!empty ($data[32])) {
-            $live->GV = trim(substr($data[32],22,7));
+        if (!empty ($data[31])) {
+            $live->GP = trim(substr($data[31],16,6))*1000;
         }
-        if (!empty ($data[32])) {
-            $live->GA = trim(substr($data[32],38,7));
+
+		if($live->GP > 0 AND $live->I1P > 0){
+        	// We can calculate the Efficienty DC>AC in %
+			$live->EFF = ($live->GP/$live->I1P)*100;
         }
-        
-        if (!empty ($data[32])) {
-            $live->GP = trim(substr($data[32],53,7));
-        }
-        /* Not supported by WSL
-        if (!empty ($data[33])) {
-        	$live->GV = trim(substr($data[33],22,7));
-        }
-        if (!empty ($data[33])) {
-        	$live->GA = trim(substr($data[33],38,7));
-        }
-        if (!empty ($data[33])) {
-        	$live->GP = trim(substr($data[33],53,7));
-        }
-        */
-        /* Not supported by WSL
-        if (!empty ($data[34])) {
-        	$live->GV = trim(substr($data[34],22,7));
-        }
-        if (!empty ($data[34])) {
-        	$live->GA = trim(substr($data[34],38,7));
-        }
-        if (!empty ($data[34])) {
-        	$live->GP = trim(substr($data[34],53,7));
-        }
-        */
-        if (!empty ($data[36])) {
-            $live->FRQ = trim(substr($data[36],12,6));
+
+        if (!empty ($data[35])) {
+            $live->FRQ = trim(substr($data[35],12,6));
         }
         
 		/* Not available
@@ -101,7 +91,7 @@ class SMABlueToothConverter
             $live->BOOT = $data[13];
         }*/
 
-        
+        //var_dump($live);
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->GP)) {
         	return null;
