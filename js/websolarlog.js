@@ -445,7 +445,7 @@ var WSL = {
 		// initialize languages selector on the given div
 		ajaxStart();
 
-		if (activeWindow() == true) {
+		if (activeWindow() == false) {
 			WSL.api.getPageIndexBlurLiveValues(function(data) {
 				document.title = '(' + data.sumInverters.GP
 						+ ' W) WebSolarLog';
