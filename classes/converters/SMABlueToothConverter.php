@@ -44,20 +44,20 @@ class SMABlueToothConverter
         }
         
         if (!empty ($data[28])) {
-            $live->I1V = trim(substr($data[28],47,6));
+            $live->I1V = trim(substr($data[28],31,7));
         }
         if (!empty ($data[28])) {
-            $live->I1A = trim(substr($data[28],31,7));
+            $live->I1A = trim(substr($data[28],47,6));
         }
         if (!empty ($data[28])) {
             $live->I1P = trim(substr($data[28],16,6))*1000;
         }
         
         if (!empty ($data[29])) {
-            $live->I2V = trim(substr($data[29],47,6));
+            $live->I2V = trim(substr($data[29],31,7));
         }
         if (!empty ($data[29])) {
-            $live->I2A = trim(substr($data[29],31,7));
+            $live->I2A = trim(substr($data[29],47,6));
         }
         if (!empty ($data[29])) {
             $live->I2P = trim(substr($data[29],16,6))*1000;
