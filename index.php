@@ -16,7 +16,7 @@ require_once("template/" . $template . "/index.php");
     		}
 		),			
 		window.setInterval(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");}, 2500); // every 5 seconds
-		window.setInterval(function(){WSL.init_PageIndexTotalValues("#sidebar");}, 6000); // every 5 seconds		
+		window.setInterval(function(){WSL.init_PageIndexTotalValues("#sidebar");}, 60000); // every 5 seconds		
 	});
 	analyticsJSCodeBlock();
 	</script>
