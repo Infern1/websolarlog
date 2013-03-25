@@ -1,29 +1,41 @@
 $.ajaxSetup({
 	complete: function(xhr) {
-			//see if we have a JSON and parse it.
-			try {
-				var pass = $.parseJSON(xhr.responseText).pass;
-				// if pass == false (we check if there a default password)
-				if(pass==true){
-					if(typeof $('.ui-pnotify-title').html()== "undefined"){
-						$.pnotify.defaults.delay = 20000;
-						$.pnotify({
-			   	 	        title: 'Security Warning!',
-			   	 	        text: 'We detected the Default Password.<br>This is a big security issue. We advice you to change it into a strong password.',
-			   	 	        nonblock: true,
-			   	 	        hide: true,
-			   	 	        closer: true,
-			   	 	        sticker: false,
-			   	 	        type:'error'
-			   	 	        	
-			   	 	    });
-						update_timer_display();
+		//see if we have a JSON and parse it.
+		try {
+			// catch the "pass" from the json
+			var pass = $.parseJSON(xhr.responseText).pass;
+			// set the title for pnotify
+			var title = 'Security Warning!';
+			// if pass == false (we check if there a default password)
+			var passSecShown = false;
+			//if we have a "pass"
+			if(pass==true){
+				//loop through all pnotify's to see if we already have a "pass" pnotify
+				$('.ui-pnotify-title').each(function(index){
+					// if we have one...
+					if(($(this).text()==title) && (passSecShown == false)){
+						passSecShown = true;
 					}
+				});
+				// if we have no pnotify with the title
+				if(passSecShown == false){
+					$.pnotify({
+		   	 	        title: title,
+		   	 	        text: 'We detected the Default Password.<br>This is a big security issue. We advice you to change it into a strong password.',
+		   	 	        nonblock: true,
+		   	 	        hide: true,
+		   	 	        closer: true,
+		   	 	        sticker: false,
+		   	 	        type:'error'
+		   	 	    });
+					// set the pnotify to 20 sec.
+					$.pnotify.defaults.delay = 20000;
+					update_timer_display();
 				}
-			}catch (e) {
-			    // not json
-			}		
-		
+			}
+		}catch (e) {
+		    // not json
+		}		
 	}
 });
 

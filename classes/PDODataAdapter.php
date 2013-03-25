@@ -420,9 +420,9 @@ class PDODataAdapter {
 	 */
 	public function readDailyData($date, $invtnum) {
 		$bean =  R::findAndExport(
-				 'history',
-				 ' INV = :INV AND SDTE like :date ',
-				 array(':INV'=>$invtnum,':date'=> '%'.$date.'%')
+				'history',
+				' INV = :INV AND SDTE like :date ',
+				array(':INV'=>$invtnum,':date'=> '%'.$date.'%')
 		);
 
 		$points = $this->DayBeansToDataArray($bean);
@@ -537,7 +537,7 @@ class PDODataAdapter {
 
 
 	/**
-	 * 
+	 *
 	 * @return number
 	 */
 	function readPlantPower(){
@@ -636,6 +636,7 @@ class PDODataAdapter {
 			$config->url = ($bean->url != "") ? $bean->url : $config->url;;
 			$config->location = $bean->location;
 			$config->latitude = $bean->latitude;
+			$config->gaugeMaxType = $bean->gaugeMaxType;
 			$config->longitude = $bean->longitude;
 			$config->timezone = $bean->timezone;
 			$config->debugmode = ($bean->debugmode != "") ? $bean->debugmode : $config->debugmode;;
@@ -671,7 +672,7 @@ class PDODataAdapter {
 			$config->piwikSiteId = $bean->piwikSiteId;
 
 			$config->adminpasswd = ($bean->adminpasswd != "") ? $bean->adminpasswd : $config->adminpasswd;
-				
+
 			$config->pauseWorker = ($bean->pauseWorker != "") ? $bean->pauseWorker : $config->pauseWorker;
 			$config->restartWorker = ($bean->restartWorker != "") ? $bean->restartWorker : $config->restartWorker;
 		}
@@ -1709,8 +1710,8 @@ class PDODataAdapter {
 					$bean['displayKWH'],
 					$bean['harvested']
 			);
-				
-				
+
+
 		}
 		//number_format($cumPower,2,'.',''),
 		// if no data was found, create 1 dummy point for the graph to render
@@ -1879,7 +1880,7 @@ class PDODataAdapter {
 		// summary live data
 		$list = array();
 		$list['summary'] = $this->readCache(1,"index","periodFigures",0,"");
-	
+
 		return $list;
 	}
 	/**
@@ -1889,9 +1890,9 @@ class PDODataAdapter {
 	 * @param string $module
 	 * @return unknown|Ambigous <multitype:, unknown>
 	 */
-	
+
 	//(1,"index","live",$inverter->id,"trend");
-	
+
 	public function readCache($group="",$page="",$module="",$inverterId=0,$key=""){
 		$where = array();
 		//
@@ -1908,7 +1909,7 @@ class PDODataAdapter {
 		}
 		//check if we need to add a 'AND'
 		($where[count($where)-1]!='' AND $where[count($where)-1]!=' AND ')? $where[] = ' AND ' : $where = $where;
-		
+
 		//
 		//    $page
 		//
@@ -1929,8 +1930,8 @@ class PDODataAdapter {
 		}
 		//check if we need to add a 'AND'
 		($where[count($where)-1]!='' AND $where[count($where)-1]!=' AND ')? $where[] = ' AND ' : $where = $where;
-		
-		
+
+
 		//
 		//    $inverterId
 		//
@@ -1938,7 +1939,7 @@ class PDODataAdapter {
 		if ($inverterId != ""){
 			$where[] = " key like '". $key."-%' ";
 		}
-		
+
 		//when we end with a " AND ", we pop it of.
 		(end($where)==" AND ")?  array_pop($where) : $where = $where;
 
@@ -1947,10 +1948,10 @@ class PDODataAdapter {
 		foreach ($where as $value) {
 			$whereString = $whereString." ".$value;
 		}
-		
+
 		//make the query
 		$query = "SELECT key,value,page,module FROM 'cache' WHERE ".$whereString." ORDER BY key ASC";
-		
+
 		//run the query
 		$cached =  R::getAll($query);
 
@@ -1970,9 +1971,9 @@ class PDODataAdapter {
 			return $cached;
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 *
 	 */
@@ -2024,7 +2025,7 @@ class PDODataAdapter {
 					}else{
 						$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
 					}
-						
+
 					$GP  += $liveBean['GP'];
 					$I1P += $liveBean['I1P'];
 					$I2P += $liveBean['I2P'];
@@ -2039,12 +2040,12 @@ class PDODataAdapter {
 					$live->GP = ($liveBean['GP']<1000) ? number_format($liveBean['GP'],1,'.','') : number_format($liveBean['GP'],0,'','');
 					$live->GA = ($liveBean['GA']<1000) ? number_format($liveBean['GA'],1,'.','') : number_format($liveBean['GA'],0,'','');
 					$live->GV = ($liveBean['GV']<1000) ? number_format($liveBean['GV'],1,'.','') : number_format($liveBean['GV'],0,'','');
-						
+
 					$live->I1P = ($liveBean['I1P']<1000) ? number_format($liveBean['I1P'],1,'.','') : number_format($liveBean['I1P'],0,'','');
 					$live->I1A = ($liveBean['I1A']<1000) ? number_format($liveBean['I1A'],1,'.','') : number_format($liveBean['I1A'],0,'','');
 					$live->I1V = ($liveBean['I1V']<1000) ? number_format($liveBean['I1V'],1,'.','') : number_format($liveBean['I1V'],0,'','');
 					$live->I1Ratio = ($liveBean['I1Ratio']<1000) ? number_format($liveBean['I1Ratio'],1,'.','') : number_format($liveBean['I1Ratio'],0,'','');
-						
+
 					$live->I2P = ($liveBean['I2P']<1000) ? number_format($liveBean['I2P'],1,'.','') : number_format($liveBean['I2P'],0,'','');
 					$live->I2A = ($liveBean['I2A']<1000) ? number_format($liveBean['I2A'],1,'.','') : number_format($liveBean['I2A'],0,'','');
 					$live->I2V = ($liveBean['I2V']<1000) ? number_format($liveBean['I2V'],1,'.','') : number_format($liveBean['I2V'],0,'','');
@@ -2052,7 +2053,7 @@ class PDODataAdapter {
 					$live->IP = ($liveBean['IP']<1000) ? number_format($liveBean['IP'],1,'.','') : number_format($liveBean['IP'],0,'','');
 					$live->EFF = ($liveBean['EFF']<1000) ? number_format($liveBean['EFF'],1,'.','') : number_format($liveBean['EFF'],0,'','');
 					//var_dump($this->readCache("","index","live",$inverter->id,"trend"));
-					
+						
 					$avgPower = $this->readCache("","index","live",$inverter->id,"trend");
 					$live->trend = $avgPower[0]['value'];
 					$live->avgPower = $avgPower['avgPower'];
@@ -2101,7 +2102,7 @@ class PDODataAdapter {
 		if($type == "today" || $type == "day" || $type == "all"){
 			$totalEnergyBeansToday = $this->readTablesPeriodValues(0, "energy", "today", date("d-m-Y"));
 			$maxPowerBeansToday = $this->readTablesPeriodValues(0, "pMaxOTD", "today", date("d-m-Y"));
-				
+
 			if (count ( $maxPowerBeansToday )==0 ){
 				$avgEnergyBeansToday= number_format(0,3,',','');
 				$totalEnergyBeansToday[]['KWH']=0;
@@ -2115,7 +2116,7 @@ class PDODataAdapter {
 				}
 
 			}
-				
+
 			if(count ( $maxPowerBeansToday )==0 ){
 				$maxPowerBeansToday[]['GP']="0";
 			}
@@ -2210,8 +2211,8 @@ class PDODataAdapter {
 			}else{
 				$totalEnergyBeansOverallKWHKWP= number_format('0',2,',','');
 			}
-				
-				
+
+
 		}
 
 
@@ -2225,9 +2226,9 @@ class PDODataAdapter {
 		}else{
 			$totalEnergyOverallTotalKWHKWP =  number_format('0',2,',','');
 		}
-		
+
 		$energy = array(
-				"todayMaxPower"=>$maxPowerBeansToday[0]['GP'],				
+				"todayMaxPower"=>$maxPowerBeansToday[0]['GP'],
 				"todayMaxPowerTime"=>$maxPowerBeansToday[0]['date'],
 				"todayDays"=>1,
 				"todayAvgKwh"=>$avgEnergyBeansToday,
@@ -2253,18 +2254,18 @@ class PDODataAdapter {
 				"yearSumKwh"=>$totalEnergyBeansYear[0]['sumkWh'],
 				"yearAvgKwh"=>$avgEnergyBeansYear,
 				"yearKwhKwp"=>$totalEnergyBeansYearKWHKWP,
-				
+
 				"overallMaxPower"=>$totalEnergyBeansOverall[0]['kWh'],
 				"overallMaxPowerTime"=>$totalEnergyBeansOverall[0]['date'],
 				"overallDays"=>$totalEnergyBeansOverall[0]['countkWh'],
 				"overallSumKwh"=>$totalEnergyBeansOverall[0]['sumkWh'],
 				"overallAvgKwh"=>$avgEnergyBeansOverall,
 				"overallKwhKwp"=>$totalEnergyBeansOverallKWHKWP,
-								 
+					
 				"totalMaxPower"=>$totalEnergyOverallTotal,
 				"totalMaxPowerTime"=>"0",
 				"totalKwhKwp"=>$totalEnergyOverallTotalKWHKWP,
-							   
+
 				"initialKwh" => $initialkwh,
 		);
 		return $energy;
@@ -2458,10 +2459,10 @@ class PDODataAdapter {
 				$average['recent'] = $this->readPlantPower();
 				break;
 			case 'average':
-	
+
 				$recentBegin = time()-400;
 				$recentEnd = time();
-	
+
 				$pastBegin = time()-800;
 				$pastEnd = time()-400;
 				if ($deviceNum > 0){
@@ -2470,13 +2471,13 @@ class PDODataAdapter {
 					$queryWhere = "";
 				}
 				$query = "SELECT  avg(GP) AS avgGP FROM 'history' WHERE ".$queryWhere." time > :begin AND  time < :end ORDER BY time DESC";
-	
+
 				$avgRecent =  R::getAll($query,array(':begin'=>$recentBegin,':end'=>$recentEnd));
 				$avgPast   =  R::getAll($query,array(':begin'=>$pastBegin,':end'=>$pastEnd));
-	
+
 				$average['recent'] = $avgRecent[0]['avgGP'];
 				$average['past'] = $avgPast[0]['avgGP'];
-	
+
 				if($average['recent']>$average['past']){
 					$average['trend'] = _("up");
 				}elseif($average['recent']<$average['past']){
@@ -2484,15 +2485,15 @@ class PDODataAdapter {
 				}else{
 					$average['trend'] = _("equal");
 				}
-	
+
 				break;
 			default:
 				break;
 		}
 		return $average;
 	}
-	
-	
+
+
 
 	/**
 	 *
@@ -2504,8 +2505,8 @@ class PDODataAdapter {
 		$average = $this->readCache(1,"index","live",$deviceNum,"");
 		return $average;
 	}
-	
-	
+
+
 	public function saveCache(Cache $cache){
 		$bean = R::findone('cache',' key = :key ', array( ":key"=> $cache->key));
 		if (!$bean){
@@ -2518,7 +2519,7 @@ class PDODataAdapter {
 		$bean->timestamp = $cache->timestamp;
 		$id = R::store($bean);
 	}
-	
+
 	public function checkDefaultPassword(){
 		$bean = R::findAndExport('config');
 		//below is the default SHA1() hash for "admin"
@@ -2530,7 +2531,7 @@ class PDODataAdapter {
 			//We do NOT have a default password
 			return false;
 		}
-	} 
-	
-	
+	}
+
+
 }
