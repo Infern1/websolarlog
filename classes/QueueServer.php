@@ -38,11 +38,11 @@ class QueueServer {
 				if ($nextItem != null) {
 					$this->process($nextItem);
 					if ($itemsAtOnceCounter > $maxQueueItemsAtOnce - 1) {
-						sleep(1); // Sleep for a second
+						sleep(2); // Sleep for two second
 						$itemsAtOnceCounter = 0;
 					}
 				} else {
-					sleep(1); // Sleep for a second
+					sleep(2); // Sleep for two second
 					$itemsAtOnceCounter = 0;
 				}
 				$itemsAtOnceCounter++;
