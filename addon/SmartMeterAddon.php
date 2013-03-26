@@ -23,10 +23,10 @@ class SmartMeterAddon {
 		$live = $args[2];
 		$timestamp = $args[3];
 		//var_dump($live);
-		$this->addSmartMeterHistory($inverter->id, $live,$timestamp);
-		
+		$this->addSmartMeterHistory($inverter->id, $live, $timestamp);
+
 		HookHandler::getInstance()->fire("newHistory", $inverter, $timestamp);
-		
+
 		// We are live, but db things offline
 		if ($inverter->state == 0) {
 			$this->adapter->changeInverterStatus($inverter, 1);
@@ -37,12 +37,12 @@ class SmartMeterAddon {
 			unset($_SESSION[$sessionKey]);
 		}
 	}
-	
+
 	public function onSmartMeterEnergy($args) {
 		$inverter = $args[1];
-	
+
 		$arHistory = $this->readSmartMeterHistory($inverter->id, null);
-		
+
 		// Initialize the variables we dont want errors in the logs
 		$gasUsage = 0;
 		$highReturn = 0;
@@ -54,59 +54,49 @@ class SmartMeterAddon {
 		$lowReturnEnd = 0;
 		$highUsageEnd = 0;
 		$lowUsageEnd = 0;
-	
+
 		if(count($arHistory)>1){
 			$first = reset($arHistory);
 			$last = end($arHistory);
-	
-	
+
 			$gasUsageStart = $first['gasUsage'];
 			$gasUsageEnd = $last['gasUsage'];
-				
 			$highReturnStart = $first['highReturn'];
 			$highReturnEnd = $last['highReturn'];
-				
 			$lowReturnStart = $first['lowReturn'];
 			$lowReturnEnd = $last['lowReturn'];
-				
 			$highUsageStart = $first['highUsage'];
 			$highUsageEnd = $last['highUsage'];
-				
 			$lowUsageStart = $first['lowUsage'];
 			$lowUsageEnd = $last['lowUsage'];
-	
-			// Check if we passed 100.000kWh
-			//if ($productionEnd < $productionStart) {
-			//	$productionEnd += 100000;
-				//}
-				$gasUsage = $gasUsageEnd - $gasUsageStart;
-				$highReturn = $highReturnEnd - $highReturnStart;
-				$lowReturn = $lowReturnEnd - $lowReturnStart;
-				$highUsage = $highUsageEnd - $highUsageStart;
-				$lowUsage = $lowUsageEnd - $lowUsageStart;
-			}	
-	
-			// Set the new values and save it
-			$energy = new EnergySmartMeter();
-			$energy->time = $args[2];
-			$energy->INV = $inverter->id;
-			$energy->gasUsage = $gasUsage;
-			$energy->highReturn = $highReturn;
-			$energy->lowReturn = $lowReturn;
-			$energy->highUsage = $highUsage;
-			$energy->lowUsage = $lowUsage;
-	
-			$energy->gasUsageT = $gasUsageEnd;
-			$energy->highReturnT = $highReturnEnd;
-			$energy->lowReturnT = $lowReturnEnd;
-			$energy->highUsageT = $highUsageEnd;
-			$energy->lowUsageT = $lowUsageEnd;
-			$energy->co2 = Formulas::CO2gas($gasUsage, $this->config->co2kwh); // Calculate co2
-			$this->addSmartMeterEnergy($inverter->id, $energy);
-	
-			HookHandler::getInstance()->fire("newSmartMeterEnergy", $inverter, $energy);
+
+			$gasUsage = $gasUsageEnd - $gasUsageStart;
+			$highReturn = $highReturnEnd - $highReturnStart;
+			$lowReturn = $lowReturnEnd - $lowReturnStart;
+			$highUsage = $highUsageEnd - $highUsageStart;
+			$lowUsage = $lowUsageEnd - $lowUsageStart;
 		}
-	
+
+		// Set the new values and save it
+		$energy = new EnergySmartMeter();
+		$energy->time = $args[2];
+		$energy->INV = $inverter->id;
+		$energy->gasUsage = $gasUsage;
+		$energy->highReturn = $highReturn;
+		$energy->lowReturn = $lowReturn;
+		$energy->highUsage = $highUsage;
+		$energy->lowUsage = $lowUsage;
+		$energy->gasUsageT = $gasUsageEnd;
+		$energy->highReturnT = $highReturnEnd;
+		$energy->lowReturnT = $lowReturnEnd;
+		$energy->highUsageT = $highUsageEnd;
+		$energy->lowUsageT = $lowUsageEnd;
+		$energy->co2 = Formulas::CO2gas($gasUsage, $this->config->co2kwh); // Calculate co2
+		$this->addSmartMeterEnergy($inverter->id, $energy);
+
+		HookHandler::getInstance()->fire("newSmartMeterEnergy", $inverter, $energy);
+	}
+
 
 	/**
 	 * Handle hook onLiveSmartMeterData
@@ -116,26 +106,16 @@ class SmartMeterAddon {
 		//echo "\r\nonLiveSmartMeterData\r\n";
 		$inverter = $args[1];
 		$live = $args[2];
-	
+
 		if ($inverter == null) {
 			HookHandler::getInstance()->fire("onError", "CoreAddon::onLiveSmartMeterData() inverter == null");
 			return;
 		}
-	
+
 		// Save the live information
-		//echo "\r\n".$inverter->id."\r\n";
 		$this->writeLiveSmartMeterInfo($inverter->id, $live);
 		HookHandler::getInstance()->fire("newLiveData", $inverter, $live);
-	
-		// Check the Max value
-		//$this->checkMaxPowerValue($inverter, $live);
 	}
-
-
-
-
-
-
 
 	/**
 	 * add the live info to the history
@@ -145,7 +125,7 @@ class SmartMeterAddon {
 	 */
 	public function addSmartMeterHistory($invtnum, LiveSmartMeter $live,$timestamp) {
 		$bean = R::dispense('historySmartMeter');
-	
+
 		$bean->invtnum = $invtnum;
 		$bean->gasUsage = $live->gasUsage;
 		$bean->highReturn = $live->highReturn;
@@ -155,12 +135,12 @@ class SmartMeterAddon {
 		$bean->liveReturn = $live->liveReturn;
 		$bean->liveUsage = $live->liveUsage;
 		$bean->time = $timestamp;
-	
+
 		//Store the bean
 		$id = R::store($bean);
 		return $bean;
 	}
-	
+
 	/**
 	 * Read the history file
 	 * @param int $invtnum
@@ -168,18 +148,17 @@ class SmartMeterAddon {
 	 * @return array<Live> $live (No Live but BEAN object!!)
 	 */
 	// TODO :: There's no Live object returned....?!
-	
 	public function readSmartMeterHistory($invtnum, $date) {
 		(!$date)? $date = date('d-m-Y') : $date = $date;
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
-	
+
 		$bean =  R::findAndExport( 'historySmartMeter',
 				' invtnum = :invtnum AND time > :beginDate AND  time < :endDate order by time',
 				array(':invtnum'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 		return $bean;
 	}
-	
+
 	/**
 	 * Return the amount off history records
 	 * @param int $invtnum
@@ -189,32 +168,30 @@ class SmartMeterAddon {
 	public function getSmartMeterHistoryCount($invtnum) {
 		$date = date('d-m-Y');
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
-	
+
 		$bean =  R::find('historySmartMeter',
 				' invtnum = :invtnum AND time > :beginDate AND  time < :endDate order by time',
 				array(':invtnum'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 		return count($bean);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * write the max power today to the file
 	 * @param int $invtnum
 	 * @param MaxPowerToday $mpt
 	 */
 	public function addSmartMeterEnergy($invtnum, EnergySmartMeter $energy) {
-		//echo "\r\naddSmartMeterEnergy\r\n";
-	
 		$date = date('d-m-Y');
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
-	
+
 		$bean =  R::findone('energySmartMeter',
 				' invtnum = :invtnum AND time > :beginDate AND  time < :endDate order by time',
 				array(':invtnum'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
-	
+
 		$oldGasUsageT = 0;
 		$oldHighReturnT = 0;
 		$oldLowReturnT = 0;
@@ -222,28 +199,24 @@ class SmartMeterAddon {
 		$oldLowUsageT = 0;
 		$oldLiveReturnT = 0;
 		$oldLiveUsageT = 0;
-	
-	
+
 		if (!$bean){
-			//echo "\r\n dispence\r\n";
 			$bean = R::dispense('energySmartMeter');
 		} else {
-			//echo "\r\n Non-Dispence \r\n";
 			$oldGasUsageT = $energy->gasUsageT;
 			$oldHighReturnT = $energy->highReturnT;
 			$oldLowReturnT = $energy->lowReturnT;
 			$oldHighUsageT = $energy->highUsageT;
 			$oldLowUsageT = $energy->lowUsageT;
 		}
-	
-		//var_dump($bean);
+
 		$bean->invtnum = $invtnum;
 		$bean->gasUsageT = $energy->gasUsageT;
 		$bean->highReturnT = $energy->highReturnT;
 		$bean->lowReturnT = $energy->lowReturnT;
 		$bean->highUsageT = $energy->highUsageT;
 		$bean->lowUsageT = $energy->lowUsageT;
-	
+
 		$bean->gasUsage = $energy->gasUsage;
 		$bean->highReturn = $energy->highReturn;
 		$bean->lowReturn = $energy->lowReturn;
@@ -252,29 +225,10 @@ class SmartMeterAddon {
 		$bean->liveReturn = $energy->liveReturn;
 		$bean->liveUsage = $energy->liveUsage;
 		$bean->time = time();
-	
-	
-		//Only store the bean when the value
-		$id = -1;
-	
-		$id = R::store($bean,$bean->id);
-	
-		return $id;
+
+		return R::store($bean);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	/**
 	 * write the LiveSmartMeter info to the file
 	 * @param int $invtnum
@@ -285,16 +239,16 @@ class SmartMeterAddon {
 				invtnum = :invtnum ',
 				array(':invtnum'=>$invtnum)
 		);
-	
+
 		if (!$bean){
 			$bean = R::dispense('liveSmartMeter');
 		}
-	
+
 		$readLiveBean = $this->readLiveSmartMeterInfo($invtnum);
-	
-		if($readLiveBean->gasUsage < $live->gasUsage){
+
+		if ($readLiveBean->gasUsage < $live->gasUsage) {
 			$liveGas = ($live->gasUsage - $readLiveBean->gasUsage);
-		}else{
+		} else {
 			$liveGas = $readLiveBean->liveGas;
 		}
 		//$bean->KWHT = $live->KWHT;
@@ -308,12 +262,11 @@ class SmartMeterAddon {
 		$bean->liveReturn = $live->liveReturn;
 		$bean->liveUsage = $live->liveUsage;
 		$bean->time = time();
-	
+
 		//Store the bean
-		$id = R::store($bean,$bean->id);
-		return $id;
+		return R::store($bean);
 	}
-	
+
 	/**
 	 * read the live info from an file
 	 * @param int $invtnum
@@ -321,7 +274,7 @@ class SmartMeterAddon {
 	 */
 	public function readLiveSmartMeterInfo($invtnum) {
 		$bean =  R::findOne('liveSmartMeter',' invtnum = :invtnum ', array(':invtnum'=>$invtnum));
-	
+
 		$live = new LiveSmartMeter();
 		if ($bean) {
 			$live->invtnum = $bean->invtnum;
@@ -335,11 +288,11 @@ class SmartMeterAddon {
 			$live->liveUsage = $bean->liveUsage;
 			$live->liveEnergy = intval($live->liveUsage) - intval($live->liveReturn);
 		}
-	
+
 		return $live;
 	}
-	
-	
+
+
 	/**
 	 * will remove the live file
 	 */
@@ -351,12 +304,12 @@ class SmartMeterAddon {
 		);
 		R::trash( $bean );
 	}
-	
+
 	public function DayBeansToGraphPoints($beans,$startDate){
 		$graph = new Graph();
 		/*
 		 * Generate Graph Point and series
-		 */
+		*/
 		$i=0;
 		foreach ($beans as $bean){
 			if ($i==0){
@@ -370,9 +323,9 @@ class SmartMeterAddon {
 			if($i==0){
 				$graph->points['smoothGasUsage'][] = array ($UTCdate * 1000,$firstBean['gasUsage']-$bean['gasUsage'],date("H:i, d-m-Y",$bean['time']));
 			}
-			if( $bean['gasUsage']-$firstBean['gasUsage'] != 
-				$preBean['gasUsage']-$firstBean['gasUsage']
-				){
+			if( $bean['gasUsage']-$firstBean['gasUsage'] !=
+					$preBean['gasUsage']-$firstBean['gasUsage']
+			){
 				$graph->points['smoothGasUsage'][] = array ($UTCdate * 1000,$bean['gasUsage']-$firstBean['gasUsage'],date("H:i, d-m-Y",$bean['time']));
 			}
 			$graph->points['cumLowUsage'][] = array ($UTCdate * 1000,$bean['lowUsage']-$firstBean['lowUsage'],date("H:i, d-m-Y",$bean['time']));
@@ -382,18 +335,18 @@ class SmartMeterAddon {
 			$preBean = $bean;
 			$i++;
 		}
-		
+
 		/*
 		 * Set Serie Labels
-		 * The order of the labels needs to be the same as the points above
-		 */
+		* The order of the labels needs to be the same as the points above
+		*/
 		//$graph['labels'][] = 'Cum. Gas(l)';
 		//$graph['labels'][] = 'Smooth Gas(l)';
 		//$graph['labels'][] = 'Low Usage(W)';
 		//$graph['labels'][] = 'High Usage (W)';
 		//$graph['labels'][] = 'Low Return(W)';
 		//$graph['labels'][] = 'High Return(W)';
-		
+
 
 		$graph->series[] = array('label'=>'Cum. Gas(l)','yaxis'=>'y5axis');
 		$graph->series[] = array('label'=>'Smooth Gas(l)' ,'yaxis'=>'y5axis');
@@ -403,11 +356,11 @@ class SmartMeterAddon {
 		$graph->series[] = array('label'=>'High Return(W)' ,'yaxis'=>'y4axis');
 
 		$graph->timestamp = Util::getBeginEndDate('day', 1,$startDate);
-		
+
 		$graph->axes['y3axis'] = array('label'=>'Usage (W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 		$graph->axes['y4axis'] = array('label'=>'Return (W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 		$graph->axes['y5axis'] = array('label'=>'Gas (l)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-		
+
 		$graph->metaData['hideSeries']= array(
 				'label'=>array(
 						'Smooth Gas(l)',
@@ -416,10 +369,10 @@ class SmartMeterAddon {
 						'High Usage(W)',
 						'Low Return(W)',
 						'High Return(W)')
-				);
+		);
 		return $graph;
-	}	
-	
+	}
+
 
 	/**
 	 * return a array with GraphPoints
@@ -436,12 +389,12 @@ class SmartMeterAddon {
 		//var_dump($beans);
 		return $beans;
 	}
-	
+
 	/*
-	public function getSmartMeterTotals(){
-		$energySmartMeter = $this->adapter->readTablesPeriodValues(0, "energySmartMeter", "today", date("d-m-Y"));
-		var_dump();
+	 public function getSmartMeterTotals(){
+	$energySmartMeter = $this->adapter->readTablesPeriodValues(0, "energySmartMeter", "today", date("d-m-Y"));
+	var_dump();
 	}*/
-	
-	
+
+
 }?>
