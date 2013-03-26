@@ -74,7 +74,7 @@ Class SmartMeter implements DeviceApi {
 
     private function execute() {	
         // Check for dangerous programs
-  		$badAppString = "rm,cat,tail,reboot,halt,shutdown,fdisk";      
+  		$badAppString = "rm,cat,tail,reboot,halt,shutdown,fdisk,mkfs,sh,cp,mv,dd";      
     	$badApp = explode(",",$badAppString);
     	foreach ($badApp as $app) {
     		if (strpos($this->PATH,$app) !== false) {
