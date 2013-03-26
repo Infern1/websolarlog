@@ -18,7 +18,7 @@ Class SmartMeter implements DeviceApi {
      * @see DeviceApi::getState()
      */
     public function getState() {
-    	return 0; // Try to detect, as it will die when offline
+    	return 0; // A smartmeter should never be offline iff the cable is connected
     }
     
     public function getAlarms() {
@@ -65,17 +65,25 @@ Class SmartMeter implements DeviceApi {
     }
 
     public function getHistoryData() {
-        //return $this->execute('-k');
         // not supported
     }
 
     public function syncTime() {
-        //return $this->execute('-L');
         // not supported
     }
 
-    private function execute() {    	
-        return shell_exec('sudo python3 '.$this->PATH.'');
+    private function execute() {	
+        // Check for dangerous programs
+  		$badAppString = "rm,cat,tail,reboot,halt,shutdown,fdisk";      
+    	$badApp = explode(",",$badAppString);
+    	foreach ($badApp as $app) {
+    		if (strpos($this->PATH,$app) !== false) {
+    			HookHandler::getInstance()->fire("onError", "SmartMeter path contains blacklisted program: " . $app);
+    			return null;
+    		}
+    	}
+    	
+    	return shell_exec($this->PATH);
     }
 }
 ?>
