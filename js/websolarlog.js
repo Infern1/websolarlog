@@ -5,6 +5,32 @@ var windowState = true;
 var ajax = $.ajaxSetup({
 	cache : true
 });
+/**
+ * 
+ * @param theArray
+ * @param goal
+ * @returns {Number}
+ */
+function getClosest(theArray, goal){
+	var closestTimestamp = null;
+	var closestValue = null;
+	var counter = 0;
+	var arrReturn = [];
+	
+	$.each(theArray,  function(index, value){
+	  if (closestTimestamp == null || Math.abs(this[0] - goal) < Math.abs(closestTimestamp - goal)) {
+		counter = index;
+	    closestTimestamp = this[0];
+	    closestValue = this[1];
+	    
+	  }
+	});
+	arrReturn.push(counter,closestTimestamp,closestValue);
+	
+	return arrReturn;
+}
+
+
 $(window).blur(function() {
 	// set time on blur
 	window.blurTime = (new Date()).getTime();
@@ -124,39 +150,22 @@ var todayTimerHandler;
 function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot, series) {
 	var returned = "";
 	seriesCount = plot.series.length - 1;
-	//console.log(plot);
-	if (is_array(plot.series[0].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("Cum.",plot.series[0].data[pointIndex][1], "W", (seriesIndex == 0));
-	}
-	if (is_array(plot.series[1].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("Energy",plot.series[1].data[pointIndex][1], "W" + pointIndex,(seriesIndex == 1));
-	}
 
-	// if(seriesCount >= 2){
-	if (is_array(plot.series[2].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("Gas",plot.series[2].data[pointIndex][1], "L", (seriesIndex == 2));
-	}
-	// }
-	// if(seriesCount >= 3){
-	if (is_array(plot.series[3].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("High usage",plot.series[3].data[pointIndex][1], "W", (seriesIndex == 3));
-	}
-	// }
-	// if(seriesCount >= 4){
-	if (is_array(plot.series[4].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("Low usage",plot.series[4].data[pointIndex][1], "W", (seriesIndex == 4));
-	}
-	// }
-	// if(seriesCount >= 5){
-	if (is_array(plot.series[5].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("High return",plot.series[5].data[pointIndex][1], "W", (seriesIndex == 5));
-	}
-	// }
-	// if(seriesCount >= 6){
-	if (is_array(plot.series[6].data[pointIndex]) == true) {
-		returned += tooltipTodayContentEditorLine("Low return",plot.series[6].data[pointIndex][1], "W", (seriesIndex == 6));
-	}
-	// }
+	$.each(plot.series,  function(index, value){
+		eachSerieIndex = index;
+		if(index !=seriesIndex){
+			ClosestPointIndex = getClosest(plot.series[eachSerieIndex].data, plot.series[seriesIndex].data[pointIndex][0]);
+			closestTimeDiff = plot.series[seriesIndex].data[pointIndex][0]- plot.series[eachSerieIndex].data[ClosestPointIndex[0]][0];
+			(closestTimeDiff < -200000) ? displayLow=false : displayLow=true;
+			(closestTimeDiff > 200000) ? displayHigh=false : displayHigh=true;
+			if(displayHigh==true && displayLow==true){
+				returned += tooltipTodayContentEditorLine(plot.series[eachSerieIndex].label,"   "+plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],false);
+			}
+		}else{
+			ClosestPointIndex = getClosest(plot.series[eachSerieIndex].data, plot.series[seriesIndex].data[pointIndex][0]);
+			returned += tooltipTodayContentEditorLine(plot.series[eachSerieIndex].label,"   "+plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],true);			
+		}
+	});
 	return returned;
 }
 
@@ -240,11 +249,10 @@ function tooltipCompareEditorLine(label, value, sign, isBold) {
 	return tooltipDefaultLine(label, value, sign, isBold);
 }
 
-function tooltipDefaultLine(label, value, sign, isBold) {
+function tooltipDefaultLine(label, value, isBold) {
 	bold = (isBold) ? [ '<b>', '</b>' ] : bold = [ '', '' ];
 	line = bold[0] + '<span class="jqplot_hl_label">' + label + ":" + "</span>"
-			+ '<span class="jqplot_hl_value">' + value + "</span>"
-			+ '<span class="jqplot_hl_sign">' + sign + "</span>" + bold[1]
+			+ '<span class="jqplot_hl_value">' + value + "</span>" + bold[1]
 			+ "<br />";
 	return line;
 }
