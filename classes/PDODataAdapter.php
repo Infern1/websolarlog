@@ -530,7 +530,6 @@ class PDODataAdapter {
 			$graph->axes['y2axis'] = array('label'=>'Avg. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->metaData['hideSeries']= array();
 		}
-
 		return $graph;
 	}
 
@@ -922,7 +921,8 @@ class PDODataAdapter {
 					WHERE time > :beginDate AND  time < :endDate
 					ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
-
+		//see if we have atleast 1 bean, else we make one :)
+		(!$energyBeans) ? $energyBeans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $energyBeans = $energyBeans;
 		return $energyBeans;
 	}
 
@@ -1628,7 +1628,8 @@ class PDODataAdapter {
 
 
 		$beans = $this->readTablesPeriodValues($invtnum, 'history', $type, $startDate);
-
+		
+		
 		$graph->axes['xaxis'] = array('label'=>'','renderer'=>'DateAxisRenderer',
 				'tickRenderer'=>'CanvasAxisTickRenderer','labelRenderer'=>'CanvasAxisLabelRenderer',
 				'tickInterval'=>3600,'tickOptions'=>array('formatter'=>'DayDateTickFormatter','angle'=>-45));

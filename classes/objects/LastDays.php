@@ -2,7 +2,4 @@
 class LastDays {
     public $points;
 }
-
-
 ?>
-
