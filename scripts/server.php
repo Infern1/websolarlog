@@ -49,6 +49,14 @@ QueueServer::getInstance()->add(new QueueItem($slowJobStartTime, "HookHandler.fi
 // Add job to refresh the config object every 2 minutes
 QueueServer::getInstance()->add(new QueueItem(createTimeForWholeInterval(120), "DeviceHandler.refreshConfig", "", true, 120));
 
+// Add job to check for pause every 2 minutes
+// TODO :: When we support db queue then we should not check for it
+QueueServer::getInstance()->add(new QueueItem(createTimeForWholeInterval(120), "DeviceHandler.checkPause", "", true, 120));
+
+// Add job to check for restart every 5 minutes
+// TODO :: When we support db queue then we should not check for it
+QueueServer::getInstance()->add(new QueueItem(createTimeForWholeInterval(300), "DeviceHandler.checkRestart", "", true, 300));
+
 // Start the queue server
 QueueServer::getInstance()->start();
 

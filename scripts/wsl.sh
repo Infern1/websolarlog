@@ -3,10 +3,10 @@
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PIDFOLDER=$SCRIPTDIR
-PHPSCRIPTNAME="worker.php"
+PHPSCRIPTNAME="server.php"
 PHP=$(which php)
 NOHUP=$(which nohup)
-LOGFILE=$SCRIPTDIR"/workerNew.log"
+LOGFILE=$SCRIPTDIR"/queueserver.log"
 
 cd $SCRIPTDIR
 
