@@ -121,7 +121,7 @@ class DeviceHandler {
 	 * Do we need to pause?
 	 */
 	public function checkPause() {
-		if ($config->pauseWorker) {
+		if (Session::getConfig()->pauseWorker) {
 			while (Session::getConfig(true)->pauseWorker) {
 				sleep(5);
 				echo("Worker paused\n");
