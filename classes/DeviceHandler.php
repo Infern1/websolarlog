@@ -120,7 +120,7 @@ class DeviceHandler {
 	/**
 	 * Do we need to pause?
 	 */
-	public function checkRestart() {
+	public function checkPause() {
 		if ($config->pauseWorker) {
 			while (Session::getConfig(true)->pauseWorker) {
 				sleep(5);
