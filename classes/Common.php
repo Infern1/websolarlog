@@ -270,6 +270,7 @@ class Common
     		$config = Session::getConfig(true); // Retrieve up to date config
     		$config->restartWorker = false;
     		PDODataAdapter::getInstance()->writeConfig($config);
+    		R::commit(); // Make sure we de an commit
     		sleep (1);
     		exit("Restarting worker\n");
     	}
