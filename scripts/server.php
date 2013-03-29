@@ -24,6 +24,9 @@ $infoStartTime = createOnceADayJob("12", "00"); // Only run at 12:00
 $alarmUpdateRate = 15 * 60; // every quarter
 $alarmStartTime = createTimeForWholeInterval($alarmUpdateRate);
 
+$historyDataUpdateRate = 24 * 60 * 60;
+$historyDataStartTime = createOnceADayJob("12", "30"); // Only run at 12:30
+
 // Create the inverter jobs
 foreach (Session::getConfig()->inverters as $device) {
 	QueueServer::getInstance()->add(new QueueItem(time(), "DeviceHandler.handleLive", array($device), true, $device->refreshTime));
@@ -31,6 +34,7 @@ foreach (Session::getConfig()->inverters as $device) {
 	QueueServer::getInstance()->add(new QueueItem($energyStartTime, "DeviceHandler.handleEnergy", array($device), true, $energyUpdateRate));
 	QueueServer::getInstance()->add(new QueueItem($infoStartTime, "DeviceHandler.handleInfo", array($device), true, $infoUpdateRate));
 	QueueServer::getInstance()->add(new QueueItem($alarmStartTime, "DeviceHandler.handleAlarm", array($device), true, $alarmUpdateRate));
+	QueueServer::getInstance()->add(new QueueItem($historyDataStartTime, "DeviceHandler.handleDeviceHistory", array($device), true, $historyDataUpdateRate));
 }
 
 

@@ -34,6 +34,23 @@ class DeviceHandler {
 				break;
 		}			
 	}
+	
+	public function handleDeviceHistory($args) {
+		$item = $args[0];
+		$device = $this->getFreshDevice($args[1]);
+		
+		switch ($device->type) {
+			case "production":
+				ProductionDeviceHandler::handleDeviceHistory($item, $device);
+				break;
+			case "metering":
+				MeteringDeviceHandler::handleDeviceHistory($item, $device);
+				break;
+			default:
+				echo("DeviceType " . $device->type . " does not support handle device history");
+				break;
+		}
+	}
 
 	public function handleEnergy($args) {
 		$item = $args[0];

@@ -78,4 +78,23 @@ class AuroraConverter
 
         return $live;
     }
+    
+    public static function toDeviceHistory($line) {
+		// Split the line based on multiple spaces between two values
+    	$parts = preg_split('/\s+/', $line);
+    	if (count($parts) < 2) {
+    		return null;
+    	}
+
+    	// Create the object
+    	$deviceHistory = new DeviceHistory();
+    	$deviceHistory->amount = (double) $parts[1];
+    	$deviceHistory->time = ($parts[0] != "") ? strtotime($parts[0]) : 0;
+    	
+    	// Only return if we have an valid time
+    	if ($deviceHistory->time > 0) {
+    		return $deviceHistory;
+    	}
+    	return null;
+    }
 }

@@ -54,7 +54,21 @@ Class Aurora implements DeviceApi {
 
     public function getHistoryData() {
     	// Try to retrieve the data of the last 366 days
-        return $this->execute('-k 366 -Y 60');
+    	$result = $this->execute('-k366 -Y60 -K10');
+        
+        if ($result) {
+        	$deviceHistoryList = array();
+        	$lines = explode("\n", $result);
+        	foreach ($lines as $line) {
+        		$deviceHistory = AuroraConverter::toDeviceHistory($line);
+        		if ($deviceHistory != null) {
+        			$deviceHistoryList[] = $deviceHistory;
+        		}
+        	}
+        	return $deviceHistoryList;
+        }
+        
+        return null;
     }
 
     public function syncTime() {
@@ -63,7 +77,6 @@ Class Aurora implements DeviceApi {
 
     private function execute($options) {
         $cmd = $this->PATH . ' -a' . $this->ADR . ' ' . $options . ' ' . $this->PORT;
-        //return shell_exec($cmd);
         
         $proc=proc_open($cmd,
         		array(
@@ -75,15 +88,7 @@ Class Aurora implements DeviceApi {
         $stdout = stream_get_contents($pipes[1]);
         $stderr = stream_get_contents($pipes[2]);
         
-        /*
-        hide errors
-        if ($stderr != "") {
-        	echo ("error found: " . $stderr . "\n");
-        }
-        */
         proc_close($proc);
-        
-        //print stream_get_contents($pipes[1]);
         return trim($stdout);
     }
 }

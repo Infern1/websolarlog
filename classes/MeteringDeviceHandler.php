@@ -22,6 +22,10 @@ class MeteringDeviceHandler {
 		HookHandler::getInstance()->fire("onSmartMeterHistory", $device, $live, $item->time);
 	}
 
+	public static function handleDeviceHistory(QueueItem $item, Inverter $device) {
+		// Not supported
+	}
+	
 	public static function handleEnergy(QueueItem $item, Inverter $device) {
 		HookHandler::getInstance()->fire("onSmartMeterEnergy", $device, $item->time);
 	}

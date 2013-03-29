@@ -31,6 +31,32 @@ class ProductionDeviceHandler {
 			}
 		}
 	}
+	
+	public static function handleDeviceHistory(QueueItem $item, Inverter $device) {
+		// Get the api we need to use
+		$api = $device->getApi(Session::getConfig());
+	
+		// Retrieve the inverter data
+		$deviceHistoryList = $api->getHistoryData();
+		
+		// Did we get an result?
+		if ($deviceHistoryList == null) {
+			return; // Nothing to do
+		}
+		
+		// Save all objects if they do not exist
+		$notProcessed = 0;
+		foreach ($deviceHistoryList as $deviceHistory) {
+			$deviceHistory->deviceId = $device->id;
+			$newDeviceHistory = PDODataAdapter::getInstance()->addOrUpdateDeviceHistoryByDeviceAndTime($deviceHistory);
+			
+			if (!$newDeviceHistory->processed) {
+				$notProcessed++;
+			}
+		}
+		HookHandler::getInstance()->fire("onInfo", "Retrieved " . count($deviceHistoryList) . 
+			" records from history off device " . $device->name . ". There are " . $notProcessed .  " unprocessed lines.\n");
+	}
 
 	public static function handleEnergy(QueueItem $item, Inverter $device) {
 		HookHandler::getInstance()->fire("onEnergy", $device, $item->time);
