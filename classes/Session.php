@@ -13,7 +13,6 @@ class Session
             $_SESSION['username'] = $username;
             return true;
         }
-
         return false;
     }
 
@@ -205,7 +204,7 @@ class Session
     	// LoggerAddon
     	$hookHandler->add("onError", "LoggerAddon.onError");
     	$hookHandler->add("onWarning", "LoggerAddon.onWarning");
-    	//$hookHandler->add("onInfo", "LoggerAddon.onInfo");
+    	$hookHandler->add("onInfo", "LoggerAddon.onInfo");
     	$hookHandler->add("onDebug", "LoggerAddon.onDebug");
     	$hookHandler->add("onInverterStartup", "LoggerAddon.onInverterStartup");
     	$hookHandler->add("onInverterShutdown", "LoggerAddon.onInverterShutdown");
@@ -248,9 +247,6 @@ class Session
     	// Statistics
     	$hookHandler->add("onFastJob", "CacheAddon.averagePower");
     	$hookHandler->add("onFastJob", "CacheAddon.EnergyValues");
-    	
-    	
-    	
     }
 }
 ?>
