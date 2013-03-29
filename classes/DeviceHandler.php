@@ -95,38 +95,5 @@ class DeviceHandler {
 	public function getFreshDevice(Inverter $inverter) {
 		return Session::getConfig()->getInverterConfig($inverter->id);
 	}
-	
-	/**
-	 * This method will be called from the queueServer to refresh the loaded config
-	 * So we can be sure we are talking to latest settings and devices
-	 */
-	public function refreshConfig() {
-		Session::getConfig(true);
-	}
-	
-	/**
-	 * Do we need to restart?
-	 */
-	public function checkRestart() {
-		if (Session::getConfig()->restartWorker) {
-			$config = Session::getConfig(true); // Retrieve up to date config
-			$config->restartWorker = false;
-			PDODataAdapter::getInstance()->writeConfig($config);
-			sleep (1);
-			exit("Restarting worker\n");
-		}
-	}
-	
-	/**
-	 * Do we need to pause?
-	 */
-	public function checkPause() {
-		if (Session::getConfig()->pauseWorker) {
-			while (Session::getConfig(true)->pauseWorker) {
-				sleep(5);
-				echo("Worker paused\n");
-			}
-		}
-	}
 }
 ?>
