@@ -51,7 +51,9 @@ class QueueServer {
 			$memory = memory_get_usage() / 1024 / 1024; // calculate mb
 			$memory_string = number_format($memory, 2); 
 			
-			HookHandler::getInstance()->fire("onInfo", " QueueServer: current memory usage = " . $memory_string . "mb queue size: " . count($this->queue));
+			if (Session::getConfig()->debugmode) {
+				HookHandler::getInstance()->fire("onInfo", " QueueServer: current memory usage = " . $memory_string . "mb queue size: " . count($this->queue));
+			}
 			$this->sync();
 		}
 	}
