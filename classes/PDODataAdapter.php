@@ -1035,7 +1035,6 @@ class PDODataAdapter {
 	 */
 	public function getMonthMaxPowerPerDay($invtnum=0,$startDate){
 		$beginEndDate = Util::getBeginEndDate('month', 1,$startDate);
-
 		if ($invtnum>0){
 			$beans = R::getAll("
 					SELECT INV, strftime ( '%d-%m-%Y %H:%M' , datetime ( time , 'unixepoch' ) ) AS date, GP as maxGP

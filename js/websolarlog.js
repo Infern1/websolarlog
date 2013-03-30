@@ -803,6 +803,10 @@ var WSL = {
 			var completeDate = $('#datePickerPeriod').val();
 		}
 		var pickerDate = $('#datePickerPeriod').val();
+		if (typeof completeDate == 'undefined') {
+			var currentTime = new Date();
+			completeDate = "01-" + (currentTime.getMonth() + 1) + "-" + currentTime.getFullYear();
+		}
 
 		// initialize languages selector on the given div
 		WSL.api.getPageMonthValues(completeDate,
@@ -815,11 +819,8 @@ var WSL = {
 						}
 					},
 					success : function(source) {
-						var template = Handlebars
-								.compile(source);
-						var html = template({
-							'data' : data,
-							'lang' : data.lang
+						var template = Handlebars.compile(source);
+						var html = template({ 'data' : data, 'lang' : data.lang
 						});
 						$(monthValues).html(html);
 
@@ -904,6 +905,10 @@ var WSL = {
 			var completeDate = $('#datePickerPeriod').val();
 		}
 		var pickerDate = $('#datePickerPeriod').val();
+		if (typeof completeDate == 'undefined') {
+			var currentTime = new Date();
+			completeDate = "01-01-" + currentTime.getFullYear();
+		}
 
 		// initialize languages selector on the given div
 		WSL.api.getPageYearValues(completeDate,function(data) {
