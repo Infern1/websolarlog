@@ -54,7 +54,7 @@ Class Aurora implements DeviceApi {
 
     public function getHistoryData() {
     	// Try to retrieve the data of the last 366 days
-    	$result = $this->execute('-k366 -Y60 -K10');
+    	$result = $this->execute('-k366 -Y60 '); // -K10 is not yet supported by aurora
         
         if ($result) {
         	$deviceHistoryList = array();
@@ -62,6 +62,7 @@ Class Aurora implements DeviceApi {
         	foreach ($lines as $line) {
         		$deviceHistory = AuroraConverter::toDeviceHistory($line);
         		if ($deviceHistory != null) {
+        			$deviceHistory->amount = $deviceHistory * 10; // Remove this line when -K10 is supported
         			$deviceHistoryList[] = $deviceHistory;
         		}
         	}
