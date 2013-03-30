@@ -62,7 +62,7 @@ Class Aurora implements DeviceApi {
         	foreach ($lines as $line) {
         		$deviceHistory = AuroraConverter::toDeviceHistory($line);
         		if ($deviceHistory != null) {
-        			$deviceHistory->amount = $deviceHistory * 10; // Remove this line when -K10 is supported
+        			$deviceHistory->amount = $deviceHistory->amount * 10; // Remove this line when -K10 is supported
         			$deviceHistoryList[] = $deviceHistory;
         		}
         	}
