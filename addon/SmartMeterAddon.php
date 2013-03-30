@@ -332,43 +332,61 @@ class SmartMeterAddon {
 			$graph->points['cumHighUsage'][] = array ($UTCdate * 1000,$bean['highUsage']-$firstBean['highUsage'],date("H:i, d-m-Y",$bean['time']));
 			$graph->points['cumLowReturn'][] = array ($UTCdate * 1000,$bean['lowReturn']-$firstBean['lowReturn'],date("H:i, d-m-Y",$bean['time']));
 			$graph->points['cumHighReturn'][] = array ($UTCdate * 1000,$bean['highReturn']-$firstBean['highReturn'],date("H:i, d-m-Y",$bean['time']));
+			
+			$lowUsage = Formulas::calcAveragePower($preBean['lowUsage'], $bean['lowUsage'], $preBean['time']-$bean['time'])/1000;
+			$highUsage = Formulas::calcAveragePower($preBean['highUsage'], $bean['highUsage'], $preBean['time']-$bean['time'])/1000;
+			$lowReturn = Formulas::calcAveragePower($preBean['lowReturn'], $bean['lowReturn'], $preBean['time']-$bean['time'])/1000;
+			$highReturn = Formulas::calcAveragePower($preBean['highReturn'], $bean['highReturn'], $preBean['time']-$bean['time'])/1000;
+				
+			$lowActual = $lowUsage-$lowReturn;
+			$highActual =  $highUsage-$highReturn;
+			$actualUsage = (int)0;
+			($lowActual>0) ?	$actualUsage = $lowActual :	$actualUsage = $highActual;
+
+			$graph->points['lowUsage'][] = array ($UTCdate * 1000,$lowUsage,date("H:i, d-m-Y",$bean['time']));
+			$graph->points['highUsage'][] = array ($UTCdate * 1000,$highUsage,date("H:i, d-m-Y",$bean['time']));
+			$graph->points['lowReturn'][] = array ($UTCdate * 1000,$lowReturn,date("H:i, d-m-Y",$bean['time']));
+			$graph->points['highReturn'][] = array ($UTCdate * 1000,$highReturn,date("H:i, d-m-Y",$bean['time']));
+			
+			($actualUsage<$minActual) ? $minActual = $actualUsage : $actualUsage = $actualUsage;
+			($actualUsage>$maxActual) ? $maxActual = $actualUsage : $actualUsage = $actualUsage;
+
+			$graph->points['actualUsage'][] = array ($UTCdate * 1000,round(trim($actualUsage),0), date("H:i, d-m-Y",$bean['time']));				
 			$preBean = $bean;
 			$i++;
 		}
-
-		/*
-		 * Set Serie Labels
-		* The order of the labels needs to be the same as the points above
-		*/
-		//$graph['labels'][] = 'Cum. Gas(l)';
-		//$graph['labels'][] = 'Smooth Gas(l)';
-		//$graph['labels'][] = 'Low Usage(W)';
-		//$graph['labels'][] = 'High Usage (W)';
-		//$graph['labels'][] = 'Low Return(W)';
-		//$graph['labels'][] = 'High Return(W)';
-
-
-		$graph->series[] = array('label'=>'Cum. Gas(l)','yaxis'=>'y5axis');
-		$graph->series[] = array('label'=>'Smooth Gas(l)' ,'yaxis'=>'y5axis');
-		$graph->series[] = array('label'=>'Low Usage(W)' ,'yaxis'=>'y3axis');
-		$graph->series[] = array('label'=>'High Usage(W)','yaxis'=>'y4axis');
-		$graph->series[] = array('label'=>'Low Return(W)','yaxis'=>'y4axis');
-		$graph->series[] = array('label'=>'High Return(W)' ,'yaxis'=>'y4axis');
-
+		/* Set Serie Labels, The order of the labels needs to be the same as the points above*/
+		$graph->series[] = array('label'=>_("Cum.").' '._("Gas").''._("(l)"),'yaxis'=>'y2axis');
+		$graph->series[] = array('label'=>_("Smooth").' '._("Gas").''._("(l)") ,'yaxis'=>'y2axis');
+		$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
+		$graph->series[] = array('label'=>_("Cum.").' '._("high").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
+		$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("return").''._("(W)"),'yaxis'=>'y2axis');
+		$graph->series[] = array('label'=>_("Cum.").' '._("high").' '._("return").''._("(W)") ,'yaxis'=>'y2axis');
+		$graph->series[] = array('label'=>_("Low").' '._("usage").''._("(W)") ,'yaxis'=>'y3axis');
+		$graph->series[] = array('label'=>_("High").' '._("usage").''._("(W)") ,'yaxis'=>'y3axis');
+		$graph->series[] = array('label'=>_("Low").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
+		$graph->series[] = array('label'=>_("High").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
+		$graph->series[] = array('label'=>_("Actual").' '._("usage").''._("(W)"),'yaxis'=>'y4axis');
+		
 		$graph->timestamp = Util::getBeginEndDate('day', 1,$startDate);
-
-		$graph->axes['y3axis'] = array('label'=>'Usage (W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-		$graph->axes['y4axis'] = array('label'=>'Return (W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-		$graph->axes['y5axis'] = array('label'=>'Gas (l)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-
+		($maxActual>0) ? $maxActual = ceil( ( ($maxActual*1.1)+100) / 100 ) * 100 : $maxActual= $maxActual;
+		($minActual<0) ? $minActual = ceil( ( ($minActual*1.1)+100) / 100 ) * 100 : $minActual = $minActual;
+		$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+		$graph->axes['y3axis'] = array('label'=>_("Gas").''._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+		$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'min'=>$minActual,'max'=>$maxActual,'labelRenderer'=>'CanvasAxisLabelRenderer');
+		
 		$graph->metaData['hideSeries']= array(
 				'label'=>array(
-						'Smooth Gas(l)',
-						'Cum. Gas(l)',
-						'Low Usage(W)',
-						'High Usage(W)',
-						'Low Return(W)',
-						'High Return(W)')
+						$graph->series[0]['label'],
+						$graph->series[1]['label'],
+						$graph->series[2]['label'],
+						$graph->series[3]['label'],
+						$graph->series[4]['label'],
+						$graph->series[5]['label'],
+						$graph->series[6]['label'],
+						$graph->series[7]['label'],
+						$graph->series[8]['label'],
+						$graph->series[9]['label'])
 		);
 		return $graph;
 	}

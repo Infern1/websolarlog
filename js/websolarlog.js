@@ -158,7 +158,8 @@ function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot, series) {
 			closestTimeDiff = plot.series[seriesIndex].data[pointIndex][0]- plot.series[eachSerieIndex].data[ClosestPointIndex[0]][0];
 			(closestTimeDiff < -200000) ? displayLow=false : displayLow=true;
 			(closestTimeDiff > 200000) ? displayHigh=false : displayHigh=true;
-			if(displayHigh==true && displayLow==true){
+			
+			if(displayHigh==true && displayLow==true && plot.series[eachSerieIndex].show == true){
 				returned += tooltipTodayContentEditorLine(plot.series[eachSerieIndex].label,"   "+plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],false);
 			}
 		}else{
@@ -996,8 +997,7 @@ var WSL = {
 		ajaxReady();
 	},
 
-	createDayGraph : function(invtnum, getDay, tab, date, currentHandler,
-			fnFinish) {
+	createDayGraph : function(invtnum, getDay, tab, date, currentHandler,fnFinish) {
 		ajaxStart();
 
 		var graphOptions = {
@@ -1013,7 +1013,7 @@ var WSL = {
 				useSeriesColor : true,
 				labelRenderer : $.jqplot.CanvasAxisLabelRenderer
 			},
-			legend : {
+			/*legend : {
 				show : true,
 				location : "nw",
 				renderer : $.jqplot.EnhancedLegendRenderer,
@@ -1021,6 +1021,16 @@ var WSL = {
 					seriesToggle : 'normal',
 					numberColumns : 1,
 					disableIEFading : false
+				}
+			},*/
+			legend : {
+				show : true,
+				location : 's',
+				placement : 'outsideGrid',
+				renderer : $.jqplot.EnhancedLegendRenderer,
+				rendererOptions : {
+					seriesToggle : 'normal',
+					numberRows : 2,// seriesToggleReplot:{resetAxes:["yaxis"]}
 				}
 			},
 			axes : {},
@@ -1109,38 +1119,38 @@ var WSL = {
 					if (currentGraphHandler) {
 						currentGraphHandler.destroy();
 						$("#graph" + tab + "Content").empty();
-						$("#graph" + tab + "Content")
-								.html(
-										'<div id="loading">refreshing graph...</div>');
+						$("#graph" + tab + "Content").html('<div id="loading">refreshing graph...</div>');
 					}
 	
 					handle = null;
 					delete handle;
-					handle = $.jqplot('graph' + tab + 'Content',
-							seriesData, graphOptions);
-	
+					handle = $.jqplot('graph' + tab + 'Content',seriesData, graphOptions);
+					//$('table.jqplot-table-legend').attr('class','jqplot-table-legend-custom');
+					$('table.jqplot-table-legend').css('left',10);
+					$('table.jqplot-table-legend').css('width','850');
+					
 					// iterator to keep track on the legenda items
 					i = 1;
 					// walkthrough legenda
-					$('tr.jqplot-table-legend').each(
+					$('td.jqplot-table-legend').each(
 						function() {
 							$this = $(this);
-							// walkthrough array with hidden
-							// lines
+							// walkthrough array with hidden lines
 							for (line in result.dayData.graph.metaData.hideSeries.label) {
-								// if legenda.text is equal
-								// to hideSeries text; Click
-								// this legenda item to hide
-								// is
+								
+								// if legenda.text is equal to hideSeries text; 
+								// Click this legenda item to hide is
+								
 								if (seriesHidden.length > 0) {
 									if ($this.text() == seriesHidden[line]) {
 										// CLICK!!
-										$('.jqplot-table-legend tr:nth-child('+ i+ ') td:nth-child(1)').click();
+										$("td:contains("+$this.text()+")").click();
 									}
 								} else {
 									if ($this.text() == result.dayData.graph.metaData.hideSeries.label[line]) {
 										// CLICK!!
-										$('.jqplot-table-legend tr:nth-child('+ i+ ') td:nth-child(1)').click();
+										console.log($this.text());
+										$("td:contains("+$this.text()+")").click();
 									}
 								}
 							}
@@ -1150,11 +1160,7 @@ var WSL = {
 	
 					delete seriesData, graphOptions;
 					if (typeof (result.dayData.graph.metaData.KWH) !== "undefined") {
-						mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'
-										+ result.lang.totalEnergy+ ': '
-										+ result.dayData.graph.metaData.KWH.cumPower+ ' '
-										+ result.dayData.graph.metaData.KWH.KWHTUnit+ ' ('+ result.dayData.graph.metaData.KWH.KWHKWP+ ' kWh/kWp)</div>')
-										.insertAfter('#graph'+ getDay+ ' .jqplot-grid-canvas');
+						mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+ result.lang.totalEnergy+ ': '+ result.dayData.graph.metaData.KWH.cumPower+ ' '+ result.dayData.graph.metaData.KWH.KWHTUnit+ ' ('+ result.dayData.graph.metaData.KWH.KWHKWP+ ' kWh/kWp)</div>').insertAfter('#graph'+ getDay+ ' .jqplot-grid-canvas');
 					}
 					fnFinish.call(this, handle);
 					ajaxReady();
@@ -1527,125 +1533,96 @@ var WSL = {
 			});
 		});
 
-		$.getJSON(
-						'server.php?method=getPeriodFilter&type=today',
-						function(data) {
-							$.ajax({
-										url : 'js/templates/datePeriodFilter.hb',
-										beforeSend : function(xhr) {
-											if (getWindowsState() == false) {
-												ajaxAbort(xhr, '');
-											}
-										},
-										success : function(source) {
-											var template = Handlebars.compile(source);
-											var html = template({
-												'data' : data,
-												'lang' : data.lang
-											});
-											$('#datePeriodFilter').html(html);
-											var invtnum = $('#pickerInv').val();
-											(queryDate != "undefined") ? date = queryDate : date = date;
-
-											$(".mainTabContainer").hover(
-												function() {
-													$("#pickerFilterDiv").hide();
-													$("#datepicker").datepicker("hide");
-												},
-												function() {
-													$("#pickerFilterDiv").show();
-												});
-											$('#pickerPeriod').live("change",
-													function() {
-														WSL.createDetailsGraph(invtnum, divId,date);
-													});
-											$('#datepicker').live("change",
-													function() {
-														WSL.createDetailsGraph(invtnum, divId,date);
-													});
-											$('#pickerInv').live("change",
-													function() {
-														WSL.createDetailsGraph(invtnum, divId,date);
-													});
-											$('#next').unbind('click');
-											$('#previous').unbind('click');
-											$('#pickerPeriod').unbind('click');
-
-											$('#next').click(
-												function() {
-													var picker = $("#datepicker");
-													var date = new Date(picker.datepicker('getDate'));
-													var splitDate = $('#datepicker').val().split('-');
-													if ($('#pickerPeriod').val() == 'Today') {
-														date.setDate(date.getDate() + 1);
-													} else if ($('#pickerPeriod').val() == 'Week') {
-														date.setDate(date.getDate() + 7);
-													} else if ($('#pickerPeriod').val() == 'Month') {
-														var value = splitDate[1];
-														date.setMonth(value);
-													} else if ($('#pickerPeriod').val() == 'Year') {
-														var value = parseInt(splitDate[2]) + 1;
-														date.setFullYear(value);
-													}
-													picker.datepicker('setDate',date);
-													var splitDate = $('#datepicker').val().split('-');
-													WSL.createDetailsGraph(invtnum,divId,splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2]);
-												});
-
-											$('#previous').click(
-															function() {
-																var picker = $("#datepicker");
-																var date = new Date(picker.datepicker('getDate'));
-																var splitDate = $('#datepicker').val().split('-');
-																if ($(
-																		'#pickerPeriod')
-																		.val() == 'Today') {
-																	date
-																			.setDate(date
-																					.getDate() - 1);
-																} else if ($(
-																		'#pickerPeriod')
-																		.val() == 'Week') {
-																	date
-																			.setDate(date
-																					.getDate() - 7);
-																} else if ($(
-																		'#pickerPeriod')
-																		.val() == 'Month') {
-																	var value = splitDate[1] - 2;
-																	date
-																			.setMonth(value);
-																} else if ($(
-																		'#pickerPeriod')
-																		.val() == 'Year') {
-																	var value = parseInt(splitDate[2]) - 1;
-																	date
-																			.setFullYear(value);
-																}
-																picker
-																		.datepicker(
-																				'setDate',
-																				date);
-																var splitDate = $(
-																		'#datepicker')
-																		.val()
-																		.split(
-																				'-');
-
-																WSL.createDetailsGraph(invtnum,divId,
-																				splitDate[0]
-																						+ '-'
-																						+ splitDate[1]
-																						+ '-'
-																						+ splitDate[2]);
-															});
-											var invtnum = $('#pickerInv').val();
-											WSL.createDetailsGraph(invtnum,
-													divId, date);
-										},
-										dataType : 'text'
-									});
+		$.getJSON('server.php?method=getPeriodFilter&type=today',
+			function(data) {
+				$.ajax({
+					url : 'js/templates/datePeriodFilter.hb',
+					beforeSend : function(xhr) {
+						if (getWindowsState() == false) {
+							ajaxAbort(xhr, '');
+						}
+					},
+					success : function(source) {
+						var template = Handlebars.compile(source);
+						var html = template({
+							'data' : data,
+							'lang' : data.lang
 						});
+						$('#datePeriodFilter').html(html);
+						var invtnum = $('#pickerInv').val();
+						(queryDate != "undefined") ? date = queryDate : date = date;
+
+						$(".mainTabContainer").hover(
+							function() {
+								$("#pickerFilterDiv").hide();
+								$("#datepicker").datepicker("hide");
+							},
+							function() {
+								$("#pickerFilterDiv").show();
+							});
+						$('#pickerPeriod').live("change",
+								function() {
+									WSL.createDetailsGraph(invtnum, divId,date);
+								});
+						$('#datepicker').live("change",
+								function() {
+									WSL.createDetailsGraph(invtnum, divId,date);
+								});
+						$('#pickerInv').live("change",
+								function() {
+									WSL.createDetailsGraph(invtnum, divId,date);
+								});
+						$('#next').unbind('click');
+						$('#previous').unbind('click');
+						$('#pickerPeriod').unbind('click');
+
+						$('#next').click(
+							function() {
+								var picker = $("#datepicker");
+								var date = new Date(picker.datepicker('getDate'));
+								var splitDate = $('#datepicker').val().split('-');
+								if ($('#pickerPeriod').val() == 'Today') {
+									date.setDate(date.getDate() + 1);
+								} else if ($('#pickerPeriod').val() == 'Week') {
+									date.setDate(date.getDate() + 7);
+								} else if ($('#pickerPeriod').val() == 'Month') {
+									var value = splitDate[1];
+									date.setMonth(value);
+								} else if ($('#pickerPeriod').val() == 'Year') {
+									var value = parseInt(splitDate[2]) + 1;
+									date.setFullYear(value);
+								}
+								picker.datepicker('setDate',date);
+								var splitDate = $('#datepicker').val().split('-');
+								WSL.createDetailsGraph(invtnum,divId,splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2]);
+							});
+
+						$('#previous').click(
+							function() {
+								var picker = $("#datepicker");
+								var date = new Date(picker.datepicker('getDate'));
+								var splitDate = $('#datepicker').val().split('-');
+								if ($('#pickerPeriod').val() == 'Today') {
+									date.setDate(date.getDate() - 1);
+								} else if ($('#pickerPeriod').val() == 'Week') {
+									date.setDate(date.getDate() - 7);
+								} else if ($('#pickerPeriod').val() == 'Month') {
+									var value = splitDate[1] - 2;
+									date.setMonth(value);
+								} else if ($('#pickerPeriod').val() == 'Year') {
+									var value = parseInt(splitDate[2]) - 1;
+									date.setFullYear(value);
+								}
+								picker.datepicker('setDate',date);
+								var splitDate = $('#datepicker').val().split('-');
+								WSL.createDetailsGraph(invtnum,divId,splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2]);
+							});
+						var invtnum = $('#pickerInv').val();
+						WSL.createDetailsGraph(invtnum,divId, date);
+					},
+					dataType : 'text'
+				});
+		});
 	},
 
 	createDetailsGraph : function(invtnum, divId, date) {
@@ -1828,8 +1805,8 @@ var WSL = {
 							delete handle;
 							handle = $.jqplot("detailsGraph", seriesData,graphOptions);
 
-							$('table.jqplot-table-legend').attr('class','jqplot-table-legend-custom');
-							$('table.jqplot-table-legend-custom').attr('left',40);
+							//$('table.jqplot-table-legend').attr('class','jqplot-table-legend-custom');
+							$('table.jqplot-table-legend').css('left',40);
 
 							$('[type=checkbox]').live('change',
 								function() {
@@ -1858,7 +1835,8 @@ var WSL = {
 										}
 									}
 									handle.replot();
-									$('table.jqplot-table-legend').attr('class','jqplot-table-legend-custom');
+									//$('table.jqplot-table-legend').attr('class','jqplot-table-legend');
+									$('table.jqplot-table-legend').css('left',40);
 								});
 							ajaxReady();
 						}
