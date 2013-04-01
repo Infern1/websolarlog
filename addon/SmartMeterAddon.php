@@ -341,7 +341,7 @@ class SmartMeterAddon {
 			$lowActual = $lowUsage-$lowReturn;
 			$highActual =  $highUsage-$highReturn;
 			$actualUsage = (int)0;
-			($lowActual>0) ?	$actualUsage = $lowActual :	$actualUsage = $highActual;
+			($lowActual!=0) ?	$actualUsage = $lowActual :	$actualUsage = $highActual;
 
 			$graph->points['lowUsage'][] = array ($UTCdate * 1000,$lowUsage,date("H:i, d-m-Y",$bean['time']));
 			$graph->points['highUsage'][] = array ($UTCdate * 1000,$highUsage,date("H:i, d-m-Y",$bean['time']));
