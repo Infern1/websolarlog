@@ -8,34 +8,34 @@
 <div class="column span-3 last" style="text-align:right;">{{lang.KWHKWP}}</div>
 
 <div class="column span-3 first"><a href="#">{{lang.today}}</a></div>
-<div class="column span-3" style="text-align:right;">{{data.summary.today.[0]}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.today.[0]}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.today.[2]}}&nbsp;</div>
+<div class="column span-3" style="text-align:right;">{{data.summary.today.todayAvgKwh-0}}&nbsp;</div>
+<div class="column span-3 last" style="text-align:right;">{{data.summary.today.todayAvgKwh-0}}&nbsp;</div>
+<div class="column span-3 last" style="text-align:right;">{{data.summary.today.todayKwhKwp-0}}&nbsp;</div>
 
 <div class="column span-3 first"><a href="#">{{lang.week}}</a></div>
-<div class="column span-3" style="text-align:right;">{{data.summary.week.[5]}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.week.[0]}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.week.[2]}}&nbsp;</div>
+<div class="column span-3" style="text-align:right;">{{data.summary.week.weekSumKwh-0}}&nbsp;</div>
+<div class="column span-3 last" style="text-align:right;">{{data.summary.week.weekAvgKwh-0}}&nbsp;</div>
+<div class="column span-3 last" style="text-align:right;">{{data.summary.week.weekKwhKwp-0}}&nbsp;</div>
 
 <div class="column span-3 first"><a href="#">{{lang.month}}</a></div>
-<div class="column span-3" style="text-align:right;">{{data.summary.month.[5]}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.month.[0]}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.month.[2]}}&nbsp;</div>
+<div class="column span-3" style="text-align:right;">{{data.summary.month.monthSumKwh-0}}&nbsp;</div>
+<div class="column span-3 last" style="text-align:right;">{{data.summary.month.monthAvgKwh-0}}&nbsp;</div>
+<div class="column span-3 last" style="text-align:right;">{{data.summary.month.monthKwhKwp-0}}&nbsp;</div>
 
 <div class="column span-3 first"><a href="#">{{lang.year}}</a></div>
-<div class="column span-3" style="text-align:right;">{{data.summary.year.[5]}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.year.[0]}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.year.[2]}}&nbsp;</div>
+<div class="column span-3" style="text-align:right;">{{data.summary.year.yearSumKwh-0}}&nbsp;</div>
+<div class="column span-3 last" style="text-align:right;">{{data.summary.year.yearAvgKwh-0}}&nbsp;</div>
+<div class="column span-3 last" style="text-align:right;">{{data.summary.year.yearKwhKwp-0}}&nbsp;</div>
 
 <div class="column span-3 first"><a href="#">{{lang.overall}}</a></div>
-<div class="column span-3" style="text-align:right;">{{data.summary.overall.[5]}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.overall.[0]}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.overall.[2]}}&nbsp;</div>
+<div class="column span-3" style="text-align:right;">{{data.summary.overall.overallSumKwh-0}}&nbsp;</div>
+<div class="column span-3 last" style="text-align:right;">{{data.summary.overall.overallAvgKwh-0}}&nbsp;</div>
+<div class="column span-3 last" style="text-align:right;">{{data.summary.overall.overallKwhKwp-0}}&nbsp;</div>
 
 <div class="column span-3 first"><a href="#">{{lang.overallTotal}}</a></div>
-<div class="column span-3" style="text-align:right;">{{data.summary.total.[3]}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.total.[3]}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.total.[2]}}&nbsp;</div>
+<div class="column span-3" style="text-align:right;">{{data.summary.total.totalSumKwh-0}}&nbsp;</div>
+<div class="column span-3 last" style="text-align:right;">{{data.summary.total.totalAvgKwh-0}}&nbsp;</div>
+<div class="column span-3 last" style="text-align:right;">{{data.summary.total.totalKwhKwp-0}}&nbsp;</div>
 </div>
 <hr>
 {{lang.allFiguresAreInKWH}}<br>
