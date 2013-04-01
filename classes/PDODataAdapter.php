@@ -265,92 +265,13 @@ class PDODataAdapter {
 	 * @return int $count
 	 */
 	public function getHistoryCount($invtnum, $date) {
-		return count(R::find('history', ' INV = :INV AND SDTE LIKE :date ', array(':INV'=>$invtnum, ':date'=> '%'.date('Ymd').'%')));
-	}
-	
-	/**
-	 * Check if we need to add or update an DeviceHistory Record
-	 * @param DeviceHistory $deviceHistory
-	 * @return DeviceHistory
-	 */
-	public function addOrUpdateDeviceHistoryByDeviceAndTime(DeviceHistory $deviceHistory) {
-		$bean =  R::findOne('deviceHistory', ' deviceId = :deviceId AND time LIKE :time ',
-				array(':deviceId'=>$deviceHistory->deviceId, ':time'=>$deviceHistory->time)
+		$bean =  R::find('history',
+				' INV = :INV AND SDTE LIKE :date ',
+				array(':INV'=>$invtnum,
+						':date'=> '%'.date('Ymd').'%'
+				)
 		);
-		
-		// Return the object from the database if it exists and the amount is the same
-		if ($bean && $bean->amount == $deviceHistory->amount) {
-			return $this->beanToDeviceHistory($bean);
-		} elseif ($bean) {
-			// Update the record by setting the id
-			$deviceHistory->id = $bean->id;
-			$deviceHistory->processed = false; // We also need to process it again 
-		}
-		
-		return $this->saveDeviceHistory($deviceHistory);
-	}
-	
-	/**
-	 * Save the DeviceHistory in the database
-	 * @param DeviceHistory $deviceHistory
-	 * @return DeviceHistory
-	 */
-	public function saveDeviceHistory(DeviceHistory $deviceHistory) {
-		$bean = null;
-		if ($deviceHistory->id > 0) {
-			$bean = R::load('deviceHistory', $deviceHistory->id);
-		} else {
-			$bean = R::dispense('deviceHistory');
-		}
-		
-		$bean->deviceId = $deviceHistory->deviceId;
-		$bean->time = $deviceHistory->time;
-		$bean->amount = $deviceHistory->amount;
-		$bean->processed = $deviceHistory->processed;
-		
-		//Store the bean
-		$deviceHistory->id = R::store($bean);
-		return $deviceHistory;
-	}
-	
-	/**
-	 * Load the DeviceHistory by the ID
-	 * @param int $id
-	 */
-	public function getDeviceHistory($id) {
-		return $this->beanToDeviceHistory(R::load('deviceHistory', $id));
-	}
-	
-	/**
-	 * Retrieve an list of DeviceHistory by device
-	 * @param Inverter $device
-	 * @param boolean $processed (null == all)
-	 * @return multitype:DeviceHistory
-	 */
-	public function readDeviceHistory(Inverter $device, $processed = null) {
-		$beans = array();
-		if ($processed == null) {
-			$beans = R::find('deviceHistory', 'deviceId = :deviceId order by time', array(':deviceId'=>$device->id));
-		} else {
-			$beans = R::find('deviceHistory', 'deviceId = :deviceId and processed=:processed order by time', array(':deviceId'=>$device->id,':processed'=>$processed));
-		}
-		
-		$deviceHistoryList = array();
-		foreach ($beans as $bean) {
-			$deviceHistoryList[] = $this->beanToDeviceHistory($bean);
-		}
-		
-		return $deviceHistoryList;
-	}
-	
-	private function beanToDeviceHistory($bean) {
-		$deviceHistory = new DeviceHistory();
-		$deviceHistory->id = $bean->id;
-		$deviceHistory->deviceId = $bean->deviceId;
-		$deviceHistory->time = $bean->time;
-		$deviceHistory->amount = $bean->amount;
-		$deviceHistory->processed = $bean->processed;
-		return $deviceHistory;
+		return count($bean);
 	}
 
 	/**
@@ -779,6 +700,7 @@ class PDODataAdapter {
 		$bean->graphOnFrontend = $inverter->graphOnFrontend;
 
 		$bean->initialkwh = $inverter->initialkwh;
+		$bean->producesSince = $inverter->producesSince;
 		$bean->expectedkwh = $inverter->expectedkwh;
 		$bean->heading = $inverter->heading;
 		$bean->correctionFactor = $inverter->correctionFactor;
@@ -825,6 +747,7 @@ class PDODataAdapter {
 		$inverter->liveOnFrontend = $bean->liveOnFrontend;
 		$inverter->graphOnFrontend = $bean->graphOnFrontend;
 		$inverter->initialkwh = $bean->initialkwh;
+		$inverter->producesSince = $bean->producesSince;
 		$inverter->expectedkwh = $bean->expectedkwh;
 		$inverter->heading = $bean->heading;
 		$inverter->correctionFactor = $bean->correctionFactor;
@@ -875,6 +798,7 @@ class PDODataAdapter {
 			$inverter->liveOnFrontend = $bean->liveOnFrontend;
 			$inverter->graphOnFrontend = $bean->graphOnFrontend;
 			$inverter->initialkwh = $bean->initialkwh;
+			$inverter->producesSince = $bean->producesSince;
 			$inverter->expectedkwh = $bean->expectedkwh;
 			$inverter->heading = $bean->heading;
 			$inverter->correctionFactor = $bean->correctionFactor;
@@ -1035,6 +959,7 @@ class PDODataAdapter {
 	 */
 	public function getMonthMaxPowerPerDay($invtnum=0,$startDate){
 		$beginEndDate = Util::getBeginEndDate('month', 1,$startDate);
+
 		if ($invtnum>0){
 			$beans = R::getAll("
 					SELECT INV, strftime ( '%d-%m-%Y %H:%M' , datetime ( time , 'unixepoch' ) ) AS date, GP as maxGP
@@ -2041,7 +1966,7 @@ class PDODataAdapter {
 				//split them
 				preg_match_all('/((?:^|[A-Z])[a-z]+)/',$cache['key'],$camleKeys);
 				//group the values by there Camle Key
-				$grouped[$camleKeys[$group][0]][] = $cache['value'];
+				$grouped[$camleKeys[$group][0]][$cache['key']] = $cache['value'];
 			}
 			// return the grouped array
 			return $grouped;

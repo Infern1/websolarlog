@@ -264,6 +264,7 @@ switch ($settingstype) {
 		$inverter->liveOnFrontend = Common::getValue("liveOnFrontend");
 		$inverter->graphOnFrontend = Common::getValue("graphOnFrontend");
 		$inverter->initialkwh = Common::getValue("initialkwh");
+		$inverter->producesSince = Common::getValue("producesSince");
 		$inverter->expectedkwh = Common::getValue("expectedkwh");
 		$inverter->plantpower = Common::getValue("plantpower");
 		$inverter->heading = Common::getValue("heading");

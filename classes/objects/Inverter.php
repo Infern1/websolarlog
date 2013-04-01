@@ -10,6 +10,7 @@ class Inverter
     public $graphOnFrontend;
     public $description;
     public $initialkwh;
+    public $producesSince;
     public $expectedkwh;
     public $plantpower;
     public $heading;
