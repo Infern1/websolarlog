@@ -2,12 +2,34 @@
   <input type="hidden" name="s" value="save-advanced" />
   <fieldset>
     <legend>Advanced settings</legend>
-    <label for="co2kwh">co2-kwh:</label><input type="text" name="co2kwh" value="{{data.co2kwh}}"/><br />
-    <label for="aurorapath">aurora path:</label><input type="text" name="aurorapath" value="{{data.aurorapath}}" /><br />
-    <label for="smagetpath">sma-get path:</label><input type="text" name="smagetpath" value="{{data.smagetpath}}" /><br />
-    <label for="smaspotpath">sma-spot path:</label><input type="text" name="smaspotpath" value="{{data.smaspotpath}}" />BlueTooth<br />
-    <label for="smartmeterpath">smartmeter path:</label><input type="text" name="smartmeterpath" value="{{data.smartmeterpath}}" /><br />
+    <label for="co2kwh">CO2 avoided per kWh:</label><input type="text" name="co2kwh" value="{{data.co2kwh}}"/>in grams<br />
+    <hr>
+    Below you need to set the path of the software you use to communicate with the device.<br>See the examples for help.<br />
+    <label for="aurorapath">Aurora PowerOne:</label><input type="text" name="aurorapath" value="{{data.aurorapath}}" size="50"/><br />
+    <label for="smagetpath">sma-get:</label><input type="text" name="smagetpath" value="{{data.smagetpath}}"  size="50"/><br />
+    <label for="smaspotpath">sma-spot:</label><input type="text" name="smaspotpath" value="{{data.smaspotpath}}"  size="50"/>BlueTooth<br />
+    <label for="smartmeterpath">smartmeter:</label><input type="text" name="smartmeterpath" value="{{data.smartmeterpath}}"  size="50"/><br />
+    <div id="examples">
+    <h3>examples</h3>
+    <div>
+    <strong>Smartmeter:</strong><br />
+    python3 /var/www/websolarlog/scripts/P1.py /dev/ttyUSB0<br />(executor script serialDevice)<br />
+    <br />
+    <strong>SMAspot:</strong><br />
+    /home/root/smaspot/./smaspot<br />(script)<br />you need to configure the inverter in SMAspot<br /><br />
+    <strong>Smartmeter through PHP:</strong><br />
+    php /var/www/wsl/utils/wslP1.php /dev/ttyUSB0<br />(executor script serialDevice)<br />
+    <br />
+    <strong>Aurora PowerOne:</strong><br />
+    /home/root/aurora-1.8.3/aurora -Y5 -l5 -M10 /dev/ttyUSB0<br />(executor parameters serialDevice)<br />
+    <br />
+    </div></div>
+    <br />
+    <hr>
+    activate debugging:<br />
     <label for="debugmode">Debug mode:</label><input type="checkbox" name="debugmode" value="1" {{#if data.debugmode}}checked=checked{{/if}}/><br />
+    <hr>
+    configure stat-tools:<br />
     <label for="googleAnalytics">Google Analytics:</label><input type="text" name="googleAnalytics" value="{{data.googleAnalytics}}" />(XX-00000000-0)<br />
     <label for="piwikServerUrl">Piwik server url:</label><input type="text" name="piwikServerUrl" value="{{data.piwikServerUrl}}" /><br />
     <label for="piwikSiteId">Piwik site id:</label><input type="text" name="piwikSiteId" value="{{data.piwikSiteId}}" /><br />
@@ -25,7 +47,7 @@
 	<a href="admin-server.php?s=attachTwitter" target="_blank">Attach SunCounter to you Twitter</a>
 	{{/if_eq}}
 	{{#if_eq data.social.TwitterAttached compare="1"}}
-	<br>
+	<br />
 	<div class="column span-6" >
 		<a href="https://www.twitter.com/{{data.social.TwitterDisplayName}}" target="_blank" title="Go to my Twitter page"><img src="images/link.png" class="icon">We are connected</a>
 	</div>
@@ -43,3 +65,15 @@
     <!--<button type="button" id="btnAdvancedSubmit">Save</button>-->
   </fieldset>
 </form> 
+<script>
+  $(function() {
+$("#examples").accordion({ 
+        event: "click",
+        active: false,
+        collapsible: true,
+        autoHeight: false
+
+    });
+  });
+  </script>
+	
