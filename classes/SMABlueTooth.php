@@ -25,7 +25,7 @@ Class SMABlueTooth implements DeviceApi {
     	if ($this->DEBUG) {
     		return "W2223424".rand(0,9);
     	} else {
-    		return $this->execute('-a');
+    		return $this->execute('');
     	}
 
     }
