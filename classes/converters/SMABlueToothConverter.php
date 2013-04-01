@@ -73,10 +73,12 @@ class SMABlueToothConverter
         if (!empty ($data[31])) {
             $live->GP = trim(substr($data[31],16,6))*1000;
         }
+        
+        ($live->I1P && $live->I2P) ? $live->IP = $live->I1P+$live->I2P : $live->IP = $live->I1P;
 
-		if($live->GP > 0 AND $live->I1P > 0){
+		if($live->GP > 0 AND $live->IP > 0){
         	// We can calculate the Efficienty DC>AC in %
-			$live->EFF = ($live->GP/$live->I1P)*100;
+			$live->EFF = ($live->GP/$live->IP)*100;
         }
 
         if (!empty ($data[35])) {
