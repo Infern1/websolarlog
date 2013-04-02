@@ -321,17 +321,16 @@ class SmartMeterAddon {
 			$UTCtimeDiff = $UTCdate - $preBean['time'];
 			$graph->points['cumGasUsage'][] = array ($UTCdate * 1000,$bean['gasUsage']-$firstBean['gasUsage'],date("H:i, d-m-Y",$bean['time']));
 			if($i==0){
-				$graph->points['smoothGasUsage'][] = array ($UTCdate * 1000,$firstBean['gasUsage']-$bean['gasUsage'],date("H:i, d-m-Y",$bean['time']));
+				$graph->points['smoothGasUsage'][] = array ($UTCdate * 1000,$firstBean['gasUsage']-$bean['gasUsage']);
 			}
-			if( $bean['gasUsage']-$firstBean['gasUsage'] !=
-					$preBean['gasUsage']-$firstBean['gasUsage']
-			){
-				$graph->points['smoothGasUsage'][] = array ($UTCdate * 1000,$bean['gasUsage']-$firstBean['gasUsage'],date("H:i, d-m-Y",$bean['time']));
+			
+			if( $bean['gasUsage']-$firstBean['gasUsage'] != $preBean['gasUsage']-$firstBean['gasUsage']){
+				$graph->points['smoothGasUsage'][] = array ($UTCdate * 1000,$bean['gasUsage']-$firstBean['gasUsage']);
 			}
-			$graph->points['cumLowUsage'][] = array ($UTCdate * 1000,$bean['lowUsage']-$firstBean['lowUsage'],date("H:i, d-m-Y",$bean['time']));
-			$graph->points['cumHighUsage'][] = array ($UTCdate * 1000,$bean['highUsage']-$firstBean['highUsage'],date("H:i, d-m-Y",$bean['time']));
-			$graph->points['cumLowReturn'][] = array ($UTCdate * 1000,$bean['lowReturn']-$firstBean['lowReturn'],date("H:i, d-m-Y",$bean['time']));
-			$graph->points['cumHighReturn'][] = array ($UTCdate * 1000,$bean['highReturn']-$firstBean['highReturn'],date("H:i, d-m-Y",$bean['time']));
+			$graph->points['cumLowUsage'][] = array ($UTCdate * 1000,$bean['lowUsage']-$firstBean['lowUsage']);
+			$graph->points['cumHighUsage'][] = array ($UTCdate * 1000,$bean['highUsage']-$firstBean['highUsage']);
+			$graph->points['cumLowReturn'][] = array ($UTCdate * 1000,$bean['lowReturn']-$firstBean['lowReturn']);
+			$graph->points['cumHighReturn'][] = array ($UTCdate * 1000,$bean['highReturn']-$firstBean['highReturn']);
 			
 			$lowUsage = Formulas::calcAveragePower($preBean['lowUsage'], $bean['lowUsage'], $preBean['time']-$bean['time'])/1000;
 			$highUsage = Formulas::calcAveragePower($preBean['highUsage'], $bean['highUsage'], $preBean['time']-$bean['time'])/1000;
@@ -343,51 +342,74 @@ class SmartMeterAddon {
 			$actualUsage = (int)0;
 			($lowActual!=0) ?	$actualUsage = $lowActual :	$actualUsage = $highActual;
 
-			$graph->points['lowUsage'][] = array ($UTCdate * 1000,$lowUsage,date("H:i, d-m-Y",$bean['time']));
-			$graph->points['highUsage'][] = array ($UTCdate * 1000,$highUsage,date("H:i, d-m-Y",$bean['time']));
-			$graph->points['lowReturn'][] = array ($UTCdate * 1000,$lowReturn,date("H:i, d-m-Y",$bean['time']));
-			$graph->points['highReturn'][] = array ($UTCdate * 1000,$highReturn,date("H:i, d-m-Y",$bean['time']));
+			$graph->points['lowUsage'][] = array ($UTCdate * 1000,$lowUsage);
+			$graph->points['highUsage'][] = array ($UTCdate * 1000,$highUsage);
+			$graph->points['lowReturn'][] = array ($UTCdate * 1000,$lowReturn);
+			$graph->points['highReturn'][] = array ($UTCdate * 1000,$highReturn);
 			
 			($actualUsage<$minActual) ? $minActual = $actualUsage : $actualUsage = $actualUsage;
 			($actualUsage>$maxActual) ? $maxActual = $actualUsage : $actualUsage = $actualUsage;
 
-			$graph->points['actualUsage'][] = array ($UTCdate * 1000,round(trim($actualUsage),0), date("H:i, d-m-Y",$bean['time']));				
+			$graph->points['actualUsage'][] = array ($UTCdate * 1000,round(trim($actualUsage),0));				
 			$preBean = $bean;
 			$i++;
 		}
-		/* Set Serie Labels, The order of the labels needs to be the same as the points above*/
-		$graph->series[] = array('label'=>_("Cum.").' '._("Gas").''._("(l)"),'yaxis'=>'y2axis');
-		$graph->series[] = array('label'=>_("Smooth").' '._("Gas").''._("(l)") ,'yaxis'=>'y2axis');
-		$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
-		$graph->series[] = array('label'=>_("Cum.").' '._("high").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
-		$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("return").''._("(W)"),'yaxis'=>'y2axis');
-		$graph->series[] = array('label'=>_("Cum.").' '._("high").' '._("return").''._("(W)") ,'yaxis'=>'y2axis');
-		$graph->series[] = array('label'=>_("Low").' '._("usage").''._("(W)") ,'yaxis'=>'y3axis');
-		$graph->series[] = array('label'=>_("High").' '._("usage").''._("(W)") ,'yaxis'=>'y3axis');
-		$graph->series[] = array('label'=>_("Low").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
-		$graph->series[] = array('label'=>_("High").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
-		$graph->series[] = array('label'=>_("Actual").' '._("usage").''._("(W)"),'yaxis'=>'y4axis');
 		
-		$graph->timestamp = Util::getBeginEndDate('day', 1,$startDate);
-		($maxActual>0) ? $maxActual = ceil( ( ($maxActual*1.1)+100) / 100 ) * 100 : $maxActual= $maxActual;
-		($minActual<0) ? $minActual = ceil( ( ($minActual*1.1)+100) / 100 ) * 100 : $minActual = $minActual;
-		$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-		$graph->axes['y3axis'] = array('label'=>_("Gas").''._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-		$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'min'=>$minActual,'max'=>$maxActual,'labelRenderer'=>'CanvasAxisLabelRenderer');
-		
-		$graph->metaData['hideSeries']= array(
-				'label'=>array(
-						$graph->series[0]['label'],
-						$graph->series[1]['label'],
-						$graph->series[2]['label'],
-						$graph->series[3]['label'],
-						$graph->series[4]['label'],
-						$graph->series[5]['label'],
-						$graph->series[6]['label'],
-						$graph->series[7]['label'],
-						$graph->series[8]['label'],
-						$graph->series[9]['label'])
-		);
+		// see if we have more then 1 bean (the dummy bean)
+		if($i > 1){
+
+			/* Set Serie Labels, The order of the labels needs to be the same as the points above*/
+			$graph->series[] = array('label'=>_("Cum.").' '._("Gas").''._("(l)"),'yaxis'=>'y2axis');
+			$graph->series[] = array('label'=>_("Smooth").' '._("Gas").''._("(l)") ,'yaxis'=>'y2axis');
+			$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
+			$graph->series[] = array('label'=>_("Cum.").' '._("high").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
+			$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("return").''._("(W)"),'yaxis'=>'y2axis');
+			$graph->series[] = array('label'=>_("Cum.").' '._("high").' '._("return").''._("(W)") ,'yaxis'=>'y2axis');
+			$graph->series[] = array('label'=>_("Low").' '._("usage").''._("(W)") ,'yaxis'=>'y3axis');
+			$graph->series[] = array('label'=>_("High").' '._("usage").''._("(W)") ,'yaxis'=>'y3axis');
+			$graph->series[] = array('label'=>_("Low").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
+			$graph->series[] = array('label'=>_("High").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
+			$graph->series[] = array('label'=>_("Actual").' '._("usage").''._("(W)"),'yaxis'=>'y4axis');
+			
+			$graph->timestamp = Util::getBeginEndDate('day', 1,$startDate);
+			($maxActual>0) ? $maxActual = ceil( ( ($maxActual*1.1)+100) / 100 ) * 100 : $maxActual= $maxActual;
+			($minActual<0) ? $minActual = ceil( ( ($minActual*1.1)+100) / 100 ) * 100 : $minActual = $minActual;
+			$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+			$graph->axes['y3axis'] = array('label'=>_("Gas").''._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+			$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'min'=>$minActual,'max'=>$maxActual,'labelRenderer'=>'CanvasAxisLabelRenderer');
+			
+			// default hide graph lines.
+			$graph->metaData['hideSeries']= array(
+					'label'=>array(
+							$graph->series[0]['label'],
+							$graph->series[1]['label'],
+							$graph->series[2]['label'],
+							$graph->series[3]['label'],
+							$graph->series[4]['label'],
+							$graph->series[5]['label'],
+							$graph->series[6]['label'],
+							$graph->series[7]['label'],
+							$graph->series[8]['label'],
+							$graph->series[9]['label']),
+					);
+			
+			//graph specific legenda.
+			$graph->metaData['legend']= array(
+							"show"=>true,
+							"location"=>'s',
+							"placement"=>'outsideGrid',
+							"renderer"=>'EnhancedLegendRenderer',
+							"rendererOptions"=>array(
+									"seriesToggle"=>'normal',
+									"numberRows"=>2
+						),
+					"left"=>10,
+					"width"=>700,
+			);
+			
+		}else{
+			$graph->points=null;
+		}
 		return $graph;
 	}
 
@@ -402,9 +424,7 @@ class SmartMeterAddon {
 
 		($args[3] == 'today')?$type='day':$type=$args[3];
 		$beans = $this->adapter->readTablesPeriodValues($args[1], 'historySmartMeter', $type, $args[2]);
-		//echo $args[2];
 		$beans = $this->DayBeansToGraphPoints($beans,$args[2]);
-		//var_dump($beans);
 		return $beans;
 	}
 

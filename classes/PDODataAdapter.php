@@ -496,8 +496,8 @@ class PDODataAdapter {
 			$cumPower = round(($bean['KWHT']-$firstBean['KWHT'])*1000,0);
 			// 09/30/2010 00:00:00
 			$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,0,0);
-			$graph->points['cumPower'][] = array (  $UTCdate*1000 ,$cumPower,date("H:i, d-m-Y",$bean['time']));
-			$graph->points['avgPower'][] = array (  $UTCdate*1000 ,$avgPower,date("H:i, d-m-Y",$bean['time']));
+			$graph->points['cumPower'][] = array (  $UTCdate*1000 ,$cumPower);
+			$graph->points['avgPower'][] = array (  $UTCdate*1000 ,$avgPower);
 			$preBeanUTCdate = $bean['time'];
 			$preBean = $bean;
 			$i++;
@@ -529,6 +529,17 @@ class PDODataAdapter {
 			$graph->axes['yaxis']  = array('label'=>'Cum. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->axes['y2axis'] = array('label'=>'Avg. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->metaData['hideSeries']= array();
+			
+			$graph->metaData['legend']= array(
+							"show"=>true,
+							"location"=>'nw',
+							"renderer"=>'EnhancedLegendRenderer',
+							"rendererOptions"=>array(
+									"seriesToggle"=>'normal',
+							),
+							"width"=>0,
+							"left"=>0
+			);
 		}
 		return $graph;
 	}
@@ -1638,9 +1649,11 @@ class PDODataAdapter {
 				'tickInterval'=>3600,'tickOptions'=>array('formatter'=>'DayDateTickFormatter','angle'=>-45));
 
 		$graph = $this->DayBeansToGraphPoints($beans,$graph,$startDate);
+		
 
 		$hookGraph = HookHandler::getInstance()->fire("GraphDayPoints",$invtnum,$startDate,$type);
-
+		
+		
 		foreach ($hookGraph->axes as $key => $value){
 			$graph->axes[$key] = $value;
 		}
@@ -1660,13 +1673,18 @@ class PDODataAdapter {
 			$graph->timestamp = $hookGraph->timestamp;
 		}
 
-
+		
 		if($hookGraph->metaData != null){
 			if(count($graph->metaData['hideSeries']['label'])== count($graph->series)){
 				$graph->metaData['hideSeries']=null;
 			}
 			$graph->metaData= array_merge_recursive((array)$hookGraph->metaData,(array)$graph->metaData);
+			
+			if($hookGraph->metaData['legend']!=null){
+				$graph->metaData['legend'] = $hookGraph->metaData['legend'];
+			}
 		}
+		
 		$array['graph'] = $graph;
 
 
