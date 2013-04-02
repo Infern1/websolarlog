@@ -31,11 +31,6 @@
 <div class="column span-3" style="text-align:right;">{{data.summary.overall.overallSumKwh-0}}&nbsp;</div>
 <div class="column span-3 last" style="text-align:right;">{{data.summary.overall.overallAvgKwh-0}}&nbsp;</div>
 <div class="column span-3 last" style="text-align:right;">{{data.summary.overall.overallKwhKwp-0}}&nbsp;</div>
-
-<div class="column span-3 first"><a href="#">{{lang.overallTotal}}</a></div>
-<div class="column span-3" style="text-align:right;">{{data.summary.total.totalSumKwh-0}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.total.totalAvgKwh-0}}&nbsp;</div>
-<div class="column span-3 last" style="text-align:right;">{{data.summary.total.totalKwhKwp-0}}&nbsp;</div>
 </div>
 <hr>
 {{lang.allFiguresAreInKWH}}<br>
