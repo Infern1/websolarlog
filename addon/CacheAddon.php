@@ -40,8 +40,9 @@ class CacheAddon {
 	
 	public function averagePower($args) {
 		$timestamp = time();
-		foreach ($this->config->inverters as $inverter) {
-			$deviceNum = $inverter->id;
+		foreach (Session::getConfig()->inverters as $device){
+
+			$deviceNum = $device->id;
 			
 			$recentBegin = time()-400;
 			$recentEnd = time();
@@ -63,7 +64,7 @@ class CacheAddon {
 			$average['recent'] = ($avgRecent[0]['avgGP']>0)? $avgRecent[0]['avgGP']: '0';
 			$average['past'] = ($avgPast[0]['avgGP']>0)? $avgPast[0]['avgGP']:'0';
 			
-			$live = $this->adapter->readLiveInfo($inverter->id);
+			$live = $this->adapter->readLiveInfo($device->id);
 			$average['recent'] = ($live->GP + $average['recent'])/2;
 			
 			if($average['recent']>$average['past']){
@@ -76,7 +77,7 @@ class CacheAddon {
 			$cache = new Cache();
 
 			//save trend
-			$cache->key = 'trend-'.$inverter->id;
+			$cache->key = 'trend-'.$device->id;
 			$cache->value = $trend;
 			$cache->module = 'live';
 			$cache->page = 'index';
@@ -86,7 +87,7 @@ class CacheAddon {
 			
 			//save pastAvg
 			/////////////////////////
-			$cache->key = 'pastAvg-'.$inverter->id;
+			$cache->key = 'pastAvg-'.$device->id;
 			$cache->value = $average['past'];
 			$cache->module = 'live';
 			$cache->page = 'index';
@@ -96,7 +97,7 @@ class CacheAddon {
 			
 			//save recentAvg
 			/////////////////////////
-			$cache->key = 'recentAvg-'.$inverter->id;
+			$cache->key = 'recentAvg-'.$device->id;
 			$cache->value = $average['recent'];
 			$cache->module = 'live';
 			$cache->page = 'index';
