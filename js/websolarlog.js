@@ -161,12 +161,17 @@ function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot, series) {
 			
 			if(displayHigh==true && displayLow==true && plot.series[eachSerieIndex].show == true){
 				returned += tooltipTodayContentEditorLine(plot.series[eachSerieIndex].label,"   "+plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],false);
+				
 			}
 		}else{
 			ClosestPointIndex = getClosest(plot.series[eachSerieIndex].data, plot.series[seriesIndex].data[pointIndex][0]);
-			returned += tooltipTodayContentEditorLine(plot.series[eachSerieIndex].label,"   "+plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],true);			
+			returned += tooltipTodayContentEditorLine(plot.series[eachSerieIndex].label,"   "+plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],true);
 		}
+		
+		
 	});
+	var time = timeConverter(plot.series[seriesIndex].data[pointIndex][0],'time');
+	returned += tooltipTodayContentEditorLine("Time:","   "+time,true);
 	return returned;
 }
 
@@ -266,12 +271,35 @@ function timeConverter(timestamp, format) {
 	var month_name = months[a.getMonth()];
 	var month = a.getMonth() + 1;
 	var date = a.getDate();
-	var hour = a.getHours();
-	var min = a.getMinutes();
-	var sec = a.getSeconds();
+	var hour = twoDigits(a.getHours());
+	var min = twoDigits(a.getMinutes());
+	var sec = twoDigits(a.getSeconds());
 	var time = eval(format);
+	
+	switch(format){
+	case "time":
+		var time = hour+':'+min+':'+sec;
+	  break;
+	case "date":
+		var time = date+'-'+month+'-'+year;
+	  break;
+	case "datetime":
+		var time = hour+':'+min+':'+sec+' '+date+'-'+month+'-'+year;
+	  break;  
+	default:
+	  var time = 'unknown format.';
+	}
+	
 	return time;
 }
+
+function twoDigits(value) {
+	if(value < 10) {
+		return '0' + value;
+	}
+	return value;
+}
+
 
 function handleGraphs(request, invtnum) {
 	// set inverter
@@ -746,7 +774,6 @@ var WSL = {
 
 	init_PageIndexTotalValues : function(sideBar) {
 		WSL.api.getPageIndexTotalValues(function(data) {
-			//console.log('total2');
 			$.ajax({
 				url : 'js/templates/totalValues.hb',
 				beforeSend : function(xhr) {
@@ -1009,10 +1036,6 @@ var WSL = {
 				autoscale : true
 			},
 			series : [],
-			axesDefaults : {
-				useSeriesColor : true,
-				labelRenderer : $.jqplot.CanvasAxisLabelRenderer
-			},
 			/*legend : {
 				show : true,
 				location : "nw",
@@ -1023,16 +1046,14 @@ var WSL = {
 					disableIEFading : false
 				}
 			},*/
-			legend : {
-				show : true,
-				location : 's',
-				placement : 'outsideGrid',
-				renderer : $.jqplot.EnhancedLegendRenderer,
-				rendererOptions : {
-					seriesToggle : 'normal',
-					numberRows : 2,// seriesToggleReplot:{resetAxes:["yaxis"]}
-				}
-			},
+			axesDefaults:
+		    {
+		        syncTicks:       true,
+				useSeriesColor : true,
+				labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+		        autoscale:       true,
+
+		    },
 			axes : {},
 			highlighter : {
 				tooltipContentEditor : tooltipTodayContentEditor,
@@ -1085,8 +1106,16 @@ var WSL = {
 							}
 							seriesData.push(json);
 						}
-						graphOptions.legend.labels = result.dayData.graph.labels;
-	
+						
+						//graphOptions.legend.labels = result.dayData.graph.labels;
+						
+						if(result.dayData.graph.metaData.legend != ''){
+							if (result.dayData.graph.metaData.legend.renderer == 'EnhancedLegendRenderer') {
+								result.dayData.graph.metaData.legend.renderer = $.jqplot.EnhancedLegendRenderer;
+							}
+							
+							graphOptions.legend = result.dayData.graph.metaData.legend;
+						}
 						for (axes in result.dayData.graph.axes) {
 							if (result.dayData.graph.axes[axes]['renderer'] == 'DateAxisRenderer') {
 								result.dayData.graph.axes[axes]['renderer'] = $.jqplot.DateAxisRenderer;
@@ -1124,10 +1153,15 @@ var WSL = {
 	
 					handle = null;
 					delete handle;
+					
 					handle = $.jqplot('graph' + tab + 'Content',seriesData, graphOptions);
-					//$('table.jqplot-table-legend').attr('class','jqplot-table-legend-custom');
-					$('table.jqplot-table-legend').css('left',10);
-					$('table.jqplot-table-legend').css('width','850');
+
+					if(result.dayData.graph.metaData.legend.left>0){
+						$('table.jqplot-table-legend').css('left',result.dayData.graph.metaData.legend.left);
+					}
+					if(result.dayData.graph.metaData.legend.width>0){
+						$('table.jqplot-table-legend').css('width',result.dayData.graph.metaData.legend);
+					}
 					
 					// iterator to keep track on the legenda items
 					i = 1;
@@ -1149,7 +1183,6 @@ var WSL = {
 								} else {
 									if ($this.text() == result.dayData.graph.metaData.hideSeries.label[line]) {
 										// CLICK!!
-										console.log($this.text());
 										$("td:contains("+$this.text()+")").click();
 									}
 								}
