@@ -82,6 +82,11 @@ class DiehlConverter
 	}
 	*/
 	
+	public static function toMode($inputLine) {
+		// TODO :: implement this method
+		return 0; // Try to detecht
+	}
+	
     /**
      * Converts the result of getData to an Live object
      * @param string $inputLine
