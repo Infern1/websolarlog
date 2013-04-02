@@ -265,18 +265,17 @@ try {
 			$data['sundown'] = Util::isSunDown($config);
 			break;
 		case 'getPageYearValues':
+			$beans = R::findAndExport('Inverter');
 			$maxEnergy=array();
 			$energy=array();
 			$maxPower=array();
 			$minMaxEnergyYear=array();
-
-			foreach (Session::getConfig()->inverters as $device){
-				$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($device->id,$date);
-				$energy[] = $dataAdapter->getYearEnergyPerMonth($device->id,$date);
-				$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($device->id,$date);
-				$maxMinEnergyYear[] = $dataAdapter->getMaxMinEnergyYear($device->id,$date);
+			foreach ($beans as $inverter){
+				$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($inverter['id'],$date);
+				$energy[] = $dataAdapter->getYearEnergyPerMonth($inverter['id'],$date);
+				$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($inverter['id'],$date);
+				$maxMinEnergyYear[] = $dataAdapter->getMaxMinEnergyYear($inverter['id'],$date);
 			}
-			
 			$lang = array();
 			$lang['today'] 			= _("Today");
 			$lang['maxGridPower'] 	= _("Max Grid Power");
@@ -304,10 +303,12 @@ try {
 			$data['yearData'] = $dayData;
 			break;
 		case 'getPageMonthValues':
-			foreach (Session::getConfig()->inverters as $device){
-				$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($device->id, $date);
-				$maxEnergy[] = $dataAdapter->getMonthEnergyPerDay($device->id, $date);
-				$minMaxEnergyMonth[] = $dataAdapter->getMaxMinEnergyMonth($device-id,$date);
+			$beans = R::findAndExport('Inverter');
+			
+			foreach ($beans as $inverter){
+				$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($inverter['id'], $date);
+				$maxEnergy[] = $dataAdapter->getMonthEnergyPerDay($inverter['id'], $date);
+				$minMaxEnergyMonth[] = $dataAdapter->getMaxMinEnergyMonth($inverter['id'],$date);
 			}
 	
 			$dayData = new DayDataResult();
@@ -336,12 +337,14 @@ try {
 			$data['monthData'] = $dayData;
 			break;
 		case 'getPageTodayValues':
+			$beans = R::findAndExport('Inverter');
+			
 			$maxEnergy = array();
 			$maxPower = array();
 			
-			foreach (Session::getConfig()->inverters as $device){
-				$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($device->id);
-				$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($device->id);
+			foreach ($beans as $inverter){
+				$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($inverter['id']);
+				$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($inverter['id']);
 			}
 			$dayData = new DayDataResult();
 			$dayData->data = array(
@@ -372,8 +375,9 @@ try {
 			$lang['expected'] 		= _("expected");
 			$data['lang'] = $lang;
 			
-			foreach (Session::getConfig()->inverters as $device){
-				$inverter[] = array("name"=>$device->name,"id"=>$device->id);
+			$inverters = R::findAndExport('Inverter');
+			foreach ($inverters as $inv){
+				$inverter[] = array("name"=>$inv['name'],"id"=>$inv['id']);
 			}
 			
 			$dayData = new DayDataResult();
@@ -391,9 +395,9 @@ try {
 			$compareMonth = Common::getValue('compareMonth', 0);
 			$compareYear = Common::getValue('compareYear', 0);
 			$invtnum = Common::getValue('invtnum', 0);
-			
-			foreach (Session::getConfig()->inverters as $device){
-				$inverter[] = array("name"=>$device->name,"id"=>$device->id);
+			$inverters = R::findAndExport('Inverter');
+			foreach ($inverters as $inv){
+				$inverter[] = array("name"=>$inv['name'],"id"=>$inv['id']);
 			}
 	
 			$lines = $dataAdapter->getCompareGraph($invtnum, $whichMonth,$whichYear,$compareMonth,$compareYear);
@@ -496,9 +500,8 @@ try {
 			$lang = array();
 			$lang['someFigures'] 	= _("Some Figures*");
 			$lang['by']			 	= _("By");
-
 			$lang['total'] 			= _("Total");
-			$lang['AvgDay']	 	= _("Avg. Day");
+			$lang['AvgDay']	 		= _("Avg. Day");
 			$lang['today'] 			= _("Today");
 			$lang['week'] 			= _("Week");
 			$lang['month'] 			= _("Month");
@@ -511,6 +514,7 @@ try {
 			$lang['allFiguresAreInKWH']= _("* All figures are in kWh");
 			$lang['overallTotalText']= _("** Incl. initial kWh");
 
+				
 			$indexValues = $dataAdapter->readPageIndexData($config);
 			$data['IndexValues'] = $indexValues;
 			$data['lang'] = $lang;
