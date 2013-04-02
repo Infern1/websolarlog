@@ -20,6 +20,12 @@ class PDODataAdapter {
 			R::setup($config->dbDSN);
 		}
 
+		// Only use on sqlite for speedup
+		if (strpos($config->dbDSN,'sqlite') !== false) {
+			R::exec("PRAGMA synchronous = NORMAL"); // A little less secure then FULL, but much less IO
+			R::exec("PRAGMA PRAGMA temp_store = 2"); // In memory (IO on SD is slow)
+		}
+		
 		R::debug(false);
 		R::setStrictTyping(false);
 	}
