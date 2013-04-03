@@ -210,6 +210,7 @@ class PDODataAdapter {
 
 		$bean->SDTE = $live->SDTE;
 		$bean->time = $timestamp;
+		$bean->dayNum = date("z",$timestamp) + 1;
 		$bean->INV = $invtnum;
 		$bean->I1V = $live->I1V;
 		$bean->I1A = $live->I1A;
@@ -930,13 +931,13 @@ class PDODataAdapter {
 		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
 		if ($invtnum > 0){
 			$energyBeans = R::getAll("
-					SELECT strftime ( '%H:%M:%S %d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date,*
+					SELECT *
 					FROM '".$table."'
 					WHERE INV = :INV AND time > :beginDate AND  time < :endDate
 					ORDER BY time",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
 			$energyBeans = R::getAll("
-					SELECT strftime ( '%H:%M:%S %d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date,*
+					SELECT *
 					FROM '".$table."'
 					WHERE time > :beginDate AND  time < :endDate
 					ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
@@ -1659,16 +1660,16 @@ class PDODataAdapter {
 
 		$hookGraph = HookHandler::getInstance()->fire("GraphDayPoints",$invtnum,$startDate,$type);
 		
-		
-		foreach ($hookGraph->axes as $key => $value){
-			$graph->axes[$key] = $value;
+		if($hookGraph->axes!=null){
+			foreach ($hookGraph->axes as $key => $value){
+				$graph->axes[$key] = $value;
+			}
 		}
-
-
-		foreach($hookGraph->series as $series){
-			$graph->series[] = $series;
+		if($hookGraph->series!=null){
+			foreach($hookGraph->series as $series){
+				$graph->series[] = $series;
+			}
 		}
-
 		if($hookGraph->points!=null){
 			foreach ($hookGraph->points as $key => $value){
 				$graph->points[$key] = $value;
