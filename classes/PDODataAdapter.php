@@ -1677,6 +1677,7 @@ class PDODataAdapter {
 		}
 
 		if($hookGraph->timestamp!=null){
+			
 			$graph->timestamp = $hookGraph->timestamp;
 		}
 
