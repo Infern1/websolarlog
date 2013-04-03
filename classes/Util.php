@@ -17,7 +17,7 @@ class Util {
     		$startDate = strtotime(date("Y",$startDate)."".date("m",$startDate)."".date("d",$startDate));
     	}
 
-    	return date_sun_info((strtotime($startDate)), $config->latitude , $config->longitude);
+    	return date_sun_info($startDate, $config->latitude , $config->longitude);
     }
     
     public static function getDataLockFile() {
