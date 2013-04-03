@@ -18,11 +18,9 @@ class SmartMeterAddon {
 	 * @param unknown $args
 	 */
 	public function onSmartMeterHistory($args) {
-		//echo "CoreAddon onSmartMeterHistory";
 		$inverter = $args[1];
 		$live = $args[2];
 		$timestamp = $args[3];
-		//var_dump($live);
 		$this->addSmartMeterHistory($inverter->id, $live, $timestamp);
 
 		HookHandler::getInstance()->fire("newHistory", $inverter, $timestamp);
@@ -103,7 +101,6 @@ class SmartMeterAddon {
 	 * @param unknown $args
 	 */
 	public function onLiveSmartMeterData($args) {
-		//echo "\r\nonLiveSmartMeterData\r\n";
 		$inverter = $args[1];
 		$live = $args[2];
 
@@ -126,6 +123,7 @@ class SmartMeterAddon {
 	public function addSmartMeterHistory($invtnum, LiveSmartMeter $live,$timestamp) {
 		$bean = R::dispense('historySmartMeter');
 
+		// check if we have a "valid" Bean to store.
 		$bean->invtnum = $invtnum;
 		$bean->gasUsage = $live->gasUsage;
 		$bean->highReturn = $live->highReturn;
@@ -135,9 +133,10 @@ class SmartMeterAddon {
 		$bean->liveReturn = $live->liveReturn;
 		$bean->liveUsage = $live->liveUsage;
 		$bean->time = $timestamp;
-
+		
 		//Store the bean
 		$id = R::store($bean);
+		
 		return $bean;
 	}
 
@@ -235,10 +234,7 @@ class SmartMeterAddon {
 	 * @param Live $live
 	 */
 	public function writeLiveSmartMeterInfo($invtnum,LiveSmartMeter $live) {
-		$bean =  R::findOne('liveSmartMeter','
-				invtnum = :invtnum ',
-				array(':invtnum'=>$invtnum)
-		);
+		$bean =  R::findOne('liveSmartMeter','invtnum = :invtnum ',array(':invtnum'=>$invtnum));
 
 		if (!$bean){
 			$bean = R::dispense('liveSmartMeter');
@@ -251,7 +247,6 @@ class SmartMeterAddon {
 		} else {
 			$liveGas = $readLiveBean->liveGas;
 		}
-		//$bean->KWHT = $live->KWHT;
 		$bean->gasUsage = $live->gasUsage;
 		$bean->invtnum = $invtnum;
 		$bean->liveGas = $liveGas;
@@ -297,11 +292,7 @@ class SmartMeterAddon {
 	 * will remove the live file
 	 */
 	public function dropSmartMeterLiveInfo($invtnum) {
-		$bean =  R::findOne('liveSmartMeter',
-				' invtnum = :invtnum  ',
-				array(':invtnum'=>$invtnum
-				)
-		);
+		$bean =  R::findOne('liveSmartMeter',' invtnum = :invtnum  ',array(':invtnum'=>$invtnum));
 		R::trash( $bean );
 	}
 
@@ -333,10 +324,11 @@ class SmartMeterAddon {
 			$graph->points['cumHighReturn'][] = array ($UTCdate * 1000,$bean['highReturn']-$firstBean['highReturn']);
 			
 			$lowUsage = Formulas::calcAveragePower($preBean['lowUsage'], $bean['lowUsage'], $preBean['time']-$bean['time'])/1000;
+			
 			$highUsage = Formulas::calcAveragePower($preBean['highUsage'], $bean['highUsage'], $preBean['time']-$bean['time'])/1000;
 			$lowReturn = Formulas::calcAveragePower($preBean['lowReturn'], $bean['lowReturn'], $preBean['time']-$bean['time'])/1000;
 			$highReturn = Formulas::calcAveragePower($preBean['highReturn'], $bean['highReturn'], $preBean['time']-$bean['time'])/1000;
-				
+
 			$lowActual = $lowUsage-$lowReturn;
 			$highActual =  $highUsage-$highReturn;
 			$actualUsage = (int)0;
@@ -357,7 +349,6 @@ class SmartMeterAddon {
 		
 		// see if we have more then 1 bean (the dummy bean)
 		if($i > 1){
-
 			/* Set Serie Labels, The order of the labels needs to be the same as the points above*/
 			$graph->series[] = array('label'=>_("Cum.").' '._("Gas").''._("(l)"),'yaxis'=>'y2axis');
 			$graph->series[] = array('label'=>_("Smooth").' '._("Gas").''._("(l)") ,'yaxis'=>'y2axis');
