@@ -19,7 +19,9 @@ class MeteringDeviceHandler {
 	public static function handleHistory(QueueItem $item, Inverter $device) {
 		$smartMeterAddon = new SmartMeterAddon();
 		$live = $smartMeterAddon->readLiveSmartMeterInfo($device->id);
-		HookHandler::getInstance()->fire("onSmartMeterHistory", $device, $live, $item->time);
+		if($live->gasUsage > 0 AND $live->highReturn > 0 AND $live->highUsage > 0 AND $live->lowReturn > 0 AND $live->lowUsage > 0){
+				HookHandler::getInstance()->fire("onSmartMeterHistory", $device, $live, $item->time);
+		}
 	}
 
 	public static function handleDeviceHistory(QueueItem $item, Inverter $device) {
