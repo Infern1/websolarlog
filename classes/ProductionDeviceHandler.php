@@ -41,6 +41,9 @@ class ProductionDeviceHandler {
 		
 		// Did we get an result?
 		if ($deviceHistoryList == null) {
+			if (Session::getConfig()->debugmode) {
+				HookHandler::getInstance()->fire("onDebug", "DeviceHistory nothing returned by inverter");
+			}
 			return; // Nothing to do
 		}
 		
