@@ -83,11 +83,11 @@ class TwitterAddon {
 			$data = $this->hybridauth->restoreSessionData( $this->hybridauth_session_data['hybridauth_session'] );
 			try{
 				$twitter = $this->hybridauth->getAdapter( "Twitter" );
-				$indexValues = $this->adapter->readPageIndexData($this->config->hybridAuth);
+				$indexValues = $this->adapter->readPageIndexData();
 				$url = Common::getShortUrl($config->url);
-				$twitter->setUserStatus("Today we generated ". $indexValues['summary']['today'][0]." kWh. Check out: " . $url . " #SunCounter" );
+				$twitter->setUserStatus("Today we generated ". $indexValues['summary']['today']['todayAvgKwh-0']." kWh. Check out: " . $url . " #SunCounter" );
 				$twitter->logout();
-				$data['message']='Tweet send';
+				$data['message']=var_dump($indexValues);
 				$data['tweetSend']=1;
 				HookHandler::getInstance()->fire("onDebug", 'It looks like we Tweeted for you :D');
 			}
