@@ -1,14 +1,13 @@
 <?php
 class SMABlueToothConverter
 {
-
     /**
      * Converts the result of getData to an Live object
      * @param string $inputLine
      * @return Live or null
      */
     public static function toLive($inputLine)
-    {
+    {    	
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
             return null;
@@ -19,86 +18,102 @@ class SMABlueToothConverter
 
 		foreach ($dataSplit as $value) {
 			// remove the connection tries from the array
-			if(substr($value,0,10) != 'Connecting'){
+			
+			if(!preg_match("/^Connecting /",$value)){
 		    	$data[] = $value;
 			}
 		}
-
         // Check if the record is okay
-        if (trim($data[count($data)-1]) != "Done.") {
+		if(!preg_match("/^Done/",trim($data[count($data)-1]))){
             return null;
         }
+        
         $live = new Live();
         $live->type = 'production';
         if (!empty ($data[13])) {
-        	$live->time = trim(substr($data[13],14,22));
+        	$values= self::liveLineToValues($data[13],'SMASpotDateTime');
+        	$live->time = $values[0];
         }
+
         if (!empty ($data[21])) {
-        	$live->status = trim(substr($data[21],20,2));
+        	$values= self::liveLineToValues($data[21],'string');
+        	$live->status = $values[0];
         }
+        
         if (!empty ($data[23])) {
-        	$live->KWHDay = trim(substr($data[23],8,6));
+        	$values= self::liveLineToValues($data[23]);
+        	$live->KWHDay = (float)$values[0];
         }
+        
         if (!empty ($data[24])) {
-            $live->KWHT = trim(substr($data[24],8,8));
+        	$values= self::liveLineToValues($data[24]);
+        	$live->KWHT = (float)$values[0];
         }
         
         if (!empty ($data[28])) {
-            $live->I1V = trim(substr($data[28],31,7));
-        }
-        if (!empty ($data[28])) {
-            $live->I1A = trim(substr($data[28],47,6));
-        }
-        if (!empty ($data[28])) {
-            $live->I1P = trim(substr($data[28],16,6))*1000;
+        	$values= self::liveLineToValues($data[28]);
+            $live->I1P = (float)$values[0]*1000;
+            $live->I1V = (float)$values[1];
+            $live->I1A = (float)$values[2];
         }
         
         if (!empty ($data[29])) {
-            $live->I2V = trim(substr($data[29],31,7));
-        }
-        if (!empty ($data[29])) {
-            $live->I2A = trim(substr($data[29],47,6));
-        }
-        if (!empty ($data[29])) {
-            $live->I2P = trim(substr($data[29],16,6))*1000;
+        	$values= self::liveLineToValues($data[29]);
+        	$live->I2P = (float)$values[0]*1000;
+        	$live->I2V = (float)$values[1];
+        	$live->I2A = (float)$values[2];
         }
         
         if (!empty ($data[31])) {
-            $live->GV = trim(substr($data[31],32,6));
-        }
-        if (!empty ($data[31])) {
-            $live->GA = trim(substr($data[31],46,7));
-        }
-        
-        if (!empty ($data[31])) {
-            $live->GP = trim(substr($data[31],16,6))*1000;
+        	$values= self::liveLineToValues($data[31]);
+        	$live->GP = (float)$values[0]*1000;
+        	$live->GV = (float)$values[1];
+        	$live->GA = (float)$values[2];
         }
         
         ($live->I1P && $live->I2P) ? $live->IP = $live->I1P+$live->I2P : $live->IP = $live->I1P;
 
 		if($live->GP > 0 AND $live->IP > 0){
         	// We can calculate the Efficienty DC>AC in %
-			$live->EFF = ($live->GP/$live->IP)*100;
+			$live->EFF = (float)round(($live->GP/$live->IP)*100,4);
         }
 
         if (!empty ($data[35])) {
-            $live->FRQ = trim(substr($data[35],12,6));
+        	$values= self::liveLineToValues($data[35]);
+        	$live->FRQ = (float)$values[0];
         }
-        
-		/* Not available
-        if (!empty ($data[12])) {
-            $live->INVT = $data[12];
-        }
-        if (!empty ($data[13])) {
-            $live->BOOT = $data[13];
-        }*/
 
-        //var_dump($live);
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->GP)) {
         	return null;
         }
-
         return $live;
+    }
+    
+    
+    public function liveLineToValues($line,$type='float'){
+    	$result = array();
+    	switch ($type){
+    		case 'float':
+    			$splitLine= preg_split("/:/",$line);
+    			if(count($splitLine)>1){
+    				unset($splitLine[0]);
+    			}
+    	    	foreach ($splitLine as $string){
+    				preg_match_all('/[0-9.]/i',$string,$array);
+    				$result[]=implode($array[0]);
+    			}
+    			break;
+    		case 'string':
+    			$splitLine = preg_split("/:/",$line);
+    			$result[] = trim($splitLine[1]);
+    			break;
+	   		case 'SMASpotDateTime':
+	   			$splitLine= preg_split("/: /",$line);
+	   	    	preg_match('/(\d{2})\/(\d{2})\/(\d{4}) (\d{2})\:(\d{2})\:(\d{2})/i', $splitLine[1], $matches,0);
+	   	    	$result[] =  Util::getTimestampOfDate($matches[4],$matches[5],$matches[6],$matches[1],$matches[2],$matches[3]);
+	   			break;
+    	}
+    	return $result; 
     }
 }
