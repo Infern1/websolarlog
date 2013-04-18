@@ -50,8 +50,8 @@ class PvOutputAddon {
 			
 			//$pvoutput = shell_exec('curl -d "d='.$now.'" -d "t='.$time.'" -d "c1=0" -d "v1='.$KWHDtot.'" -d "v2='.$GPtot.'" -d "v5='.$INVT.'" -d "v6='.$GV.'" -H "X-Pvoutput-Apikey: '.$APIKEY.'" -H "X-Pvoutput-SystemId: '.$SYSID.'" http://pvoutput.org/service/r2/addstatus.jsp &');
 			$url = "http://pvoutput.org/service/r2/addstatus.jsp";
-			$this->PVoutputCurl($url,$vars,$headerInfo);
-
+			$result = $this->PVoutputCurl($url,$vars,$headerInfo);
+			return $result;
 		} catch (Exception $e) {
 			HookHandler::getInstance()->fire("onError", $e->getMessage());
 		}
@@ -206,7 +206,6 @@ class PvOutputAddon {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 4); // Connection timeout in seconds
 		curl_setopt($ch, CURLOPT_TIMEOUT, 60); // Transmission timeout in seconds
-		curl_setopt($ch, CURLOPT_VERBOSE, 1);
 		$response = curl_exec($ch);
 		$info = curl_getinfo($ch);
 		$httpResponse = curl_getinfo($ch,CURLINFO_HEADER_OUT);
