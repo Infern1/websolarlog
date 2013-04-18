@@ -197,6 +197,7 @@ function init_menu() {
     $("#btnEmail").bind('click', function() { init_mail(); });
     $("#btnTestPage").bind('click', function() { init_testpage(); });
     $("#btnTariff").bind('click', function() { init_tariff(); });
+    $("#btnSocial").bind('click', function() { init_social(); });
     $("#btnUpdate").bind('click', function() { init_updatepage(); });
     $("#btnBackup").bind('click', function() { init_backup(); });
 }
@@ -228,8 +229,6 @@ function init_backup() {
     
     $.getJSON('admin-server.php?s=dropbox', function(data) {
     	if (data.available){
-
-
     	    $.getJSON('admin-server.php?s=dropboxGetFiles', function(data) {
     	        $.ajax({
     	            url : 'js/templates/dropboxFiles.hb',
@@ -247,9 +246,6 @@ function init_backup() {
     	            dataType : 'text'
     	        });
     	    });
-    	    
-    	    
-    	                         
     	}else{
             $.ajax({
                 url : 'js/templates/dropbox.hb',
@@ -412,7 +408,34 @@ function init_advanced() {
                         });
                     });
                 });   
+
+            },
+            dataType : 'text'
+        });        
+    });
+}
+
+
+function init_social(){
+	
+    $('#sidebar').html("");
+    var content = $('#content');
+    content.html('<div id="c_social"></div>'); // Clear old data
+
+    $.getJSON('admin-server.php?s=social', function(data,response) {
+        $.ajax({
+            url : 'js/templates/social.hb',
+            success : function(source) {
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : data
+                });
                 
+                $('#content').html(html);
+                
+                
+                deviceStatuses();
+
                 $('#sendTweet').bind('click', function(){
                  	$.pnotify({
                  		title: 'Twitter',
@@ -434,10 +457,141 @@ function init_advanced() {
 	                	 }
                      });
                 });
+                              
+
+                $('#detachTwitter').bind('click', function(){
+                 	$.pnotify({
+                 		title: 'Twitter',
+                 		text: 'Disconnect twitter'
+                 	});
+                	 $.getJSON('admin-server.php?s=detachTwitter', function(data) {
+	                	 if(data.result==1){
+	                      	$.pnotify({
+	                     		title: 'Twitter',
+	                     		text: "We disconnected WSL from you're account."
+	                     	});
+	                	 }
+	                	 if(data.result==0){
+		                      $.pnotify({
+		                     	title: 'Twitter',
+		                     	text: 'Something went wrong:<br>'+data.message+'',
+		                     	type: 'error'
+		                    });
+	                	 }
+	                	 
+                     });
+                	 init_social();
+
+                });
+
+                $('#attachTwitter').bind('click', function(){
+                 	$.pnotify({
+                 		title: 'Twitter',
+                 		text: 'attach Twitter'
+                 	});
+                	 $.getJSON('admin-server.php?s=attachTwitter', function(data) {
+	                	 if(data.result==1){
+	                      	$.pnotify({
+	                     		title: 'Twitter',
+	                     		text: "We connected WSL from you're account."
+	                     	});
+	                	 }
+	                	 if(data.result==0){
+		                      $.pnotify({
+		                     	title: 'Twitter',
+		                     	text: 'Something went wrong:<br>'+data.message+'',
+		                     	type: 'error'
+		                    });
+	                	 }
+	                	 
+                     });
+                	 
+                });
+                              
+                
+                
+                /*
+                 * Because of the requests limitation of 60 request an hour, we disabled this...
+                 * 
+                $.getJSON('admin-server.php?s=getTeamFiguresFromPVoutput', function(data,response) {
+                    $.ajax({
+                        url : 'js/templates/pvoutputteams.hb',
+                        success : function(source) {
+                            var template = Handlebars.compile(source);
+                            var html = template({ 'data' : data,'lang':data.lang });
+                            $('#pvoutputteams').html(html);
+                        },
+                        dataType : 'text'
+                     });
+                });
+                */
+                
+                
+                
             },
             dataType : 'text'
-        });        
+        });
+        
     });
+            
+	
+}
+
+function deviceStatuses(){
+    
+    $.getJSON('admin-server.php?s=getTeamStatus', function(data,response) {
+        $.ajax({
+            url : 'js/templates/pvoutputdevices.hb',
+            success : function(source) {
+            	
+                var template = Handlebars.compile(source);
+                var html = template({ 'data' : data,'lang':data.lang });
+                $('#devices').html(html);
+
+                
+                $('[id^="deviceTeamState"]').bind('click', function(){
+                	$this = $(this);
+                	var get = $this.attr("id").split('-');
+                	
+                	if(get[2]=='0'){	
+                		$.post("admin-server.php?s=leavePVoTeam", { id:get[1]},
+                				  function(data){
+    				     	$.pnotify({
+    				     		title: 'Leaving  PVoutput team',
+    				     		text: data.team.response,
+                                type: 'error'
+    				     	});                				   
+                		});
+                		
+				     	$.pnotify({
+				     		title: 'Leaving  PVoutput team',
+				     		text: 'We are trying to remove you from the PVoutput WebSolarLog team'
+				     	});
+				     	deviceStatuses();
+                	}else if(get[2]=='1'){
+                		$.post('admin-server.php?s=joinPVoTeam', { id:get[1]})
+                		.done(function(data) {
+    				     	$.pnotify({
+    				     		title: 'Joining  PVoutput team',
+    				     		text: data.team.response,
+                                type: 'success'
+    				     	}); 
+                		});	              
+				     	$.pnotify({
+				     		title: 'Joining  PVoutput team',
+				     		text: 'We are trying to add you to the PVoutput WebSolarLog team'
+				     	});				     	
+				     	deviceStatuses();
+                	}else{
+                		
+                	}
+			    });
+                
+            },
+            dataType : 'text'
+         });
+    });
+    
 }
 
 

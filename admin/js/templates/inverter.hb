@@ -41,11 +41,19 @@
     <hr>
     <label for="comLog">Log comm:</label><input type="checkbox" name="comLog" value="1" {{#if data.inverter.comLog}}checked=checked{{/if}}/>   <br />   
     <label for="syncTime">Synchronize time:</label><input type="checkbox" name="syncTime" value="1" {{#if data.inverter.syncTime}}checked=checked{{/if}}/>   <br />   
-    <hr>
+    <hr><a name="pvoutput"/>
     PVoutput config for this inverter;<br>
+    
     <label for="pvoutputEnabled">PVOutput Enabled:</label><input type="checkbox" name="pvoutputEnabled" value="1" {{#if data.inverter.pvoutputEnabled}}checked=checked{{/if}}/>   <br />   
     <label for="pvoutputApikey">PVOutput Api key:</label><input type="text" name="pvoutputApikey" value="{{data.inverter.pvoutputApikey}}" />   See your PVoutput settings page.<br />   
-    <label for="pvoutputSystemId">PVOutput System id:</label><input type="text" name="pvoutputSystemId" value="{{data.inverter.pvoutputSystemId}}" />   See your PVoutput settings page.<br />   
+    <label for="pvoutputSystemId">PVOutput System id:</label><input type="text" name="pvoutputSystemId" value="{{data.inverter.pvoutputSystemId}}" />   See your PVoutput settings page.<br />
+    <label for="pvoutputWSLTeamMember">WSL Team Member:</label>
+    {{#if data.inverter.pvoutputWSLTeamMember}}
+    wel lid
+    {{else}}
+    <a href="index.php#social">niet lid</a>
+    {{/if}}
+    <br />
     
     <button type="button" id="btnInverterSubmit">Save</button>
   </fieldset>

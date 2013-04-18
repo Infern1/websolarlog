@@ -22,7 +22,7 @@
 	
 			{{#each data.infoEvents}}
 			<div class="column span-4 first">{{this.INV}}</div>
-			<div class="column span-4" title="{{this.HumanTime}}">{{this.date}}</div>
+			<div class="column span-4" title="{{timestampDateFormat this.date format="HH:MM:SS"}}">{{timestampDateFormat this.date format="DD MMM YYYY"}}</div>
 			<div class="column span-11 last">{{this.Event}}</div>
 			{{/each}}
 		</div>
@@ -89,7 +89,7 @@
 		
 				{{#each data.noticeEvents}}
 				<div class="column span-4 first">{{this.INV}}</div>
-				<div class="column span-4" title="{{this.HumanTime}}">{{this.date}}</div>
+				<div class="column span-4" title="{{timestampDateFormat this.date format="HH:MM:SS"}}">{{timestampDateFormat this.date format="DD MMM YYYY"}}</div>
 				<div class="column span-11 last">{{this.Event}}</div>
 				{{/each}}
 			</div>
@@ -108,7 +108,7 @@
 		
 				{{#each data.alarmEvents}}
 				<div class="column span-4 first">{{this.INV}}</div>
-				<div class="column span-4" title="{{this.HumanTime}}">{{this.date}}</div>
+				<div class="column span-4" title="{{timestampDateFormat this.date format="HH:MM:SS"}}">{{timestampDateFormat this.date format="DD MMM YYYY"}}</div>
 				<div class="column span-11 last">{{this.Event}}</div>
 				{{/each}}
 			</div>

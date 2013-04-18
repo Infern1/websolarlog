@@ -127,6 +127,68 @@ jQuery.fn.center = function() {
 }
 
 
+function modLegenda(plot){
+	// bind to the data highlighting event to make custom tooltip:
+    $('#detailsGraph').bind('jqplotDataMouseOver', function (ev, seriesIndex, pointIndex, data) {
+    	var i = 0;
+    	$('td.jqplot-table-legend').each(
+    		function (){
+    			if(seriesIndex == i){
+    				bold = [ '<b><font color="red">', '</font></b>' ];
+    			}else{
+    				bold = [ '', '' ];
+    			}
+    			$('#tooltipValue-'+i).html(bold[0]+handle.data[i][pointIndex][1]+bold[1]);
+    			i = i + 1;
+    			}
+    		)
+		}
+    );   
+   
+    $('#detailsGraph').bind('jqplotDataUnhighlight', 
+    		function () {
+    		var i=0;
+    		$('td.jqplot-table-legend').each(
+				function() {
+					$this = $(this);
+					// walkthrough array with hidden lines
+					if($this.text().length>0){
+						//console.log(i);
+						$('#tooltipValue-'+i).text('-');
+						i = i + 1;
+					}
+					
+				});
+            }
+        );   
+	//$('table.jqplot-table-legend').attr('class','jqplot-table-legend-custom');
+    $('table.jqplot-table-legend').wrapInner('<div class="column span-21 first" id="legendWrappers" style="margin:0px;">');
+	// walkthrough legenda
+    var i=0;
+    var newLegend = '';
+	$('td.jqplot-table-legend').each(
+		function() {
+			$this = $(this);
+			// walkthrough array with hidden lines
+			if($this.text().length>0){
+				
+				newLegend += '<div class="column span-5 first" id="'+i+'" style="margin:0px;">'+$this.text()+'<br><span id="tooltipValue-'+i+'">-</span></div>';
+				i = i + 1;
+			}
+			
+		});
+    var margin = (i / 5)*15;
+    $('#legendWrappers').after('<div class="column span-21 last">'+newLegend+'<br><div style="clear:both;"></div></div>');
+    $("#detailsGraph").css('margin-bottom',margin);
+   // console.log(innerLegend);
+    $('#detailsSwitches').css('margin-top','50px');
+    $('#detailsSwitches').hide();
+    $('table.jqplot-table-legend').css('left',0);
+    $('table.jqplot-table-legend').css('top',310);
+    $('table.jqplot-table-legend').css('width',850);
+
+}
+
 
 function pageLoadingTime() {
 	afterLoad = (new Date()).getTime();
@@ -170,16 +232,17 @@ function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot, series) {
 		
 		
 	});
-	var time = timeConverter(plot.series[seriesIndex].data[pointIndex][0],'time');
-	returned += tooltipTodayContentEditorLine("Time:","   "+time,true);
+	var time = timeConverter(plot.series[seriesIndex].data[pointIndex][0]," hour+':'+min ;");
+	returned += tooltipTodayContentEditorLine("Time","   "+time,true);
 	return returned;
 }
 
 function tooltipPeriodContentEditor(str, seriesIndex, pointIndex, plot, series) {
 	var returned = "";
-	returned += tooltipDefaultLine("Energy",plot.series[0].data[pointIndex][1], "kWh", (seriesIndex == 0));
-	returned += tooltipDefaultLine("Energy",plot.series[1].data[pointIndex][1], "kWh", (seriesIndex == 1));
-	returned += tooltipDefaultLine("Date", plot.series[1].data[pointIndex][2],"", (seriesIndex == 1));
+	returned += tooltipDefaultLine("Day ",plot.series[0].data[pointIndex][1], "kWh", (seriesIndex == 0));
+	returned += tooltipDefaultLine("Month Cum.",plot.series[1].data[pointIndex][1], "kWh", (seriesIndex == 1));
+	var time = timeConverter(plot.series[seriesIndex].data[pointIndex][0]," day+' '+month_name ;");
+	returned += tooltipTodayContentEditorLine("Time","   "+time,true);
 	return returned;
 }
 
@@ -216,7 +279,7 @@ function tooltipCompareEditor(str, seriesIndex, pointIndex, plot, series) {
 				plot.series[1].data[pointIndex][1], "kWh", (seriesIndex == 1));
 		returned += tooltipCompareEditorLine("date", timeConverter(
 				plot.series[1].data[pointIndex][0],
-				" date+'-'+month+'-'+year ;"), " ", (seriesIndex == 1));
+				" day+'-'+month+'-'+year ;"), " ", (seriesIndex == 1));
 	} else {
 		returned += tooltipCompareEditorLine("Expected",
 				"No data available for " + plot.series[1].data[pointIndex][2],
@@ -228,7 +291,7 @@ function tooltipCompareEditor(str, seriesIndex, pointIndex, plot, series) {
 				plot.series[0].data[pointIndex][1], "kWh", (seriesIndex == 0));
 		returned += tooltipCompareEditorLine("date", timeConverter(
 				plot.series[0].data[pointIndex][0],
-				" date+'-'+month+'-'+year ;"), " ", (seriesIndex == 0));
+				" day+'-'+month+'-'+year ;",'date'), " ", (seriesIndex == 0));
 	} else {
 		returned += tooltipCompareEditorLine("Harvested",
 				"No data available for " + plot.series[0].data[pointIndex][2],
@@ -270,25 +333,12 @@ function timeConverter(timestamp, format) {
 	var year = a.getFullYear();
 	var month_name = months[a.getMonth()];
 	var month = a.getMonth() + 1;
-	var date = a.getDate();
+	var day = a.getDate();
 	var hour = twoDigits(a.getHours());
 	var min = twoDigits(a.getMinutes());
 	var sec = twoDigits(a.getSeconds());
 	var time = eval(format);
-	
-	switch(format){
-	case "time":
-		var time = hour+':'+min+':'+sec;
-	  break;
-	case "date":
-		var time = date+'-'+month+'-'+year;
-	  break;
-	case "datetime":
-		var time = hour+':'+min+':'+sec+' '+date+'-'+month+'-'+year;
-	  break;  
-	default:
-	  var time = 'unknown format.';
-	}
+
 	
 	return time;
 }
@@ -1060,7 +1110,7 @@ var WSL = {
 				show : true,
 				tooltipLocation : 'n',
 				fadeTooltip : true,
-				tooltipFadeSpeed : 300,
+				tooltipFadeSpeed : 500,
 				tooltipAxes : 'both',
 			},
 			cursor : {
@@ -1100,7 +1150,7 @@ var WSL = {
 							var json = [];
 							for (values in result.dayData.graph.points[line]) {
 								json.push([
-									result.dayData.graph.points[line][values][0],
+									result.dayData.graph.points[line][values][0]*1000,
 									result.dayData.graph.points[line][values][1] 
 								]);
 							}
@@ -1155,7 +1205,6 @@ var WSL = {
 					delete handle;
 					
 					handle = $.jqplot('graph' + tab + 'Content',seriesData, graphOptions);
-
 					if(result.dayData.graph.metaData.legend.left>0){
 						$('table.jqplot-table-legend').css('left',result.dayData.graph.metaData.legend.left);
 					}
@@ -1218,8 +1267,8 @@ var WSL = {
 				var i = 0;
 				for (line in result.dayData.data) {
 					var object = result.dayData.data[line];
-					dayData1.push([ object[0], object[1], object[2] ]);
-					dayData2.push([ object[0], object[3], object[2] ]);
+					dayData1.push([ object[0]*1000, object[1]]);
+					dayData2.push([ object[0]*1000, object[2]]);
 					i += 1;
 				}
 				// add a custom tick formatter, so that you don't have
@@ -1313,13 +1362,11 @@ var WSL = {
 						}
 					}
 				};
-				graphDayPeriodOptions.axes.xaxis.min = result.dayData.data[0][2];
-				graphDayPeriodOptions.axes.xaxis.max = result.dayData.data[i - 1][2];
-				var plot = $.jqplot(divId, [ dayData1, dayData2 ],
-						graphDayPeriodOptions).destroy();
+				graphDayPeriodOptions.axes.xaxis.min = result.dayData.data[0][0]*1000;
+				graphDayPeriodOptions.axes.xaxis.max = result.dayData.data[i - 1][0]*1000;
+				var plot = $.jqplot(divId, [ dayData1, dayData2 ],graphDayPeriodOptions).destroy();
 				plot = null;
-				var plot = $.jqplot(divId, [ dayData1, dayData2 ],
-						graphDayPeriodOptions);
+				var plot = $.jqplot(divId, [ dayData1, dayData2 ],graphDayPeriodOptions);
 				ajaxReady();
 			}
 		});
@@ -1385,7 +1432,6 @@ var WSL = {
 							var monthTable = [];
 							for (line in result.dayData.data) {
 								var object = result.dayData.data[line];
-								// monthTable.push(result.dayData.ticks[line]);
 								dataDay1.push(object[0]);
 								dataDay2.push(object[2]);
 								dataDay3.push(object[4]);
@@ -1545,7 +1591,7 @@ var WSL = {
 	},
 
 	init_details : function(divId, queryDate) {
-		$("#main-middle").prepend('<div id="datePeriodFilter"></div><div id="detailsSwitches"></div><div id="detailsGraph"></div>');
+		$("#main-middle").prepend('<div id="datePeriodFilter"></div><div id="detailsGraph"></div><div id="detailsSwitches"></div>');
 		$.getJSON('server.php?method=getDetailsSwitches', function(data) {
 			$.ajax({
 				url : 'js/templates/detailsSwitches.hb',
@@ -1677,7 +1723,7 @@ var WSL = {
 							for (line in result.dayData.data) {
 								var json = [];
 								for (values in result.dayData.data[line]) {
-									json.push([result.dayData.data[line][values][0],result.dayData.data[line][values][1] ]);
+									json.push([result.dayData.data[line][values][0]*1000,result.dayData.data[line][values][1] ]);
 								}
 								seriesLabels.push(line);
 								seriesData.push(json);
@@ -1710,16 +1756,21 @@ var WSL = {
 									renderer : $.jqplot.EnhancedLegendRenderer,
 									rendererOptions : {
 										seriesToggle : 'normal',
-										numberRows : 3,// seriesToggleReplot:{resetAxes:["yaxis"]}
+										numberColumns : 4,// seriesToggleReplot:{resetAxes:["yaxis"]}
 									}
 								},
 								seriesDefaults : {
+									rendererOptions : {
+										smooth : true
+									},
 									tickOptions : {
 										formatString : '%d'
 									},
 									pointLabels : {
 										show : false
 									},
+									showMarker : false,
+									autoscale : true,
 								},
 								axes : {
 									xaxis : {
@@ -1797,9 +1848,17 @@ var WSL = {
 										}
 									}
 								},
+
+								cursor : {
+									zoom : true,
+									show : true,
+									showTooltip : false,
+									style : 'default',
+									followMouse: true
+								},
 								highlighter : {
-									tooltipContentEditor : tooltipDetailsContentEditor,
-									show : true
+									show : true,
+									showTooltip: false
 								}
 							};
 							var maxP = result.dayData.max.P;
@@ -1837,10 +1896,25 @@ var WSL = {
 							handle = $.jqplot("detailsGraph", seriesData,graphOptions).destroy();
 							delete handle;
 							handle = $.jqplot("detailsGraph", seriesData,graphOptions);
-
-							//$('table.jqplot-table-legend').attr('class','jqplot-table-legend-custom');
-							$('table.jqplot-table-legend').css('left',40);
-
+							testZoom();
+							modLegenda(handle);
+							
+							function testZoom() { 
+								$.jqplot.postDrawHooks.push(zoomHandler);
+							}
+							function zoomHandler() {
+							   var c = this.plugins.cursor;
+							   if(c._zoom.zooming) {
+							       console.log('Zoom In');
+							       modLegenda(handle);
+							   } else {
+								   console.log('Zoom Out');
+								   modLegenda(handle);
+							   }
+							}
+							
+							
+								
 							$('[type=checkbox]').live('change',
 								function() {
 									var id = $(this).attr("id");
@@ -1868,15 +1942,16 @@ var WSL = {
 										}
 									}
 									handle.replot();
+									console.log('repot');
 									//$('table.jqplot-table-legend').attr('class','jqplot-table-legend');
-									$('table.jqplot-table-legend').css('left',40);
+									$('table.jqplot-table-legend').css('left',5);
+									$('table.jqplot-table-legend').css('width',400);
 								});
 							ajaxReady();
 						}
 					}
 				});
 	},
-
 	init_compare : function(invtnum, divId) {
 		ajaxStart();
 		var dataTable = [];
@@ -2014,9 +2089,9 @@ var WSL = {
 							var whichTable = [];
 							for (line in result.dayData.data.compare) {
 								var object = result.dayData.data.compare[line];
-								dataDay1.push([ object[0], object[2], object[3] ]);
+								dataDay1.push([ parseFloat(object[0]*1000), object[2], object[3] ]);
 								var item = {
-									"timestamp" : object[0],
+									"timestamp" : parseFloat(object[0]*1000),
 									"har" : object[2],
 									"date" : object[1],
 									"displayKWH" : object[3],
@@ -2026,9 +2101,9 @@ var WSL = {
 							}
 							for (line in result.dayData.data.which) {
 								var object = result.dayData.data.which[line];
-								dataDay2.push([ object[0], object[2], object[3] ]);
+								dataDay2.push([ parseFloat(object[0]*1000), object[2], object[3] ]);
 								var item = {
-									"timestamp" : object[0],
+									"timestamp" : parseFloat(object[0]*1000),
 									"har" : object[2],
 									"date" : object[1],
 									"displayKWH" : object[3],
@@ -2036,6 +2111,7 @@ var WSL = {
 								};
 								whichTable.push([ item ]);
 							}
+							
 							$("#content").append('<div id="compareGraph"></div>');
 							$('#content').append('<div id="compareFigures"></div>');
 							$("#compareGraph").height(350);
@@ -2047,8 +2123,8 @@ var WSL = {
 							graphOptions.series[0].label = $("#whichMonth option:selected").text()+ ' '+ $("#whichYear option:selected").text();
 							graphOptions.series[1].label = $("#compareMonth option:selected").text()+ ' '+ $("#compareYear option:selected").text();
 
-							graphOptions.axes.x2axis.min = result.dayData.data.which[0][0];
-							graphOptions.axes.xaxis.min = result.dayData.data.compare[0][0];
+							graphOptions.axes.x2axis.min = result.dayData.data.which[0][0]*1000;
+							graphOptions.axes.xaxis.min = result.dayData.data.compare[0][0]*1000;
 
 							graphOptions.axes.yaxis.min = 0;
 

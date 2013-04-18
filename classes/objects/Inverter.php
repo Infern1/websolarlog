@@ -21,6 +21,7 @@ class Inverter
     public $pvoutputEnabled;
     public $pvoutputApikey;
     public $pvoutputSystemId;
+    public $pvoutputWSLTeamMember;
     public $state;
     public $refreshTime;
 
@@ -55,6 +56,7 @@ class Inverter
         $this->comAddress = 2;
         $this->comLog = false;
         $this->syncTime = false;
+        $this->pvoutputWSLTeamMember=false;
         $this->pvoutputEnabled = false;
         $this->panels = array();
         $this->state = 0;

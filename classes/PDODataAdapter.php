@@ -2,6 +2,7 @@
 class PDODataAdapter {
 	private static $instance;
 	public $ProcessTime;
+	public $sqlEngine;
 
 	// Singleton
 	public static function getInstance() {
@@ -13,7 +14,7 @@ class PDODataAdapter {
 
 
 	function __construct() {
-		$config = Session::getConfig(false, false); // We dont need data from dbase
+		$config = Session::getConfig(true, false); // We dont need data from dbase
 		if ($config->getDatabaseUser() != "" && $config->getDatabasePassword() != "") {
 			R::setup($config->dbDSN, $config->getDatabaseUser(), $config->getDatabasePassword());
 		} else {
@@ -24,6 +25,9 @@ class PDODataAdapter {
 		if (strpos($config->dbDSN,'sqlite') !== false) {
 			R::exec("PRAGMA synchronous = NORMAL"); // A little less secure then FULL, but much less IO
 			R::exec("PRAGMA PRAGMA temp_store = 2"); // In memory (IO on SD is slow)
+			$this->sqlEngine = 'sqlite'; //set db-engine dependent dateFunction
+		}elseif(strpos($config->dbDSN,',mysql') !== false){
+			$this->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
 		}
 		
 		R::debug(false);
@@ -67,8 +71,8 @@ class PDODataAdapter {
 
 		// Prevent division by zero error
 		if (!empty($IP)) {
-			$bean->I1Ratio = ($live->I1P/$IP)*100;
-			$bean->I2Ratio = ($live->I2P/$IP)*100;
+			$bean->I1Ratio = round(($live->I1P/$IP)*100,3);
+			$bean->I2Ratio = round(($live->I2P/$IP)*100,3);
 		}
 
 		$bean->GV = $live->GV;
@@ -76,7 +80,7 @@ class PDODataAdapter {
 		$bean->GP = $live->GP;
 
 		$bean->FRQ = $live->FRQ;
-		$bean->EFF = $live->EFF;
+		$bean->EFF = round($live->EFF,3);
 		$bean->INVT = $live->INVT;
 
 		$bean->BOOT = $live->BOOT;
@@ -178,7 +182,7 @@ class PDODataAdapter {
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 
 		$bean =  R::findOne( 'pMaxOTD',
-				' INV = :INV AND time > :beginDate AND  time < :endDate order by time',
+				' INV = :INV AND time > :beginDate AND  time < :endDate ORDER BY time',
 				array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 
@@ -212,33 +216,33 @@ class PDODataAdapter {
 		$bean->time = $timestamp;
 		$bean->dayNum = date("z",$timestamp) + 1;
 		$bean->INV = $invtnum;
-		$bean->I1V = $live->I1V;
-		$bean->I1A = $live->I1A;
-		$bean->I1P = $live->I1P;
+		$bean->I1V = round($live->I1V,3);
+		$bean->I1A = round($live->I1A,3);
+		$bean->I1P = round($live->I1P,3);
 
-		$bean->I2V = $live->I2V;
-		$bean->I2A = $live->I2A;
-		$bean->I2P = $live->I2P;
+		$bean->I2V = round($live->I2V,3);
+		$bean->I2A = round($live->I2A,3);
+		$bean->I2P = round($live->I2P,3);
 
-		$bean->GV = $live->GV;
-		$bean->GA = $live->GA;
-		$bean->GP = $live->GP;
+		$bean->GV = round($live->GV,3);
+		$bean->GA = round($live->GA,3);
+		$bean->GP = round($live->GP,3);
 
-		$bean->FRQ = $live->FRQ;
-		$bean->EFF = $live->EFF;
-		$bean->INVT = $live->INVT;
+		$bean->FRQ = round($live->FRQ,3);
+		$bean->EFF = round($live->EFF,3);
+		$bean->INVT = round($live->INVT,3);
 
-		$bean->BOOT = $live->BOOT;
-		$bean->KWHT = $live->KWHT;
+		$bean->BOOT = round($live->BOOT,3);
+		$bean->KWHT = round($live->KWHT,3);
 
 		$bean->pvoutput = false;
 
-		$IP = $live->I1P+$live->I2P;
+		$IP = round($live->I1P+$live->I2P,3);
 
 		// Prevent division by zero error
 		if (!empty($IP)) {
-			$bean->I1Ratio = ($live->I1P/$IP)*100;
-			$bean->I2Ratio = ($live->I2P/$IP)*100;
+			$bean->I1Ratio = round(($live->I1P/$IP)*100,3);
+			$bean->I2Ratio = round(($live->I2P/$IP)*100,3);
 		}
 
 		//Store the bean
@@ -259,7 +263,7 @@ class PDODataAdapter {
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 
 		$bean =  R::findAndExport( 'history',
-				' INV = :INV AND time > :beginDate AND  time < :endDate order by time',
+				' INV = :INV AND time > :beginDate AND  time < :endDate ORDER BY time',
 				array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 		return $bean;
@@ -385,11 +389,9 @@ class PDODataAdapter {
 	 */
 	public function readTypeEvents($invtnum,$type,$limit=20) {
 		($type=='Info')?$limit=1:$limit=$limit;
-
 		$bean = R::getAll("
 				select *,
-				strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date,
-				strftime ( '%H:%M' , time ( time , 'unixepoch' ) ) AS HumanTime
+				time AS date 
 				FROM event
 				WHERE Type = :type
 				ORDER BY id DESC
@@ -503,8 +505,8 @@ class PDODataAdapter {
 			$cumPower = round(($bean['KWHT']-$firstBean['KWHT'])*1000,0);
 			// 09/30/2010 00:00:00
 			$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,0,0);
-			$graph->points['cumPower'][] = array (  $UTCdate*1000 ,$cumPower);
-			$graph->points['avgPower'][] = array (  $UTCdate*1000 ,$avgPower);
+			$graph->points['cumPower'][] = array (  $UTCdate ,$cumPower);
+			$graph->points['avgPower'][] = array (  $UTCdate ,$avgPower);
 			$preBeanUTCdate = $bean['time'];
 			$preBean = $bean;
 			$i++;
@@ -530,10 +532,10 @@ class PDODataAdapter {
 
 			$graph->metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
 
-			$graph->series[] = array('label'=>'Cum. Power(W)','yaxis'=>'yaxis');
+			$graph->series[] = array('label'=>'Cum. Power(Wh)','yaxis'=>'yaxis');
 			$graph->series[] = array('label'=>'Avg. Power(W)','yaxis'=>'yaxis');
 
-			$graph->axes['yaxis']  = array('label'=>'Cum. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+			$graph->axes['yaxis']  = array('label'=>'Cum. Power(Wh)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->axes['y2axis'] = array('label'=>'Avg. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->metaData['hideSeries']= array();
 			
@@ -728,6 +730,7 @@ class PDODataAdapter {
 		$bean->pvoutputEnabled = $inverter->pvoutputEnabled;
 		$bean->pvoutputApikey = $inverter->pvoutputApikey;
 		$bean->pvoutputSystemId = $inverter->pvoutputSystemId;
+		($inverter->pvoutputWSLTeamMember!='') ? $bean->pvoutputWSLTeamMember = $inverter->pvoutputWSLTeamMember : $inverter->pvoutputWSLTeamMember = $inverter->pvoutputWSLTeamMember;
 		$bean->state = $inverter->state;
 		$bean->refreshTime = $inverter->refreshTime;
 
@@ -749,6 +752,7 @@ class PDODataAdapter {
 		return $id;
 	}
 
+	
 	/**
 	 *
 	 * @param unknown_type $id
@@ -775,6 +779,7 @@ class PDODataAdapter {
 		$inverter->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $inverter->pvoutputEnabled;
 		$inverter->pvoutputApikey = $bean->pvoutputApikey;
 		$inverter->pvoutputSystemId = $bean->pvoutputSystemId;
+		$inverter->pvoutputWSLTeamMember = $bean->pvoutputWSLTeamMember;
 		$inverter->state = $bean->state;
 		$inverter->refreshTime = (isset($bean->refreshTime) && $bean->refreshTime != "") ? $bean->refreshTime : $inverter->refreshTime;
 		$inverter->panels = $this->readPanelsByInverter($inverter->id);
@@ -956,13 +961,15 @@ class PDODataAdapter {
 
 		if ($invtnum>0){
 			$beans = R::getAll("
-					SELECT INV, strftime ( '%d-%m-%Y %H:%M' , datetime ( time , 'unixepoch' ) ) AS date, KWH
-					FROM energy WHERE INV = :INV AND time > :beginDate AND time < :endDate order by time DESC",
+					SELECT INV, time AS date, KWH
+					FROM energy WHERE INV = :INV AND time > :beginDate AND time < :endDate 
+					ORDER BY time DESC",
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
 			$beans = R::getAll("
-					SELECT INV, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date, KWH
-					FROM energy  WHERE time > :beginDate AND time < :endDate  order by time DESC",
+					SELECT INV, time AS date, KWH
+					FROM energy  WHERE time > :beginDate AND time < :endDate  
+					ORDER BY time DESC",
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
 		for ($i = 0; $i < count($beans); $i++) {
@@ -977,16 +984,18 @@ class PDODataAdapter {
 	 */
 	public function getMonthMaxPowerPerDay($invtnum=0,$startDate){
 		$beginEndDate = Util::getBeginEndDate('month', 1,$startDate);
-
+		
 		if ($invtnum>0){
 			$beans = R::getAll("
-					SELECT INV, strftime ( '%d-%m-%Y %H:%M' , datetime ( time , 'unixepoch' ) ) AS date, GP as maxGP
-					FROM pMaxOTD WHERE INV = :INV AND time > :beginDate AND time < :endDate order by time DESC",
+					SELECT INV, time AS date, GP as maxGP
+					FROM pMaxOTD WHERE INV = :INV AND time > :beginDate AND time < :endDate 
+					ORDER BY time DESC",
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
 			$beans = R::getAll("
-					SELECT INV, strftime ( '%d-%m-%Y %H:%M' , datetime ( time , 'unixepoch' ) ) AS date, GP as maxGP
-					FROM pMaxOTD  WHERE time > :beginDate AND time < :endDate  order by time DESC",
+					SELECT INV, time AS date, GP as maxGP
+					FROM pMaxOTD  WHERE time > :beginDate AND time < :endDate  
+					ORDER BY time DESC",
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
 		for ($i = 0; $i < count($beans); $i++) {
@@ -1003,16 +1012,17 @@ class PDODataAdapter {
 		$beginEndDate = Util::getBeginEndDate('year', 1,$date);
 		if ($invtnum>0){
 			$beans = R::getAll("
-					SELECT INV,MAX ( kwh ) AS KWH, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,MAX ( kwh ) AS KWH, time AS date
 					FROM energy
 					WHERE INV = :INV AND time > :beginDate AND time < :endDate
-					GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) )
+					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')."
 					ORDER BY time DESC",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
+
 			$beans = R::getAll("
-					SELECT INV,MAX ( kwh ) AS KWH, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,MAX ( kwh ) AS KWH, time AS date
 					FROM energy WHERE time > :beginDate AND time < :endDate
-					GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) )
+					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')."
 					ORDER BY time DESC",
 					array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
@@ -1028,17 +1038,17 @@ class PDODataAdapter {
 		$beginEndDate = Util::getBeginEndDate('year', 1,$date);
 		if ($invtnum>0){
 			$beans = R::getAll("
-					SELECT INV,sum(kWh) AS KWH, strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,sum(kWh) AS KWH, time AS date
 					FROM energy
 					WHERE INV = :INV AND time > :beginDate AND time < :endDate
-					GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) )
+					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')."
 					ORDER BY time DESC",
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
 			$beans = R::getAll("
-					SELECT INV,sum(kWh) AS KWH, strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,sum(kWh) AS KWH, time AS date
 					FROM energy WHERE time > :beginDate AND time < :endDate
-					GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) )
+					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')."
 					ORDER BY time DESC",
 					array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
@@ -1062,18 +1072,18 @@ class PDODataAdapter {
 		$beginEndDate = Util::getBeginEndDate('year', 1,$date);
 		if ($invtnum>0){
 			$beansMax = R::getRow("
-					SELECT INV,max(kWh) as kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,max(kWh) as kWh, time AS date
 					FROM energy
 					WHERE INV = :INV AND time > :beginDate AND time < :endDate
-					GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) )
-					order by time DESC",
+					GROUP BY ".$this->crossSQLDateTime("'%Y'",'time','date')."
+					ORDER BY time DESC",
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 			$beansMin = R::getRow("
-					SELECT INV,min(kWh) as kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,min(kWh) as kWh, time AS date
 					FROM energy
 					WHERE INV = :INV AND time > :beginDate AND time < :endDate
-					GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) )
-					order by time DESC",
+					GROUP BY ".$this->crossSQLDateTime("'%Y'",'time','date')."
+					ORDER BY time DESC",
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 			$beansMax['kWh'] = number_format($beansMax['kWh'],2,',','');
 			$beansMin['kWh'] = number_format($beansMin['kWh'],2,',','');
@@ -1084,18 +1094,18 @@ class PDODataAdapter {
 			);
 		}else{
 			$beansMax = R::getRow("
-					SELECT INV,max(kWh) as kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,max(kWh) as kWh, time AS date
 					FROM energy
 					WHERE  time > :beginDate AND time < :endDate
-					GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) )
-					order by time DESC",
+					GROUP BY ".$this->crossSQLDateTime("'%Y'",'time','date')."
+					ORDER BY time DESC",
 					array('beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 			$beansMin = R::getRow("
-					SELECT INV,min(kWh) as kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,min(kWh) as kWh, time AS date
 					FROM energy
 					WHERE time > :beginDate AND time < :endDate
-					GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) )
-					order by time DESC",
+					GROUP BY ".$this->crossSQLDateTime("'%Y'",'time','date')."
+					ORDER BY time DESC",
 					array('beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 			for ($i = 0; $i < count($beansMax); $i++) {
 				$beansMax[$i]['kWh'] = number_format($beansMax[$i]['kWh'],2,',','');
@@ -1134,16 +1144,16 @@ class PDODataAdapter {
 		$beginEndDate = Util::getBeginEndDate('month', 1,$date);
 		if ($invtnum>0){
 			$beansMax = R::getRow("
-					SELECT INV,max(kWh) as kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,max(kWh) as kWh, time AS date
 					FROM energy
 					WHERE INV = :INV AND time > :beginDate AND time < :endDate
-					order by time DESC",
+					ORDER BY time DESC",
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 			$beansMin = R::getRow("
-					SELECT INV,min(kWh) as kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,min(kWh) as kWh, time AS date
 					FROM energy
 					WHERE INV = :INV AND time > :beginDate AND time < :endDate
-					order by time DESC",
+					ORDER BY time DESC",
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 			$beansMax['kWh'] = number_format($beansMax['kWh'],2,',','');
 			$beansMin['kWh'] = number_format($beansMin['kWh'],2,',','');
@@ -1154,16 +1164,16 @@ class PDODataAdapter {
 			);
 		}else{
 			$beansMax = R::getRow("
-					SELECT INV,max(kWh) as kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,max(kWh) as kWh, time AS date
 					FROM energy
 					WHERE  time > :beginDate AND time < :endDate
-					order by time DESC",
+					ORDER BY time DESC",
 					array('beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 			$beansMin = R::getRow("
-					SELECT INV,min(kWh) as kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,min(kWh) as kWh, time AS date
 					FROM energy
 					WHERE time > :beginDate AND time < :endDate
-					order by time DESC",
+					ORDER BY time DESC",
 					array('beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 			for ($i = 0; $i < count($beansMax); $i++) {
 				$beansMax[$i]['kWh'] = number_format($beansMax[$i]['kWh'],2,',','');
@@ -1176,7 +1186,6 @@ class PDODataAdapter {
 		return $return;
 	}
 
-
 	/**
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
@@ -1185,19 +1194,19 @@ class PDODataAdapter {
 		$beginEndDate = Util::getBeginEndDate('year', 1,$date);
 		if ($invtnum>0){
 			$beans = R::getAll("
-					SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,MAX(GP) AS maxGP, time AS date
 					FROM pMaxOTD
 					WHERE INV = :INV AND  time > :beginDate AND time < :endDate
-					GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) )
-					order by time DESC",
+					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')."
+					ORDER BY time DESC",
 					array(':INV'=>$invtnum,'beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
 			$beans = R::getAll("
-					SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
+					SELECT INV,MAX(GP) AS maxGP, time AS date
 					FROM pMaxOTD
 					WHERE  time > :beginDate AND time < :endDate
-					GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) )
-					order by time DESC",
+					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')."
+					ORDER BY time DESC",
 					array('beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
 		for ($i = 0; $i < count($beans); $i++) {
@@ -1205,7 +1214,6 @@ class PDODataAdapter {
 		}
 		return $beans;
 	}
-
 
 	/**
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
@@ -1215,12 +1223,15 @@ class PDODataAdapter {
 		$beginEndDate = Util::getBeginEndDate('today', 1);
 
 		if ($invtnum>0){
-
-			$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
-					FROM energy WHERE INV = :INV  AND time > :beginDate AND time < :endDate GROUP BY strftime ( 'd%-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+			$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, time AS date
+					FROM energy WHERE INV = :INV  AND time > :beginDate AND time < :endDate
+					GROUP BY ".$this->crossSQLDateTime("'d%-%m-%Y'",'time','date')."  
+					ORDER BY time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}else{
-			$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
-					FROM energy WHERE time > :beginDate AND time < :endDate GROUP BY strftime ( 'd%-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+			$beans = R::getAll("SELECT INV,MAX ( kwh ) AS kWh, time AS date
+					FROM energy WHERE time > :beginDate AND time < :endDate 
+					GROUP BY ".$this->crossSQLDateTime("'d%-%m-%Y'",'time','date')." 
+					ORDER BY time DESC",array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}
 		for ($i = 0; $i < count($beans); $i++) {
 			$beans[$i]['kWh'] = number_format($beans[$i]['kWh'],2,',','');
@@ -1236,11 +1247,15 @@ class PDODataAdapter {
 		$beginEndDate = Util::getBeginEndDate('today', 1);
 
 		if ($invtnum>0){
-			$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
-					FROM pMaxOTD WHERE INV = :INV AND time > :beginDate AND time < :endDate GROUP BY strftime ( 'd%-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+			$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, time AS date
+					FROM pMaxOTD WHERE INV = :INV AND time > :beginDate AND time < :endDate 
+					GROUP BY ".$this->crossSQLDateTime("'d%-%m-%Y'",'time','date')." 
+					ORDER BY time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}else{
-			$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date
-					FROM pMaxOTD WHERE time > :beginDate AND time < :endDate GROUP BY strftime ( 'd%-%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC",array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+			$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, time AS date
+					FROM pMaxOTD WHERE time > :beginDate AND time < :endDate 
+					GROUP BY ".$this->crossSQLDateTime("'d%-%m-%Y'",'time','date')." 
+					ORDER BY time DESC",array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 
 		}
 		for ($i = 0; $i < count($beans); $i++) {
@@ -1260,10 +1275,10 @@ class PDODataAdapter {
 		$beginEndDate = Util::getBeginEndDate('day', 1,$startDate);
 
 		if ($invtnum>0){
-			$beans = R::getAll("SELECT * FROM History WHERE INV = :INV AND time > :beginDate AND time < :endDate order by time ASC",
+			$beans = R::getAll("SELECT * FROM History WHERE INV = :INV AND time > :beginDate AND time < :endDate ORDER BY time ASC",
 					array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}else{
-			$beans = R::getAll("SELECT * FROM History WHERE time > :beginDate AND time < :endDate order by time ASC",
+			$beans = R::getAll("SELECT * FROM History WHERE time > :beginDate AND time < :endDate ORDER BY time ASC",
 					array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}
 		$historyColumns = R::getColumns('history');
@@ -1314,7 +1329,7 @@ class PDODataAdapter {
 		$switches['TEMP'][] = 14;
 
 		foreach($beans as $bean){
-			$bean['time'] =$bean['time']*1000;
+			$bean['time'] =$bean['time'];
 			$live->GP[] 	= array($bean['time'],(float)$bean['GP']);
 			($bean['GP'] > $max['P'])? $max['P'] = (float)$bean['GP'] : $max['P'] = $max['P'];
 
@@ -1396,7 +1411,11 @@ class PDODataAdapter {
 	public function getYearsMonthCompareFilters(){
 		$month = array();
 		$year = array();
-		$year = R::getAll("SELECT distinct(strftime ( '%Y' , date ( time , 'unixepoch' ) )) AS date FROM Energy GROUP BY strftime ( '%m-%Y' , date ( time ,'unixepoch' ) ) ORDER BY date ASC");
+		$year = R::getAll("
+				SELECT distinct(".$this->crossSQLDateTime("'%Y'",'time','date').") AS date 
+				FROM Energy 
+				GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." 
+				ORDER BY date ASC");
 		$month[] = array("number"=>1,"name"=>"Jan");
 		$month[] = array("number"=>2,"name"=>"Feb");
 		$month[] = array("number"=>3,"name"=>"Mar");
@@ -1527,10 +1546,15 @@ class PDODataAdapter {
 		$expectedCount = count($expectedBeans);
 		if($whichCount>=$expectedCount){
 			for ($i = 0; $i < $whichCount; $i++) {
-				$diffCalc = $whichBeans[$i]['KWH']-$expectedBeans[$i]['KWH'];
-				$diffHarvestedCalc = $whichBeans[$i]['harvested']-$expectedBeans[$i]['harvested'];
+				
+				
+				$diffCumCalc = $whichBeans[$i]['KWH']-$expectedBeans[$i]['KWH'];
+				$diffDailyCalc = $whichBeans[$i]['harvested']-$expectedBeans[$i]['harvested'];
+				
+				$diffcolor = $this->rangeBetweenColor($diffCumCalc, $expectedBeans[0]['KWH']);
+				$diffHarvestedDayColor = $this->rangeBetweenColor($diffDailyCalc, round($expectedBeans[0]['KWH']*0.2,2));
 
-				$diff[] = array("diff"=>sprintf("%01.2f",(float)$diffCalc),"diffHar"=>$diffHarvestedCalc);
+				$diff[] = array("diffCumCalc"=>sprintf("%01.2f",(float)$diffCumCalc),"diffDailyCalc"=>$diffDailyCalc,'diffColor'=>$diffcolor,'diffHarvestedColor'=>$diffHarvestedDayColor);
 			}
 		}else{
 			for ($i = 0; $i < $expectedCount; $i++) {
@@ -1543,7 +1567,24 @@ class PDODataAdapter {
 		}
 		return $diff;
 	}
-
+	
+	/**
+	 * 
+	 * @param unknown $compare
+	 * @param unknown $to
+	 * @param unknown $colors
+	 * @return unknown
+	 */
+	public function rangeBetweenColor($compare, $to, $colors = array('orange','green','red')){
+		if(($compare <= $to  AND $compare >= 0) OR ($compare<=0 AND $compare >= (-1 * abs($to)))){
+			$var= $colors[0];
+		}elseif($compare >= $to){
+			$var= $colors[1];
+		}else{
+			$var= $colors[2];
+		}
+		return $var;
+	}
 
 	/**
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
@@ -1551,15 +1592,20 @@ class PDODataAdapter {
 	 */
 	public function getYearSumPowerPerMonth($invtnum,$startDate){
 		$inverter = array();
+		
+		$inverter = array();
 		$beginEndDate = Util::getBeginEndDate('year', 1,$startDate);
-
 		if ($invtnum>0){
-			$beans = R::getAll("SELECT INV,SUM(KWH) as KWH, time
-					FROM Energy WHERE INV = :INV AND time > :beginDate AND time < :endDate GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time ASC",
+			$beans = R::getAll("SELECT INV,SUM(KWH) as KWH, time 
+					FROM Energy WHERE INV = :INV AND time > :beginDate AND time < :endDate 
+					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." 
+					ORDER BY time ASC",
 					array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}else{
 			$beans = R::getAll("SELECT INV,SUM(KWH) as KWH, time
-					FROM Energy WHERE time > :beginDate AND time < :endDate GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time ASC",
+					FROM Energy WHERE time > :beginDate AND time < :endDate 
+					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." 
+					ORDER BY time ASC",
 					array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}
 		if(count($beans)==0){
@@ -1567,7 +1613,6 @@ class PDODataAdapter {
 		}else{
 			$firstMonth = date("n",$beans[0]['time']);
 			$lastMonth = date("n",$beans[count($beans)-1]['time']);
-
 			$inverter = $this->readInverter($invtnum);
 			$expected = $inverter->expectedkwh;
 			$invExp[0] = ($expected/100)*$inverter->expectedJAN;
@@ -1588,7 +1633,6 @@ class PDODataAdapter {
 				$iMonth = $i+1;
 				// if $i <= 5
 				if($iMonth<$firstMonth || $iMonth>$lastMonth){
-
 					$newBean[$i]['time'] = strtotime(date("01-".$iMonth."-Y"));
 					//$newBean[$i]['time'] = date ( "n"  ,$newBean[$i]['time'] );
 					$newBean[$i]['KWH'] = number_format(0,0,',','');
@@ -1621,7 +1665,7 @@ class PDODataAdapter {
 				}
 			}
 		}
-		//var_dump($newBean);
+		
 		return array("energy"=>$this->CompareBeansToGraphPoints($newBean),"expected"=>0);
 	}
 
@@ -1632,7 +1676,10 @@ class PDODataAdapter {
 	 */
 	public function getDayHistoryPerRecord($invtnum=1){
 		$beginEndDate = Util::getBeginEndDate('today', 1);
-		$beans = R::getAll("SELECT INV, GP,KWHT, strftime ( '%H:%M %d-%m-%Y' , datetime ( time , 'unixepoch' ) ) AS date FROM history WHERE INV = :INV  AND time > :beginDate AND time < :endDate order by time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+		$beans = R::getAll("SELECT INV, GP,KWHT, time AS date 
+				FROM history 
+				WHERE INV = :INV  AND time > :beginDate AND time < :endDate 
+				ORDER BY time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		return $beans;
 	}
 
@@ -1734,7 +1781,7 @@ class PDODataAdapter {
 			//$cumPower += $bean['KWH'];
 			//echo mktime(0, 0, 0,date("m",$bean['time']),date("d",$bean['time']),date("Y",$bean['time']))."   ";
 			$points[] = array (
-					mktime(0, 0, 0,date("m",$bean['time']),date("d",$bean['time']),date("Y",$bean['time']))*1000,
+					mktime(0, 0, 0,date("m",$bean['time']),date("d",$bean['time']),date("Y",$bean['time'])),
 					date("d-m-Y",$bean['time']),
 					$bean['KWH'],
 					$bean['displayKWH'],
@@ -1747,7 +1794,7 @@ class PDODataAdapter {
 		// if no data was found, create 1 dummy point for the graph to render
 		if(count($points)==0){
 			$cumPower = 0;
-			$points[] = array (time()* 1000, 0,0);
+			$points[] = array (time(), 0,0);
 		}
 
 		$lastDays = new LastDays();
@@ -1772,7 +1819,7 @@ class PDODataAdapter {
 			$cumPower += $bean['KWH'];
 			$points[] = array (
 					//$bean['time'],
-					//mktime(0, 0, 0,date("m",$bean['time']),1,date("Y",$bean['time']))*1000,
+					//mktime(0, 0, 0,date("m",$bean['time']),1,date("Y",$bean['time'])),
 					floatval($bean['KWH']),
 					"1-".date("m-Y",$bean['time']),
 					floatval($bean['Exp']),
@@ -1787,7 +1834,7 @@ class PDODataAdapter {
 		// if no data was found, create 1 dummy point for the graph to render
 		if(count($points)==0){
 			$cumPower = 0;
-			$points[] = array (time()* 1000, 0,0);
+			$points[] = array (time(), 0,0);
 		}
 
 		$lastDays = new LastDays();
@@ -1807,34 +1854,32 @@ class PDODataAdapter {
 		$cumPower=0;
 		foreach ($beans as $bean){
 			$cumPower += $bean['KWH'];
-			$points[] = array (Util::getTimestampOfDate(0,0,0, date("d",$bean['time']),date("m",$bean['time']), date("Y",$bean['time']))*1000,
+			$points[] = array (
+					$bean['time'],
 					floatval($bean['KWH']),
-					date("Y-m-d",$bean['time']),
-					floatval($cumPower),
-					$bean['KWH']
+					floatval($cumPower)
 			);
 		}
 
 		// if no data was found, create 1 dummy point for the graph to render
 		if(count($points)==0){
 			$cumPower = 0;
-			$points[] = array (time()* 1000, 0,0);
+			$points[] = array (time(), 0,0);
 		}else{
 			if (strtolower($period) == 'month'){
 				$endOfMonth =Util::getTimestampOfDate(0,0,0,  date('t'),date("m",strtotime($date)), date("Y"));
-
 			}else{
 				$beginEndWeek = Util::getStartAndEndOfWeek(strtotime($date));
 				$endOfMonth = $beginEndWeek[1];
 			}
 			$countPoints = count($points)-1;
 
-			$time = strtotime(date("d-m-Y",($points[$countPoints][0])/1000));
+			$time = strtotime(date("d-m-Y",($points[$countPoints][0])));
 			$time += 86400;
 			while ($time<$endOfMonth){
 				$time += 86400;
 				$points[] = array (
-						($time)*1000,
+						($time),
 						0,
 						date("Y-m-d",$time),
 						floatval($cumPower)
@@ -1906,7 +1951,7 @@ class PDODataAdapter {
 	/**
 	 *
 	 */
-	public function readPageIndexData($config) {
+	public function readPageIndexData() {
 		// summary live data
 		$list = array();
 		$list['summary'] = $this->readCache(1,"index","periodFigures",0,"");
@@ -2153,7 +2198,11 @@ class PDODataAdapter {
 		}
 
 		if($type == "week" || $type == "all"){
-			$totalEnergyBeansWeek = R::getAll("SELECT COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%Y%W' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY date ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit));
+			$totalEnergyBeansWeek = R::getAll("
+					SELECT COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh,
+					 ".$this->crossSQLDateTime("'%Y%W'",'time','date')." AS date 
+					FROM energy GROUP BY date 
+					ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit));
 			if(count($totalEnergyBeansWeek)>0){
 				$avgEnergyBeansWeek = number_format($totalEnergyBeansWeek[0]['sumkWh']/$totalEnergyBeansWeek[0]['countkWh'],2,',','');
 
@@ -2168,13 +2217,21 @@ class PDODataAdapter {
 
 		if($type == "month" ||  $type == "all"){
 			if ($invtnum>0){
-				$totalEnergyBeansMonth = R::getAll("SELECT INV,COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
+				$totalEnergyBeansMonth = R::getAll("
+						SELECT INV,COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, time AS date 
+						FROM energy 
+						WHERE INV = :INV 
+						GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." 
+						ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
 				$avgEnergyBeansMonth = number_format($totalEnergyBeansMonth[0]['sumkWh']/$totalEnergyBeansMonth[0]['countkWh'],2,',','');
 				for ($i = 0; $i < count($totalEnergyBeansMonth); $i++) {
 					$totalEnergyBeansMonth[$i]['sumkWh'] = number_format($totalEnergyBeansMonth[$i]['sumkWh'],2,',','');
 				}
 			}else{
-				$totalEnergyBeansMonth = R::getAll("SELECT INV,COUNT(kwh) as countkWh, MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%m-%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit));
+				$totalEnergyBeansMonth = R::getAll("SELECT INV,COUNT(kwh) as countkWh, MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, time AS date 
+						FROM energy 
+						GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." 
+						ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit));
 				if(count($totalEnergyBeansMonth)>0){
 					$avgEnergyBeansMonth = number_format($totalEnergyBeansMonth[0]['sumkWh']/$totalEnergyBeansMonth[0]['countkWh'],2,',','');
 					for ($i = 0; $i < count($avgEnergyBeansMonth); $i++) {
@@ -2193,13 +2250,20 @@ class PDODataAdapter {
 
 		if($type == "year" || $type == "all"){
 			if ($invtnum>0){
-				$totalEnergyBeansYear = R::getAll("SELECT COUNT(kwh) as countkWh,MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh,strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
+				$totalEnergyBeansYear = R::getAll("
+						SELECT COUNT(kwh) as countkWh,MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh,time AS date 
+						FROM energy WHERE INV = :INV 
+						GROUP BY ".$this->crossSQLDateTime("'%Y'",'time','date')."  
+						ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
 				$avgEnergyBeansYear = number_format($totalEnergyBeansYear[0]['sumkWh']/$totalEnergyBeansYear[0]['countkWh'],2,',','');
 				for ($i = 0; $i < count($totalEnergyBeansYear); $i++) {
 					$totalEnergyBeansYear[$i]['sumkWh'] = number_format($totalEnergyBeansYear[$i]['sumkWh'],2,',','');
 				}
 			}else{
-				$totalEnergyBeansYear = R::getAll("SELECT COUNT(kwh) as countkWh,MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh,strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy GROUP BY strftime ( '%Y' , date ( time , 'unixepoch' ) ) order by time DESC limit 0,:limit",array(':limit'=>$limit));
+				$totalEnergyBeansYear = R::getAll("
+						SELECT COUNT(kwh) as countkWh,MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh,time AS date FROM energy 
+						GROUP BY ".$this->crossSQLDateTime("'%Y'",'time','date')." 
+						ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit));
 				if($totalEnergyBeansYear[0]['sumkWh']>0){
 					$avgEnergyBeansYear = number_format($totalEnergyBeansYear[0]['sumkWh']/$totalEnergyBeansYear[0]['countkWh'],2,',','');
 				}else{
@@ -2218,13 +2282,20 @@ class PDODataAdapter {
 
 		if($type == "overall" || $type == "all"){
 			if ($invtnum>0){
-				$totalEnergyBeansOverall = R::getAll("SELECT COUNT(kwh) as countkWh, MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy WHERE INV = :INV order by time limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
+				$totalEnergyBeansOverall = R::getAll("
+						SELECT COUNT(kwh) as countkWh, MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh, time AS date 
+						FROM energy 
+						WHERE INV = :INV 
+						ORDER BY time limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
 				$avgEnergyBeansOverall = number_format($totalEnergyBeansOverall[0]['sumkWh']/$totalEnergyBeansOverall[0]['countkWh'],2,',','');
 				for ($i = 0; $i < count($totalEnergyBeansOverall); $i++) {
 					$totalEnergyBeansOverall[$i]['sumkWh'] = number_format($totalEnergyBeansOverall[$i]['sumkWh'],2,',','');
 				}
 			}else{
-				$totalEnergyBeansOverall = R::getAll("SELECT COUNT(kwh) as countkWh, MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh, strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) ) AS date FROM energy order by time limit 0,:limit",array(':limit'=>$limit));
+				$totalEnergyBeansOverall = R::getAll("
+						SELECT COUNT(kwh) as countkWh, MAX ( kwh )  AS kWh,  SUM (kwh) AS sumkWh, time AS date 
+						FROM energy 
+						ORDER BY time limit 0,:limit",array(':limit'=>$limit));
 
 				if($totalEnergyBeansOverall[0]['sumkWh']>0){
 					$avgEnergyBeansOverall = number_format($totalEnergyBeansOverall[0]['sumkWh']/$totalEnergyBeansOverall[0]['countkWh'],2,',','');
@@ -2301,6 +2372,29 @@ class PDODataAdapter {
 		return $energy;
 	}
 
+	/**
+	 * 
+	 * @param string $format = the formate
+	 * @param string $column = the timestamp column
+	 * @param string $dateTimeFunction = the SQLite function that doe
+	 * @return string
+	 */
+	public function crossSQLDateTime($format, $column, $dateTimeFunction=''){
+		switch ($this->sqlEngine) {
+		case 'sqlite':
+			//strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) );
+			($dateTimeFunction=='') ? $dateTimeFunction = 'date' : $dateTimeFunction = $dateTimeFunction;
+			//return "strftime (" . $format . " , " . $dateTimeFunction . " ( " . $column . " , 'unixepoch' ) )";
+			return "strftime (" . $format . " ,  ".$dateTimeFunction . " ( " . $column . " , 'unixepoch' ) )";
+			break;
+		case 'mysql':
+			//DATE_FORMAT(date,format)
+			return "DATE_FORMAT(" . $column . "," . $format . ")";
+			break;
+		}
+	}
+	
+	
 	public function dropboxTokenExists(){
 		$beans =  R::findAndExport('dropboxOauthTokens',' id >0');
 		return (count($beans) > 0 ? true : false);
@@ -2373,14 +2467,13 @@ class PDODataAdapter {
 
 
 	public function remove_hybridauth_session($current_user_id, $type){
-
-		$bean =  R::findOne('hybridUsersConnections',
-				' user_id = :user_id AND type :type ',
+		$bean =  R::findone('hybridUsersConnections',
+				' user_id = :user_id AND type like :type ',
 				array(':user_id'=>$current_user_id,
-						':type'=> $type
+						':type'=> strtolower($type)
 				)
 		);
-		R::trash( $bean );
+		R::trash($bean);
 
 	}
 

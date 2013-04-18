@@ -3,44 +3,61 @@
 <div id="todayPosts">
 <div class="columns">
 <h3>Compare</h3>
-<div class="column span-17">
-<div class="column span-4 first">{{lang.month}}</div>
-<div class="column span-5" style="text-align:right;">{{lang.expected}}</div>
-<div class="column span-5" style="text-align:right;">{{lang.CumExpected}}</div>
-<div class="cl"></div>
-{{#each compare}}
-
-{{#each this}}<div class="trs">
-<div class="column span-4 first" >{{this.date}}</div>
-<div class="column span-5" style="text-align:right;" >{{this.harvested}}</div>
-<div class="column span-5" style="text-align:right;">{{this.displayKWH}}</div>
-<div class="cl"></div>
-</div>{{/each}}{{/each}}
-</div>
 
 <div class="column span-16" style="border-left:solid 1px #ccc;">
-<div class="column span-4 first">{{lang.month}}</div>
-<div class="column span-5" style="text-align:right;">{{lang.harvested}}</div>
-<div class="column span-5" style="text-align:right;">{{lang.CumHarvested}}</div>
-<div class="cl"></div>
-{{#each which}}
-{{#each this}}<div class="trs">
-<div class="column span-4 first">{{this.date}}</div>
-<div class="column span-5" style="text-align:right;">{{this.harvested}}</div>
-<div class="column span-5" style="text-align:right;">{{this.displayKWH}}</div>
-<div class="cl"></div>
-</div>
-{{/each}}{{/each}}
+	<div class="column span-4 first">{{lang.month}}</div>
+	<div class="column span-5" style="text-align:right;">{{lang.harvested}}</div>
+	<div class="column span-5" style="text-align:right;">{{lang.CumHarvested}}</div>
+	<div class="cl"></div>
+	{{#each which}}
+		{{#each this}}
+		<div class="tr1">
+			<div class="column span-4 first">{{this.date}}</div>
+			<div class="column span-5" style="text-align:right;">{{this.harvested}}</div>
+			<div class="column span-5" style="text-align:right;">{{this.displayKWH}}</div>
+			<div class="cl"></div>
+		</div>
+		{{/each}}
+	{{/each}}
 </div>
 
+<div class="column span-17">
+	<div class="column span-4 first">{{lang.month}}</div>
+	<div class="column span-5" style="text-align:right;">{{lang.expected}}</div>
+	<div class="column span-5" style="text-align:right;">{{lang.CumExpected}}</div>
+	<div class="cl"></div>
+	{{#each compare}}
+		{{#each this}}
+			<div class="tr2">
+				<div class="column span-4 first" >{{this.date}}</div>
+				<div class="column span-5" style="text-align:right;">{{this.harvested}}</div>
+				<div class="column span-5 last" style="text-align:right;">{{this.displayKWH}}</div>
+				<div class="cl"></div>
+			</div>
+		{{/each}}
+	{{/each}}
+</div>
+
+
+
+<script>
+$(function() {
+kWhDay = $("div.tr1 div").eq(2).text().replace(',','.');
+kWhDayCalc = ((kWhDay/100)*10)+parseFloat(kWhDay);
+kWhDayMargin = parseFloat(Math.ceil(kWhDayCalc * 1) / 1);
+console.log(kWhDayMargin);
+
+});
+</script>
 
 <div class="column span-11" style="border-left:solid 1px #ccc;">
-<div class="column span-5" style="text-align:right;">{{lang.CumDifference}}</div>
 <div class="column span-5" style="text-align:right;">{{lang.difference}}</div>
+<div class="column span-5" style="text-align:right;">{{lang.CumDifference}}</div>
 <div class="cl"></div>
-{{#each diff}}<div class="trs">
-<div class="column span-5" style="text-align:right;">{{this.diff}}</div>
-<div class="column span-5" style="text-align:right;">{{this.diffHar}}</div>
+{{#each diff}}<div class="tr3">
+<div class="column span-5" style="text-align:right;color:{{this.diffHarvestedColor}}">{{this.diffDailyCalc}}</div>
+<div class="column span-5" style="text-align:right;color:{{this.diffColor}}">{{this.diffCumCalc}}</div>
+
 <div class="cl"></div>
 </div>
 {{/each}}
@@ -57,7 +74,7 @@
 </div>
 </div>
 <script>$(function() {
-$("div.trs:even").css('background-color','#ddd');
+$("div.tr1:even").css('background-color','#ddd');
+$("div.tr2:even").css('background-color','#ddd');
+$("div.tr3:even").css('background-color','#ddd');
 });</script>
-<style>
-</style>

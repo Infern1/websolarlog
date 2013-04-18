@@ -25,6 +25,7 @@ $config = Session::getConfig();
 	<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.pnotify.min.js"></script>
+	<script type="text/javascript" src="js/moment.min.js"></script>
 	<script type="text/javascript" src="js/handlebars.js"></script>
 	<script type="text/javascript" src="js/helpers.js"></script>
 	<script type="text/javascript" src="js/jquery-ui.min.js"></script>

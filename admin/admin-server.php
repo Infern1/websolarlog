@@ -47,6 +47,129 @@ switch ($settingstype) {
 		
 		
 		break;
+	case 'social':
+		
+		// social
+		$user_id=1;
+		$type='Twitter';
+		$twitter = $adapter->get_hybridauth_session($user_id,$type);
+	
+		if($twitter){
+			$social = new Social();
+			$social->TwitterAttached = (strlen($twitter['displayName'])>0) ? 1 : 0;
+			$social->TwitterDisplayName = $twitter['displayName'];
+			$data['social'] = $social;
+		}else{
+			$social = new Social();
+			$social->TwitterAttached = 0;
+			$data['twitter'] = $social;
+		}
+		break;
+	case 'getTeamFiguresFromPVoutput':
+		$lang = array();
+		$lang['teamName'] 			= ucfirst(_("team"))." "._("name");
+		$lang['energyGenerated']	= ucfirst(_("energy"))." "._("generated");
+		
+		$lang['energyAverage'] 		= ucfirst(_("energy"))." "._("average");
+		$lang['description']	 	= ucfirst(_("description"));
+		$lang['numberOfSystems'] 	= ucfirst(_("number"))." "._("of")." "._("Systems");
+		$lang['teamSize'] 			= ucfirst(_("team"))." "._("size");
+		$lang['averageSize'] 		= ucfirst(_("average"))." "._("size");
+		$lang['outputs'] 			= ucfirst(_("outputs"));
+		$lang['inverter'] 			= ucfirst(_("inverter"));
+		$data['lang'] = $lang;
+		
+		$pvOutputAddon = new PvOutputAddon();
+		$team = $pvOutputAddon->getTeamFiguresFromPVoutput();
+		$data['devices'][] =array('pvOutputTeams' => $team);
+
+		
+		break;
+	case "joinPVoTeam":
+		$pvOutputAddon = new PvOutputAddon();
+		$team = array();
+		$inverterId = Common::getValue("id", null);
+		if($inverterId){
+			$device = $config->getInverterConfig($inverterId);
+			if($device->pvoutputApikey){
+				$result = $pvOutputAddon->joinTeam($device);
+				//var_dump($result);
+				if($result['info']['http_code']==200){
+					//var_dump($result['response']);
+					$pvOutputAddon->saveTeamStateFromPVoutputToDB($device);
+					$team = $result;
+				}else{
+					$pvOutputAddon->saveTeamStateFromPVoutputToDB($device);
+					$team = $result;
+				}
+			}
+		}else{
+			$team['response'] = 'no team supplied';
+		}
+		$data['id'] = $inverterId;
+		$data['team']= $team;
+		break;
+	case "leavePVoTeam":
+		$pvOutputAddon = new PvOutputAddon();
+		$team = array();
+		$inverterId = Common::getValue("id", null);
+		if($inverterId){
+			$device = $config->getInverterConfig($inverterId);
+			if($device->pvoutputApikey){
+				$result = $pvOutputAddon->leaveTeam($device);
+				if($result['info']['http_code']==200){
+					//var_dump($result['response']);
+					$pvOutputAddon->saveTeamStateFromPVoutputToDB($device);
+					$team = $result;
+				}else{
+					$pvOutputAddon->saveTeamStateFromPVoutputToDB($device);
+					$team = $result;
+				}
+			}
+		}else{
+			$team['response'] = 'no team supplied';
+		}
+		$data['id'] = $inverterId;
+		$data['team']= $team;
+		break;
+	case "saveTeamStatus":
+		$pvOutputAddon = new PvOutputAddon();
+		$team = array();
+		$inverterId = Common::getValue("id", null);
+		if($inverterId){
+			$device = $config->getInverterConfig($inverterId);
+			if($device->pvoutputApikey){
+				//request PVoutput for teamstatus and save it in the DB
+				$pvOutputAddon->saveTeamStateFromPVoutputToDB($device);
+			}
+		}else{
+			foreach ($config->inverters as $device){
+				if($device->pvoutputApikey){
+					//request PVoutput for teamstatus and save it in the DB
+					$pvOutputAddon->saveTeamStateFromPVoutputToDB($device);
+				}
+				pause(1);
+			}
+		}
+		break;
+	case "getTeamStatus":
+		$pvOutputAddon = new PvOutputAddon();
+		$result = array();
+		$inverterId = Common::getValue("id", null);
+		if($inverterId){
+			$device = $config->getInverterConfig($inverterId);
+			if($device->pvoutputApikey){
+				$result[] = $pvOutputAddon->getTeamStatusFromDB($device);
+			}
+		}else{
+			foreach ($config->inverters as $device){
+				if($device->pvoutputApikey){
+					$result[] = $pvOutputAddon->getTeamStatusFromDB($device);
+				}
+			}
+		}
+		$data['devices'] = $result;
+		break;
 	case 'communication';
 		$data['comPort'] = $config->comPort;
 		$data['comOptions'] = $config->comOptions;
@@ -277,6 +400,7 @@ switch ($settingstype) {
 		$inverter->pvoutputEnabled = Common::getValue("pvoutputEnabled");
 		$inverter->pvoutputApikey = Common::getValue("pvoutputApikey");
 		$inverter->pvoutputSystemId = Common::getValue("pvoutputSystemId");
+		$inverter->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
 
 		$data['id'] = $adapter->writeInverter($inverter);
 		break;
@@ -338,14 +462,16 @@ switch ($settingstype) {
 		break;
 	case 'attachTwitter':
 		$hybridTwitter = new TwitterAddon();
+		$_SESSION["HA::CONFIG"]=null;
+		//var_dump($_SESSION);
+		//exit();
+		
 		$hybridTwitter->attachTwitter();
 		
 		break;
-		
 	case 'detachTwitter':
 		$hybridTwitter = new TwitterAddon();
 		$hybridTwitter->detachTwitter();
-	
 		break;
 	case 'sendTweet':
 		$hybridTwitter = new TwitterAddon();
@@ -366,8 +492,8 @@ switch ($settingstype) {
 	case 'sendFacebook':
 		$hybridFacebook = new FacebookAddon();
 		$hybridFacebook->sendFacebook();
-	
 		break;
+
 	case 'attachDropbox':
 		if(strlen(common::getValue('uid'))>6 && strlen(common::getValue('oauth_token'))==15){
 			$dropbox = new Dropbox();
@@ -471,9 +597,6 @@ switch ($settingstype) {
 			$adapter->dropboxSaveFile($data['files'][$i]);
 			// sum the filesizes for some nice figures
 			$totalBackupSize += $file->bytes;
-
-
-
 			$i++;
 		}
 		$data['totalBackups'] = $i+1;

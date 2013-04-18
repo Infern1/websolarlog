@@ -44,22 +44,25 @@ class Util {
     	return strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$seconde);
     }
 
-    /**
-     * get First Day Of Month
-     * @param int $invtnum
-     * @param int $limit
-     * @return bean object
-     */
+	/**
+	 * get First Day Of Month
+	 * @param unknown $day
+	 * @param unknown $month
+	 * @param unknown $year
+	 */
     public static function getFirstDayOfMonth($day,$month,$year) {
     	return strtotime(date('Y-m-d', mktime(0, 0, 0, $month, 1, $year)));
     }
 
-    /**
-     * get Timestamp Of Date
-     * @param int $invtnum
-     * @param int $limit
-     * @return bean object
-     */
+   /**
+    * 
+    * @param number $hour
+    * @param number $minute
+    * @param number $second
+    * @param unknown $day
+    * @param unknown $month
+    * @param unknown $year
+    */
     public static function getTimestampOfDate($hour=0,$minute=0,$second=0,$day,$month,$year) {
     	return mktime($hour,$minute,$second, $month, $day, $year);
     }

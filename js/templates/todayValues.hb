@@ -14,7 +14,7 @@
 				    			{{#each this}}
 					    			<div class="column span-5 first">{{this.INV}}</div>
 					    			<div class="column span-4" style="text-align:right;">{{this.maxGP}}</div>
-					    			<div class="column span-8 last">{{this.date}} </div>
+					    			<div class="column span-8 last">{{timestampDateFormat this.date format="HH:mm:ss"}}</div>
 				    			{{/each}}
 				    		{{/each}}
 					    </div>
@@ -28,7 +28,7 @@
 								{{#each this}}
 					    			<div class="column span-5 first">{{this.INV}}</div>
 					    			<div class="column span-4" style="text-align:right;">{{this.kWh}}</div>
-					    			<div class="column span-8 last">{{this.date}}</div>
+					    			<div class="column span-8 last">{{timestampDateFormat this.date format="HH:mm:ss"}}</div>
 					    		{{/each}}
 					    	{{/each}}
 					    </div>

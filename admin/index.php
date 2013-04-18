@@ -48,6 +48,7 @@ session_start();
 					<li><a href="#inverters" id="btnInverters">Inverters</a></li>
 					<li><a href="#email" id="btnEmail">eMail</a></li>
 					<li><a href="#advanced" id="btnAdvanced">Advanced</a></li>
+					<li><a href="#social" id="btnSocial">Social</a></li>
 					<!-- <li><a href="#tariff" id="btnTariff">Tariff</a></li>-->
 					<li><a href="#update" id="btnUpdate">Update</a></li>
 					<li><a href="#backup" id="btnBackup">Backup</a></li>

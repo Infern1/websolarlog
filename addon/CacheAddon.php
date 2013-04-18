@@ -29,7 +29,6 @@ class CacheAddon {
 				$cache->module = 'periodFigures';
 				$cache->page = 'index';
 				$cache->timestamp = $timestamp;
-				
 				//save cache
 				$this->adapter->saveCache($cache);
 				/////////////////////////

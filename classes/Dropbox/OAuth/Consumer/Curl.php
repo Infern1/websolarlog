@@ -62,7 +62,6 @@ class Curl extends ConsumerAbstract
     	
         // Get the signed request URL
         $request = $this->getSignedRequest($method, $url, $call, $additional);
-        //var_dump($request);
        //echo $request;
         // Initialise and execute a cURL request
         $handle = curl_init($request['url']);

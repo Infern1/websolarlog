@@ -19,7 +19,7 @@
     				{{#each this}}
 			    		<div class="column span-5 first">{{this.INV}}</div>
 		    			<div class="column span-4" style="text-align:right;">{{this.maxGP}}</div>
-		    			<div class="column span-8" last" style="text-align:right;">{{this.date}}</div>
+		    			<div class="column span-8" last" style="text-align:right;">{{timestampDateFormat this.date format="DD MMM YYYY"}}</div>
 			   		{{/each}}
 				</div>
 		    {{/each}}
@@ -43,7 +43,7 @@
     				{{#each this}}
 		    			<div class="column span-5 first">{{this.INV}}</div>
 			    		<div class="column span-4" style="text-align:right;">{{this.KWH}}</div>
-			    		<div class="column span-8" last" style="text-align:right;">{{this.date}}</div>
+			    		<div class="column span-8" last" style="text-align:right;">{{timestampDateFormat this.date format="DD MMM YYYY"}}</div>
 				    {{/each}}
 			   	</div>
 		    {{/each}}
@@ -66,11 +66,11 @@
 				
 				<div class="column span-4">The Best:</div>
 				<div class="column span-3" style="text-align:right;">{{this.maxEnergy.kWh}}</div>
-				<div class="column span-9 last">{{this.maxEnergy.date}}</div>
+				<div class="column span-9 last">{{timestampDateFormat this.maxEnergy.date format="DD MMM YYYY"}}</div>
 				
     			<div class="column span-4">The Worst:</div>
 				<div class="column span-3" style="text-align:right;">{{this.minEnergy.kWh}}</div>
-				<div class="column span-9 last">{{this.minEnergy.date}}</div>
+				<div class="column span-9 last">{{timestampDateFormat this.minEnergy.date format="DD MMM YYYY"}}</div>
 			</div>
 	    {{/each}}
 	    </div>

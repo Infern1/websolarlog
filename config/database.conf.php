@@ -9,7 +9,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; below is a example
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;; [example-database]
+;;;;; ;[example-database]
 ;;;;; dsn="mysql:host=localhost;dbname=websolarlog"
 ;;;;; username="root"
 ;;;;; password="RQ0T"
@@ -18,9 +18,9 @@
 
 ;;;;; Remove the ;'s and replace the XXXXXX with your host, dbname and credentials
 ;[database]
-;dsn="mysql:host=XXXXXX;dbname=XXXXXX"
-;username="XXXXXX"
-;password="XXXXXX"
+;dsn="mysql:host=localhost;dbname=wsl"
+;username="root"
+;password="2724cv"
 
 
 ;;;;; Do not remove anything below this line

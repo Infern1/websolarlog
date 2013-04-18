@@ -310,18 +310,18 @@ class SmartMeterAddon {
 			}
 			$UTCdate = $bean['time'];
 			$UTCtimeDiff = $UTCdate - $preBean['time'];
-			$graph->points['cumGasUsage'][] = array ($UTCdate * 1000,$bean['gasUsage']-$firstBean['gasUsage'],date("H:i, d-m-Y",$bean['time']));
+			$graph->points['cumGasUsage'][] = array ($UTCdate ,$bean['gasUsage']-$firstBean['gasUsage'],date("H:i, d-m-Y",$bean['time']));
 			if($i==0){
-				$graph->points['smoothGasUsage'][] = array ($UTCdate * 1000,$firstBean['gasUsage']-$bean['gasUsage']);
+				$graph->points['smoothGasUsage'][] = array ($UTCdate ,$firstBean['gasUsage']-$bean['gasUsage']);
 			}
 			
 			if( $bean['gasUsage']-$firstBean['gasUsage'] != $preBean['gasUsage']-$firstBean['gasUsage']){
-				$graph->points['smoothGasUsage'][] = array ($UTCdate * 1000,$bean['gasUsage']-$firstBean['gasUsage']);
+				$graph->points['smoothGasUsage'][] = array ($UTCdate,$bean['gasUsage']-$firstBean['gasUsage']);
 			}
-			$graph->points['cumLowUsage'][] = array ($UTCdate * 1000,$bean['lowUsage']-$firstBean['lowUsage']);
-			$graph->points['cumHighUsage'][] = array ($UTCdate * 1000,$bean['highUsage']-$firstBean['highUsage']);
-			$graph->points['cumLowReturn'][] = array ($UTCdate * 1000,$bean['lowReturn']-$firstBean['lowReturn']);
-			$graph->points['cumHighReturn'][] = array ($UTCdate * 1000,$bean['highReturn']-$firstBean['highReturn']);
+			$graph->points['cumLowUsage'][] = array ($UTCdate,$bean['lowUsage']-$firstBean['lowUsage']);
+			$graph->points['cumHighUsage'][] = array ($UTCdate ,$bean['highUsage']-$firstBean['highUsage']);
+			$graph->points['cumLowReturn'][] = array ($UTCdate ,$bean['lowReturn']-$firstBean['lowReturn']);
+			$graph->points['cumHighReturn'][] = array ($UTCdate ,$bean['highReturn']-$firstBean['highReturn']);
 			
 			$lowUsage = Formulas::calcAveragePower($preBean['lowUsage'], $bean['lowUsage'], $preBean['time']-$bean['time'])/1000;
 			
@@ -334,15 +334,15 @@ class SmartMeterAddon {
 			$actualUsage = (int)0;
 			($lowActual!=0) ?	$actualUsage = $lowActual :	$actualUsage = $highActual;
 
-			$graph->points['lowUsage'][] = array ($UTCdate * 1000,$lowUsage);
-			$graph->points['highUsage'][] = array ($UTCdate * 1000,$highUsage);
-			$graph->points['lowReturn'][] = array ($UTCdate * 1000,$lowReturn);
-			$graph->points['highReturn'][] = array ($UTCdate * 1000,$highReturn);
+			$graph->points['lowUsage'][] = array ($UTCdate ,$lowUsage);
+			$graph->points['highUsage'][] = array ($UTCdate ,$highUsage);
+			$graph->points['lowReturn'][] = array ($UTCdate ,$lowReturn);
+			$graph->points['highReturn'][] = array ($UTCdate ,$highReturn);
 			
 			($actualUsage<$minActual) ? $minActual = $actualUsage : $actualUsage = $actualUsage;
 			($actualUsage>$maxActual) ? $maxActual = $actualUsage : $actualUsage = $actualUsage;
 
-			$graph->points['actualUsage'][] = array ($UTCdate * 1000,round(trim($actualUsage),0));				
+			$graph->points['actualUsage'][] = array ($UTCdate ,round(trim($actualUsage),0));				
 			$preBean = $bean;
 			$i++;
 		}

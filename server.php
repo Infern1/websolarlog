@@ -24,7 +24,7 @@ try {
 	// Initialize return array
 	$dataAdapter = PDODataAdapter::getInstance();
 	$config = Session::getConfig();
-
+	
 	$data = array();
 	$invtnum = Common::getValue('invtnum', 0);
 	$page = Common::getValue('page', 0);
@@ -265,16 +265,18 @@ try {
 			$data['sundown'] = Util::isSunDown($config);
 			break;
 		case 'getPageYearValues':
-			$beans = R::findAndExport('Inverter');
+			
 			$maxEnergy=array();
 			$energy=array();
 			$maxPower=array();
 			$minMaxEnergyYear=array();
-			foreach ($beans as $inverter){
-				$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($inverter['id'],$date);
-				$energy[] = $dataAdapter->getYearEnergyPerMonth($inverter['id'],$date);
-				$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($inverter['id'],$date);
-				$maxMinEnergyYear[] = $dataAdapter->getMaxMinEnergyYear($inverter['id'],$date);
+			foreach ($config->inverters as $device){
+				if($device->type == 'production'){
+					$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($device->id,$date);
+					$energy[] = $dataAdapter->getYearEnergyPerMonth($device->id,$date);
+					$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($device->id,$date);
+					$maxMinEnergyYear[] = $dataAdapter->getMaxMinEnergyYear($device->id,$date);
+				}
 			}
 			$lang = array();
 			$lang['today'] 			= _("Today");
@@ -303,12 +305,11 @@ try {
 			$data['yearData'] = $dayData;
 			break;
 		case 'getPageMonthValues':
-			$beans = R::findAndExport('Inverter');
 			
-			foreach ($beans as $inverter){
-				$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($inverter['id'], $date);
-				$maxEnergy[] = $dataAdapter->getMonthEnergyPerDay($inverter['id'], $date);
-				$minMaxEnergyMonth[] = $dataAdapter->getMaxMinEnergyMonth($inverter['id'],$date);
+			foreach ($config->inverters as $device){
+				$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($device->id, $date);
+				$maxEnergy[] = $dataAdapter->getMonthEnergyPerDay($device->id, $date);
+				$minMaxEnergyMonth[] = $dataAdapter->getMaxMinEnergyMonth($device->id,$date);
 			}
 	
 			$dayData = new DayDataResult();
@@ -337,15 +338,14 @@ try {
 			$data['monthData'] = $dayData;
 			break;
 		case 'getPageTodayValues':
-			$beans = R::findAndExport('Inverter');
-			
 			$maxEnergy = array();
 			$maxPower = array();
 			
-			foreach ($beans as $inverter){
-				$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($inverter['id']);
-				$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($inverter['id']);
+			foreach ($config->inverters as $device){
+				$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($device->id);
+				$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($device->id);
 			}
+
 			$dayData = new DayDataResult();
 			$dayData->data = array(
 					"maxPower"=>$maxPower,
@@ -375,9 +375,8 @@ try {
 			$lang['expected'] 		= _("expected");
 			$data['lang'] = $lang;
 			
-			$inverters = R::findAndExport('Inverter');
-			foreach ($inverters as $inv){
-				$inverter[] = array("name"=>$inv['name'],"id"=>$inv['id']);
+			foreach ($config->inverters as $device){
+				$inverter[] = array("name"=>$device->name,"id"=>$device->id);
 			}
 			
 			$dayData = new DayDataResult();
@@ -395,9 +394,9 @@ try {
 			$compareMonth = Common::getValue('compareMonth', 0);
 			$compareYear = Common::getValue('compareYear', 0);
 			$invtnum = Common::getValue('invtnum', 0);
-			$inverters = R::findAndExport('Inverter');
-			foreach ($inverters as $inv){
-				$inverter[] = array("name"=>$inv['name'],"id"=>$inv['id']);
+			
+			foreach ($config->inverters as $device){
+				$inverter[] = array("name"=>$device->name,"id"=>$device->id);
 			}
 	
 			$lines = $dataAdapter->getCompareGraph($invtnum, $whichMonth,$whichYear,$compareMonth,$compareYear);
@@ -500,6 +499,7 @@ try {
 			$lang = array();
 			$lang['someFigures'] 	= _("Some Figures*");
 			$lang['by']			 	= _("By");
+
 			$lang['total'] 			= _("Total");
 			$lang['AvgDay']	 		= _("Avg. Day");
 			$lang['today'] 			= _("Today");
@@ -527,8 +527,10 @@ try {
 			}
 			break;
 		case "test":
-			$data['test']='test';
+			$hybridTwitter = new PvOutputAddon();
+			$hybridTwitter->joinTeam();
 			break;
+
 		default:
 			break;
 	}
