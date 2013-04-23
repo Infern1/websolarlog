@@ -1,8 +1,4 @@
 <?php
-// For debugging only
-//error_reporting(E_ALL);
-//ini_set('display_errors', '1');
-
 define('checkaccess', TRUE);
 
 require 'classes/classloader.php';
@@ -153,7 +149,33 @@ try {
 			$data['serverUptime'] = $serverUptime;
 			break;
 		case 'getGraphDayPoints':
+			$dtz = new DateTimeZone($config->timezone);
+			$timezoneOffset = new DateTime('now', $dtz);
+			$data['timezoneOffset'] = $dtz->getOffset( $timezoneOffset )/3600;
 			$lines = $dataAdapter->getGraphDayPoint($invtnum, $type, $date);
+			$slimConfig = array();
+			$slimConfig['lat'] = number_format($config->latitude,2,'.','');
+			$slimConfig['long'] = number_format($config->longitude,2,'.','');
+			$util = new Util();
+			
+			$data['sunInfo'] = $util->getSunInfo($config, $date);
+			foreach ($config->inverters as $inverter){
+				if($inverter->type=='production'){
+					foreach ($inverter->panels as $panel){
+						$panels[] = array(
+							'roofOrientation'=>$panel->roofOrientation,
+							'roofPitch'=>$panel->roofPitch,
+							'totalWp'=>$panel->amount*$panel->wp
+						);
+					}
+					$inverters[] = array(
+						'plantPower'=>$inverter->plantpower,
+						'panels'=>$panels
+					);
+				}
+			}
+			$slimConfig['inverters'] = $inverters;
+			
 			$dayData = new DayDataResult();
 			$dayData->graph = $lines['graph'];
 			$dayData->success = true;
@@ -163,6 +185,7 @@ try {
 			$lang['harvested'] = _('harvested (W)');
 			$lang['cumulative'] = _('cumulative (W)');
 			$lang['totalEnergy'] = _('total Energy');
+			$data['slimConfig'] = $slimConfig;
 			$data['lang'] = $lang;
 			$data['dayData'] = $dayData;
 			break;
@@ -527,8 +550,10 @@ try {
 			}
 			break;
 		case "test":
-			$hybridTwitter = new PvOutputAddon();
-			$hybridTwitter->joinTeam();
+			
+			$test = $dataAdapter->readCache("","index","live",$inverter->id,"trend");
+			echo $test[0]['value'];
+			var_dump($test);
 			break;
 
 		default:

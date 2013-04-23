@@ -18,9 +18,9 @@
 
 ;;;;; Remove the ;'s and replace the XXXXXX with your host, dbname and credentials
 ;[database]
-;dsn="mysql:host=localhost;dbname=wsl"
-;username="root"
-;password="2724cv"
+;dsn="mysql:host=localhost;dbname=WSL"
+;username="xxxx"
+;password="xxxx"
 
 
 ;;;;; Do not remove anything below this line

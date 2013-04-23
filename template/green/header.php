@@ -42,7 +42,6 @@ $config = Session::getConfig();
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.pointLabels.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.highlighter.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.enhancedLegendRenderer.min.js"></script>
-
-    
+    <script type="text/javascript" src="js/astrocal.js"></script>
     <script type="text/javascript" src="js/websolarlog.js"></script>
 </head>

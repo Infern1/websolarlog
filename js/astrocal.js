@@ -1,39 +1,22 @@
-//Credits to:
-//Proceedings of the Open source GIS - GRASS users conference 2002 - Trento, Italy, 11-13 September 2002
-//The solar radiation model for Open source GIS:
-//implementation and applications
-//Jaroslav Hofierka,Marcel Uri
-
-function init_astrocalc(date,long,lat,az,roof,temp_coeff,sd) {
+function init_astrocalc(date,long,lat,az,roof,temp_coeff,timezone) {					
 	tmp_debug="";
+	skydome_coeff = 1; //skydome
 	pi = 3.1415926536;
-	// degrees-radians
-	RAD = pi/180.0; 
+	RAD = pi/180.0; // degrees-radians
 	// hight of sun at sunrise: radius+refraction
-	h_sunrise = -(50.0/60.0)*RAD;
+	h_sunrise   = -(50.0/60.0)*RAD;
 	meteo_data = [];
 	//sunhours, av min temp, av max temp, windspeed, source: http://www.meteo.be/meteo/view/nl/360955-Maandelijkse+normalen.html#ppt_5238199  
-	meteo_data["Gemiddelde"] = [[59,77,114,159,191,188,201,190,143,113,66,45],[0.7,0.7,3.1,5.3,9.2,11.9,14.0,13.6,10.9,7.8,4.1,1.6],
+	meteo_data["Gemiddelde"]=[[59,77,114,159,191,188,201,190,143,113,66,45],[0.7,0.7,3.1,5.3,9.2,11.9,14.0,13.6,10.9,7.8,4.1,1.6],
 						[5.7,6.6,10.4,14.2,18.1,20.6,23,22.6,19,14.7,9.5,6.1],[4.1,3.8,3.8,3.4,3.2,3,2.9,2.8,3,3.4,3.6,3.7]];
-	
-	//max temperature per month for Ukkel, Belgium, source: http://www.meteo.be/meteo/view/nl/360955-Maandelijkse+normalen.html#ppt_5238199
-//	location_max_temp_month_arr = new Array(5.7,6.6,10.4,14.2,18.1,20.6,23.0,22.6,19.0,14.7,9.5,6.1); 
-//	location_windspeed_month_arr = new Array(4.1,3.8,3.8,3.4,3.2,3.0,2.9,2.8,3.0,3.4,3.6,3.7); 
-	//Atmospheric Properties Linke Turbidity Factor, see http://www.soldata.dk/PDF/Bason%20-%20Diffuse%20irradiance%20and%20visibility.PDF
-	//Pure Rayleigh atmosphere 1
-	//Extremely clear, cold air (arctic) 2
-	//Clear, warm air 3
-	//Moist, warm air 4-6
-	//Polluted atmosphere 8
-//  	 LTFarr = new Array(3.2, 3.4 ,4.0 ,4.0 ,4.3 ,4.1 ,4.3 ,4.4 ,4.0 ,3.4 ,3.3 ,3.0); //JRC Aartselaar
-//	   LTFarr = new Array(2.8 ,3.0, 3.1, 4.0 ,4.3 ,4.1 ,4.3 ,4.4 ,4.0 ,3.3 ,3.2 ,2.8); //adapted
-// 	   LTFarr = new Array(3.3,3.4,4.0,4.1,4.3,4.1,4.3,4.5,4.1,3.4,3.4,3.0); //JRC Emblem
-//	   LTFarr = new Array(3.3,3.5,4.1,4.3,4.4,4.2,4.4,4.5,4.1,3.4,3.4,3.0); //Ukkel
-
-
-	//set skydome to 1 of panels can "see" the horizon, 
-	//set to 0.8 or less if buildings or trees are in the way
-	skydome_coeff=sd*1;
+	meteo_data["2010"]=[[48.65,28.87,117.97,223.02,171.80,258.62,252.02,136.48,142.67,118.58,23.77,33.12],[0,0,0,0,0,0,0,0,0,0,0,0],
+						[2.2,5,10.4,15.7,15.4,22.4,25.8,21.5,18.6,14.7,8.2,1.2],[2.9,4.1,4.1,3.5,3.2,2.8,2.9,3,2.7,3.6,3.5,2.8]];
+	meteo_data["2011"]=[[52.28,54.75,204.22,238.85,264.20,180.98,140.00,144.68,173.38,161.75,114.9,51.93],[0,0,0,0,0,0,0,0,0,0,0,3.6],
+						[6.7,8.1,12.4,19.6,20,21.7,20.1,21.9,21.2,16.5,12.5,8.7],[3.6,3.9,3.3,2.9,3.4,3.3,3.1,3,3.3,3.4,3.2,4.7]];
+	meteo_data["2012"]=[[48.95,95.42,165.93,113.18,189.87,147.37,173.38,218.5,175.37,119.97,96.66,30.8],[2.7,-3.2,4.6,4.4,9.8,11.4,13.4,14.3,9.9,14.9,4.7,7.2],
+						[8,3.6,13.3,12.6,19.1,19.5,21.8,24.3,19.5,7.5,9.6,2.5],[3.9,3.4,2.9,4,3.1,3.3,3,3.2,3,3.4,3.8,4.6]];
+	meteo_data["2013"]=[[36.35,59.33,82.72,0,0,0,0,0,0,0,0,0],[0.0001,-0.9,-0.3,0,0,0,0,0,0,0,0,0],
+						[4.1,3.7,6.1,0,0,0,0,0,0,0,0,0],[3.6,3.7,4.04,0,0,0,0,0,0,0,0,0]];
 	longitude = long; //longitude of pv location
 	latitude = lat; //latitude of pv location
 	longRAD = long*RAD; // latitude in radians
@@ -42,8 +25,9 @@ function init_astrocalc(date,long,lat,az,roof,temp_coeff,sd) {
 	pv_roof = roof*RAD; //roof in radians
 	pv_temp_coeff = temp_coeff //temperature coefficient pv module Pmax [%/K] with STC=25°C
 	pv_eff = 1; //=1 taking into account that pv-modules have positive tolerance so that other losses can be neglected
-	time_zone = 1; //timetzone (normally 1 in CEST + 1 will be added by function for summertime)
-
+	time_zone = timezone; //timetzone (normally 1 in CEST + 1 will be added by function for summertime)
+	console.log(timezone);
+	
 	doy = dayofyear(date);
 	TE = timeequation(doy);
  	DC = sun_declination(doy);
@@ -52,12 +36,18 @@ function init_astrocalc(date,long,lat,az,roof,temp_coeff,sd) {
 	SS = sunset(doy);
 	city = fLTFarr(longRAD,latRAD);
 	LTF = conv_avrg(city[3],doy);
-	dataset = 'Gemiddelde';
+	if (!document.getElementById('dataset')) dataset='Gemiddelde'; else {
+		var selectElement = document.getElementById("dataset"); 
+		dataset = selectElement.options[selectElement.selectedIndex].text; 
+	}
+	for(i=0;i<4;i++) {
+		for(i1=0;i1<12;i1++) {
+			if (meteo_data[dataset][i][i1]==0) meteo_data[dataset][i][i1]=meteo_data["Gemiddelde"][i][i1];
+		}
+	}
 	location_min_temp_month = conv_avrg(meteo_data[dataset][1],doy);
 	location_max_temp_month = conv_avrg(meteo_data[dataset][2],doy);
 	location_windspeed = conv_avrg(meteo_data[dataset][3],doy);
-	//alert(doy);
-//	alert(longitude+" "+latitude+" "+pv_az+" "+pv_roof+" "+pv_temp_coeff);
 }
 
 function fLTFarr(lon1,lat1){
@@ -77,7 +67,6 @@ function fLTFarr(lon1,lat1){
 	 			["Tienen",50.808,4.943,[3.3,3.5,4.1,4.2,4.4,4.2,4.4,4.5,4.1,3.5,3.4,3],"EBBE"],
 	 			["Groningen",53.2,6.6,[2.6,2.3,3.1,2.9,3.2,3.4,3.9,4.1,3.9,3.5,2.6,2.8,3.2],"EHGG"],	 
 	 			["Amsterdam",52.370,4.895,[2.7,2.5,3.5,3.2,3.4,3.8,4,4.5,4,3.6,2.5,2.7],"EHAM"], 
-	 			["Rotterdam",51.951,4.434,[2.8,2.6,3.5,3.3,3.5,3.8,4,4.5,4,3.6,2.4,2.8],"EHRD"], 
 	 			["Arnhem",52.068,5.896,[2.7,2.4,3.5,3.2,3.5,4,4.3,4.7,4.1,3.6,2.5,2.8],"EHDL"]
 			];	
  //calculate distance, source: http://www.movable-type.co.uk/scripts/latlong.html	 
@@ -88,7 +77,6 @@ function fLTFarr(lon1,lat1){
   var lat2=	cities[i][1]*RAD;
   var lon2=	cities[i][2]*RAD;
   var d = Math.acos(Math.sin(lat1)*Math.sin(lat2)+Math.cos(lat1)*Math.cos(lat2)*Math.cos(lon2-lon1)) * R;
-  //alert(d+" "+cities[i][0]);
   if (d<min_d) {min_d=d;min_d_city=i;}
  }
  return cities[min_d_city];
@@ -98,7 +86,6 @@ function conv_avrg(in_array,doy) {
 	var m=0;
 	var d=0;
 	var new_in_array=[];
-//	if (doy==365) alert(sum+" "+in_array);
 	while (d<doy-15) {
 		d=d+daysInMonth(m+1,2011);
 		m++;
@@ -110,10 +97,8 @@ function conv_avrg(in_array,doy) {
 	}
 	new_in_array[0]=new_in_array[12];
 	new_in_array[13]=new_in_array[1];
-//	if (doy==20) alert("Json" + JSON.stringify(in_array));
 	var basem=new_in_array[m]; var nextm=new_in_array[m+1];
 	var ddiff=doy-d+15;
-//	alert(m+" "+basem+" "+nextm+" "+ddiff+" "+(basem+(nextm-basem)/30*ddiff));
 	return basem+(nextm-basem)/30*ddiff;
 }
 
@@ -146,7 +131,6 @@ function windspeed() {
 //source: own formula to simulate temperature as f(time)
 function real_temp(curr_time) {
  var a=	location_min_temp_month+0.5*(location_max_temp_month-location_min_temp_month)*(1+Math.sin( pi*(curr_time-SR)/(SS-SR)-0.5 ) );
-//	tmp_debug =a;
  return a;
 }
 
@@ -155,7 +139,6 @@ function panel_temp (tot_en, doy, curr_time) {
 	var noct=47; //average, depending on module
 	var a= real_temp(curr_time)+(noct-20)/80*100*tot_en*windspeed();
 	return a;
-	//if (a>0) return a; else return 0;
 }
 
 function temperature_coeff (temp) {
@@ -163,7 +146,6 @@ function temperature_coeff (temp) {
 	return a;
 //	if (a>0) return a; else return 0;
 }
-
 function dayofyear(indate) {   // indate YYYYMMDD
     var d = new Date(parseInt(indate.substr(0,4),10) , parseInt(indate.substr(4,2),10) - 1,parseInt(indate.substr(6,2),10) , 0,0,0);
 	var yn = d.getFullYear();
@@ -201,7 +183,6 @@ function timeequation(doy)
 	// formula 2008 by Arnold(at)Barmettler.com, fit to 20 years of average equation of time (2008-2017)
 	return -0.170869921174742*Math.sin(0.0336997028793971 * doy + 0.465419984181394) - 0.129890681040717*Math.sin(0.0178674832556871*doy - 0.167936777524864);
 }
-
 function sunrise(doy)
 {
 	var DC = sun_declination(doy);
@@ -214,24 +195,11 @@ function sunset(doy)
 	return 12 + timedifference(DC) - timeequation(doy);
 }
 
-function refraction_old(h0ref)
-{
-	// refraction of sun
-	var P=1013.25; // airpressure atmosphere in hPa (=mbar)
-	var T=15; // temperature atmosphere in °C 
-	var R = 0;
-//	if (h0ref>=15*RAD) R = 0.00452*RAD*P/Math.tan(h0ref)/(273+T); // above 15° - easier formula
-//	else if (h0ref>-1*RAD) R = RAD*P*(0.1594+0.0196*h0ref+0.00002*sqr(h0ref))/((273+T)*(1+0.505*h0ref+0.0845*sqr(h0ref)));
-	if (h0ref>-1*RAD) R = RAD*P*(0.1594+0.0196*h0ref+0.00002*sqr(h0ref))/((273+T)*(1+0.505*h0ref+0.0845*sqr(h0ref)));
-	return R; // refraction in radians
-}
-
 function refraction(h0)
 {
 	// refraction in radians
 	return RAD*0.061359*(0.1594+1.123*h0+0.065656*h0*h0)/(1+28.9344*h0+277.3971*h0*h0); 
 }
-
 
 function global_radiation(doy) {
 	return 1367*(1 + 0.03344*Math.cos(2*pi*doy/365.25-0.048869));  
@@ -264,7 +232,6 @@ function diffuse_radiation(h0){
 
 function diffrad_coeff(B0c,Dhc,az,h0,beam_coeff) {
 //	if (h0<-4*RAD) return 0;
-//	alert("alive");
 	// better fit?
 	var Kb = Dhc/G0; 
 	// according to jrc:
@@ -302,9 +269,6 @@ function ground_reflection (B0c,Dhc,h0){
 	if (a>0) return a; else return 0;
 }
 
-
-
-// calculation of azimuth and hight of sun
 function azimuthhight(curr_time)
 {
 	var cosdec = Math.cos(DC);
@@ -321,12 +285,10 @@ function azimuthhight(curr_time)
 	var coor = new Object();
 	coor.azimuth = Math.atan2(N, D); if (coor.azimuth<0) coor.azimuth += 2*pi; // azimuth: north=0, east=pi/2, west=3/4pi
 	coor.h0  = Math.asin( sindec * sinlat + cosdec * coslha * coslat ); // hight of sun
-//	if (curr_time==9) alert(refraction(coor.h0ref)/RAD);
 	coor.h0ref  = coor.h0  + refraction(coor.h0);
 	coor.beam_coeff = (Math.cos(coor.h0)*Math.sin(pv_roof)*Math.cos(pv_az-coor.azimuth)+Math.sin(coor.h0)*Math.cos(pv_roof));
     if (coor.beam_coeff<0) coor.beam_coeff=0; 
 	coor.time=curr_time;
-//	if (coor.time==5) alert("alive");
 //	coor.am=airmass(coor.h0ref);
 //	coor.old_intens=old_intensity(coor.am);
 //    var mc= meas_correction(doy);
@@ -345,16 +307,20 @@ function azimuthhight(curr_time)
 	coor.temp_coeff=temperature_coeff (coor.temp_panel);
 	coor.pan_coeff=panel_coeff (tot_en/1000*coor.temp_coeff);
     coor.gen_coeff = generator_coeff(tot_en/1000*coor.temp_coeff*coor.pan_coeff);
-//	if (curr_time==17) alert(tot_en);
 	coor.tot_en = tot_en*coor.temp_coeff*coor.pan_coeff*coor.gen_coeff;
     //in kW/m2
 
-//	if (coor.time==8) alert(coor.pan_coeff);
 	coor.debug=tmp_debug;
 //	coor.debug = Math.round(100*cf(coor.azimuth,coor.h0ref))/100;
     return coor;
 }
 
+function timeStringToFloat(time) {
+	  var hoursMinutes = time.split(/[.:]/);
+	  var hours = parseInt(hoursMinutes[0], 10);
+	  var minutes = hoursMinutes[1] ? parseInt(hoursMinutes[1], 10) : 0;
+	  return hours + minutes / 60;
+}
 
 //summer time function
 //call summer time by checking (example):
@@ -369,19 +335,10 @@ Date.prototype.dst = function() {
 return this.getTimezoneOffset() < this.stdTimezoneOffset();
 }
 
-//function meas_correction(doy) {
-// return 1;	
-//return -0.00000000000002847872*Math.pow(doy,6) + 0.00000000003037654662*Math.pow(doy,5) - 0.00000001210144682937*Math.pow(doy,4) + 0.00000221141824315041*Math.pow(doy,3) - 0.000173530294940605*Math.pow(doy,2) + 0.00263939823949499*doy + 1.16383508985655;
-//}
+function daysInMonth(month,year) {
+	var dd = new Date(year, month, 0);
+	return dd.getDate();
+} 
 
-//source: http://www.pveducation.org/pvcdrom/properties-of-sunlight/air-mass
-//function airmass(h0ref) {
-// var diff_zenith=pi/2-h0ref;
-// return 1/( Math.cos(diff_zenith)+0.50572*Math.pow(96.07995-diff_zenith,-1.6364) );
-//}
-//
-////source: http://www.pveducation.org/pvcdrom/properties-of-sunlight/air-mass
-//function old_intensity(am){
-//	a= 1.353*Math.pow(0.7,Math.pow(am,0.678));
-//	return a;
-//}
+
+

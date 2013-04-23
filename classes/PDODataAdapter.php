@@ -531,9 +531,9 @@ class PDODataAdapter {
 			$graph->timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
 
 			$graph->metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
-
-			$graph->series[] = array('label'=>'Cum. Power(Wh)','yaxis'=>'yaxis');
-			$graph->series[] = array('label'=>'Avg. Power(W)','yaxis'=>'yaxis');
+			$graph->series[0] = array('label'=>'Cum. Power(Wh)','yaxis'=>'y2axis');
+			$graph->series[1] = array('label'=>'Avg. Power(W)','yaxis'=>'yaxis');
+			
 
 			$graph->axes['yaxis']  = array('label'=>'Cum. Power(Wh)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->axes['y2axis'] = array('label'=>'Avg. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
@@ -937,13 +937,13 @@ class PDODataAdapter {
 		if ($invtnum > 0){
 			$energyBeans = R::getAll("
 					SELECT *
-					FROM '".$table."'
+					FROM ".$table."
 					WHERE INV = :INV AND time > :beginDate AND  time < :endDate
 					ORDER BY time",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
 			$energyBeans = R::getAll("
 					SELECT *
-					FROM '".$table."'
+					FROM ".$table."
 					WHERE time > :beginDate AND  time < :endDate
 					ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
@@ -2001,7 +2001,7 @@ class PDODataAdapter {
 		//
 		//check if we are looking for a $page
 		if ($inverterId != ""){
-			$where[] = " key LIKE '%-". $inverterId."' ";
+			$where[] = " `key` LIKE '%-". $inverterId."' ";
 		}
 		//check if we need to add a 'AND'
 		($where[count($where)-1]!='' AND $where[count($where)-1]!=' AND ')? $where[] = ' AND ' : $where = $where;
@@ -2012,7 +2012,7 @@ class PDODataAdapter {
 		//
 		//check if we are looking for a $page
 		if ($inverterId != ""){
-			$where[] = " key like '". $key."-%' ";
+			$where[] = " `key` like '". $key."-%' ";
 		}
 
 		//when we end with a " AND ", we pop it of.
@@ -2025,7 +2025,7 @@ class PDODataAdapter {
 		}
 
 		//make the query
-		$query = "SELECT key,value,page,module FROM 'cache' WHERE ".$whereString." ORDER BY key ASC";
+		$query = "SELECT `key`,value,page,module FROM cache WHERE ".$whereString." ORDER BY `key` ASC";
 
 		//run the query
 		$cached =  R::getAll($query);
@@ -2131,7 +2131,6 @@ class PDODataAdapter {
 						
 					$avgPower = $this->readCache("","index","live",$inverter->id,"trend");
 					$live->trend = $avgPower[0]['value'];
-					$live->avgPower = $avgPower['avgPower'];
 				}
 
 				$oInverter["id"] = $liveBean['INV'];

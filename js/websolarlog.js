@@ -343,6 +343,24 @@ function timeConverter(timestamp, format) {
 	return time;
 }
 
+
+function dateConverter(date, format) {
+	var a = date.split('-');
+	var year = a[2];
+	var month = a[1];
+	var day = a[0];
+	var time = eval(format);
+	return time;
+}
+
+function timeStringToFloat(time) {
+	  var hoursMinutes = time.split(/[.:]/);
+	  var hours = parseInt(hoursMinutes[0], 10);
+	  var minutes = hoursMinutes[1] ? parseInt(hoursMinutes[1], 10) : 0;
+	  return hours + minutes / 60;
+	}
+
+
 function twoDigits(value) {
 	if(value < 10) {
 		return '0' + value;
@@ -1128,8 +1146,7 @@ var WSL = {
 			return $.jsDate.strftime(val, format);
 		};
 		$.ajax({
-			url : "server.php?method=getGraphDayPoints&type=" + getDay
-					+ "&date=" + date + "&invtnum=" + invtnum,
+			url : "server.php?method=getGraphDayPoints&type=" + getDay + "&date=" + date + "&invtnum=" + invtnum,
 			beforeSend : function(xhr) {
 				if (getWindowsState() == false) {
 					ajaxAbort(xhr, '');
@@ -1140,9 +1157,47 @@ var WSL = {
 			success : function(result) {
 				// add a custom tick formatter, so that you don't have
 				// to include the entire date renderer library.
-	
+				var gl_date = dateConverter(date, "year+''+month+''+day");
+				var longitude = result.slimConfig.long;
+				var latitude = result.slimConfig.lat;
+				var pv_az = result.slimConfig.inverters[0].panels[0].roofOrientation; 
+				var pv_roof = result.slimConfig.inverters[0].panels[0].roofPitch;
+				var pv_temp_coeff = -0.45;
+				var skydome_coeff = 1;
+				var Wp_panels = result.slimConfig.inverters[0].plantPower;
+				var timezone = result.timezoneOffset;
+				init_astrocalc(gl_date,longitude,latitude,pv_az,pv_roof,pv_temp_coeff,timezone);
+				
+				
+				var coeff = 1000 * 60 * 5;
+				var beforeSunrise = coeff*20;
+				var sunrise = new Date(result.sunInfo.sunrise*1000);  //or use any other date
+				var sunriseRounded = Math.round(sunrise.getTime() / coeff) * coeff;
+				
+				var sunset = new Date(result.sunInfo.sunset*1000);  //or use any other date
+				var sunsetRounded = (Math.round(sunset.getTime() / coeff) * coeff)+coeff*6;
+				var maxPower = [];
+				var maxPowerTime = [];
+				
+				for (var i=sunriseRounded; i<=sunsetRounded; i=i+coeff){
+					maxPowerTime=[];
+					currentTime = new Date(i);
+					if(currentTime.getMinutes()<10){
+						var minutes = 0+""+currentTime.getMinutes();
+					}else{
+						var minutes = currentTime.getMinutes();
+					}
+					if(currentTime.getHours()<10){
+						var hours = 0+""+currentTime.getHours();
+					}else{
+						var hours = currentTime.getHours();
+					}
+					var coor=azimuthhight(timeStringToFloat(hours+':'+minutes)); 
+					maxPowerTime.push(i,Math.round(coor.tot_en/1000*Wp_panels));
+					maxPower.push(maxPowerTime);
+				}
 				seriesData = [];
-	
+				var clearSkySeriesObject ={}; 
 				var json = [];
 				if (result.dayData) {
 					if (result.dayData.graph) {
@@ -1151,10 +1206,19 @@ var WSL = {
 							for (values in result.dayData.graph.points[line]) {
 								json.push([
 									result.dayData.graph.points[line][values][0]*1000,
-									result.dayData.graph.points[line][values][1] 
+									result.dayData.graph.points[line][values][1]
 								]);
+							
 							}
 							seriesData.push(json);
+							if(seriesData.length==2){
+								seriesData.push(maxPower);
+								clearSkySeriesObject['label'] = 'Clear Sky';
+								clearSkySeriesObject['yaxis'] = 'yaxis';
+								result.dayData.graph.series.splice(2, 0, clearSkySeriesObject);
+								result.dayData.graph.series.join();
+							}
+							
 						}
 						
 						//graphOptions.legend.labels = result.dayData.graph.labels;
@@ -1163,7 +1227,6 @@ var WSL = {
 							if (result.dayData.graph.metaData.legend.renderer == 'EnhancedLegendRenderer') {
 								result.dayData.graph.metaData.legend.renderer = $.jqplot.EnhancedLegendRenderer;
 							}
-							
 							graphOptions.legend = result.dayData.graph.metaData.legend;
 						}
 						for (axes in result.dayData.graph.axes) {
@@ -1185,7 +1248,6 @@ var WSL = {
 						graphOptions.axes.xaxis.max = result.dayData.graph.timestamp.endDate * 1000;
 						graphOptions.series = result.dayData.graph.series;
 					}
-	
 					var seriesHidden = [];
 					// loop through all hidden
 					$('td.jqplot-series-hidden').each(function() {
