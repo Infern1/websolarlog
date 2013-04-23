@@ -53,7 +53,7 @@ class CacheAddon {
 			}else{
 				$queryWhere = "";
 			}
-			$query = "SELECT  avg(GP) AS avgGP FROM 'history' WHERE ".$queryWhere." time > :begin AND  time < :end GROUP BY GP ORDER BY time DESC";
+			$query = "SELECT  avg(GP) AS avgGP FROM history WHERE ".$queryWhere." time > :begin AND  time < :end GROUP BY avgGP ORDER BY time DESC";
 			
 			$avgRecent =  R::getAll($query,array(':begin'=>$recentBegin,':end'=>$recentEnd));
 			$avgPast   =  R::getAll($query,array(':begin'=>$pastBegin,':end'=>$pastEnd));
