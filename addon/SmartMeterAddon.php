@@ -338,7 +338,8 @@ class SmartMeterAddon {
 			$graph->points['highUsage'][] = array ($UTCdate ,$highUsage);
 			$graph->points['lowReturn'][] = array ($UTCdate ,$lowReturn);
 			$graph->points['highReturn'][] = array ($UTCdate ,$highReturn);
-			
+			(!$minActual) ? $minActual = 0 : $minActual = $minActual;
+			(!$maxActual) ? $maxActual = 0 : $maxActual = $maxActual;
 			($actualUsage<$minActual) ? $minActual = $actualUsage : $actualUsage = $actualUsage;
 			($actualUsage>$maxActual) ? $maxActual = $actualUsage : $actualUsage = $actualUsage;
 
