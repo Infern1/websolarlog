@@ -89,6 +89,7 @@ class Config
 		$this->location='Home Sweet Home';
 		$this->latitude = '52.061152';
 		$this->longitude = '4.493330';
+		$this->timezone = 'UTC';
 
 		// ### Communication
 		$this->comPort = "/dev/ttyUSB0";
