@@ -29,9 +29,9 @@ class PDODataAdapter {
 		}elseif(strpos($config->dbDSN,'mysql') !== false){
 			$this->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
 		}
+		RedBean_OODBBean::setFlagBeautifulColumnNames(false);
 		R::debug(false);
 		R::setStrictTyping(false);
-		R::setFlagBeautifulColumnNames(false);
 	}
 
 	function __destruct() {
