@@ -2164,7 +2164,7 @@ class PDODataAdapter {
 			//sum plantpower of all inverters
 			$sumPlantPower += $inverter->plantpower/1000;
 		}
-		echo "SELECT INV,COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, time AS date FROM energy WHERE INV = :INV GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." ORDER BY time DESC limit 0,1";
+		//echo "SELECT INV,COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, time AS date FROM energy WHERE INV = :INV GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." ORDER BY time DESC limit 0,1";
 		// type to lowercase
 		$type = strtolower($type);
 		// init array
