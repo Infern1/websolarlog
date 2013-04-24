@@ -2380,7 +2380,7 @@ class PDODataAdapter {
 	 * @return string
 	 */
 	public function crossSQLDateTime($format, $column, $dateTimeFunction=''){
-		echo "xxx".$this->sqlEngine."xxxx";
+		//echo "xxx".$this->sqlEngine."xxxx";
 		switch ($this->sqlEngine) {
 		case 'sqlite':
 			//strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) );
