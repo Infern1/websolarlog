@@ -26,10 +26,10 @@ class PDODataAdapter {
 			R::exec("PRAGMA synchronous = NORMAL"); // A little less secure then FULL, but much less IO
 			R::exec("PRAGMA PRAGMA temp_store = 2"); // In memory (IO on SD is slow)
 			$this->sqlEngine = 'sqlite'; //set db-engine dependent dateFunction
-		}elseif(strpos($config->dbDSN,',mysql') !== false){
+		}elseif(strpos($config->dbDSN,'mysql') !== false){
 			$this->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
 		}
-		
+		//echo $this->sqlEngine;
 		R::debug(false);
 		R::setStrictTyping(false);
 	}
@@ -2164,7 +2164,7 @@ class PDODataAdapter {
 			//sum plantpower of all inverters
 			$sumPlantPower += $inverter->plantpower/1000;
 		}
-
+		echo "SELECT INV,COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, time AS date FROM energy WHERE INV = :INV GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." ORDER BY time DESC limit 0,1";
 		// type to lowercase
 		$type = strtolower($type);
 		// init array
@@ -2215,6 +2215,7 @@ class PDODataAdapter {
 		}
 
 		if($type == "month" ||  $type == "all"){
+			
 			if ($invtnum>0){
 				$totalEnergyBeansMonth = R::getAll("
 						SELECT INV,COUNT(kwh) as countkWh,MAX ( kwh ) AS kWh, SUM (kwh) AS sumkWh, time AS date 
@@ -2379,6 +2380,7 @@ class PDODataAdapter {
 	 * @return string
 	 */
 	public function crossSQLDateTime($format, $column, $dateTimeFunction=''){
+		echo "xxx".$this->sqlEngine."xxxx";
 		switch ($this->sqlEngine) {
 		case 'sqlite':
 			//strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) );
@@ -2630,7 +2632,7 @@ class PDODataAdapter {
 
 
 	public function saveCache(Cache $cache){
-		$bean = R::findone('cache',' key = :key ', array( ":key"=> $cache->key));
+		$bean = R::findone('cache',' `key` = :key ', array( ":key"=> $cache->key));
 		if (!$bean){
 			$bean = R::dispense('cache');
 		}
