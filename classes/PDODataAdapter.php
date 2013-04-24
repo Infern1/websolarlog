@@ -1038,7 +1038,7 @@ class PDODataAdapter {
 		$beginEndDate = Util::getBeginEndDate('year', 1,$date);
 		if ($invtnum>0){
 			$beans = R::getAll("
-					SELECT INV,sum(kWh) AS KWH, time AS date
+					SELECT INV, SUM(kWh) AS KWH, time AS date
 					FROM energy
 					WHERE INV = :INV AND time > :beginDate AND time < :endDate
 					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')."
@@ -1046,7 +1046,7 @@ class PDODataAdapter {
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
 			$beans = R::getAll("
-					SELECT INV,sum(kWh) AS KWH, time AS date
+					SELECT INV, SUM(kWh) AS KWH, time AS date
 					FROM energy WHERE time > :beginDate AND time < :endDate
 					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')."
 					ORDER BY time DESC",
@@ -1596,13 +1596,13 @@ class PDODataAdapter {
 		$inverter = array();
 		$beginEndDate = Util::getBeginEndDate('year', 1,$startDate);
 		if ($invtnum>0){
-			$beans = R::getAll("SELECT INV,SUM(KWH) as KWH, time 
+			$beans = R::getAll("SELECT INV, SUM(KWH) as KWH, time 
 					FROM Energy WHERE INV = :INV AND time > :beginDate AND time < :endDate 
 					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." 
 					ORDER BY time ASC",
 					array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}else{
-			$beans = R::getAll("SELECT INV,SUM(KWH) as KWH, time
+			$beans = R::getAll("SELECT INV, SUM(KWH) as KWH, time
 					FROM Energy WHERE time > :beginDate AND time < :endDate 
 					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." 
 					ORDER BY time ASC",
