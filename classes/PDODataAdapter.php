@@ -2164,7 +2164,7 @@ class PDODataAdapter {
 			//sum plantpower of all inverters
 			$sumPlantPower += $inverter->plantpower/1000;
 		}
-		//echo "SELECT INV,COUNT(kwh) as countkWh,MAX(kwh) AS kWh, SUM (kwh) AS sumkWh, time AS date FROM energy WHERE INV = :INV GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." ORDER BY time DESC limit 0,1";
+		//echo "SELECT INV,COUNT(kwh) as countkWh,MAX(kwh) AS kWh, SUM(kwh) AS sumkWh, time AS date FROM energy WHERE INV = :INV GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." ORDER BY time DESC limit 0,1";
 		// type to lowercase
 		$type = strtolower($type);
 		// init array
@@ -2198,7 +2198,7 @@ class PDODataAdapter {
 
 		if($type == "week" || $type == "all"){
 			$totalEnergyBeansWeek = R::getAll("
-					SELECT COUNT(kwh) as countkWh,MAX(kwh) AS kWh, SUM (kwh) AS sumkWh,
+					SELECT COUNT(kwh) as countkWh,MAX(kwh) AS kWh, SUM(kwh) AS sumkWh,
 					 ".$this->crossSQLDateTime("'%Y%W'",'time','date')." AS date 
 					FROM energy GROUP BY date 
 					ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit));
@@ -2218,7 +2218,7 @@ class PDODataAdapter {
 			
 			if ($invtnum>0){
 				$totalEnergyBeansMonth = R::getAll("
-						SELECT INV,COUNT(kwh) as countkWh,MAX(kwh) AS kWh, SUM (kwh) AS sumkWh, time AS date 
+						SELECT INV,COUNT(kwh) as countkWh,MAX(kwh) AS kWh, SUM(kwh) AS sumkWh, time AS date 
 						FROM energy 
 						WHERE INV = :INV 
 						GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." 
@@ -2228,7 +2228,7 @@ class PDODataAdapter {
 					$totalEnergyBeansMonth[$i]['sumkWh'] = number_format($totalEnergyBeansMonth[$i]['sumkWh'],2,',','');
 				}
 			}else{
-				$totalEnergyBeansMonth = R::getAll("SELECT INV,COUNT(kwh) as countkWh, MAX(kwh) AS kWh, SUM (kwh) AS sumkWh, time AS date 
+				$totalEnergyBeansMonth = R::getAll("SELECT INV,COUNT(kwh) as countkWh, MAX(kwh) AS kWh, SUM(kwh) AS sumkWh, time AS date 
 						FROM energy 
 						GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." 
 						ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit));
@@ -2251,7 +2251,7 @@ class PDODataAdapter {
 		if($type == "year" || $type == "all"){
 			if ($invtnum>0){
 				$totalEnergyBeansYear = R::getAll("
-						SELECT COUNT(kwh) as countkWh,MAX(kwh)  AS kWh,  SUM (kwh) AS sumkWh,time AS date 
+						SELECT COUNT(kwh) as countkWh,MAX(kwh)  AS kWh,  SUM(kwh) AS sumkWh,time AS date 
 						FROM energy WHERE INV = :INV 
 						GROUP BY ".$this->crossSQLDateTime("'%Y'",'time','date')."  
 						ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
@@ -2261,7 +2261,7 @@ class PDODataAdapter {
 				}
 			}else{
 				$totalEnergyBeansYear = R::getAll("
-						SELECT COUNT(kwh) as countkWh,MAX(kwh)  AS kWh,  SUM (kwh) AS sumkWh,time AS date FROM energy 
+						SELECT COUNT(kwh) as countkWh,MAX(kwh)  AS kWh,  SUM(kwh) AS sumkWh,time AS date FROM energy 
 						GROUP BY ".$this->crossSQLDateTime("'%Y'",'time','date')." 
 						ORDER BY time DESC limit 0,:limit",array(':limit'=>$limit));
 				if($totalEnergyBeansYear[0]['sumkWh']>0){
@@ -2283,7 +2283,7 @@ class PDODataAdapter {
 		if($type == "overall" || $type == "all"){
 			if ($invtnum>0){
 				$totalEnergyBeansOverall = R::getAll("
-						SELECT COUNT(kwh) as countkWh, MAX(kwh)  AS kWh,  SUM (kwh) AS sumkWh, time AS date 
+						SELECT COUNT(kwh) as countkWh, MAX(kwh)  AS kWh,  SUM(kwh) AS sumkWh, time AS date 
 						FROM energy 
 						WHERE INV = :INV 
 						ORDER BY time limit 0,:limit",array(':limit'=>$limit,':INV'=>$invtnum));
@@ -2293,7 +2293,7 @@ class PDODataAdapter {
 				}
 			}else{
 				$totalEnergyBeansOverall = R::getAll("
-						SELECT COUNT(kwh) as countkWh, MAX(kwh)  AS kWh,  SUM (kwh) AS sumkWh, time AS date 
+						SELECT COUNT(kwh) as countkWh, MAX(kwh)  AS kWh,  SUM(kwh) AS sumkWh, time AS date 
 						FROM energy 
 						ORDER BY time limit 0,:limit",array(':limit'=>$limit));
 
