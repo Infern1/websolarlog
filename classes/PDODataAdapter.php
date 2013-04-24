@@ -942,7 +942,6 @@ class PDODataAdapter {
 					WHERE INV = :INV AND time > :beginDate AND  time < :endDate
 					ORDER BY time",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
-			echo "SELECT * FROM ".$table." WHERE time > :beginDate AND time < :endDate ORDER BY time";
 			$energyBeans = R::getAll("
 					SELECT *
 					FROM ".$table."
