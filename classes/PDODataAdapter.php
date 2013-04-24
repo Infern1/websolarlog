@@ -934,7 +934,7 @@ class PDODataAdapter {
 
 		// get the begin and end date/time
 		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
-		var_dump($beginEndDate);
+		
 		if ($invtnum > 0){
 			$energyBeans = R::getAll("
 					SELECT *
