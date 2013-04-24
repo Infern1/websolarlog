@@ -29,9 +29,9 @@ class PDODataAdapter {
 		}elseif(strpos($config->dbDSN,'mysql') !== false){
 			$this->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
 		}
-		//echo $this->sqlEngine;
 		R::debug(false);
 		R::setStrictTyping(false);
+		R::setFlagBeautifulColumnNames(false);
 	}
 
 	function __destruct() {
@@ -934,6 +934,7 @@ class PDODataAdapter {
 
 		// get the begin and end date/time
 		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
+		var_dump($beginEndDate);
 		if ($invtnum > 0){
 			$energyBeans = R::getAll("
 					SELECT *
@@ -941,6 +942,7 @@ class PDODataAdapter {
 					WHERE INV = :INV AND time > :beginDate AND  time < :endDate
 					ORDER BY time",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
+			echo "SELECT * FROM ".$table." WHERE time > :beginDate AND time < :endDate ORDER BY time";
 			$energyBeans = R::getAll("
 					SELECT *
 					FROM ".$table."
