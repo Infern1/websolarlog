@@ -159,5 +159,15 @@
 			return context;   //  moment plugin is not available, context does not have a truthy value, or context is not a valid date
 		}
 	});
+	
+	
+	Handlebars.registerHelper("checkboxWithHidden", function(name, state) {
+		if(state==1 || state==true || state == 'checked'){
+			var checked = 'checked="checked"';
+		}else{
+			var checked = '';
+		}
+		return new Handlebars.SafeString("<input type=\"hidden\" name=\""+name+"\" value=\"0\"/><input type=\"checkbox\" "+checked+" name=\""+name+"\" value=\"1\"/>");
+	});
     
 }));
