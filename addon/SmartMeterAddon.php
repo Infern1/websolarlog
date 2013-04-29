@@ -296,6 +296,37 @@ class SmartMeterAddon {
 		R::trash( $bean );
 	}
 
+	public function defaultAxes(){
+		$graph = new Graph();
+		$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+		$graph->axes['y3axis'] = array('label'=>_("Gas").''._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+		$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'min'=>$minActual,'max'=>$maxActual,'labelRenderer'=>'CanvasAxisLabelRenderer');
+					
+	}
+
+	public function defaultSeries(){
+		$graph = new Graph();
+		$graph->series[] = array('label'=>_("Cum.").' '._("Gas").''._("(l)"),'yaxis'=>'y2axis');
+		$graph->series[] = array('label'=>_("Smooth").' '._("Gas").''._("(l)") ,'yaxis'=>'y2axis');
+		$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
+		$graph->series[] = array('label'=>_("Cum.").' '._("high").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
+		$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("return").''._("(W)"),'yaxis'=>'y2axis');
+		$graph->series[] = array('label'=>_("Cum.").' '._("high").' '._("return").''._("(W)") ,'yaxis'=>'y2axis');
+		$graph->series[] = array('label'=>_("Low").' '._("usage").''._("(W)") ,'yaxis'=>'y3axis');
+		$graph->series[] = array('label'=>_("High").' '._("usage").''._("(W)") ,'yaxis'=>'y3axis');
+		$graph->series[] = array('label'=>_("Low").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
+		$graph->series[] = array('label'=>_("High").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
+		$graph->series[] = array('label'=>_("Actual").' '._("usage").''._("(W)"),'yaxis'=>'y4axis');
+	}
+	
+	public function addSeries(){
+		$graph = new Graph();
+		$graph = $this->defaultSeries();
+		
+	}
+	
+	
+	
 	public function DayBeansToGraphPoints($beans,$startDate){
 		$graph = new Graph();
 		/*
@@ -351,7 +382,7 @@ class SmartMeterAddon {
 		// see if we have more then 1 bean (the dummy bean)
 		if($i > 1){
 			/* Set Serie Labels, The order of the labels needs to be the same as the points above*/
-			$graph->series[] = array('label'=>_("Cum.").' '._("Gas").''._("(l)"),'yaxis'=>'y2axis');
+			/*$graph->series[] = array('label'=>_("Cum.").' '._("Gas").''._("(l)"),'yaxis'=>'y2axis');
 			$graph->series[] = array('label'=>_("Smooth").' '._("Gas").''._("(l)") ,'yaxis'=>'y2axis');
 			$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
 			$graph->series[] = array('label'=>_("Cum.").' '._("high").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
@@ -362,14 +393,14 @@ class SmartMeterAddon {
 			$graph->series[] = array('label'=>_("Low").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
 			$graph->series[] = array('label'=>_("High").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
 			$graph->series[] = array('label'=>_("Actual").' '._("usage").''._("(W)"),'yaxis'=>'y4axis');
-			
+			*/
 			$graph->timestamp = Util::getBeginEndDate('day', 1,$startDate);
 			($maxActual>0) ? $maxActual = ceil( ( ($maxActual*1.1)+100) / 100 ) * 100 : $maxActual= $maxActual;
 			($minActual<0) ? $minActual = ceil( ( ($minActual*1.1)+100) / 100 ) * 100 : $minActual = $minActual;
-			$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+			/*$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->axes['y3axis'] = array('label'=>_("Gas").''._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'min'=>$minActual,'max'=>$maxActual,'labelRenderer'=>'CanvasAxisLabelRenderer');
-			
+			*/
 			// default hide graph lines.
 			$graph->metaData['hideSeries']= array(
 					'label'=>array(

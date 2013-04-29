@@ -3,9 +3,13 @@
   <fieldset>
     <legend>Dropbox</legend>
     {{#if_eq data.available compare=false}}
+    {{#if_eq data.sqlEngine compare=sqlite}}
     We need to connect Dropbox with SunCounter before we can store your data in the cloud.<br>
     Click the link below and follow the steps:<br> 
    <a href="admin-server.php?s=attachDropbox" id="linkAttachDropbox">Attach SunCounter to your Dropbox.</a>
+   {{else}}
+    Unfortunately we only support SQLite database backups.
+    {{/if_eq}}
     {{/if_eq}}
     {{#if_eq data.authTokenAvailable compare=true}}
     Something is wrong...

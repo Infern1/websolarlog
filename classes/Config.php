@@ -6,6 +6,7 @@ class Config
 	// These are private, else they can be exported to json, use getters to get the values
 	private $dbUser;
 	private $dbPassword;
+	public $sqlEngine;
 	
     public $version_title;
     public $version_revision;
@@ -142,7 +143,7 @@ class Config
 	}
 
 	public function setDatabasePassword($password) {
-		$this->dbPassword = $password;		
+		$this->dbPassword = $password;
 	}
 
 	function getInverterConfig($inverterId) {

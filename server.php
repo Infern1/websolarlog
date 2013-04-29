@@ -555,7 +555,9 @@ try {
 			echo $test[0]['value'];
 			var_dump($test);
 			break;
-
+		case "getMaxTotalEnergyValues":
+			echo $dataAdapter->getMaxTotalEnergyValues(0,'all');
+			break;
 		default:
 			break;
 	}

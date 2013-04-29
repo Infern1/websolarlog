@@ -72,6 +72,7 @@ $(function()
                     });
                     $('#content').html(html);
                     $('#loginForm').bind('submit', function (){
+                    	checkCheckboxesHiddenFields();
                         var data = $(this).serialize();
                         $.post('admin-server.php', data, function(logindata){
                             if (logindata.result == true) {
@@ -167,6 +168,7 @@ function init_KWHcalc(inv_data){
             
             $('#btnExpectationSubmit').bind('click', function(){
                 var inverterId = $('input[name="id"]').val();
+                checkCheckboxesHiddenFields();
                 var data = $(this).parent().serialize();
                 $.post('admin-server.php', data, function(){
                     init_inverters(inverterId);                        
@@ -400,6 +402,7 @@ function init_advanced() {
                 $('#content').html(html);
                 
                 $('#btnAdvancedSubmit').bind('click', function(){
+                	checkCheckboxesHiddenFields();
                 	var data = $(this).parent().parent().serialize();
                     $.post('admin-server.php', data, function(){
                         $.pnotify({
@@ -411,7 +414,7 @@ function init_advanced() {
 
             },
             dataType : 'text'
-        });        
+        });
     });
 }
 
@@ -633,6 +636,7 @@ function init_general() {
 	         	 	});
                 });
                 $('#btnGeneralSubmit').bind('click', function(){
+                	checkCheckboxesHiddenFields();
                     var data = $(this).parent().parent().serialize();
                     $.post('admin-server.php', data, function(){
                         $.pnotify({
@@ -656,6 +660,7 @@ function init_general() {
                 $('#c_communication', content).html(html);
                 
                 $('#btnCommunicationSubmit').bind('click', function(){
+                	checkCheckboxesHiddenFields();
                     var data = $(this).parent().parent().serialize();
                     $.post('admin-server.php', data, function(){
                         $.pnotify({
@@ -676,6 +681,7 @@ function init_general() {
     			$('#c_security', content).html(html);
     			
     			$('#btnSecuritySubmit').bind('click', function(){
+    				checkCheckboxesHiddenFields();
     				var data = $(this).parent().parent().serialize();
     				$.post('admin-server.php', data, function(result){
     					$.pnotify({
@@ -691,6 +697,15 @@ function init_general() {
 	      
 }
 
+function checkCheckboxesHiddenFields(){
+	
+	$('input:hidden').each(function () {
+		 	if($('input:checkbox[name='+$(this).attr('name')+']').attr('checked')){
+		 		$('input:hidden[name='+$(this).attr('name')+']').remove();
+		 	}
+	});
+}
+
 function init_inverters(selected_inverterId) {
     $.getJSON('admin-server.php?s=inverters', function(data) {
         $.ajax({
@@ -701,7 +716,7 @@ function init_inverters(selected_inverterId) {
                     'data' : data
                 });
                 $('#sidebar').html(html);
-                
+
                 if (selected_inverterId) {
                     load_inverter(selected_inverterId);
                 } else {
@@ -731,12 +746,14 @@ function load_inverter(inverterId) {
                 var html = template({
                     'data' : inv_data
                 });
-                
                 $('#content').html(html);
                 
                 $('#btnInverterSubmit').bind('click', function(){
                 	$('#btnInverterSubmit').attr("disabled", "disabled");
+                	checkCheckboxesHiddenFields();
+                	
                     var data = $(this).parent().parent().serialize();
+                    console.log(data);
                     $.post('admin-server.php', data, function(result){
                         init_inverters(result.id);                        
                         $.pnotify({
@@ -748,6 +765,7 @@ function load_inverter(inverterId) {
                 });
                 
                 var handle_panel_submit = function() {
+                	checkCheckboxesHiddenFields();
                     var data = $(this).parent().parent().serialize();
                     $.post('admin-server.php', data, function(){
                         load_inverter(inverterId);
@@ -806,6 +824,7 @@ function init_mail() {
                 $('#c_mail', content).html(html);
                 
                 $('#btnEmailSubmit').bind('click', function(){
+                	checkCheckboxesHiddenFields();
                     var data = $(this).parent().parent().serialize();
                     $.post('admin-server.php', data, function(){
                         $.pnotify({
@@ -816,6 +835,7 @@ function init_mail() {
                 });
 
                 $('#btnSmtpSubmit').bind('click', function(){
+                	checkCheckboxesHiddenFields();
                     var data = $(this).parent().parent().serialize();
                     $.post('admin-server.php', data, function(){
                         $.pnotify({
@@ -826,6 +846,7 @@ function init_mail() {
                 });
                 
                 $('#btnEmailTest').bind('click', function() {
+                	checkCheckboxesHiddenFields();
                     var senddata = $(this).parent().serialize();
                     $.post('admin-server.php', senddata, function(data){
                         if (data.result == true) {
@@ -918,7 +939,7 @@ function init_updatepage(experimental) {
                         });
                         
                         startUpdaterMonitor(updateNotice, button);
-
+                        checkCheckboxesHiddenFields();
                         var data = $(this).parent().serialize();
                         $.post('admin-server.php', data, function(updateresult){
                             console.log(updateresult.result);

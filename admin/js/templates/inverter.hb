@@ -6,8 +6,10 @@
     Name and description of inverter:<br>
     <label for="name">name:</label><input type="text" name="name" value="{{data.inverter.name}}" />   <br />   
     <label for="description">description:</label><input type="text" name="description" value="{{data.inverter.description}}" />   <br />       
-    <label for="liveOnFrontend">Show livedata@frontend:</label><input type="checkbox" name="liveOnFrontend" value="1" {{#if data.inverter.liveOnFrontend}}checked=checked{{/if}}/>   <br />   
-    <label for="graphOnFrontend">Show history@graph:</label><input type="checkbox" name="graphOnFrontend" value="1" {{#if data.inverter.graphOnFrontend}}checked=checked{{/if}}/>   <br />   
+    <label for="liveOnFrontend">Show livedata@frontend:</label>
+    {{checkboxWithHidden 'liveOnFrontend' data.inverter.liveOnFrontend}}<br />   
+    <label for="graphOnFrontend">Show history@graph:</label>
+    {{checkboxWithHidden 'graphOnFrontend' data.inverter.graphOnFrontend}}<br />   
     <hr>
     kWh the inverter already generated without WSL and the installation date of the inverter;<br>
     <label for="initialkwh">initial kWh:</label><input type="text" name="initialkwh" value="{{data.inverter.initialkwh}}" />    kWh<br />       
@@ -37,14 +39,18 @@
             <option value="metering" {{#if_eq data.inverter.type compare="metering"}}selected=selected{{/if_eq}}>Metering</option>
         </select>
         <br />   
-    <label for="comAddress">(RS485/IP) address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" />   1-255 for RS485 or a IP<br />   
+    <label for="comAddress">(RS485/IP) address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" />1-255 for RS485 or a IP<br />   
     <hr>
-    <label for="comLog">Log comm:</label><input type="checkbox" name="comLog" value="1" {{#if data.inverter.comLog}}checked=checked{{/if}}/>   <br />   
-    <label for="syncTime">Synchronize time:</label><input type="checkbox" name="syncTime" value="1" {{#if data.inverter.syncTime}}checked=checked{{/if}}/>   <br />   
+    <label for="comLog">Log comm:</label>
+    {{checkboxWithHidden 'comLog' data.inverter.comLog}}<br />
+    
+    <label for="syncTime">Synchronize time:</label>
+    {{checkboxWithHidden 'syncTime' data.inverter.syncTime}}<br>   
     <hr><a name="pvoutput"/>
     PVoutput config for this inverter;<br>
     
-    <label for="pvoutputEnabled">PVOutput Enabled:</label><input type="checkbox" name="pvoutputEnabled" value="1" {{#if data.inverter.pvoutputEnabled}}checked=checked{{/if}}/>   <br />   
+    <label for="pvoutputEnabled">PVOutput Enabled:</label>
+    {{checkboxWithHidden 'pvoutputEnabled' data.inverter.pvoutputEnabled}}<br />   
     <label for="pvoutputApikey">PVOutput Api key:</label><input type="text" name="pvoutputApikey" value="{{data.inverter.pvoutputApikey}}" />   See your PVoutput settings page.<br />   
     <label for="pvoutputSystemId">PVOutput System id:</label><input type="text" name="pvoutputSystemId" value="{{data.inverter.pvoutputSystemId}}" />   See your PVoutput settings page.<br />
     <label for="pvoutputWSLTeamMember">WSL Team Member:</label>

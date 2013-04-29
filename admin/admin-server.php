@@ -381,6 +381,7 @@ switch ($settingstype) {
 		if ($id > 0) {
 			// get the current data
 			$inverter = $adapter->readInverter($id);
+			
 		}
 		$inverter->name = Common::getValue("name");
 		$inverter->description = Common::getValue("description");
@@ -397,11 +398,23 @@ switch ($settingstype) {
 		$inverter->comAddress = Common::getValue("comAddress");
 		$inverter->comLog = Common::getValue("comLog");
 		$inverter->syncTime = Common::getValue("syncTime");
-		$inverter->pvoutputEnabled = Common::getValue("pvoutputEnabled");
+		$inverter->pvoutputEnabled = Common::getValue("pvoutputEnabled",'null');
 		$inverter->pvoutputApikey = Common::getValue("pvoutputApikey");
 		$inverter->pvoutputSystemId = Common::getValue("pvoutputSystemId");
 		$inverter->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
 
+		$inverter->expectedkwh = 0;
+		$inverter->expectedJAN = 0;
+		$inverter->expectedFEB = 0;
+		$inverter->expectedMAR = 0;
+		$inverter->expectedMAY = 0;
+		$inverter->expectedJUN = 0;
+		$inverter->expectedJUL = 0;
+		$inverter->expectedAUG = 0;
+		$inverter->expectedSEP = 0;
+		$inverter->expectedOCT = 0;
+		$inverter->expectedNOV = 0;
+		$inverter->expectedDEC = 0;
 		$data['id'] = $adapter->writeInverter($inverter);
 		break;
 	case 'save-panel':
@@ -495,26 +508,18 @@ switch ($settingstype) {
 		break;
 
 	case 'attachDropbox':
-		if(strlen(common::getValue('uid'))>6 && strlen(common::getValue('oauth_token'))==15){
+		// getting back from Dropbox with the UID and oauth_token as $_get values
+		if((Common::getValue('uid')) && (Common::getValue('oauth_token'))){
 			$dropbox = new Dropbox();
-			$protocol = (!empty($_SERVER['HTTPS'])) ? 'https' : 'http';
-			// /websolarlog/trunk/admin/
-			$url = explode("/",$_SERVER['PHP_SELF']);
-			$i = 1;
-			$path = '/';
-			$count = count($url)-1; // -1 because we don't need the filename.php
-			while ($i < $count) {
-
-				$path .= $url[$i]."/";
-				$i++;
-			}
-			$path = $protocol. '://' .$_SERVER['HTTP_HOST'].$path."#backup";
-			header('location:'.$path);
+			$url =explode("/",Util::getCurrentUrl());
+			array_pop($url);
+			$url = implode("/",$url);
+			header('location:'.$url."#backup");
 		}else{
+			//we are not getting from Dropbox and want to go to Dropbox to account
 			unset($_SESSION['dropbox_api']);
 			$dropbox = new Dropbox();
 		}
-		//var_dump($dropbox);
 		break;
 	case 'dropboxMakeBackup':
 		$dropbox = new Dropbox;
@@ -555,7 +560,12 @@ switch ($settingstype) {
 		$dropbox->storage->delete();
 		break;
 	case 'dropbox':
-		$data['available'] = $adapter->dropboxTokenExists();
+		if($adapter->sqlEngine=='sqlite'){
+			$data['available'] = $adapter->dropboxTokenExists();
+		}else{
+			$data['available'] = false;
+			$data['sqlEngine'] = $adapter->sqlEngine;
+		}
 		break;
 	case 'dropboxSyncFiles':
 		// get Dropbox things

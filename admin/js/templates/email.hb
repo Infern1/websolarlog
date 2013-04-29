@@ -5,9 +5,12 @@
     <label for="emailTo">to:</label><input type="text" name="emailTo" value="{{data.emailTo}}" /><br />
     <label for="emailFromName">from name:</label><input type="text" name="emailFromName" value="{{data.emailFromName}}" /><br />
     <label for="emailFrom">from address:</label><input type="text" name="emailFrom" value="{{data.emailFrom}}" /><br />
-    <label for="emailAlarms">Receive alarms:</label><input type="checkbox" name="emailAlarms" value="1" {{#if data.emailAlarms}}checked=checked{{/if}}/><br />
-    <label for="emailEvents">Receive events:</label><input type="checkbox" name="emailEvents" value="1" {{#if data.emailEvents}}checked=checked{{/if}}/><br />
-    <label for="emailReports">Receive reports:</label><input type="checkbox" name="emailReports" value="1" {{#if data.emailReports}}checked=checked{{/if}}/><br />
+    <label for="emailAlarms">Receive alarms:</label>
+    {{checkboxWithHidden 'emailAlarms' data.emailAlarms}}<br />
+    <label for="emailEvents">Receive events:</label>
+    {{checkboxWithHidden 'emailEvents' data.emailEvents}}<br />
+    <label for="emailReports">Receive reports:</label>
+    {{checkboxWithHidden 'emailReports' data.emailReports}}<br />
     <button type="button" id="btnEmailSubmit">Save</button>
   </fieldset>
 </form>

@@ -652,13 +652,13 @@ class PDODataAdapter {
 
 			$config->title = $bean->title;
 			$config->subtitle = $bean->subtitle;
-			$config->url = ($bean->url != "") ? $bean->url : $config->url;;
+			$config->url = ($bean->url != "") ? $bean->url : $config->url;
 			$config->location = $bean->location;
 			$config->latitude = $bean->latitude;
 			$config->gaugeMaxType = $bean->gaugeMaxType;
 			$config->longitude = $bean->longitude;
 			$config->timezone = $bean->timezone;
-			$config->debugmode = ($bean->debugmode != "") ? $bean->debugmode : $config->debugmode;;
+			$config->debugmode = ($bean->debugmode != "") ? $bean->debugmode : $config->debugmode;
 
 			$config->comPort = $bean->comPort;
 			$config->comOptions = $bean->comOptions;
