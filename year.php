@@ -9,9 +9,8 @@ require_once("template/" . $template . "/index.php");
 	<script type="text/javascript">
     // Make sure the page is loaded
 	$(function(){
-		WSL.init_tabs("index","#main-middle",
+		WSL.init_tabs("index",3,"#main-middle",
 			function(){
-				$('#tabs').tabs({ selected: 3 });
 				WSL.init_PageYearValues("#columns","#periodList"); // Initial load fast
     		}
 		)

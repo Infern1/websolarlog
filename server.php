@@ -31,7 +31,6 @@ try {
 
 	switch ($method) {
 		case 'getTabs':
-			// TODO :: Move to json file or something???
 			$tabs = array();
 			$tabs[] = array( "graphName" => "Today","translation" => _("Today"),"position" => "0","active" => ($page == "index") ? 'true' : 'false');
 			$tabs[] = array( "graphName" => "Yesterday","translation" => _("Yesterday"),"position" => "1","active" => ($page == "yesterday") ? 'true' : 'false');
@@ -276,7 +275,7 @@ try {
 	
 			$dayData = new DayDataResult();
 			$dayData->data = $lines['energy']->points;
-			$dayData->ticks = $lines['energy']->ticks;
+			$dayData->ticks = (isset($lines['energy']->ticks)) ? $lines['energy']->ticks : 10;
 			$lang['month'] = _('month');
 			$lang['expected'] = _('expected');
 			$lang['harvested'] = _('harvested');

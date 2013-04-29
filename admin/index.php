@@ -9,20 +9,23 @@ session_start();
 <link rel="shortcut icon" href="../css/images/favicon.ico" />
 <link rel="stylesheet" href="../css/blueprint/screen.css" type="text/css" media="screen, projection"/>
 <link rel="stylesheet" href="../css/blueprint/print.css" type="text/css" media="print"/>
+<link rel="stylesheet" href="../css/slick.grid.css" type="text/css" media="screen"/>
 <!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"/><![endif]-->
 
 <link rel="stylesheet" href="../css/jquery.pnotify.default.css" type="text/css" />
 <link rel="stylesheet" href="css/style.css" type="text/css" />
 <link rel="stylesheet" href="css/main.css" type="text/css" />
 <link rel="stylesheet" href="../js/jqueryuicss/jquery-ui-custom.css" type="text/css" />
-<script type="text/javascript" src="../js/jquery.min.js"></script>
-<script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="../js/jquery-ui-1.10.2.min.js"></script>
 <script type="text/javascript" src="../js/jquery.calculation.min.js"></script>
 <script type="text/javascript" src="../js/jquery.pnotify.min.js"></script>
 <script type="text/javascript" src="../js/handlebars.js"></script>
 <script type="text/javascript" src="../js/helpers.js"></script>
 <script type="text/javascript" src="../js/websolarlog.js"></script>
 <script type="text/javascript" src="js/admin.js"></script>
+<script type="text/javascript" src="../js/SlickGrid/slick.core.js"></script>
+<script type="text/javascript" src="../js/SlickGrid/slick.grid.js"></script>
 </head>
 <body>
 	<!-- Wrapper -->
@@ -52,6 +55,7 @@ session_start();
 					<!-- <li><a href="#tariff" id="btnTariff">Tariff</a></li>-->
 					<li><a href="#update" id="btnUpdate">Update</a></li>
 					<li><a href="#backup" id="btnBackup">Backup</a></li>
+					<li><a href="#DataMaintenance" id="btnDataMaintenance">DBM</a></li>
 					<li class="nav-end"><a href="#testpage" id="btnTestPage">Test page</a></li>
 				</ul>
 				<div class="cl"></div>
@@ -63,11 +67,11 @@ session_start();
 				<div id="main-middle">
 					<!-- Content -->
 					<header>
-						<h1>WSL :: Configuration</h1>
+						<h1 id="site-title">WSL :: Configuration</h1>
 					</header>
 					<div id="content">
     					<header>
-    						<h2>Welcome to the configuration</h2>
+    						<h2 id="page-title">Welcome to the configuration</h2>
     					</header>
             			<!-- Defining content section article -->
 					</div>

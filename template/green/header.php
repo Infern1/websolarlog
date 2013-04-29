@@ -23,12 +23,12 @@ $config = Session::getConfig();
 	<link rel="stylesheet" href="template/green/css/custom.css" type="text/css" media="all" />
 	
 	<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
-	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.10.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery.pnotify.min.js"></script>
 	<script type="text/javascript" src="js/moment.min.js"></script>
 	<script type="text/javascript" src="js/handlebars.js"></script>
 	<script type="text/javascript" src="js/helpers.js"></script>
-	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="js/jquery.jqplot.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.json2.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.barRenderer.min.js"></script>

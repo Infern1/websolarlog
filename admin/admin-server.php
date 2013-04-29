@@ -658,13 +658,23 @@ switch ($settingstype) {
 	case 'test':
 		$data['test'] = checkSQLite();
 		break;
+	case 'dbm_getTables':
+		$data['tables'] = R::$writer->getTables();
+		break;
+	case 'dbm_getTableData':
+		$dbname = Common::getValue("dbname");
+		$columns = R::$writer->getColumns($dbname);
+		$data = R::getAll("select * from " + $dbname); // TODO convert to named params
+		$data['dbname'] = $dbname;
+		$data['columns'] = $columns;
+		$data['data'] = $data;
 }
 
 if(Session::isLogin()){
 	$pass = $adapter->checkDefaultPassword();
 }
 
-if($pass){
+if(isset($pass) && $pass){
 	$data['pass']=$pass;	
 }
 

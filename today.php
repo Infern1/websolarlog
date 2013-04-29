@@ -9,13 +9,11 @@ require_once("template/" . $template . "/index.php");
 	<script type="text/javascript">
     // Make sure the page is loaded
 	$(function(){
-		WSL.init_tabs("index","#main-middle",
+		WSL.init_tabs("index",0,"#main-middle",
 			function(){
-				$('#tabs').tabs({ selected: 0 });
-				WSL.init_PageTodayValues("#columns",
-						function(){
-						WSL.init_PageTodayHistoryValues("#history"); // Initial load fast
-					}); // Initial load fast
+				WSL.init_PageTodayValues("#columns", function(){
+					WSL.init_PageTodayHistoryValues("#history"); // Initial load fast
+				}); // Initial load fast
     		}
 		);
 	});

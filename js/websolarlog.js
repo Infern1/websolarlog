@@ -138,7 +138,11 @@ function modLegenda(plot){
     			}else{
     				bold = [ '', '' ];
     			}
-    			$('#tooltipValue-'+i).html(bold[0]+handle.data[i][pointIndex][1]+bold[1]);
+    			if (typeof handle.data[i] !== 'undefined') {
+    				$('#tooltipValue-'+i).html(bold[0]+handle.data[i][pointIndex][1]+bold[1]);
+    			} else {
+    				$('#tooltipValue-'+i).text('-');
+    			}
     			i = i + 1;
     			}
     		)
@@ -373,7 +377,8 @@ function handleGraphs(request, invtnum) {
 	// set inverter
 	invtnum = $('#pickerInv').val();
 	// get activated Tab;
-	var tabSelected = $('#tabs').tabs('option', 'selected');
+	var tabSelected = $('#tabs').tabs('option', 'active');
+	console.log(tabSelected);
 	// set type to Today
 	var tab = 'Today';
 	// set date
@@ -437,7 +442,7 @@ function handleGraphs(request, invtnum) {
 	}
 }
 
-function populateTabs() {
+function populateTabs(tabIndex) {
 	$.getJSON('server.php?method=getPeriodFilter&type=all', function(data) {
 		$.ajax({
 			url : 'js/templates/datePeriodFilter.hb',
@@ -464,7 +469,7 @@ function populateTabs() {
 					$("#pickerFilterDiv").show();
 				});
 
-				$('#pickerPeriod').live("change", function() {
+				$('#datePeriodFilter').on('change', '#pickerPeriod', function(){
 					handleGraphs('picker', invtnum);
 				});
 				$('#next').unbind('click');
@@ -785,7 +790,7 @@ var WSL = {
 		});
 	},
 
-	init_tabs : function(page, divId, success) {
+	init_tabs : function(page, tabIndex, divId, success) {
 		// initialize languages selector on the given div
 		WSL.api.getTabs(page, function(data) {
 			$.ajax({
@@ -804,7 +809,12 @@ var WSL = {
 					$(html).prependTo(divId);
 
 					$('#tabs').tabs({
-						show : function(event, ui) {
+						active: tabIndex,
+						create: function(event, ui) {
+							// populate the tabs:
+							populateTabs();
+						},
+						activate: function(event, ui) {
 							// populate the tabs:
 							populateTabs();
 						}
@@ -1701,18 +1711,16 @@ var WSL = {
 							function() {
 								$("#pickerFilterDiv").show();
 							});
-						$('#pickerPeriod').live("change",
-								function() {
-									WSL.createDetailsGraph(invtnum, divId,date);
-								});
-						$('#datepicker').live("change",
-								function() {
-									WSL.createDetailsGraph(invtnum, divId,date);
-								});
-						$('#pickerInv').live("change",
-								function() {
-									WSL.createDetailsGraph(invtnum, divId,date);
-								});
+						$('datePeriodFilter').on('change', '#pickerPeriod', function(){
+							WSL.createDetailsGraph(invtnum, divId,date);
+						});
+						$('datePeriodFilter').on('change', '#datepicker', function(){
+							WSL.createDetailsGraph(invtnum, divId, date);
+						});
+						$('datePeriodFilter').on('change', '#pickerInv', function(){
+							WSL.createDetailsGraph(invtnum, divId, date);
+						});
+						
 						$('#next').unbind('click');
 						$('#previous').unbind('click');
 						$('#pickerPeriod').unbind('click');
@@ -1958,7 +1966,7 @@ var WSL = {
 							handle = $.jqplot("detailsGraph", seriesData,graphOptions).destroy();
 							delete handle;
 							handle = $.jqplot("detailsGraph", seriesData,graphOptions);
-							testZoom();
+							//testZoom();
 							modLegenda(handle);
 							
 							function testZoom() { 
@@ -1975,10 +1983,8 @@ var WSL = {
 							   }
 							}
 							
-							
-								
-							$('[type=checkbox]').live('change',
-								function() {
+							$('#detailsSwitches').on('change', '[type=checkbox]', function() {
+								console.log('HIT');
 									var id = $(this).attr("id");
 									if (id == 'every') {
 										if ($(this).is(':checked')) {
@@ -2040,27 +2046,22 @@ var WSL = {
 				dataType : 'text',
 			});
 		});
-		$('#invtnum').live('change',
-				function() {
-					WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-				});
-		$('#whichMonth').live('change',
-				function() {
-					WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-				});
-		$('#whichYear').live('change',
-				function() {
-					WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-				});
-		$('#compareMonth').live('change',
-				function() {
-					WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-				});
-		$('#compareYear').live('change',
-				function() {
-					WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-				});
-
+		
+		$('#compareFilter').on('change', '#invtnum', function() {
+			WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+		});
+		$('#compareFilter').on('change','#whichMonth', function() {
+			WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+		});
+		$('#compareFilter').on('change', '#whichYear', function() {
+			WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+		});
+		$('#compareFilter').on('change', '#compareMonth', function() {
+			WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+		});
+		$('#compareFilter').on('change', '#compareYear', function() {
+			WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+		});
 	},
 
 	createCompareGraph : function(invtnum, whichMonth, whichYear, compareMonth,

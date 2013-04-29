@@ -1330,6 +1330,16 @@ class PDODataAdapter {
 		$switches['TEMP'][] = 14;
 
 		foreach($beans as $bean){
+			// Initialize values
+			$max = array();
+			$max['P'] = 0;
+			$max['V'] = 0;
+			$max['A'] = 0;
+			$max['FRQ'] = 0;
+			$max['Ratio'] = 0;
+			$max['T'] = 0;
+			$max['EFF'] = 0;
+			
 			$bean['time'] =$bean['time'];
 			$live->GP[] 	= array($bean['time'],(float)$bean['GP']);
 			($bean['GP'] > $max['P'])? $max['P'] = (float)$bean['GP'] : $max['P'] = $max['P'];
@@ -1514,7 +1524,7 @@ class PDODataAdapter {
 				for ($i = 0; $i < $expectedMonthDays; $i++) {
 					$iCompareDay = $i+1;
 					$expectedBeans[$i]['time'] = strtotime(date("Y")."/".$compareMonth."/".$iCompareDay);
-					$expectedBeans[$i]['KWH'] =  (float)number_format((float)$expectedBeans[$i-1]['KWH']+(float)$expectedKwhPerDay,2,'.','');
+					$expectedBeans[$i]['KWH'] =  (float)number_format((float)['KWH']+(float)$expectedKwhPerDay,2,'.','');
 					$expectedBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$expectedBeans[$i-1]['KWH']+(float)$expectedKwhPerDay);
 					$expectedBeans[$i]['harvested'] = (float)number_format((float)$expectedKwhPerDay,2,'.','');
 				}
@@ -1629,7 +1639,9 @@ class PDODataAdapter {
 			$invExp[10] = ($expected/100)*$inverter->expectedNOV;
 			$invExp[11] = ($expected/100)*$inverter->expectedDEC;
 
-			$ii	=0;
+			$ii	= 0;
+			$cumExp = 0;
+			$cumKWH = 0;
 			for ($i = 0; $i < 12; $i++) {
 				$iMonth = $i+1;
 				// if $i <= 5
@@ -1731,7 +1743,7 @@ class PDODataAdapter {
 
 		
 		if($hookGraph->metaData != null){
-			if(count($graph->metaData['hideSeries']['label'])== count($graph->series)){
+			if(isset($graph->metaData['hideSeries']['label']) && count($graph->metaData['hideSeries']['label']) == count($graph->series)){
 				$graph->metaData['hideSeries']=null;
 			}
 			$graph->metaData= array_merge_recursive((array)$hookGraph->metaData,(array)$graph->metaData);
@@ -1910,6 +1922,9 @@ class PDODataAdapter {
 		$energyBeans = $this->readTablesPeriodValues($invtnum, "energy", $type,$startDate);
 		$Energy = array();
 
+		$Energy['KWH'] = 0;
+		$KWHT = 0;
+		$cum = 0;
 		foreach ($energyBeans as $energyBean){
 			$invConfig = $this->readInverter($energyBean['INV']);
 			$energyBean['KWH'] = (float)$energyBean['KWH'];

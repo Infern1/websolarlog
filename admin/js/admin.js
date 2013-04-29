@@ -1,3 +1,8 @@
+// Don't know why but slickgrid seems to think we dont have drag support
+if (!jQuery.fn.drag) {
+	jQuery.fn.drag = function(){};
+}
+
 $.ajaxSetup({
 	complete: function(xhr) {
 		//see if we have a JSON and parse it.
@@ -202,6 +207,7 @@ function init_menu() {
     $("#btnSocial").bind('click', function() { init_social(); });
     $("#btnUpdate").bind('click', function() { init_updatepage(); });
     $("#btnBackup").bind('click', function() { init_backup(); });
+    $("#btnDataMaintenance").bind('click', function() { init_dataMaintenance(); });
 }
 
 
@@ -970,7 +976,6 @@ function init_updatepage(experimental) {
 function startUpdaterMonitor(updateNotice, button) {
 	$('#content').append('<div id="updaterMonitor"></div>');
 	
-	
 	$.ajax({
          url : 'js/templates/updater-status.hb',
          success : function(source) {
@@ -994,8 +999,61 @@ function startUpdaterMonitor(updateNotice, button) {
          },
          dataType : 'text'
      });
+}
+
+function init_dataMaintenance() {
+	$('#site-title').text("Database Maintenance");
+	$('#page-title').text("Use with care");
+	$('#content').append('<div id="dbtable" style="height: 400px; border: 1px solid red"></div>')
 	
-	
+	$.getJSON('admin-server.php?s=dbm_getTables', function(data) {
+		$.ajax({
+	         url : 'js/templates/dbm_tables.hb',
+	         success : function(source) {
+	             var template = Handlebars.compile(source);
+        		 var html = template({'data' : data });
+        		 $('#updaterMonitor').html(html);
+        		 $('#sidebar').html(html);
+        		 $('button').bind('click', function(){$('#page-title').text($(this).attr('id'));});
+        		 $('#page-title').text("Use with care");
+        		 
+        		 
+        		 // Get data and display in grid
+        		 
+        		  var grid;
+        		  var columns = [
+        		    {id: "title", name: "Title", field: "title"},
+        		    {id: "duration", name: "Duration", field: "duration"},
+        		    {id: "%", name: "% Complete", field: "percentComplete"},
+        		    {id: "start", name: "Start", field: "start"},
+        		    {id: "finish", name: "Finish", field: "finish"},
+        		    {id: "effort-driven", name: "Effort Driven", field: "effortDriven"}
+        		  ];
+
+        		  var options = {
+        		    enableCellNavigation: true,
+        		    enableColumnReorder: false
+        		  };
+
+        		  $(function () {
+        		    var data = [];
+        		    for (var i = 0; i < 500; i++) {
+        		      data[i] = {
+        		        title: "Task " + i,
+        		        duration: "5 days",
+        		        percentComplete: Math.round(Math.random() * 100),
+        		        start: "01/01/2009",
+        		        finish: "01/05/2009",
+        		        effortDriven: (i % 5 == 0)
+        		      };
+        		    }
+
+        		    grid = new Slick.Grid("#dbtable", data, columns, options);
+        		  })
+	         },
+	         dataType : 'text'
+	     });
+	});
 }
 
 
