@@ -26,7 +26,6 @@ function init_astrocalc(date,long,lat,az,roof,temp_coeff,timezone) {
 	pv_temp_coeff = temp_coeff //temperature coefficient pv module Pmax [%/K] with STC=25°C
 	pv_eff = 1; //=1 taking into account that pv-modules have positive tolerance so that other losses can be neglected
 	time_zone = timezone; //timetzone (normally 1 in CEST + 1 will be added by function for summertime)
-	console.log(timezone);
 	
 	doy = dayofyear(date);
 	TE = timeequation(doy);

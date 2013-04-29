@@ -378,7 +378,7 @@ function handleGraphs(request, invtnum) {
 	invtnum = $('#pickerInv').val();
 	// get activated Tab;
 	var tabSelected = $('#tabs').tabs('option', 'active');
-	console.log(tabSelected);
+	
 	// set type to Today
 	var tab = 'Today';
 	// set date
