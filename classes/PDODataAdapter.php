@@ -1523,9 +1523,10 @@ class PDODataAdapter {
 				// create expected
 				for ($i = 0; $i < $expectedMonthDays; $i++) {
 					$iCompareDay = $i+1;
+					($i>0) ? $ii = $i-1 : $ii = 0;
 					$expectedBeans[$i]['time'] = strtotime(date("Y")."/".$compareMonth."/".$iCompareDay);
-					$expectedBeans[$i]['KWH'] =  (float)number_format((float)['KWH']+(float)$expectedKwhPerDay,2,'.','');
-					$expectedBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$expectedBeans[$i-1]['KWH']+(float)$expectedKwhPerDay);
+					$expectedBeans[$i]['KWH'] =  (float)number_format($expectedBeans[$ii]['KWH']+$expectedKwhPerDay,2,'.','');
+					$expectedBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$expectedBeans[$ii]['KWH']+(float)$expectedKwhPerDay);
 					$expectedBeans[$i]['harvested'] = (float)number_format((float)$expectedKwhPerDay,2,'.','');
 				}
 				//var_dump($expectedBeans);
