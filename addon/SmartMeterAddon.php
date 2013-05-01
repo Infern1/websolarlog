@@ -301,7 +301,7 @@ class SmartMeterAddon {
 		$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 		$graph->axes['y3axis'] = array('label'=>_("Gas").''._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 		$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'min'=>$minActual,'max'=>$maxActual,'labelRenderer'=>'CanvasAxisLabelRenderer');
-					
+		return $graph;
 	}
 
 	public function defaultSeries(){
@@ -317,6 +317,7 @@ class SmartMeterAddon {
 		$graph->series[] = array('label'=>_("Low").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
 		$graph->series[] = array('label'=>_("High").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
 		$graph->series[] = array('label'=>_("Actual").' '._("usage").''._("(W)"),'yaxis'=>'y4axis');
+		return $graph;
 	}
 	
 	public function addSeries(){
@@ -394,9 +395,14 @@ class SmartMeterAddon {
 			$graph->series[] = array('label'=>_("High").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
 			$graph->series[] = array('label'=>_("Actual").' '._("usage").''._("(W)"),'yaxis'=>'y4axis');
 			*/
+			
+			$graph = $this->defaultSeries();
+			
 			$graph->timestamp = Util::getBeginEndDate('day', 1,$startDate);
 			($maxActual>0) ? $maxActual = ceil( ( ($maxActual*1.1)+100) / 100 ) * 100 : $maxActual= $maxActual;
 			($minActual<0) ? $minActual = ceil( ( ($minActual*1.1)+100) / 100 ) * 100 : $minActual = $minActual;
+			
+			$graph = $this->defaultAxes();
 			/*$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->axes['y3axis'] = array('label'=>_("Gas").''._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'min'=>$minActual,'max'=>$maxActual,'labelRenderer'=>'CanvasAxisLabelRenderer');
@@ -413,8 +419,9 @@ class SmartMeterAddon {
 							$graph->series[6]['label'],
 							$graph->series[7]['label'],
 							$graph->series[8]['label'],
-							$graph->series[9]['label']),
-					);
+							$graph->series[9]['label']
+					),
+			);
 			
 			//graph specific legenda.
 			$graph->metaData['legend']= array(
@@ -425,9 +432,9 @@ class SmartMeterAddon {
 							"rendererOptions"=>array(
 									"seriesToggle"=>'normal',
 									"numberRows"=>2
-						),
-					"left"=>10,
-					"width"=>700,
+							),
+							"left"=>10,
+							"width"=>700
 			);
 			
 		}else{
