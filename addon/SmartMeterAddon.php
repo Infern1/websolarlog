@@ -297,7 +297,6 @@ class SmartMeterAddon {
 	}
 
 	public function defaultAxes(){
-		$graph = new Graph();
 		$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 		$graph->axes['y3axis'] = array('label'=>_("Gas").''._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 		$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'min'=>$minActual,'max'=>$maxActual,'labelRenderer'=>'CanvasAxisLabelRenderer');
@@ -305,7 +304,6 @@ class SmartMeterAddon {
 	}
 
 	public function defaultSeries(){
-		$graph = new Graph();
 		$graph->series[] = array('label'=>_("Cum.").' '._("Gas").''._("(l)"),'yaxis'=>'y2axis');
 		$graph->series[] = array('label'=>_("Smooth").' '._("Gas").''._("(l)") ,'yaxis'=>'y2axis');
 		$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
@@ -396,13 +394,15 @@ class SmartMeterAddon {
 			$graph->series[] = array('label'=>_("Actual").' '._("usage").''._("(W)"),'yaxis'=>'y4axis');
 			*/
 			
-			$graph = $this->defaultSeries();
+			$defaultSeries = $this->defaultSeries();
+			$graph->series = $defaultSeries->series;
 			
 			$graph->timestamp = Util::getBeginEndDate('day', 1,$startDate);
 			($maxActual>0) ? $maxActual = ceil( ( ($maxActual*1.1)+100) / 100 ) * 100 : $maxActual= $maxActual;
 			($minActual<0) ? $minActual = ceil( ( ($minActual*1.1)+100) / 100 ) * 100 : $minActual = $minActual;
 			
-			$graph = $this->defaultAxes();
+			$defaultAxes = $this->defaultAxes();
+			$graph->axes = $defaultAxes->axes;
 			/*$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->axes['y3axis'] = array('label'=>_("Gas").''._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'min'=>$minActual,'max'=>$maxActual,'labelRenderer'=>'CanvasAxisLabelRenderer');
