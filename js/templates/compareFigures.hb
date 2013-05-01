@@ -40,15 +40,6 @@
 
 
 
-<script>
-$(function() {
-kWhDay = $("div.tr1 div").eq(2).text().replace(',','.');
-kWhDayCalc = ((kWhDay/100)*10)+parseFloat(kWhDay);
-kWhDayMargin = parseFloat(Math.ceil(kWhDayCalc * 1) / 1);
-console.log(kWhDayMargin);
-
-});
-</script>
 
 <div class="column span-11" style="border-left:solid 1px #ccc;">
 <div class="column span-5" style="text-align:right;">{{lang.difference}}</div>
@@ -57,7 +48,6 @@ console.log(kWhDayMargin);
 {{#each diff}}<div class="tr3">
 <div class="column span-5" style="text-align:right;color:{{this.diffHarvestedColor}}">{{this.diffDailyCalc}}</div>
 <div class="column span-5" style="text-align:right;color:{{this.diffColor}}">{{this.diffCumCalc}}</div>
-
 <div class="cl"></div>
 </div>
 {{/each}}
@@ -73,7 +63,14 @@ console.log(kWhDayMargin);
 </div>
 </div>
 </div>
-<script>$(function() {
+<script>
+$(function() {
+kWhDay = $("div.tr1 div").eq(2).text().replace(',','.');
+kWhDayCalc = ((kWhDay/100)*10)+parseFloat(kWhDay);
+kWhDayMargin = parseFloat(Math.ceil(kWhDayCalc * 1) / 1);
+});
+
+$(function() {
 $("div.tr1:even").css('background-color','#ddd');
 $("div.tr2:even").css('background-color','#ddd');
 $("div.tr3:even").css('background-color','#ddd');
