@@ -51,10 +51,10 @@ require_once("template/" . $template . "/index.php");
 		),			
 		window.setInterval(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");}, 5000); // every 5 seconds
 
-		window.setInterval(function(){updatePowerValues("smartMeterLive");}, 5000); // every 5 seconds
+		/*window.setInterval(function(){updatePowerValues("smartMeterLive");}, 5000); // every 5 seconds
 		window.setInterval(function(){updatePowerGraph("smartMeterLive");}, 60000); // every 60 seconds
 		updatePowerValues("smartMeterLive");
-		updatePowerGraph("smartMeterLive");
+		updatePowerGraph("smartMeterLive");*/
 		window.setInterval(function(){WSL.init_PageIndexTotalValues("#sidebar");}, 60000); // every 5 seconds		
 	});
 	analyticsJSCodeBlock();
