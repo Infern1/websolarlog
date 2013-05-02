@@ -3,6 +3,8 @@ if (!jQuery.fn.drag) {
 	jQuery.fn.drag = function(){};
 }
 
+
+
 $.ajaxSetup({
 	complete: function(xhr) {
 		//see if we have a JSON and parse it.
@@ -44,8 +46,13 @@ $.ajaxSetup({
 	}
 });
 
+
 $(function()
 {
+	$("#forceGet").bind('click', function(){
+		window.location.reload(true);
+	});
+
     $.getJSON('admin-server.php?s=isLogin', function(data) {
         if (data.result === true) {
             init_menu();
@@ -436,12 +443,11 @@ function init_social(){
             url : 'js/templates/social.hb',
             success : function(source) {
                 var template = Handlebars.compile(source);
+                data['refURL']= document.URL;   
                 var html = template({
                     'data' : data
                 });
-                
                 $('#content').html(html);
-                
                 
                 deviceStatuses();
 
@@ -759,7 +765,6 @@ function load_inverter(inverterId) {
                 	checkCheckboxesHiddenFields();
                 	
                     var data = $(this).parent().parent().serialize();
-                    console.log(data);
                     $.post('admin-server.php', data, function(result){
                         init_inverters(result.id);                        
                         $.pnotify({

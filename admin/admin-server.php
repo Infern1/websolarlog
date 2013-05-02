@@ -403,18 +403,19 @@ switch ($settingstype) {
 		$inverter->pvoutputSystemId = Common::getValue("pvoutputSystemId");
 		$inverter->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
 
-		$inverter->expectedkwh = 0;
-		$inverter->expectedJAN = 0;
-		$inverter->expectedFEB = 0;
-		$inverter->expectedMAR = 0;
-		$inverter->expectedMAY = 0;
-		$inverter->expectedJUN = 0;
-		$inverter->expectedJUL = 0;
-		$inverter->expectedAUG = 0;
-		$inverter->expectedSEP = 0;
-		$inverter->expectedOCT = 0;
-		$inverter->expectedNOV = 0;
-		$inverter->expectedDEC = 0;
+		$inverter->expectedkwh = '0';
+		$inverter->expectedJAN = '0';
+		$inverter->expectedFEB = '0';
+		$inverter->expectedMAR = '0';
+		$inverter->expectedAPR = '0';
+		$inverter->expectedMAY = '0';
+		$inverter->expectedJUN = '0';
+		$inverter->expectedJUL = '0';
+		$inverter->expectedAUG = '0';
+		$inverter->expectedSEP = '0';
+		$inverter->expectedOCT = '0';
+		$inverter->expectedNOV = '0';
+		$inverter->expectedDEC = '0';
 		$data['id'] = $adapter->writeInverter($inverter);
 		break;
 	case 'save-panel':
@@ -474,13 +475,19 @@ switch ($settingstype) {
 		$adapter->writeConfig($config);
 		break;
 	case 'attachTwitter':
-		$hybridTwitter = new TwitterAddon();
-		$_SESSION["HA::CONFIG"]=null;
-		//var_dump($_SESSION);
-		//exit();
-		
-		$hybridTwitter->attachTwitter();
-		
+		$_SESSION['refURL'] = Common::getValue('refURL');
+		if($_SESSION["HA::STORE"]['hauth_session.twitter.is_logged_in']!='i:1;'){
+			$_SESSION["HA::STORE"] = null;
+			$_SESSION["HA::CONFIG"] = null;
+			$hybridTwitter = new TwitterAddon();
+			$hybridTwitter->attachTwitter();
+		}else{
+			$hybridTwitter = new TwitterAddon();
+			$hybridTwitter->attachTwitter();
+			$refURL = $_SESSION['refURL'];
+			$_SESSION['refURL'] = null;
+			header("location:".$refURL."#social");
+		}
 		break;
 	case 'detachTwitter':
 		$hybridTwitter = new TwitterAddon();

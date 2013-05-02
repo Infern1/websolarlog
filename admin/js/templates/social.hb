@@ -17,7 +17,7 @@
 			<a href="#social" id="detachTwitter"><img src="images/link_delete.png" class="icon">Detach from my Twitter account</a>
 		</div>
 	{{else}}
-	<a href="admin-server.php?s=attachTwitter" target="_blank">Attach to my Twitter</a>
+	<a href="admin-server.php?s=attachTwitter&refURL={{data.refURL}}" target="">Attach to my Twitter</a>
 	{{/if_eq}}
 	</div>
     </span>

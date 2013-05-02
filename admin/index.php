@@ -80,6 +80,9 @@ session_start();
 					<div id="sidebar"></div>
 					<!-- END Sidebar -->
 					<div class="cl"></div>
+					<br><br>
+					<div class="column span-40 first">&nbsp;</div>
+					<div class="column last"><button id="forceGet">force page reload</button></div>
 				</div>
 				<div id="main-bottom"></div>
 			</div>
