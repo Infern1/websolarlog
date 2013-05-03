@@ -643,6 +643,11 @@ class PDODataAdapter {
 	 */
 	public function readConfig() {
 		$bean = R::findOne('config');
+		
+		if (!$bean){
+			$bean = R::dispense('config');
+		}
+
 
 		$config = new Config();
 
@@ -685,6 +690,9 @@ class PDODataAdapter {
 
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
 			$config->inverters = $this->readInverters();
+			
+			$config->graphSeries = $this->getGraphSeries();
+			$config->graphAxes = $this->getGraphAxes();
 
 			$config->googleAnalytics = $bean->googleAnalytics;
 			$config->piwikServerUrl = $bean->piwikServerUrl;
@@ -759,7 +767,6 @@ class PDODataAdapter {
 	 */
 	public function readInverter($id) {
 		$bean = R::load('inverter',$id);
-
 		$inverter = new Inverter();
 		$inverter->id = $bean->id;
 		$inverter->deviceApi = $bean->deviceApi;
@@ -803,7 +810,6 @@ class PDODataAdapter {
 				$inverter->plantpower += ($panel->amount * $panel->wp);
 			}
 		}
-
 		return $inverter;
 	}
 	/**
@@ -860,6 +866,15 @@ class PDODataAdapter {
 		return $list;
 	}
 
+	public function getGraphSeries(){
+		$bean = R::findAll('graphSeries');
+	}
+	
+	public function getGraphAxes(){
+		$bean = R::findAll('graphAxes');
+	}
+
+	
 	/**
 	 *
 	 * @param Panel $panel

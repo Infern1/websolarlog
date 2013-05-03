@@ -40,6 +40,9 @@ class Config
     public $template;
     public $basePath;
     public $inverters; // Contains an array of inverters
+    
+    public $graphSeries; // Contains an array of Graph Series
+    public $graphAxes; // Contains an array of Graph axes
 
     public $co2kwh;
     public $co2gas;
@@ -99,6 +102,12 @@ class Config
 
 		// ### Create 2 inverter config for testing multi inverter config
 		$this->inverters = array();
+		
+		// ### Graph series
+		$this->graphSeries = array();
+		
+		// ### Graph axes
+		$this->graphAxes = array();
 
 		// ### FRONT PAGE
 		$this->YMAX='4600';
@@ -152,6 +161,7 @@ class Config
 				return $inverter;
 			}
 		}
-	}
+	}	
 }
+
 ?>
