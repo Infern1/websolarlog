@@ -2024,8 +2024,7 @@ var WSL = {
 		ajaxStart();
 		var dataTable = [];
 		// initialize languages selector on the given div
-		$.getJSON('server.php?method=getCompareFilters&type=today', 
-				function(data) {
+		$.getJSON('server.php?method=getCompareFilters&type=today', function(data) {
 			$.ajax({
 				url : 'js/templates/compareFilters.hb',
 				beforeSend : function(xhr) {
@@ -2130,6 +2129,11 @@ var WSL = {
 				},
 				yaxis : {}
 			},
+			cursor : {
+				zoom : true,
+				show : true,
+				style : 'default'
+			},
 			highlighter : {
 				tooltipContentEditor : tooltipCompareEditor,
 				show : true
@@ -2177,7 +2181,7 @@ var WSL = {
 							
 							$("#content").append('<div id="compareGraph"></div>');
 							$('#content').append('<div id="compareFigures"></div>');
-							$("#compareGraph").height(350);
+							$("#compareGraph").height(500);
 							$("#compareGraph").width(830);
 
 							graphOptions.axes.x2axis.label = $("#whichMonth option:selected").text()+ ' '+ $("#whichYear option:selected").text();
