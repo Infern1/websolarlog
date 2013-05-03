@@ -2132,7 +2132,6 @@ var WSL = {
 			cursor : {
 				zoom : true,
 				show : true,
-				style : 'default'
 			},
 			highlighter : {
 				tooltipContentEditor : tooltipCompareEditor,
