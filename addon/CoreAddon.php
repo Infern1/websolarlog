@@ -150,5 +150,8 @@ class CoreAddon {
 		}
 	}
 	
-	
+	public function touchFile(){
+		$filename = Session::getBasePath().'/scripts/server.php.pid';
+		touch($filename);
+	}
 }

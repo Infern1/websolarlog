@@ -213,6 +213,9 @@ class Session
     	// PvOutputAddon
     	$hookHandler->add("onFastJob", "PvOutputAddon.onJob");
     	
+    	//touch pid file
+    	$hookHandler->add("onFastJob", "CoreAddon.touchPidFile");
+    	
     	// TwitterAddon
     	$hookHandler->add("onInverterShutdown", "TwitterAddon.sendTweet");
     	
