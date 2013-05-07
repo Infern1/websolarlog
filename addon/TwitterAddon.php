@@ -43,7 +43,7 @@ class TwitterAddon {
 		if($this->hybridauth_session_data){
 			$data['message'] = 'Connected';
 		}else{
-	
+			
 			$twitter = $this->hybridauth->authenticate( "Twitter" );
 			$hybridauth_session_data = $this->hybridauth->getSessionData();
 	
