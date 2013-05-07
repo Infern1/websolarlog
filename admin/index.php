@@ -17,6 +17,7 @@ session_start();
 <link rel="stylesheet" href="css/main.css" type="text/css" />
 <link rel="stylesheet" href="../js/jqueryuicss/jquery-ui-custom.css" type="text/css" />
 <script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="../js/moment.min.js"></script>
 <script type="text/javascript" src="../js/jquery-ui-1.10.2.min.js"></script>
 <script type="text/javascript" src="../js/jquery.calculation.min.js"></script>
 <script type="text/javascript" src="../js/jquery.pnotify.min.js"></script>
@@ -56,7 +57,7 @@ session_start();
 					<li><a href="#update" id="btnUpdate">Update</a></li>
 					<li><a href="#backup" id="btnBackup">Backup</a></li>
 					<!-- li><a href="#DataMaintenance" id="btnDataMaintenance">DBM</a></li -->
-					<li class="nav-end"><a href="#testpage" id="btnTestPage">Test page</a></li>
+					<li class="nav-end"><a href="#test" id="btnTestPage">Test page</a></li>
 				</ul>
 				<div class="cl"></div>
 			</div>
