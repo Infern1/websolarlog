@@ -10,6 +10,7 @@ class Config
 	
     public $version_title;
     public $version_revision;
+    public $checkNewTrunk;
 
     public $title;
     public $subtitle;
@@ -52,6 +53,7 @@ class Config
     public $aurorapath; // The path to aurora
     public $smagetpath; // The path to sma-get
     public $smaspotpath; // The path to sma-spot
+    public $smaspotWSLpath; // The path to sma-spot -wsl
     public $smartmeterpath;
     
     public $adminpasswd;
