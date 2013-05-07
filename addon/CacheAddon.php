@@ -59,23 +59,25 @@ class CacheAddon {
 			$avgPast   =  R::getAll($query,array(':begin'=>$pastBegin,':end'=>$pastEnd));
 			
 			
-			
-			$average['recent'] = ($avgRecent[0]['avgGP']>0)? $avgRecent[0]['avgGP']: '0';
-			$average['past'] = ($avgPast[0]['avgGP']>0)? $avgPast[0]['avgGP']:'0';
-			
-			$live = $this->adapter->readLiveInfo($device->id);
-			$average['recent'] = ($live->GP + $average['recent'])/2;
-			
-			if($average['recent']>$average['past']){
-				$trend = "up";
-			}elseif($average['recent']<$average['past']){
-				$trend = "down";
+			if(count($avgRecent)>0){
+				$average['recent'] = ($avgRecent[0]['avgGP']>0)? $avgRecent[0]['avgGP']: '0';
+				$average['past'] = ($avgPast[0]['avgGP']>0)? $avgPast[0]['avgGP']:'0';
+				
+				$live = $this->adapter->readLiveInfo($device->id);
+				$average['recent'] = ($live->GP + $average['recent'])/2;
+				
+				if($average['recent']>$average['past']){
+					$trend = "up";
+				}elseif($average['recent']<$average['past']){
+					$trend = "down";
+				}else{
+					$trend = "equal";
+				}
 			}else{
 				$trend = "equal";
 			}
-			$cache = new Cache();
-
 			//save trend
+			$cache = new Cache();
 			$cache->key = 'trend-'.$device->id;
 			$cache->value = $trend;
 			$cache->module = 'live';
