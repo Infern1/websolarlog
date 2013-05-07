@@ -1,6 +1,7 @@
 <?php
 class Updater {
     public static $url = "http://svn.code.sf.net/p/websolarlog/code/";
+    public static $urlReleases = "http://www.websolarlog.com/json/";
     public static $problems = array();
     public static $basepath = "../tmp";
 
@@ -30,17 +31,9 @@ class Updater {
      * @return array
      */
     public static function getVersions($experimental = false) {
-        $tags = svn_ls(self::$url . "tags");
-        $versions = array();
-        foreach ($tags as $tag) {
-            if ($experimental) {
-                $versions[] = array('name'=>$tag['name'],'revision'=>$tag['created_rev'],'experimental'=>true);
-            } else {
-                if (Common::startsWith($tag['name'], "release") || Common::startsWith($tag['name'], "stable")) {
-                    $versions[] = array('name'=>$tag['name'],'revision'=>$tag['created_rev'], 'experimental'=>false);
-                }
-            }
-        }
+    	$json = file_get_contents(self::$urlReleases . "releases.php");
+    	$versions = json_decode($json, TRUE);
+    	
         if ($experimental) {
             $trunk = svn_ls(self::$url);
             $versions[] = array('name'=>'trunk','experimental'=>true, 'revision'=>$trunk['trunk']['created_rev']);
