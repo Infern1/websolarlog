@@ -91,7 +91,7 @@ class SMABlueToothConverter
     }
     
     
-    public function liveLineToValues($line,$type='float'){
+    public static function liveLineToValues($line,$type='float'){
     	$result = array();
     	switch ($type){
     		case 'float':
