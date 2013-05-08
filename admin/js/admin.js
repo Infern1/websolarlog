@@ -930,7 +930,7 @@ function init_update(experimental) {
                     		type = 'success';
                     		checkNewTrunkText = 'We notify you if there is a trunk update.';
                     	}else{
-                    		checkNewTrunkText = 'We <b>won\'t</b> notify tou on a trunk update.';
+                    		checkNewTrunkText = 'We <b>won\'t</b> notify you on a trunk update.';
                     		type = 'warning';
                     		checkNewTrunk= false;
                     	}
@@ -943,11 +943,13 @@ function init_update(experimental) {
                                 });
                                 if(checkNewTrunk){
 	                        		$.getJSON('admin-server.php?s=current-trunk-version', function(data) {
+	                        			if(data.trunkNotifier){
 	                                    $.pnotify({
 	                                        title: 'Trunk notifier',
 	                                        text: 'We already found a Trunk update!<br><br><font color="red">Please keep in mind that Trunk releases are not supported!</font>',
 	                                        type: 'warning'
 	                                    });
+	                        			}
 	                        		});
                                 }
                             } else {
@@ -1008,11 +1010,13 @@ function init_update(experimental) {
             });
         	if(data.chkNewTrunk==true){
         		$.getJSON('admin-server.php?s=current-trunk-version', function(data) {
-                    $.pnotify({
-                        title: 'Trunk notifier',
-                        text: 'There is a new Trunk release.<br><br><font color="red">Please keep in mind that Trunk releases are not supported!</font>',
-                        type: 'warning'
-                    });
+        			if(data.trunkNotifier){
+	                    $.pnotify({
+	                        title: 'Trunk notifier',
+	                        text: 'There is a new Trunk release.<br><br><font color="red">Please keep in mind that Trunk releases are not supported!</font>',
+	                        type: 'warning'
+	                    });
+        			}
         		});
         	}
         }
@@ -1151,10 +1155,8 @@ function setPercentBar(month,KWH,KWHTotal) {
 
 
 function runFunction(name, arguments){
-	console.log(name);
     var fn = window[name];
     if(typeof fn !== 'function'){
-    	console.log('foutje');
         return;
     }
 
