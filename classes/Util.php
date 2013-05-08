@@ -133,17 +133,12 @@ class Util {
 	    			break;
 	    		case 'week':
 	    			$beginEndDate = Util::getStartAndEndOfWeek($startDate);
-	    			//var_dump($beginEndDate);
 	    			$beginDate = $beginEndDate[0];
 	    			$endDate = $beginEndDate[1];
-	    			//echo "beginDate:".$beginDate;
-	    			//echo "endDate:".$endDate;
 	    			break;
 	    		case 'month':
 	    			$beginDate = Util::getTimestampOfDate(0,0,0, 1, date("m",$startDate), date("Y",$startDate));
 	    			$endDate = Util::getTimestampOfDate(23,59,59,date("t",$startDate), date("m",$startDate), date("Y",$startDate));
-	    			//echo date("d-m-Y",$beginDate);
-	    			//echo date("d-m-Y",$endDate);
 	    			break;
 	    		case 'year':
 	    			$beginDate = Util::getTimestampOfDate(0,0,0, 1,1, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
