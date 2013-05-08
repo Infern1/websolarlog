@@ -141,7 +141,7 @@ class Util {
 	    			break;
 	    		case 'month':
 	    			$beginDate = Util::getTimestampOfDate(0,0,0, 1, date("m",$startDate), date("Y",$startDate));
-	    			$endDate = Util::getTimestampOfDate(23,59,59,31, date("m",$startDate), date("Y",$startDate));
+	    			$endDate = Util::getTimestampOfDate(23,59,59,date("t",$startDate), date("m",$startDate), date("Y",$startDate));
 	    			//echo date("d-m-Y",$beginDate);
 	    			//echo date("d-m-Y",$endDate);
 	    			break;
