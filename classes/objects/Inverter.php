@@ -70,8 +70,11 @@ class Inverter
     		if ($this->deviceApi == "SMA-RS485") {
 	    	return new Sma($config->smagetpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
 	    }
-	    if ($this->deviceApi == "SMA-BT") {
+    	if ($this->deviceApi == "SMA-BT") {
 	    	return new SMABlueTooth($config->smaspotpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    }
+	    if ($this->deviceApi == "SMA-BT-WSL") {
+	    	return new SMASpotWSL($config->smaspotpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
 	    }
 	    if ($this->deviceApi == "Diehl-ethernet") {
 	    	return new Diehl($config->smagetpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);

@@ -58,6 +58,7 @@ $(function()
             init_menu();
             var hash = document.URL.split('#');// split on #
             // go further if there is a split and more than 1 element in the array
+            
             if(hash.length>1){
             	var shortcut = hash[1];
             	if(shortcut.indexOf('?')){
@@ -114,14 +115,6 @@ $(function()
  * Init var/array
  */
 
-
-function runFunction(name, arguments){
-    var fn = window[name];
-    if(typeof fn !== 'function')
-        return;
-
-    fn.apply(window, arguments);
-}
 
 
 var originalPerc=new Array(2,5,7,10,12,14,14,12,10,7,5,2);
@@ -211,10 +204,10 @@ function init_menu() {
     $("#btnInverters").bind('click', function() { init_inverters(); });
     $("#btnGrid").bind('click', function() { init_grid();});
     $("#btnEmail").bind('click', function() { init_mail(); });
-    $("#btnTestPage").bind('click', function() { init_testpage(); });
+    $("#btnTestPage").bind('click', function() { init_test(); });
     $("#btnTariff").bind('click', function() { init_tariff(); });
     $("#btnSocial").bind('click', function() { init_social(); });
-    $("#btnUpdate").bind('click', function() { init_updatepage(); });
+    $("#btnUpdate").bind('click', function() { init_update(); });
     $("#btnBackup").bind('click', function() { init_backup(); });
     $("#btnDataMaintenance").bind('click', function() { init_dataMaintenance(); });
 }
@@ -883,7 +876,7 @@ function init_mail() {
     });
 }
 
-function init_testpage() {
+function init_test() {
     $('#sidebar').html("");
     $.getJSON('admin-server.php?s=test', function(data) {
         $.ajax({
@@ -901,10 +894,11 @@ function init_testpage() {
         
 }
 
-function init_updatepage(experimental) {
+function init_update(experimental) {
     if (typeof experimental === 'undefined' ) {
         experimental = false;
     }
+
     $.getJSON('admin-server.php?s=updater-getversions&experimental=' + experimental, function(data) {
         if (data.result === false) {
             $.ajax({
@@ -917,21 +911,58 @@ function init_updatepage(experimental) {
                 dataType : 'text'
             });
         } else {
+
             $.ajax({
                 url : 'js/templates/updater-experimental.hb',
                 success : function(source) {
                     var template = Handlebars.compile(source);
-                    var html = template({'experimental' : experimental });
+                    var html = template({'experimental' : experimental , 'chkNewTrunk' : data.chkNewTrunk});
                     $('#sidebar').html(html);
                     
                     $('#chkExperimental').bind('click', function(){
                         var checked = $(this).is(':checked');
-                        init_updatepage(checked);
+                        init_update(checked);
+                    });
+                    
+                    $("input[name = 'chkNewTrunk']").bind('click', function(){                        
+                    	if ($("input[name = 'chkNewTrunk']").is(":checked")){
+                    		checkNewTrunk = true;
+                    		type = 'success';
+                    		checkNewTrunkText = 'We notify you if there is a trunk update.';
+                    	}else{
+                    		checkNewTrunkText = 'We <b>won\'t</b> notify tou on a trunk update.';
+                    		type = 'warning';
+                    		checkNewTrunk= false;
+                    	}
+                        $.post('admin-server.php', {'s' : 'save-checkNewTrunk', chkNewTrunk: checkNewTrunk }, function(result){
+                            if (result.result === true) {
+                                $.pnotify({
+                                    title: 'Trunk notifier',
+                                    text: checkNewTrunkText,
+                                    type: type
+                                });
+                                if(checkNewTrunk){
+	                        		$.getJSON('admin-server.php?s=current-trunk-version', function(data) {
+	                                    $.pnotify({
+	                                        title: 'Trunk notifier',
+	                                        text: 'We already found a Trunk update!<br><br><font color="red">Please keep in mind that Trunk releases are not supported!</font>',
+	                                        type: 'warning'
+	                                    });
+	                        		});
+                                }
+                            } else {
+                                $.pnotify({
+                                    title: 'Trunk notifier',
+                                    text: 'Something went wrong:<br />' + result.error,
+                                    type: 'error'
+                                });
+                            }
+                        });
                     });
                 },
                 dataType : 'text'
             });
-            
+        	
             $.ajax({
                 url : 'js/templates/updater-versions.hb',
                 success : function(source) {
@@ -955,7 +986,6 @@ function init_updatepage(experimental) {
                         checkCheckboxesHiddenFields();
                         var data = $(this).parent().serialize();
                         $.post('admin-server.php', data, function(updateresult){
-                            console.log(updateresult.result);
                             if (updateresult.result === true) {
                                 $.pnotify({
                                     title: 'Update',
@@ -976,6 +1006,15 @@ function init_updatepage(experimental) {
                 },
                 dataType : 'text'
             });
+        	if(data.chkNewTrunk==true){
+        		$.getJSON('admin-server.php?s=current-trunk-version', function(data) {
+                    $.pnotify({
+                        title: 'Trunk notifier',
+                        text: 'There is a new Trunk release.<br><br><font color="red">Please keep in mind that Trunk releases are not supported!</font>',
+                        type: 'warning'
+                    });
+        		});
+        	}
         }
     });
 }
@@ -1108,4 +1147,16 @@ function setPercentBar(month,KWH,KWHTotal) {
 	
 	$("img[id="+month+"BAR]").css('top', top);
 	$("img[id="+month+"BAR]").css('height',height);
+}
+
+
+function runFunction(name, arguments){
+	console.log(name);
+    var fn = window[name];
+    if(typeof fn !== 'function'){
+    	console.log('foutje');
+        return;
+    }
+
+    fn.apply(window, arguments);
 }

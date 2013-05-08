@@ -7,7 +7,8 @@
     Below you need to set the path of the software you use to communicate with the device.<br>See the examples for help.<br />
     <label for="aurorapath">Aurora PowerOne(RS485):</label><input type="text" name="aurorapath" value="{{data.aurorapath}}" size="50"/><br />
     <label for="smagetpath">sma-get(RS485):</label><input type="text" name="smagetpath" value="{{data.smagetpath}}"  size="50"/><br />
-    <label for="smaspotpath">sma-spot(BlueTooth):</label><input type="text" name="smaspotpath" value="{{data.smaspotpath}}"  size="50"/><br />
+    <label for="smaspotpath">sma-spot(BT):</label><input type="text" name="smaspotpath" value="{{data.smaspotpath}}"  size="50"/><br />
+    <label for="smaspotWSLpath">sma-spot >2.0.6(BT):</label><input type="text" name="smaspotWSLpath" value="{{data.smaspotWSLpath}}"  size="50"/><br />
     <label for="smartmeterpath">smartmeter:</label><input type="text" name="smartmeterpath" value="{{data.smartmeterpath}}"  size="50"/><br />
     <div id="examples">
     <h3>examples</h3>

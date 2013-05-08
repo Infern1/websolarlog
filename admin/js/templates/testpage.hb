@@ -1,5 +1,14 @@
 <h1>We have runned some tests to check your installation</h1>
 <br />
+<form>
+<fieldset>
+    <legend>WSL running state:</legend>
+		<label>PID file:</label>{{#if data.test.pid.exists}}exists{{else}}doesn't exists{{/if}}<br />
+		<label>WSL running state:</label>{{#if data.test.pid.WSLRunningState}}running{{else}}not running{{/if}}<br />
+		<label>Currenttime:</label>{{timestampDateFormat data.test.pid.currentTime format="DD-MM-YYYY HH:mm:ss "}}<br />
+		<label>last change:</label>{{timestampDateFormat data.test.pid.ctime format="DD-MM-YYYY HH:mm:ss "}}<br />
+</fieldset>
+</form>
 <div id="extensions">
     <div>Which extensions are loaded/installed?
     	<ul>

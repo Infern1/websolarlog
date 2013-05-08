@@ -549,9 +549,14 @@ try {
 			}
 			break;
 		case "test":
-			
-			$test = $dataAdapter->readCache("","index","live",$inverter->id,"trend");
-			echo $test[0]['value'];
+			$sma = new SMASpotWSL('/', $address, $port, $comoption, true);
+			$test = $sma->getLiveData();
+			//var_dump($test);
+			break;
+		case "testSmartMeter":
+			$sma = new SmartMeter('/', $address, $port, $comoption, true);
+			var_dump($sma);
+			$test = $sma->getLiveData();
 			var_dump($test);
 			break;
 		case "getMaxTotalEnergyValues":

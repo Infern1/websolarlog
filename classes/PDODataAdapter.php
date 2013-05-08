@@ -590,6 +590,7 @@ class PDODataAdapter {
 
 		$bean->version_title = $config->version_title;
 		$bean->version_revision = $config->version_revision;
+		$bean->checkNewTrunk = $config->checkNewTrunk;
 
 		$bean->title = $config->title;
 		$bean->subtitle = $config->subtitle;
@@ -622,6 +623,7 @@ class PDODataAdapter {
 		$bean->aurorapath = $config->aurorapath;
 		$bean->smagetpath = $config->smagetpath;
 		$bean->smaspotpath = $config->smaspotpath;
+		$bean->smaspotWSLpath = $config->smaspotWSLpath;
 		$bean->smartmeterpath = $config->smartmeterpath;
 
 		$bean->co2kwh = $config->co2kwh;
@@ -648,13 +650,12 @@ class PDODataAdapter {
 			$bean = R::dispense('config');
 		}
 
-
 		$config = new Config();
 
 		if ($bean) {
 			$config->version_title = $bean->version_title;
 			$config->version_revision = $bean->version_revision;
-
+			$config->checkNewTrunk = $bean->checkNewTrunk;
 			$config->title = $bean->title;
 			$config->subtitle = $bean->subtitle;
 			$config->url = ($bean->url != "") ? $bean->url : $config->url;
@@ -686,6 +687,7 @@ class PDODataAdapter {
 			$config->aurorapath = ($bean->aurorapath != "") ? $bean->aurorapath : $config->aurorapath;
 			$config->smagetpath = ($bean->smagetpath != "") ? $bean->smagetpath : $config->smagetpath;
 			$config->smaspotpath = ($bean->smaspotpath != "") ? $bean->smaspotpath : $config->smaspotpath;
+			$config->smaspotWSLpath = ($bean->smaspotWSLpath != "") ? $bean->smaspotWSLpath : $config->smaspotWSLpath;
 			$config->smartmeterpath = ($bean->smartmeterpath != "") ? $bean->smartmeterpath : $config->smartmeterpath;
 
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
@@ -741,20 +743,20 @@ class PDODataAdapter {
 		($inverter->pvoutputWSLTeamMember!='') ? $bean->pvoutputWSLTeamMember = $inverter->pvoutputWSLTeamMember : $inverter->pvoutputWSLTeamMember = $inverter->pvoutputWSLTeamMember;
 		$bean->state = $inverter->state;
 		$bean->refreshTime = $inverter->refreshTime;
-
-		$bean->expectedJAN = $inverter->expectedJAN;
-		$bean->expectedFEB = $inverter->expectedFEB;
-		$bean->expectedMAR = $inverter->expectedMAR;
-		$bean->expectedAPR = $inverter->expectedAPR;
-		$bean->expectedMAY = $inverter->expectedMAY;
-		$bean->expectedJUN = $inverter->expectedJUN;
-		$bean->expectedJUL = $inverter->expectedJUL;
-		$bean->expectedAUG = $inverter->expectedAUG;
-		$bean->expectedSEP = $inverter->expectedSEP;
-		$bean->expectedOCT = $inverter->expectedOCT;
-		$bean->expectedNOV = $inverter->expectedNOV;
-		$bean->expectedDEC = $inverter->expectedDEC;
-
+		
+		($inverter->expectedJAN) ? $bean->expectedJAN = $inverter->expectedJAN : $bean->expectedJAN = 0;
+		($inverter->expectedFEB) ? $bean->expectedFEB = $inverter->expectedFEB : $bean->expectedFEB = 0;
+		($inverter->expectedMAR) ? $bean->expectedMAR = $inverter->expectedMAR : $bean->expectedMAR = 0;
+		($inverter->expectedAPR) ? $bean->expectedAPR = $inverter->expectedAPR : $bean->expectedAPR = 0;
+		($inverter->expectedMAY) ? $bean->expectedMAY = $inverter->expectedMAY : $bean->expectedMAY = 0;
+		($inverter->expectedJUN) ? $bean->expectedJUN = $inverter->expectedJUN : $bean->expectedJUN = 0;
+		($inverter->expectedJUL) ? $bean->expectedJUL = $inverter->expectedJUL : $bean->expectedJUL = 0;
+		($inverter->expectedAUG) ? $bean->expectedAUG = $inverter->expectedAUG : $bean->expectedAUG = 0;
+		($inverter->expectedSEP) ? $bean->expectedSEP = $inverter->expectedSEP : $bean->expectedSEP = 0;
+		($inverter->expectedOCT) ? $bean->expectedOCT = $inverter->expectedOCT : $bean->expectedOCT = 0;
+		($inverter->expectedNOV) ? $bean->expectedNOV = $inverter->expectedNOV : $bean->expectedNOV = 0;
+		($inverter->expectedDEC) ? $bean->expectedDEC = $inverter->expectedDEC : $bean->expectedDEC = 0;
+		
 		//Store the bean
 		$id = R::store($bean);
 		return $id;
@@ -791,19 +793,21 @@ class PDODataAdapter {
 		$inverter->refreshTime = (isset($bean->refreshTime) && $bean->refreshTime != "") ? $bean->refreshTime : $inverter->refreshTime;
 		$inverter->panels = $this->readPanelsByInverter($inverter->id);
 
-		$inverter->expectedJAN = $bean->expectedJAN;
-		$inverter->expectedFEB = $bean->expectedFEB;
-		$inverter->expectedMAR = $bean->expectedMAR;
-		$inverter->expectedAPR = $bean->expectedAPR;
-		$inverter->expectedMAY = $bean->expectedMAY;
-		$inverter->expectedJUN = $bean->expectedJUN;
-		$inverter->expectedJUL = $bean->expectedJUL;
-		$inverter->expectedAUG = $bean->expectedAUG;
-		$inverter->expectedSEP = $bean->expectedSEP;
-		$inverter->expectedOCT = $bean->expectedOCT;
-		$inverter->expectedNOV = $bean->expectedNOV;
-		$inverter->expectedDEC = $bean->expectedDEC;
+		
 
+		($bean->expectedJAN!='NaN') ? $inverter->expectedJAN = $bean->expectedJAN : $inverter->expectedJAN = 0;
+		($bean->expectedFEB!='NaN') ?  $inverter->expectedFEB = $bean->expectedFEB : $inverter->expectedFEB = 0;
+		($bean->expectedMAR!='NaN') ?  $inverter->expectedMAR = $bean->expectedMAR : $inverter->expectedMAR = 0;
+		($bean->expectedAPR!='NaN') ?  $inverter->expectedAPR = $bean->expectedAPR : $inverter->expectedAPR = 0;
+		($bean->expectedMAY!='NaN') ?  $inverter->expectedMAY = $bean->expectedMAY : $inverter->expectedMAY = 0;
+		($bean->expectedJUN!='NaN') ?  $inverter->expectedJUN = $bean->expectedJUN : $inverter->expectedJUN = 0;
+		($bean->expectedJUL!='NaN') ?  $inverter->expectedJUL = $bean->expectedJUL : $inverter->expectedJUL = 0;
+		($bean->expectedAUG!='NaN') ?  $inverter->expectedAUG = $bean->expectedAUG : $inverter->expectedAUG = 0;
+		($bean->expectedSEP!='NaN') ?  $inverter->expectedSEP = $bean->expectedSEP : $inverter->expectedSEP = 0;
+		($bean->expectedOCT!='NaN') ?  $inverter->expectedOCT = $bean->expectedOCT : $inverter->expectedOCT = 0;
+		($bean->expectedNOV!='NaN') ?  $inverter->expectedNOV = $bean->expectedNOV : $inverter->expectedNOV = 0;
+		($bean->expectedDEC!='NaN') ?  $inverter->expectedDEC = $bean->expectedDEC : $inverter->expectedDEC = 0;
+		
 		$inverter->plantpower = 0;
 		if ($inverter->panels != null && is_array($inverter->panels)) {
 			foreach ($inverter->panels as $panel) {
@@ -841,19 +845,20 @@ class PDODataAdapter {
 			$inverter->refreshTime = (isset($bean->refreshTime) && $bean->refreshTime != "") ? $bean->refreshTime : $inverter->refreshTime;
 			$inverter->panels = $this->readPanelsByInverter($inverter->id);
 
-			$inverter->expectedJAN = $bean->expectedJAN;
-			$inverter->expectedFEB = $bean->expectedFEB;
-			$inverter->expectedMAR = $bean->expectedMAR;
-			$inverter->expectedAPR = $bean->expectedAPR;
-			$inverter->expectedMAY = $bean->expectedMAY;
-			$inverter->expectedJUN = $bean->expectedJUN;
-			$inverter->expectedJUL = $bean->expectedJUL;
-			$inverter->expectedAUG = $bean->expectedAUG;
-			$inverter->expectedSEP = $bean->expectedSEP;
-			$inverter->expectedOCT = $bean->expectedOCT;
-			$inverter->expectedNOV = $bean->expectedNOV;
-			$inverter->expectedDEC = $bean->expectedDEC;
-
+		
+		($bean->expectedJAN!='NaN') ? $inverter->expectedJAN = $bean->expectedJAN : $inverter->expectedJAN = 0;
+		($bean->expectedFEB!='NaN' ) ?$inverter->expectedFEB = $bean->expectedFEB : $inverter->expectedFEB = 0;
+		($bean->expectedMAR!='NaN' ) ?$inverter->expectedMAR = $bean->expectedMAR : $inverter->expectedMAR = 0;
+		($bean->expectedAPR!='NaN' ) ?$inverter->expectedAPR = $bean->expectedAPR : $inverter->expectedAPR = 0;
+		($bean->expectedMAY!='NaN' ) ?$inverter->expectedMAY = $bean->expectedMAY : $inverter->expectedMAY = 0;
+		($bean->expectedJUN!='NaN' ) ?$inverter->expectedJUN = $bean->expectedJUN : $inverter->expectedJUN = 0;
+		($bean->expectedJUL!='NaN' ) ?$inverter->expectedJUL = $bean->expectedJUL : $inverter->expectedJUL = 0;
+		($bean->expectedAUG!='NaN' ) ?$inverter->expectedAUG = $bean->expectedAUG : $inverter->expectedAUG = 0;
+		($bean->expectedSEP!='NaN' ) ?$inverter->expectedSEP = $bean->expectedSEP : $inverter->expectedSEP = 0;
+		($bean->expectedOCT!='NaN' ) ?$inverter->expectedOCT = $bean->expectedOCT : $inverter->expectedOCT = 0;
+		($bean->expectedNOV!='NaN' ) ?$inverter->expectedNOV = $bean->expectedNOV : $inverter->expectedNOV = 0;
+		($bean->expectedDEC!='NaN' ) ?$inverter->expectedDEC = $bean->expectedDEC : $inverter->expectedDEC = 0;
+		
 			$inverter->plantpower = 0;
 			foreach ($inverter->panels as $panel) {
 				//$panel = new Panel();

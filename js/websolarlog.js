@@ -418,6 +418,9 @@ function handleGraphs(request, invtnum) {
 	} else {
 		$('#lastCall').val('normal');
 		if (tab == "Today" || tab == "Yesterday") {
+			if(tab == "Yesterday"){
+				date = moment().subtract('days', 1).format('DD-MM-YYYY');
+			}
 			WSL.createDayGraph(invtnum, "Today", tab, date,
 					currentGraphHandler, function(handler) {
 						currentGraphHandler = handler;
@@ -458,8 +461,16 @@ function populateTabs(tabIndex) {
 					'data' : data,
 					'lang' : data.lang
 				});
-				$('#pickerFilter').html(html);
-
+				$("#pickerFilter").html(html);
+				$("#datepicker").datepicker({
+				        onSelect: function(date) {
+				        	handleGraphs('picker', invtnum);
+				        }
+				});
+				$("#datepicker").datepicker("option", "dateFormat", "dd-mm-yy" );
+				
+				$("#datepicker").datepicker('setDate', new Date());
+				
 				var invtnum = $('#pickerInv').val();
 
 				$(".mainTabContainer").hover(function() {
@@ -469,9 +480,7 @@ function populateTabs(tabIndex) {
 					$("#pickerFilterDiv").show();
 				});
 
-				$('#datePeriodFilter').on('change', '#pickerPeriod', function(){
-					handleGraphs('picker', invtnum);
-				});
+
 				$('#next').unbind('click');
 				$('#previous').unbind('click');
 				$('#pickerPeriod').unbind('click');
@@ -1155,6 +1164,7 @@ var WSL = {
 			format = '%H:%M';
 			return $.jsDate.strftime(val, format);
 		};
+		console.log(date);
 		$.ajax({
 			url : "server.php?method=getGraphDayPoints&type=" + getDay + "&date=" + date + "&invtnum=" + invtnum,
 			beforeSend : function(xhr) {
@@ -1172,18 +1182,17 @@ var WSL = {
 				var latitude = result.slimConfig.lat;
 				var pv_az = result.slimConfig.inverters[0].panels[0].roofOrientation; 
 				var pv_roof = result.slimConfig.inverters[0].panels[0].roofPitch;
-				var pv_temp_coeff = -0.45;
+				var pv_temp_coeff = -0.48;
 				var skydome_coeff = 1;
 				var Wp_panels = result.slimConfig.inverters[0].plantPower;
 				var timezone = result.timezoneOffset;
 				init_astrocalc(gl_date,longitude,latitude,pv_az,pv_roof,pv_temp_coeff,timezone);
 				
-				
-				var coeff = 1000 * 60 * 5;
-				var beforeSunrise = coeff*20;
-				var sunrise = new Date(result.sunInfo.sunrise*1000);  //or use any other date
-				var sunriseRounded = Math.round(sunrise.getTime() / coeff) * coeff;
-				
+                var coeff = 1000 * 60 * 5;
+                var beforeSunrise = coeff*5;
+                var sunrise = new Date((result.sunInfo.sunrise-1000)*1000);  //or use any other date
+                var sunriseRounded = Math.round(sunrise.getTime() / coeff) * coeff;
+
 				var sunset = new Date(result.sunInfo.sunset*1000);  //or use any other date
 				var sunsetRounded = (Math.round(sunset.getTime() / coeff) * coeff)+coeff*6;
 				var maxPower = [];

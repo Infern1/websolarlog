@@ -128,7 +128,7 @@ Done.";
     }
 
     private function execute($options) {
-        return shell_exec($this->PATH . ' ' . $options);
+        return shell_exec('"'.$this->PATH . ' ' . $options.'"')';
     }
 
 }

@@ -23,6 +23,7 @@ switch ($settingstype) {
 		$data['aurorapath'] = $config->aurorapath;
 		$data['smagetpath'] = $config->smagetpath;
 		$data['smaspotpath'] = $config->smaspotpath;
+		$data['smaspotWSLpath'] = $config->smaspotWSLpath;
 		$data['smartmeterpath'] = $config->smartmeterpath;
 		$data['debugmode'] = $config->debugmode;
 		$data['googleAnalytics'] = $config->googleAnalytics;
@@ -205,6 +206,7 @@ switch ($settingstype) {
 		break;
 	case 'inverter':
 		$inverterId = $_GET['id'];
+		$adapter->readInverter($inverterId);
 		$data['inverter'] = $config->getInverterConfig($inverterId);
 		if ($inverterId == -1) {
 			$data['inverter'] = new Inverter();
@@ -237,9 +239,16 @@ switch ($settingstype) {
 	case 'logout':
 		Session::logout();
 		break;
+	case 'save-checkNewTrunk':
+		$config->checkNewTrunk = Common::getValue('chkNewTrunk');
+		$adapter->writeConfig($config);
+		$data['result']= true;
+		
+		break;
 	case 'updater-getversions':
 		$experimental = (Common::getValue("experimental", 'false') === 'true') ? true : false;
-
+		$data['chkNewTrunk'] = ($config->checkNewTrunk=='true') ? true : false;
+		
 		if (Updater::isUpdateable()) {
 			$data['result'] = true;
 			$data['versions'] = Updater::getVersions($experimental);
@@ -350,6 +359,7 @@ switch ($settingstype) {
 		$config->aurorapath =Common::getValue("aurorapath");
 		$config->smagetpath =Common::getValue("smagetpath");
 		$config->smaspotpath =Common::getValue("smaspotpath");
+		$config->smaspotWSLpath =Common::getValue("smaspotWSLpath");
 		$config->smartmeterpath =Common::getValue("smartmeterpath");
 		$config->debugmode =Common::getValue("debugmode");
 		$config->googleAnalytics = Common::getValue("googleAnalytics");
@@ -662,6 +672,17 @@ switch ($settingstype) {
 		}
 
 		break;
+		
+	case 'current-trunk-version':
+		$config = Session::getConfig();
+		$versions = Updater::getVersions(true);
+		foreach ($versions as $version){
+			if($version['name']=='trunk'){
+				$data['trunkNotifier'] = ($version['revision'] > $config->version_revision) ? true : false;
+			}
+		}
+		
+		break;
 	case 'test':
 		$data['test'] = checkSQLite();
 		break;
@@ -723,7 +744,22 @@ function checkSQLite() {
 			$result['sqlite'] = true;
 		}
 	}
-
+	
+	$filename = Session::getBasePath().'/scripts/server.php.pid';	
+	if (file_exists($filename)) {
+		$stat = stat($filename);
+		$result['pid']['exists']=true;
+		$result['pid']['currentTime']=time();
+		$result['pid']['timeDiff'] = time()-$stat['atime'];
+		($result['pid']['timeDiff'] >= 65) ? $result['pid']['WSLRunningState']=false : $result['pid']['WSLRunningState']=true;
+		
+		$result['pid']['atime']=$stat['atime'];
+		$result['pid']['mtime']=$stat['mtime'];
+		$result['pid']['ctime']=$stat['ctime'];
+	} else {
+		$result['pid']['exists']=false;
+	}
+		
 	// Try to get the sqlite version if installed
 	if ($result['sqlite'] === true) {
 		$filename = tempnam(sys_get_temp_dir(), 'empty'); // use a temporary empty db file for version check
