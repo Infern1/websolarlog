@@ -77,7 +77,7 @@ Class SmartMeter implements DeviceApi {
   		$badAppString = "rm,cat,tail,reboot,halt,shutdown,fdisk,mkfs,sh,cp,mv,dd";      
     	$badApp = explode(",",$badAppString);
     	foreach ($badApp as $app) {
-    		if (strpos($this->PATH,$app) !== false) {
+    		if (strpos($this->PATH, $app . " ") !== false) {
     			HookHandler::getInstance()->fire("onError", "SmartMeter path contains blacklisted program: " . $app);
     			return null;
     		}
