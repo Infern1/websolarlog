@@ -51,9 +51,8 @@ class QueueServer {
 			$memory = memory_get_usage() / 1024 / 1024; // calculate mb
 			$memory_string = number_format($memory, 2); 
 			
-			if (Session::getConfig()->debugmode) {
-				HookHandler::getInstance()->fire("onInfo", " QueueServer: current memory usage = " . $memory_string . "mb queue size: " . count($this->queue));
-			}
+			// Print memory info when debug is enabled
+			HookHandler::getInstance()->fire("onDebug", " QueueServer: current memory usage = " . $memory_string . "mb queue size: " . count($this->queue));
 			$this->sync();
 		}
 	}
@@ -80,9 +79,62 @@ class QueueServer {
 	}
 	
 	
+	// Retrieve new items from the queue
 	private function sync() {
-		// Synchronize the memory queue with the database
+		$currentQueueIds = $this->getDbQueueItemIds();
 		
+		$beans = R::findAll("QueueItem", "1 order by time");
+		foreach (beans as $bean) {
+			if (!in_array($bean->id, $ids)) {
+				$arguments = null;
+				// Create new queue Item 
+				$newQueueItem = new QueueItem($bean->time, $bean->method, $arguments, true, $device->refreshTime, true);
+				$newQueueItem->dbId = $bean->id;
+				
+				// Add the new item to the queue
+				QueueServer::getInstance()->add($newQueueItem);
+			}
+		}
+	}
+	
+	private function getDbQueueItemIds () {
+		$ids = array();
+		foreach ($this->queue as $key => $queueItem) {
+			if ($queueItem->dbSync && $queueItem->dbId > 0) {
+				$ids[] = $queueItem->dbId;
+			}
+		}
+		return $ids;
+	}
+	
+	private function removeDbQueueItem(QueueItem $item) {
+		// Check if it is already in the database
+		if ($item->dbId > 0) {
+			$dbQueueItem = R::load("QueueItem", $item->dbId);
+			if ($dbQueueItem) {		
+				R::trash($item);
+			}
+		}
+	}
+	
+	private function updateDbQueueItem(QueueItem $item) {
+		$dbItem = null;
+		if ($item->dbId > 0) {
+			$dbItem = R::load("QueueItem", $item->dbId);
+		}
+		if ($dbItem == null) {
+			$dbItem = R::dispense("QueueItem");
+		}
+		$dbItem->time = $item->time;
+		$dbItem->classmethod = $item->classmethod;
+		$dbItem->arguments = $item->arguments;
+		$dbItem->requeue = $item->requeue;
+		$dbItem->requeueTime = $item->requeueTime;
+		$dbItem->dbSync = $item->dbSync;
+		
+		$item->dbId = R::store($dbItem);
+		
+		return $item;
 	}
 	
 	// Process the job 
@@ -111,9 +163,19 @@ class QueueServer {
 			// do we need to requeue this item?
 			if ($item->requeue) {
 				$item->time = $item->getNextTime();
+				// Save the new version to the database
+				if ($item->dbSync) {
+					$item = $this->updateDbQueueItem($item);
+				}				
 				$this->add($item);
 				//echo ("Requeue item: " . $item->classmethod . " time: " . date("ymd h:i:s", $item->time) . "\n");
 			}
+			
+			// Remove from database if needed
+			if ($item->dbSync && $item->requeue == false) {
+				$this->removeDbQueueItem($item);
+			}
+			
 			R::commit(); // Commit the transaction
 		} catch (Exception $e) {
 			R::rollback();
