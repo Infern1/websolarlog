@@ -128,8 +128,7 @@ Done.";
     }
 
     private function execute($options) {
-    	HookHandler::getInstance()->fire("onDebug",'SMABlueTooth::Execute: '.'"'.$this->PATH . ' ' . $options.'"');
-        return shell_exec('"'.$this->PATH . ' ' . $options.'"')';
+        return shell_exec($this->PATH . ' ' . $options);
     }
 
 }
