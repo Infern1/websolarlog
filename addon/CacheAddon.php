@@ -58,7 +58,7 @@ class CacheAddon {
 			$avgRecent =  R::getAll($query,array(':begin'=>$recentBegin,':end'=>$recentEnd));
 			$avgPast   =  R::getAll($query,array(':begin'=>$pastBegin,':end'=>$pastEnd));
 			
-			
+			$average = array();
 			if(count($avgRecent)>0){
 				$average['recent'] = ($avgRecent[0]['avgGP']>0)? $avgRecent[0]['avgGP']: '0';
 				$average['past'] = ($avgPast[0]['avgGP']>0)? $avgPast[0]['avgGP']:'0';
