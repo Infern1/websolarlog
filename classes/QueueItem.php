@@ -25,12 +25,32 @@ class QueueItem {
 	 */
 	public $requeueTime;
 	
-	public function __construct($time, $classmethod, $arguments = null, $requeue = false, $requeueTime = 3600) {
+	/**
+	 * Should this item be synchronized in the database
+	 */
+	public $dbSync;
+	
+	/**
+	 * The id in the database, if empty it is an new object 
+	 */
+	public $dbId;
+	
+	/**
+	 * Constructor for creating an QueueItem
+	 * @param number $time
+	 * @param string $classmethod
+	 * @param string $arguments
+	 * @param bool $requeue
+	 * @param number $requeueTime
+	 * @param bool $dbSync
+	 */
+	public function __construct($time, $classmethod, $arguments = null, $requeue = false, $requeueTime = 3600, $dbSync = false) {
 		$this->time = $time;
 		$this->classmethod = $classmethod;
 		$this->arguments = $arguments;
 		$this->requeue = $requeue;
 		$this->requeueTime = $requeueTime;
+		$this->dbSync = $dbSync;
 	}
 	
 	/**

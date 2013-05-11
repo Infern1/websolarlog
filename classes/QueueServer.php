@@ -10,6 +10,14 @@ class QueueServer {
 		return self::$instance;
 	}
 	
+	public static function addItemToDatabase(QueueItem $item) {
+		self::getInstance()->updateDbQueueItem($item);
+	}
+	
+	public static function removeItemFromDatabase(QueueItem $item) {
+		self::getInstance()->removeDbQueueItem($item);
+	}
+	
 	// Class
 	private $queue;
 
@@ -57,10 +65,21 @@ class QueueServer {
 		}
 	}
 	
+	// Add an item to the  queue
 	public function add(QueueItem $item) {
 		$item->validate(); // Validate before adding
 		$this->queue[] = $item;
 	}
+	
+	// Remove an item from the queue
+	private function remove(QueueItem $item) {
+		foreach ($this->queue as $key => $queueItem) {
+			if ($queueItem->dbId == $item->dbId) {
+				unset($this->queue[$key]);
+			}
+		}
+	}
+	
 	
 	/**
 	 * Checks if there is an item in the queue needed to be processed, returns the item and removes it from the queue
@@ -81,14 +100,19 @@ class QueueServer {
 	
 	// Retrieve new items from the queue
 	private function sync() {
+		// Get the current db ids in the queue
 		$currentQueueIds = $this->getDbQueueItemIds();
 		
-		$beans = R::findAll("QueueItem", "1 order by time");
-		foreach (beans as $bean) {
-			if (!in_array($bean->id, $ids)) {
-				$arguments = null;
+		// Get the current QueueItems from the db
+		$beans = R::findAll("QueueItem", "order by time");
+		
+		// Check for new ones in the database
+		foreach ($beans as $bean) {
+			if (!in_array($bean->id, $currentQueueIds)) {
+				$arguments = $bean->arguments; // TODO :: Support for more then one parameter
+				
 				// Create new queue Item 
-				$newQueueItem = new QueueItem($bean->time, $bean->method, $arguments, true, $device->refreshTime, true);
+				$newQueueItem = new QueueItem($bean->time, $bean->classmethod, $arguments, $bean->requeue, $bean->requeueTime, true);
 				$newQueueItem->dbId = $bean->id;
 				
 				// Add the new item to the queue
@@ -107,12 +131,19 @@ class QueueServer {
 		return $ids;
 	}
 	
+	// Remove an item from the database queue
 	private function removeDbQueueItem(QueueItem $item) {
-		// Check if it is already in the database
+		echo("removeDbQueueItem " . $item->dbId . "  \n");
+	
+		// remove from queue
+		$this->remove($item);
+	
+		// Check if it is in the database
 		if ($item->dbId > 0) {
 			$dbQueueItem = R::load("QueueItem", $item->dbId);
-			if ($dbQueueItem) {		
-				R::trash($item);
+			if ($dbQueueItem) {
+				echo("removed from db \n");
+				R::trash($dbQueueItem);
 			}
 		}
 	}
@@ -122,6 +153,14 @@ class QueueServer {
 		if ($item->dbId > 0) {
 			$dbItem = R::load("QueueItem", $item->dbId);
 		}
+		
+		// Check if it is still in the dbase or we received an empty object
+		if ($item->dbId > 0 && ($dbItem == null || $dbItem->id != $item->dbId )) {
+			// Deleted remove it from the queue
+			$this->remove($item);
+			return;
+		}
+		
 		if ($dbItem == null) {
 			$dbItem = R::dispense("QueueItem");
 		}
@@ -166,13 +205,15 @@ class QueueServer {
 				// Save the new version to the database
 				if ($item->dbSync) {
 					$item = $this->updateDbQueueItem($item);
+				}
+				if ($item != null) {
+					$this->add($item);
+					//echo ("Requeue item: " . $item->classmethod . " time: " . date("ymd h:i:s", $item->time) . "\n");
 				}				
-				$this->add($item);
-				//echo ("Requeue item: " . $item->classmethod . " time: " . date("ymd h:i:s", $item->time) . "\n");
 			}
 			
 			// Remove from database if needed
-			if ($item->dbSync && $item->requeue == false) {
+			if ($item != null && $item->dbSync && $item->requeue == false) {
 				$this->removeDbQueueItem($item);
 			}
 			
