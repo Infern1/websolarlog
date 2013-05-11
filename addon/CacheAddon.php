@@ -89,7 +89,7 @@ class CacheAddon {
 			//save pastAvg
 			/////////////////////////
 			$cache->key = 'pastAvg-'.$device->id;
-			$cache->value = $average['past'];
+			$cache->value = (isset($average['past'])) ? $average['past'] : 0;
 			$cache->module = 'live';
 			$cache->page = 'index';
 			$cache->timestamp = $timestamp;
@@ -99,7 +99,7 @@ class CacheAddon {
 			//save recentAvg
 			/////////////////////////
 			$cache->key = 'recentAvg-'.$device->id;
-			$cache->value = $average['recent'];
+			$cache->value = (isset($average['recent'])) ? $average['recent'] : 0;
 			$cache->module = 'live';
 			$cache->page = 'index';
 			$cache->timestamp = $timestamp;

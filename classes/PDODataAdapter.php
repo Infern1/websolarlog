@@ -2387,7 +2387,7 @@ class PDODataAdapter {
 		}
 
 		$energy = array(
-				"todayMaxPower"=>$maxPowerBeansToday[0]['GP'],
+				"todayMaxPower"=>(isset($maxPowerBeansToday[0]['GP']) ? $maxPowerBeansToday[0]['GP'] : 0),
 				"todayMaxPowerTime"=>isset($maxPowerBeansToday[0]['date']) ? $maxPowerBeansToday[0]['date'] : time(),
 				"todayDays"=>1,
 				"todayAvgKwh"=>$avgEnergyBeansToday,
