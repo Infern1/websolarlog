@@ -51,7 +51,8 @@ class ProductionDeviceHandler {
 		$notProcessed = 0;
 		foreach ($deviceHistoryList as $deviceHistory) {
 			$deviceHistory->deviceId = $device->id;
-			$newDeviceHistory = PDODataAdapter::getInstance()->addOrUpdateDeviceHistoryByDeviceAndTime($deviceHistory);
+			// TODO :: Missing function in PDO disabled
+			//$newDeviceHistory = PDODataAdapter::getInstance()->addOrUpdateDeviceHistoryByDeviceAndTime($deviceHistory);
 			
 			if (!$newDeviceHistory->processed) {
 				$notProcessed++;
