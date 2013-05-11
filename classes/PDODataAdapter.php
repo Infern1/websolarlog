@@ -323,8 +323,6 @@ class PDODataAdapter {
 	 * @param DeviceHistory $deviceHistory
 	 */
 	public function addOrUpdateDeviceHistoryByDeviceAndTime(DeviceHistory $deviceHistory) {
-		$beginEndDate = Util::getBeginEndDate('day', 1,date('d-m-Y'));
-
 		$bean =  R::findOne('deviceHistory', ' deviceId = :deviceId AND time = :time ',
 				array(':deviceId'=>$deviceHistory->deviceId, ':time' => $deviceHistory->time)
 		);
