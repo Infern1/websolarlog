@@ -133,8 +133,6 @@ class QueueServer {
 	
 	// Remove an item from the database queue
 	private function removeDbQueueItem(QueueItem $item) {
-		echo("removeDbQueueItem " . $item->dbId . "  \n");
-	
 		// remove from queue
 		$this->remove($item);
 	
@@ -142,7 +140,6 @@ class QueueServer {
 		if ($item->dbId > 0) {
 			$dbQueueItem = R::load("QueueItem", $item->dbId);
 			if ($dbQueueItem) {
-				echo("removed from db \n");
 				R::trash($dbQueueItem);
 			}
 		}
@@ -208,7 +205,6 @@ class QueueServer {
 				}
 				if ($item != null) {
 					$this->add($item);
-					//echo ("Requeue item: " . $item->classmethod . " time: " . date("ymd h:i:s", $item->time) . "\n");
 				}				
 			}
 			
