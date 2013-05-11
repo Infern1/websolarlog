@@ -53,14 +53,15 @@ start)
     fi
 ;;
 stop)
-	if [ "$RESULT" = 'YES' ]
-	then
-		kill `cat $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` 2> /dev/null
-	else
-		echo "WebSolarLog is not running"
-	fi
-	kill `pgrep wsl.sh` &
-	exit 0
+     if [ "$RESULT" = 'YES' ]
+     then
+        kill `cat $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` 2> /dev/null
+        rm -f $PIDFOLDER"/"$PHPSCRIPTNAME".pid"
+     else
+        echo "WebSolarLog is not running"
+     fi
+     kill `pgrep wsl.sh` &
+     exit 0
 ;;
 status)
 	if [ "$RESULT" = 'YES' ]
