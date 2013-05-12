@@ -25,6 +25,8 @@ switch ($settingstype) {
 		$data['smaspotpath'] = $config->smaspotpath;
 		$data['smaspotWSLpath'] = $config->smaspotWSLpath;
 		$data['smartmeterpath'] = $config->smartmeterpath;
+		$data['plugwiseStrech20IP'] = $config->plugwiseStrech20IP;
+		$data['plugwiseStrech20ID'] = $config->plugwiseStrech20ID;
 		$data['debugmode'] = $config->debugmode;
 		$data['googleAnalytics'] = $config->googleAnalytics;
 		$data['piwikServerUrl'] = $config->piwikServerUrl;
@@ -360,6 +362,8 @@ switch ($settingstype) {
 		$config->smagetpath =Common::getValue("smagetpath");
 		$config->smaspotpath =Common::getValue("smaspotpath");
 		$config->smaspotWSLpath =Common::getValue("smaspotWSLpath");
+		$config->plugwiseStrech20IP =Common::getValue("plugwiseStrech20IP");
+		$config->plugwiseStrech20ID =Common::getValue("plugwiseStrech20ID");
 		$config->smartmeterpath =Common::getValue("smartmeterpath");
 		$config->debugmode =Common::getValue("debugmode");
 		$config->googleAnalytics = Common::getValue("googleAnalytics");
@@ -672,7 +676,36 @@ switch ($settingstype) {
 		}
 
 		break;
+	case "getAllPlugs":
+		$plugwise = new PlugwiseStretchAddon();
+		$data['plugs'] = $plugwise->getAllPlugwisePlugs();
+		break;
+	case "switchPowerState":
+		$plugwise = new PlugwiseStretchAddon();
 		
+		$plug = new PlugwisePlug();
+		$plug->powerState = Common::getValue('newPowerState',null);
+		$plug->applianceID = Common::getValue('applianceID',null);
+		
+		$data['plugs'] = $plugwise->switchPowerState($plug);
+		break;
+	case "syncPlugs":
+		$plugwise = new PlugwiseStretchAddon();
+		$data['plugs'] = $plugwise->syncPlugsWithDB();
+		break;	
+	case "getPlugWatts":
+		$plugwise = new PlugwiseStretchAddon();
+		$data['plugs'] = $plugwise->getPlugsWatts();
+		break;
+	case 'plugwiseSavePlug':
+		$plugwise = new PlugwiseStretchAddon();
+		$plug = new PlugwisePlug();
+		
+		$plug->name = Common::getValue('name');
+		$plug->applianceID = Common::getValue('id');
+		$plugwise->SavePlugwisePlug($plug);
+		$data['result'] = true;
+		break;	
 	case 'current-trunk-version':
 		$config = Session::getConfig();
 		$versions = Updater::getVersions(true);
@@ -689,6 +722,7 @@ switch ($settingstype) {
 	case 'dbm_getTables':
 		$data['tables'] = R::$writer->getTables();
 		break;
+		
 	case 'dbm_getTableData':
 		$dbname = Common::getValue("dbname");
 		$columns = R::$writer->getColumns($dbname);
@@ -745,11 +779,11 @@ function checkSQLite() {
 		}
 	}
 	
-	$filename = Session::getBasePath().'/scripts/server.php.pid';	
-	if (file_exists($filename)) {
-		$stat = stat($filename);
+	$PidFilename = Session::getBasePath().'/scripts/server.php.pid';
+	$result['currentTime']=time();
+	if (file_exists($PidFilename)) {
+		$stat = stat($PidFilename);
 		$result['pid']['exists']=true;
-		$result['pid']['currentTime']=time();
 		$result['pid']['timeDiff'] = time()-$stat['atime'];
 		($result['pid']['timeDiff'] >= 65) ? $result['pid']['WSLRunningState']=false : $result['pid']['WSLRunningState']=true;
 		
@@ -760,6 +794,20 @@ function checkSQLite() {
 		$result['pid']['exists']=false;
 	}
 		
+	$SDBFilename = Session::getBasePath().'/database/wsl.sdb';
+	if (file_exists($SDBFilename)) {
+		$stat = stat($SDBFilename);
+		$result['sdb']['exists']=true;
+		$result['sdb']['timeDiff'] = time()-$stat['atime'];
+		($result['sdb']['timeDiff'] >= 10) ? $result['sdb']['dbChanged']=false : $result['sdb']['dbChanged']=true;
+	
+		$result['sdb']['atime']=$stat['atime'];
+		$result['sdb']['mtime']=$stat['mtime'];
+		$result['sdb']['ctime']=$stat['ctime'];
+	} else {
+		$result['sdb']['exists']=false;
+	}
+	
 	// Try to get the sqlite version if installed
 	if ($result['sqlite'] === true) {
 		$filename = tempnam(sys_get_temp_dir(), 'empty'); // use a temporary empty db file for version check
