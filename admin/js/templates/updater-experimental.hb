@@ -4,5 +4,5 @@ So only use this if you know what you are doing.</p>
 <input type="checkbox" id="chkExperimental" value="1" {{#if experimental}}checked='checked'{{/if}}/>
 <br/><br/>
 <hr>
-<b>Notify me on new trunk release:<b>
+<b>Notify me on new trunk releases:<b>
 {{checkboxWithHidden 'chkNewTrunk' chkNewTrunk}}
