@@ -5,12 +5,12 @@
     <legend>WSL running state:</legend>
 		<label>PID file:</label>{{#if data.test.pid.exists}}exists{{else}}doesn't exists{{/if}}<br />
 		<label>WSL running state:</label>{{#if data.test.pid.WSLRunningState}}running{{else}}not running{{/if}}<br />
-		<label>Currenttime:</label>{{timestampDateFormat data.test.pid.currentTime format="DD-MM-YYYY HH:mm:ss "}}<br />
+		<label>Currenttime:</label>{{timestampDateFormat data.test.currentTime format="DD-MM-YYYY HH:mm:ss "}}<br />
 		<label>last change:</label>{{timestampDateFormat data.test.pid.ctime format="DD-MM-YYYY HH:mm:ss "}}<br />
 
 		<label>SQLite DB file:</label>{{#if data.test.sdb.exists}}exists{{else}}doesn't exists{{/if}}<br />
 		<label>Database Changed last 10 sec.:</label>{{#if data.test.sdb.dbChanged}}true{{else}}false{{/if}}<br />
-		<label>Currenttime:</label>{{timestampDateFormat data.test.sdb.currentTime format="DD-MM-YYYY HH:mm:ss "}}<br />
+		<label>Currenttime:</label>{{timestampDateFormat data.test.currentTime format="DD-MM-YYYY HH:mm:ss "}}<br />
 		<label>last change:</label>{{timestampDateFormat data.test.sdb.ctime format="DD-MM-YYYY HH:mm:ss "}}<br />
 
 </fieldset>
