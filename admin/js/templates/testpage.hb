@@ -18,13 +18,15 @@
 
 </fieldset>
 </form>
+
+<form>
+<fieldset>
+    <legend>Which extensions are loaded/installed:</legend>
 <div id="extensions">
-    <div>Which extensions are loaded/installed?
-    	<ul>
+    <div>
 			{{#data.test.extensions}}
-				<li>{{this.name}}: {{this.status}}</li>
+				{{this.name}}: {{this.status}}<br>
 			{{/data.test.extensions}}
-		</ul>
 	</div>
 </div>
 <br />
@@ -33,5 +35,7 @@
     Encrypting test <b>{{#if data.test.encrypting}}passed{{else}}failed{{/if}}</b><br />
 </div>
 <div id="sqlite">
-    <div>SQLlite version: {{data.test.sqlite_version}}</div>
+    <div>SQLlite version: {{data.test.sqlite_version}} (needs to be >= 3.7.11)</div>
 </div>
+</fieldset>
+</form>
