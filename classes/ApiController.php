@@ -15,7 +15,7 @@
  * At the moment the ones with an * are not supported
  * 
  * @author Martin Diphoorn
- * @version 1.0.1
+ * @version 1.0.2
  */
 class ApiController
 {
@@ -47,8 +47,20 @@ class ApiController
 	 * @param $index
 	 */
 	public function routeRequest($method, $request) {
+		if (!is_array($request)) {
+			exit("Invalid request");			
+		}
+		
 		$requestPath = array_values($request); // Copy orignal array, we dont want to modify it
+		
+		if (count($requestPath) == 0) {
+			exit("Invalid request");			
+		}
+		
 		$classname = array_shift($requestPath) . "Rest"; // Get the first entry and remove it from the array
+		if ($classname == "Rest") {
+			exit("Invalid request");			
+		}
 		
 		// Create the first object
 		$object = new $classname();
