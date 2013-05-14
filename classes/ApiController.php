@@ -15,7 +15,7 @@
  * At the moment the ones with an * are not supported
  * 
  * @author Martin Diphoorn
- * @version 1.0.0
+ * @version 1.0.1
  */
 class ApiController
 {
@@ -35,7 +35,7 @@ class ApiController
 	 */
 	public function route() {
 		$method = $_SERVER['REQUEST_METHOD'];
-		$request = (isset($_SERVER['PATH_INFO'])) ? explode("/", substr($_SERVER['PATH_INFO'], 1)) : "";
+		$request = (isset($_SERVER['PATH_INFO'])) ? explode("/", trim($_SERVER['PATH_INFO'], "/")) : "";
 		
 		return $this->routeRequest($method, $request);
 	}
@@ -47,10 +47,6 @@ class ApiController
 	 * @param $index
 	 */
 	public function routeRequest($method, $request) {
-		if ($request == "" || $request == "/" || $request == "//") {
-			return array("error"=>"Invalid request");
-		}
-		
 		$requestPath = array_values($request); // Copy orignal array, we dont want to modify it
 		$classname = array_shift($requestPath) . "Rest"; // Get the first entry and remove it from the array
 		
@@ -58,28 +54,31 @@ class ApiController
 		$object = new $classname();
 		
 		// Loop to the last getter we can found
-		for ($pathId = 1; $pathId < count($request)+1; $pathId++) {
+		for ($pathId = 0; $pathId < count($requestPath); $pathId++) {
 			$methodObject = "";
-			if (count($request) > 1) {
-				$methodObject = $request[$pathId];
-				$propertyName = "get" . lcfirst($methodObject);
+			if (count($requestPath) >= 0) {
+				$methodObject = $requestPath[$pathId];
+				$propertyName = "get" . ucfirst($methodObject);
 			}
 			
 			// Check if it exists
-			if (trim($methodObject) === "" || !method_exists($object, $propertyName)) {
-				if (!method_exists($object, $method)) {
-					return array("error"=>"This restfull service does not support this method");					
+			if (!method_exists($object, $propertyName)) {
+				if (method_exists($object, $method)) {
+					return $object->$method($request, $requestPath);
+				} else {
+					return $object;
 				}
-				return $object->$method($request, $requestPath);
 			}
 			
 			$object = $object->$propertyName();
 			array_shift($requestPath);
 		}
 		
-		return null;
+		if (count($requestPath) == 0 && method_exists($object, $method)) {
+			return $object->$method($request, $requestPath);
+		}
+		
+		return $object;
 	}
-	
-	
 }
 ?>
