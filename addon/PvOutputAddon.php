@@ -13,11 +13,18 @@ class PvOutputAddon {
 				$time = date("H:i", $live->time);
 				
 				$result = $this->sendStatus($inverter, $date, $time, $live->KWHT, $live->GP, $live->GV);
-				if ($result) {
-					$live->pvoutput = true;
+				if ($result['info']['http_code'] == "200") {
+					$live->pvoutput = 1;
+					R::store($live);
+				}elseif ($result['info']['http_code'] == "400") {
+					$live->pvoutput = 2;
+					$live->pvoutputErrorMessage = $result['response'];
+					R::store($live);
+				}else{
+					$live->pvoutput = 3;
+					$live->pvoutputErrorMessage = $result['response'];
 					R::store($live);
 				}
-				return;
 			}
 		}
 	}
@@ -50,7 +57,7 @@ class PvOutputAddon {
 			
 			//$pvoutput = shell_exec('curl -d "d='.$now.'" -d "t='.$time.'" -d "c1=0" -d "v1='.$KWHDtot.'" -d "v2='.$GPtot.'" -d "v5='.$INVT.'" -d "v6='.$GV.'" -H "X-Pvoutput-Apikey: '.$APIKEY.'" -H "X-Pvoutput-SystemId: '.$SYSID.'" http://pvoutput.org/service/r2/addstatus.jsp &');
 			$url = "http://pvoutput.org/service/r2/addstatus.jsp";
-			$result = $this->PVoutputCurl($url,$vars,$headerInfo);
+			$result = $this->PVoutputCurl($url,$vars,$headerInfo,true);
 			return $result;
 		} catch (Exception $e) {
 			HookHandler::getInstance()->fire("onError", $e->getMessage());
