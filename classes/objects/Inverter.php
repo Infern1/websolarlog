@@ -63,7 +63,7 @@ class Inverter
         $this->refreshTime = 2;
     }
 
-    function getApi($config) {
+    function getApi(Config $config) {
         if ($this->deviceApi == "AURORA") {
             return new Aurora($config->aurorapath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
         }
@@ -84,6 +84,9 @@ class Inverter
 	    }
     	if ($this->deviceApi == "DutchSmartMeterRemote") {
 	    	return new SmartMeterRemote($config->smartmeterpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    }
+    	if ($this->deviceApi == "Open-Weather-Map") {
+	    	return new WeatherOWM($config->latitude, $config->longitude);
 	    }
 	        
     }

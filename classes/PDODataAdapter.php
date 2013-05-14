@@ -2715,5 +2715,15 @@ class PDODataAdapter {
 		}
 	}
 
-
+	public function saveWeather(Weather $weather) {
+		$bean = ($weather->id > 0) ? R::load("Weather", $weather->id) : null;
+		if ($bean == null) {
+			$bean = R::dispense("Weather");
+		}
+		R::store($weather->toBean($bean));
+	}
+	
+	public function getLastWeather() {
+		$bean = R::findOne('Weather',' deviceId = :user_id and type = :type LIMIT 1',array(':user_id'=>$current_user_id,':type'=>$type));		
+	}
 }

@@ -1,6 +1,5 @@
 <?php
 class DeviceHandler {
-	
 	public function handleLive($args) {
 		$item = $args[0];
 		$device = $this->getFreshDevice($args[1]);
@@ -12,6 +11,8 @@ class DeviceHandler {
 			case "metering":
 				MeteringDeviceHandler::handleLive($item, $device);
 				break;
+			case "weather":
+				WeatherDeviceHandler::handleLive($item, $device);
 			default:
 				echo("DeviceType " . $device->type . " does not support handle live");
 				break;
@@ -29,6 +30,8 @@ class DeviceHandler {
 			case "metering":
 				MeteringDeviceHandler::handleHistory($item, $device);
 				break;
+			case "weather":
+				WeatherDeviceHandler::handleHistory($item, $device);
 			default:
 				echo("DeviceType " . $device->type . " does not support handle history");
 				break;
@@ -46,6 +49,9 @@ class DeviceHandler {
 			case "metering":
 				MeteringDeviceHandler::handleDeviceHistory($item, $device);
 				break;
+			case "weather":
+				WeatherDeviceHandler::handleDeviceHistory($item, $device);
+				break;
 			default:
 				echo("DeviceType " . $device->type . " does not support handle device history");
 				break;
@@ -58,10 +64,13 @@ class DeviceHandler {
 		
 		switch ($device->type) {
 			case "production":
-				ProductionDeviceHandler::handleAlarm($item, $device);
+				ProductionDeviceHandler::handleEnergy($item, $device);
 				break;
 			case "metering":
-				MeteringDeviceHandler::handleAlarm($item, $device);
+				MeteringDeviceHandler::handleEnergy($item, $device);
+				break;
+			case "weather":
+				WeatherDeviceHandler::handleEnergy($item, $device);
 				break;
 			default:
 				echo("DeviceType " . $device->type . " does not support handle energy");
@@ -80,6 +89,9 @@ class DeviceHandler {
 			case "metering":
 				MeteringDeviceHandler::handleInfo($item, $device);
 				break;
+			case "weather":
+				WeatherDeviceHandler::handleInfo($item, $device);
+				break;
 			default:
 				echo("DeviceType " . $device->type . " does not support handle info");
 				break;
@@ -96,6 +108,9 @@ class DeviceHandler {
 				break;
 			case "metering":
 				MeteringDeviceHandler::handleAlarm($item, $device);
+				break;
+			case "weather":
+				WeatherDeviceHandler::handleAlarm($item, $device);
 				break;
 			default:
 				echo("DeviceType " . $device->type . " does not support handle alarm");

@@ -26,5 +26,9 @@ class HistoryRest
 	public function getProduction() {
 		return new ProductionRest();
 	}	
+
+	public function getWeather() {
+		return new ProductionRest();
+	}	
 }
 ?>
