@@ -712,7 +712,8 @@ class PDODataAdapter {
 			$config->smartmeterpath = ($bean->smartmeterpath != "") ? $bean->smartmeterpath : $config->smartmeterpath;
 
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
-			$config->inverters = $this->readInverters();
+			$config->devices = $this->readInverters();
+			$config->inverters = $config->devices; // @Deprecated
 			
 			$config->graphSeries = $this->getGraphSeries();
 			$config->graphAxes = $this->getGraphAxes();
@@ -2732,5 +2733,22 @@ class PDODataAdapter {
 		$bean = R::findOne('weather',' deviceId = :deviceId ORDER BY time DESC LIMIT 1',array(':deviceId'=>$deviceId));
 		$weather = new Weather();
 		return $weather->toObject($bean);	
+	}
+	
+	public function getWeatherForDate($deviceId, $date=null) {
+		(!$date)? $date = date('d-m-Y') : $date = $date;
+		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
+		
+		$beans =  R::findAll( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
+				array(':deviceId'=>$deviceId,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
+		);
+		
+		$objects = array();
+		foreach ($beans as $bean) {
+			$object = new Weather();
+			$objects[] = $object->toObject($bean);
+		}
+		
+		return $objects;
 	}
 }

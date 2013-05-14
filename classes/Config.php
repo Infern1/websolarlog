@@ -40,7 +40,13 @@ class Config
 
     public $template;
     public $basePath;
-    public $inverters; // Contains an array of inverters
+    
+    /**
+     * @deprecated
+     */
+    public $inverters; 
+
+    public $devices;// Contains an array of devices
     
     public $graphSeries; // Contains an array of Graph Series
     public $graphAxes; // Contains an array of Graph axes
