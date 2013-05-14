@@ -2728,7 +2728,9 @@ class PDODataAdapter {
 		R::store($weather->toBean($bean));
 	}
 	
-	public function getLastWeather() {
-		$bean = R::findOne('weather',' deviceId = :user_id and type = :type LIMIT 1',array(':user_id'=>$current_user_id,':type'=>$type));		
+	public function getLastWeather($deviceId) {
+		$bean = R::findOne('weather',' deviceId = :deviceId ORDER BY time DESC LIMIT 1',array(':deviceId'=>$deviceId));
+		$weather = new Weather();
+		return $weather->toObject($bean);	
 	}
 }

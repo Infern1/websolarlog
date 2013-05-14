@@ -32,6 +32,9 @@ class LiveRest
 					$smartMeterAddon = new SmartMeterAddon();
 					$live = $smartMeterAddon->readLiveSmartMeterInfo($inverter->id);					
 					break;
+				case "weather":
+					$live = PDODataAdapter::getInstance()->getLastWeather($inverter->id);					
+					break;
 			}
 			$result[] = array("type"=>$type, "id"=>$inverter->id, "name"=>$inverter->name, "data"=>$live);
 		}

@@ -29,10 +29,6 @@ class WeatherRest
 		$result['type'] = $type;
 		$result['data'] = null;
 		switch ($type) {
-			case "live":
-				$weatherAddon = new WeatherAddon();
-				$result['data'] = $weatherAddon->live();
-				break;
 			case "today":
 				$weatherAddon = new WeatherAddon();
 				$result['data'] = $weatherAddon->readWeatherHistory();
