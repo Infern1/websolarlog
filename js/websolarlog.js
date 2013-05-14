@@ -847,7 +847,7 @@ var WSL = {
 				}
 				if (this.type == "weather") {
 					console.log("weather");
-					$('#weather').text(this.data.temp + ' C');
+					$('#weather').html(this.data.temp + ' &deg;C');
 				}
 			});
 		});
