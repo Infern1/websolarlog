@@ -33,8 +33,7 @@
 <div class="column span-3 last" style="text-align:right;">{{data.summary.overall.overallKwhKwp-0}}&nbsp;</div>
 </div>
 <hr>
-{{lang.allFiguresAreInKWH}}<br>
-{{lang.overallTotalText}}
+{{lang.allFiguresAreInKWH}}
 </div>
 <!--<span class="read-more"><a href="#" title="Read More">»&nbsp;{{lang.more}}</a></span>-->
 </div>
