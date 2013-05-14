@@ -6,8 +6,11 @@
 		<!-- Header -->
 		<div id="header">
 			<!-- Logo -->
-			<h1 id="logo"><a href="./" title="Dashboard"><?php echo $config->title; ?></a></h1>
-			<h2 id="subLogo"><a href="./" title="Dashboard"><?php echo $config->subtitle; ?></a></h2>
+			<div style="display: inline-block;">
+				<h1 id="logo"><a href="./" title="Dashboard"><?php echo $config->title; ?></a></h1>
+				<h2 id="subLogo"><a href="./" title="Dashboard"><?php echo $config->subtitle; ?></a></h2>
+			</div>
+			<div id="weather" style="display: inline-block; margin-left: 100px;"></div>
 			<div class="socials">
 			  <b class="spiffy">
 			  <b class="spiffy1"><b></b></b>

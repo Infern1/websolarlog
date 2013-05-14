@@ -835,6 +835,23 @@ var WSL = {
 		});
 		return true;
 	},
+	
+	init_LiveValues : function () {
+		WSL.api.live(function(data) {
+			$.each(data, function(){
+				if (this.type == "production") {
+					console.log("production");
+				}
+				if (this.type == "metering") {
+					console.log("metering");
+				}
+				if (this.type == "weather") {
+					console.log("weather");
+					$('#weather').text(this.data.temp + ' C');
+				}
+			});
+		});
+	},
 
 	init_PageLiveValues : function(divId) {
 		WSL.api.init_PageLiveValues(function(data) {
@@ -2349,4 +2366,9 @@ WSL.api.getLanguages = function(success) {
 WSL.api.getMenu = function(success) {
 	//wslGetJSON(url,dataType,success,runOnBlur);
 	wslGetJSON('server.php?method=getMenu','json',success,false);
+};
+
+WSL.api.live = function(success) {
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('api.php/Live','json' ,success ,false);
 };
