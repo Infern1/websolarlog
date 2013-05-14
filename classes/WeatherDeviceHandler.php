@@ -7,7 +7,8 @@ class WeatherDeviceHandler {
 
 	public static function handleHistory(QueueItem $item, Inverter $device) {
 		$api = $device->getApi(Session::getConfig());
-		$weather = $api->getData($device);
+		$weather = $api->getData();
+		$weather->deviceId = $device->id;
 		$weather->time = $item->time;
 		
 		PDODataAdapter::getInstance()->saveWeather($weather);

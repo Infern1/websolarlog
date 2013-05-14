@@ -13,8 +13,9 @@ class DeviceHandler {
 				break;
 			case "weather":
 				WeatherDeviceHandler::handleLive($item, $device);
+				break;
 			default:
-				echo("DeviceType " . $device->type . " does not support handle live");
+				echo("DeviceType " . $device->type . " does not support handle live \n");
 				break;
 		}
 	}
@@ -32,8 +33,9 @@ class DeviceHandler {
 				break;
 			case "weather":
 				WeatherDeviceHandler::handleHistory($item, $device);
+				break;
 			default:
-				echo("DeviceType " . $device->type . " does not support handle history");
+				echo("DeviceType " . $device->type . " does not support handle history \n");
 				break;
 		}			
 	}
@@ -53,7 +55,7 @@ class DeviceHandler {
 				WeatherDeviceHandler::handleDeviceHistory($item, $device);
 				break;
 			default:
-				echo("DeviceType " . $device->type . " does not support handle device history");
+				echo("DeviceType " . $device->type . " does not support handle device history \n");
 				break;
 		}
 	}
@@ -73,7 +75,7 @@ class DeviceHandler {
 				WeatherDeviceHandler::handleEnergy($item, $device);
 				break;
 			default:
-				echo("DeviceType " . $device->type . " does not support handle energy");
+				echo("DeviceType " . $device->type . " does not support handle energy \n");
 				break;
 		}			
 	}
@@ -93,7 +95,7 @@ class DeviceHandler {
 				WeatherDeviceHandler::handleInfo($item, $device);
 				break;
 			default:
-				echo("DeviceType " . $device->type . " does not support handle info");
+				echo("DeviceType " . $device->type . " does not support handle info \n");
 				break;
 		}			
 	}
@@ -113,7 +115,7 @@ class DeviceHandler {
 				WeatherDeviceHandler::handleAlarm($item, $device);
 				break;
 			default:
-				echo("DeviceType " . $device->type . " does not support handle alarm");
+				echo("DeviceType " . $device->type . " does not support handle alarm \n");
 				break;
 		}			
 	}

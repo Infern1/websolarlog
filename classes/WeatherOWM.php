@@ -19,13 +19,13 @@ Class WeatherOWM implements DeviceApi {
 		// not supported
 	}
 	
-	public function getData(Inverter $device) {
+	public function getData() {
 		$latlng = "lat=" . $this->lat . "&lon=" . $this->lon;
 		$url = $this->weatherUrl . "&" . $latlng;
 		$result = json_decode($this->call($url));
 		
 		$weather = new Weather();
-		$weather->deviceId = $device->id;
+		$weather->deviceId = -1;
 		$weather->time = time();
 		$weather->temp = $result->list[0]->main->temp - 273.15;
 		$weather->temp_min = $result->list[0]->main->temp_min - 273.15;

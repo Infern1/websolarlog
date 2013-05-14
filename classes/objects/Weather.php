@@ -11,7 +11,6 @@ class Weather {
 	public $humidity;
 	
 	public function toBean($bObject) {
-		$bObject->id = $this->id;
 		$bObject->deviceId = $this->deviceId;
 		$bObject->time = $this->time;
 		$bObject->temp = $this->temp;
