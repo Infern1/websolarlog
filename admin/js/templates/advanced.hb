@@ -7,13 +7,15 @@
     Below you need to set the path of the software you use to communicate with the device.<br>See the examples for help.<br />
     <label for="aurorapath">Aurora PowerOne(RS485):</label><input type="text" name="aurorapath" value="{{data.aurorapath}}" size="50"/><br />
     <label for="smagetpath">sma-get(RS485):</label><input type="text" name="smagetpath" value="{{data.smagetpath}}"  size="50"/><br />
-    <label for="smaspotpath">sma-spot(BT):</label><input type="text" name="smaspotpath" value="{{data.smaspotpath}}"  size="50"/><br />
-    <label for="smaspotWSLpath">sma-spot >2.0.6(BT):</label><input type="text" name="smaspotWSLpath" value="{{data.smaspotWSLpath}}"  size="50"/><br />
+    <span style="color:#f00;">At this moment we only support SMAspot version 2.0.4!</span><br>
+    <label for="smaspotpath">SMAspot <span style="color:#f00;">2.0.4</span>(BT)</label><input type="text" name="smaspotpath" value="{{data.smaspotpath}}"  size="50"/><br />
+   <span style="color:#f00;">SMAspot 2.0.6 is a Beta Release, do not use this version with WSL!</span><br>
+    <label for="smaspotWSLpath">SMAspot <span style="color:#f00;">>2.0.6</span>(BT):</label><input type="text" name="smaspotWSLpath" value="{{data.smaspotWSLpath}}"  size="50"/><br />
     <label for="smartmeterpath">smartmeter:</label><input type="text" name="smartmeterpath" value="{{data.smartmeterpath}}"  size="50"/><br />
     <label for="plugwiseStrech20IP">Plugwise Stretch 2.0:</label><input type="text" name="plugwiseStrech20IP" value="{{data.plugwiseStrech20IP}}"  size="30"/>Stretch IP adress<br />
     <label for="plugwiseStrech20ID">Plugwise Stretch 2.0:</label><input type="text" name="plugwiseStrech20ID" value="{{data.plugwiseStrech20ID}}"  size="30"/>Stretch ID<br />
     <div id="examples">
-    <h3>examples</h3>
+    <h3>Path examples</h3>
     <div>
     <strong>Smartmeter:</strong><br />
     python3 /var/www/websolarlog/scripts/P1.py /dev/ttyUSB0<br />(executor script serialDevice)<br />
