@@ -1,5 +1,5 @@
 <?php
-class GeoCacheService {
+class WeatherService {
 	public static $tbl = "weather";
 	
 	public function save(Weather $object) {
