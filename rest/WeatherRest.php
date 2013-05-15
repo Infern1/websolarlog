@@ -37,12 +37,13 @@ class WeatherRest {
 		switch ($type) {
 			case "today":
 				if ($deviceId > 0) {
-					$result['data'] =array(array( "deviceId"=>$deviceId, "data"=>$this->weatherService->getWeatherForDate($deviceId)));
+					$device = $this->weatherService->load($deviceId);
+					$result['data'] =array(array( "deviceId"=>$deviceId, "data"=>$this->weatherService->getWeatherForDate($device)));
 				} else {
 					$weathers = array();
 					foreach (Session::getConfig()->devices as $device) {
 						if ($device->type == "weather") {
-							$weathers[] = array("deviceId"=>$device->id, "data"=>$this->weatherService->getWeatherForDate($device->id));
+							$weathers[] = array("deviceId"=>$device->id, "data"=>$this->weatherService->getWeatherForDate($device));
 						}
 					}
 					$result['data'] = $weathers;

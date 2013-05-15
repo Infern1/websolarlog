@@ -34,7 +34,7 @@ class LiveRest {
 					$live = $smartMeterAddon->readLiveSmartMeterInfo($inverter->id);					
 					break;
 				case "weather":
-					$live = $this->weatherService->getLastWeather($inverter->id);					
+					$live = $this->weatherService->getLastWeather($inverter);					
 					break;
 			}
 			$result[] = array("type"=>$type, "id"=>$inverter->id, "name"=>$inverter->name, "data"=>$live);
