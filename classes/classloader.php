@@ -27,7 +27,7 @@ function wsl_autoloader($classname)
     }
 
 	// Gather the dirs we need to check
-	$classdirs = Array( "/classes", "/classes/objects", "/classes/devices", "/classes/converters", "/addon", "/rest" );
+	$classdirs = Array( "/classes", "/classes/objects", "/classes/devices", "/classes/services", "/classes/converters", "/addon", "/rest" );
 
     foreach ($classdirs as $classdir) {
         // Check the domain model

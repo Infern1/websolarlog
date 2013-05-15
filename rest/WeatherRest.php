@@ -1,18 +1,19 @@
 <?php
-class WeatherRest
-{
+class WeatherRest {
+	private $weatherService;
+	
 	/**
 	 * Constructor
 	 */
-	function __construct()
-	{
+	function __construct() {
+		$this->weatherService = new WeatherService();
 	}
 	
 	/**
 	 * Destructor
 	 */
-	function __destruct()
-	{
+	function __destruct() {
+		$this->weatherService = null;
 	}
 
 	/**
@@ -36,12 +37,12 @@ class WeatherRest
 		switch ($type) {
 			case "today":
 				if ($deviceId > 0) {
-					$result['data'] =array(array( "deviceId"=>$deviceId, "data"=>PDODataAdapter::getInstance()->getWeatherForDate($deviceId)));
+					$result['data'] =array(array( "deviceId"=>$deviceId, "data"=>$this->weatherService->getWeatherForDate($deviceId)));
 				} else {
 					$weathers = array();
 					foreach (Session::getConfig()->devices as $device) {
 						if ($device->type == "weather") {
-							$weathers[] = array("deviceId"=>$device->id, "data"=>PDODataAdapter::getInstance()->getWeatherForDate($device->id));
+							$weathers[] = array("deviceId"=>$device->id, "data"=>$this->weatherService->getWeatherForDate($device->id));
 						}
 					}
 					$result['data'] = $weathers;

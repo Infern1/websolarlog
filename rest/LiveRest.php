@@ -1,18 +1,19 @@
 <?php
-class LiveRest
-{
+class LiveRest {
+	private $weatherService;
+	
 	/**
 	 * Constructor
 	 */
-	function __construct()
-	{
+	function __construct() {
+		$this->weatherService = new WeatherService();
 	}
 	
 	/**
 	 * Destructor
 	 */
-	function __destruct()
-	{
+	function __destruct() {
+		$this->weatherService = null;
 	}
 
 	/**
@@ -33,7 +34,7 @@ class LiveRest
 					$live = $smartMeterAddon->readLiveSmartMeterInfo($inverter->id);					
 					break;
 				case "weather":
-					$live = PDODataAdapter::getInstance()->getLastWeather($inverter->id);					
+					$live = $this->weatherService->getLastWeather($inverter->id);					
 					break;
 			}
 			$result[] = array("type"=>$type, "id"=>$inverter->id, "name"=>$inverter->name, "data"=>$live);

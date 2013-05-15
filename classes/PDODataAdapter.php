@@ -2720,40 +2720,4 @@ class PDODataAdapter {
 			return false;
 		}
 	}
-
-	public function saveWeather(Weather $weather) {
-		$bean = false;
-		if ($weather->id > 0) {
-			$bean =  R::findOne('weather',' id = :id ', array(':id'=>$weather->id));
-		}
-		
-		if (!$bean){
-			$bean = R::dispense('weather');
-		}
-		
-		R::store($weather->toBean($bean));
-	}
-	
-	public function getLastWeather($deviceId) {
-		$bean = R::findOne('weather',' deviceId = :deviceId ORDER BY time DESC LIMIT 1',array(':deviceId'=>$deviceId));
-		$weather = new Weather();
-		return $weather->toObject($bean);	
-	}
-	
-	public function getWeatherForDate($deviceId, $date=null) {
-		(!$date)? $date = date('d-m-Y') : $date = $date;
-		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
-		
-		$beans =  R::findAll( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
-				array(':deviceId'=>$deviceId,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
-		);
-		
-		$objects = array();
-		foreach ($beans as $bean) {
-			$object = new Weather();
-			$objects[] = $object->toObject($bean);
-		}
-		
-		return $objects;
-	}
 }

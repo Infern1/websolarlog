@@ -4,15 +4,13 @@ class HistoryRest
 	/**
 	 * Constructor
 	 */
-	function __construct()
-	{
+	function __construct() {
 	}
 	
 	/**
 	 * Destructor
 	 */
-	function __destruct()
-	{
+	function __destruct() {
 	}
 
 	/**
@@ -28,7 +26,7 @@ class HistoryRest
 	}	
 
 	public function getWeather() {
-		return new ProductionRest();
+		return new WeatherRest();
 	}	
 }
 ?>
