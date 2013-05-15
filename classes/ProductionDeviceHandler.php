@@ -8,6 +8,22 @@ class ProductionDeviceHandler {
 		// Retrieve the inverter data
 		$live = $api->getLiveData();
 		
+		// Set some variables
+		$live->deviceId = $device->id;
+		$live->INV = $device->id; // Needs to be replaced with deviceId in future
+		$live->time = $item->time;
+		$bean->SDTE = date("Ymd-H:i:s", $item->time);
+		
+		// Calculate IP
+		$live->IP = $live->I1P+$live->I2P;
+		if (!empty($live->IP)) {
+			$live->I1Ratio = round(($live->I1P/$live->IP)*100,3);
+			$live->I2Ratio = round(($live->I2P/$live->IP)*100,3);
+		}
+		
+		// Round some variables
+		$live->EFF = round($live->EFF,3);
+		
 		// Fire the hook
 		if ($live != null) {
 			HookHandler::getInstance()->fire("onLiveData", $device, $live);

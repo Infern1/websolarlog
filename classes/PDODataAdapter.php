@@ -58,6 +58,7 @@ class PDODataAdapter {
 		$bean->SDTE = date("Ymd-H:i:s");
 		$bean->time = time();
 		$bean->INV = $invtnum;
+		$bean->deviceId = $invtnum;
 
 		$bean->I1V = $live->I1V;
 		$bean->I1A = $live->I1A;

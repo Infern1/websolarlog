@@ -1,14 +1,17 @@
 <?php
 class CoreAddon {
 	private $adapter;
+	private $liveService;
 	private $config;
 
 	function __construct() {
 		$this->adapter = PDODataAdapter::getInstance();
 		$this->config = Session::getConfig();
+		$this->liveService = new LiveService();
 	}
 
 	function __destruct() {
+		$this->liveService = null;
 		$this->config = null;
 		$this->adapter = null;
 	}
@@ -27,7 +30,8 @@ class CoreAddon {
 		}
 	
 		// Save the live information
-		$this->adapter->writeLiveInfo($inverter->id, $live);
+		$this->liveService->save($live);
+		//$this->adapter->writeLiveInfo($inverter->id, $live);
 		HookHandler::getInstance()->getInstance()->fire("newLiveData", $inverter, $live);
 	
 		// Check the Max value
