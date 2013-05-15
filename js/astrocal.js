@@ -338,6 +338,3 @@ function daysInMonth(month,year) {
 	var dd = new Date(year, month, 0);
 	return dd.getDate();
 } 
-
-
-

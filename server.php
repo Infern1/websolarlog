@@ -183,7 +183,8 @@ try {
 			$lang['avgPowerW'] = _('avg. Power (W)');
 			$lang['harvested'] = _('harvested (W)');
 			$lang['cumulative'] = _('cumulative (W)');
-			$lang['totalEnergy'] = _('total Energy');
+			$lang['generated'] = _('generated');
+			$lang['max'] = _('max');
 			$data['slimConfig'] = $slimConfig;
 			$data['lang'] = $lang;
 			$data['dayData'] = $dayData;
@@ -198,7 +199,9 @@ try {
 			$lang['avgPowerW'] = _('avg. Power (W)');
 			$lang['harvested'] = _('harvested (W)');
 			$lang['cumulative'] = _('cumulative (W)');
-			$lang['totalEnergy'] = _('total Energy');
+			$lang['generated'] = _('generated');
+			$lang['max'] = _('max');
+			
 			$data['lang'] = $lang;
 			$data['dayData'] = $dayData;
 			break;

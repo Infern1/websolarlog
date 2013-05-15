@@ -1211,7 +1211,7 @@ var WSL = {
 				var sunsetRounded = (Math.round(sunset.getTime() / coeff) * coeff)+coeff*6;
 				var maxPower = [];
 				var maxPowerTime = [];
-				
+				var totalPower = 0;
 				for (var i=sunriseRounded; i<=sunsetRounded; i=i+coeff){
 					maxPowerTime=[];
 					currentTime = new Date(i);
@@ -1227,8 +1227,12 @@ var WSL = {
 					}
 					var coor=azimuthhight(timeStringToFloat(hours+':'+minutes)); 
 					maxPowerTime.push(i,Math.round(coor.tot_en/1000*Wp_panels));
+					totalPower = totalPower + Math.round((coor.tot_en/1000*Wp_panels)/12);
 					maxPower.push(maxPowerTime);
 				}
+				
+				totalKWhkWp = Math.round((totalPower/Wp_panels) *100)/100;
+				totalPower = Math.round((totalPower/1000) *100)/100;
 				seriesData = [];
 				var clearSkySeriesObject ={}; 
 				var json = [];
@@ -1337,7 +1341,16 @@ var WSL = {
 	
 					delete seriesData, graphOptions;
 					if (typeof (result.dayData.graph.metaData.KWH) !== "undefined") {
-						mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+ result.lang.totalEnergy+ ': '+ result.dayData.graph.metaData.KWH.cumPower+ ' '+ result.dayData.graph.metaData.KWH.KWHTUnit+ ' ('+ result.dayData.graph.metaData.KWH.KWHKWP+ ' kWh/kWp)</div>').insertAfter('#graph'+ getDay+ ' .jqplot-grid-canvas');
+						mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+ 
+								result.lang.generated+ ': '+ 
+								result.dayData.graph.metaData.KWH.cumPower + ' '+ 
+								result.dayData.graph.metaData.KWH.KWHTUnit + ' ('+ 
+								result.dayData.graph.metaData.KWH.KWHKWP + ' kWh/kWp)&nbsp&nbsp;'+ 
+								result.lang.max + ': '+ 
+								totalPower + ' '+ 
+								result.dayData.graph.metaData.KWH.KWHTUnit + ' ('+ 
+								 totalKWhkWp +
+								' kWh/kWp)</div>').insertAfter('#graph'+ getDay+ ' .jqplot-grid-canvas');
 					}
 					fnFinish.call(this, handle);
 					ajaxReady();
