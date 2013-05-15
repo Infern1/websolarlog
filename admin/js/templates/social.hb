@@ -3,8 +3,6 @@
     <legend>Twitter</legend>
     <label for="Twitter">Twitter:</label><input type="text" name="Twitter" value="{{data.social.TwitterDisplayName}}" disabled="disabled"/>
     <span id="attachTwitter">
-
-
 	{{#if_eq data.social.TwitterAttached compare="1"}}
 		<br />
 		<div class="column span-6" >
@@ -29,6 +27,7 @@
 <fieldset>
 <a name="pvoutput"/>
 <legend>WebSolarLog PVoutput team</legend>
+It possible join your inverter to multiple team.<br>PVoutput let you join 10 teams in total.
 <strong>Team status of devices</strong>:<br>
 <div id="devices">Loading device data....</div>
 <hr>
