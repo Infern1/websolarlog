@@ -1,12 +1,14 @@
+    <form><fieldset>
+   <legend>System Expectation</legend>
 <div style="height:300px;">
-    <form>
+
         <input type="hidden" name="s" value="save_expectation" />
         <input type="hidden" name="id" value="{{data.inverterId}}" />
-        What is the predicted kWh a year:<br>                        
+        What is the predicted kWh for a year:<br>                        
         <input name="totalProdKWH" class="monthProd" id="totalKWHProd" value=""><br><br>
         <div id="expectation">    
             <div class="expectation_row">
-                <div class="expectation_cell monthName">Months</div>
+                <div class="expectation_cell monthName">Months&nbsp;</div>
                 {{#data.month_perc}}    
                     <div id="month{{this.month}}" class="expectation_cell  monthName">{{this.month}}</div>
                 {{/data.month_perc}}
@@ -29,7 +31,7 @@
         <div style="clear: both" />
         <button type="button" id="btnExpectationSubmit">save</button>
         <button type="button" id="btnExpectationDefault">default</button>
-    </form>              
+            
     <br><br>
     <div id="expectation_graph">
     <span>Graphs</span>
@@ -42,3 +44,5 @@
     <p class="monthBAR_label">{{this.month}}</p>
     {{/data.month_perc}}            
 </div>
+</fieldset>
+    </form>  

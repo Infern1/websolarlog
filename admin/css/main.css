@@ -46,6 +46,7 @@
 	width: 600px;
 }
 
+
 form fieldset {
 	padding: 15px 20px;
 	margin: 15px 0px;
@@ -53,6 +54,7 @@ form fieldset {
     width: 100%;
     line-height: 27px;
 }
+
 
 form fieldset legend {
 	font-size: 18px;
@@ -75,6 +77,16 @@ form fieldset button {
 	font-size: 16px;
 	padding: 2px 5px;
 }
+
+
+form fieldset fieldset {
+	padding: 10px 10px;
+	margin: 10px 0px;
+	border: 1px solid #4B8902;
+    width: 98%;
+    line-height: 27px;
+}
+
 
 .alert {
     background-color: #FCF8E3;
