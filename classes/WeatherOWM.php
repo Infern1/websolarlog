@@ -32,6 +32,9 @@ Class WeatherOWM implements DeviceApi {
 		$weather->temp_max = $result->list[0]->main->temp_max - 273.15;
 		$weather->pressure = $result->list[0]->main->pressure;
 		$weather->humidity = $result->list[0]->main->humidity;
+		$weather->conditionId = $result->list[0]->weather[0]->id;
+		$weather->wind_speed = $result->list[0]->wind->speed;
+		$weather->wind_direction = $result->list[0]->wind->deg;
 		return $weather;
 	}
 	

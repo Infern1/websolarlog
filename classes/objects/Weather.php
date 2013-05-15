@@ -9,6 +9,9 @@ class Weather {
 	public $temp_max; 
 	public $pressure;
 	public $humidity;
+	public $conditionId;
+	public $wind_speed;
+	public $wind_direction;
 	
 	public function toBean($bObject) {
 		$bObject->deviceId = $this->deviceId;
@@ -18,6 +21,9 @@ class Weather {
 		$bObject->temp_max = $this->temp_max;
 		$bObject->pressure = $this->pressure;
 		$bObject->humidity = $this->humidity;
+		$bObject->conditionId = $this->conditionId;
+		$bObject->wind_speed = $this->wind_speed;
+		$bObject->wind_direction = $this->wind_direction;
 		return $bObject;
 	}
 
@@ -30,6 +36,9 @@ class Weather {
 		$this->temp_max = $bObject->temp_max;
 		$this->pressure = $bObject->pressure;
 		$this->humidity = $bObject->humidity;
+		$this->conditionId = $bObject->conditionId;
+		$this->wind_speed = $bObject->wind_speed;
+		$this->wind_direction = $bObject->wind_direction;
 		return $this;
 	}
 }
