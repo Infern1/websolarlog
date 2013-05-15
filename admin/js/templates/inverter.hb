@@ -66,6 +66,12 @@
     <button type="button" id="btnInverterSubmit">Save</button>
   </fieldset>
 </form> 
+
+<br />
+<form>
+      <fieldset>
+    <legend>System Panels</legend>
+    Create panels for the strings you have on your rooftop.<br>
 {{#data.inverter.panels}}
     <form>
       <input type="hidden" name="s" value="save-panel" />   
@@ -74,7 +80,7 @@
       <fieldset>
     <legend>Panel/String: {{this.id}}</legend>
         <label for="description">description:</label><input type="text" name="description" value="{{this.description}}" />   SolarPanel 265Wp 123-32/23+<br />   
-        <label for="roofOrientation">roof orientation:</label><input type="text" name="roofOrientation" value="{{this.roofOrientation}}" />   0 = north, 180 = south<br />   
+        <label for="roofOrientation">roof orientation:</label><input type="text" name="roofOrientation" value="{{this.roofOrientation}}" />0=north,90=east,180=south,270=west<br />   
         <label for="roofPitch">roof pitch:</label><input type="text" name="roofPitch" value="{{this.roofPitch}}" />   0 = horizontal, 90 = vertical<br />   
         <label for="amount">Panels in string:</label><input type="text" name="amount" value="{{this.amount}}" />   20<br />   
         <label for="wp">Watt-peak of one panel:</label><input type="text" name="wp" value="{{this.wp}}" />   265<br />   
@@ -82,10 +88,16 @@
       </fieldset>
     </form>
 {{/data.inverter.panels}}
-<br />   
 <div id="new_panels"></div>
+<br>
+    Example:<br>
+    When your system has 2 strings, each 10 panels of 195Wp, 1 string on orientation East(270) and 1 string on orientation East(270) both with a roof pitch of 45<br>
+    You make 2 panels and fillout the field with the information you now of what is your best guess.<br>
+    
 {{#if_gt data.inverter.id compare=0}}
     <button type="button" id="btnNewPanel">New panel</button><br/>   
 {{else}}
 Panels can be added after saving the new inverter
 {{/if_gt}}
+      </fieldset>
+    </form>
