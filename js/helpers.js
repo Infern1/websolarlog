@@ -55,7 +55,6 @@
     Handlebars.registerHelper('if_gt', function(context, options) {
     	if(options.hash.compare){
     		options.hash.compare= options.hash.compare.replace(",",".");
-    		console.log(context + '>'+options.hash.compare );
     	}
     	
         if (context > options.hash.compare)

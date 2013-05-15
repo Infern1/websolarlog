@@ -157,7 +157,6 @@ function modLegenda(plot){
 					$this = $(this);
 					// walkthrough array with hidden lines
 					if($this.text().length>0){
-						//console.log(i);
 						$('#tooltipValue-'+i).text('-');
 						i = i + 1;
 					}
@@ -184,7 +183,6 @@ function modLegenda(plot){
     var margin = (i / 5)*15;
     $('#legendWrappers').after('<div class="column span-21 last">'+newLegend+'<br><div style="clear:both;"></div></div>');
     $("#detailsGraph").css('margin-bottom',margin);
-   // console.log(innerLegend);
     $('#detailsSwitches').css('margin-top','50px');
     $('#detailsSwitches').hide();
     $('table.jqplot-table-legend').css('left',0);
@@ -1181,7 +1179,6 @@ var WSL = {
 			format = '%H:%M';
 			return $.jsDate.strftime(val, format);
 		};
-		console.log(date);
 		$.ajax({
 			url : "server.php?method=getGraphDayPoints&type=" + getDay + "&date=" + date + "&invtnum=" + invtnum,
 			beforeSend : function(xhr) {
@@ -1826,21 +1823,22 @@ var WSL = {
 							}
 							var lang = result.lang;
 							var graphOptions = {
-								series : [ {yaxis : 'yaxis'},// 0
+								series : [ 
+								{yaxis : 'yaxis'}, // 0
 								{yaxis : 'y2axis'},// 1
 								{yaxis : 'y3axis'},// 2
 								{yaxis : 'y4axis'},// 3
-								{yaxis : 'yaxis'},// 4
+								{yaxis : 'yaxis'}, // 4
 								{yaxis : 'y2axis'},// 5
 								{yaxis : 'y3axis'},// 6
 								{yaxis : 'y5axis'},// 7
-								{yaxis : 'yaxis'},// 8
+								{yaxis : 'yaxis'}, // 8
 								{yaxis : 'y2axis'},// 9
 								{yaxis : 'y3axis'},// 10
 								{yaxis : 'y5axis'},// 11
 								{yaxis : 'y7axis'},// 12
 								{yaxis : 'y6axis'},// 13
-								{yaxis : 'y6axis'} // 13
+								{yaxis : 'y6axis'} // 14
 								],
 								axesDefaults : {
 									useSeriesColor : true
@@ -1958,29 +1956,28 @@ var WSL = {
 								}
 							};
 							var maxP = result.dayData.max.P;
-							graphOptions.axes.yaxis.max = maxP + ((maxP / 100) * 10);
-							graphOptions.axes.y7axis.max = maxP + ((maxP / 100) * 10);
+							graphOptions.axes.yaxis.max = maxP + ((maxP / 100) * 5);
+							graphOptions.axes.y7axis.max = maxP + ((maxP / 100) * 5);
 
 							var maxV = result.dayData.max.V;
-							graphOptions.axes.y2axis.max = maxV + ((maxV / 100) * 10);
+							graphOptions.axes.y2axis.max = maxV + ((maxV / 100) * 5);
 
 							var maxA = result.dayData.max.A;
-							graphOptions.axes.y3axis.max = maxA + ((maxA / 100) * 10);
+							graphOptions.axes.y3axis.max = maxA + ((maxA / 100) * 5);
 
 							var maxFRQ = result.dayData.max.FRQ;
-							graphOptions.axes.y4axis.max = maxFRQ + ((maxFRQ / 100) * 10);
+							graphOptions.axes.y4axis.max = maxFRQ + ((maxFRQ / 100) * 5);
 
 							var maxRatio = result.dayData.max.Ratio;
 							(!maxRatio) ? maxRatio = 10 : maxRatio = maxRatio;
-							graphOptions.axes.y5axis.max = maxRatio + ((maxRatio / 100) * 10);
+							graphOptions.axes.y5axis.max = maxRatio + ((maxRatio / 100) * 5);
 
 							var maxT = result.dayData.max.T;
-
-							graphOptions.axes.y6axis.max = maxT + ((maxT / 100) * 10);
+							graphOptions.axes.y6axis.max = maxT + ((maxT / 100) * 5);
 
 							var maxEFF = result.dayData.max.EFF;
 							(!maxEFF) ? maxEFF = 10 : maxEFF = maxEFF;
-							graphOptions.axes.y7axis.max = maxEFF + ((maxEFF / 100) * 10);
+							graphOptions.axes.y7axis.max = maxEFF + ((maxEFF / 100) * 5);
 
 							switches = result.dayData.switches;
 
@@ -2001,16 +1998,12 @@ var WSL = {
 							function zoomHandler() {
 							   var c = this.plugins.cursor;
 							   if(c._zoom.zooming) {
-							       console.log('Zoom In');
 							       modLegenda(handle);
 							   } else {
-								   console.log('Zoom Out');
 								   modLegenda(handle);
 							   }
 							}
-							
 							$('#detailsSwitches').on('change', '[type=checkbox]', function() {
-								console.log('HIT');
 									var id = $(this).attr("id");
 									if (id == 'every') {
 										if ($(this).is(':checked')) {
@@ -2036,7 +2029,6 @@ var WSL = {
 										}
 									}
 									handle.replot();
-									console.log('repot');
 									//$('table.jqplot-table-legend').attr('class','jqplot-table-legend');
 									$('table.jqplot-table-legend').css('left',5);
 									$('table.jqplot-table-legend').css('width',400);

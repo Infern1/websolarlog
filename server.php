@@ -551,16 +551,7 @@ try {
 		case "test":
 			$sma = new SMASpotWSL('/', $address, $port, $comoption, true);
 			$test = $sma->getLiveData();
-			//var_dump($test);
-			break;
-		case "testSmartMeter":
-			$sma = new SmartMeter('/', $address, $port, $comoption, true);
-			var_dump($sma);
-			$test = $sma->getLiveData();
 			var_dump($test);
-			break;
-		case "getMaxTotalEnergyValues":
-			echo $dataAdapter->getMaxTotalEnergyValues(0,'all');
 			break;
 		default:
 			break;

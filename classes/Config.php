@@ -60,6 +60,8 @@ class Config
     public $smagetpath; // The path to sma-get
     public $smaspotpath; // The path to sma-spot
     public $smaspotWSLpath; // The path to sma-spot -wsl
+    public $plugwiseStrech20IP;
+    public $plugwiseStrech20ID;
     public $smartmeterpath;
     
     public $adminpasswd;

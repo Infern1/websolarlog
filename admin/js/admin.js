@@ -209,7 +209,80 @@ function init_menu() {
     $("#btnSocial").bind('click', function() { init_social(); });
     $("#btnUpdate").bind('click', function() { init_update(); });
     $("#btnBackup").bind('click', function() { init_backup(); });
+    $("#btnPlugwise").bind('click', function() { init_plugwise(); });
     $("#btnDataMaintenance").bind('click', function() { init_dataMaintenance(); });
+}
+
+function init_plugwise(){
+	$('#sidebar').html("");
+	$.getJSON('admin-server.php?s=getAllPlugs', function(data) {
+        $.ajax({
+        	async: true,
+        	url : 'js/templates/plugwiseAllPlugs.hb',
+            success : function(source) { 
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : data
+                });
+                $('#content').html(html);
+                
+                window.setInterval(function(){
+                	$.getJSON('admin-server.php?s=getAllPlugs', function(data) {
+                		for (var key in data.plugs) {
+                			   var obj = data.plugs[key];
+                			   $("#"+obj.applianceID+'-W').html(obj.currentPowerUsage+' W');                			   
+                			}
+                	});
+                }, 3000);
+                $("div.editme").click(function() {
+            		var id = $(this).attr('id');
+            		if ($("#"+id).children('input').length == 0) {
+            			var inputbox = "<input type='text' class='column span-3' id=\"input-"+id+"\" class='inputbox' value=\""+$("#"+id).text()+"\">";
+            			$("#"+id).html(inputbox);
+            			$("#input-"+id).focus();
+            			
+            			$("#input-"+id).keydown(function(e) {
+            			    if (e.keyCode == 9) {  //tab pressed
+            			    	$(this).blur();  	
+		            			e.preventDefault(); // stops its action
+            			    }
+            			})
+            			$("#input-"+id).blur(function() {
+            				var value = $("#input-"+id).val();
+            				$("#"+id).html(value);
+            				if($("#"+id).html() == value){
+            	                $.post('admin-server.php?s=plugwiseSavePlug',{id: id,name: value} , function(){
+                                    $.pnotify({
+                                        title: 'Plug name saved',
+                                        text: 'Name "'+value+'" saved',
+                                        type: 'success'
+                                    });
+            	                });            				
+            				}
+            			});
+            			
+            		}
+            	});
+                $("div.switchPlug").click(function() {
+                var id = $(this).attr('id');
+                var applianceID = $(this).attr('id').split('-')[0];
+                var newPowerState = $(this).attr('id').split('-')[1];
+                var oldPowerState = (newPowerState == 'on') ? 'off' : 'on';
+                $('#'+id).html('Switching....');
+               	$.get('admin-server.php?s=switchPowerState',{ applianceID: applianceID , newPowerState: newPowerState },function(data){
+                        $.pnotify({
+                            title: 'Plug name saved',
+                            text: 'Switch power state to: "'+newPowerState+'"',
+                            type: 'success'
+                        });
+                        $('#'+id).html('Switch' + ' ' + oldPowerState);
+                        $('#'+id).attr('id',  applianceID + '-' + oldPowerState);
+	                });
+                });
+            },
+            dataType : 'text'
+        })
+	 });
 }
 
 
@@ -939,7 +1012,8 @@ function init_update(experimental) {
                                 $.pnotify({
                                     title: 'Trunk notifier',
                                     text: checkNewTrunkText,
-                                    type: type
+                                    type: type,
+                                    nonblock: true
                                 });
                                 if(checkNewTrunk){
 	                        		$.getJSON('admin-server.php?s=current-trunk-version', function(data) {
@@ -1014,7 +1088,8 @@ function init_update(experimental) {
 	                    $.pnotify({
 	                        title: 'Trunk notifier',
 	                        text: 'There is a new Trunk release.<br><br><font color="red">Please keep in mind that Trunk releases are not supported!</font>',
-	                        type: 'warning'
+	                        type: 'warning',
+	                        nonblock: true,
 	                    });
         			}
         		});

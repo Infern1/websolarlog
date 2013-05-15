@@ -645,6 +645,8 @@ class PDODataAdapter {
 		$bean->smagetpath = $config->smagetpath;
 		$bean->smaspotpath = $config->smaspotpath;
 		$bean->smaspotWSLpath = $config->smaspotWSLpath;
+		$bean->plugwiseStrech20IP = $config->plugwiseStrech20IP;
+		$bean->plugwiseStrech20ID = $config->plugwiseStrech20ID;
 		$bean->smartmeterpath = $config->smartmeterpath;
 
 		$bean->co2kwh = $config->co2kwh;
@@ -709,6 +711,8 @@ class PDODataAdapter {
 			$config->smagetpath = ($bean->smagetpath != "") ? $bean->smagetpath : $config->smagetpath;
 			$config->smaspotpath = ($bean->smaspotpath != "") ? $bean->smaspotpath : $config->smaspotpath;
 			$config->smaspotWSLpath = ($bean->smaspotWSLpath != "") ? $bean->smaspotWSLpath : $config->smaspotWSLpath;
+			$config->plugwiseStrech20IP = ($bean->plugwiseStrech20IP != "") ? $bean->plugwiseStrech20IP : $config->plugwiseStrech20IP;
+			$config->plugwiseStrech20ID = ($bean->plugwiseStrech20ID != "") ? $bean->plugwiseStrech20ID : $config->plugwiseStrech20ID;
 			$config->smartmeterpath = ($bean->smartmeterpath != "") ? $bean->smartmeterpath : $config->smartmeterpath;
 
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
@@ -1371,16 +1375,17 @@ class PDODataAdapter {
 		$switches['TEMP'][] = 13;
 		$switches['TEMP'][] = 14;
 
+		$max = array();
+		$max['P'] = 0;
+		$max['V'] = 0;
+		$max['A'] = 0;
+		$max['FRQ'] = 0;
+		$max['Ratio'] = 0;
+		$max['T'] = 0;
+		$max['EFF'] = 0;
+		
 		foreach($beans as $bean){
 			// Initialize values
-			$max = array();
-			$max['P'] = 0;
-			$max['V'] = 0;
-			$max['A'] = 0;
-			$max['FRQ'] = 0;
-			$max['Ratio'] = 0;
-			$max['T'] = 0;
-			$max['EFF'] = 0;
 			
 			$bean['time'] =$bean['time'];
 			$live->GP[] 	= array($bean['time'],(float)$bean['GP']);

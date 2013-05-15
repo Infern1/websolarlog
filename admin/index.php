@@ -56,6 +56,7 @@ session_start();
 					<!-- <li><a href="#tariff" id="btnTariff">Tariff</a></li>-->
 					<li><a href="#update" id="btnUpdate">Update</a></li>
 					<li><a href="#backup" id="btnBackup">Backup</a></li>
+					<li><a href="#plugwise" id="btnPlugwise">Plugwise</a></li>
 					<!-- li><a href="#DataMaintenance" id="btnDataMaintenance">DBM</a></li -->
 					<li class="nav-end"><a href="#test" id="btnTestPage">Test page</a></li>
 				</ul>

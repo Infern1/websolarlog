@@ -714,7 +714,6 @@ switch ($settingstype) {
 				$data['trunkNotifier'] = ($version['revision'] > $config->version_revision) ? true : false;
 			}
 		}
-		
 		break;
 	case 'test':
 		$data['test'] = checkSQLite();
