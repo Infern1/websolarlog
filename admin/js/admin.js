@@ -132,8 +132,6 @@ function init_KWHcalc(inv_data){
     
     // Merge month with percentages from live stream if not null or empty
     $.each(Month, function(){
-    	console.log('a');
-    	console.log(inv_data);
         var perc = inv_data.inverter["expected"+this.toUpperCase()];
         var month_perc = [];
         month_perc['month'] = this;
@@ -143,7 +141,7 @@ function init_KWHcalc(inv_data){
         }
         data['month_perc'].push(month_perc);
     });
-    console.log(data);
+
     // Replace Perc if we have received an valid value for all months!
     if (newPerc.length==12) {
         Perc = newPerc;        
@@ -845,7 +843,7 @@ function load_inverter(inverterId) {
                 
                 var handle_panel_submit = function() {
                 	checkCheckboxesHiddenFields();
-                    var data = $(this).parent().parent().serialize();
+                    var data = $(this).parent().parent().parent().serialize();
                     $.post('admin-server.php', data, function(){
                         load_inverter(inverterId);
                         $.pnotify({
@@ -1190,7 +1188,6 @@ function KWHcalc(object, Perc, Month){
 		if($(object).attr('id') == 'totalKWHProd'){
 			var totalProd = $("#totalKWHProd").val();
 			$(Perc).each(function(index) {
-				console.log('3');
 					var kwh = totalProd * Perc[index]/100;
 					$("#"+Month[index]+"PER").val(Math.round(Perc[index]*10)/10);
 					$("#"+Month[index]+"KWH").val(Math.round(kwh*1)/1);
@@ -1200,7 +1197,6 @@ function KWHcalc(object, Perc, Month){
 			sumKWHtotal();
 			var totalProd = $("#totalKWHProd").val();
 			$(Perc).each(function(index) {
-				console.log('2');
 					var kwh = $("#"+Month[index]+"KWH").val();
 					var monthPER= Math.round(((kwh/totalProd)*100)*100)/100;
 					$("#"+Month[index]+"PER").val(monthPER);
@@ -1216,7 +1212,6 @@ function sumKWHtotal(){
 }
 
 function setPercentBar(month,KWH,KWHTotal) {
-	console.log('1');
 	var monthBarHeight = $("p[class=monthBAR]").height();
 	var monthPER= Math.round(((KWH/KWHTotal)*100)*100)/100;
 	var top = monthBarHeight-monthBarHeight/100*monthPER*4;
