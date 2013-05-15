@@ -91,7 +91,7 @@
 <div id="new_panels"></div>
 <br>
     Example:<br>
-    When your system has 2 strings, each 10 panels of 195Wp, 1 string on orientation East(270) and 1 string on orientation East(270) both with a roof pitch of 45<br>
+    When your system has 2 strings, each 10 panels of 195Wp, 1 string on orientation West(270) and 1 string on orientation East(90) both with a roof pitch of 45<br>
     You make 2 panels and fillout the field with the information you now of what is your best guess.<br>
     
 {{#if_gt data.inverter.id compare=0}}
