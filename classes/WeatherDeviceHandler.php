@@ -1,16 +1,12 @@
 <?php
 class WeatherDeviceHandler {
-	private $weatherService;
-	
 	
 	function __construct() {
 		// Initialize services
-		$this->weatherService = new WeatherService();
 	}
 	
 	function __destruct() {
 		// Destroy services
-		$this->weatherService = null;		
 	}
 	
 	
@@ -23,7 +19,9 @@ class WeatherDeviceHandler {
 		$weather = $device->getApi(Session::getConfig())->getData();
 		$weather->deviceId = $device->id;
 		$weather->time = $item->time;
-		$this->weatherService->save($weather);
+
+		$weatherService = new WeatherService();
+		$weatherService->save($weather);
 	}
 
 	public static function handleDeviceHistory(QueueItem $item, Inverter $device) {
