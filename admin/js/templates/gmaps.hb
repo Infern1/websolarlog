@@ -57,7 +57,7 @@
 						}
 				});
 		});
-		$("#roundLatLong").live("change", function(){
+		$("#roundLatLong").bind("change", function(){
 			var round = $("#roundLatLong").val();
 			$('#mapsLat').val(Math.round($('#hiddenLat').val()*round)/round);
 			$('#mapsLong').val(Math.round($('#hiddenLong').val()*round)/round);
