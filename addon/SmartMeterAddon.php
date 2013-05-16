@@ -243,7 +243,7 @@ class SmartMeterAddon {
 			$bean = R::dispense('liveSmartMeter');
 		}
 
-		$readLiveBean = $this->readLiveSmartMeterInfo($invtnum);
+		$readLiveBean = $this->readLiveSmartMeterInfo($deviceId);
 
 		if ($readLiveBean->gasUsage < $live->gasUsage) {
 			$liveGas = ($live->gasUsage - $readLiveBean->gasUsage);
