@@ -234,13 +234,10 @@ class SmartMeterAddon {
 	/**
 	 * write the LiveSmartMeter info to the file
 	 * @param int $invtnum
-	 * @param Live $live
+	 * @param LiveSmartMeter $live
 	 */
-	public function writeLiveSmartMeterInfo($invtnum,LiveSmartMeter $live) {
-		
-		
-		
-		$bean =  R::findOne('liveSmartMeter','invtnum = :invtnum ',array(':invtnum'=>$invtnum));
+	public function writeLiveSmartMeterInfo($deviceId,LiveSmartMeter $live) {
+		$bean =  R::findOne('liveSmartMeter','invtnum = :deviceId ',array(':deviceId'=>$deviceId));
 
 		if (!$bean){
 			$bean = R::dispense('liveSmartMeter');
