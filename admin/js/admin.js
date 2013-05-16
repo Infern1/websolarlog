@@ -224,14 +224,15 @@ function init_plugwise(){
                 });
                 $('#content').html(html);
                 
-                window.setInterval(function(){
+               /* window.setInterval(function(){
                 	$.getJSON('admin-server.php?s=getAllPlugs', function(data) {
                 		for (var key in data.plugs) {
                 			   var obj = data.plugs[key];
                 			   $("#"+obj.applianceID+'-W').html(obj.currentPowerUsage+' W');                			   
                 			}
                 	});
-                }, 3000);
+                }, 3000);*/
+                
                 $("div.editme").click(function() {
             		var id = $(this).attr('id');
             		if ($("#"+id).children('input').length == 0) {
