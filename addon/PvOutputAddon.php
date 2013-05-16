@@ -121,7 +121,7 @@ class PvOutputAddon {
 		($device->pvoutputApikey) ? $device->pvoutputApikey = true : $device->pvoutputApikey = false;
 		($device->pvoutputSystemId) ? $device->pvoutputSystemId = true : $device->pvoutputSystemId = false;
 		$device->pvoutputWSLTeamMember = $bean->pvoutputWSLTeamMember;
-		return v;
+		return $device;
 	}
 	
 	
