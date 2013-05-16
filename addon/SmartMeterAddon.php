@@ -251,7 +251,8 @@ class SmartMeterAddon {
 			$liveGas = $readLiveBean->liveGas;
 		}
 		$bean->gasUsage = $live->gasUsage;
-		$bean->invtnum = $invtnum;
+		$bean->invtnum = $deviceId;
+		$bean->deviceId = $deviceId;
 		$bean->liveGas = $liveGas;
 		$bean->highReturn = $live->highReturn;
 		$bean->lowReturn = $live->lowReturn;
