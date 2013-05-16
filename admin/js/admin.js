@@ -1008,12 +1008,14 @@ function init_update(experimental) {
                     	}
                         $.post('admin-server.php', {'s' : 'save-checkNewTrunk', chkNewTrunk: checkNewTrunk }, function(result){
                             if (result.result === true) {
+                            	var title = 'Trunk notifier';
                                 $.pnotify({
-                                    title: 'Trunk notifier',
+                                    title: title,
                                     text: checkNewTrunkText,
                                     type: type,
                                     nonblock: true
                                 });
+                    			
                                 if(checkNewTrunk){
 	                        		$.getJSON('admin-server.php?s=current-trunk-version', function(data) {
 	                        			if(data.trunkNotifier){
@@ -1083,9 +1085,11 @@ function init_update(experimental) {
             });
         	if(data.chkNewTrunk==true){
         		$.getJSON('admin-server.php?s=current-trunk-version', function(data) {
-        			if(data.trunkNotifier){
+        			var title = 'Trunk notifier';
+        			//prevent double notifiers
+        			if(data.trunkNotifier && checkForDoubleNotifier(title)==false){
 	                    $.pnotify({
-	                        title: 'Trunk notifier',
+	                        title: title,
 	                        text: 'There is a new Trunk release.<br><br><font color="red">Please keep in mind that Trunk releases are not supported!</font>',
 	                        type: 'warning',
 	                        nonblock: true,
@@ -1096,6 +1100,19 @@ function init_update(experimental) {
         }
     });
 }
+
+function checkForDoubleNotifier(title){
+	//loop through all pnotify's to see if we already have a "pass" pnotify
+	var passSecShown = false;
+	$('.ui-pnotify-title').each(function(index){
+		// if we have one...
+		if(($(this).text()==title) && (passSecShown == false)){
+			passSecShown = true;
+		}
+	});
+	return passSecShown;
+}
+
 
 function startUpdaterMonitor(updateNotice, button) {
 	$('#content').append('<div id="updaterMonitor"></div>');

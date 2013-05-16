@@ -27,7 +27,9 @@
 <fieldset>
 <a name="pvoutput"/>
 <legend>WebSolarLog PVoutput team</legend>
-A inverter can be join with multiple team.<br>PVoutput has set the limit for a inverter to 10 teams.<br>
+PVoutput has some restrictions for joining a team;<br>
+- The system must have at least 5 outputs<br>
+- The system cannot join more than 10 teams<br>
 <br>
 <strong>Team status of devices</strong>:<br>
 <div id="devices">Loading device data....</div>
