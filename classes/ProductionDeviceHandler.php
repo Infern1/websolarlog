@@ -12,7 +12,7 @@ class ProductionDeviceHandler {
 		$live->deviceId = $device->id;
 		$live->INV = $device->id; // Needs to be replaced with deviceId in future
 		$live->time = $item->time;
-		$bean->SDTE = date("Ymd-H:i:s", $item->time);
+		$live->SDTE = date("Ymd-H:i:s", $item->time);
 		
 		// Calculate IP
 		$live->IP = $live->I1P+$live->I2P;
