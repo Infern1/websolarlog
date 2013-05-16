@@ -165,10 +165,17 @@ class Config
 		$this->dbPassword = $password;
 	}
 
-	function getInverterConfig($inverterId) {
-		foreach ($this->inverters as $inverter) {
-			if ($inverter->id == $inverterId) {
-				return $inverter;
+	/**
+	 * @Deprecated
+	 */
+	function getInverterConfig($deviceId) {
+		return $this->getDeviceConfig($deviceId);
+	}
+	
+	function getDeviceConfig($deviceId) {
+		foreach ($this->devices as $device) {
+			if ($device->id == $deviceId) {
+				return $device;
 			}
 		}
 	}	

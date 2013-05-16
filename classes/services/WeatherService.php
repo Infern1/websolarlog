@@ -29,10 +29,10 @@ class WeatherService {
 	
 	/**
 	 * Retrieve all values for an device
-	 * @param Inverter $device
+	 * @param Device $device
 	 * @return array of Weather
 	 */
-	public function getArrayByDevice(Inverter $device) {
+	public function getArrayByDevice(Device $device) {
 		$bObjects = R::find( self::$tbl, ' deviceId = :deviceId ORDER BY time ', array("deviceId"=>$device->id));
 		$objects = array();
 		foreach ($bObjects as $bObject) {
@@ -43,21 +43,21 @@ class WeatherService {
 	
 	/**
 	 * Retrieve the last object
-	 * @param Inverter $device
+	 * @param Device $device
 	 * @return Weather
 	 */
-	public function getLastWeather(Inverter $device) {
+	public function getLastWeather(Device $device) {
 		$bean = R::findOne('weather',' deviceId = :deviceId ORDER BY time DESC LIMIT 1',array(':deviceId'=>$device->id));
 		return $this->toObject($bean);
 	}
 	
 	/**
 	 * Retrieve all objects for the given device and for the given date (default today)
-	 * @param Inverter $device
+	 * @param Device $device
 	 * @param string $date
 	 * @return array of Weather
 	 */
-	public function getWeatherForDate(Inverter $device, $date=null) {
+	public function getWeatherForDate(Device $device, $date=null) {
 		(!$date)? $date = date('d-m-Y') : $date = $date;
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 	

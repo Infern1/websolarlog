@@ -91,9 +91,9 @@ switch ($settingstype) {
 	case "joinPVoTeam":
 		$pvOutputAddon = new PvOutputAddon();
 		$team = array();
-		$inverterId = Common::getValue("id", null);
-		if($inverterId){
-			$device = $config->getInverterConfig($inverterId);
+		$deviceId = Common::getValue("id", null);
+		if($deviceId){
+			$device = $config->getDeviceConfig($deviceId);
 			if($device->pvoutputApikey){
 				$result = $pvOutputAddon->joinTeam($device);
 				//var_dump($result);
@@ -109,15 +109,15 @@ switch ($settingstype) {
 		}else{
 			$team['response'] = 'no team supplied';
 		}
-		$data['id'] = $inverterId;
+		$data['id'] = $deviceId;
 		$data['team']= $team;
 		break;
 	case "leavePVoTeam":
 		$pvOutputAddon = new PvOutputAddon();
 		$team = array();
-		$inverterId = Common::getValue("id", null);
-		if($inverterId){
-			$device = $config->getInverterConfig($inverterId);
+		$deviceId = Common::getValue("id", null);
+		if($deviceId){
+			$device = $config->getDeviceConfig($deviceId);
 			if($device->pvoutputApikey){
 				$result = $pvOutputAddon->leaveTeam($device);
 				if($result['info']['http_code']==200){
@@ -132,21 +132,21 @@ switch ($settingstype) {
 		}else{
 			$team['response'] = 'no team supplied';
 		}
-		$data['id'] = $inverterId;
+		$data['id'] = $deviceId;
 		$data['team']= $team;
 		break;
 	case "saveTeamStatus":
 		$pvOutputAddon = new PvOutputAddon();
 		$team = array();
-		$inverterId = Common::getValue("id", null);
-		if($inverterId){
-			$device = $config->getInverterConfig($inverterId);
+		$deviceId = Common::getValue("id", null);
+		if($deviceId){
+			$device = $config->getDeviceConfig($deviceId);
 			if($device->pvoutputApikey){
 				//request PVoutput for teamstatus and save it in the DB
 				$pvOutputAddon->saveTeamStateFromPVoutputToDB($device);
 			}
 		}else{
-			foreach ($config->inverters as $device){
+			foreach ($config->devices as $device){
 				if($device->pvoutputApikey){
 					//request PVoutput for teamstatus and save it in the DB
 					$pvOutputAddon->saveTeamStateFromPVoutputToDB($device);
@@ -158,14 +158,14 @@ switch ($settingstype) {
 	case "getTeamStatus":
 		$pvOutputAddon = new PvOutputAddon();
 		$result = array();
-		$inverterId = Common::getValue("id", null);
-		if($inverterId){
-			$device = $config->getInverterConfig($inverterId);
+		$deviceId = Common::getValue("id", null);
+		if($deviceId){
+			$device = $config->getDeviceConfig($deviceId);
 			if($device->pvoutputApikey){
 				$result[] = $pvOutputAddon->getTeamStatusFromDB($device);
 			}
 		}else{
-			foreach ($config->inverters as $device){
+			foreach ($config->devices as $device){
 				if($device->pvoutputApikey){
 					$result[] = $pvOutputAddon->getTeamStatusFromDB($device);
 				}
@@ -204,22 +204,20 @@ switch ($settingstype) {
 		$data['timezones'] = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
 		break;
 	case 'inverters':
-		$data['inverters'] = $config->inverters;
+		$data['inverters'] = $config->devices;
 		break;
 	case 'inverter':
-		$inverterId = $_GET['id'];
-		$adapter->readInverter($inverterId);
-		$data['inverter'] = $config->getInverterConfig($inverterId);
-		if ($inverterId == -1) {
-			$data['inverter'] = new Inverter();
+		$deviceId = $_GET['id'];
+		$data['inverter'] = $config->getDeviceConfig($deviceId);
+		if ($deviceId == -1) {
+			$data['inverter'] = new Device();
 		}
 		break;
 	case 'panel':
 		$id = $_GET['id'];
-		$inverterId = $_GET['inverterId'];
 		$panel = new Panel();
 		if ($id == -1) {
-			$panel->inverterId = $inverterId;
+			$panel->inverterId = $_GET['inverterId'];
 		} else {
 			$panel = $adapter->readPanel($id);
 		}
@@ -391,46 +389,46 @@ switch ($settingstype) {
 		break;
 	case 'save-inverter':
 		$id = Common::getValue("id");
-		$inverter = new Inverter();
+		$device = new Device();
 		if ($id > 0) {
 			// get the current data
-			$inverter = $adapter->readInverter($id);
+			$device = $adapter->readInverter($id);
 			
 		}
-		$inverter->name = Common::getValue("name");
-		$inverter->description = Common::getValue("description");
-		$inverter->liveOnFrontend = Common::getValue("liveOnFrontend");
-		$inverter->graphOnFrontend = Common::getValue("graphOnFrontend");
-		$inverter->initialkwh = Common::getValue("initialkwh");
-		$inverter->producesSince = Common::getValue("producesSince");
-		$inverter->expectedkwh = Common::getValue("expectedkwh");
-		$inverter->plantpower = Common::getValue("plantpower");
-		$inverter->heading = Common::getValue("heading");
-		$inverter->correctionFactor = Common::getValue("correctionFactor");
-		$inverter->deviceApi = Common::getValue("deviceApi");
-		$inverter->type = Common::getValue("deviceType");
-		$inverter->comAddress = Common::getValue("comAddress");
-		$inverter->comLog = Common::getValue("comLog");
-		$inverter->syncTime = Common::getValue("syncTime");
-		$inverter->pvoutputEnabled = Common::getValue("pvoutputEnabled",'null');
-		$inverter->pvoutputApikey = Common::getValue("pvoutputApikey");
-		$inverter->pvoutputSystemId = Common::getValue("pvoutputSystemId");
-		$inverter->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
+		$device->name = Common::getValue("name");
+		$device->description = Common::getValue("description");
+		$device->liveOnFrontend = Common::getValue("liveOnFrontend");
+		$device->graphOnFrontend = Common::getValue("graphOnFrontend");
+		$device->initialkwh = Common::getValue("initialkwh");
+		$device->producesSince = Common::getValue("producesSince");
+		$device->expectedkwh = Common::getValue("expectedkwh");
+		$device->plantpower = Common::getValue("plantpower");
+		$device->heading = Common::getValue("heading");
+		$device->correctionFactor = Common::getValue("correctionFactor");
+		$device->deviceApi = Common::getValue("deviceApi");
+		$device->type = Common::getValue("deviceType");
+		$device->comAddress = Common::getValue("comAddress");
+		$device->comLog = Common::getValue("comLog");
+		$device->syncTime = Common::getValue("syncTime");
+		$device->pvoutputEnabled = Common::getValue("pvoutputEnabled",'null');
+		$device->pvoutputApikey = Common::getValue("pvoutputApikey");
+		$device->pvoutputSystemId = Common::getValue("pvoutputSystemId");
+		$device->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
 
-		$inverter->expectedkwh = '0';
-		$inverter->expectedJAN = '0';
-		$inverter->expectedFEB = '0';
-		$inverter->expectedMAR = '0';
-		$inverter->expectedAPR = '0';
-		$inverter->expectedMAY = '0';
-		$inverter->expectedJUN = '0';
-		$inverter->expectedJUL = '0';
-		$inverter->expectedAUG = '0';
-		$inverter->expectedSEP = '0';
-		$inverter->expectedOCT = '0';
-		$inverter->expectedNOV = '0';
-		$inverter->expectedDEC = '0';
-		$data['id'] = $adapter->writeInverter($inverter);
+		$device->expectedkwh = '0';
+		$device->expectedJAN = '0';
+		$device->expectedFEB = '0';
+		$device->expectedMAR = '0';
+		$device->expectedAPR = '0';
+		$device->expectedMAY = '0';
+		$device->expectedJUN = '0';
+		$device->expectedJUL = '0';
+		$device->expectedAUG = '0';
+		$device->expectedSEP = '0';
+		$device->expectedOCT = '0';
+		$device->expectedNOV = '0';
+		$device->expectedDEC = '0';
+		$data['id'] = $adapter->writeInverter($device);
 		break;
 	case 'save-panel':
 		$id = Common::getValue("id");
@@ -450,26 +448,26 @@ switch ($settingstype) {
 		break;
 	case 'save_expectation':
 		$id = Common::getValue("id");
-		$inverter = new Inverter();
+		$device = new Device();
 		if ($id > 0) {
 			// get the current data
-			$inverter = $adapter->readInverter($id);
+			$device = $adapter->readInverter($id);
 		}
-		$inverter->expectedkwh = Common::getValue("totalProdKWH");
-		$inverter->expectedJAN = Common::getValue("janPER");
-		$inverter->expectedFEB = Common::getValue("febPER");
-		$inverter->expectedMAR = Common::getValue("marPER");
-		$inverter->expectedAPR = Common::getValue("aprPER");
-		$inverter->expectedMAY = Common::getValue("mayPER");
-		$inverter->expectedJUN = Common::getValue("junPER");
-		$inverter->expectedJUL = Common::getValue("julPER");
-		$inverter->expectedAUG = Common::getValue("augPER");
-		$inverter->expectedSEP = Common::getValue("sepPER");
-		$inverter->expectedOCT = Common::getValue("octPER");
-		$inverter->expectedNOV = Common::getValue("novPER");
-		$inverter->expectedDEC = Common::getValue("decPER");
+		$device->expectedkwh = Common::getValue("totalProdKWH");
+		$device->expectedJAN = Common::getValue("janPER");
+		$device->expectedFEB = Common::getValue("febPER");
+		$device->expectedMAR = Common::getValue("marPER");
+		$device->expectedAPR = Common::getValue("aprPER");
+		$device->expectedMAY = Common::getValue("mayPER");
+		$device->expectedJUN = Common::getValue("junPER");
+		$device->expectedJUL = Common::getValue("julPER");
+		$device->expectedAUG = Common::getValue("augPER");
+		$device->expectedSEP = Common::getValue("sepPER");
+		$device->expectedOCT = Common::getValue("octPER");
+		$device->expectedNOV = Common::getValue("novPER");
+		$device->expectedDEC = Common::getValue("decPER");
 
-		$adapter->writeInverter($inverter);
+		$adapter->writeInverter($device);
 		break;
 	case 'save-email':
 		$config->emailFromName = Common::getValue("emailFromName");

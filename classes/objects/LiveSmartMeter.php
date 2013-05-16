@@ -1,6 +1,9 @@
 <?php
 class LiveSmartMeter {
+	public $id;
+	public $time;
 	public $invtnum;
+	public $deviceId;
 	public $status;
 	public $name;
 	public $type;
@@ -12,6 +15,6 @@ class LiveSmartMeter {
 	public $liveReturn;
 	public $liveEnergy;
 	public $gasUsage;
+	public $liveGas;
 }
-
 ?>

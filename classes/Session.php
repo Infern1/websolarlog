@@ -229,7 +229,7 @@ class Session
     	$hookHandler->add("onHistory", "CoreAddon.onHistory");
     	$hookHandler->add("onSmartMeterHistory", "SmartMeterAddon.onSmartMeterHistory");
     	
-    	$hookHandler->add("onEnergy", "CoreAddon.onEnergy"); // Will run also if inverter is down
+    	$hookHandler->add("onEnergy", "CoreAddon.onEnergy"); // Will run also if device is down
     	$hookHandler->add("onSmartMeterEnergy", "SmartMeterAddon.onSmartMeterEnergy"); // Will run at 00:00
     	
     	

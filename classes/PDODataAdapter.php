@@ -583,13 +583,13 @@ class PDODataAdapter {
 	 */
 	function readPlantPower(){
 
-		$inverters = $this->readInverters();
+		$devices = $this->readInverters();
 		$plantPower = 0;
 
-		foreach ($inverters as $inverter) {
-			$inverter->panels = $this->readPanelsByInverter($inverter->id);
+		foreach ($devices as $device) {
+			$device->panels = $this->readPanelsByInverter($device->id);
 
-			foreach ($inverter->panels as $panel) {
+			foreach ($device->panels as $panel) {
 				//$panel = new Panel();
 				$plantPower += ($panel->amount * $panel->wp);
 			}
@@ -736,53 +736,53 @@ class PDODataAdapter {
 		return $config;
 	}
 	/**
-	 * Create or update an inverter object
-	 * @param Inverter $inverter
-	 * @return the id off the saved inverter
+	 * Create or update an device object
+	 * @param Device $device
+	 * @return the id off the saved device
 	 */
-	public function writeInverter(Inverter $inverter) {
+	public function writeInverter(Device $device) {
 		// Only save the object self not the arrays
-		$bean = R::load('inverter',$inverter->id);
+		$bean = R::load('inverter',$device->id);
 
 		if (!$bean){
 			$bean = R::dispense('inverter');
 		}
 
-		$bean->deviceApi = $inverter->deviceApi;
-		$bean->type = $inverter->type;
-		$bean->name = $inverter->name;
-		$bean->description = $inverter->description;
+		$bean->deviceApi = $device->deviceApi;
+		$bean->type = $device->type;
+		$bean->name = $device->name;
+		$bean->description = $device->description;
 
-		$bean->liveOnFrontend = $inverter->liveOnFrontend;
-		$bean->graphOnFrontend = $inverter->graphOnFrontend;
+		$bean->liveOnFrontend = $device->liveOnFrontend;
+		$bean->graphOnFrontend = $device->graphOnFrontend;
 
-		$bean->initialkwh = $inverter->initialkwh;
-		$bean->producesSince = $inverter->producesSince;
-		$bean->expectedkwh = $inverter->expectedkwh;
-		$bean->heading = $inverter->heading;
-		$bean->correctionFactor = $inverter->correctionFactor;
-		$bean->comAddress = $inverter->comAddress;
-		$bean->comLog = $inverter->comLog;
-		$bean->syncTime = $inverter->syncTime;
-		$bean->pvoutputEnabled = $inverter->pvoutputEnabled;
-		$bean->pvoutputApikey = $inverter->pvoutputApikey;
-		$bean->pvoutputSystemId = $inverter->pvoutputSystemId;
-		($inverter->pvoutputWSLTeamMember!='') ? $bean->pvoutputWSLTeamMember = $inverter->pvoutputWSLTeamMember : $inverter->pvoutputWSLTeamMember = $inverter->pvoutputWSLTeamMember;
-		$bean->state = $inverter->state;
-		$bean->refreshTime = $inverter->refreshTime;
+		$bean->initialkwh = $device->initialkwh;
+		$bean->producesSince = $device->producesSince;
+		$bean->expectedkwh = $device->expectedkwh;
+		$bean->heading = $device->heading;
+		$bean->correctionFactor = $device->correctionFactor;
+		$bean->comAddress = $device->comAddress;
+		$bean->comLog = $device->comLog;
+		$bean->syncTime = $device->syncTime;
+		$bean->pvoutputEnabled = $device->pvoutputEnabled;
+		$bean->pvoutputApikey = $device->pvoutputApikey;
+		$bean->pvoutputSystemId = $device->pvoutputSystemId;
+		($device->pvoutputWSLTeamMember!='') ? $bean->pvoutputWSLTeamMember = $device->pvoutputWSLTeamMember : $device->pvoutputWSLTeamMember = $device->pvoutputWSLTeamMember;
+		$bean->state = $device->state;
+		$bean->refreshTime = $device->refreshTime;
 		
-		($inverter->expectedJAN) ? $bean->expectedJAN = $inverter->expectedJAN : $bean->expectedJAN = 0;
-		($inverter->expectedFEB) ? $bean->expectedFEB = $inverter->expectedFEB : $bean->expectedFEB = 0;
-		($inverter->expectedMAR) ? $bean->expectedMAR = $inverter->expectedMAR : $bean->expectedMAR = 0;
-		($inverter->expectedAPR) ? $bean->expectedAPR = $inverter->expectedAPR : $bean->expectedAPR = 0;
-		($inverter->expectedMAY) ? $bean->expectedMAY = $inverter->expectedMAY : $bean->expectedMAY = 0;
-		($inverter->expectedJUN) ? $bean->expectedJUN = $inverter->expectedJUN : $bean->expectedJUN = 0;
-		($inverter->expectedJUL) ? $bean->expectedJUL = $inverter->expectedJUL : $bean->expectedJUL = 0;
-		($inverter->expectedAUG) ? $bean->expectedAUG = $inverter->expectedAUG : $bean->expectedAUG = 0;
-		($inverter->expectedSEP) ? $bean->expectedSEP = $inverter->expectedSEP : $bean->expectedSEP = 0;
-		($inverter->expectedOCT) ? $bean->expectedOCT = $inverter->expectedOCT : $bean->expectedOCT = 0;
-		($inverter->expectedNOV) ? $bean->expectedNOV = $inverter->expectedNOV : $bean->expectedNOV = 0;
-		($inverter->expectedDEC) ? $bean->expectedDEC = $inverter->expectedDEC : $bean->expectedDEC = 0;
+		($device->expectedJAN) ? $bean->expectedJAN = $device->expectedJAN : $bean->expectedJAN = 0;
+		($device->expectedFEB) ? $bean->expectedFEB = $device->expectedFEB : $bean->expectedFEB = 0;
+		($device->expectedMAR) ? $bean->expectedMAR = $device->expectedMAR : $bean->expectedMAR = 0;
+		($device->expectedAPR) ? $bean->expectedAPR = $device->expectedAPR : $bean->expectedAPR = 0;
+		($device->expectedMAY) ? $bean->expectedMAY = $device->expectedMAY : $bean->expectedMAY = 0;
+		($device->expectedJUN) ? $bean->expectedJUN = $device->expectedJUN : $bean->expectedJUN = 0;
+		($device->expectedJUL) ? $bean->expectedJUL = $device->expectedJUL : $bean->expectedJUL = 0;
+		($device->expectedAUG) ? $bean->expectedAUG = $device->expectedAUG : $bean->expectedAUG = 0;
+		($device->expectedSEP) ? $bean->expectedSEP = $device->expectedSEP : $bean->expectedSEP = 0;
+		($device->expectedOCT) ? $bean->expectedOCT = $device->expectedOCT : $bean->expectedOCT = 0;
+		($device->expectedNOV) ? $bean->expectedNOV = $device->expectedNOV : $bean->expectedNOV = 0;
+		($device->expectedDEC) ? $bean->expectedDEC = $device->expectedDEC : $bean->expectedDEC = 0;
 		
 		//Store the bean
 		$id = R::store($bean);
@@ -796,52 +796,52 @@ class PDODataAdapter {
 	 */
 	public function readInverter($id) {
 		$bean = R::load('inverter',$id);
-		$inverter = new Inverter();
-		$inverter->id = $bean->id;
-		$inverter->deviceApi = $bean->deviceApi;
-		$inverter->type = $bean->type;
-		$inverter->name = $bean->name;
-		$inverter->description = $bean->description;
-		$inverter->liveOnFrontend = $bean->liveOnFrontend;
-		$inverter->graphOnFrontend = $bean->graphOnFrontend;
-		$inverter->initialkwh = $bean->initialkwh;
-		$inverter->producesSince = $bean->producesSince;
-		$inverter->expectedkwh = $bean->expectedkwh;
-		$inverter->heading = $bean->heading;
-		$inverter->correctionFactor = $bean->correctionFactor;
-		$inverter->comAddress = $bean->comAddress;
-		$inverter->comLog = $bean->comLog;
-		$inverter->syncTime = $bean->syncTime;
-		$inverter->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $inverter->pvoutputEnabled;
-		$inverter->pvoutputApikey = $bean->pvoutputApikey;
-		$inverter->pvoutputSystemId = $bean->pvoutputSystemId;
-		$inverter->pvoutputWSLTeamMember = $bean->pvoutputWSLTeamMember;
-		$inverter->state = $bean->state;
-		$inverter->refreshTime = (isset($bean->refreshTime) && $bean->refreshTime != "") ? $bean->refreshTime : $inverter->refreshTime;
-		$inverter->panels = $this->readPanelsByInverter($inverter->id);
+		$device = new Device();
+		$device->id = $bean->id;
+		$device->deviceApi = $bean->deviceApi;
+		$device->type = $bean->type;
+		$device->name = $bean->name;
+		$device->description = $bean->description;
+		$device->liveOnFrontend = $bean->liveOnFrontend;
+		$device->graphOnFrontend = $bean->graphOnFrontend;
+		$device->initialkwh = $bean->initialkwh;
+		$device->producesSince = $bean->producesSince;
+		$device->expectedkwh = $bean->expectedkwh;
+		$device->heading = $bean->heading;
+		$device->correctionFactor = $bean->correctionFactor;
+		$device->comAddress = $bean->comAddress;
+		$device->comLog = $bean->comLog;
+		$device->syncTime = $bean->syncTime;
+		$device->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $device->pvoutputEnabled;
+		$device->pvoutputApikey = $bean->pvoutputApikey;
+		$device->pvoutputSystemId = $bean->pvoutputSystemId;
+		$device->pvoutputWSLTeamMember = $bean->pvoutputWSLTeamMember;
+		$device->state = $bean->state;
+		$device->refreshTime = (isset($bean->refreshTime) && $bean->refreshTime != "") ? $bean->refreshTime : $device->refreshTime;
+		$device->panels = $this->readPanelsByInverter($device->id);
 
 		
 
-		($bean->expectedJAN!='NaN') ? $inverter->expectedJAN = $bean->expectedJAN : $inverter->expectedJAN = 0;
-		($bean->expectedFEB!='NaN') ?  $inverter->expectedFEB = $bean->expectedFEB : $inverter->expectedFEB = 0;
-		($bean->expectedMAR!='NaN') ?  $inverter->expectedMAR = $bean->expectedMAR : $inverter->expectedMAR = 0;
-		($bean->expectedAPR!='NaN') ?  $inverter->expectedAPR = $bean->expectedAPR : $inverter->expectedAPR = 0;
-		($bean->expectedMAY!='NaN') ?  $inverter->expectedMAY = $bean->expectedMAY : $inverter->expectedMAY = 0;
-		($bean->expectedJUN!='NaN') ?  $inverter->expectedJUN = $bean->expectedJUN : $inverter->expectedJUN = 0;
-		($bean->expectedJUL!='NaN') ?  $inverter->expectedJUL = $bean->expectedJUL : $inverter->expectedJUL = 0;
-		($bean->expectedAUG!='NaN') ?  $inverter->expectedAUG = $bean->expectedAUG : $inverter->expectedAUG = 0;
-		($bean->expectedSEP!='NaN') ?  $inverter->expectedSEP = $bean->expectedSEP : $inverter->expectedSEP = 0;
-		($bean->expectedOCT!='NaN') ?  $inverter->expectedOCT = $bean->expectedOCT : $inverter->expectedOCT = 0;
-		($bean->expectedNOV!='NaN') ?  $inverter->expectedNOV = $bean->expectedNOV : $inverter->expectedNOV = 0;
-		($bean->expectedDEC!='NaN') ?  $inverter->expectedDEC = $bean->expectedDEC : $inverter->expectedDEC = 0;
+		($bean->expectedJAN!='NaN') ? $device->expectedJAN = $bean->expectedJAN : $device->expectedJAN = 0;
+		($bean->expectedFEB!='NaN') ? $device->expectedFEB = $bean->expectedFEB : $device->expectedFEB = 0;
+		($bean->expectedMAR!='NaN') ? $device->expectedMAR = $bean->expectedMAR : $device->expectedMAR = 0;
+		($bean->expectedAPR!='NaN') ? $device->expectedAPR = $bean->expectedAPR : $device->expectedAPR = 0;
+		($bean->expectedMAY!='NaN') ? $device->expectedMAY = $bean->expectedMAY : $device->expectedMAY = 0;
+		($bean->expectedJUN!='NaN') ? $device->expectedJUN = $bean->expectedJUN : $device->expectedJUN = 0;
+		($bean->expectedJUL!='NaN') ? $device->expectedJUL = $bean->expectedJUL : $device->expectedJUL = 0;
+		($bean->expectedAUG!='NaN') ? $device->expectedAUG = $bean->expectedAUG : $device->expectedAUG = 0;
+		($bean->expectedSEP!='NaN') ? $device->expectedSEP = $bean->expectedSEP : $device->expectedSEP = 0;
+		($bean->expectedOCT!='NaN') ? $device->expectedOCT = $bean->expectedOCT : $device->expectedOCT = 0;
+		($bean->expectedNOV!='NaN') ? $device->expectedNOV = $bean->expectedNOV : $device->expectedNOV = 0;
+		($bean->expectedDEC!='NaN') ? $device->expectedDEC = $bean->expectedDEC : $device->expectedDEC = 0;
 		
-		$inverter->plantpower = 0;
-		if ($inverter->panels != null && is_array($inverter->panels)) {
-			foreach ($inverter->panels as $panel) {
-				$inverter->plantpower += ($panel->amount * $panel->wp);
+		$device->plantpower = 0;
+		if ($device->panels != null && is_array($device->panels)) {
+			foreach ($device->panels as $panel) {
+				$device->plantpower += ($panel->amount * $panel->wp);
 			}
 		}
-		return $inverter;
+		return $device;
 	}
 	/**
 	 *
@@ -849,50 +849,50 @@ class PDODataAdapter {
 	private function readInverters() {
 		$list = array();
 		foreach(R::find('inverter') as $bean) {
-			$inverter = new Inverter();
-			$inverter->id = $bean->id;
-			$inverter->deviceApi = $bean->deviceApi;
-			$inverter->type = $bean->type;
-			$inverter->name = $bean->name;
-			$inverter->description = $bean->description;
-			$inverter->liveOnFrontend = $bean->liveOnFrontend;
-			$inverter->graphOnFrontend = $bean->graphOnFrontend;
-			$inverter->initialkwh = $bean->initialkwh;
-			$inverter->producesSince = $bean->producesSince;
-			$inverter->expectedkwh = $bean->expectedkwh;
-			$inverter->heading = $bean->heading;
-			$inverter->correctionFactor = $bean->correctionFactor;
-			$inverter->comAddress = $bean->comAddress;
-			$inverter->comLog = $bean->comLog;
-			$inverter->syncTime = $bean->syncTime;
-			$inverter->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $inverter->pvoutputEnabled;
-			$inverter->pvoutputApikey = $bean->pvoutputApikey;
-			$inverter->pvoutputSystemId = $bean->pvoutputSystemId;
-			$inverter->state = $bean->state;
-			$inverter->refreshTime = (isset($bean->refreshTime) && $bean->refreshTime != "") ? $bean->refreshTime : $inverter->refreshTime;
-			$inverter->panels = $this->readPanelsByInverter($inverter->id);
+			$device = new Device();
+			$device->id = $bean->id;
+			$device->deviceApi = $bean->deviceApi;
+			$device->type = $bean->type;
+			$device->name = $bean->name;
+			$device->description = $bean->description;
+			$device->liveOnFrontend = $bean->liveOnFrontend;
+			$device->graphOnFrontend = $bean->graphOnFrontend;
+			$device->initialkwh = $bean->initialkwh;
+			$device->producesSince = $bean->producesSince;
+			$device->expectedkwh = $bean->expectedkwh;
+			$device->heading = $bean->heading;
+			$device->correctionFactor = $bean->correctionFactor;
+			$device->comAddress = $bean->comAddress;
+			$device->comLog = $bean->comLog;
+			$device->syncTime = $bean->syncTime;
+			$device->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $device->pvoutputEnabled;
+			$device->pvoutputApikey = $bean->pvoutputApikey;
+			$device->pvoutputSystemId = $bean->pvoutputSystemId;
+			$device->state = $bean->state;
+			$device->refreshTime = (isset($bean->refreshTime) && $bean->refreshTime != "") ? $bean->refreshTime : $device->refreshTime;
+			$device->panels = $this->readPanelsByInverter($device->id);
 
 		
-		($bean->expectedJAN!='NaN') ? $inverter->expectedJAN = $bean->expectedJAN : $inverter->expectedJAN = 0;
-		($bean->expectedFEB!='NaN' ) ?$inverter->expectedFEB = $bean->expectedFEB : $inverter->expectedFEB = 0;
-		($bean->expectedMAR!='NaN' ) ?$inverter->expectedMAR = $bean->expectedMAR : $inverter->expectedMAR = 0;
-		($bean->expectedAPR!='NaN' ) ?$inverter->expectedAPR = $bean->expectedAPR : $inverter->expectedAPR = 0;
-		($bean->expectedMAY!='NaN' ) ?$inverter->expectedMAY = $bean->expectedMAY : $inverter->expectedMAY = 0;
-		($bean->expectedJUN!='NaN' ) ?$inverter->expectedJUN = $bean->expectedJUN : $inverter->expectedJUN = 0;
-		($bean->expectedJUL!='NaN' ) ?$inverter->expectedJUL = $bean->expectedJUL : $inverter->expectedJUL = 0;
-		($bean->expectedAUG!='NaN' ) ?$inverter->expectedAUG = $bean->expectedAUG : $inverter->expectedAUG = 0;
-		($bean->expectedSEP!='NaN' ) ?$inverter->expectedSEP = $bean->expectedSEP : $inverter->expectedSEP = 0;
-		($bean->expectedOCT!='NaN' ) ?$inverter->expectedOCT = $bean->expectedOCT : $inverter->expectedOCT = 0;
-		($bean->expectedNOV!='NaN' ) ?$inverter->expectedNOV = $bean->expectedNOV : $inverter->expectedNOV = 0;
-		($bean->expectedDEC!='NaN' ) ?$inverter->expectedDEC = $bean->expectedDEC : $inverter->expectedDEC = 0;
+		($bean->expectedJAN!='NaN' ) ? $device->expectedJAN = $bean->expectedJAN : $device->expectedJAN = 0;
+		($bean->expectedFEB!='NaN' ) ? $device->expectedFEB = $bean->expectedFEB : $device->expectedFEB = 0;
+		($bean->expectedMAR!='NaN' ) ? $device->expectedMAR = $bean->expectedMAR : $device->expectedMAR = 0;
+		($bean->expectedAPR!='NaN' ) ? $device->expectedAPR = $bean->expectedAPR : $device->expectedAPR = 0;
+		($bean->expectedMAY!='NaN' ) ? $device->expectedMAY = $bean->expectedMAY : $device->expectedMAY = 0;
+		($bean->expectedJUN!='NaN' ) ? $device->expectedJUN = $bean->expectedJUN : $device->expectedJUN = 0;
+		($bean->expectedJUL!='NaN' ) ? $device->expectedJUL = $bean->expectedJUL : $device->expectedJUL = 0;
+		($bean->expectedAUG!='NaN' ) ? $device->expectedAUG = $bean->expectedAUG : $device->expectedAUG = 0;
+		($bean->expectedSEP!='NaN' ) ? $device->expectedSEP = $bean->expectedSEP : $device->expectedSEP = 0;
+		($bean->expectedOCT!='NaN' ) ? $device->expectedOCT = $bean->expectedOCT : $device->expectedOCT = 0;
+		($bean->expectedNOV!='NaN' ) ? $device->expectedNOV = $bean->expectedNOV : $device->expectedNOV = 0;
+		($bean->expectedDEC!='NaN' ) ? $device->expectedDEC = $bean->expectedDEC : $device->expectedDEC = 0;
 		
-			$inverter->plantpower = 0;
-			foreach ($inverter->panels as $panel) {
+			$device->plantpower = 0;
+			foreach ($device->panels as $panel) {
 				//$panel = new Panel();
-				$inverter->plantpower += ($panel->amount * $panel->wp);
+				$device->plantpower += ($panel->amount * $panel->wp);
 			}
 
-			$list[] = $inverter;
+			$list[] = $device;
 		}
 
 		return $list;
@@ -950,11 +950,11 @@ class PDODataAdapter {
 	}
 	/**
 	 *
-	 * @param unknown_type $inverterId
+	 * @param unknown_type $deviceId
 	 */
-	private function readPanelsByInverter($inverterId) {
+	private function readPanelsByInverter($deviceId) {
 		$list = array();
-		$beans = R::find('panel',' inverterId = :id ', array( ":id"=>$inverterId ));
+		$beans = R::find('panel',' inverterId = :id ', array( ":id"=>$deviceId ));
 		foreach ($beans as $bean){
 			$panel = new Panel();
 			$panel->id = $bean->id;
@@ -1558,9 +1558,9 @@ class PDODataAdapter {
 				// create string to get month percentage
 				$expectedMonthString = 'expected'.strtoupper(date('M', strtotime($compareMonth."/01/".date("Y"))));
 
-				$inverter = $config->getInverterConfig($invtnum);
-				$expectedPerc = $inverter->$expectedMonthString;
-				$expectedkwhYear = $inverter->expectedkwh;
+				$device = $config->getDeviceConfig($invtnum);
+				$expectedPerc = $device->$expectedMonthString;
+				$expectedkwhYear = $device->expectedkwh;
 
 				// calculate month kWh = (year/100*month perc)
 				$expectedKWhMonth = ($expectedkwhYear / 100)*$expectedPerc;
@@ -1651,9 +1651,7 @@ class PDODataAdapter {
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
 	 */
 	public function getYearSumPowerPerMonth($invtnum,$startDate){
-		$inverter = array();
-		
-		$inverter = array();
+		$device = array();
 		$beginEndDate = Util::getBeginEndDate('year', 1,$startDate);
 		if ($invtnum>0){
 			$beans = R::getAll("SELECT INV, SUM(KWH) as KWH, time 
@@ -1673,20 +1671,20 @@ class PDODataAdapter {
 		}else{
 			$firstMonth = date("n",$beans[0]['time']);
 			$lastMonth = date("n",$beans[count($beans)-1]['time']);
-			$inverter = $this->readInverter($invtnum);
-			$expected = $inverter->expectedkwh;
-			$invExp[0] = ($expected/100)*$inverter->expectedJAN;
-			$invExp[1] = ($expected/100)*$inverter->expectedFEB;
-			$invExp[2] = ($expected/100)*$inverter->expectedMAR;
-			$invExp[3] = ($expected/100)*$inverter->expectedAPR;
-			$invExp[4] = ($expected/100)*$inverter->expectedMAY;
-			$invExp[5] = ($expected/100)*$inverter->expectedJUN;
-			$invExp[6] = ($expected/100)*$inverter->expectedJUL;
-			$invExp[7] = ($expected/100)*$inverter->expectedAUG;
-			$invExp[8] = ($expected/100)*$inverter->expectedSEP;
-			$invExp[9] = ($expected/100)*$inverter->expectedOCT;
-			$invExp[10] = ($expected/100)*$inverter->expectedNOV;
-			$invExp[11] = ($expected/100)*$inverter->expectedDEC;
+			$device = $this->readInverter($invtnum);
+			$expected = $device->expectedkwh;
+			$invExp[0] = ($expected/100)*$device->expectedJAN;
+			$invExp[1] = ($expected/100)*$device->expectedFEB;
+			$invExp[2] = ($expected/100)*$device->expectedMAR;
+			$invExp[3] = ($expected/100)*$device->expectedAPR;
+			$invExp[4] = ($expected/100)*$device->expectedMAY;
+			$invExp[5] = ($expected/100)*$device->expectedJUN;
+			$invExp[6] = ($expected/100)*$device->expectedJUL;
+			$invExp[7] = ($expected/100)*$device->expectedAUG;
+			$invExp[8] = ($expected/100)*$device->expectedSEP;
+			$invExp[9] = ($expected/100)*$device->expectedOCT;
+			$invExp[10] = ($expected/100)*$device->expectedNOV;
+			$invExp[11] = ($expected/100)*$device->expectedDEC;
 
 			$ii	= 0;
 			$cumExp = 0;
@@ -2031,9 +2029,9 @@ class PDODataAdapter {
 	 * @return unknown|Ambigous <multitype:, unknown>
 	 */
 
-	//(1,"index","live",$inverter->id,"trend");
+	//(1,"index","live",$device->id,"trend");
 
-	public function readCache($group="",$page="",$module="",$inverterId=0,$key=""){
+	public function readCache($group="",$page="",$module="",$deviceId=0,$key=""){
 		$where = array();
 		//
 		// build Query finds
@@ -2062,21 +2060,21 @@ class PDODataAdapter {
 		($where[count($where)-1]!='' AND $where[count($where)-1]!=' AND ')? $where[] = ' AND ' : $where = $where;
 
 		//
-		//    $inverterId
+		//    $deviceId
 		//
 		//check if we are looking for a $page
-		if ($inverterId != ""){
-			$where[] = " `key` LIKE '%-". $inverterId."' ";
+		if ($deviceId != ""){
+			$where[] = " `key` LIKE '%-". $deviceId."' ";
 		}
 		//check if we need to add a 'AND'
 		($where[count($where)-1]!='' AND $where[count($where)-1]!=' AND ')? $where[] = ' AND ' : $where = $where;
 
 
 		//
-		//    $inverterId
+		//    $deviceId
 		//
 		//check if we are looking for a $page
-		if ($inverterId != ""){
+		if ($deviceId != ""){
 			$where[] = " `key` like '". $key."-%' ";
 		}
 
@@ -2128,19 +2126,19 @@ class PDODataAdapter {
 
 		$liveBean = array();
 
-		foreach ($config->inverters as $inverter){
-			if($inverter->type=="production"){
-				$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$inverter->id));
+		foreach ($config->device as $device){
+			if($device->type=="production"){
+				$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
 
 				$oInverter = 	array();
 
 
 				if(Util::isSunDown(Session::getConfig())){
 					$live = new Live();
-					$live->name = $inverter->name;
+					$live->name = $device->name;
 					$live->status = 'offline';
 					$live->time = date("H:i:s");
-					$live->INV = $inverter->id;
+					$live->INV = $device->id;
 					$live->GP = number_format(0,0,',','');
 					$live->GA = number_format(0,0,',','');
 					$live->GV = number_format(0,0,',','');
@@ -2158,7 +2156,7 @@ class PDODataAdapter {
 					$live->trend = _("equal");
 					$live->avgPower = number_format(0,2,',','');
 				}else{
-					$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$inverter->id));
+					$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
 
 					if($liveBean['I1P']>0 AND $liveBean['I2P']==0){
 						$ITP = round($liveBean['I1P'],2);
@@ -2173,7 +2171,7 @@ class PDODataAdapter {
 					$EFF += $liveBean['EFF'];
 
 					$live = new Live();
-					$live->name = $inverter->name;
+					$live->name = $device->name;
 					$live->status = 'online';
 					$live->time = date("H:i:s",$liveBean['time']);
 					$live->INV = $liveBean['INV'];
@@ -2192,9 +2190,9 @@ class PDODataAdapter {
 					$live->I2Ratio = ($liveBean['I2Ratio']<1000) ? number_format($liveBean['I2Ratio'],1,'.','') : number_format($liveBean['I2Ratio'],0,'','');
 					$live->IP = ($liveBean['IP']<1000) ? number_format($liveBean['IP'],1,'.','') : number_format($liveBean['IP'],0,'','');
 					$live->EFF = ($liveBean['EFF']<1000) ? number_format($liveBean['EFF'],1,'.','') : number_format($liveBean['EFF'],0,'','');
-					//var_dump($this->readCache("","index","live",$inverter->id,"trend"));
+					//var_dump($this->readCache("","index","live",$device->id,"trend"));
 						
-					$avgPower = $this->readCache("","index","live",$inverter->id,"trend");
+					$avgPower = $this->readCache("","index","live",$device->id,"trend");
 					$live->trend = $avgPower[0]['value'];
 				}
 
@@ -2224,10 +2222,10 @@ class PDODataAdapter {
 		$config = Session::getConfig();
 		// init var
 		$sumPlantPower = 0;
-		// loop through inverters
-		foreach ($config->inverters as $inverter) {
-			//sum plantpower of all inverters
-			$sumPlantPower += $inverter->plantpower/1000;
+		// loop through devices
+		foreach ($config->devices as $device) {
+			//sum plantpower of all devices
+			$sumPlantPower += $device->plantpower/1000;
 		}
 		//echo "SELECT INV,COUNT(kwh) as countkWh,MAX(kwh) AS kWh, SUM(kwh) AS sumkWh, time AS date FROM energy WHERE INV = :INV GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." ORDER BY time DESC limit 0,1";
 		// type to lowercase
@@ -2382,8 +2380,8 @@ class PDODataAdapter {
 		}
 
 
-		foreach ($config->inverters as $inverter){
-			$initialkwh += floatval($inverter->initialkwh);
+		foreach ($config->devices as $device){
+			$initialkwh += floatval($device->initialkwh);
 		}
 		$tempTotal = 0;
 		$totalEnergyOverallTotal = number_format($initialkwh + floatval($totalEnergyBeansOverall[0]['sumkWh']),2,',','');
@@ -2591,30 +2589,30 @@ class PDODataAdapter {
 	 * changeInverterStatus
 	 *
 	 * @param int $status // 1=active, 0=sleep
-	 * @param Inverter $inverter // Inverter object
+	 * @param Device $device // Device object
 	 * @return boolean // changed yes or no;
 	 */
 
-	function changeInverterStatus(Inverter $inverter, $state){
-		// get inverter bean
-		$bean = R::load('inverter', $inverter->id);
+	function changeInverterStatus(Device $device, $state){
+		// get device bean
+		$bean = R::load('inverter', $device->id);
 
 		// look if we have a bean
 		if (!$bean){
 			// If we can't find the bean there is a serious problem exit!
-			HookHandler::getInstance()->fire("onError", "changeInverterStatus: Could not find inverter bean for id:" . $inverter->id);
+			HookHandler::getInstance()->fire("onError", "changeInverterStatus: Could not find device bean for id:" . $device->id);
 			return null;
 		}
 
-		// check if we are going to change the inverter status
+		// check if we are going to change the device status
 		$changed = false;
 		if($bean->state != $state){
-			// oo we are going to change the inverter, so we set it to TRUE
+			// oo we are going to change the device, so we set it to TRUE
 			$changed = true;
-			// change the bean to the new status for this inverter
+			// change the bean to the new status for this device
 			$bean->state = $state;
 
-			//Store the bean with the new inverter status
+			//Store the bean with the new device status
 			R::store($bean);
 		}
 		return $changed;
@@ -2623,14 +2621,14 @@ class PDODataAdapter {
 	/**
 	 * setDeviceType
 	 *
-	 * @param Inverter $inverter // Inverter object
+	 * @param Device $device // Device object
 	 * @return boolean // changed true;
 	 */
-	function setDeviceType(Inverter $inverter){
-		// get inverter bean
-		$bean = R::load('inverter', $inverter->id);
+	function setDeviceType(Device $device){
+		// get device bean
+		$bean = R::load('inverter', $device->id);
 		$bean->type = "production";
-		//Store the bean with the new inverter type
+		//Store the bean with the new device type
 		R::store($bean);
 		return true;
 	}

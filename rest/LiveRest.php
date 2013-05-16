@@ -22,22 +22,22 @@ class LiveRest {
 	
 	public function GET($request, $options) {
 		$result = array();
-		foreach (Session::getConfig()->inverters as $inverter) {
-			$type = $inverter->type;
+		foreach (Session::getConfig()->devices as $device) {
+			$type = $device->type;
 			$live = null;
 			switch ($type) {
 				case "production":
-					$live = PDODataAdapter::getInstance()->readLiveInfo($inverter->id);					
+					$live = PDODataAdapter::getInstance()->readLiveInfo($device->id);					
 					break;
 				case "metering":
 					$smartMeterAddon = new SmartMeterAddon();
-					$live = $smartMeterAddon->readLiveSmartMeterInfo($inverter->id);					
+					$live = $smartMeterAddon->readLiveSmartMeterInfo($device->id);					
 					break;
 				case "weather":
-					$live = $this->weatherService->getLastWeather($inverter);					
+					$live = $this->weatherService->getLastWeather($device);					
 					break;
 			}
-			$result[] = array("type"=>$type, "id"=>$inverter->id, "name"=>$inverter->name, "data"=>$live);
+			$result[] = array("type"=>$type, "id"=>$device->id, "name"=>$device->name, "data"=>$live);
 		}
 		return $result;
 	}

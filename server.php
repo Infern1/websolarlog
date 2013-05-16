@@ -90,8 +90,8 @@ try {
 			$slimConfig['lat'] = number_format($config->latitude,2,'.','');
 			$slimConfig['long'] = number_format($config->longitude,2,'.','');
 			
-			foreach ($config->inverters as $inverter){
-				foreach ($inverter->panels as $panel){
+			foreach ($config->devices as $device){
+				foreach ($device->panels as $panel){
 					$panels[] = array(
 						'id'=>$panel->id,
 						'description'=>$panel->description,
@@ -103,9 +103,9 @@ try {
 					);
 				}
 				$inverters[] = array(
-					'name'=>$inverter->name,
-					'expectedKWH'=>$inverter->expectedkwh,
-					'plantPower'=>$inverter->plantpower,
+					'name'=>$device->name,
+					'expectedKWH'=>$device->expectedkwh,
+					'plantPower'=>$device->plantpower,
 					'panels'=>$panels
 				);
 			}
@@ -158,9 +158,9 @@ try {
 			$util = new Util();
 			
 			$data['sunInfo'] = $util->getSunInfo($config, $date);
-			foreach ($config->inverters as $inverter){
-				if($inverter->type=='production'){
-					foreach ($inverter->panels as $panel){
+			foreach ($config->devices as $device){
+				if($device->type=='production'){
+					foreach ($device->panels as $panel){
 						$panels[] = array(
 							'roofOrientation'=>$panel->roofOrientation,
 							'roofPitch'=>$panel->roofPitch,
@@ -168,7 +168,7 @@ try {
 						);
 					}
 					$inverters[] = array(
-						'plantPower'=>$inverter->plantpower,
+						'plantPower'=>$device->plantpower,
 						'panels'=>$panels
 					);
 				}
@@ -239,9 +239,9 @@ try {
 				$options[] =array( "value" => "Today","name"=> _("Day"));
 			}
 	
-			foreach ($config->inverters as $inverter){
-				if($inverter->graphOnFrontend){
-					$data['inverters'][] = array('id'=>$inverter->id,'name'=>$inverter->name);
+			foreach ($config->devices as $device){
+				if($device->graphOnFrontend){
+					$data['inverters'][] = array('id'=>$device->id,'name'=>$device->name);
 				}
 			}
 			$lang = array();
@@ -295,7 +295,7 @@ try {
 			$energy=array();
 			$maxPower=array();
 			$minMaxEnergyYear=array();
-			foreach ($config->inverters as $device){
+			foreach ($config->devices as $device){
 				if($device->type == 'production'){
 					$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($device->id,$date);
 					$energy[] = $dataAdapter->getYearEnergyPerMonth($device->id,$date);
@@ -331,7 +331,7 @@ try {
 			break;
 		case 'getPageMonthValues':
 			
-			foreach ($config->inverters as $device){
+			foreach ($config->devices as $device){
 				$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($device->id, $date);
 				$maxEnergy[] = $dataAdapter->getMonthEnergyPerDay($device->id, $date);
 				$minMaxEnergyMonth[] = $dataAdapter->getMaxMinEnergyMonth($device->id,$date);
@@ -366,7 +366,7 @@ try {
 			$maxEnergy = array();
 			$maxPower = array();
 			
-			foreach ($config->inverters as $device){
+			foreach ($config->devices as $device){
 				$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($device->id);
 				$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($device->id);
 			}
@@ -400,7 +400,7 @@ try {
 			$lang['expected'] 		= _("expected");
 			$data['lang'] = $lang;
 			
-			foreach ($config->inverters as $device){
+			foreach ($config->devices as $device){
 				$inverter[] = array("name"=>$device->name,"id"=>$device->id);
 			}
 			
@@ -420,7 +420,7 @@ try {
 			$compareYear = Common::getValue('compareYear', 0);
 			$invtnum = Common::getValue('invtnum', 0);
 			
-			foreach ($config->inverters as $device){
+			foreach ($config->devices as $device){
 				$inverter[] = array("name"=>$device->name,"id"=>$device->id);
 			}
 	

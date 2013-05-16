@@ -15,7 +15,7 @@ class MailAddon {
 	public function onInverterStartup($args) {
 		/*
 		$hookname = $args[0];
-		$inverter = $args[1];
+		$device = $args[1];
 		if (Session::getConfig()->emailReports) {
 			Common::sendMail("WSL :: Startup", "Startup test", Session::getConfig());
 		}
@@ -24,10 +24,10 @@ class MailAddon {
 	
 	public function onInverterShutdown($args) {
 		$hookname = $args[0];
-		$inverter = $args[1];
+		$device = $args[1];
 		if (Session::getConfig()->emailReports) {
-			$title = "WSL :: Shutdown " . $inverter->name;
-			$body = $this->createReport($inverter);
+			$title = "WSL :: Shutdown " . $device->name;
+			$body = $this->createReport($device);
 			
 			Common::sendMail($title, $body, Session::getConfig());		
 		}
@@ -50,9 +50,9 @@ class MailAddon {
 		
 	}
 	
-	private function createInverterEventReport(Inverter $inverter, $eventType, $eventText) {
+	private function createInverterEventReport(Device $device, $eventType, $eventText) {
 		$report = file_get_contents(Session::getBasePath() . "/reports/email/inverterEvent_en.inc");
-		$report = str_replace("{{inverter.name}}", $inverter->name, $report);
+		$report = str_replace("{{inverter.name}}", $device->name, $report);
 		$report = str_replace("{{event.type}}", $eventType, $report);
 		$report = str_replace("{{event.text}}", $eventText, $report);
 		return $report;
@@ -65,10 +65,10 @@ class MailAddon {
 		return $report;
 	}
 	
-	private function createReport(Inverter $inverter) {
+	private function createReport(Device $device) {
 		$adapter = PDODataAdapter::getInstance();
-		$maxPowerToday = $adapter->readMaxPowerToday($inverter->id);
-		$arHistory = $adapter->readHistory($inverter->id, null);
+		$maxPowerToday = $adapter->readMaxPowerToday($device->id);
+		$arHistory = $adapter->readHistory($device->id, null);
 		
 		$first = reset($arHistory);
 		$last = end($arHistory);
@@ -85,7 +85,7 @@ class MailAddon {
 		$maxwatt = round($maxPowerToday->GP, 0);
 		
 		$report = file_get_contents(Session::getBasePath() . "/reports/email/inverterShutdown_en.inc");
-		$report = str_replace("{{inverter.name}}", $inverter->name, $report);
+		$report = str_replace("{{inverter.name}}", $device->name, $report);
 		$report = str_replace("{{totalkwh}}", $production, $report);
 		$report = str_replace("{{maxwatt}}", $maxwatt, $report);
 		$report = str_replace("{{maxtime}}", date('h:n', $maxPowerToday->time), $report);

@@ -7,12 +7,12 @@ class PvOutputAddon {
 	public function onJob($args) {
 		$beans = $this->getUnsendHistory();
 		foreach ($beans as $live) {
-			$inverter= Session::getConfig()->getInverterConfig($live->INV);
-			if ($inverter->pvoutputEnabled) {
+			$device= Session::getConfig()->getDeviceConfig($live->INV);
+			if ($device->pvoutputEnabled) {
 				$date = date("Ymd", $live->time);
 				$time = date("H:i", $live->time);
 				
-				$result = $this->sendStatus($inverter, $date, $time, $live->KWHT, $live->GP, $live->GV);
+				$result = $this->sendStatus($device, $date, $time, $live->KWHT, $live->GP, $live->GV);
 				if ($result['info']['http_code'] == "200") {
 					$live->pvoutput = 1;
 					R::store($live);
@@ -35,7 +35,7 @@ class PvOutputAddon {
 		return $beans;
 	}
 	
-	private function sendStatus($inverter, $date, $time, $KWHDtot, $GPtot, $GV) {
+	private function sendStatus(Device $device, $date, $time, $KWHDtot, $GPtot, $GV) {
 		$headerInfo = array();
 		try {
 			$vars = array(
@@ -52,8 +52,8 @@ class PvOutputAddon {
 			);
 		
 			// header info
-			$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $inverter->pvoutputApikey;
-			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: " . $inverter->pvoutputSystemId;
+			$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
+			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: " . $device->pvoutputSystemId;
 			
 			//$pvoutput = shell_exec('curl -d "d='.$now.'" -d "t='.$time.'" -d "c1=0" -d "v1='.$KWHDtot.'" -d "v2='.$GPtot.'" -d "v5='.$INVT.'" -d "v6='.$GV.'" -H "X-Pvoutput-Apikey: '.$APIKEY.'" -H "X-Pvoutput-SystemId: '.$SYSID.'" http://pvoutput.org/service/r2/addstatus.jsp &');
 			$url = "http://pvoutput.org/service/r2/addstatus.jsp";
@@ -115,13 +115,13 @@ class PvOutputAddon {
 	public function getTeamStatusFromDB($device) {
 		$bean = R::load('inverter',$device->id);
 	
-		$inverter = new Inverter();
-		$inverter->id = $bean->id;
-		$inverter->name = $bean->name;
-		($inverter->pvoutputApikey) ? $inverter->pvoutputApikey = true : $inverter->pvoutputApikey = false;
-		($inverter->pvoutputSystemId) ? $inverter->pvoutputSystemId = true : $inverter->pvoutputSystemId = false;
-		$inverter->pvoutputWSLTeamMember = $bean->pvoutputWSLTeamMember;
-		return $inverter;
+		$device = new Device();
+		$device->id = $bean->id;
+		$device->name = $bean->name;
+		($device->pvoutputApikey) ? $device->pvoutputApikey = true : $device->pvoutputApikey = false;
+		($device->pvoutputSystemId) ? $device->pvoutputSystemId = true : $device->pvoutputSystemId = false;
+		$device->pvoutputWSLTeamMember = $bean->pvoutputWSLTeamMember;
+		return v;
 	}
 	
 	

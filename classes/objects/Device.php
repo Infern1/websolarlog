@@ -1,7 +1,6 @@
 <?php
 
-class Inverter
-{
+class Device {
     public $id;
     public $deviceApi;
     public $type;

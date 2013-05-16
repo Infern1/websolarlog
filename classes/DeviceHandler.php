@@ -123,11 +123,11 @@ class DeviceHandler {
 	/**
 	 * We need to get the device from the config else we keep talking to
 	 * the device object set during the start off the queueServer
-	 * @param Inverter $inverter
-	 * @return Inverter
+	 * @param Device $device
+	 * @return Device
 	 */
-	public function getFreshDevice(Inverter $inverter) {
-		return Session::getConfig()->getInverterConfig($inverter->id);
+	public function getFreshDevice(Device $device) {
+		return Session::getConfig()->getDeviceConfig($device->id);
 	}
 }
 ?>

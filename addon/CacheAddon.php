@@ -39,7 +39,7 @@ class CacheAddon {
 	
 	public function averagePower($args) {
 		$timestamp = time();
-		foreach (Session::getConfig()->inverters as $device){
+		foreach (Session::getConfig()->devices as $device){
 
 			$deviceNum = $device->id;
 			

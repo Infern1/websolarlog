@@ -1,11 +1,11 @@
 <?php
 class ProductionDeviceHandler {
 	
-	public static function handleLive(QueueItem $item, Inverter $device) {
+	public static function handleLive(QueueItem $item, Device $device) {
 		// Get the api we need to use
 		$api = $device->getApi(Session::getConfig());
 		
-		// Retrieve the inverter data
+		// Retrieve the device data
 		$live = $api->getLiveData();
 		
 		// Set some variables
@@ -32,7 +32,7 @@ class ProductionDeviceHandler {
 		}
 	}
 	
-	public static function handleHistory(QueueItem $item, Inverter $device) {
+	public static function handleHistory(QueueItem $item, Device $device) {
 		// Only create history when the device is online
 		if ($device->state == 1) {
 			$live = PDODataAdapter::getInstance()->readLiveInfo($device->id);
@@ -48,17 +48,17 @@ class ProductionDeviceHandler {
 		}
 	}
 	
-	public static function handleDeviceHistory(QueueItem $item, Inverter $device) {
+	public static function handleDeviceHistory(QueueItem $item, Device $device) {
 		// Get the api we need to use
 		$api = $device->getApi(Session::getConfig());
 	
-		// Retrieve the inverter data
+		// Retrieve the device data
 		$deviceHistoryList = $api->getHistoryData();
 		
 		// Did we get an result?
 		if ($deviceHistoryList == null) {
 			if (Session::getConfig()->debugmode) {
-				HookHandler::getInstance()->fire("onDebug", "DeviceHistory nothing returned by inverter");
+				HookHandler::getInstance()->fire("onDebug", "DeviceHistory nothing returned by device");
 			}
 			return; // Nothing to do
 		}
@@ -77,18 +77,18 @@ class ProductionDeviceHandler {
 			" records from history off device " . $device->name . ". There are " . $notProcessed .  " unprocessed lines.\n");
 	}
 
-	public static function handleEnergy(QueueItem $item, Inverter $device) {
+	public static function handleEnergy(QueueItem $item, Device $device) {
 		HookHandler::getInstance()->fire("onEnergy", $device, $item->time);
 	}
 
-	public static function handleInfo(QueueItem $item, Inverter $device) {
+	public static function handleInfo(QueueItem $item, Device $device) {
 		$info = trim($device->getApi(Session::getConfig())->getInfo());
 		if ($info != "") {
 			HookHandler::getInstance()->fire("onInverterInfo", $device, $info);
 		}
 	}
 	
-	public static function handleAlarm(QueueItem $item, Inverter $device) {
+	public static function handleAlarm(QueueItem $item, Device $device) {
 		$alarm = trim($device->getApi(Session::getConfig())->getAlarms());
 		if ($alarm != "") {
 			$event = new Event($device->id, time(), 'Alarm', Util::formatEvent($alarm));

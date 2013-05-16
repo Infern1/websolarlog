@@ -29,10 +29,10 @@ class LiveService {
 	
 	/**
 	 * Retrieve object for an device
-	 * @param Inverter $device
+	 * @param Device $device
 	 * @return Live
 	 */
-	public function getLiveByDevice(Inverter $device) {
+	public function getLiveByDevice(Device $device) {
 		$bObject = R::findOne( self::$tbl, ' INV = :deviceId ', array("deviceId"=>$device->id));
 		return $this->toObject($bObject);
 	}

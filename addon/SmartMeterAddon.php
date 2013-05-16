@@ -2,13 +2,16 @@
 class SmartMeterAddon {
 	private $adapter;
 	private $config;
+	private $liveSmartMeterService;
 
 	function __construct() {
 		$this->adapter = PDODataAdapter::getInstance();
 		$this->config = Session::getConfig();
+		$this->liveSmartMeterService = new LiveSmartMeterService();
 	}
 
 	function __destruct() {
+		$this->liveSmartMeterService = null;
 		$this->config = null;
 		$this->adapter = null;
 	}
@@ -18,28 +21,28 @@ class SmartMeterAddon {
 	 * @param unknown $args
 	 */
 	public function onSmartMeterHistory($args) {
-		$inverter = $args[1];
+		$device = $args[1];
 		$live = $args[2];
 		$timestamp = $args[3];
-		$this->addSmartMeterHistory($inverter->id, $live, $timestamp);
+		$this->addSmartMeterHistory($device->id, $live, $timestamp);
 
-		HookHandler::getInstance()->fire("newHistory", $inverter, $timestamp);
+		HookHandler::getInstance()->fire("newHistory", $device, $timestamp);
 
 		// We are live, but db things offline
-		if ($inverter->state == 0) {
-			$this->adapter->changeInverterStatus($inverter, 1);
-			$inverter->state == 1;
+		if ($device->state == 0) {
+			$this->adapter->changeInverterStatus($device, 1);
+			$device->state == 1;
 		}
-		$sessionKey = 'noLiveCounter-' . $inverter->id;
+		$sessionKey = 'noLiveCounter-' . $device->id;
 		if (isset($_SESSION[$sessionKey])) {
 			unset($_SESSION[$sessionKey]);
 		}
 	}
 
 	public function onSmartMeterEnergy($args) {
-		$inverter = $args[1];
+		$device = $args[1];
 
-		$arHistory = $this->readSmartMeterHistory($inverter->id, null);
+		$arHistory = $this->readSmartMeterHistory($device->id, null);
 
 		// Initialize the variables we dont want errors in the logs
 		$gasUsage = 0;
@@ -78,7 +81,7 @@ class SmartMeterAddon {
 		// Set the new values and save it
 		$energy = new EnergySmartMeter();
 		$energy->time = $args[2];
-		$energy->INV = $inverter->id;
+		$energy->INV = $device->id;
 		$energy->gasUsage = $gasUsage;
 		$energy->highReturn = $highReturn;
 		$energy->lowReturn = $lowReturn;
@@ -90,9 +93,9 @@ class SmartMeterAddon {
 		$energy->highUsageT = $highUsageEnd;
 		$energy->lowUsageT = $lowUsageEnd;
 		$energy->co2 = Formulas::CO2gas($gasUsage, $this->config->co2kwh); // Calculate co2
-		$this->addSmartMeterEnergy($inverter->id, $energy);
+		$this->addSmartMeterEnergy($device->id, $energy);
 
-		HookHandler::getInstance()->fire("newSmartMeterEnergy", $inverter, $energy);
+		HookHandler::getInstance()->fire("newSmartMeterEnergy", $device, $energy);
 	}
 
 
@@ -101,17 +104,17 @@ class SmartMeterAddon {
 	 * @param unknown $args
 	 */
 	public function onLiveSmartMeterData($args) {
-		$inverter = $args[1];
+		$device = $args[1];
 		$live = $args[2];
 
-		if ($inverter == null) {
-			HookHandler::getInstance()->fire("onError", "CoreAddon::onLiveSmartMeterData() inverter == null");
+		if ($device == null) {
+			HookHandler::getInstance()->fire("onError", "CoreAddon::onLiveSmartMeterData() device == null");
 			return;
 		}
 
 		// Save the live information
-		$this->writeLiveSmartMeterInfo($inverter->id, $live);
-		HookHandler::getInstance()->fire("newLiveData", $inverter, $live);
+		$this->writeLiveSmartMeterInfo($device->id, $live);
+		HookHandler::getInstance()->fire("newLiveData", $device, $live);
 	}
 
 	/**
@@ -234,6 +237,9 @@ class SmartMeterAddon {
 	 * @param Live $live
 	 */
 	public function writeLiveSmartMeterInfo($invtnum,LiveSmartMeter $live) {
+		
+		
+		
 		$bean =  R::findOne('liveSmartMeter','invtnum = :invtnum ',array(':invtnum'=>$invtnum));
 
 		if (!$bean){
@@ -267,8 +273,10 @@ class SmartMeterAddon {
 	 * @param int $invtnum
 	 * @return LiveSmartMeter
 	 */
-	public function readLiveSmartMeterInfo($invtnum) {
-		$bean =  R::findOne('liveSmartMeter',' invtnum = :invtnum ', array(':invtnum'=>$invtnum));
+	public function readLiveSmartMeterInfo($deviceId) {
+		//return $this->liveSmartMeterService->getLiveByDevice($device);
+		
+		$bean =  R::findOne('liveSmartMeter',' invtnum = :deviceId ', array(':deviceId'=>$deviceId));
 
 		$live = new LiveSmartMeter();
 		if ($bean) {
