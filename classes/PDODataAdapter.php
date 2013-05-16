@@ -2126,7 +2126,7 @@ class PDODataAdapter {
 
 		$liveBean = array();
 
-		foreach ($config->device as $device){
+		foreach ($config->devices as $device){
 			if($device->type=="production"){
 				$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
 
