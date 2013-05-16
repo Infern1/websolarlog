@@ -28,8 +28,12 @@ class CoreAddon {
 			HookHandler::getInstance()->fire("onError", "CoreAddon::onLiveData() $device == null");
 			return;
 		}
+		
+		// Get the current live object
+		$dbLive = $this->liveService->getLiveByDevice($device);
 	
 		// Save the live information
+		$live->id = $dbLive->id;
 		$this->liveService->save($live);
 		//$this->adapter->writeLiveInfo($device->id, $live);
 		HookHandler::getInstance()->getInstance()->fire("newLiveData", $device, $live);
