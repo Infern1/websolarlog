@@ -7,6 +7,10 @@ class ProductionDeviceHandler {
 		
 		// Retrieve the device data
 		$live = $api->getLiveData();
+		if ($live == null) {
+			// No valid live data returned
+			return null;
+		}
 		
 		// Set some variables
 		$live->deviceId = $device->id;
