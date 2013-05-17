@@ -12,6 +12,8 @@ class MeteringDeviceHandler {
 			return null;
 		}
 		
+		echo("live=" . $live . " <-- \n");
+		
 		// Fill some extra variables
 		$live->time = $item->time;
 		$live->invtnum = $device->id;
