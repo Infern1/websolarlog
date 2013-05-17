@@ -7,6 +7,10 @@ class MeteringDeviceHandler {
 		
 		// Retrieve the device data
 		$live = $api->getLiveData();
+		if ($live == null) {
+			// No valid live data returned
+			return null;
+		}
 		
 		// Fill some extra variables
 		$live->time = $item->time;
