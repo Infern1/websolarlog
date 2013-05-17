@@ -114,13 +114,15 @@ class SmartMeterAddon {
 		
 		// Get the current live object
 		$dbLive = $this->liveSmartMeterService->getLiveByDevice($device);
-		$live = $dbLive->id;
-		
-		// Calculate the gass
-		if ($dbLive->gasUsage < $live->gasUsage) {
-			$live->gasUsage = ($live->gasUsage - $dbLive->gasUsage);
-		} else {
-			$live->gasUsage = $dbLive->liveGas;
+		if ($dbLive) {
+			$live = $dbLive->id;
+			
+			// Calculate the gass
+			if ($dbLive->gasUsage < $live->gasUsage) {
+				$live->gasUsage = ($live->gasUsage - $dbLive->gasUsage);
+			} else {
+				$live->gasUsage = $dbLive->liveGas;
+			}
 		}
 		
 		$this->liveSmartMeterService->save($live);
