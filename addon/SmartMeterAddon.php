@@ -111,9 +111,20 @@ class SmartMeterAddon {
 			HookHandler::getInstance()->fire("onError", "CoreAddon::onLiveSmartMeterData() device == null");
 			return;
 		}
+		
+		// Get the current live object
+		$dbLive = $this->liveSmartMeterService->getLiveByDevice($device);
+		$live = $dbLive->id;
+		
+		// Calculate the gass
+		if ($dbLive->gasUsage < $live->gasUsage) {
+			$live->gasUsage = ($live->gasUsage - $dbLive->gasUsage);
+		} else {
+			$live->gasUsage = $dbLive->liveGas;
+		}
+		
+		$this->liveSmartMeterService->save($live);
 
-		// Save the live information
-		$this->writeLiveSmartMeterInfo($device->id, $live);
 		HookHandler::getInstance()->fire("newLiveData", $device, $live);
 	}
 
@@ -124,6 +135,12 @@ class SmartMeterAddon {
 	 * @param string date
 	 */
 	public function addSmartMeterHistory($invtnum, LiveSmartMeter $live,$timestamp) {
+		$live->deviceId = $invtnum;
+		$live->invtnum = $invtnum;
+		
+		
+		
+		
 		$bean = R::dispense('historySmartMeter');
 
 		// check if we have a "valid" Bean to store.
@@ -231,78 +248,11 @@ class SmartMeterAddon {
 		return R::store($bean);
 	}
 
-	/**
-	 * write the LiveSmartMeter info to the file
-	 * @param int $invtnum
-	 * @param LiveSmartMeter $live
-	 */
-	public function writeLiveSmartMeterInfo($deviceId,LiveSmartMeter $live) {
-		$bean =  R::findOne('liveSmartMeter','invtnum = :deviceId ',array(':deviceId'=>$deviceId));
-
-		if (!$bean){
-			$bean = R::dispense('liveSmartMeter');
-		}
-
-		$readLiveBean = $this->readLiveSmartMeterInfo($deviceId);
-
-		if ($readLiveBean->gasUsage < $live->gasUsage) {
-			$liveGas = ($live->gasUsage - $readLiveBean->gasUsage);
-		} else {
-			$liveGas = $readLiveBean->liveGas;
-		}
-		$bean->gasUsage = $live->gasUsage;
-		$bean->invtnum = $deviceId;
-		$bean->deviceId = $deviceId;
-		$bean->liveGas = $liveGas;
-		$bean->highReturn = $live->highReturn;
-		$bean->lowReturn = $live->lowReturn;
-		$bean->highUsage = $live->highUsage;
-		$bean->lowUsage = $live->lowUsage;
-		$bean->liveReturn = $live->liveReturn;
-		$bean->liveUsage = $live->liveUsage;
-		$bean->time = time();
-
-		//Store the bean
-		return R::store($bean);
-	}
-
-	/**
-	 * read the live info from an file
-	 * @param int $invtnum
-	 * @return LiveSmartMeter
-	 */
-	public function readLiveSmartMeterInfo($deviceId) {
-		//return $this->liveSmartMeterService->getLiveByDevice($device);
-		
-		$bean =  R::findOne('liveSmartMeter',' invtnum = :deviceId ', array(':deviceId'=>$deviceId));
-
-		$live = new LiveSmartMeter();
-		if ($bean) {
-			$live->invtnum = $bean->invtnum;
-			$live->liveGas = $bean->liveGas;
-			$live->gasUsage = $bean->gasUsage;
-			$live->highReturn = $bean->highReturn;
-			$live->lowReturn = $bean->lowReturn;
-			$live->highUsage = $bean->highUsage;
-			$live->lowUsage = $bean->lowUsage;
-			$live->liveReturn = $bean->liveReturn;
-			$live->liveUsage = $bean->liveUsage;
-			$live->liveEnergy = intval($live->liveUsage) - intval($live->liveReturn);
-		}
-
-		return $live;
-	}
-
-
-	/**
-	 * will remove the live file
-	 */
-	public function dropSmartMeterLiveInfo($invtnum) {
-		$bean =  R::findOne('liveSmartMeter',' invtnum = :invtnum  ',array(':invtnum'=>$invtnum));
-		R::trash( $bean );
-	}
-
 	public function defaultAxes(){
+		// TODO :: minActual and maxActual are not set
+		$minActual = 0;
+		$maxActual = 0;
+		
 		$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 		$graph->axes['y3axis'] = array('label'=>_("Gas").''._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 		$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'min'=>$minActual,'max'=>$maxActual,'labelRenderer'=>'CanvasAxisLabelRenderer');
@@ -327,10 +277,7 @@ class SmartMeterAddon {
 	public function addSeries(){
 		$graph = new Graph();
 		$graph = $this->defaultSeries();
-		
 	}
-	
-	
 	
 	public function DayBeansToGraphPoints($beans,$startDate){
 		$graph = new Graph();
@@ -469,6 +416,5 @@ class SmartMeterAddon {
 	$energySmartMeter = $this->adapter->readTablesPeriodValues(0, "energySmartMeter", "today", date("d-m-Y"));
 	var_dump();
 	}*/
-
-
-}?>
+}
+?>

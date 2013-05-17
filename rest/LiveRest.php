@@ -1,18 +1,24 @@
 <?php
 class LiveRest {
 	private $weatherService;
+	private $liveService;
+	private $liveSmartMeterService;
 	
 	/**
 	 * Constructor
 	 */
 	function __construct() {
 		$this->weatherService = new WeatherService();
+		$this->liveService = new LiveService();
+		$this->liveSmartMeterService = new LiveSmartMeterService();
 	}
 	
 	/**
 	 * Destructor
 	 */
 	function __destruct() {
+		$this->liveSmartMeterService = null;
+		$this->liveService = null;
 		$this->weatherService = null;
 	}
 
@@ -27,11 +33,10 @@ class LiveRest {
 			$live = null;
 			switch ($type) {
 				case "production":
-					$live = PDODataAdapter::getInstance()->readLiveInfo($device->id);					
+					$live = $this->liveService->getLiveByDevice($device);
 					break;
 				case "metering":
-					$smartMeterAddon = new SmartMeterAddon();
-					$live = $smartMeterAddon->readLiveSmartMeterInfo($device->id);					
+					$live = $this->liveSmartMeterService->getLiveByDevice($device);					
 					break;
 				case "weather":
 					$live = $this->weatherService->getLastWeather($device);					
@@ -52,7 +57,5 @@ class LiveRest {
 	public function loadProduct($id) {
 		return $this->productService->get($id);
 	}
-	
-	
 }
 ?>

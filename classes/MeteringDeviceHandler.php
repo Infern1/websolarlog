@@ -8,6 +8,11 @@ class MeteringDeviceHandler {
 		// Retrieve the device data
 		$live = $api->getLiveData();
 		
+		// Fill some extra variables
+		$live->time = $item->time;
+		$live->invtnum = $device->id;
+		$live->deviceId = $device->id;
+		
 		// Fire the hook
 		if ($live != null) {
 			HookHandler::getInstance()->fire("onLiveSmartMeterData", $device, $live);
@@ -17,8 +22,9 @@ class MeteringDeviceHandler {
 	}
 
 	public static function handleHistory(QueueItem $item, Device $device) {
-		$smartMeterAddon = new SmartMeterAddon();
-		$live = $smartMeterAddon->readLiveSmartMeterInfo($device->id);
+		$liveSmartMeterService = new LiveSmartMeterService();
+		$live = $liveSmartMeterService->getLiveByDevice($device); 
+		
 		if($live->highReturn > 0 AND $live->highUsage > 0 AND $live->lowReturn > 0 AND $live->lowUsage > 0){
 				HookHandler::getInstance()->fire("onSmartMeterHistory", $device, $live, $item->time);
 		}
