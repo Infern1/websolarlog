@@ -10,6 +10,8 @@ class Weather {
 	public $pressure;
 	public $humidity;
 	public $conditionId;
+	public $rain1h;
+	public $cloud;
 	public $wind_speed;
 	public $wind_direction;
 }

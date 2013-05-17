@@ -49,6 +49,20 @@ class WeatherRest {
 					$result['data'] = $weathers;
 				}
 				break;
+			case "live":
+				if ($deviceId > 0) {
+					$device = $this->weatherService->load($deviceId);
+					$result['data'] =array(array( "deviceId"=>$deviceId, "data"=>$this->weatherService->getLastWeather($device)));
+				} else {
+					$weathers = array();
+					foreach (Session::getConfig()->devices as $device) {
+						if ($device->type == "weather") {
+							$weathers[] = array("deviceId"=>$device->id, "data"=>$this->weatherService->getLastWeather($device));
+						}
+					}
+					$result['data'] = $weathers;
+				}
+				break;
 			default:
 				$result['message'] = "not supported";
 		}

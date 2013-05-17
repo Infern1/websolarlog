@@ -82,6 +82,8 @@ class WeatherService {
 		$bObject->pressure = $object->pressure;
 		$bObject->humidity = $object->humidity;
 		$bObject->conditionId = $object->conditionId;
+		$bObject->rain1h = $object->rain1h;
+		$bObject->cloud = $object->cloud;
 		$bObject->wind_speed = $object->wind_speed;
 		$bObject->wind_direction = $object->wind_direction;
 		return $bObject;
@@ -98,6 +100,8 @@ class WeatherService {
 		$object->pressure = $bObject->pressure;
 		$object->humidity = $bObject->humidity;
 		$object->conditionId = $bObject->conditionId;
+		$object->rain1h = $bObject->rain1h;
+		$object->cloud = $bObject->cloud;
 		$object->wind_speed = $bObject->wind_speed;
 		$object->wind_direction = $bObject->wind_direction;
 		return $object;

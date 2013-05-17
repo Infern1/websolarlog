@@ -796,7 +796,7 @@ function checkSQLite() {
 		$stat = stat($SDBFilename);
 		$result['sdb']['exists']=true;
 		$result['sdb']['timeDiff'] = time()-$stat['ctime'];
-		($result['sdb']['timeDiff'] >= 10) ? $result['sdb']['dbChanged']=false : $result['sdb']['dbChanged']=true;
+		($result['sdb']['timeDiff'] >= 30) ? $result['sdb']['dbChanged']=false : $result['sdb']['dbChanged']=true;
 	
 		$result['sdb']['atime']=$stat['atime'];
 		$result['sdb']['mtime']=$stat['mtime'];

@@ -1,7 +1,7 @@
 <?php 
 
 Class WeatherOWM implements DeviceApi {
-	private $weatherUrl = "http://openweathermap.org/data/2.1/find/city?units=metrics&cnt=1";
+	private $weatherUrl = "http://openweathermap.org/data/2.5/find?units=metrics&cnt=1";
 	private $lat;
 	private $lon;
 	
@@ -23,7 +23,7 @@ Class WeatherOWM implements DeviceApi {
 		$latlng = "lat=" . $this->lat . "&lon=" . $this->lon;
 		$url = $this->weatherUrl . "&" . $latlng;
 		$result = json_decode($this->call($url));
-		
+		$hookHandler->add("onDebug", "weatherResult".print_r($result,true));
 		$weather = new Weather();
 		$weather->deviceId = -1;
 		$weather->time = time();
@@ -33,8 +33,15 @@ Class WeatherOWM implements DeviceApi {
 		$weather->pressure = $result->list[0]->main->pressure;
 		$weather->humidity = $result->list[0]->main->humidity;
 		$weather->conditionId = $result->list[0]->weather[0]->id;
+		if($result->list[0]->rain != null){
+			$weather->rain1h = $result->list[0]->rain->{'1h'};
+		}
+		if($result->list[0]->clouds != null){
+			$weather->clouds = $result->list[0]->clouds->all;
+		}
 		$weather->wind_speed = $result->list[0]->wind->speed;
 		$weather->wind_direction = $result->list[0]->wind->deg;
+		
 		return $weather;
 	}
 	
