@@ -251,13 +251,9 @@ class SmartMeterAddon {
 	}
 
 	public function defaultAxes(){
-		// TODO :: minActual and maxActual are not set
-		$minActual = 0;
-		$maxActual = 0;
-		
 		$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 		$graph->axes['y3axis'] = array('label'=>_("Gas").''._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-		$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'min'=>$minActual,'max'=>$maxActual,'labelRenderer'=>'CanvasAxisLabelRenderer');
+		$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'labelRenderer'=>'CanvasAxisLabelRenderer');
 		return $graph;
 	}
 
