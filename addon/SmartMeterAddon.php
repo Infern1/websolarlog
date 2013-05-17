@@ -106,11 +106,13 @@ class SmartMeterAddon {
 	public function onLiveSmartMeterData($args) {
 		$device = $args[1];
 		$live = $args[2];
-
+		
 		if ($device == null) {
 			HookHandler::getInstance()->fire("onError", "CoreAddon::onLiveSmartMeterData() device == null");
 			return;
 		}
+		
+		echo ("live=" . $live);
 		
 		// Get the current live object
 		$dbLive = $this->liveSmartMeterService->getLiveByDevice($device);
