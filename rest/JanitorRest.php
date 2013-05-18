@@ -6,7 +6,7 @@ class JanitorRest {
 	public function GET($request, $options) {
 		$option = "";
 		if (count($options) > 0) {
-			$option = (trim($options[0]) != "") ? strtolower($options[0]) : $option;
+			$option = (trim($options[0]) != "") ? $options[0] : $option;
 		}
 		
 		if ($option != "clean" && $option != "DbCheck") {
