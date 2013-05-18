@@ -2,6 +2,15 @@
 if (!jQuery.fn.drag) {
 	jQuery.fn.drag = function(){};
 }
+$(function() {
+	$( document ).tooltip({
+	      content: function() {
+	        var element = $( this );
+	          return element.context.title;
+	      }
+	    });
+});
+
 
 
 
@@ -67,9 +76,10 @@ $(function()
             hash = document.URL.split('#');// split on #
             // go further if there is a split and more than 1 element in the array
             if(hash.length>1){
-            	var hash = hash[1];
-            	var shortcutFunction = hash[1];
+            	//console.log(hash);
             	
+            	shortcutFunction = hash[1];
+            	hash = hash[1];
             	// #devices-1?id=1
             	// loses: ?id=1
             	if(hash.indexOf('?')>0){
@@ -82,7 +92,7 @@ $(function()
             	// #devices-1?id=1
             	// loses: -1
             	if(hash.indexOf('-')>0){
-            		var shortcut = hash.split('-'); // remove querystring params
+            		shortcut = hash.split('-'); // remove querystring params
             		shortcutFunction = shortcut[0];
             		hashId = shortcut[1];
             		// gives: #devices
@@ -91,9 +101,9 @@ $(function()
             /*
             console.log('get:'+get);
             console.log('hash:'+hash);
-            console.log('hashId:'+hashId)
-            console.log('shortcutFunction:'+shortcutFunction);
-            */
+            console.log('hashId:'+hashId)*/
+            //console.log('shortcutFunction:'+shortcutFunction);
+            
             // check if there is a function
             if(shortcutFunction){
             	// call the #xxxxxx function // example: '/admin/#backup' load the backup page.
@@ -196,6 +206,15 @@ function init_KWHcalc(inv_data){
                 KWHcalc(object,Perc,Month);
                 $('input[name="expectedkwh"]').val($("#totalKWHProd").val());
             });
+            
+            $("#totalKWHProd").bind("keyup", function(){
+                object = this;
+                KWHcalc(object,Perc,Month);
+                $('input[name="expectedkwh"]').val($("#totalKWHProd").val());
+            });
+            $('input[name="expectedkwh"]').bind("keyup", function(){
+            	$("#totalKWHProd").val( $('input[name="expectedkwh"]').val());
+            }),
             
             $("#totalKWHProd").val($('input[name="expectedkwh"]').val()).trigger("keyup");
             
@@ -837,7 +856,6 @@ function init_devices(selected_inverterId) {
                     var button = $(this);
                     var inverterId = button.attr('id').split("_")[1];
                     window.location.hash = shortcutFunction+"-"+inverterId;
-
                 });
                 
                 $('.inverter_select').each(function(){

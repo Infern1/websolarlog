@@ -12,19 +12,19 @@
     {{checkboxWithHidden 'graphOnFrontend' data.inverter.graphOnFrontend}}<br />   
     <hr>
     kWh the inverter already generated without WSL and the installation date of the inverter;<br>
-    <label for="initialkwh">initial kWh:</label><input type="text" name="initialkwh" value="{{data.inverter.initialkwh}}" />    kWh<br />       
-    <label for="producesSince">produces since:</label><input type="text" name="producesSince" value="{{data.inverter.producesSince}}" />   (31-12-2000)<br />   
+    <label for="initialkwh">initial kWh:</label><input type="text" name="initialkwh" value="{{data.inverter.initialkwh}}" />{{infoTooltip title="kWh"}}<br />       
+    <label for="producesSince">produces since:</label><input type="text" name="producesSince" value="{{data.inverter.producesSince}}" />{{infoTooltip title="(31-12-2000)"}}<br />   
     <hr>
     What is the expected production in kWh for this inverter. The plant power is calculated by the panels below:<br>
-    <label for="expectedkwh">expected kWh:</label><input type="text" name="expectedkwh" value="{{data.inverter.expectedkwh}}" />    kWh<br />   
-    <label for="plantpower">plant power:</label><input type="text" name="plantpower" value="{{data.inverter.plantpower}}" readonly="true" />    Calculated by the panels<br />   
+    <label for="expectedkwh">expected kWh:</label><input type="text" name="expectedkwh" value="{{data.inverter.expectedkwh}}" />{{infoTooltip title="kWh"}}<br />   
+    <label for="plantpower">plant power:</label><input type="text" name="plantpower" value="{{data.inverter.plantpower}}" readonly="true" />{{infoTooltip title="Calculated by the panels, see the bottom of this page."}}<br />   
     <hr>
-    <label for="heading">heading:</label><input type="text" name="heading" value="{{data.inverter.heading}}" />   <br />   
-    <label for="correctionFactor">correction factor:</label><input type="text" name="correctionFactor" value="{{data.inverter.correctionFactor}}" />   <br />   
+    <label for="heading">heading:</label><input type="text" name="heading" value="{{data.inverter.heading}}" /><br />
+    <label for="correctionFactor">correction factor:</label><input type="text" name="correctionFactor" value="{{data.inverter.correctionFactor}}" /><br />
 	<hr>
 	Select the program you use to communicate with the device,what type of device it is and if needed the address of the device:<br>
     <label for="deviceApi">Device Api:</label>
-        <select name="deviceApi">
+        <select name="deviceApi" style="width:148px;">
             <option value="AURORA" {{#if_eq data.inverter.deviceApi compare="AURORA"}}selected=selected{{/if_eq}}>Aurora</option>
             <option value="SMA-RS485" {{#if_eq data.inverter.deviceApi compare="SMA-RS485"}}selected=selected{{/if_eq}}>SMA RS485</option>
             <option value="SMA-BT" {{#if_eq data.inverter.deviceApi compare="SMA-BT"}}selected=selected{{/if_eq}}>SMA-spot BlueTooth</option>
@@ -32,16 +32,16 @@
             <option value="DutchSmartMeter" {{#if_eq data.inverter.deviceApi compare="DutchSmartMeter"}}selected=selected{{/if_eq}}>Dutch Smart Meter</option>
             <option value="DutchSmartMeterRemote" {{#if_eq data.inverter.deviceApi compare="DutchSmartMeterRemote"}}selected=selected{{/if_eq}}>Dutch Smart Meter Remote</option>
             <option value="Open-Weather-Map" {{#if_eq data.inverter.deviceApi compare="Open-Weather-Map"}}selected=selected{{/if_eq}}>Open Weather Map</option>
-        </select>
+        </select>{{infoTooltip title="Select the device/brand you use"}}
     <br />   
     <label for="deviceType">Device Type:</label>
-            <select name="deviceType">
+            <select name="deviceType" style="width:148px;">
             <option value="production" {{#if_eq data.inverter.type compare="production"}}selected=selected{{/if_eq}}>Production</option>
             <option value="metering" {{#if_eq data.inverter.type compare="metering"}}selected=selected{{/if_eq}}>Metering</option>
             <option value="weather" {{#if_eq data.inverter.type compare="weather"}}selected=selected{{/if_eq}}>Weather</option>
-        </select>
+        </select>{{infoTooltip title="Select the device type;<br>- production: (wind/solar)inverter<br>- metering: SmartMeter<Br>- weather: Collect Weather data"}}
         <br />   
-    <label for="comAddress">(RS485/IP) address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" />1-255 for RS485 or a IP<br />   
+    <label for="comAddress">(RS485/IP) address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" />{{infoTooltip title="RS485: 1-255<br>IP: v4 of v6 adress"}}<br />   
     <hr>
     <label for="comLog">Log comm:</label>
     {{checkboxWithHidden 'comLog' data.inverter.comLog}}<br />
@@ -53,14 +53,15 @@
     
     <label for="pvoutputEnabled">PVOutput Enabled:</label>
     {{checkboxWithHidden 'pvoutputEnabled' data.inverter.pvoutputEnabled}}<br />   
-    <label for="pvoutputApikey">PVOutput Api key:</label><input type="text" name="pvoutputApikey" value="{{data.inverter.pvoutputApikey}}" />   See your PVoutput settings page.<br />   
-    <label for="pvoutputSystemId">PVOutput System id:</label><input type="text" name="pvoutputSystemId" value="{{data.inverter.pvoutputSystemId}}" />   See your PVoutput settings page.<br />
+    <label for="pvoutputApikey">PVOutput Api key:</label><input type="text" name="pvoutputApikey" value="{{data.inverter.pvoutputApikey}}" />{{infoTooltip title="See your PVoutput account/settings page."}}<br />   
+    <label for="pvoutputSystemId">PVOutput System id:</label><input type="text" name="pvoutputSystemId" value="{{data.inverter.pvoutputSystemId}}" />{{infoTooltip title="See your PVoutput account/settings page."}}<br />
     <label for="pvoutputWSLTeamMember">WSL Team Member:</label>
     {{#if data.inverter.pvoutputWSLTeamMember}}
-    wel lid
+    This inverter is member of the WSL team.{{infoTooltip title="Great the device is a member of the WSL team :) "}}
     {{else}}
-    <a href="index.php#social">niet lid</a>
+    <a href="#social">This inverter is no member of the WSL team</a>{{infoTooltip title=":( This device is no member of our great team.... <br>Go to the Social tab and add this device to the team :) "}}
     {{/if}}
+    
     <br />
     
     <button type="button" id="btnDeviceSubmit">Save</button>
@@ -79,11 +80,11 @@
       <input type="hidden" name="inverterId" value="{{this.inverterId}}" />   
       <fieldset>
     <legend>Panel/String: {{this.id}}</legend>
-        <label for="description">description:</label><input type="text" name="description" value="{{this.description}}" />   SolarPanel 265Wp 123-32/23+<br />   
-        <label for="roofOrientation">roof orientation:</label><input type="text" name="roofOrientation" value="{{this.roofOrientation}}" />0=north,90=east,180=south,270=west<br />   
-        <label for="roofPitch">roof pitch:</label><input type="text" name="roofPitch" value="{{this.roofPitch}}" />   0 = horizontal, 90 = vertical<br />   
-        <label for="amount">Panels in string:</label><input type="text" name="amount" value="{{this.amount}}" />   20<br />   
-        <label for="wp">Watt-peak of one panel:</label><input type="text" name="wp" value="{{this.wp}}" />   265<br />   
+        <label for="description">description:</label><input type="text" name="description" value="{{this.description}}" />{{infoTooltip title="example: SolarPanel 265Wp 123-32/23+"}}<br />   
+        <label for="roofOrientation">roof orientation:</label><input type="text" name="roofOrientation" value="{{this.roofOrientation}}" />{{infoTooltip title="example: 0=north,90=east,180=south,270=west"}}<br />   
+        <label for="roofPitch">roof pitch:</label><input type="text" name="roofPitch" value="{{this.roofPitch}}" />{{infoTooltip title="example: 0 = horizontal, 90 = vertical"}}<br />   
+        <label for="amount">Panels in string:</label><input type="text" name="amount" value="{{this.amount}}" />{{infoTooltip title="example: 20"}}<br />   
+        <label for="wp">Watt-peak of one panel:</label><input type="text" name="wp" value="{{this.wp}}" />{{infoTooltip title="example: 265"}}<br />   
         <button type="button" id="btnPanelSubmit{{this.id}}" class="panel_submit">Save</button>
       </fieldset>
     </form>
