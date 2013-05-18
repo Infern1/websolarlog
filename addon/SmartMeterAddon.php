@@ -119,9 +119,9 @@ class SmartMeterAddon {
 			
 			// Calculate the gass
 			if ($dbLive->gasUsage < $live->gasUsage) {
-				$live->gasUsage = ($live->gasUsage - $dbLive->gasUsage);
+				$live->liveGas = ($live->gasUsage - $dbLive->gasUsage);
 			} else {
-				$live->gasUsage = $dbLive->liveGas;
+				$live->liveGas = $dbLive->liveGas;
 			}
 		}
 		
