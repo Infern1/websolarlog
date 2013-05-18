@@ -199,7 +199,7 @@ function init_KWHcalc(inv_data){
 function init_menu() {
     $("#btnAdvanced").bind('click', function() { init_advanced();});
     $("#btnGeneral").bind('click', function() { init_general();});
-    $("#btnInverters").bind('click', function() { init_inverters(); });
+    $("#btnDevices").bind('click', function() { init_inverters(); });
     $("#btnGrid").bind('click', function() { init_grid();});
     $("#btnEmail").bind('click', function() { init_mail(); });
     $("#btnTestPage").bind('click', function() { init_test(); });
@@ -827,8 +827,8 @@ function load_inverter(inverterId) {
                 });
                 $('#content').html(html);
                 
-                $('#btnInverterSubmit').bind('click', function(){
-                	$('#btnInverterSubmit').attr("disabled", "disabled");
+                $('#btnDeviceSubmit').bind('click', function(){
+                	$('#btnDeviceSubmit').attr("disabled", "disabled");
                 	checkCheckboxesHiddenFields();
                 	
                     var data = $(this).parent().parent().serialize();
@@ -838,7 +838,7 @@ function load_inverter(inverterId) {
                             title: 'Saved',
                             text: 'You\'re changes have been saved.'
                         });
-                        $('#btnInverterSubmit').removeAttr("disabled");
+                        $('#btnDeviceSubmit').removeAttr("disabled");
                     });
                 });
                 

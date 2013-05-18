@@ -63,7 +63,7 @@
     {{/if}}
     <br />
     
-    <button type="button" id="btnInverterSubmit">Save</button>
+    <button type="button" id="btnDeviceSubmit">Save</button>
   </fieldset>
 </form> 
 
