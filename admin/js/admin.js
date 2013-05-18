@@ -46,6 +46,12 @@ $.ajaxSetup({
 	}
 });
 
+var hash;
+var hashId;
+var get;
+var shortcutFunction;
+
+
 
 $(function()
 {
@@ -56,20 +62,42 @@ $(function()
     $.getJSON('admin-server.php?s=isLogin', function(data) {
         if (data.result === true) {
             init_menu();
-            var hash = document.URL.split('#');// split on #
-            // go further if there is a split and more than 1 element in the array
+            //.php#devices-1?id=1
             
+            hash = document.URL.split('#');// split on #
+            // go further if there is a split and more than 1 element in the array
             if(hash.length>1){
-            	var shortcut = hash[1];
-            	if(shortcut.indexOf('?')){
-            		var shortcut = shortcut.split('?'); // remove querystring params
-            		var shortcut = shortcut[0];
+            	var hash = hash[1];
+            	var shortcutFunction = hash[1];
+            	
+            	// #devices-1?id=1
+            	// loses: ?id=1
+            	if(hash.indexOf('?')>0){
+            		var splitHash = hash.split('?');
+            		get = splitHash[1]; // remove querystring params
+            		hash = splitHash[0];
+            		shortcutFunction = hash;
+            		// gives: #devices-1
+            	}
+            	// #devices-1?id=1
+            	// loses: -1
+            	if(hash.indexOf('-')>0){
+            		var shortcut = hash.split('-'); // remove querystring params
+            		shortcutFunction = shortcut[0];
+            		hashId = shortcut[1];
+            		// gives: #devices
             	}
             }
+            /*
+            console.log('get:'+get);
+            console.log('hash:'+hash);
+            console.log('hashId:'+hashId)
+            console.log('shortcutFunction:'+shortcutFunction);
+            */
             // check if there is a function
-            if(shortcut){
+            if(shortcutFunction){
             	// call the #xxxxxx function // example: '/admin/#backup' load the backup page.
-            	runFunction('init_'+shortcut);
+            	runFunction('init_'+shortcutFunction);
             }else{
             	// else always load the general function
             	init_general(); // First admin item
@@ -174,9 +202,9 @@ function init_KWHcalc(inv_data){
             $('#btnExpectationSubmit').bind('click', function(){
                 var inverterId = $('input[name="id"]').val();
                 checkCheckboxesHiddenFields();
-                var data = $(this).parent().serialize();
+                var data = $(this).parent().parent().serialize();
                 $.post('admin-server.php', data, function(){
-                    init_inverters(inverterId);                        
+                    init_devices(inverterId);                        
                     $.pnotify({
                         title: 'Saved',
                         text: 'You\'re changes have been saved.',
@@ -199,7 +227,7 @@ function init_KWHcalc(inv_data){
 function init_menu() {
     $("#btnAdvanced").bind('click', function() { init_advanced();});
     $("#btnGeneral").bind('click', function() { init_general();});
-    $("#btnDevices").bind('click', function() { init_inverters(); });
+    $("#btnDevices").bind('click', function() { init_devices(); });
     $("#btnGrid").bind('click', function() { init_grid();});
     $("#btnEmail").bind('click', function() { init_mail(); });
     $("#btnTestPage").bind('click', function() { init_test(); });
@@ -785,7 +813,7 @@ function checkCheckboxesHiddenFields(){
 	});
 }
 
-function init_inverters(selected_inverterId) {
+function init_devices(selected_inverterId) {
     $.getJSON('admin-server.php?s=inverters', function(data) {
         $.ajax({
             url : 'js/templates/inverter_sb.hb',
@@ -797,17 +825,27 @@ function init_inverters(selected_inverterId) {
                 $('#sidebar').html(html);
 
                 if (selected_inverterId) {
-                    load_inverter(selected_inverterId);
+                    load_device(selected_inverterId);
                 } else {
                     $('#content').html("<br /><h2>Choose or create an inverter on the right side --></h2>");                    
                 }
+                if(hashId){
+                	load_device(hashId);
+                }
+                
+                $('.inverter_select').bind("click",function(){
+                    var button = $(this);
+                    var inverterId = button.attr('id').split("_")[1];
+                    window.location.hash = shortcutFunction+"-"+inverterId;
+
+                });
                 
                 $('.inverter_select').each(function(){
                     var button = $(this);
                     var inverterId = button.attr('id').split("_")[1];
                     
                     button.bind('click', function() {
-                        load_inverter(inverterId);
+                        load_device(inverterId);
                     }); 
                 });
             },
@@ -816,7 +854,7 @@ function init_inverters(selected_inverterId) {
     });
 }
 
-function load_inverter(inverterId) {
+function load_device(inverterId) {
     $.getJSON('admin-server.php?s=inverter&id='+inverterId, function(inv_data) {
         $.ajax({
             url : 'js/templates/inverter.hb',
@@ -833,7 +871,7 @@ function load_inverter(inverterId) {
                 	
                     var data = $(this).parent().parent().serialize();
                     $.post('admin-server.php', data, function(result){
-                        init_inverters(result.id);                        
+                        init_devices(result.id);                        
                         $.pnotify({
                             title: 'Saved',
                             text: 'You\'re changes have been saved.'
@@ -846,7 +884,7 @@ function load_inverter(inverterId) {
                 	checkCheckboxesHiddenFields();
                     var data = $(this).parent().parent().parent().serialize();
                     $.post('admin-server.php', data, function(){
-                        load_inverter(inverterId);
+                        load_device(inverterId);
                         $.pnotify({
                             title: 'Saved',
                             text: 'You\'re changes have been saved.'
@@ -855,7 +893,7 @@ function load_inverter(inverterId) {
                 };
                 
                 $('.panel_submit').bind('click', handle_panel_submit);
-                
+
                 $('#btnNewPanel').bind('click', function(){
                     $.getJSON('admin-server.php?s=panel&id=-1&inverterId='+inverterId, function(data) {
                         $.ajax({
@@ -1247,6 +1285,5 @@ function runFunction(name, arguments){
     if(typeof fn !== 'function'){
         return;
     }
-
     fn.apply(window, arguments);
 }
