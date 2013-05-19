@@ -169,4 +169,13 @@
 		return new Handlebars.SafeString("<input type=\"hidden\" name=\""+name+"\" value=\"0\"/><input type=\"checkbox\" "+checked+" name=\""+name+"\" value=\"1\"/>");
 	});
     
+	
+	Handlebars.registerHelper("infoTooltip", function(context,block) {
+		//console.log(context);
+		return new Handlebars.SafeString("<img src=\"images/information.png\" class=\"tooltip\" title=\""+context.hash.title+"\"/>");
+	});
+    
+	
+	
+	
 }));
