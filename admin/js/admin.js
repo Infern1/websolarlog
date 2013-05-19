@@ -60,50 +60,48 @@ var hashId;
 var get;
 var shortcutFunction;
 
+function checkURL(){
 
+    hash = document.URL.split('#');// split on #
+    // go further if there is a split and more than 1 element in the array
+    if(hash.length>1){
+    	//console.log(hash);
+    	
+    	shortcutFunction = hash[1];
+    	hash = hash[1];
+    	// #devices-1?id=1
+    	// loses: ?id=1
+    	if(hash.indexOf('?')>0){
+    		var splitHash = hash.split('?');
+    		get = splitHash[1]; // remove querystring params
+    		hash = splitHash[0];
+    		shortcutFunction = hash;
+    		// gives: #devices-1
+    	}
+    	// #devices-1?id=1
+    	// loses: -1
+    	if(hash.indexOf('-')>0){
+    		shortcut = hash.split('-'); // remove querystring params
+    		shortcutFunction = shortcut[0];
+    		hashId = shortcut[1];
+    		// gives: #devices
+    	}
+    }
+}
 
 $(function()
 {
 	$("#forceGet").bind('click', function(){
 		window.location.reload(true);
 	});
-
+	
+	
+    
     $.getJSON('admin-server.php?s=isLogin', function(data) {
         if (data.result === true) {
             init_menu();
-            //.php#devices-1?id=1
-            
-            hash = document.URL.split('#');// split on #
-            // go further if there is a split and more than 1 element in the array
-            if(hash.length>1){
-            	//console.log(hash);
-            	
-            	shortcutFunction = hash[1];
-            	hash = hash[1];
-            	// #devices-1?id=1
-            	// loses: ?id=1
-            	if(hash.indexOf('?')>0){
-            		var splitHash = hash.split('?');
-            		get = splitHash[1]; // remove querystring params
-            		hash = splitHash[0];
-            		shortcutFunction = hash;
-            		// gives: #devices-1
-            	}
-            	// #devices-1?id=1
-            	// loses: -1
-            	if(hash.indexOf('-')>0){
-            		shortcut = hash.split('-'); // remove querystring params
-            		shortcutFunction = shortcut[0];
-            		hashId = shortcut[1];
-            		// gives: #devices
-            	}
-            }
-            /*
-            console.log('get:'+get);
-            console.log('hash:'+hash);
-            console.log('hashId:'+hashId)*/
-            //console.log('shortcutFunction:'+shortcutFunction);
-            
+
+            checkURL();
             // check if there is a function
             if(shortcutFunction){
             	// call the #xxxxxx function // example: '/admin/#backup' load the backup page.
@@ -835,7 +833,7 @@ function checkCheckboxesHiddenFields(){
 function init_devices(selected_inverterId) {
     $.getJSON('admin-server.php?s=inverters', function(data) {
         $.ajax({
-            url : 'js/templates/inverter_sb.hb',
+            url : 'js/templates/device_sb.hb',
             success : function(source) {
                 var template = Handlebars.compile(source);
                 var html = template({
@@ -848,6 +846,9 @@ function init_devices(selected_inverterId) {
                 } else {
                     $('#content').html("<br /><h2>Choose or create an inverter on the right side --></h2>");                    
                 }
+                // get hash...
+                checkURL();
+                
                 if(hashId){
                 	load_device(hashId);
                 }
@@ -875,7 +876,7 @@ function init_devices(selected_inverterId) {
 function load_device(inverterId) {
     $.getJSON('admin-server.php?s=inverter&id='+inverterId, function(inv_data) {
         $.ajax({
-            url : 'js/templates/inverter.hb',
+            url : 'js/templates/device.hb',
             success : function(source) {
                 var template = Handlebars.compile(source);
                 var html = template({
