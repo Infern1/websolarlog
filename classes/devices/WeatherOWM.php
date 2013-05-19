@@ -23,7 +23,6 @@ Class WeatherOWM implements DeviceApi {
 		$latlng = "lat=" . $this->lat . "&lon=" . $this->lon;
 		$url = $this->weatherUrl . "&" . $latlng;
 		$result = json_decode($this->call($url));
-		HookHandler::getInstance()->fire("onDebug", "weatherResult:".print_r($result,true));
 		$weather = new Weather();
 		$weather->deviceId = -1;
 		$weather->time = time();
