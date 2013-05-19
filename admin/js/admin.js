@@ -2,20 +2,17 @@
 if (!jQuery.fn.drag) {
 	jQuery.fn.drag = function(){};
 }
-$(function() {
-	$( document ).tooltip({
-	      content: function() {
-	        var element = $( this );
-	          return element.context.title;
-	      }
-	    });
-});
-
-
-
 
 $.ajaxSetup({
+
 	complete: function(xhr) {
+		
+		//always init tooltip after a ajax.complete 
+		$( '.tooltip' ).tooltip({
+			content: function() {
+		        return $( this ).context.title;
+			}
+		});
 		//see if we have a JSON and parse it.
 		try {
 			// catch the "pass" from the json
@@ -94,9 +91,7 @@ $(function()
 	$("#forceGet").bind('click', function(){
 		window.location.reload(true);
 	});
-	
-	
-    
+
     $.getJSON('admin-server.php?s=isLogin', function(data) {
         if (data.result === true) {
             init_menu();
@@ -246,7 +241,7 @@ function init_menu() {
     $("#btnGeneral").bind('click', function() { init_general();});
     $("#btnDevices").bind('click', function() { init_devices(); });
     $("#btnGrid").bind('click', function() { init_grid();});
-    $("#btnEmail").bind('click', function() { init_mail(); });
+    $("#btnEmail").bind('click', function() { init_email(); });
     $("#btnTestPage").bind('click', function() { init_test(); });
     $("#btnTariff").bind('click', function() { init_tariff(); });
     $("#btnSocial").bind('click', function() { init_social(); });
@@ -944,7 +939,7 @@ function init_grid() {
     
 }
 
-function init_mail() {
+function init_email() {
     $('#sidebar').html("");
     var content = $('#content');
     content.html('<div id="c_mail"></div><div id="c_smtp"></div>');
