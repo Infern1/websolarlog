@@ -49,7 +49,7 @@ session_start();
 			<div id="navigation">
 				<ul>
 					<li class="nav-start"><a href="#" id="btnGeneral">General</a></li>
-					<li><a href="#inverters" id="btnInverters">Inverters</a></li>
+					<li><a href="#devices" id="btnDevices">Devices</a></li>
 					<li><a href="#email" id="btnEmail">eMail</a></li>
 					<li><a href="#advanced" id="btnAdvanced">Advanced</a></li>
 					<li><a href="#social" id="btnSocial">Social</a></li>
