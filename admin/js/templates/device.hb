@@ -59,7 +59,7 @@
     {{#if data.inverter.pvoutputWSLTeamMember}}
     This inverter is member of the WSL team.{{infoTooltip title="Great the device is a member of the WSL team :) "}}
     {{else}}
-    <a href="#social">This inverter is no member of the WSL team</a>{{infoTooltip title=":( This device is no member of our great team.... <br>Go to the Social tab and add this device to the team :) "}}
+    <a href="#social">This device is no member of the WSL team</a>{{infoTooltip title=":( This device is no member of our great team.... <br>Go to the Social tab and add this device to the team :) "}}
     {{/if}}
     
     <br />
