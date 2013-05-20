@@ -4,7 +4,7 @@ if (!jQuery.fn.drag) {
 }
 
 $.ajaxSetup({
-
+	cache: false,
 	complete: function(xhr) {
 		
 		//always init tooltip after a ajax.complete 
