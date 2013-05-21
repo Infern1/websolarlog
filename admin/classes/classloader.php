@@ -25,10 +25,10 @@ function wsl_autoloader($classname)
     if ($classname == "") {
         exit("Could not autoload empty classname!");
     }
-
-	// Gather the dirs we need to check
-	$classdirs = Array( "/classes", "/classes/objects", "/classes/converters", "/addon" );
-
+    
+    // Gather the dirs we need to check
+    $classdirs = Array( "/classes", "/classes/objects", "/classes/devices", "/classes/services", "/classes/converters", "/addon", "/rest" );
+    
     foreach ($classdirs as $classdir) {
         // Check the domain model
         $filename = $docRoot . $classdir . "/" . $classname . ".php";
