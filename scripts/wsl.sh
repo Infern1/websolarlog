@@ -8,9 +8,8 @@ PHP=$($WHICH php)
 NOHUP=$($WHICH nohup)
 PGREP=$($WHICH pgrep)
 DIRNAME=$($WHICH dirname)
-PWD=$($WHICH pwd)
 CAT=$($WHICH cat)
-SCRIPTDIR="$( cd "$( $DIRNAME "${BASH_SOURCE[0]}" )" && $PWD )"
+SCRIPTDIR="$( cd "$( $DIRNAME "${BASH_SOURCE[0]}" )" && pwd )"
 PIDFOLDER=$SCRIPTDIR
 LOGFILE=$SCRIPTDIR"/queueserver.log"
 
