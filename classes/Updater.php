@@ -63,11 +63,12 @@ class Updater {
     /**
      * Do a checkout off the given version
      * @param string $urlsvn
+     * @param int $revision 
      * @return boolean
      */
-    public static function doCheckout($urlsvn) {
+    public static function doCheckout($urlsvn, $revision=-1) {
         // Try to do an export
-        return svn_export ($urlsvn, self::$basepath . "/export", false );
+        return svn_export ($urlsvn, self::$basepath . "/export", false, revision);
     }
 
     /**
