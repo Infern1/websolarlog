@@ -271,9 +271,18 @@ class Common
     		$config->restartWorker = false;
     		PDODataAdapter::getInstance()->writeConfig($config);
     		R::commit(); // Make sure we de an commit
+    		QueueServer::getInstance()->stop();
     		sleep (1);
     		exit("Restarting worker\n");
     	}
+    }
+    
+    /**
+     * Exit the current php process, use with care and probably only for cron
+     */
+    public static function exitProcess() {
+    	QueueServer::getInstance()->stop();
+    	exit();
     }
     
     /**

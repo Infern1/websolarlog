@@ -388,12 +388,12 @@ switch ($settingstype) {
 		$adapter->writeConfig($config);
 		break;
 	case 'save-inverter':
+		$deviceService = new DeviceService();
 		$id = Common::getValue("id");
 		$device = new Device();
 		if ($id > 0) {
 			// get the current data
-			$device = $adapter->readInverter($id);
-			
+			$device = $deviceService->load($id);
 		}
 		$device->name = Common::getValue("name");
 		$device->description = Common::getValue("description");
@@ -415,20 +415,7 @@ switch ($settingstype) {
 		$device->pvoutputSystemId = Common::getValue("pvoutputSystemId");
 		$device->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
 
-		$device->expectedkwh = '0';
-		$device->expectedJAN = '0';
-		$device->expectedFEB = '0';
-		$device->expectedMAR = '0';
-		$device->expectedAPR = '0';
-		$device->expectedMAY = '0';
-		$device->expectedJUN = '0';
-		$device->expectedJUL = '0';
-		$device->expectedAUG = '0';
-		$device->expectedSEP = '0';
-		$device->expectedOCT = '0';
-		$device->expectedNOV = '0';
-		$device->expectedDEC = '0';
-		$data['id'] = $adapter->writeInverter($device);
+		$data['id'] = $deviceService->save($device);
 		break;
 	case 'save-panel':
 		$id = Common::getValue("id");
@@ -447,27 +434,28 @@ switch ($settingstype) {
 		$adapter->writePanel($panel);
 		break;
 	case 'save_expectation':
+		$deviceService = new DeviceService();
 		$id = Common::getValue("id");
-		$device = new Device();
 		if ($id > 0) {
 			// get the current data
-			$device = $adapter->readInverter($id);
+			$device = $deviceService->load($id);
+			$device->expectedkwh = Common::getValue("totalProdKWH");
+			$device->expectedJAN = Common::getValue("janPER");
+			$device->expectedFEB = Common::getValue("febPER");
+			$device->expectedMAR = Common::getValue("marPER");
+			$device->expectedAPR = Common::getValue("aprPER");
+			$device->expectedMAY = Common::getValue("mayPER");
+			$device->expectedJUN = Common::getValue("junPER");
+			$device->expectedJUL = Common::getValue("julPER");
+			$device->expectedAUG = Common::getValue("augPER");
+			$device->expectedSEP = Common::getValue("sepPER");
+			$device->expectedOCT = Common::getValue("octPER");
+			$device->expectedNOV = Common::getValue("novPER");
+			$device->expectedDEC = Common::getValue("decPER");
+			
+			echo ($device->expectedAPR);
+			$deviceService->save($device);
 		}
-		$device->expectedkwh = Common::getValue("totalProdKWH");
-		$device->expectedJAN = Common::getValue("janPER");
-		$device->expectedFEB = Common::getValue("febPER");
-		$device->expectedMAR = Common::getValue("marPER");
-		$device->expectedAPR = Common::getValue("aprPER");
-		$device->expectedMAY = Common::getValue("mayPER");
-		$device->expectedJUN = Common::getValue("junPER");
-		$device->expectedJUL = Common::getValue("julPER");
-		$device->expectedAUG = Common::getValue("augPER");
-		$device->expectedSEP = Common::getValue("sepPER");
-		$device->expectedOCT = Common::getValue("octPER");
-		$device->expectedNOV = Common::getValue("novPER");
-		$device->expectedDEC = Common::getValue("decPER");
-
-		$adapter->writeInverter($device);
 		break;
 	case 'save-email':
 		$config->emailFromName = Common::getValue("emailFromName");

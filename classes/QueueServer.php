@@ -19,6 +19,7 @@ class QueueServer {
 	}
 	
 	// Class
+	private $started;
 	private $queue;
 
 	function __construct() {
@@ -36,8 +37,9 @@ class QueueServer {
 		$syncOffset = 30; // seconds
 		$maxQueueItemsAtOnce = 5;
 		$this->sync();
+		$this->started = true;
 		
-		while (true) {
+		while ($this->started) {
 			$syncOffsetTime = time();
 			$itemsAtOnceCounter = 0;
 			while (time() - $syncOffsetTime < $syncOffset) {
@@ -63,6 +65,11 @@ class QueueServer {
 			HookHandler::getInstance()->fire("onDebug", " QueueServer: current memory usage = " . $memory_string . "mb queue size: " . count($this->queue));
 			$this->sync();
 		}
+	}
+
+	public function stop() {
+		$this->sync();
+		$this->started = false;
 	}
 	
 	// Add an item to the  queue
