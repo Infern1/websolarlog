@@ -61,6 +61,9 @@ QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(1
 // TODO :: When we support db queue then we should not check for it
 QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(300), "Common.checkRestart", "", true, 300));
 
+// Janitor clean 1x per uur
+QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(3600), "JanitorRest.clean", "", true, 3600));
+
 // Start the queue server
 QueueServer::getInstance()->start();
 
