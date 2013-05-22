@@ -453,7 +453,6 @@ switch ($settingstype) {
 			$device->expectedNOV = Common::getValue("novPER");
 			$device->expectedDEC = Common::getValue("decPER");
 			
-			echo ($device->expectedAPR);
 			$deviceService->save($device);
 		}
 		break;

@@ -1,4 +1,4 @@
-<form><fieldset>
+<form id="expectationFormId"><fieldset>
    <legend>System Expectation</legend>
 	<div>
         <input type="hidden" name="s" value="save_expectation" />

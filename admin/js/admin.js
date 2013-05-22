@@ -214,7 +214,7 @@ function init_KWHcalc(inv_data){
             $('#btnExpectationSubmit').bind('click', function(){
                 var inverterId = $('input[name="id"]').val();
                 checkCheckboxesHiddenFields();
-                var data = $(this).parent().parent().serialize();
+                var data = $('#expectationFormId').serialize();
                 $.post('admin-server.php', data, function(){
                     init_devices(inverterId);                        
                     $.pnotify({
