@@ -278,7 +278,7 @@ class Common
     }
     
     /**
-     * Exit the current php process, use with care and probably only for cron
+     * Exit the current php process, use with care and probably only for QueueItems
      */
     public static function exitProcess() {
     	QueueServer::getInstance()->stop();
@@ -295,6 +295,13 @@ class Common
     			echo("Worker paused\n");
     		}
     	}
+    }
+    
+    /**
+     * tell the queueServer it should restart
+     */
+    public static function createRestartQueueItem () {
+    	QueueServer::addItemToDatabase(new QueueItem(time(), "Common.exitProcess", "", false, 0, true));
     }
 }
 ?>

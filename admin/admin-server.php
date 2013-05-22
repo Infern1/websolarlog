@@ -291,7 +291,7 @@ switch ($settingstype) {
 		// Set the worker on pause, so we won't have conflicts or errors
 		$config->pauseWorker = true;
 		$adapter->writeConfig($config);
-
+		
 		updaterJsonFile("busy", "retrieving update", 10);
 		HookHandler::getInstance()->fire("onInfo", "Update info: Starting checkout of " . $url);
 		if(!Updater::doCheckout($url)) {
@@ -311,9 +311,11 @@ switch ($settingstype) {
 		// Everything ok, save version info to db
 		$config->version_title = $version;
 		$config->version_revision = $revision;
-		$config->restartWorker = true;
 		$config->pauseWorker = false;
 		$adapter->writeConfig($config);
+		
+		// We want an restart off the queue server
+		Common::createRestartQueueItem();
 
 		HookHandler::getInstance()->fire("onInfo", "Update ready: " . $version . " (" . $revision . ")");
 		updaterJsonFile("ready", "Update ready", 100);
