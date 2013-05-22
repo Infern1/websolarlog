@@ -38,8 +38,6 @@ class DeviceService {
 		$bObject->initialkwh = $object->initialkwh;
 		$bObject->producesSince = $object->producesSince;
 		$bObject->expectedkwh = $object->expectedkwh;
-		$bObject->heading = $object->heading;
-		$bObject->correctionFactor = $object->correctionFactor;
 		$bObject->comAddress = $object->comAddress;
 		$bObject->comLog = $object->comLog;
 		$bObject->syncTime = $object->syncTime;
@@ -78,8 +76,6 @@ class DeviceService {
 		$object->initialkwh = $bObject->initialkwh;
 		$object->producesSince = $bObject->producesSince;
 		$object->expectedkwh = $bObject->expectedkwh;
-		$object->heading = $bObject->heading;
-		$object->correctionFactor = $bObject->correctionFactor;
 		$object->comAddress = $bObject->comAddress;
 		$object->comLog = $bObject->comLog;
 		$object->syncTime = $bObject->syncTime;

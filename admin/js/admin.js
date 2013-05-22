@@ -884,6 +884,7 @@ function load_device(inverterId) {
                 	checkCheckboxesHiddenFields();
                 	
                     var data = $(this).parent().parent().serialize();
+                    var data = $('#deviceFormId').serialize();
                     $.post('admin-server.php', data, function(result){
                         init_devices(result.id);                        
                         $.pnotify({

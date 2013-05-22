@@ -12,8 +12,6 @@ class Device {
     public $producesSince;
     public $expectedkwh;
     public $plantpower;
-    public $heading;
-    public $correctionFactor;
     public $comAddress;
     public $comLog;
     public $syncTime;
@@ -50,8 +48,6 @@ class Device {
         $this->initialkwh = 0;
         $this->expectedkwh = 0;
         $this->plantpower = 0;
-        $this->heading = "";
-        $this->correctionFactor = 0.987;
         $this->comAddress = 2;
         $this->comLog = false;
         $this->syncTime = false;

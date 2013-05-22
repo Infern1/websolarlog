@@ -759,8 +759,6 @@ class PDODataAdapter {
 		$bean->initialkwh = $device->initialkwh;
 		$bean->producesSince = $device->producesSince;
 		$bean->expectedkwh = $device->expectedkwh;
-		$bean->heading = $device->heading;
-		$bean->correctionFactor = $device->correctionFactor;
 		$bean->comAddress = $device->comAddress;
 		$bean->comLog = $device->comLog;
 		$bean->syncTime = $device->syncTime;
@@ -807,8 +805,6 @@ class PDODataAdapter {
 		$device->initialkwh = $bean->initialkwh;
 		$device->producesSince = $bean->producesSince;
 		$device->expectedkwh = $bean->expectedkwh;
-		$device->heading = $bean->heading;
-		$device->correctionFactor = $bean->correctionFactor;
 		$device->comAddress = $bean->comAddress;
 		$device->comLog = $bean->comLog;
 		$device->syncTime = $bean->syncTime;
@@ -860,8 +856,6 @@ class PDODataAdapter {
 			$device->initialkwh = $bean->initialkwh;
 			$device->producesSince = $bean->producesSince;
 			$device->expectedkwh = $bean->expectedkwh;
-			$device->heading = $bean->heading;
-			$device->correctionFactor = $bean->correctionFactor;
 			$device->comAddress = $bean->comAddress;
 			$device->comLog = $bean->comLog;
 			$device->syncTime = $bean->syncTime;

@@ -1,4 +1,4 @@
-<form>
+<form id="deviceFormId">
   <input type="hidden" name="s" value="save-inverter" />   
   <input type="hidden" name="id" value="{{data.inverter.id}}" />   
   <fieldset>
@@ -18,9 +18,6 @@
     What is the expected production in kWh for this inverter. The plant power is calculated by the panels below:<br>
     <label for="expectedkwh">expected kWh:</label><input type="text" name="expectedkwh" value="{{data.inverter.expectedkwh}}" />{{infoTooltip title="kWh"}}<br />   
     <label for="plantpower">plant power:</label><input type="text" name="plantpower" value="{{data.inverter.plantpower}}" readonly="true" />{{infoTooltip title="Calculated by the panels, see the bottom of this page."}}<br />   
-    <hr>
-    <label for="heading">heading:</label><input type="text" name="heading" value="{{data.inverter.heading}}" /><br />
-    <label for="correctionFactor">correction factor:</label><input type="text" name="correctionFactor" value="{{data.inverter.correctionFactor}}" /><br />
 	<hr>
 	Select the program you use to communicate with the device,what type of device it is and if needed the address of the device:<br>
     <label for="deviceApi">Device Api:</label>

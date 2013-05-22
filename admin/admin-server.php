@@ -248,7 +248,8 @@ switch ($settingstype) {
 	case 'updater-getversions':
 		$experimental = (Common::getValue("experimental", 'false') === 'true') ? true : false;
 		$data['chkNewTrunk'] = ($config->checkNewTrunk=='true') ? true : false;
-		
+		$data['currentVersionTitle'] = $config->version_title;
+		$data['currentVersionRevision'] = $config->version_revision;
 		if (Updater::isUpdateable()) {
 			$data['result'] = true;
 			$data['versions'] = Updater::getVersions($experimental);
@@ -405,8 +406,6 @@ switch ($settingstype) {
 		$device->producesSince = Common::getValue("producesSince");
 		$device->expectedkwh = Common::getValue("expectedkwh");
 		$device->plantpower = Common::getValue("plantpower");
-		$device->heading = Common::getValue("heading");
-		$device->correctionFactor = Common::getValue("correctionFactor");
 		$device->deviceApi = Common::getValue("deviceApi");
 		$device->type = Common::getValue("deviceType");
 		$device->comAddress = Common::getValue("comAddress");
