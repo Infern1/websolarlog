@@ -152,7 +152,9 @@ class Common
                 }
             }
         }
-        rmdir($dir);
+        if (!rmdir($dir)) {
+        	HookHandler::getInstance()->fire("onError", "Update error: could not remove folder:" . $dir . " error: " . self::getLastError());
+        }
     }
 
     /**
