@@ -11,6 +11,7 @@ class Weather {
 	public $humidity;
 	public $conditionId;
 	public $rain1h;
+	public $rain3h;
 	public $clouds;
 	public $wind_speed;
 	public $wind_direction;
