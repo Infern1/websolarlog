@@ -367,7 +367,7 @@ try {
 			$maxPower = array();
 			
 			foreach ($config->devices as $device){
-				if($device->type == "production"){
+				if($device->type == 'production'){
 					$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($device->id);
 					$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($device->id);
 				}
