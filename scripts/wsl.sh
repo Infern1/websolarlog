@@ -1,11 +1,17 @@
 #!/bin/bash
 # WebSolarLog start and stop script
 
-SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PIDFOLDER=$SCRIPTDIR
 PHPSCRIPTNAME="server.php"
-PHP=$(which php)
-NOHUP=$(which nohup)
+
+WHICH=/usr/bin/which
+PHP=$($WHICH php)
+NOHUP=$($WHICH nohup)
+PGREP=$($WHICH pgrep)
+DIRNAME=$($WHICH dirname)
+PWD=$($WHICH pwd)
+CAT=$($WHICH cat)
+SCRIPTDIR="$( cd "$( $DIRNAME "${BASH_SOURCE[0]}" )" && $PWD )"
+PIDFOLDER=$SCRIPTDIR
 LOGFILE=$SCRIPTDIR"/queueserver.log"
 
 cd $SCRIPTDIR
@@ -18,7 +24,7 @@ is_running(){
           return
         fi
 
-        kill -0 `cat $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` 2> /dev/null
+        kill -0 `$CAT $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` 2> /dev/null
         if [ "$?" -eq "1" ]
         then
           return
@@ -55,12 +61,12 @@ start)
 stop)
      if [ "$RESULT" = 'YES' ]
      then
-        kill `cat $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` 2> /dev/null
+        kill `$CAT $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` 2> /dev/null
         rm -f $PIDFOLDER"/"$PHPSCRIPTNAME".pid"
      else
         echo "WebSolarLog is not running"
      fi
-     kill `pgrep wsl.sh` &
+     kill `$PGREP wsl.sh` &
      exit 0
 ;;
 status)
