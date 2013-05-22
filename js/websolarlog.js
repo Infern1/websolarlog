@@ -873,7 +873,9 @@ var WSL = {
 			});
 		});
 	},
+	
 
+		
 	init_PageIndexTotalValues : function(sideBar) {
 		WSL.api.getPageIndexTotalValues(function(data) {
 			$.ajax({
@@ -890,6 +892,26 @@ var WSL = {
 						'lang' : data.lang
 					});
 					$(sideBar).html(html);
+					WSL.api.getWeatherValues(function(data) {
+						$.ajax({
+							url : 'js/templates/widgetWeather.hb',
+							beforeSend : function(xhr) {
+								if (getWindowsState() == false) {
+									ajaxAbort(xhr);
+								}
+							},
+							success : function(source) {
+								var template = Handlebars.compile(source);
+								var html = template({
+									'data' : data.data
+								});
+								$(sideBar).append(html);
+
+								ajaxReady();
+							},
+							dataType : 'text',
+						});
+					});
 					ajaxReady();
 				},
 				dataType : 'text',
@@ -1203,7 +1225,6 @@ var WSL = {
 				init_astrocalc(gl_date,longitude,latitude,pv_az,pv_roof,pv_temp_coeff,timezone);
 				
                 var coeff = 1000 * 60 * 5;
-                var beforeSunrise = coeff*5;
                 var sunrise = new Date((result.sunInfo.sunrise-1000)*1000);  //or use any other date
                 var sunriseRounded = Math.round(sunrise.getTime() / coeff) * coeff;
 
@@ -2302,6 +2323,13 @@ WSL.api.getPageIndexTotalValues = function(success) {
 	//wslGetJSON(url,dataType,success,runOnBlur);
 	wslGetJSON('server.php?method=getPageIndexTotalValues','json',success,false);
 };
+
+
+WSL.api.getWeatherValues = function(success) {
+	//wslGetJSON(url,dataType,success,runOnBlur);
+	wslGetJSON('api.php/Weather/live','json',success,false);
+};
+
 
 WSL.api.init_PageLiveValues = function(success) {
 	//wslGetJSON(url,dataType,success,runOnBlur);
