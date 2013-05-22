@@ -260,6 +260,29 @@ class Util {
     	return $value." ";
     }
     
+    /**
+     * Creates an job on a fix time every day
+     * @param $hour
+     * @param $minute
+     * @return time
+     */
+    public static function createOnceADayJob($hour, $minute){
+    	$today_text = date("Y-m-d ", time()) . $hour . ":" . $minute . ":00";
+    	$today = strtotime($today_text);
+    	$tomorrow = strtotime($today_text . ' +24 hour');
+    	if ($today > time()) {
+    		return $today;
+    	}
+    	return $tomorrow;
+    }
     
+    /**
+     * Creates an time based on the first coming interval
+     * @param unknown $interval
+     * @return number
+     */
+    public static function createTimeForWholeInterval($interval) {
+    	return (time() + $interval) - (time() % $interval);
+    }  
 }
 ?>
