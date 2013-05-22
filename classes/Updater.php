@@ -68,7 +68,7 @@ class Updater {
      */
     public static function doCheckout($urlsvn, $revision=-1) {
         // Try to do an export
-        return svn_export ($urlsvn, self::$basepath . "/export", false, revision);
+        return svn_export ($urlsvn, self::$basepath . "/export", false, $revision);
     }
 
     /**
