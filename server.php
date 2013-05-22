@@ -367,8 +367,10 @@ try {
 			$maxPower = array();
 			
 			foreach ($config->devices as $device){
-				$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($device->id);
-				$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($device->id);
+				if($device->type == "production"){
+					$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($device->id);
+					$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($device->id);
+				}
 			}
 
 			$dayData = new DayDataResult();
@@ -383,6 +385,7 @@ try {
 			$lang['today'] 			= _("Today");
 			$lang['maxGridPower'] 	= _("Max Grid Power");
 			$lang['date'] 			= _("date");
+			$lang['time'] 			= _("time");
 			$lang['totalKWh'] 		= _("TotalKWh");
 			$lang['inv'] 			= _("Inv");
 			$lang['kwh'] 			= _("kwh");

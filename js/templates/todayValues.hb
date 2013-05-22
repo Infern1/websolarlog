@@ -9,7 +9,7 @@
 							<div class="column span-22"><h4>{{lang.maxGridPower}}</h4></div>
 							<div class="column span-5 first">{{lang.inv}}</div>
 							<div class="column span-4" style="text-align:right;">{{lang.kwh}}</div>
-							<div class="column span-8 last">{{lang.date}}</div>
+							<div class="column span-8 last">{{lang.time}}</div>
 				    		{{#each data.maxPower}}
 				    			{{#each this}}
 					    			<div class="column span-5 first">{{this.INV}}</div>
@@ -22,8 +22,8 @@
 						<div class="column span-22">
 					    	<div class="column span-22"><h4>{{lang.TotalKWh}}</h4></div>
 							<div class="column span-5 first">{{lang.inv}}</div>
-							<div class="column span-4" style="text-align:right;">{{lang.kwh}}</div>
-							<div class="column span-8 last">{{lang.date}}</div>
+							<div class="column span-4" style="text-align:right;">{{lang.watt}}</div>
+							<div class="column span-8 last">{{lang.time}}</div>
 							{{#each data.maxEnergy}}
 								{{#each this}}
 					    			<div class="column span-5 first">{{this.INV}}</div>
