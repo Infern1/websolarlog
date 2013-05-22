@@ -102,6 +102,6 @@ class Updater {
         copy($source . "scripts/worker.php", $target . "scripts/worker.php");
         copy($source . "scripts/server.php", $target . "scripts/server.php");
         copy($source . "scripts/wsl.sh", $target . "scripts/wsl.sh");
-        chmod($target . "scripts/wsl.sh", 0750);
+        chmod($target . "scripts/wsl.sh", '0750');
     }
 }
