@@ -144,7 +144,7 @@ class CoreAddon {
 	private function checkMaxPowerValue($device, $live) {
 		// Get the highest value off the day
 		$currentMPT = $this->adapter->readMaxPowerToday($device->id);
-		$COEF=($live->EFF/100)* 1;
+		$COEF=$live->EFF/100;
 		$COEF=($COEF > 1) ? 1 : $COEF;
 		$GP2 = round($live->GP * $COEF,2);
 		if (!isset($currentMPT) || $GP2 > $currentMPT->GP) {
