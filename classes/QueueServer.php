@@ -182,6 +182,11 @@ class QueueServer {
 	
 	// Process the job 
 	private function process(QueueItem $item) {
+		// Remove from database if needed
+		if ($item != null && $item->dbSync && $item->requeue == false) {
+			$this->removeDbQueueItem($item);
+		}
+		
 		try {
 			R::begin(); // Every queuItem has its own database transaction
 			$classmethod = explode (".",$item->classmethod);
@@ -213,11 +218,6 @@ class QueueServer {
 				if ($item != null) {
 					$this->add($item);
 				}				
-			}
-			
-			// Remove from database if needed
-			if ($item != null && $item->dbSync && $item->requeue == false) {
-				$this->removeDbQueueItem($item);
 			}
 			
 			R::commit(); // Commit the transaction
