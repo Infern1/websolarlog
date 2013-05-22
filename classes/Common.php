@@ -147,7 +147,9 @@ class Common
             if(is_dir($file)) {
                 self::rrmdir($file);
             } else {
-                unlink($file);
+                if (!unlink($file)) {
+                	HookHandler::getInstance()->fire("onError", "Update error: could not delete file:" . $file . " error: " . self::getLastError());
+                }
             }
         }
         rmdir($dir);
@@ -302,6 +304,13 @@ class Common
      */
     public static function createRestartQueueItem () {
     	QueueServer::addItemToDatabase(new QueueItem(time(), "Common.exitProcess", "", false, 0, true));
+    }
+    
+    public static function getLastError() {
+    	$error = error_get_last();
+    	if (isset($error)) {
+    		return $error['type'] . ". " . $error['message'] . " " . $error['file'] . "[" . $error['line'] . "]";
+    	}
     }
 }
 ?>

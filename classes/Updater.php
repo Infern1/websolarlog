@@ -102,6 +102,8 @@ class Updater {
         copy($source . "scripts/worker.php", $target . "scripts/worker.php");
         copy($source . "scripts/server.php", $target . "scripts/server.php");
         copy($source . "scripts/wsl.sh", $target . "scripts/wsl.sh");
-        chmod($target . "scripts/wsl.sh", '0750');
+        if (!chmod($target . "scripts/wsl.sh", octdec(0750))) {
+        	HookHandler::getInstance()->fire("onError", "Update error: could not change right of wsl.sh check if it is executable! " . Common::getLastError());
+        }
     }
 }
