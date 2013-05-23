@@ -53,10 +53,6 @@ QueueServer::getInstance()->add(new QueueItem($slowJobStartTime, "HookHandler.fi
 // Add job to refresh the config object every 2 minutes
 QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(120), "Common.refreshConfig", "", true, 120));
 
-// Add job to check for pause every 2 minutes
-// TODO :: When we support db queue then we should not check for it
-QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(120), "Common.checkPause", "", true, 120));
-
 // Add job to check for restart every 5 minutes
 // TODO :: When we support db queue then we should not check for it
 QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(300), "Common.checkRestart", "", true, 300));

@@ -291,14 +291,10 @@ class Common
     
     /**
      * Do we need to pause?
+     * @deprecated
      */
     public static function checkPause() {
-    	if (Session::getConfig()->pauseWorker) {
-    		while (Session::getConfig(true)->pauseWorker) {
-    			sleep(5);
-    			echo("Worker paused\n");
-    		}
-    	}
+    	// Do nothing
     }
     
     /**
