@@ -289,10 +289,6 @@ switch ($settingstype) {
 		$url = ($version == "trunk") ? Updater::$url . "trunk" : $url;
 		$data['svnurl'] = $url;
 
-		// Set the worker on pause, so we won't have conflicts or errors
-		$config->pauseWorker = true;
-		$adapter->writeConfig($config);
-		
 		updaterJsonFile("busy", "retrieving update", 10);
 		HookHandler::getInstance()->fire("onInfo", "Update info: Starting checkout of " . $url);
 		if(!Updater::doCheckout($url)) {
@@ -312,7 +308,6 @@ switch ($settingstype) {
 		// Everything ok, save version info to db
 		$config->version_title = $version;
 		$config->version_revision = $revision;
-		$config->pauseWorker = false;
 		$adapter->writeConfig($config);
 		
 		// We want an restart off the queue server
