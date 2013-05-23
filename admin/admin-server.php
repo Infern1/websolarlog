@@ -410,8 +410,8 @@ switch ($settingstype) {
 		$device->pvoutputApikey = Common::getValue("pvoutputApikey");
 		$device->pvoutputSystemId = Common::getValue("pvoutputSystemId");
 		$device->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
-
-		$data['id'] = $deviceService->save($device);
+		$savedDevice = $deviceService->save($device);
+		$data['id'] = $savedDevice->id;
 		break;
 	case 'save-panel':
 		$id = Common::getValue("id");
