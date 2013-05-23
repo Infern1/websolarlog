@@ -33,10 +33,10 @@ Class WeatherOWM implements DeviceApi {
 		$weather->humidity = $result->list[0]->main->humidity;
 		$weather->conditionId = $result->list[0]->weather[0]->id;
 		if($result->list[0]->rain != null){
-			if($result->list[0]->rain->{'1h'} != null){
+			if(isset($result->list[0]->rain->{'1h'})){
 				$weather->rain1h = $result->list[0]->rain->{'1h'};
 			}
-			if($result->list[0]->rain->{'3h'} != null){
+			if(isset($result->list[0]->rain->{'3h'})){
 				$weather->rain3h = $result->list[0]->rain->{'3h'};
 			}
 		}
