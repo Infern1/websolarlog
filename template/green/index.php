@@ -97,6 +97,7 @@
 			<a href="http://www.websolarlog.com/" target="_blank" class="leftFooter">WebSolarLog.com</a><br/>
 			<a href="http://www.websolarlog.com/index.php/help-support/" target="_blank" class="leftFooter">Support Group</a><br/>
 			<a href="http://www.websolarlog.com/index.php/development/" target="_blank" class="leftFooter">Development</a><br/>
+			<a href="http://tracker.websolarlog.com/" target="_blank" class="leftFooter">Tracker</a><br/>
 			</div>
 			<div style="float:left; width:180px;">
 			Supported device:<br/>
