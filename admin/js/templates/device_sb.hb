@@ -17,6 +17,7 @@ Solar inverters:<br>
 Metering devices:<br>
 <ul>
 	<li>Dutch Smart Meter (P1 serial)</li>
+	<li>Dutch Smart Meter (Remote IP)</li>
 </ul>
 <br>
 Online services:<br>

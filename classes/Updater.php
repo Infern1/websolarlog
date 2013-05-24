@@ -30,13 +30,29 @@ class Updater {
      * @param boolean $experimental
      * @return array
      */
-    public static function getVersions($experimental = false) {
-    	$json = file_get_contents(self::$urlReleases . "releases.php");
-    	$versions = json_decode($json, TRUE);
+    public static function getVersions($showExperimental = false, $showBeta = false) {
+    	$json = file_get_contents(self::$urlReleases . "newReleases.php");
+    	$jsonVersions = json_decode($json, TRUE);
+    	$versions = [];
     	
-        if ($experimental) {
+    	foreach($jsonVersions['stable'] as $stable){
+    		if ($stable['display']) {
+    			$versions['stable'][] = $stable;
+    		}
+    	}
+    	foreach($jsonVersions['beta'] as $beta){
+    		if ($beta['display'] && $showBeta) {
+    			$svn = svn_ls($beta['path']);
+    			$versions['beta'][] = $beta;
+    		}
+    	}
+    	 
+        if ($jsonVersions['trunk'][0]['display'] && $showExperimental) {
             $trunk = svn_ls(self::$url);
-            $versions[] = array('name'=>'trunk','experimental'=>true, 'revision'=>$trunk['trunk']['created_rev']);
+            $versions['trunk'][0] = $jsonVersions['trunk'][0];																																																																					
+            $versions['trunk'][0]['timestamp'] = $trunk['trunk']['time_t'];
+            $versions['trunk'][0]['revision'] = $trunk['trunk']['created_rev'];
+            $versions['trunk'][0]['path'] = self::$url."trunk/";
         }
 
         return $versions;

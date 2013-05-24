@@ -247,12 +247,13 @@ switch ($settingstype) {
 		break;
 	case 'updater-getversions':
 		$experimental = (Common::getValue("experimental", 'false') === 'true') ? true : false;
+		$beta = (Common::getValue("beta", 'false') === 'true') ? true : false;
 		$data['chkNewTrunk'] = ($config->checkNewTrunk=='true') ? true : false;
 		$data['currentVersionTitle'] = $config->version_title;
 		$data['currentVersionRevision'] = $config->version_revision;
 		if (Updater::isUpdateable()) {
 			$data['result'] = true;
-			$data['versions'] = Updater::getVersions($experimental);
+			$data['versions'] = Updater::getVersions($experimental,$beta);
 		} else {
 			$data['result'] = false;
 			$data['problems'] = Updater::$problems;
@@ -410,8 +411,7 @@ switch ($settingstype) {
 		$device->pvoutputApikey = Common::getValue("pvoutputApikey");
 		$device->pvoutputSystemId = Common::getValue("pvoutputSystemId");
 		$device->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
-		$savedDevice = $deviceService->save($device);
-		$data['id'] = $savedDevice->id;
+		$data['id'] = $deviceService->save($device)->id;
 		break;
 	case 'save-panel':
 		$id = Common::getValue("id");

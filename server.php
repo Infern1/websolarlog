@@ -555,9 +555,9 @@ try {
 			}
 			break;
 		case "test":
-			$sma = new SMASpotWSL('/', $address, $port, $comoption, true);
-			$test = $sma->getLiveData();
-			var_dump($test);
+			$updater = new Updater();
+			$versions = $updater->getVersions(true);
+			var_dump($versions);
 			break;
 		default:
 			break;

@@ -886,6 +886,9 @@ function load_device(inverterId) {
                     var data = $(this).parent().parent().serialize();
                     var data = $('#deviceFormId').serialize();
                     $.post('admin-server.php', data, function(result){
+                    	console.log('aa');
+                    	console.log(result.id);
+                    	console.log('bb');
                         init_devices(result.id);                        
                         $.pnotify({
                             title: 'Saved',
@@ -1019,12 +1022,12 @@ function init_test() {
         
 }
 
-function init_update(experimental) {
+function init_update(experimental,beta) {
     if (typeof experimental === 'undefined' ) {
         experimental = false;
     }
 
-    $.getJSON('admin-server.php?s=updater-getversions&experimental=' + experimental, function(data) {
+    $.getJSON('admin-server.php?s=updater-getversions&experimental=' + experimental+ '&beta=' + beta, function(data) {
         if (data.result === false) {
             $.ajax({
                 url : 'js/templates/updater-problems.hb',
@@ -1041,12 +1044,18 @@ function init_update(experimental) {
                 url : 'js/templates/updater-experimental.hb',
                 success : function(source) {
                     var template = Handlebars.compile(source);
-                    var html = template({'experimental' : experimental , 'chkNewTrunk' : data.chkNewTrunk});
+                    var html = template({'experimental' : experimental , 'beta' : beta , 'chkNewTrunk' : data.chkNewTrunk});
                     $('#sidebar').html(html);
                     
                     $('#chkExperimental').bind('click', function(){
-                        var checked = $(this).is(':checked');
-                        init_update(checked);
+                    	var experimental = $('#chkExperimental').is(':checked');
+                    	var beta = $('#chkBeta').is(':checked');
+                    	init_update(experimental,beta);
+                    });
+                    $('#chkBeta').bind('click', function(){
+                    	var experimental = $('#chkExperimental').is(':checked');
+                    	var beta = $('#chkBeta').is(':checked');
+                    	init_update(experimental,beta);
                     });
                     
                     $("input[name = 'chkNewTrunk']").bind('click', function(){                        

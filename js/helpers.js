@@ -175,7 +175,20 @@
 		return new Handlebars.SafeString("<img src=\"images/information.png\" class=\"tooltip\" title=\""+context.hash.title+"\"/>");
 	});
     
-	
-	
-	
+	Handlebars.registerHelper("updaterVersionsList", function(context,block) {
+		var list = '<div class="span span-30">';
+		$.each( context, function( key, type ) {
+			list += '<ul style="list-style-type: none;"><li>'+key.capitalize()+"";
+			$.each( type, function( key, value ) {
+				list += '<ul><li style="list-style-type: none;"><input type="radio" name="version" value="'+value.displayName+'*'+value.revision+'"><span style="color:'+value.displayColor+'">&nbsp;&nbsp;'+value.displayName+'</span></input>';
+				list += '<ul><li>Release date:</li>';
+				list += '<li style="list-style-type: none;">'+moment(value.timestamp*1000).format('DD-MM-YYYY HH:mm:ss')+'</li>';
+				list += '<li>Description:</li><li style="list-style-type: none;">'+value.description+'</li></ul></ul>';
+			});
+			list += '</li></ul></ul>';
+		});
+		
+		list += '</div>';
+    	return new Handlebars.SafeString(list);
+    });
 }));
