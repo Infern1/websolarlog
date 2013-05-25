@@ -87,8 +87,8 @@ try {
 			$serverUptime = Util::serverUptime();
 
 			$slimConfig = array();
-			$slimConfig['lat'] = number_format($config->latitude,2,'.','');
-			$slimConfig['long'] = number_format($config->longitude,2,'.','');
+			$slimConfig['lat'] = $config->latitude;
+			$slimConfig['long'] = $config->longitude;
 			
 			foreach ($config->devices as $device){
 				foreach ($device->panels as $panel){
