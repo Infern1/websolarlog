@@ -91,23 +91,25 @@ try {
 			$slimConfig['long'] = $config->longitude;
 			
 			foreach ($config->devices as $device){
-				foreach ($device->panels as $panel){
-					$panels[] = array(
-						'id'=>$panel->id,
-						'description'=>$panel->description,
-						'roofOrientation'=>$panel->roofOrientation,
-						'roofPitch'=>$panel->roofPitch,
-						'amount'=>$panel->amount,
-						'wp'=>$panel->wp,
-						'totalWp'=>$panel->amount*$panel->wp
+				if($device->type=="production"){
+					foreach ($device->panels as $panel){
+						$panels[] = array(
+							'id'=>$panel->id,
+							'description'=>$panel->description,
+							'roofOrientation'=>$panel->roofOrientation,
+							'roofPitch'=>$panel->roofPitch,
+							'amount'=>$panel->amount,
+							'wp'=>$panel->wp,
+							'totalWp'=>$panel->amount*$panel->wp
+						);
+					}
+					$inverters[] = array(
+						'name'=>$device->name,
+						'expectedKWH'=>$device->expectedkwh,
+						'plantPower'=>$device->plantpower,
+						'panels'=>$panels
 					);
 				}
-				$inverters[] = array(
-					'name'=>$device->name,
-					'expectedKWH'=>$device->expectedkwh,
-					'plantPower'=>$device->plantpower,
-					'panels'=>$panels
-				);
 			}
 			$slimConfig['inverters'] = $inverters;
 			
