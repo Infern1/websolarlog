@@ -10,7 +10,6 @@
 				<h1 id="logo"><a href="./" title="Dashboard"><?php echo $config->title; ?></a></h1>
 				<h2 id="subLogo"><a href="./" title="Dashboard"><?php echo $config->subtitle; ?></a></h2>
 			</div>
-			<div id="weather" style="display: inline-block; margin-left: 100px;"></div>
 			<div class="socials">
 			  <b class="spiffy">
 			  <b class="spiffy1"><b></b></b>
@@ -107,6 +106,7 @@
 			<a href="http://www.Effekta.com" target="_blank" class="leftFooter">Effekta</a> (software)<br/>
 			<a href="http://www.diehl.com/en/diehl-controls/photovoltaics/wechselrichter.html" target="_blank" class="leftFooter">Diehl</a>(not needed)<br/>
 			<a href="http://www.websolarlog.com/" target="_blank" class="leftFooter">Dutch SmartMeter</a> (software)<br/>
+			<a href="http://www.openweathermap.com" target="_blank" class="leftFooter">OpenWeatherMap</a> (Webservice)<br/>
 			</div>
 
 			<div style="float:left; width:200px;">
