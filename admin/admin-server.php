@@ -765,12 +765,18 @@ function checkSQLite() {
 		$stat = stat($PidFilename);
 		$result['pid']['exists']=true;
 		$result['pid']['timeDiff'] = time()-$stat['atime'];
-		($result['pid']['timeDiff'] >= 65) ? $result['pid']['WSLRunningState']=false : $result['pid']['WSLRunningState']=true;
+		if($result['pid']['timeDiff'] >= 65){
+			$result['pid']['WSLRunningState']=false;
+			$result['startWSL'] = Session::getBasePath().'/scripts/./wsl.sh start';
+		}else{ 
+			$result['pid']['WSLRunningState']=true;
+		}
 		
 		$result['pid']['atime']=$stat['atime'];
 		$result['pid']['mtime']=$stat['mtime'];
 		$result['pid']['ctime']=$stat['ctime'];
 	} else {
+		$result['startWSL'] = Session::getBasePath().'/scripts/./wsl.sh start';
 		$result['pid']['exists']=false;
 	}
 		

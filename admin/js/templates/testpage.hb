@@ -8,6 +8,10 @@
 		<label>Currenttime:</label>{{timestampDateFormat data.test.currentTime format="DD-MM-YYYY HH:mm:ss "}}<br />
 		<label>last change:</label>{{timestampDateFormat data.test.pid.ctime format="DD-MM-YYYY HH:mm:ss "}}<br />
 <br>
+{{#if data.test.startWSL}}
+<font style="color:#FFCC00">WebSolarLog is not running.<br />Please run the following command on the prompt of your Linux system:<br /></font>
+<font style="color:#FF0000">sudo {{data.test.startWSL}}</font>
+{{/if}}
 <br>
 <hr>
 <br>
