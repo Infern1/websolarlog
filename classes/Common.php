@@ -143,15 +143,25 @@ class Common
      */
     public static function rrmdir($dir) {
         if (!is_dir($dir)) return; // Only handle dirs that exist
-        foreach(glob($dir . '/*') as $file) {
-            if(is_dir($file)) {
-                self::rrmdir($file);
-            } else {
-                if (!unlink($file)) {
-                	HookHandler::getInstance()->fire("onError", "Update error: could not delete file:" . $file . " error: " . self::getLastError());
-                }
-            }
+        
+        if ($handle = opendir($dir)) {
+        	while (false !== ($filename = readdir($handle))) {
+        		$file = $dir . "/" . $filename;
+	            if ($filename == "." or $filename == "..") {
+	            	continue;
+	            }
+        		
+        		if(is_dir($file)) {
+	                self::rrmdir($file);
+	            } else {
+	                if (!unlink($file)) {
+	                	HookHandler::getInstance()->fire("onError", "Update error: could not delete file:" . $file . " error: " . self::getLastError());
+	                }
+	            }
+        	}
+        	closedir($handle);
         }
+        
         if (!rmdir($dir)) {
         	HookHandler::getInstance()->fire("onError", "Update error: could not remove folder:" . $dir . " error: " . self::getLastError());
         }
