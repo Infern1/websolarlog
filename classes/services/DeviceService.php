@@ -28,7 +28,6 @@ class DeviceService {
 	}
 	
 	private function toBean($object, $bObject) {
-		$bObject->id = $object->id;
 		$bObject->deviceApi = $object->deviceApi;
 		$bObject->type = $object->type;
 		$bObject->name = $object->name;
