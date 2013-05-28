@@ -388,7 +388,7 @@ switch ($settingstype) {
 		break;
 	case 'save-inverter':
 		$deviceService = new DeviceService();
-		$id = Common::getValue("id");
+		$id = Common::getValue("id", -1);
 		$device = new Device();
 		if ($id > 0) {
 			// get the current data
@@ -411,6 +411,7 @@ switch ($settingstype) {
 		$device->pvoutputApikey = Common::getValue("pvoutputApikey");
 		$device->pvoutputSystemId = Common::getValue("pvoutputSystemId");
 		$device->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
+		$device->active = 1;
 		$data['id'] = $deviceService->save($device)->id;
 		break;
 	case 'save-panel':

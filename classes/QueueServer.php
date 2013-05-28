@@ -176,7 +176,6 @@ class QueueServer {
 		$dbItem->dbSync = $item->dbSync;
 		
 		$item->dbId = R::store($dbItem);
-		
 		return $item;
 	}
 	

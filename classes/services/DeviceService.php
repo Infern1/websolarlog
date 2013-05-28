@@ -2,6 +2,13 @@
 class DeviceService {
 	public static $tbl = "inverter";
 	
+	public $panelService;
+	
+	function __construct() {
+		$this->panelService = new PanelService();
+		HookHandler::getInstance()->add("onJanitorDbCheck", "DeviceService.janitorDbCheck");
+	}
+	
 	/**
 	 * Save the object to the database
 	 * @param Device $object
@@ -27,7 +34,53 @@ class DeviceService {
 		return isset($object) ? $object : new Device();
 	}
 	
+	/**
+	 * Retrieves all devices
+	 * @return Array of Device
+	 */
+	public function getAllDevices() {
+		$bObjects = R::find( self::$tbl);
+		$objects = array();
+		foreach ($bObjects as $bObject) {
+			$objects[] = $this->toObject($bObject);
+		}
+		return $objects;
+	}
+	
+	/**
+	 * Retrieves all active devices
+	 * @return Array of Device
+	 */
+	public function getActiveDevices() {
+		$bObjects = R::find( self::$tbl, ' active = 1 ');
+		$objects = array();
+		foreach ($bObjects as $bObject) {
+			$objects[] = $this->toObject($bObject);
+		}
+		return $objects;
+	}
+	
+	public function janitorDbCheck() {
+		HookHandler::getInstance()->fire("onInfo", "DeviceService janitor DB Check");
+		// Get an device and save it, to make sure al fields are available in the database
+		$objects = $this->getAllDevices();
+		$object = $objects[0]; // first
+		$bObject= R::load(self::$tbl, $object->id);
+		
+		// Check if we have an active field on the old object
+		$setAllActive = (!isset($bObject['active']));
+		
+		// Save it
+		R::store($this->toBean($object, $bObject));
+		
+		// Set all to active
+		if ($setAllActive) {
+			R::exec("UPDATE inverter SET active = 1");
+		}
+	}
+	
 	private function toBean($object, $bObject) {
+		$bObject->active = $object->active;
 		$bObject->deviceApi = $object->deviceApi;
 		$bObject->type = $object->type;
 		$bObject->name = $object->name;
@@ -66,6 +119,7 @@ class DeviceService {
 	private function toObject($bObject) {
 		$object = new Device();
 		$object->id = $bObject->id;
+		$object->active = $bObject->active;
 		$object->deviceApi = $bObject->deviceApi;
 		$object->type = $bObject->type;
 		$object->name = $bObject->name;
@@ -85,8 +139,12 @@ class DeviceService {
 		$object->state = $bObject->state;
 		$object->refreshTime = (isset($bObject->refreshTime) && $bObject->refreshTime != "") ? $bObject->refreshTime : $object->refreshTime;
 		
-		// TODO :: retrieve by panelService
-		//$object->panels = $this->readPanelsByInverter($object->id);
+		// retrieve by panelService
+		$object->panels = $this->panelService->getArrayByDevice($object);
+		$object->plantpower = 0;
+		foreach ($object->panels as $panel) {
+			$object->plantpower += ($panel->amount * $panel->wp);
+		}
 		
 		$object->expectedJAN = ($bObject->expectedJAN!='NaN') ? $bObject->expectedJAN : 0;
 		$object->expectedFEB = ($bObject->expectedFEB!='NaN') ? $bObject->expectedFEB : 0;

@@ -575,25 +575,16 @@ class PDODataAdapter {
 		return $graph;
 	}
 
-
-
 	/**
-	 *
+	 * Get an overal power amount for all production devices
 	 * @return number
 	 */
 	function readPlantPower(){
-
-		$devices = $this->readInverters();
 		$plantPower = 0;
-
-		foreach ($devices as $device) {
-			$device->panels = $this->readPanelsByInverter($device->id);
-
-			foreach ($device->panels as $panel) {
-				//$panel = new Panel();
-				$plantPower += ($panel->amount * $panel->wp);
+		foreach (Session::getConfig()->devices as $device) {
+			if ($device->type == "production") {
+				$plantPower += $device->plantPower;
 			}
-
 		}
 		return $plantPower;
 	}
@@ -789,107 +780,22 @@ class PDODataAdapter {
 
 	
 	/**
-	 *
-	 * @param unknown_type $id
+	 * Please use the deviceService instead of this function;
+	 * @Deprecated
+	 * @param int $id
 	 */
 	public function readInverter($id) {
-		$bean = R::load('inverter',$id);
-		$device = new Device();
-		$device->id = $bean->id;
-		$device->deviceApi = $bean->deviceApi;
-		$device->type = $bean->type;
-		$device->name = $bean->name;
-		$device->description = $bean->description;
-		$device->liveOnFrontend = $bean->liveOnFrontend;
-		$device->graphOnFrontend = $bean->graphOnFrontend;
-		$device->initialkwh = $bean->initialkwh;
-		$device->producesSince = $bean->producesSince;
-		$device->expectedkwh = $bean->expectedkwh;
-		$device->comAddress = $bean->comAddress;
-		$device->comLog = $bean->comLog;
-		$device->syncTime = $bean->syncTime;
-		$device->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $device->pvoutputEnabled;
-		$device->pvoutputApikey = $bean->pvoutputApikey;
-		$device->pvoutputSystemId = $bean->pvoutputSystemId;
-		$device->pvoutputWSLTeamMember = $bean->pvoutputWSLTeamMember;
-		$device->state = $bean->state;
-		$device->refreshTime = (isset($bean->refreshTime) && $bean->refreshTime != "") ? $bean->refreshTime : $device->refreshTime;
-		$device->panels = $this->readPanelsByInverter($device->id);
-
-		
-
-		($bean->expectedJAN!='NaN') ? $device->expectedJAN = $bean->expectedJAN : $device->expectedJAN = 0;
-		($bean->expectedFEB!='NaN') ? $device->expectedFEB = $bean->expectedFEB : $device->expectedFEB = 0;
-		($bean->expectedMAR!='NaN') ? $device->expectedMAR = $bean->expectedMAR : $device->expectedMAR = 0;
-		($bean->expectedAPR!='NaN') ? $device->expectedAPR = $bean->expectedAPR : $device->expectedAPR = 0;
-		($bean->expectedMAY!='NaN') ? $device->expectedMAY = $bean->expectedMAY : $device->expectedMAY = 0;
-		($bean->expectedJUN!='NaN') ? $device->expectedJUN = $bean->expectedJUN : $device->expectedJUN = 0;
-		($bean->expectedJUL!='NaN') ? $device->expectedJUL = $bean->expectedJUL : $device->expectedJUL = 0;
-		($bean->expectedAUG!='NaN') ? $device->expectedAUG = $bean->expectedAUG : $device->expectedAUG = 0;
-		($bean->expectedSEP!='NaN') ? $device->expectedSEP = $bean->expectedSEP : $device->expectedSEP = 0;
-		($bean->expectedOCT!='NaN') ? $device->expectedOCT = $bean->expectedOCT : $device->expectedOCT = 0;
-		($bean->expectedNOV!='NaN') ? $device->expectedNOV = $bean->expectedNOV : $device->expectedNOV = 0;
-		($bean->expectedDEC!='NaN') ? $device->expectedDEC = $bean->expectedDEC : $device->expectedDEC = 0;
-		
-		$device->plantpower = 0;
-		if ($device->panels != null && is_array($device->panels)) {
-			foreach ($device->panels as $panel) {
-				$device->plantpower += ($panel->amount * $panel->wp);
-			}
-		}
-		return $device;
+		$deviceService = new DeviceService();
+		return $deviceService->load($id);
 	}
+
 	/**
-	 *
+	 *  Please use the deviceService instead of this function;
+	 *	@Deprecated
 	 */
 	private function readInverters() {
-		$list = array();
-		foreach(R::find('inverter') as $bean) {
-			$device = new Device();
-			$device->id = $bean->id;
-			$device->deviceApi = $bean->deviceApi;
-			$device->type = $bean->type;
-			$device->name = $bean->name;
-			$device->description = $bean->description;
-			$device->liveOnFrontend = $bean->liveOnFrontend;
-			$device->graphOnFrontend = $bean->graphOnFrontend;
-			$device->initialkwh = $bean->initialkwh;
-			$device->producesSince = $bean->producesSince;
-			$device->expectedkwh = $bean->expectedkwh;
-			$device->comAddress = $bean->comAddress;
-			$device->comLog = $bean->comLog;
-			$device->syncTime = $bean->syncTime;
-			$device->pvoutputEnabled = ($bean->pvoutputEnabled != "") ? $bean->pvoutputEnabled : $device->pvoutputEnabled;
-			$device->pvoutputApikey = $bean->pvoutputApikey;
-			$device->pvoutputSystemId = $bean->pvoutputSystemId;
-			$device->state = $bean->state;
-			$device->refreshTime = (isset($bean->refreshTime) && $bean->refreshTime != "") ? $bean->refreshTime : $device->refreshTime;
-			$device->panels = $this->readPanelsByInverter($device->id);
-
-		
-		($bean->expectedJAN!='NaN' ) ? $device->expectedJAN = $bean->expectedJAN : $device->expectedJAN = 0;
-		($bean->expectedFEB!='NaN' ) ? $device->expectedFEB = $bean->expectedFEB : $device->expectedFEB = 0;
-		($bean->expectedMAR!='NaN' ) ? $device->expectedMAR = $bean->expectedMAR : $device->expectedMAR = 0;
-		($bean->expectedAPR!='NaN' ) ? $device->expectedAPR = $bean->expectedAPR : $device->expectedAPR = 0;
-		($bean->expectedMAY!='NaN' ) ? $device->expectedMAY = $bean->expectedMAY : $device->expectedMAY = 0;
-		($bean->expectedJUN!='NaN' ) ? $device->expectedJUN = $bean->expectedJUN : $device->expectedJUN = 0;
-		($bean->expectedJUL!='NaN' ) ? $device->expectedJUL = $bean->expectedJUL : $device->expectedJUL = 0;
-		($bean->expectedAUG!='NaN' ) ? $device->expectedAUG = $bean->expectedAUG : $device->expectedAUG = 0;
-		($bean->expectedSEP!='NaN' ) ? $device->expectedSEP = $bean->expectedSEP : $device->expectedSEP = 0;
-		($bean->expectedOCT!='NaN' ) ? $device->expectedOCT = $bean->expectedOCT : $device->expectedOCT = 0;
-		($bean->expectedNOV!='NaN' ) ? $device->expectedNOV = $bean->expectedNOV : $device->expectedNOV = 0;
-		($bean->expectedDEC!='NaN' ) ? $device->expectedDEC = $bean->expectedDEC : $device->expectedDEC = 0;
-		
-			$device->plantpower = 0;
-			foreach ($device->panels as $panel) {
-				//$panel = new Panel();
-				$device->plantpower += ($panel->amount * $panel->wp);
-			}
-
-			$list[] = $device;
-		}
-
-		return $list;
+		$deviceService = new DeviceService();
+		return $deviceService->getActiveDevices();		
 	}
 
 	public function getGraphSeries(){

@@ -13,7 +13,7 @@ class JanitorRest {
 			exit();
 		}
 		
-		$item = new QueueItem(time(), "JanitorRest." . $option, null,	 false, 0, true);
+		$item = new QueueItem(time(), "JanitorRest." . $option, null, false, 0, true);
 		QueueServer::addItemToDatabase($item);
 		
 		return array("status"=>"added to queue");
@@ -26,7 +26,7 @@ class JanitorRest {
 	}
 	
 	public function DbCheck() {
-		HookHandler::getInstance()->fire('onInfo', "Janitor checking the datbase.");
+		HookHandler::getInstance()->fire('onInfo', "Janitor checking the database.");
 		HookHandler::getInstance()->fire("onJanitorDbCheck", "before");
 		HookHandler::getInstance()->fire("onJanitorDbCheck", "check");
 		HookHandler::getInstance()->fire("onJanitorDbCheck", "after");
