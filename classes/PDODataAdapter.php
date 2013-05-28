@@ -2121,12 +2121,7 @@ class PDODataAdapter {
 		// get config
 		$config = Session::getConfig();
 		// init var
-		$sumPlantPower = 0;
-		// loop through devices
-		foreach ($config->devices as $device) {
-			//sum plantpower of all devices
-			$sumPlantPower += $device->plantpower/1000;
-		}
+		$sumPlantPower = $this->readPlantPower();
 		//echo "SELECT INV,COUNT(kwh) as countkWh,MAX(kwh) AS kWh, SUM(kwh) AS sumkWh, time AS date FROM energy WHERE INV = :INV GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." ORDER BY time DESC limit 0,1";
 		// type to lowercase
 		$type = strtolower($type);
