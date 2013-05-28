@@ -160,6 +160,6 @@ class CoreAddon {
 	
 	public function touchPidFile(){
 		$filename = Session::getBasePath().'/scripts/server.php.pid';
-		touch($filename);
+		@touch($filename); // Surpress permission denied errors with @
 	}
 }
