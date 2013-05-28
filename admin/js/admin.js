@@ -1015,6 +1015,9 @@ function init_test() {
                     'data' : data
                 });
                 $('#content').html(html);
+                $('#btnCheckDb').bind('click', function() {
+                	$.getJSON('../api.php/Janitor/dbcheck');
+                }); 
             },
             dataType : 'text'
         });        

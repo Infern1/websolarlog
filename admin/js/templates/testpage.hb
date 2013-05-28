@@ -22,7 +22,9 @@
 
 </fieldset>
 </form>
-
+<form>
+	<button type="button" id="btnCheckDb">Check the database</button>
+</form>
 <form>
 <fieldset>
     <legend>Which extensions are loaded/installed:</legend>
