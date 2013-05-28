@@ -53,6 +53,7 @@ class Session
      * @return Config
      */
     public static function getConfig($reload=false,$usedb=true) {
+    	$deviceService = new DeviceService();
     	if (!$usedb) {
     		$config = new Config();
     		// Get dbase settings
