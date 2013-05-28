@@ -298,7 +298,7 @@ class Common
     	QueueServer::getInstance()->stop();
     	
     	// Create an Janitor Item
-    	$item = new QueueItem(time(), "JanitorRest." . $option, null, false, 0, true);
+    	$item = new QueueItem(time(), "JanitorRest.DbCheck", null, false, 0, true);
     	QueueServer::addItemToDatabase($item);
     	
     	exit();
