@@ -318,9 +318,6 @@ switch ($settingstype) {
 		// We want an restart off the queue server
 		Common::createRestartQueueItem();
 		
-		// Create an Janitor Item
-		$item = new QueueItem(time(), "JanitorRest." . $option, null, false, 0, true);
-		QueueServer::addItemToDatabase($item);
 		break;
 	case 'isLogin':
 		$data['result'] = Session::isLogin();

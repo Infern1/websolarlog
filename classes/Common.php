@@ -296,6 +296,11 @@ class Common
      */
     public static function exitProcess() {
     	QueueServer::getInstance()->stop();
+    	
+    	// Create an Janitor Item
+    	$item = new QueueItem(time(), "JanitorRest." . $option, null, false, 0, true);
+    	QueueServer::addItemToDatabase($item);
+    	
     	exit();
     }
     
