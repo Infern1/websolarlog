@@ -54,6 +54,7 @@ class PanelService {
 	
 	private function toObject($bObject) {
 		$object = new Panel();
+		$object->id = $bObject->id;
 		$object->inverterId = $bObject->inverterId;
 		$object->deviceId = $bObject->deviceId;
 		$object->description = $bObject->description;
