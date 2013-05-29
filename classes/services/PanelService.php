@@ -44,7 +44,7 @@ class PanelService {
 	private function toBean($object, $bObject) {
 		$bObject->inverterId = $object->inverterId;
 		$bObject->deviceId = $object->deviceId;
-		$bObject->description = $object->decription;
+		$bObject->description = $object->description;
 		$bObject->roofOrientation = $object->roofOrientation;
 		$bObject->roofPitch = $object->roofPitch;
 		$bObject->amount = $object->amount;
@@ -56,7 +56,7 @@ class PanelService {
 		$object = new Panel();
 		$object->inverterId = $bObject->inverterId;
 		$object->deviceId = $bObject->deviceId;
-		$object->description = $bObject->decription;
+		$object->description = $bObject->description;
 		$object->roofOrientation = $bObject->roofOrientation;
 		$object->roofPitch = $bObject->roofPitch;
 		$object->amount = $bObject->amount;
