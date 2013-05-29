@@ -886,9 +886,6 @@ function load_device(inverterId) {
                     var data = $(this).parent().parent().serialize();
                     var data = $('#deviceFormId').serialize();
                     $.post('admin-server.php', data, function(result){
-                    	console.log('aa');
-                    	console.log(result.id);
-                    	console.log('bb');
                         init_devices(result.id);                        
                         $.pnotify({
                             title: 'Saved',
@@ -900,7 +897,7 @@ function load_device(inverterId) {
                 
                 var handle_panel_submit = function() {
                 	checkCheckboxesHiddenFields();
-                    var data = $(this).parent().parent().parent().serialize();
+                    var data = $(this).parent().parent().serialize();
                     $.post('admin-server.php', data, function(){
                         load_device(inverterId);
                         $.pnotify({
