@@ -18,9 +18,13 @@ class Updater {
         self::$problems = array(); // Reset the problems
         $result = true;
         if (!extension_loaded('svn')) {
-            self::$problems[] = "SVN module not found. Try to install php5-svn package under debian.";
+        	$distro = explode("\n",shell_exec('cat /etc/lsb-release'));
+        	self::$problems[] = "SVN module not found. Try to install php5-svn package under ".$distro.".";
             $result = false;
         }
+        $distro = explode("\n",shell_exec('cat /etc/lsb-release'));
+        self::$problems[] = "SVN module not found. Try to install php5-svn package under ".$distro['DISTRIB_DESCRIPTION'].".";
+        $result = false;
         return $result;
     }
 
@@ -118,8 +122,12 @@ class Updater {
         copy($source . "scripts/worker.php", $target . "scripts/worker.php");
         copy($source . "scripts/server.php", $target . "scripts/server.php");
         copy($source . "scripts/wsl.sh", $target . "scripts/wsl.sh");
-        if (!chmod($target . "scripts/wsl.sh", octdec(0750))) {
-        	HookHandler::getInstance()->fire("onError", "Update error: could not change right of wsl.sh check if it is executable! " . Common::getLastError());
-        }
+        
+        /* Quick "fix"
+        * if (!chmod($target . "scripts/wsl.sh", octdec(0750))) {
+        * 	HookHandler::getInstance()->fire("onError", "Update error: could not change right of wsl.sh check if it is executable! " . Common::getLastError());
+        * }
+        */
+        
     }
 }
