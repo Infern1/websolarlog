@@ -57,8 +57,8 @@ class SMASpotWSLConverter
         
         $live = new Live();
         $live->type = 'production';
-        if (!empty ($data[2])) {
-        	$values= self::liveLineToValues($data[2],'SMASpotDateTime');
+        if (!empty ($data[1])) {
+        	$values= self::liveLineToValues($data[1],'SMASpotDateTime');
         	$live->time = $values[0];
         }
 
