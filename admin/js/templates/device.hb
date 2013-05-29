@@ -1,7 +1,7 @@
 <form id="deviceFormId">
   <input type="hidden" name="s" value="save-inverter" />   
   <input type="hidden" name="id" value="{{data.inverter.id}}" />   
-  <fieldset>
+  <fieldset style="width:500px;">
     <legend>Device: {{data.inverter.name}}</legend>
     Name and description of device:<br>
     <label for="name">name:</label><input type="text" name="name" value="{{data.inverter.name}}" />   <br />   
@@ -24,7 +24,8 @@
         <select name="deviceApi" style="width:148px;">
             <option value="AURORA" {{#if_eq data.inverter.deviceApi compare="AURORA"}}selected=selected{{/if_eq}}>Aurora</option>
             <option value="SMA-RS485" {{#if_eq data.inverter.deviceApi compare="SMA-RS485"}}selected=selected{{/if_eq}}>SMA RS485</option>
-            <option value="SMA-BT" {{#if_eq data.inverter.deviceApi compare="SMA-BT"}}selected=selected{{/if_eq}}>SMA-spot BlueTooth</option>
+            <option value="SMA-BT" {{#if_eq data.inverter.deviceApi compare="SMA-BT"}}selected=selected{{/if_eq}}>SMA-spot-2.0.4 BlueTooth</option>
+            <option value="SMA-BT-WSL" {{#if_eq data.inverter.deviceApi compare="SMA-BT-WSL"}}selected=selected{{/if_eq}}>SMA-spot-2.0.6 BlueTooth</option>
             <option value="Diehl-ethernet" {{#if_eq data.inverter.deviceApi compare="Diehl-ethernet"}}selected=selected{{/if_eq}}>Diehl Ethernet</option>
             <option value="DutchSmartMeter" {{#if_eq data.inverter.deviceApi compare="DutchSmartMeter"}}selected=selected{{/if_eq}}>Dutch Smart Meter</option>
             <option value="DutchSmartMeterRemote" {{#if_eq data.inverter.deviceApi compare="DutchSmartMeterRemote"}}selected=selected{{/if_eq}}>Dutch Smart Meter Remote</option>
@@ -38,7 +39,31 @@
             <option value="weather" {{#if_eq data.inverter.type compare="weather"}}selected=selected{{/if_eq}}>Weather</option>
         </select>{{infoTooltip title="Select the device type;<br>- production: (wind/solar)inverter<br>- metering: SmartMeter<Br>- weather: Collect Weather data"}}
         <br />   
-    <label for="comAddress">(RS485/IP) address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" />{{infoTooltip title="RS485: 1-255<br>IP: v4 of v6 address"}}<br />   
+    <label for="comAddress">(RS485/IP) address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" />{{infoTooltip title="RS485: 1-255<br>IP: v4 of v6 address"}}<br />
+    
+    <div class="span-8 first">
+    <label for="liveRate" style="float:left;">Live poll Rate:</label>
+    </div>
+    <div class="span-14 last" >
+    <div>
+    <div id="sliderLiveRate" class="span-25"></div><br>
+    <input type="text" name="refreshTime" id="refreshTime" value="{{data.inverter.refreshTime}}" />
+    
+    {{infoTooltip title="How often do we need to poll this device?<br>1-3600 sec."}}<br />
+    </div>  </div><br/><br/><br/>
+    
+    
+    <div class="span-8 first">
+    <label for="historyRate" style="float:left;">History poll Rate:</label>
+    {{infoTooltip title="How often do we need to poll this device?<br>1-3600 sec."}}
+    </div>
+
+    <div>
+    <div id="sliderHistoryRate" class="span-25"></div><br>
+    <input type="text" name="historyRate" id="historyRate" value="{{data.inverter.historyRate}}" />
+    
+    </div>
+    
     <hr>
     <label for="comLog">Log comm:</label>
     {{checkboxWithHidden 'comLog' data.inverter.comLog}}<br />
@@ -99,3 +124,32 @@ Panels can be added after saving the new inverter
 {{/if_gt}}
       </fieldset>
     </form>
+    
+<script language="text/javascript">
+
+    $( "#sliderLiveRate" ).slider({
+      min: 0,
+      max: 3600,
+      step: 5,
+      slide: function( event, ui ) {
+        $( "#refreshTime" ).val( ui.value );
+      }
+    });
+    // setter
+    console.log($( "#refreshTime" ).val());
+	$( "#sliderLiveRate" ).slider( "option", "value", $( "#refreshTime" ).val() );
+	
+	$( "#refreshTime" ).val( $( "#sliderLiveRate" ).slider( "value" ));
+	
+    
+     $( "#sliderHistoryRate" ).slider({
+      min: 0,
+      max: 3600,
+      step: 5,
+      slide: function( event, ui ) {
+        $( "#historyRate" ).val(  ui.value );
+      }
+    });
+    $( "#historyRate" ).val( $( "#sliderHistoryRate" ).slider( "value" ) );
+
+</script>
