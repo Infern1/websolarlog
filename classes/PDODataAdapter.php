@@ -583,7 +583,7 @@ class PDODataAdapter {
 		$plantPower = 0;
 		foreach (Session::getConfig()->devices as $device) {
 			if ($device->type == "production") {
-				$plantPower += $device->plantPower;
+				$plantPower += $device->plantpower;
 			}
 		}
 		return $plantPower;
