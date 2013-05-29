@@ -50,7 +50,7 @@ class SMASpotWSLConverter
         $data = preg_split("/;/",$inputLine);
         
         // Check if the record is okay
-		if(($data[0]!="WSL_START") && ($data[28]!="WSL_END")){
+		if(($data[0]!="WSL_START") || ($data[count($data)-1]!="WSL_END")){
             return null;
         }
         
