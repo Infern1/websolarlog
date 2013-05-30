@@ -178,12 +178,18 @@ class Util {
     }
     
     public static function serverUptime(){
-    
-    	$ut = strtok( shell_exec( "cat /proc/uptime" ), "." );
-    	$days = sprintf( "%2d", ($ut/(3600*24)) );
-    	$hours = sprintf( "%2d", ( ($ut % (3600*24)) / 3600) );
-    	$min = sprintf( "%2d", ($ut % (3600*24) % 3600)/60  );
-    	$sec = sprintf( "%2d", ($ut % (3600*24) % 3600)%60  );
+    	$ut = strtok( file_get_contents('/proc/uptime'), "." );
+    	if($ut){
+	    	$days = sprintf( "%2d", ($ut/(3600*24)) );
+	    	$hours = sprintf( "%2d", ( ($ut % (3600*24)) / 3600) );
+	    	$min = sprintf( "%2d", ($ut % (3600*24) % 3600)/60  );
+	    	$sec = sprintf( "%2d", ($ut % (3600*24) % 3600)%60  );
+    	}else{
+    		$days = 0;
+	    	$hours = 0;
+	    	$min = 0;
+	    	$sec = 0;
+    	}
     	return array( 'day'=>$days, 'hour'=>$hours, 'min'=>$min, 'sec'=>$sec );
     }
     
