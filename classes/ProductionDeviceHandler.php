@@ -73,7 +73,6 @@ class ProductionDeviceHandler {
 		$notProcessed = 0;
 		foreach ($deviceHistoryList as $deviceHistory) {
 			$deviceHistory->deviceId = $device->id;
-			$deviceHistory->time = $item->time;
 			$newDeviceHistory = $deviceHistoryService->addOrUpdateDeviceHistoryByDeviceAndTime($deviceHistory);
 			
 			if ($newDeviceHistory != null && !$newDeviceHistory->processed) {
