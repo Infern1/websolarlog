@@ -74,7 +74,7 @@ class ProductionDeviceHandler {
 			$deviceHistory->time = $item->time;
 			$newDeviceHistory = PDODataAdapter::getInstance()->addOrUpdateDeviceHistoryByDeviceAndTime($deviceHistory);
 			
-			if (!$newDeviceHistory->processed) {
+			if ($newDeviceHistory != null && !$newDeviceHistory->processed) {
 				$notProcessed++;
 			}
 		}
