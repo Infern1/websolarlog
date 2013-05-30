@@ -7,7 +7,7 @@ class DeviceHistoryService {
 	 * @param Panel $object
 	 * @return Panel
 	 */
-	public function save(Panel $object) {
+	public function save(DeviceHistory $object) {
 		$bObject = ($object->id > 0) ? R::load(self::$tbl, $object->id) : R::dispense(self::$tbl);
 		$bObject = $this->toBean($object, $bObject);
 		$object->id = R::store($bObject);
@@ -54,9 +54,7 @@ class DeviceHistoryService {
 			$bean = R::dispense(self::$tbl);
 		}
 		
-		$bean = $this->toObject($bean);
 		$bean = $this->toBean($deviceHistory, $bean);
-		
 		$bean->deviceId = $deviceHistory->deviceId;
 		$bean->time = $deviceHistory->time;
 		$bean->amount = $deviceHistory->amount;
