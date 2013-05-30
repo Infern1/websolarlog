@@ -334,7 +334,7 @@ class PDODataAdapter {
 		
 		$bean->deviceId = $deviceHistory->deviceId;
 		$bean->time = $deviceHistory->time;
-		$bean->bean = $deviceHistory->amount;
+		$bean->amount = $deviceHistory->amount;
 		$bean->processed = $deviceHistory->processed;
 
 		return R::store($bean);

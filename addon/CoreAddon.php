@@ -42,8 +42,6 @@ class CoreAddon {
 		$this->checkMaxPowerValue($device, $live);
 	}
 	
-
-
 	/**
 	 * Handle hook onHistory
 	 * @param unknown $args
@@ -60,9 +58,6 @@ class CoreAddon {
 		}
 	}
 	
-	
-
-
 	public function onEnergy($args) {
 		//echo "CoreAddon onEnergy";
 		//var_dump($args);
@@ -94,8 +89,6 @@ class CoreAddon {
 		$this->adapter->addEnergy($device->id, $energy);
 		HookHandler::getInstance()->fire("newEnergy", $device, $energy);
 	}
-	
-
 	
 	/**
 	 * Handle hook onInverterInfo

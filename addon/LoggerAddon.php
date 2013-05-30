@@ -43,7 +43,7 @@ class LoggerAddon {
 	}
 	
 	private function write2file($level, $message) {
-		$logPath = dirname(dirname(__FILE__)) . "/log";
+		$logPath = Common::getRootPath() . "/log";
 		
 		// Check if the log directory is available
 		if (!is_dir($logPath)) {

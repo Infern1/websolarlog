@@ -9,6 +9,7 @@ class DeviceHistory {
    	function __construct () {
    		$this->id = -1;
    		$this->deviceId = -1;
+   		$this->amount = 0;
    		$this->processed = false;
    	}
 }

@@ -73,6 +73,13 @@ class Common
     {
         return isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null ;
     }
+    
+    /**
+     * Returns the root path off wsl
+     */
+    public static function getRootPath() {
+    	return dirname(dirname(__FILE__));
+    }
 
     /**
      * Retrieves the defined constants from the environment

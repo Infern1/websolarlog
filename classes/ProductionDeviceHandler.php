@@ -71,6 +71,7 @@ class ProductionDeviceHandler {
 		$notProcessed = 0;
 		foreach ($deviceHistoryList as $deviceHistory) {
 			$deviceHistory->deviceId = $device->id;
+			$deviceHistory->time = $item->time;
 			$newDeviceHistory = PDODataAdapter::getInstance()->addOrUpdateDeviceHistoryByDeviceAndTime($deviceHistory);
 			
 			if (!$newDeviceHistory->processed) {
@@ -78,7 +79,7 @@ class ProductionDeviceHandler {
 			}
 		}
 		HookHandler::getInstance()->fire("onInfo", "Retrieved " . count($deviceHistoryList) . 
-			" records from history off device " . $device->name . ". There are " . $notProcessed .  " unprocessed lines.\n");
+			" records from history off device " . $device->name . ". There are " . $notProcessed .  " new unprocessed lines.\n");
 	}
 
 	public static function handleEnergy(QueueItem $item, Device $device) {
