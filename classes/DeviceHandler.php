@@ -40,6 +40,14 @@ class DeviceHandler {
 		}			
 	}
 	
+	public function handleAllDeviceHistory($args) {
+		foreach (Session::getConfig()->devices as $device) {
+			$counter++;
+			$queueItem = new QueueItem(time(), "DeviceHandler.handleDeviceHistory", $device, false, 0, true);
+			QueueServer::getInstance()->add($queueItem);
+		}
+	}
+	
 	public function handleDeviceHistory($args) {
 		$item = $args[0];
 		$device = $this->getFreshDevice($args[1]);

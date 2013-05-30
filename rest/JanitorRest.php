@@ -31,5 +31,13 @@ class JanitorRest {
 		HookHandler::getInstance()->fire("onJanitorDbCheck", "check");
 		HookHandler::getInstance()->fire("onJanitorDbCheck", "after");
 	}
+	
+	public function getDeviceHistory() {
+		foreach (Session::getConfig()->devices as $device) {
+			$queueItem = new QueueItem(time(), "DeviceHandler.handleAllDeviceHistory", null, false, 0, true);
+			QueueServer::addItemToDatabase($queueItem);
+		}
+		return array("status"=>"OK");
+	}
 }
 ?>
