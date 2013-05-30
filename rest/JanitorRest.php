@@ -33,10 +33,8 @@ class JanitorRest {
 	}
 	
 	public function getDeviceHistory() {
-		foreach (Session::getConfig()->devices as $device) {
-			$queueItem = new QueueItem(time(), "DeviceHandler.handleAllDeviceHistory", null, false, 0, true);
-			QueueServer::addItemToDatabase($queueItem);
-		}
+		$queueItem = new QueueItem(time(), "DeviceHandler.handleAllDeviceHistory", null, false, 0, true);
+		QueueServer::addItemToDatabase($queueItem);
 		return array("status"=>"OK");
 	}
 }
