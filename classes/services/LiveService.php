@@ -27,7 +27,6 @@ class LiveService {
 		return isset($object) ? $object : new Live();
 	}
 	
-
 	/**
 	 * Truncate live table
 	 * @return Live
@@ -35,7 +34,6 @@ class LiveService {
 	public function truncateTable() {
 		R::wipe('live');
 	}
-	
 	
 	/**
 	 * Retrieve object for an device

@@ -53,6 +53,8 @@ class ProductionDeviceHandler {
 	}
 	
 	public static function handleDeviceHistory(QueueItem $item, Device $device) {
+		$deviceHistoryService = new DeviceHistoryService();
+		
 		// Get the api we need to use
 		$api = $device->getApi(Session::getConfig());
 	
@@ -72,7 +74,7 @@ class ProductionDeviceHandler {
 		foreach ($deviceHistoryList as $deviceHistory) {
 			$deviceHistory->deviceId = $device->id;
 			$deviceHistory->time = $item->time;
-			$newDeviceHistory = PDODataAdapter::getInstance()->addOrUpdateDeviceHistoryByDeviceAndTime($deviceHistory);
+			$newDeviceHistory = $deviceHistoryService->addOrUpdateDeviceHistoryByDeviceAndTime($deviceHistory);
 			
 			if ($newDeviceHistory != null && !$newDeviceHistory->processed) {
 				$notProcessed++;

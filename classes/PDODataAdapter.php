@@ -320,27 +320,6 @@ class PDODataAdapter {
 	}
 
 	/**
-	 * add or update the Device History
-	 * @param DeviceHistory $deviceHistory
-	 */
-	public function addOrUpdateDeviceHistoryByDeviceAndTime(DeviceHistory $deviceHistory) {
-		$bean =  R::findOne('deviceHistory', ' deviceId = :deviceId AND time = :time ',
-				array(':deviceId'=>$deviceHistory->deviceId, ':time' => $deviceHistory->time)
-		);
-
-		if (!$bean){
-			$bean = R::dispense('deviceHistory');
-		}
-		
-		$bean->deviceId = $deviceHistory->deviceId;
-		$bean->time = $deviceHistory->time;
-		$bean->amount = $deviceHistory->amount;
-		$bean->processed = $deviceHistory->processed;
-
-		return R::store($bean);
-	}
-
-	/**
 	 * write the max power today to the file
 	 * @param int $invtnum
 	 * @param MaxPowerToday $mpt
@@ -356,8 +335,6 @@ class PDODataAdapter {
 		$id = R::store($bean);
 		return $id;
 	}
-
-
 
 	/**
 	 * add the events to the events
