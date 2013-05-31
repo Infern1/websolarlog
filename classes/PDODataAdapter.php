@@ -2007,38 +2007,6 @@ class PDODataAdapter {
 			return $sessionData;
 		}
 	}
-	/**
-	 * changeInverterStatus
-	 *
-	 * @param int $status // 1=active, 0=sleep
-	 * @param Device $device // Device object
-	 * @return boolean // changed yes or no;
-	 */
-
-	function changeInverterStatus(Device $device, $state){
-		// get device bean
-		$bean = R::load('inverter', $device->id);
-
-		// look if we have a bean
-		if (!$bean){
-			// If we can't find the bean there is a serious problem exit!
-			HookHandler::getInstance()->fire("onError", "changeInverterStatus: Could not find device bean for id:" . $device->id);
-			return null;
-		}
-
-		// check if we are going to change the device status
-		$changed = false;
-		if($bean->state != $state){
-			// oo we are going to change the device, so we set it to TRUE
-			$changed = true;
-			// change the bean to the new status for this device
-			$bean->state = $state;
-
-			//Store the bean with the new device status
-			R::store($bean);
-		}
-		return $changed;
-	}
 
 	/**
 	 * setDeviceType

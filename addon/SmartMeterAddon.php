@@ -2,16 +2,19 @@
 class SmartMeterAddon {
 	private $adapter;
 	private $config;
+	private $deviceService;
 	private $liveSmartMeterService;
 
 	function __construct() {
 		$this->adapter = PDODataAdapter::getInstance();
 		$this->config = Session::getConfig();
+		$this->deviceService = new DeviceHistoryService();
 		$this->liveSmartMeterService = new LiveSmartMeterService();
 	}
 
 	function __destruct() {
 		$this->liveSmartMeterService = null;
+		$this->deviceService = null;
 		$this->config = null;
 		$this->adapter = null;
 	}
@@ -28,7 +31,7 @@ class SmartMeterAddon {
 
 		// We are live, but db things offline
 		if ($device->state == 0) {
-			$this->adapter->changeInverterStatus($device, 1);
+			$this->deviceHistory->changeDeviceStatus($device, 1);
 			$device->state == 1;
 		}
 		$sessionKey = 'noLiveCounter-' . $device->id;

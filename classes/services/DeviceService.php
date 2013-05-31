@@ -60,6 +60,37 @@ class DeviceService {
 		return $objects;
 	}
 	
+	/**
+	 * change the status off the device
+	 * @param int $status // 1=active, 0=sleep
+	 * @param Device $device // Device object
+	 * @return boolean // changed yes or no;
+	 */
+	function changeDeviceStatus(Device $device, $state){
+		// get the device
+		$freshDevice = $this->load($device->id);
+	
+		// look if we have a bean
+		if ($freshDevice == null || $freshDevice->id != $device->id){
+			// If we can't find the bean there is a serious problem exit!
+			HookHandler::getInstance()->fire("onError", "changeDeviceStatus: Could not find device for id:" . $device->id);
+			return null;
+		}
+	
+		// check if we are going to change the device status
+		$changed = false;
+		if($freshDevice->state != $state){
+			// oo we are going to change the device, so we set it to TRUE
+			$changed = true;
+			// change the bean to the new status for this device
+			$freshDevice->state = $state;
+	
+			//Store the bean with the new device status
+			$this->save($freshDevice);
+		}
+		return $changed;
+	}
+	
 	public function janitorDbCheck() {
 		HookHandler::getInstance()->fire("onInfo", "DeviceService janitor DB Check");
 		// Get an device and save it, to make sure al fields are available in the database

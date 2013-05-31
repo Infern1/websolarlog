@@ -1,17 +1,20 @@
 <?php
 class BasicChecksAddon {
 	private $adapter;
+	private $deviceService;
 	private $liveService;
 	private $config;
 	
 	function __construct() {
 		$this->adapter = PDODataAdapter::getInstance();
 		$this->config = Session::getConfig();
+		$this->deviceService = new DeviceService();
 		$this->liveService = new LiveService();
 	}
 	
 	function __destruct() {
 		$this->liveService = null;
+		$this->deviceService = null;
 		$this->config = null;
 		$this->adapter = null;
 	}
@@ -22,7 +25,7 @@ class BasicChecksAddon {
 		
 		// Check if the sun is up and the device is down
 		if(!Util::isSunDown($this->config) && $device->state != 1) {
-			if ($this->adapter->changeInverterStatus($device, 1)) {
+			if ($this->deviceService->changeDeviceStatus($device, 1)) {
 				HookHandler::getInstance()->fire("onInverterStartup", $device);
 				$device->state = 1;
 			}			
@@ -69,7 +72,7 @@ class BasicChecksAddon {
 		}
 		
 		if ($offline) {
-			if ($this->adapter->changeInverterStatus($device, 0)) {
+			if ($this->deviceService->changeDeviceStatus($device, 0)) {
 				if (PeriodHelper::isPeriodJob("ShutDownJobINV-" . $device->id, (2 * 60))) {
 					HookHandler::getInstance()->fire("onInverterShutdown", $device);
 					$device->state = 0;
