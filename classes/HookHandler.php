@@ -60,6 +60,9 @@ class HookHandler {
         	$object = new $classname();
         	
         	if (method_exists($object, $methodname)) {
+        		// use below for debugging hooks
+        		// echo (date("Ymd His") . "\t fire :: object=".$classname.", methodname=".$methodname);
+        		
         		// Handle any exception thrown by an hook
         		try {
         			// we cannot use return here, ass we break the hook after the first entry!

@@ -26,8 +26,6 @@ class SmartMeterAddon {
 		$timestamp = $args[3];
 		$this->addSmartMeterHistory($device->id, $live, $timestamp);
 
-		HookHandler::getInstance()->fire("newHistory", $device, $timestamp);
-
 		// We are live, but db things offline
 		if ($device->state == 0) {
 			$this->adapter->changeInverterStatus($device, 1);
