@@ -1653,7 +1653,7 @@ class PDODataAdapter {
 		// type to lowercase
 		$type = strtolower($type);
 		// init array
-		$avgEnergyBeansToday[] = array();
+		$avgEnergyBeansToday = 0;
 		// init var
 		$initialkwh = 0;
 
@@ -1668,12 +1668,12 @@ class PDODataAdapter {
 				$totalEnergyBeansTodayKWHKWP = number_format('0.000',3,',','');
 			}else{
 				$totalEnergyBeansTodayKWHKWP= number_format(($totalEnergyBeansToday[0]['KWH'] / $sumPlantPower),3,',','');
-				for ($i = 0; $i < count($maxPowerBeansToday); $i++) {
+				for ($i = 0; $i < count($totalEnergyBeansToday); $i++) {
 					//$maxPowerBeansToday[$i]['sumkWh'] = number_format($maxPowerBeansToday[$i]['sumkWh'],2,',','');
-					$avgEnergyBeansToday= number_format($totalEnergyBeansToday[$i]['KWH'],3,',','');
+					$avgEnergyBeansToday += $totalEnergyBeansToday[$i]['KWH'];
 					$totalEnergyBeansToday[$i]['KWH'] = number_format($totalEnergyBeansToday[$i]['KWH'],3,',','');
 				}
-
+				$avgEnergyBeansToday = number_format($avgEnergyBeansToday,3,',','');
 			}
 
 			if(count ( $maxPowerBeansToday )==0 ){
