@@ -2,6 +2,7 @@
 class CoreAddon {
 	private $adapter;
 	private $energyService;
+	private $eventService;
 	private $historyService;
 	private $liveService;
 	private $config;
@@ -10,6 +11,7 @@ class CoreAddon {
 		$this->adapter = PDODataAdapter::getInstance();
 		$this->config = Session::getConfig();
 		$this->energyService = new EnergyService();
+		$this->eventService = new EventService();
 		$this->historyService = new HistoryService();
 		$this->liveService = new LiveService();
 	}
@@ -17,6 +19,7 @@ class CoreAddon {
 	function __destruct() {
 		$this->liveService = null;
 		$this->historyService = null;
+		$this->eventService = null;
 		$this->energyService = null;
 		$this->config = null;
 		$this->adapter = null;
@@ -110,7 +113,7 @@ class CoreAddon {
 		
 		// Write InverterInfo (firmware,model,etc) to DB
 		$event = new Event($device->id, time(), 'Info', $info);
-		$this->adapter->addEvent($device->id, $event);
+		$this->eventService->save($event);
 		HookHandler::getInstance()->fire("newInfo", $device, $event);		
 	}
 	
@@ -134,7 +137,7 @@ class CoreAddon {
 			$alarm->alarmSend = false;
 			HookHandler::getInstance()->fire("onError", $e->getMessage());
 		}
-		$this->adapter->addEvent($device->id, $alarm);
+		$this->eventService->save($event);
 		HookHandler::getInstance()->fire("newAlarm", $device, $alarm);		
 	}
 	

@@ -4,8 +4,6 @@ session_start();
 require_once("classes/classloader.php");
 Session::initialize();
 
-
-
 $config = Session::getConfig();
 $adapter = PDODataAdapter::getInstance();
 // Retrieve action params
@@ -215,11 +213,12 @@ switch ($settingstype) {
 		break;
 	case 'panel':
 		$id = $_GET['id'];
-		$panel = new Panel();
+		$panelService = new PanelService();
 		if ($id == -1) {
+			$panel = new Panel();
 			$panel->inverterId = $_GET['inverterId'];
 		} else {
-			$panel = $adapter->readPanel($id);
+			$panel = $panelService->load($id);
 		}
 		$data['panel'] = $panel;
 		break;
@@ -416,11 +415,13 @@ switch ($settingstype) {
 		$data['id'] = $deviceService->save($device)->id;
 		break;
 	case 'save-panel':
+		$panelService = new PanelService();
+		
 		$id = Common::getValue("id");
 		$panel = new Panel();
 		if ($id > 0) {
 			// get the current data
-			$panel = $adapter->readPanel($id);
+			$panel = $panelService->load($id);
 		}
 		$panel->inverterId = Common::getValue("inverterId");
 		$panel->description = Common::getValue("description");
@@ -429,7 +430,7 @@ switch ($settingstype) {
 		$panel->amount = Common::getValue("amount");
 		$panel->wp = Common::getValue("wp");
 
-		$adapter->writePanel($panel);
+		$panelService->save($panel);
 		break;
 	case 'save_expectation':
 		$deviceService = new DeviceService();

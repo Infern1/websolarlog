@@ -104,7 +104,9 @@ class BasicChecksAddon {
 					$body .= "WebSolarLog";
 	
 					$event->alarmSend = Common::sendMail($subject, $body, $this->config);
-					$this->adapter->addEvent($device->id, $event);
+					
+					$eventService = new EventService();
+					$eventService->save($event);
 				}
 			}
 		}

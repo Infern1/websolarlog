@@ -3,6 +3,8 @@ class PDODataAdapter {
 	private static $instance;
 	public $ProcessTime;
 	public $sqlEngine;
+	
+	private $deviceService;
 
 	// Singleton
 	public static function getInstance() {
@@ -32,10 +34,13 @@ class PDODataAdapter {
 		RedBean_OODBBean::setFlagBeautifulColumnNames(false);
 		R::debug(false);
 		R::setStrictTyping(false);
+		
+		$this->deviceService = new DeviceService();
 	}
 
 	function __destruct() {
 		//print "Destroying " . $this->name . "\n";
+		$this->deviceService = null;
 	}
 
 
@@ -87,38 +92,6 @@ class PDODataAdapter {
 	}
 
 	/**
-	 * will remove the max power today file
-	 * @param int $invtnum
-	 */
-	public function dropMaxPowerToday($invtnum) {
-		$bean =  R::findOne('pMaxOTD',
-				' INV = :INV AND SDTE LIKE :date ',
-				array(':INV'=>$invtnum,
-						':date'=> '%'.date('Ymd').'%'
-				)
-		);
-		R::trash( $bean );
-	}
-
-	/**
-	 * add the events to the events
-	 * @param int $invtnum
-	 * @param Event $event
-	 */
-	public function addEvent($invtnum, Event $event) {
-		$bean = R::dispense('event');
-
-		$bean->INV = $invtnum;
-		$bean->SDTE = $event->SDTE;
-		$bean->time = $event->time;
-		$bean->Event = $event->event;
-		$bean->Type = $event->type;
-		$bean->alarmSend = $event->alarmSend;
-		$id = R::store($bean);
-
-	}
-
-	/**
 	 * Diehl
 	 */
 	public function checkEventExists($number,$event){
@@ -128,21 +101,6 @@ class PDODataAdapter {
 
 		return $bean;
 	}
-
-
-	/**
-	 * Read the events file
-	 * @param int $invtnum
-	 * @return bean object
-	 */
-	public function readEvent($invtnum,$limit=10) {
-		$bean = R::getAll('select * from event ORDER BY id DESC LIMIT :limit ',
-				array(':limit'=>$limit)
-		);
-
-		return $bean;
-	}
-
 
 
 	/**
@@ -164,26 +122,6 @@ class PDODataAdapter {
 		return $bean;
 	}
 
-
-
-
-	/**
-	 * will remove Event
-	 * @param int $invtnum
-	 */
-	public function dropEvent($invtnum) {
-		$bean =  R::findOne('event',
-				' INV = :INV ',
-				array(':INV'=>$invtnum
-				)
-		);
-		R::trash( $bean );
-	}
-
-	public function writeDailyData($invtnum,Day $day) {
-		// TODO :: ??
-	}
-
 	/**
 	 * Read Daily Data
 	 * @param string $date
@@ -203,23 +141,8 @@ class PDODataAdapter {
 		$lastDays->KWHT=$points[1];
 		return $lastDays;
 	}
-	/**
-	 *
-	 * @param unknown_type $invtnum
-	 */
-	public function dropDailyData($invtnum) {
-		// TODO :: ??
-	}
-	/**
-	 *
-	 * @param unknown_type $invtnum
-	 * @param Day $day
-	 */
-	public function writeLastDaysData($invtnum,Day $day) {
-		// TODO :: ??
-	}
-
-	/**
+	
+		/**
 	 * read Last Days Data
 	 * @param int $invtnum
 	 * @param int $limit
@@ -238,10 +161,6 @@ class PDODataAdapter {
 		return $lastDays;
 	}
 
-
-	public function dropLastDaysData($invtnum) {
-		// TODO :: ??
-	}
 
 	/**
 	 *
@@ -406,8 +325,9 @@ class PDODataAdapter {
 			$bean = R::dispense('config');
 		}
 
+		$deviceService = new DeviceService();
+		
 		$config = new Config();
-
 		if ($bean) {
 			$config->version_title = $bean->version_title;
 			$config->version_revision = $bean->version_revision;
@@ -449,7 +369,8 @@ class PDODataAdapter {
 			$config->smartmeterpath = ($bean->smartmeterpath != "") ? $bean->smartmeterpath : $config->smartmeterpath;
 
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
-			$config->devices = $this->readInverters();
+			
+			$config->devices = $this->deviceService->getActiveDevices();
 			$config->inverters = $config->devices; // @Deprecated
 			
 			$config->graphSeries = $this->getGraphSeries();
@@ -467,148 +388,13 @@ class PDODataAdapter {
 
 		return $config;
 	}
-	/**
-	 * Create or update an device object
-	 * @param Device $device
-	 * @return the id off the saved device
-	 */
-	public function writeInverter(Device $device) {
-		// Only save the object self not the arrays
-		$bean = R::load('inverter',$device->id);
-
-		if (!$bean){
-			$bean = R::dispense('inverter');
-		}
-
-		$bean->deviceApi = $device->deviceApi;
-		$bean->type = $device->type;
-		$bean->name = $device->name;
-		$bean->description = $device->description;
-
-		$bean->liveOnFrontend = $device->liveOnFrontend;
-		$bean->graphOnFrontend = $device->graphOnFrontend;
-
-		$bean->initialkwh = $device->initialkwh;
-		$bean->producesSince = $device->producesSince;
-		$bean->expectedkwh = $device->expectedkwh;
-		$bean->comAddress = $device->comAddress;
-		$bean->comLog = $device->comLog;
-		$bean->syncTime = $device->syncTime;
-		$bean->pvoutputEnabled = $device->pvoutputEnabled;
-		$bean->pvoutputApikey = $device->pvoutputApikey;
-		$bean->pvoutputSystemId = $device->pvoutputSystemId;
-		($device->pvoutputWSLTeamMember!='') ? $bean->pvoutputWSLTeamMember = $device->pvoutputWSLTeamMember : $device->pvoutputWSLTeamMember = $device->pvoutputWSLTeamMember;
-		$bean->state = $device->state;
-		$bean->refreshTime = $device->refreshTime;
-		
-		($device->expectedJAN) ? $bean->expectedJAN = $device->expectedJAN : $bean->expectedJAN = 0;
-		($device->expectedFEB) ? $bean->expectedFEB = $device->expectedFEB : $bean->expectedFEB = 0;
-		($device->expectedMAR) ? $bean->expectedMAR = $device->expectedMAR : $bean->expectedMAR = 0;
-		($device->expectedAPR) ? $bean->expectedAPR = $device->expectedAPR : $bean->expectedAPR = 0;
-		($device->expectedMAY) ? $bean->expectedMAY = $device->expectedMAY : $bean->expectedMAY = 0;
-		($device->expectedJUN) ? $bean->expectedJUN = $device->expectedJUN : $bean->expectedJUN = 0;
-		($device->expectedJUL) ? $bean->expectedJUL = $device->expectedJUL : $bean->expectedJUL = 0;
-		($device->expectedAUG) ? $bean->expectedAUG = $device->expectedAUG : $bean->expectedAUG = 0;
-		($device->expectedSEP) ? $bean->expectedSEP = $device->expectedSEP : $bean->expectedSEP = 0;
-		($device->expectedOCT) ? $bean->expectedOCT = $device->expectedOCT : $bean->expectedOCT = 0;
-		($device->expectedNOV) ? $bean->expectedNOV = $device->expectedNOV : $bean->expectedNOV = 0;
-		($device->expectedDEC) ? $bean->expectedDEC = $device->expectedDEC : $bean->expectedDEC = 0;
-		
-		//Store the bean
-		$id = R::store($bean);
-		return $id;
-	}
-
 	
-	/**
-	 * Please use the deviceService instead of this function;
-	 * @Deprecated
-	 * @param int $id
-	 */
-	public function readInverter($id) {
-		$deviceService = new DeviceService();
-		return $deviceService->load($id);
-	}
-
-	/**
-	 *  Please use the deviceService instead of this function;
-	 *	@Deprecated
-	 */
-	private function readInverters() {
-		$deviceService = new DeviceService();
-		return $deviceService->getActiveDevices();		
-	}
-
 	public function getGraphSeries(){
 		$bean = R::findAll('graphSeries');
 	}
 	
 	public function getGraphAxes(){
 		$bean = R::findAll('graphAxes');
-	}
-
-	
-	/**
-	 *
-	 * @param Panel $panel
-	 */
-	public function writePanel(Panel $panel) {
-		// Only save the object self not the arrays
-		$bean = R::load('panel', $panel->id);
-
-		if (!$bean){
-			$bean = R::dispense('panel');
-		}
-
-		$bean->inverterId = $panel->inverterId;
-		$bean->description = $panel->description;
-		$bean->roofOrientation = $panel->roofOrientation;
-		$bean->roofPitch = $panel->roofPitch;
-		$bean->amount = $panel->amount;
-		$bean->wp = $panel->wp;
-
-		//Store the bean
-		R::store($bean);
-	}
-
-	/**
-	 *
-	 * @param unknown_type $id
-	 */
-
-	public function readPanel($id) {
-		$bean = R::load('panel', $id);
-
-		$panel = new Panel();
-		$panel->id = $bean->id;
-		$panel->inverterId = $bean->inverterId;
-		$panel->description = $bean->description;
-		$panel->roofOrientation = $bean->roofOrientation;
-		$panel->roofPitch = $bean->roofPitch;
-		$panel->amount = $bean->amount;
-		$panel->wp = $bean->wp;
-		return $panel;
-	}
-	/**
-	 *
-	 * @param unknown_type $deviceId
-	 */
-	private function readPanelsByInverter($deviceId) {
-		$list = array();
-		$beans = R::find('panel',' inverterId = :id ', array( ":id"=>$deviceId ));
-		foreach ($beans as $bean){
-			$panel = new Panel();
-			$panel->id = $bean->id;
-			$panel->inverterId = $bean->inverterId;
-			$panel->description = $bean->description;
-			$panel->roofOrientation = $bean->roofOrientation;
-			$panel->roofPitch = $bean->roofPitch;
-			$panel->amount = $bean->amount;
-			$panel->wp = $bean->wp;
-			$list[] = $panel;
-		}
-
-		return $list;
 	}
 
 	/**
@@ -1312,7 +1098,7 @@ class PDODataAdapter {
 		}else{
 			$firstMonth = date("n",$beans[0]['time']);
 			$lastMonth = date("n",$beans[count($beans)-1]['time']);
-			$device = $this->readInverter($invtnum);
+			$device = $this->deviceService->load($invtnum);
 			$expected = $device->expectedkwh;
 			$invExp[0] = ($expected/100)*$device->expectedJAN;
 			$invExp[1] = ($expected/100)*$device->expectedFEB;
@@ -1614,7 +1400,7 @@ class PDODataAdapter {
 		$KWHT = 0;
 		$cum = 0;
 		foreach ($energyBeans as $energyBean){
-			$invConfig = $this->readInverter($energyBean['INV']);
+			$invConfig = $this->deviceService->load($energyBean['INV']);
 			$energyBean['KWH'] = (float)$energyBean['KWH'];
 			$Energy['INV'] =  $energyBean['INV'];
 			$Energy['KWHKWP'] = number_format($energyBean['KWH'] / ($invConfig->plantpower/1000),2,',','');

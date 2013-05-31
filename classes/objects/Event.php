@@ -1,5 +1,6 @@
 <?php
 class Event {
+	public $id;
     public $INV;
     public $deviceId;
     public $SDTE;
