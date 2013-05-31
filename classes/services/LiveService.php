@@ -42,6 +42,10 @@ class LiveService {
 	 */
 	public function getLiveByDevice(Device $device) {
 		$bObject = R::findOne( self::$tbl, ' INV = :deviceId ', array("deviceId"=>$device->id));
+		if (!$bObject) {
+			HookHandler::getInstance()->fire("onWarning", "Could not find live record for device id=" . $device->id);
+			return null;
+		}
 		return $this->toObject($bObject);
 	}
 	
