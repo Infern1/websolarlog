@@ -27,6 +27,27 @@ class EnergyService {
 		return isset($object) ? $object : new Energy();
 	}
 	
+	/**
+	 * add or update the Energy
+	 * @param Energy $energy
+	 * @param $time
+	 * @return $energy
+	 */
+	public function addOrUpdateEnergyByDeviceAndTime(Energy $energy, $time) {
+		$beginEndDate = Util::getBeginEndDate('day', 1, $time);
+		$bean =  R::findOne( self::$tbl, ' INV = :deviceId AND time > :beginDate AND time < :endDate ',
+				array(':deviceId'=>$energy->deviceId, ':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
+		);
+	
+		if (!$bean){
+			$bean = R::dispense(self::$tbl);
+		}
+	
+		$bean = $this->toBean($energy, $bean);
+		$energy->id = R::store($bean);
+		return $energy;
+	}
+	
 	private function toBean($object, $bObject) {
 		$bObject->INV = $object->INV;
 		$bObject->deviceId = $object->deviceId;

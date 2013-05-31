@@ -1,14 +1,17 @@
 <?php
 class BasicChecksAddon {
 	private $adapter;
+	private $liveService;
 	private $config;
 	
 	function __construct() {
 		$this->adapter = PDODataAdapter::getInstance();
 		$this->config = Session::getConfig();
+		$this->liveService = new LiveService();
 	}
 	
 	function __destruct() {
+		$this->liveService = null;
 		$this->config = null;
 		$this->adapter = null;
 	}
@@ -89,7 +92,7 @@ class BasicChecksAddon {
 		// Only check every 30 minutes
 		if (PeriodHelper::isPeriodJob("InactiveCheckJob", 30)) {
 			foreach ($this->config->devices as $device) {
-				$live = $this->adapter->readLiveInfo($device->id);
+				$live = $this->liveService->getLiveByDevice($device);
 				if (!empty($live->time) && (time() - $live->time > 3600)) {
 					$event = new Event($device->id, time(), 'Check', "Live data for inverter '" . $device->name . "' not updated for more then one hour.");
 					$subject = "WSL :: Event message";

@@ -2,13 +2,16 @@
 class CacheAddon {
 	private $adapter;
 	private $config;
+	private $liveService;
 	
 	function __construct() {
 		$this->adapter = PDODataAdapter::getInstance();
 		$this->config = Session::getConfig();
+		$this->liveService = new LiveService();
 	}
 	
 	function __destruct() {
+		$this->liveService = null;
 		$this->config = null;
 		$this->adapter = null;
 	}
@@ -63,7 +66,7 @@ class CacheAddon {
 				$average['recent'] = ($avgRecent[0]['avgGP']>0)? $avgRecent[0]['avgGP']: '0';
 				$average['past'] = ($avgPast[0]['avgGP']>0)? $avgPast[0]['avgGP']:'0';
 				
-				$live = $this->adapter->readLiveInfo($device->id);
+				$live = $this->liveService->getLiveByDevice($device);
 				$average['recent'] = ($live->GP + $average['recent'])/2;
 				
 				if($average['recent']>$average['past']){

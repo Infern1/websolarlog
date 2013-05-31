@@ -1,5 +1,5 @@
 <?php
-class CsvDataAdapter extends CsvWriter implements DataAdapter {
+class CsvDataAdapter extends CsvWriter {
 
 	
 	/**

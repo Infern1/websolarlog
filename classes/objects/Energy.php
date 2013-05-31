@@ -1,6 +1,8 @@
 <?php
 class Energy {
+	public $id;
 	public $INV;
+	public $deviceId;
     public $SDTE;
     public $time;
     public $KWH;

@@ -33,16 +33,23 @@ foreach (scandir($energyPath) as $file) {
 }
 
 function importDailyFile($src, $inverterId, PDODataAdapter $adapter) {
+	$historyService = new HistoryService();
+	
     // Read all lines
     $lines = file($src);
     R::begin();
     foreach ($lines as $line) {
-        $adapter->addHistory($inverterId, parseCsvToLive(trim($line, "\n")));
+    	$live = parseCsvToLive(trim($line, "\n"));
+    	$live->INV = $inverterId;
+    	$live->deviceId = $inverterId;
+    	$historyService->save($live->toHistory());
     }
     R::commit();
 }
 
 function importEnergyFile($src, $inverterId, PDODataAdapter $adapter) {
+	$energyService = new EnergyService();
+	
     // Read all lines
     $lines = file($src);
     echo ($src . ": " . count($lines));
@@ -52,7 +59,7 @@ function importEnergyFile($src, $inverterId, PDODataAdapter $adapter) {
         $energy = parseCsvToEnergy($inverterId, trim($line, "\n"));
         $kwht += $energy->KWH;
         $energy->KWHT = $kwht;
-        $adapter->addNewEnergy($inverterId, $energy);
+        $energyService->save($energy);
     }
     R::commit();
 }
@@ -98,6 +105,7 @@ function parseCsvToEnergy($inverterId, $csv) {
 
     $energy = new Energy();
     $energy->INV = $inverterId;
+    $energy->deviceId = $inverterId;
     $energy->SDTE = $fields[0] . "-05:00:00";
     $energy->time = Util::getUTCdate($fields[0] . "-05:00:00");
     $energy->KWH = $fields[1];

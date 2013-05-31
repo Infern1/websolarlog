@@ -1,17 +1,23 @@
 <?php
 class CoreAddon {
 	private $adapter;
+	private $energyService;
+	private $historyService;
 	private $liveService;
 	private $config;
 
 	function __construct() {
 		$this->adapter = PDODataAdapter::getInstance();
 		$this->config = Session::getConfig();
+		$this->energyService = new EnergyService();
+		$this->historyService = new HistoryService();
 		$this->liveService = new LiveService();
 	}
 
 	function __destruct() {
 		$this->liveService = null;
+		$this->historyService = null;
+		$this->energyService = null;
 		$this->config = null;
 		$this->adapter = null;
 	}
@@ -35,7 +41,6 @@ class CoreAddon {
 		// Save the live information
 		$live->id = $dbLive->id;
 		$this->liveService->save($live);
-		//$this->adapter->writeLiveInfo($device->id, $live);
 		HookHandler::getInstance()->getInstance()->fire("newLiveData", $device, $live);
 	
 		// Check the Max value
@@ -53,7 +58,11 @@ class CoreAddon {
 
 		// Only add history when the device is live
 		if ($device->state == 1) {
-			$this->adapter->addHistory($device->id, $live, $timestamp);
+			$history = $live->toHistory();
+			$history->INV = $device->id;
+			$history->deviceId = $device->id;
+			$history->time = $timestamp;
+			$this->historyService->save($history);
 			hookHandler::getInstance()->fire("newHistory", $device, $timestamp);
 		}
 	}
@@ -63,14 +72,14 @@ class CoreAddon {
 		//var_dump($args);
 		$device = $args[1];
 		$timestamp = $args[2];
-	
-		$arHistory = $this->adapter->readHistory($device->id, null);
+		
+		$arHistory = $this->historyService->getArrayByDeviceAndTime($device, null);
 	
 		$first = reset($arHistory);
 		$last = end($arHistory);
 	
-		$productionStart = $first['KWHT'];
-		$productionEnd = $last['KWHT'];
+		$productionStart = $first->KWHT;
+		$productionEnd = $last->KWHT;
 	
 		// Check if we passed 100.000kWh
 		if ($productionEnd < $productionStart) {
@@ -80,13 +89,14 @@ class CoreAddon {
 	
 		// Set the new values and save it
 		$energy = new Energy();
-		$energy->SDTE = $first['SDTE'];
+		$energy->SDTE = $last->SDTE;
 		$energy->time = $timestamp;
 		$energy->INV = $device->id;
+		$energy->deviceId = $device->id;
 		$energy->KWH = $production;
 		$energy->KWHT = $productionEnd;
 		$energy->co2 = Formulas::CO2kWh($production, $this->config->co2kwh); // Calculate co2
-		$this->adapter->addEnergy($device->id, $energy);
+		$energy = $this->energyService->addOrUpdateEnergyByDeviceAndTime($energy, date('d-m-Y'));
 		HookHandler::getInstance()->fire("newEnergy", $device, $energy);
 	}
 	

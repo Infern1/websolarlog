@@ -66,15 +66,18 @@ class MailAddon {
 	}
 	
 	private function createReport(Device $device) {
+		$historyService = new HistoryService();
+		
 		$adapter = PDODataAdapter::getInstance();
 		$maxPowerToday = $adapter->readMaxPowerToday($device->id);
-		$arHistory = $adapter->readHistory($device->id, null);
+		
+		$arHistory = $historyService->getArrayByDeviceAndTime($device, null);
 		
 		$first = reset($arHistory);
 		$last = end($arHistory);
 		
-		$productionStart = $first['KWHT'];
-		$productionEnd = $last['KWHT'];
+		$productionStart = $first->KWHT;
+		$productionEnd = $last->KWHT;
 		
 		// Check if we passed 100.000kWh
 		if ($productionEnd < $productionStart) {
