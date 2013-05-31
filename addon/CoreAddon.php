@@ -89,7 +89,7 @@ class CoreAddon {
 	
 		// Set the new values and save it
 		$energy = new Energy();
-		$energy->SDTE = $last->SDTE;
+		$energy->SDTE = $first->SDTE;
 		$energy->time = $timestamp;
 		$energy->INV = $device->id;
 		$energy->deviceId = $device->id;
