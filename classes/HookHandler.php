@@ -27,7 +27,15 @@ class HookHandler {
      * @throws InvalidArgumentException
      */
     public function add($name, $callback) {
-        $this->hooks[$name][] = $callback;
+        // Check if it is already registerd
+    	foreach($this->getCallbacks($name) as $cb) {
+    		if ($cb == $callback) {
+    			return; // Hook already exists
+    		}
+    	}
+
+    	// Add the hook
+    	$this->hooks[$name][] = $callback;
     }
     
     /**
