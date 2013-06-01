@@ -217,8 +217,8 @@ class PDODataAdapter {
 			$graph->series[1] = array('label'=>'Avg. Power(W)','yaxis'=>'yaxis');
 			
 
-			$graph->axes['yaxis']  = array('label'=>'Cum. Power(Wh)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-			$graph->axes['y2axis'] = array('label'=>'Avg. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+			$graph->axes['yaxis']  = array('label'=>'Avg. Power(Wh)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+			$graph->axes['y2axis'] = array('label'=>'Cum. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->metaData['hideSeries']= array();
 			
 			$graph->metaData['legend']= array(
