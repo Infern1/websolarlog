@@ -32,7 +32,7 @@ class LiveService {
 	 * @return Live
 	 */
 	public function truncateTable() {
-		R::wipe('live');
+		R::wipe(self::$tbl);
 	}
 	
 	/**
