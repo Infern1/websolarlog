@@ -181,8 +181,8 @@
 			list += '<ul style="list-style-type: none;"><li>'+key.capitalize()+"";
 			$.each( type, function( key, value ) {
 				list += '<ul><li style="list-style-type: none;"><input type="radio" name="version" value="'+value.name+'*'+value.revision+'"><span style="color:'+value.displayColor+'">&nbsp;&nbsp;'+value.displayName+'</span></input>';
-				list += '<ul><li>Release date:</li>';
-				list += '<li style="list-style-type: none;">'+moment(value.timestamp*1000).format('DD-MM-YYYY HH:mm:ss')+'</li>';
+				list += '<ul><li>Release date(revision):</li>';
+				list += '<li style="list-style-type: none;">'+moment(value.timestamp*1000).format('DD-MM-YYYY HH:mm:ss')+'('+value.revision+')</li>';
 				list += '<li>Description:</li><li style="list-style-type: none;">'+value.description+'</li></ul></ul>';
 			});
 			list += '</li></ul></ul>';
