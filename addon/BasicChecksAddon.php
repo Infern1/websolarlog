@@ -95,21 +95,24 @@ class BasicChecksAddon {
 		// Only check every 30 minutes
 		if (PeriodHelper::isPeriodJob("InactiveCheckJob", 30)) {
 			foreach ($this->config->devices as $device) {
-				$live = $this->liveService->getLiveByDevice($device);
-				if (!empty($live->time) && (time() - $live->time > 3600)) {
-					$event = new Event($device->id, time(), 'Check', "Live data for inverter '" . $device->name . "' not updated for more then one hour.");
-					$subject = "WSL :: Event message";
-					$body = "Hello, \n\n We have detected an problem on your device.\n\n";
-					$body .= $event->event . "\n\n";
-					$body .= "Please check if everything is alright.\n\n";
-					$body .= "Time of live data : " . date("d-m-Y H:i:s", $live->time) . "\n\n";
-					$body .= "Please check if everything is alright.\n\n";
-					$body .= "WebSolarLog";
-	
-					$event->alarmSend = Common::sendMail($subject, $body, $this->config);
-					
-					$eventService = new EventService();
-					$eventService->save($event);
+				// for now we only want Live-record of production device, only the write in the Live table.
+				if($device->type == "production"){
+					$live = $this->liveService->getLiveByDevice($device);
+					if (!empty($live->time) && (time() - $live->time > 3600)) {
+						$event = new Event($device->id, time(), 'Check', "Live data for inverter '" . $device->name . "' not updated for more then one hour.");
+						$subject = "WSL :: Event message";
+						$body = "Hello, \n\n We have detected an problem on your device.\n\n";
+						$body .= $event->event . "\n\n";
+						$body .= "Please check if everything is alright.\n\n";
+						$body .= "Time of live data : " . date("d-m-Y H:i:s", $live->time) . "\n\n";
+						$body .= "Please check if everything is alright.\n\n";
+						$body .= "WebSolarLog";
+		
+						$event->alarmSend = Common::sendMail($subject, $body, $this->config);
+						
+						$eventService = new EventService();
+						$eventService->save($event);
+					}
 				}
 			}
 		}
