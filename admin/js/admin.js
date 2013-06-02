@@ -61,9 +61,7 @@ function checkURL(){
 
     hash = document.URL.split('#');// split on #
     // go further if there is a split and more than 1 element in the array
-    if(hash.length>1){
-    	//console.log(hash);
-    	
+    if(hash.length>1){    	
     	shortcutFunction = hash[1];
     	hash = hash[1];
     	// #devices-1?id=1
@@ -764,56 +762,33 @@ function init_general() {
                         });
                     });
                 });
+
+                // We don't want to first show the below block, so load it after the communication data
+                $.ajax({
+            		url : 'js/templates/security.hb',
+            		success : function(source) {
+            			var template = Handlebars.compile(source);
+            			var html = template();
+            			$('#c_security', content).html(html);
+            			
+            			$('#btnSecuritySubmit').bind('click', function(){
+            				checkCheckboxesHiddenFields();
+            				var data = $(this).parent().parent().serialize();
+            				$.post('admin-server.php', data, function(result){
+            					$.pnotify({
+            						title: result.title,
+            						text: result.text
+            					});						
+            				});
+            			});
+            		},
+            		dataType : 'text' 
+                });
             },
             dataType : 'text'
         });        
     });
-    $.getJSON('admin-server.php?s=communication', function(data) {
-        $.ajax({
-            url : 'js/templates/communication.hb',
-            success : function(source) {
-                var template = Handlebars.compile(source);
-                var html = template({
-                    'data' : data
-                });
-                $('#c_communication', content).html(html);
-                
-                $('#btnCommunicationSubmit').bind('click', function(){
-                	checkCheckboxesHiddenFields();
-                    var data = $(this).parent().parent().serialize();
-                    $.post('admin-server.php', data, function(){
-                        $.pnotify({
-                            title: 'Saved',
-                            text: 'You\'re changes have been saved.'
-                        });
-                    });
-                });
-            },
-            dataType : 'text'
-        });
-        // We don't want to first show the below block, so load it after the communication data
-        $.ajax({
-    		url : 'js/templates/security.hb',
-    		success : function(source) {
-    			var template = Handlebars.compile(source);
-    			var html = template();
-    			$('#c_security', content).html(html);
-    			
-    			$('#btnSecuritySubmit').bind('click', function(){
-    				checkCheckboxesHiddenFields();
-    				var data = $(this).parent().parent().serialize();
-    				$.post('admin-server.php', data, function(result){
-    					$.pnotify({
-    						title: result.title,
-    						text: result.text
-    					});						
-    				});
-    			});
-    		},
-    		dataType : 'text'
-    	});  
-    });
-	      
+
 }
 
 function checkCheckboxesHiddenFields(){
@@ -868,6 +843,93 @@ function init_devices(selected_inverterId) {
     });
 }
 
+
+
+function showAlertOverlay($this,inverterId,typeName) {
+	
+	var thisId = $this.val();
+	
+	var text = '<form id="pnotify-confirm" name="pnotify-confirm">Do you really want to delete this '+typeName+' ?<br>This action could result in lost of data.';
+	text += '<input type="submit" name="submit" value="Delete '+typeName+'">&nbsp&nbsp&nbsp&nbsp;&nbsp&nbsp&nbsp&nbsp;';
+	text += '<button type="button" id="pnotify-cancel" id="pnotify-cancel">Cancel!</button></form>';
+    var modal_overlay;
+    info_box = $.pnotify({
+        title: "Delete "+typeName,
+        text: text,
+        type: "error",
+        hide: false,
+        closer: false,
+        sticker: false,
+        history: false,
+        stack: false,
+        before_open: function(pnotify) {
+            // Position this notice in the center of the screen.
+            pnotify.css({
+                "top": ($(window).height() / 2) - (pnotify.height() / 2),
+                "left": ($(window).width() / 2) - (pnotify.width() / 2)
+            });
+            // Make a modal screen overlay.
+            if (modal_overlay) modal_overlay.fadeIn("fast");
+            else modal_overlay = $("<div />", {
+                "class": "ui-widget-overlay",
+                "css": {
+                    "display": "none","position": "fixed","top": "0",
+                    "bottom": "0","right": "0","left": "0"}
+            }).appendTo("body").fadeIn("fast");
+        },
+        before_close: function() {
+            modal_overlay.fadeOut("fast");
+        }
+    });
+    
+    info_box.find('#pnotify-confirm').submit(function() {
+    	$.ajax({
+            type: "DELETE",
+            url: "../api.php/"+typeName+"/"+thisId,
+            success: function(response){
+				if (response == true) {
+					$.pnotify({
+						title: 'Succes',
+				        text: typeName+' removed!',
+				        type: 'success'                                    
+					});     
+					if(typeName == 'Panel'){
+						load_device(inverterId);
+					}else{
+						init_devices();
+					}
+				} else {
+					$.pnotify({
+				        title: 'Error',
+				        text: typeName+' not removed...',
+				        type: 'error'
+				    });      
+				}
+            }
+            });
+    	info_box.pnotify_remove();
+        return false;
+    });
+    
+    info_box.find('#pnotify-cancel').bind('click',function() {
+    	$.pnotify({
+            title: 'Cancelled panel deletion',
+            text: 'You cancelled the deletion of the panel',
+            icon: true,
+            width: $.pnotify.defaults.width,
+            hide: true,
+            closer: true,
+            sticker: true,
+            type: 'warning'
+        });
+    	info_box.pnotify_remove();
+        return false;
+    });
+}
+
+
+
+
 function load_device(inverterId) {
     $.getJSON('admin-server.php?s=inverter&id='+inverterId, function(inv_data) {
         $.ajax({
@@ -882,8 +944,7 @@ function load_device(inverterId) {
                 $('#btnDeviceSubmit').bind('click', function(){
                 	$('#btnDeviceSubmit').attr("disabled", "disabled");
                 	checkCheckboxesHiddenFields();
-                	
-                    var data = $(this).parent().parent().serialize();
+                    //var data = $(this).parent().parent().serialize();
                     var data = $('#deviceFormId').serialize();
                     $.post('admin-server.php', data, function(result){
                         init_devices(result.id);                        
@@ -897,7 +958,7 @@ function load_device(inverterId) {
                 
                 var handle_panel_submit = function() {
                 	checkCheckboxesHiddenFields();
-                    var data = $(this).parent().parent().serialize();
+                    var data = $(this).parent().parent().parent().serialize();
                     $.post('admin-server.php', data, function(){
                         load_device(inverterId);
                         $.pnotify({
@@ -928,7 +989,19 @@ function load_device(inverterId) {
                 });
                 
                 init_KWHcalc(inv_data);
-                
+                $("input[name = 'removePanel']").bind('click', function(){                        
+                    if ($(this).is(":checked")){
+                    	$this = $(this);
+                    	showAlertOverlay($this,inverterId,'Panel');
+                    }
+            	});
+                $("input[name = 'removeDevice']").bind('click', function(){                        
+                    if ($(this).is(":checked")){
+                    	$this = $(this);
+                    	showAlertOverlay($this,inverterId,'Device');
+                    }
+            	});
+
             },
             dataType : 'text'
         });        

@@ -26,5 +26,14 @@ class DeviceRest {
 		}
 		return $result;
 	}
+	
+	/**
+	 * 
+	 * @param unknown $request
+	 * @param unknown $options
+	 */
+	public function DELETE($request, $options){
+		return $this->deviceService->delete($options[0]);
+	}
 }
 ?>

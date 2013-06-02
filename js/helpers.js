@@ -160,13 +160,16 @@
 	});
 	
 	
-	Handlebars.registerHelper("checkboxWithHidden", function(name, state) {
+	Handlebars.registerHelper("checkboxWithHidden", function(name, state, value) {
 		if(state==1 || state==true || state == 'checked'){
 			var checked = 'checked="checked"';
 		}else{
 			var checked = '';
 		}
-		return new Handlebars.SafeString("<input type=\"hidden\" name=\""+name+"\" value=\"0\"/><input type=\"checkbox\" "+checked+" name=\""+name+"\" value=\"1\"/>");
+		if(!value){
+			value = 1;
+		}
+		return new Handlebars.SafeString("<input type=\"hidden\" name=\""+name+"\" value=\"0\"/><input type=\"checkbox\" "+checked+" name=\""+name+"\" value=\""+value+"\"/>");
 	});
     
 	

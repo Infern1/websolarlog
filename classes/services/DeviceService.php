@@ -34,6 +34,33 @@ class DeviceService {
 		return isset($object) ? $object : new Device();
 	}
 	
+	
+
+	/**
+	 * Delete an object from the database
+	 * @param int $id
+	 * @return bool 
+	 */
+	public function delete($id) {
+		// load bean to delete
+		$bObject = R::load(self::$tbl, $id);
+		$object = $this->toObject($bObject);
+		if($object->type == "production"){
+			$panelService = new PanelService();
+		
+			// remove all panels of this device
+			foreach ($this->panelService->getArrayByDevice($object) as $panel){
+				$panelService->delete($panel->id);
+			}
+		}
+		$bObject = R::load(self::$tbl, $id);
+		// trash the bean
+		R::trash($bObject);
+		// check if bean still there and return result.
+		return (R::load(self::$tbl, $id)->id>0) ? false : true;
+	}
+	
+	
 	/**
 	 * Retrieves all devices
 	 * @return Array of Device

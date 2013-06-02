@@ -558,8 +558,13 @@ try {
 			break;
 		case "test":
 			$updater = new Updater();
-			$versions = $updater->getVersions(true);
+			$versions = $updater->isUpdateable();
 			var_dump($versions);
+		case "phpinfo":
+			$phpinfo = new Util();
+			
+			var_dump($phpinfo->phpInfo());
+			
 			break;
 		default:
 			break;

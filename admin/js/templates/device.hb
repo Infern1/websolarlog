@@ -1,7 +1,7 @@
 <form id="deviceFormId">
   <input type="hidden" name="s" value="save-inverter" />   
   <input type="hidden" name="id" value="{{data.inverter.id}}" />   
-  <fieldset style="width:500px;">
+  <fieldset style="width:560px;">
     <legend>Device: {{data.inverter.name}}</legend>
     Name and description of device:<br>
     <label for="name">name:</label><input type="text" name="name" value="{{data.inverter.name}}" />   <br />   
@@ -85,9 +85,14 @@
     <a href="#social">This device is no member of the WSL team</a>{{infoTooltip title=":( This device is no member of our great team.... <br>Go to the Social tab and add this device to the team :) "}}
     {{/if}}
     
-    <br />
+    <br /><br />
+        <div class="span-20 first">
+        	<button type="button" id="btnDeviceSubmit">Save</button>
+        </div>
+        <div class="span-6 last">
+        	{{checkboxWithHidden 'removeDevice' '' data.inverter.id}}&nbsp;remove this device<br />
+        </div>
     
-    <button type="button" id="btnDeviceSubmit">Save</button>
   </fieldset>
 </form> 
 
@@ -95,7 +100,7 @@
 <form>
       <fieldset>
     <legend>System Panels</legend>
-    Create panels for the strings you have on your rooftop.<br>
+    Create panels for the array's you have on your rooftop.<br>
 {{#data.inverter.panels}}
     <form>
       <input type="hidden" name="s" value="save-panel" />   
@@ -103,12 +108,17 @@
       <input type="hidden" name="inverterId" value="{{this.inverterId}}" />   
       <fieldset>
     <legend>Panel/String: {{this.id}}</legend>
-        <label for="description">description:</label><input type="text" name="description" value="{{this.description}}" />{{infoTooltip title="example: SolarPanel 265Wp 123-32/23+"}}<br />   
-        <label for="roofOrientation">roof orientation:</label><input type="text" name="roofOrientation" value="{{this.roofOrientation}}" />{{infoTooltip title="example: 0=north,90=east,180=south,270=west"}}<br />   
-        <label for="roofPitch">roof pitch:</label><input type="text" name="roofPitch" value="{{this.roofPitch}}" />{{infoTooltip title="example: 0 = horizontal, 90 = vertical"}}<br />   
-        <label for="amount">Panels in string:</label><input type="text" name="amount" value="{{this.amount}}" />{{infoTooltip title="example: 20"}}<br />   
+        <label for="description">Description:</label><input type="text" name="description" value="{{this.description}}" />{{infoTooltip title="example: SolarPanel 265Wp 123-32/23+"}}<br />   
+        <label for="roofOrientation">Orientation:</label><input type="text" name="roofOrientation" value="{{this.roofOrientation}}" />{{infoTooltip title="example: 0=north,90=east,180=south,270=west"}}<br />   
+        <label for="roofPitch">Array tilt:</label><input type="text" name="roofPitch" value="{{this.roofPitch}}" />{{infoTooltip title="example: 0 = horizontal, 90 = vertical"}}<br />   
+        <label for="amount">Panels in Array:</label><input type="text" name="amount" value="{{this.amount}}" />{{infoTooltip title="example: 20"}}<br />   
         <label for="wp">Watt-peak of one panel:</label><input type="text" name="wp" value="{{this.wp}}" />{{infoTooltip title="example: 265"}}<br />   
-        <button type="button" id="btnPanelSubmit{{this.id}}" class="panel_submit">Save</button>
+        <div class="span-20 first">
+        	<button type="button" id="btnPanelSubmit{{this.id}}" class="panel_submit">Save</button>
+        </div>
+        <div class="span-6 last">
+        	{{checkboxWithHidden 'removePanel' '' this.id}}&nbsp;remove this panel<br />
+        </div>
       </fieldset>
     </form>
 {{/data.inverter.panels}}
@@ -125,19 +135,20 @@ Panels can be added after saving the new inverter
 {{/if_gt}}
       </fieldset>
     </form>
-    
+
+
 <script language="text/javascript">
 
     $( "#sliderLiveRate" ).slider({
       min: 0,
-      max: 3600,
-      step: 5,
+      max: 300,
+      step: 1,
       slide: function( event, ui ) {
         $( "#refreshTime" ).val( ui.value );
       }
     });
     // setter
-    console.log($( "#refreshTime" ).val());
+
 	$( "#sliderLiveRate" ).slider( "option", "value", $( "#refreshTime" ).val() );
 	
 	$( "#refreshTime" ).val( $( "#sliderLiveRate" ).slider( "value" ));
@@ -145,12 +156,11 @@ Panels can be added after saving the new inverter
     
      $( "#sliderHistoryRate" ).slider({
       min: 0,
-      max: 3600,
-      step: 5,
+      max: 1800,
+      step: 1,
       slide: function( event, ui ) {
         $( "#historyRate" ).val(  ui.value );
       }
     });
     $( "#historyRate" ).val( $( "#sliderHistoryRate" ).slider( "value" ) );
-
 </script>

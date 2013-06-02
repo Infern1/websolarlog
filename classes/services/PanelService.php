@@ -28,6 +28,21 @@ class PanelService {
 	}
 	
 	/**
+	 * Delete an object from the database
+	 * @param int $id
+	 * @return bool
+	 */
+	public function delete($id) {
+		// load bean to delete
+		$bObject = R::load(self::$tbl, $id);
+		// trash the bean
+		R::trash($bObject);
+		// check if bean still there and return result.
+		return (R::load(self::$tbl, $id)->id>0) ? false : true;
+	}
+	
+	
+	/**
 	 * Retrieve all values for an device
 	 * @param Device $device
 	 * @return array of Panel
