@@ -896,7 +896,7 @@ function showAlertOverlay($this,inverterId,typeName) {
 						load_device(inverterId);
 					}else{
 						init_devices();
-						document.URL.split('#devices');
+						window.location.hash = '#devices';
 					}
 				} else {
 					$.pnotify({
@@ -953,6 +953,7 @@ function load_device(inverterId) {
                             text: 'You\'re changes have been saved.'
                         });
                         $('#btnDeviceSubmit').removeAttr("disabled");
+                        window.location.hash = '#devices-'+result.id;
                     });
                 });
                 
