@@ -12,8 +12,7 @@ require_once("template/" . $template . "/index.php");
 	var compareMonth = '<?php echo date("n");?>';
 	var compareYear = '<?php echo date("Y");?>';
 	$(function(){
-		var invtnum=(!invtnum)?invtnum=1:invtnum=invtnum;
-		WSL.init_compare(invtnum,"#content");
+		WSL.init_compare("#content");
 	});
 
 	 // Initial load fast

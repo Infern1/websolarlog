@@ -2076,7 +2076,7 @@ var WSL = {
 					}
 				});
 	},
-	init_compare : function(invtnum, divId) {
+	init_compare : function(divId) {
 		ajaxStart();
 		var dataTable = [];
 		// initialize languages selector on the given div
@@ -2095,7 +2095,7 @@ var WSL = {
 						'lang' : data.lang
 					});
 					$(divId).html(html);
-					WSL.createCompareGraph(invtnum, whichMonth, whichYear,compareMonth, compareYear, 0);
+					WSL.createCompareGraph($('#invtnum').val(), whichMonth, whichYear,compareMonth, compareYear, 0);
 					ajaxReady();
 				},
 				dataType : 'text',

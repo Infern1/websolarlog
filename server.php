@@ -406,7 +406,9 @@ try {
 			$data['lang'] = $lang;
 			
 			foreach ($config->devices as $device){
-				$inverter[] = array("name"=>$device->name,"id"=>$device->id);
+				if($device->type == "production"){
+					$inverter[] = array("name"=>$device->name,"id"=>$device->id);
+				}
 			}
 			
 			$dayData = new DayDataResult();
