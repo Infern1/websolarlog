@@ -962,7 +962,7 @@ function load_device(inverterId) {
                 
                 var handle_panel_submit = function() {
                 	checkCheckboxesHiddenFields();
-                    var data = $(this).parent().parent().parent().serialize();
+                    var data = $(this).closest('form').serialize();
                     $.post('admin-server.php', data, function(){
                         load_device(inverterId);
                         $.pnotify({
