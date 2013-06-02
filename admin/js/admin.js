@@ -868,17 +868,12 @@ function showAlertOverlay($this,inverterId,typeName) {
         stack: false,
         before_open: function(pnotify) {
             // Position this notice in the center of the screen.
-            pnotify.css({
-                "top": ($(window).height() / 2) - (pnotify.height() / 2),
-                "left": ($(window).width() / 2) - (pnotify.width() / 2)
-            });
+            pnotify.css({"top": ($(window).height() / 2) - (pnotify.height() / 2),"left": ($(window).width() / 2) - (pnotify.width() / 2)});
             // Make a modal screen overlay.
             if (modal_overlay) modal_overlay.fadeIn("fast");
             else modal_overlay = $("<div />", {
                 "class": "ui-widget-overlay",
-                "css": {
-                    "display": "none","position": "fixed","top": "0",
-                    "bottom": "0","right": "0","left": "0"}
+                "css": {"display": "none","position": "fixed","top": "0","bottom": "0","right": "0","left": "0"}
             }).appendTo("body").fadeIn("fast");
         },
         before_close: function() {
@@ -901,6 +896,7 @@ function showAlertOverlay($this,inverterId,typeName) {
 						load_device(inverterId);
 					}else{
 						init_devices();
+						document.URL.split('#devices');
 					}
 				} else {
 					$.pnotify({
