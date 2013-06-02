@@ -848,7 +848,11 @@ function init_devices(selected_inverterId) {
 function showAlertOverlay($this,inverterId,typeName) {
 	
 	var thisId = $this.val();
-	
+	if(typeName == 'Panel'){
+		var typeText = 'Do you really want to delete this '+typeName+' ?<br />This action could result in lost of data.';
+	}else if(typename == 'Device'){
+		var typeText = 'Do you really want to delete this '+typeName+' ?<br /><br /><br />Caution:<br /><br />This action also removes child object such as Panels.';
+	}
 	var text = '<form id="pnotify-confirm" name="pnotify-confirm">Do you really want to delete this '+typeName+' ?<br>This action could result in lost of data.';
 	text += '<input type="submit" name="submit" value="Delete '+typeName+'">&nbsp&nbsp&nbsp&nbsp;&nbsp&nbsp&nbsp&nbsp;';
 	text += '<button type="button" id="pnotify-cancel" id="pnotify-cancel">Cancel!</button></form>';
