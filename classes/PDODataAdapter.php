@@ -975,7 +975,7 @@ class PDODataAdapter {
 				$lastKWH = $whichBeans[count($whichBeans)-1]['KWH'];
 
 				// complete array to days of month and fill it with the last KWH value
-				for ($i = count($whichBeans); $i < $whichMonthDays; $i++) {
+				for ($i = count($whichBeans)-1; $i < $whichMonthDays; $i++) {
 					$iWhichDay = $i+1;
 					$whichBeans[$i]['time'] = strtotime(date("Y")."/".$whichMonth."/".$iWhichDay);
 					$whichBeans[$i]['KWH'] = (float)$lastKWH;
@@ -1400,7 +1400,7 @@ class PDODataAdapter {
 		$KWHT = 0;
 		$cum = 0;
 		foreach ($energyBeans as $energyBean){
-			$invConfig = $this->deviceService->load($energyBean['INV']);
+			$invConfig = $this->deviceService->load($invtnum);
 			$energyBean['KWH'] = (float)$energyBean['KWH'];
 			$Energy['INV'] =  $energyBean['INV'];
 			$Energy['KWHKWP'] = number_format($energyBean['KWH'] / ($invConfig->plantpower/1000),2,',','');
@@ -1617,7 +1617,6 @@ class PDODataAdapter {
 					$live->I2Ratio = ($liveBean['I2Ratio']<1000) ? number_format($liveBean['I2Ratio'],1,'.','') : number_format($liveBean['I2Ratio'],0,'','');
 					$live->IP = ($liveBean['IP']<1000) ? number_format($liveBean['IP'],1,'.','') : number_format($liveBean['IP'],0,'','');
 					$live->EFF = ($liveBean['EFF']<1000) ? number_format($liveBean['EFF'],1,'.','') : number_format($liveBean['EFF'],0,'','');
-					//var_dump($this->readCache("","index","live",$device->id,"trend"));
 						
 					$avgPower = $this->readCache("","index","live",$device->id,"trend");
 					$live->trend = $avgPower[0]['value'];
