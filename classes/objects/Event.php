@@ -14,7 +14,7 @@ class Event {
         $this->deviceId = $deviceId;
         $this->SDTE = date("Ymd H:i:s", $date);
         $this->time = $date;
-        $this->Type = $type;
+        $this->type = $type;
         $this->event = $event;
         $this->alarmSend = false;
     }
