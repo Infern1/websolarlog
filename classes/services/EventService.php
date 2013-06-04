@@ -33,8 +33,8 @@ class EventService {
 		$bObject->deviceId = $object->deviceId;
 		$bObject->SDTE = $object->SDTE;
 		$bObject->time = $object->time;
-		$bObject->type = $object->type;
-		$bObject->event = $object->event;
+		$bObject->Type = $object->type;
+		$bObject->Event = $object->event;
 		$bObject->alarmSend = $object->alarmSend;
 		return $bObject;
 	}
@@ -46,8 +46,8 @@ class EventService {
 		$object->deviceId = $bObject->deviceId;
 		$object->SDTE = $bObject->SDTE;
 		$object->time = $bObject->time;
-		$object->type = $bObject->type;
-		$object->event = $bObject->event;
+		$object->type = $bObject->Type;
+		$object->event = $bObject->Event;
 		$object->alarmSend = $bObject->alarmSend;
 		return $object;
 	}
