@@ -31,6 +31,9 @@ class BasicChecksAddon {
 			if ($this->deviceService->changeDeviceStatus($device, 1)) {
 				HookHandler::getInstance()->fire("onInverterStartup", $device);
 				$device->state = 1;
+				
+				$event = new Event($device->id, time(), "info", "Inverter " . $device->name . " online");
+				$this->eventService->save($event);
 			}			
 		}
 		
