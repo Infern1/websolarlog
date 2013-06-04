@@ -2,6 +2,7 @@
 class BasicChecksAddon {
 	private $adapter;
 	private $deviceService;
+	private $eventService;
 	private $liveService;
 	private $config;
 	
@@ -9,11 +10,13 @@ class BasicChecksAddon {
 		$this->adapter = PDODataAdapter::getInstance();
 		$this->config = Session::getConfig();
 		$this->deviceService = new DeviceService();
+		$this->eventService = new EventService();
 		$this->liveService = new LiveService();
 	}
 	
 	function __destruct() {
 		$this->liveService = null;
+		$this->eventService = null;
 		$this->deviceService = null;
 		$this->config = null;
 		$this->adapter = null;
@@ -46,7 +49,7 @@ class BasicChecksAddon {
 			// we are offline
 			$offline = true;
 		}		
-		if ($deviceApi->getState() == 0  ) {
+		if ($deviceApi->getState() == 0  ) { // Auto detect if offline
 			$sessionKey = 'noLiveCounter-' . $device->id;
 			
 			$liveCounter = (integer) (isset($_SESSION[$sessionKey]) ? $_SESSION[$sessionKey] : 0);
@@ -63,6 +66,7 @@ class BasicChecksAddon {
 					$liveCounter = 0;
 				}		
 			}
+			
 			// Reset the counter if we are still live and the counter > 30
 			if ($device->state = 1 && $liveCounter > 30) {
 					$liveCounter = 0;			
@@ -76,6 +80,9 @@ class BasicChecksAddon {
 				if (PeriodHelper::isPeriodJob("ShutDownJobINV-" . $device->id, (2 * 60))) {
 					HookHandler::getInstance()->fire("onInverterShutdown", $device);
 					$device->state = 0;
+					
+					$event = new Event($device->id, time(), "info", "Inverter " . $device->name . " offline");
+					$this->eventService->save($event);
 				}
 			}
 		}
