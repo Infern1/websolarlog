@@ -82,7 +82,7 @@ class ApiController
 				}
 			}
 			
-			$object = $object->$propertyName();
+			$object = $object->$propertyName($requestPath);
 			array_shift($requestPath);
 		}
 		

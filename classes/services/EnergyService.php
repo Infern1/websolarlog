@@ -48,6 +48,25 @@ class EnergyService {
 		return $energy;
 	}
 	
+	/**
+	 * get the Energy for an device
+	 * @param Device $energy
+	 * @param $time
+	 * @return $energy
+	 */
+	public function getEnergyByDeviceAndTime(Device $device, $time) {
+		$beginEndDate = Util::getBeginEndDate('day', 1, date("Y-m-d", $time));
+		$bean =  R::findOne( self::$tbl, ' INV = :deviceId AND time > :beginDate AND time < :endDate ',
+				array(':deviceId'=>$device->id, ':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
+		);
+	
+		if (!$bean){
+			return null;
+		}
+	
+		return $this->toObject($bean);
+	}
+	
 	private function toBean($object, $bObject) {
 		$bObject->INV = $object->INV;
 		$bObject->deviceId = $object->deviceId;
@@ -61,7 +80,7 @@ class EnergyService {
 	}
 	
 	private function toObject($bObject) {
-		$object = new Live();
+		$object = new Energy();
 		$object->id = $bObject->id;
 		$object->INV = $bObject->INV;
 		$object->deviceId = $bObject->deviceId;
