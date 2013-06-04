@@ -1,10 +1,14 @@
 <?php
 class Util {
 
-    public static function isSunDown($config, $correction=600) {
-        $now = strtotime(date("Ymd H:i"));
-        $sun_info = date_sun_info((strtotime(date("Ymd"))), $config->latitude , $config->longitude);
-        return $now<($sun_info['sunrise']+$correction) || $now>($sun_info['sunset']-$correction);
+	/**
+	 * Checks if the sun is down
+	 * @param number $correction
+	 * @return boolean
+	 */
+    public static function isSunDown($correction=300) {
+        $sun_info = date_sun_info(time(), session::getConfig()->latitude , session::getConfig()->longitude);
+        return time()<($sun_info['sunrise']+$correction) || time()>($sun_info['sunset']-$correction);
     }
     
     public static function getSunInfo($config,$startDate) {

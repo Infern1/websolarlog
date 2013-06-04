@@ -289,7 +289,7 @@ try {
 			$dayData->success = true;
 			$data['lang'] = $lang;
 			$data['dayData'] = $dayData;
-			$data['sundown'] = Util::isSunDown($config);
+			$data['sundown'] = Util::isSunDown();
 			break;
 		case 'getPageYearValues':
 			

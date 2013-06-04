@@ -194,6 +194,21 @@ class Session
     public static function registerHooks() {
     	// TODO :: Get from dbase
     	$hookHandler = HookHandler::getInstance();
+
+    	// Core hooks
+    	$hookHandler->add("onInverterInfo", "CoreAddon.onInverterInfo");
+    	$hookHandler->add("onInverterAlarm", "CoreAddon.onInverterAlarm");
+    	$hookHandler->add("onHistory", "CoreAddon.onHistory");
+    	$hookHandler->add("onLiveData", "CoreAddon.onLiveData");
+    	$hookHandler->add("onFastJob", "CoreAddon.touchPidFile"); // Touch the pid file
+    	$hookHandler->add("onEnergy", "CoreAddon.onEnergy"); // Will run also if device is down
+    	$hookHandler->add("newHistory", "CoreAddon.onEnergy"); // Update on every new History
+    	
+    	// BasicChecksAddon
+    	$hookHandler->add("newLiveData", "BasicChecksAddon.onNewLive");
+    	$hookHandler->add("onNoLiveData", "BasicChecksAddon.onNoLiveData");
+    	$hookHandler->add("onRegularJob", "BasicChecksAddon.on10MinJob");
+    	
     	// MailAddon
     	$hookHandler->add("onError", "MailAddon.onError");
     	$hookHandler->add("onWarning", "MailAddon.onWarning");
@@ -208,46 +223,26 @@ class Session
     	$hookHandler->add("onInfo", "LoggerAddon.onInfo");
     	$hookHandler->add("onDebug", "LoggerAddon.onDebug");
     	$hookHandler->add("onInverterStartup", "LoggerAddon.onInverterStartup");
-    	$hookHandler->add("onInverterShutdown", "LoggerAddon.onInverterShutdown");
     	$hookHandler->add("onInverterError", "LoggerAddon.onInverterError");
+    	$hookHandler->add("onInverterShutdown", "LoggerAddon.onInverterShutdown");
     	
     	// PvOutputAddon
     	$hookHandler->add("onFastJob", "PvOutputAddon.onJob");
     	
-    	//touch pid file
-    	$hookHandler->add("onFastJob", "CoreAddon.touchPidFile");
-    	
-    	// TwitterAddon
-    	$hookHandler->add("onInverterShutdown", "TwitterAddon.sendTweet");
-    	
-    	// BasicChecksAddon
-    	$hookHandler->add("onRegularJob", "BasicChecksAddon.on10MinJob");
-    	
-    	// NEW Work Handler hooks
-    	$hookHandler->add("onLiveData", "CoreAddon.onLiveData");
+    	// Smart meter addon
     	$hookHandler->add("onLiveSmartMeterData", "SmartMeterAddon.onLiveSmartMeterData");
-    	
-    	$hookHandler->add("onHistory", "CoreAddon.onHistory");
     	$hookHandler->add("onSmartMeterHistory", "SmartMeterAddon.onSmartMeterHistory");
-    	
-    	$hookHandler->add("onEnergy", "CoreAddon.onEnergy"); // Will run also if device is down
     	$hookHandler->add("onSmartMeterEnergy", "SmartMeterAddon.onSmartMeterEnergy"); // Will run at 00:00
     	
     	
     	$hookHandler->add("GraphDayPoints", "SmartMeterAddon.GraphDayPoints"); // Will run at 00:00
     	
-    	
-    	$hookHandler->add("newHistory", "CoreAddon.onEnergy"); // Update on every new History
-    	$hookHandler->add("onInverterInfo", "CoreAddon.onInverterInfo");
-    	$hookHandler->add("onInverterAlarm", "CoreAddon.onInverterAlarm");
-    	
-    	$hookHandler->add("newLiveData", "BasicChecksAddon.onNewLive");
-    	$hookHandler->add("onNoLiveData", "BasicChecksAddon.onNoLiveData");
-    	$hookHandler->add("onRegularJob", "BasicChecksAddon.on10MinJob");
-    	
     	// fire from frontend
     	$hookHandler->add("checkEnergy", "EnergyCheckAddon.checkEnergy");
 
+    	// TwitterAddon
+    	$hookHandler->add("onInverterShutdown", "TwitterAddon.sendTweet"); 
+    	
     	// Statistics
     	$hookHandler->add("onFastJob", "CacheAddon.averagePower");
     	$hookHandler->add("onFastJob", "CacheAddon.EnergyValues");

@@ -1560,7 +1560,7 @@ class PDODataAdapter {
 				$oInverter = 	array();
 
 
-				if(Util::isSunDown(Session::getConfig())){
+				if(Util::isSunDown()){
 					$live = new Live();
 					$live->name = $device->name;
 					$live->status = 'offline';

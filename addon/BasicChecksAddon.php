@@ -24,7 +24,7 @@ class BasicChecksAddon {
 		$sessionKey = 'noLiveCounter-' . $device->id;
 		
 		// Check if the sun is up and the device is down
-		if(!Util::isSunDown($this->config) && $device->state != 1) {
+		if(!Util::isSunDown() && $device->state != 1) {
 			if ($this->deviceService->changeDeviceStatus($device, 1)) {
 				HookHandler::getInstance()->fire("onInverterStartup", $device);
 				$device->state = 1;
@@ -53,7 +53,7 @@ class BasicChecksAddon {
 			$liveCounter++;
 			if ($liveCounter == 30) {
 				// Are we seriously down?
-				if(Util::isSunDown($this->config)) {
+				if(Util::isSunDown()) {
 					$offline = true;
 				} else {
 					// Probably temporarely down, check again
@@ -87,8 +87,8 @@ class BasicChecksAddon {
 	
 	private function InactiveCheck() {
 		// Only continue when the sun is up!
-		// -1800, means start checking 30 min after the sun is up and before it is down
-		if (Util::isSunDown($this->config,-1800)) {
+		// 1800, means start checking 30 min after the sun is up and before it is down
+		if (Util::isSunDown(1800)) {
 			return true;
 		}
 	
