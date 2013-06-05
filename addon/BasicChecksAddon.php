@@ -57,7 +57,7 @@ class BasicChecksAddon {
 			
 			$liveCounter = (integer) (isset($_SESSION[$sessionKey]) ? $_SESSION[$sessionKey] : 0);
 			$liveCounter++;
-			if ($liveCounter == 30) {
+			if ($liveCounter == 15) {
 				// Are we seriously down?
 				if(Util::isSunDown()) {
 					$offline = true;
@@ -71,7 +71,7 @@ class BasicChecksAddon {
 			}
 			
 			// Reset the counter if we are still live and the counter > 30
-			if ($device->state = 1 && $liveCounter > 30) {
+			if ($device->state == 1 && $liveCounter > 20) {
 					$liveCounter = 0;			
 			}
 			
