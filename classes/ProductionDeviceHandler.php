@@ -9,6 +9,7 @@ class ProductionDeviceHandler {
 		$live = $api->getLiveData();
 		if ($live == null) {
 			// No valid live data returned
+			HookHandler::getInstance()->fire("onNoLiveData", $device);
 			return null;
 		}
 		
@@ -29,11 +30,7 @@ class ProductionDeviceHandler {
 		$live->EFF = round($live->EFF,3);
 		
 		// Fire the hook
-		if ($live != null) {
-			HookHandler::getInstance()->fire("onLiveData", $device, $live);
-		} else {
-			HookHandler::getInstance()->fire("onNoLiveData", $device);
-		}
+		HookHandler::getInstance()->fire("onLiveData", $device, $live);
 	}
 	
 	public static function handleHistory(QueueItem $item, Device $device) {
