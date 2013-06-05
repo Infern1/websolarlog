@@ -956,7 +956,7 @@ class PDODataAdapter {
 					// after the last data day
 					$line[$counter]['time'] = strtotime($year."/".$month."/".($counter+1));
 					$line[$counter]['KWH'] = $line[$counter-1]['KWH'];
-					$line[$counter]['harvested'] =  $line[$counter-1]['harvested'];
+					$line[$counter]['harvested'] =  0;
 					$line[$counter]['displayKWH'] =  $line[$counter-1]['displayKWH'];	
 				}
 			}
