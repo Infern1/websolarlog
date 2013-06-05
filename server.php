@@ -453,8 +453,6 @@ try {
 			$data['lang'] = $lang;
 
 			$dayData = new DayDataResult();
-			$dayData->month = $monthYear['month'];
-			$dayData->year = $monthYear['year'];
 			$dayData->inverters = $inverter;
 			$dayData->data = array(
 				"which"=>$lines['whichBeans']->points,
@@ -462,8 +460,6 @@ try {
 				"diff"=>$lines['whichCompareDiff']
 			);
 			$dayData->type = $lines['type'];
-			$dayData->expectedMonthString = $lines['expectedMonthString'];
-			$dayData->expectedPerc = $lines['expectedPerc'];
 			$dayData->success = true;
 			$data['dayData'] = $dayData;
 			break;

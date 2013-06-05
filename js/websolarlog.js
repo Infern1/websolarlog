@@ -2096,31 +2096,32 @@ var WSL = {
 					});
 					$(divId).html(html);
 					WSL.createCompareGraph($('#invtnum').val(), whichMonth, whichYear,compareMonth, compareYear, 0);
+					
+					$('#compareFilter').on('change', '#invtnum', function() {
+						WSL.createCompareGraph($('#invtnum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+					});
+					$('#compareFilter').on('change','#whichMonth', function() {
+						WSL.createCompareGraph($('#invtnum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+					});
+					$('#compareFilter').on('change', '#whichYear', function() {
+						WSL.createCompareGraph($('#invtnum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+					});
+					$('#compareFilter').on('change', '#compareMonth', function() {
+						WSL.createCompareGraph($('#invtnum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+					});
+					$('#compareFilter').on('change', '#compareYear', function() {
+						WSL.createCompareGraph($('#invtnum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+					});
 					ajaxReady();
 				},
 				dataType : 'text',
 			});
 		});
 		
-		$('#compareFilter').on('change', '#invtnum', function() {
-			WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-		});
-		$('#compareFilter').on('change','#whichMonth', function() {
-			WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-		});
-		$('#compareFilter').on('change', '#whichYear', function() {
-			WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-		});
-		$('#compareFilter').on('change', '#compareMonth', function() {
-			WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-		});
-		$('#compareFilter').on('change', '#compareYear', function() {
-			WSL.createCompareGraph(1, $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-		});
+
 	},
 
-	createCompareGraph : function(invtnum, whichMonth, whichYear, compareMonth,
-			compareYear, type) {
+	createCompareGraph : function(invtnum, whichMonth, whichYear, compareMonth,compareYear, type) {
 		$('#whichMonth').val(whichMonth);
 		$('#whichYear').val(whichYear);
 		$('#compareMonth').val(compareMonth);
@@ -2231,9 +2232,10 @@ var WSL = {
 									"displayKWH" : object[3],
 									"harvested" : object[4],
 								};
+								console.log(item);
 								whichTable.push([ item ]);
 							}
-							
+							console.log(compareTable);
 							$("#content").append('<div id="compareGraph"></div>');
 							$('#content').append('<div id="compareFigures"></div>');
 							$("#compareGraph").height(500);

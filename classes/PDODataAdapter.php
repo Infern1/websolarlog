@@ -917,7 +917,57 @@ class PDODataAdapter {
 		return array('month'=> $month, 'year'=>$year );
 	}
 
+	/**
+	 * 
+	 * @param unknown $month
+	 * @param unknown $year
+	 * @return multitype:NULL unknown
+	 */
+	public function getCompareBeans($invtnum, $month,$year){
+		// init
+		$counter = 0;
+		$dataDays = 0;
+		$first = false;
+		$getCompareBeans = array();
 
+		// get beans for month and year
+		$beans = $this->readEnergyValues($invtnum, 'month', 1, $year."-".$month."-1");
+		// lose one array
+		$beans = $beans[0];
+		foreach ($beans as $bean) {
+			$newBeans[strtotime(date("Y-m-d",$bean['time']))] = $bean;  
+		}
+		// get last KWH value from the Which array
+		$dates = $this->datesMonthInArray($month,$year);
+
+		foreach ($dates as $key=>$date) {
+			
+			if($newBeans[$key]){
+				$dataDays++;
+				$line[] = $newBeans[$key];
+			}else{
+				if($dataDays == 0){
+					// before the first data day
+					$line[$counter]['time'] = strtotime($year."/".$month."/".($counter+1));
+					$line[$counter]['KWH'] = (float)0;
+					$line[$counter]['harvested'] =  sprintf("%01.2f",(float)0);
+					$line[$counter]['displayKWH'] =  sprintf("%01.2f",(float)0);
+				}else{
+					// after the last data day
+					$line[$counter]['time'] = strtotime($year."/".$month."/".($counter+1));
+					$line[$counter]['KWH'] = $line[$counter-1]['KWH'];
+					$line[$counter]['harvested'] =  $line[$counter-1]['harvested'];
+					$line[$counter]['displayKWH'] =  $line[$counter-1]['displayKWH'];	
+				}
+			}
+			$counter++;
+		}
+		$getCompareBeans['line']=$line;
+		$getCompareBeans['monthDays']=count($whichDates);
+		
+		return $getCompareBeans;
+	}
+	
 	/**
 	 *
 	 * @param unknown_type $invtnum
@@ -927,105 +977,94 @@ class PDODataAdapter {
 	 * @param unknown_type $compareYear
 	 */
 	public function getCompareGraph($invtnum,$whichMonth,$whichYear,$compareMonth,$compareYear){
-		$config = Session::getConfig();
 		$beans = array();
+		
 		$whichBeans = array();
 		$compareBeans = array();
-		//var_dump($invtnum,$whichMonth,$whichYear,$compareMonth,$compareYear);
-		if($whichMonth >0 AND $whichYear>0){
-			$whichMonthDays    =  cal_days_in_month(CAL_GREGORIAN, $whichMonth, $whichYear);
-			$expectedMonthDays =  cal_days_in_month(CAL_GREGORIAN, $compareMonth, date("Y"));
-			if ($compareYear > 0){
-				// get Which beans
-				$beans = $this->readEnergyValues($invtnum, 'month', 1, $whichYear."-".$whichMonth."-1");
-				// lose one array
-				$whichBeans = $beans[0];
-				// get last KWH value from the Which array
-				$lastKWH = $whichBeans[count($whichBeans)]['KWH'];
-					
-				// here we complete the month
-				for ($i = count($whichBeans)-1; $i < $whichMonthDays; $i++) {
-					$iWhichDay = $i+1;
-					$whichBeans[$i]['time'] = strtotime($compareYear."/".$compareMonth."/".$iWhichDay);
-					$whichBeans[$i]['KWH'] = sprintf("%01.2f",(float)$lastKWH);
-					$whichBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$lastKWH);
-				}
+		
+		$whichDates = array();
+		$compareDates = array();
 
-				// get Compare beans
-				$beans = $this->readEnergyValues($invtnum, 'month', 1, $compareYear."-".$compareMonth."-1");
-				$compareBeans = $beans[0];
-				$lastKWH = $compareBeans[count($compareBeans)]['KWH'];
-				$compareMonthDays =  cal_days_in_month(CAL_GREGORIAN, $compareMonth, $compareYear);
-				for ($i = count($compareBeans)-1; $i < $compareMonthDays; $i++) {
-					$iExpectedDay = $i+1;
-					$compareBeans[$i]['time'] = strtotime($compareYear."/".$compareMonth."/".$iExpectedDay);
-					$compareBeans[$i]['KWH'] = sprintf("%01.2f",(float)$lastKWH);
-					$compareBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$lastKWH);
-				}
+		if($whichMonth >0 AND $whichYear>0){
+			if ($compareYear > 1970){
+				// get Which beans
+				
+				$beans = $this->getCompareBeans($invtnum,$whichMonth,$whichYear);
+				$whichBeans =$beans['line'];
+
+				$beans = $this->getCompareBeans($invtnum,$compareMonth,$compareYear);
+				$compareBeans =$beans['line'];
+				
 				// move compareBeans to expectedBeans, so we pass it to JSON.
 				$expectedBeans  = $compareBeans;
+				
 				$diff = $this->getDiffCompare($whichBeans,$expectedBeans);
 				$type = "energy vs energy";
 			}else{
-				// harvested data.....
-				$beans = $this->readEnergyValues($invtnum, 'month', 1, $whichYear."-".$whichMonth."-1");
-				//var_dump($beans);
-				$whichBeans = $beans[0];
-				//get last kwh value
-				$lastKWH = $whichBeans[count($whichBeans)-1]['KWH'];
+				// get Which beans				
+				$beans = $this->getCompareBeans($invtnum,$whichMonth,$whichYear);
+				$whichBeans =$beans['line'];				
+				
+				//get expected beans
+				$expectedBeans = $this->expectedMonthProduction($invtnum,$compareMonth);
 
-				// complete array to days of month and fill it with the last KWH value
-				for ($i = count($whichBeans)-1; $i < $whichMonthDays; $i++) {
-					$iWhichDay = $i+1;
-					$whichBeans[$i]['time'] = strtotime(date("Y")."/".$whichMonth."/".$iWhichDay);
-					$whichBeans[$i]['KWH'] = (float)$lastKWH;
-					$whichBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$lastKWH);
-					$whichBeans[$i]['harvested'] =  0;
-				}
-				// create string to get month percentage
-				$expectedMonthString = 'expected'.strtoupper(date('M', strtotime($compareMonth."/01/".date("Y"))));
-
-				$device = $config->getDeviceConfig($invtnum);
-				$expectedPerc = $device->$expectedMonthString;
-				$expectedkwhYear = $device->expectedkwh;
-
-				// calculate month kWh = (year/100*month perc)
-				$expectedKWhMonth = ($expectedkwhYear / 100)*$expectedPerc;
-
-				// calculate daily expected, based on month day (28,29,30,31 days)
-				$expectedKwhPerDay = ($expectedKWhMonth/$expectedMonthDays);
-
-				// create expected
-				for ($i = 0; $i < $expectedMonthDays; $i++) {
-					$iCompareDay = $i+1;
-					($i>0) ? $ii = $i-1 : $ii = 0;
-					$expectedBeans[$i]['time'] = strtotime(date("Y")."/".$compareMonth."/".$iCompareDay);
-					$expectedBeans[$i]['KWH'] =  (float)number_format($expectedBeans[$ii]['KWH']+$expectedKwhPerDay,2,'.','');
-					$expectedBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$expectedBeans[$ii]['KWH']+(float)$expectedKwhPerDay);
-					$expectedBeans[$i]['harvested'] = (float)number_format((float)$expectedKwhPerDay,2,'.','');
-				}
-				//var_dump($expectedBeans);
 				$type = "energy vs expected";
 				$diff = $this->getDiffCompare($whichBeans,$expectedBeans);
 			}
 		}
 
 		return array(
-				"expectedKWhMonth"=>$expectedKWhMonth,
-				"expectedkwhYear"=>$expectedkwhYear,
-				"expectedPerc"=>$expectedPerc,
 				"whichMonthDays"=>$whichMonthDays,
 				"compareMonthDays"=>$compareMonthDays,
 				"compareBeans"=>$this->beansToGraphPoints($expectedBeans),
 				"whichBeans"=>$this->beansToGraphPoints($whichBeans),
 				"whichCompareDiff"=>$diff,
-				"expectedMonthString"=>$expectedMonthString,
-				"expectedPerc"=>$expectedPerc,
 				"type"=>$type
-
 		);
 	}
+	
+	
+	function expectedMonthProduction($invtnum,$month,$year=0){
+		$config = Session::getConfig();
+		
+		($year < 1970) ? $year = date("Y") : $year = $year;
+		 
+		$expectedMonthDays =  cal_days_in_month(CAL_GREGORIAN, $month, $year);
+		$expectedMonthString = 'expected'.strtoupper(date('M', strtotime($month."/01/".$year)));
+		$expectedPerc = $config->getDeviceConfig($invtnum)->$expectedMonthString;
+		$expectedkwhYear = $config->getDeviceConfig($invtnum)->expectedkwh;
+		
+		// calculate month kWh = (year/100*month perc)
+		$expectedKWhMonth = ($expectedkwhYear / 100)*$expectedPerc;
+		// calculate daily expected, based on month day (28,29,30,31 days)
+		$expectedKwhPerDay = ($expectedKWhMonth/$expectedMonthDays);
+		
+		// create expected
+		for ($i = 0; $i < $expectedMonthDays; $i++) {
+			$iCompareDay = $i+1;
+			($i>0) ? $ii = $i-1 : $ii = 0;
+			$expectedBeans[$i]['time'] = strtotime(date("Y")."/".$month."/".$iCompareDay);
+			$expectedBeans[$i]['KWH'] =  (float)number_format($expectedBeans[$ii]['KWH']+$expectedKwhPerDay,2,'.','');
+			$expectedBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$expectedBeans[$ii]['KWH']+(float)$expectedKwhPerDay);
+			$expectedBeans[$i]['harvested'] = (float)number_format((float)$expectedKwhPerDay,2,'.','');
+		}
+		return $expectedBeans;
+	}
 
+	/**
+	 * 
+	 * @param string $month
+	 * @param string $year
+	 * @return multitype:unknown
+	 */
+	function datesMonthInArray($month,$year){
+		$num = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+		$datesMonth=array();
+		for($i=0;$i<$num;$i++){
+			$datesMonth[strtotime(date(($i+1)."-".$month."-".$year))]=null;
+		}
+		return $datesMonth;
+	}
 
 	public function getDiffCompare($whichBeans,$expectedBeans){
 
@@ -1399,9 +1438,14 @@ class PDODataAdapter {
 		$Energy['KWH'] = 0;
 		$KWHT = 0;
 		$cum = 0;
+		
 		foreach ($energyBeans as $energyBean){
-			$invConfig = $this->deviceService->load($invtnum);
+			$invConfig = $this->deviceService->load($energyBean['INV']);
+			if($invConfig->id > 0){
+			
 			$energyBean['KWH'] = (float)$energyBean['KWH'];
+			$Energy['index'] = date("d",$energyBean['time'])-1;
+			$Energy['date'] = date("Y-m-d",$energyBean['time']);
 			$Energy['INV'] =  $energyBean['INV'];
 			$Energy['KWHKWP'] = number_format($energyBean['KWH'] / ($invConfig->plantpower/1000),2,',','');
 			$Energy['harvested'] = number_format((float)$energyBean['KWH'],2,'.','');
@@ -1410,10 +1454,12 @@ class PDODataAdapter {
 			$cum +=$energyBean['KWH'];
 			$Energy['displayKWH'] = sprintf("%01.2f",(float)$cum);
 			$Energy['CO2'] =Formulas::CO2kWh($energyBean['KWH'],$config->co2kwh);
-			$Energy['time'] = $energyBean['time'];
+			$Energy['time'] = strtotime(date("Y-m-d",$energyBean['time']));
 			$Energy['KWHT'] = number_format($energyBean['KWHT'],2,',','');
 			$KWHT += $energyBean['KWH'];
+			}
 			$energy[] = $Energy;
+			
 		}
 		return array($energy,$KWHT);
 	}
