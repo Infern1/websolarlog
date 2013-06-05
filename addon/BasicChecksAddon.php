@@ -57,13 +57,16 @@ class BasicChecksAddon {
 			
 			$liveCounter = (integer) (isset($_SESSION[$sessionKey]) ? $_SESSION[$sessionKey] : 0);
 			$liveCounter++;
-			if ($liveCounter == 15) {
+			if ($liveCounter == 30) {
 				// Are we seriously down?
 				if(Util::isSunDown()) {
 					$offline = true;
 				} else {
 					// Probably temporarely down, check again
 					if (PeriodHelper::isPeriodJob("ShutDownJobErrorINV-" . $device->id, 60)) {
+						$event = new Event($device->id, time(), "Info", "Inverter " . $device->name . " offline during day");
+						$this->eventService->save($event);
+						
 						HookHandler::getInstance()->fire("onInverterError", $device, "Inverter seems to be down");
 					}
 					$liveCounter = 0;
@@ -71,7 +74,7 @@ class BasicChecksAddon {
 			}
 			
 			// Reset the counter if we are still live and the counter > 30
-			if ($device->state == 1 && $liveCounter > 20) {
+			if ($device->state == 1 && $liveCounter > 30) {
 					$liveCounter = 0;			
 			}
 			
