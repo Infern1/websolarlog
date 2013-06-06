@@ -81,16 +81,24 @@ try {
 			}
 			break;
 		case 'getMisc':
-			$noticeEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Notice'));
-			$alarmEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Alarm'));
-			$infoEvents = Util::makeEventsReadable($dataAdapter->readTypeEvents($invtnum,'Info'));
+			$eventService = new EventService();
+			
 			$serverUptime = Util::serverUptime();
 
 			$slimConfig = array();
 			$slimConfig['lat'] = $config->latitude;
 			$slimConfig['long'] = $config->longitude;
-			
+			$devices = array();
 			foreach ($config->devices as $device){
+				$panels = null;
+				$info = $eventService->getArrayByDeviceAndType($device, 'Info', 1);
+				if (count($info) == 1) {
+					$info = $info[0];
+				}
+				if (count($info) == 0) {
+					$info = null;
+				}
+				
 				if($device->type=="production"){
 					foreach ($device->panels as $panel){
 						$panels[] = array(
@@ -103,15 +111,21 @@ try {
 							'totalWp'=>$panel->amount*$panel->wp
 						);
 					}
-					$inverters[] = array(
-						'name'=>$device->name,
-						'expectedKWH'=>$device->expectedkwh,
-						'plantPower'=>$device->plantpower,
-						'panels'=>$panels
-					);
 				}
+				$devices[] = array(
+					'name'=>$device->name,
+					'type'=>$device->type,
+					'expectedKWH'=>$device->expectedkwh,
+					'plantPower'=>$device->plantpower,
+					'panels'=>$panels,
+					'events'=>array(
+							'notice'=>$eventService->getArrayByDeviceAndType($device, 'notice'),
+							'alarm'=>$eventService->getArrayByDeviceAndType($device, 'alarm'),
+							'info'=>$info
+					)
+				);
 			}
-			$slimConfig['inverters'] = $inverters;
+			$slimConfig['devices'] = $devices;
 			
 			$lang = array();
 			$lang['Time'] = _('Time');
@@ -144,9 +158,6 @@ try {
 
 			$data['lang'] = $lang;
 			$data['slimConfig'] = $slimConfig;
-			$data['noticeEvents'] = $noticeEvents;
-			$data['alarmEvents'] = $alarmEvents;
-			$data['infoEvents'] = $infoEvents;
 			$data['serverUptime'] = $serverUptime;
 			break;
 		case 'getGraphDayPoints':

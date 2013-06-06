@@ -8,6 +8,9 @@ class Event {
     public $type;
     public $event;
     public $alarmSend;
+    
+    // @Transient
+    public $eventHTML;
 
     function __construct($deviceId, $date, $type, $event) {
         $this->INV = $deviceId;

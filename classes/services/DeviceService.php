@@ -119,7 +119,7 @@ class DeviceService {
 	}
 	
 	public function janitorDbCheck() {
-		HookHandler::getInstance()->fire("onInfo", "DeviceService janitor DB Check");
+		HookHandler::getInstance()->fire("onDebug", "DeviceService janitor DB Check");
 		// Get an device and save it, to make sure al fields are available in the database
 		$objects = $this->getAllDevices();
 		$object = $objects[0]; // first
