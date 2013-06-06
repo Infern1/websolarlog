@@ -1132,6 +1132,7 @@ class PDODataAdapter {
 					ORDER BY time ASC",
 					array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}
+		
 		if(count($beans)==0){
 			$newBean = null;
 		}else{
@@ -1159,7 +1160,7 @@ class PDODataAdapter {
 				$iMonth = $i+1;
 				// if $i <= 5
 				if($iMonth<$firstMonth || $iMonth>$lastMonth){
-					$newBean[$i]['time'] = strtotime(date("01-".$iMonth."-Y"));
+					$newBean[$i]['time'] = (int)strtotime(date("01-".$iMonth."-".date("Y",strtotime($startDate))));
 					//$newBean[$i]['time'] = date ( "n"  ,$newBean[$i]['time'] );
 					$newBean[$i]['KWH'] = number_format(0,0,',','');
 					$newBean[$i]['Exp'] = number_format($invExp[$i],0,',','');
@@ -1174,7 +1175,7 @@ class PDODataAdapter {
 					$newBean[$i]['what'] = 'prepend';
 				}else{
 
-					$newBean[$i]['time'] = $beans[$ii]['time'];
+					$newBean[$i]['time'] = (int)$beans[$ii]['time'];
 					//$newBean[$i]['time'] = date ( "n"  ,$beans[$ii]['time']);
 					$newBean[$i]['KWH'] =number_format($beans[$ii]['KWH'],0,',','');
 					$newBean[$i]['Exp'] =number_format($invExp[$i],0,',','');
@@ -1191,8 +1192,7 @@ class PDODataAdapter {
 				}
 			}
 		}
-		
-		return array("energy"=>$this->CompareBeansToGraphPoints($newBean),"expected"=>0);
+		return array("energy"=>$this->CompareBeansToGraphPoints($newBean),"expected"=>$expected);
 	}
 
 
@@ -1338,9 +1338,9 @@ class PDODataAdapter {
 	 * @return array($beginDate, $endDate);
 	 */
 	public function CompareBeansToGraphPoints($beans){
-		//var_dump($beans);
 		$points = array();
 		$cumPower = 0;
+		
 		foreach ($beans as $bean){
 			$cumPower += $bean['KWH'];
 			$points[] = array (

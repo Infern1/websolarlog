@@ -80,6 +80,21 @@ try {
 				$data['piwikSiteId'] = $config->piwikSiteId;
 			}
 			break;
+			
+		case 'getDevices':
+			$devices = array();
+			foreach ($config->devices as $device){
+				if($device->type=="production"){
+					$devices[] = array(
+							'name'=>$device->name,
+							'id'=>$device->id
+					);
+				}
+			}
+			
+			$slimConfig['devices'] = $devices;
+			$data['slimConfig'] = $slimConfig;
+			break;
 		case 'getMisc':
 			$eventService = new EventService();
 			
@@ -287,7 +302,7 @@ try {
 		case 'getProductionGraph':
 			(!$year)?$year=date("Y"):$year=$year;
 			(!$invtnum)?$invtnum=1:$invtnum=$invtnum;
-			$lines = $dataAdapter->getYearSumPowerPerMonth($invtnum, $date);
+			$lines = $dataAdapter->getYearSumPowerPerMonth($invtnum, $year);
 	
 			$dayData = new DayDataResult();
 			$dayData->data = $lines['energy']->points;
@@ -300,7 +315,6 @@ try {
 			$dayData->success = true;
 			$data['lang'] = $lang;
 			$data['dayData'] = $dayData;
-			$data['sundown'] = Util::isSunDown();
 			break;
 		case 'getPageYearValues':
 			
@@ -568,11 +582,11 @@ try {
 		case "test":
 			$updater = new Updater();
 			$versions = $updater->isUpdateable();
-			var_dump($versions);
+			//var_dump($versions);
 		case "phpinfo":
 			$phpinfo = new Util();
 			
-			var_dump($phpinfo->phpInfo());
+			//var_dump($phpinfo->phpInfo());
 			
 			break;
 		default:

@@ -15,7 +15,7 @@
 <div class="cl"></div>
 {{#each data}}
 {{#each this}}
-<div class="column span-3 first">{{this.date}}</div>
+<div class="column span-3 first">{{timestampDateFormat this.date format="MM-YYYY"}}</div>
 <div class="column span-5" style="text-align:right;">{{this.exp}}</div>
 <div class="column span-5" style="text-align:right;">{{this.har}}</div>
 <div class="column span-5" style="text-align:right;">{{this.diff}}</div>
