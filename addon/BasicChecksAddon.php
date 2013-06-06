@@ -29,11 +29,11 @@ class BasicChecksAddon {
 		// Check if the sun is up and the device is down
 		if(!Util::isSunDown() && $device->state != 1) {
 			if ($this->deviceService->changeDeviceStatus($device, 1)) {
+				$event = new Event($device->id, time(), "Notice", "Inverter " . $device->name . " online");
+				$this->eventService->save($event);
+				
 				HookHandler::getInstance()->fire("onInverterStartup", $device);
 				$device->state = 1;
-				
-				$event = new Event($device->id, time(), "info", "Inverter " . $device->name . " online");
-				$this->eventService->save($event);
 			}			
 		}
 		
@@ -64,7 +64,7 @@ class BasicChecksAddon {
 				} else {
 					// Probably temporarely down, check again
 					if (PeriodHelper::isPeriodJob("ShutDownJobErrorINV-" . $device->id, 60)) {
-						$event = new Event($device->id, time(), "Info", "Inverter " . $device->name . " offline during day");
+						$event = new Event($device->id, time(), "Notice", "Inverter " . $device->name . " offline during day");
 						$this->eventService->save($event);
 						
 						HookHandler::getInstance()->fire("onInverterError", $device, "Inverter seems to be down");
@@ -84,11 +84,12 @@ class BasicChecksAddon {
 		if ($offline) {
 			if ($this->deviceService->changeDeviceStatus($device, 0)) {
 				if (PeriodHelper::isPeriodJob("ShutDownJobINV-" . $device->id, (2 * 60))) {
+					$event = new Event($device->id, time(), "Notice", "Inverter " . $device->name . " offline");
+					$this->eventService->save($event);
+					
 					HookHandler::getInstance()->fire("onInverterShutdown", $device);
 					$device->state = 0;
 					
-					$event = new Event($device->id, time(), "info", "Inverter " . $device->name . " offline");
-					$this->eventService->save($event);
 				}
 			}
 		}
