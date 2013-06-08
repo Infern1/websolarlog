@@ -535,6 +535,7 @@ var gaugeGP;
 var gaugeIP;
 var gaugeEFF;
 
+function graphProductionOptions(){
 var graphProductionOptions = {
 		series : [ {
 			label : 'Harvested(kWh)',
@@ -649,7 +650,8 @@ var graphProductionOptions = {
 			show : false
 		},
 	};
-
+	return graphProductionOptions;
+};
 
 // WSL class
 var WSL = {
@@ -1739,7 +1741,7 @@ var WSL = {
 						},
 						dataType : 'text',
 					});
-
+					// create "white-space" on begin of x-axes
 					ticksTable.push("0");
 					var monthTable = [];
 					for (line in result.dayData.data) {
@@ -1749,8 +1751,10 @@ var WSL = {
 						dataDay3.push(object[4]);
 						dataDay4.push(object[5]);
 					}
+					// create "white-space" on end of x-axes
 					ticksTable.push("13");
 					
+					graphProductionOptions = graphProductionOptions();
 					graphProductionOptions.axes.xaxis.numberTicks = ticksTable;
 					graphProductionOptions.axes.xaxis.ticks = ticksTable;
 					var harvested = [];
