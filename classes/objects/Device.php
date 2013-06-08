@@ -21,6 +21,7 @@ class Device {
     public $pvoutputWSLTeamMember;
     public $state;
     public $refreshTime;
+    public $historyRate;
 
     public $expectedJAN;
     public $expectedFEB;

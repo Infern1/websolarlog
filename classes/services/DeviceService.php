@@ -157,6 +157,7 @@ class DeviceService {
 		$bObject->pvoutputWSLTeamMember = $object->pvoutputWSLTeamMember;
 		$bObject->state = $object->state;
 		$bObject->refreshTime = (isset($object->refreshTime) && $object->refreshTime != "") ? $object->refreshTime : $bObject->refreshTime;
+		$bObject->historyRate = (isset($object->historyRate) && $object->historyRate != "") ? $object->historyRate : $bObject->historyRate;
 		
 		$bObject->expectedJAN = $object->expectedJAN;
 		$bObject->expectedFEB = $object->expectedFEB;
@@ -196,6 +197,7 @@ class DeviceService {
 		$object->pvoutputWSLTeamMember = $bObject->pvoutputWSLTeamMember;
 		$object->state = $bObject->state;
 		$object->refreshTime = (isset($bObject->refreshTime) && $bObject->refreshTime != "") ? $bObject->refreshTime : $object->refreshTime;
+		$object->historyRate = (isset($bObject->historyRate) && $bObject->historyRate != "") ? $bObject->historyRate : $object->historyRate;
 		
 		// retrieve by panelService
 		$object->panels = $this->panelService->getArrayByDevice($object);
