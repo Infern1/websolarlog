@@ -957,6 +957,37 @@ function load_device(inverterId) {
                     });
                 });
                 
+                $( "#sliderLiveRate" ).slider({
+                    min: 1,
+                    max: 60,
+                    step: 1,
+                    slide: function( event, ui ) {
+                      $( "#refreshTime" ).val( ui.value );
+                    }
+                  });
+                  // setter
+
+              	$( "#sliderLiveRate" ).slider( "option", "value", $( "#refreshTime" ).val() );
+
+              	$( "#refreshTime" ).on('keyup',function(){
+              		$( "#sliderLiveRate" ).slider( "option", "value", $(this).val() );
+              	});
+
+                $( "#sliderHistoryRate" ).slider({
+                    min: 1,
+                    max: 3600,
+                    step: 1,
+                    slide: function( event, ui ) {
+                      $( "#historyRate" ).val( ui.value );
+                    }
+                  });
+                // setter
+              	$( "#sliderHistoryRate" ).slider( "option", "value", $( "#historyRate" ).val() );
+              	
+              	$( "#historyRate" ).on('keyup',function(){
+              		$( "#sliderHistoryRate" ).slider( "option", "value", $(this).val() );
+              	});
+                
                 var handle_panel_submit = function() {
                 	checkCheckboxesHiddenFields();
                     var data = $(this).closest('form').serialize();
@@ -1272,7 +1303,7 @@ function startUpdaterMonitor(updateNotice, button) {
             	 });
              };
              
-             refreshIntervalId = setInterval(monitor, 2000); // 2 seconds
+             refreshIntervalId = setInterval(monitor, 1500); // 1,5 seconds
          },
          dataType : 'text'
      });

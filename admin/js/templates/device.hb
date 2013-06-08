@@ -43,27 +43,31 @@
     <label for="comAddress">(RS485/IP) address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" />{{infoTooltip title="RS485: 1-255<br>IP: v4 of v6 address"}}<br />
     
     <div class="span-8 first">
+    <br>
     <label for="liveRate" style="float:left;">Live poll Rate:</label>
     </div>
     <div class="span-14 last" >
+    <br>
     <div>
-    <div id="sliderLiveRate" class="span-25"></div><br>
+    <div id="sliderLiveRate" class="span-20"></div><br>
     <input type="text" name="refreshTime" id="refreshTime" value="{{data.inverter.refreshTime}}" />
     
     {{infoTooltip title="How often do we need to poll this device?<br>1-3600 sec."}}<br />
-    </div>  </div><br/><br/><br/>
+    </div>  </div>
     
-    
-    <div class="span-8 first">
+        <div class="span-8 first">
+    <br>
     <label for="historyRate" style="float:left;">History poll Rate:</label>
-    {{infoTooltip title="How often do we need to poll this device?<br>1-3600 sec."}}
     </div>
-
+    <div class="span-14 last" >
+    <br>
     <div>
-    <div id="sliderHistoryRate" class="span-25"></div><br>
+    <div id="sliderHistoryRate" class="span-20"></div><br>
     <input type="text" name="historyRate" id="historyRate" value="{{data.inverter.historyRate}}" />
     
-    </div>
+    {{infoTooltip title="How often do we need to poll this device?<br>1-3600 sec."}}<br />
+    </div>  </div>
+    
     
     <hr>
     <label for="comLog">Log comm:</label>
@@ -135,32 +139,3 @@ Panels can be added after saving the new inverter
 {{/if_gt}}
       </fieldset>
     </form>
-
-
-<script language="text/javascript">
-
-    $( "#sliderLiveRate" ).slider({
-      min: 0,
-      max: 300,
-      step: 1,
-      slide: function( event, ui ) {
-        $( "#refreshTime" ).val( ui.value );
-      }
-    });
-    // setter
-
-	$( "#sliderLiveRate" ).slider( "option", "value", $( "#refreshTime" ).val() );
-	
-	$( "#refreshTime" ).val( $( "#sliderLiveRate" ).slider( "value" ));
-	
-    
-     $( "#sliderHistoryRate" ).slider({
-      min: 0,
-      max: 1800,
-      step: 1,
-      slide: function( event, ui ) {
-        $( "#historyRate" ).val(  ui.value );
-      }
-    });
-    $( "#historyRate" ).val( $( "#sliderHistoryRate" ).slider( "value" ) );
-</script>
