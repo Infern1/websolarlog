@@ -2,7 +2,7 @@
   <input type="hidden" name="s" value="save-email" />
   <fieldset>
     <legend>eMail</legend>
-    <label for="emailTo">to:</label><input type="text" name="emailTo" value="{{data.emailTo}}" /><br />
+    <label for="emailTo">to:</label><input type="text" name="emailTo" value="{{data.emailTo}}" />{{infoTooltip title="To send emails to multiple recipients, seperate addresses with ; <br /><br />example:<br />test@test.com;example@example.com"}}<br />
     <label for="emailFromName">from name:</label><input type="text" name="emailFromName" value="{{data.emailFromName}}" /><br />
     <label for="emailFrom">from address:</label><input type="text" name="emailFrom" value="{{data.emailFrom}}" /><br />
     <label for="emailAlarms">Receive alarms:</label>

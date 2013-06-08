@@ -219,6 +219,7 @@ class Common
      * @return string|boolean
      */
     public static function sendMail($subject, $body, $config) {
+    	
         $mail = new PHPMailer();
         // $mail->SMTPDebug = true; Use this for testing only
 
@@ -228,7 +229,14 @@ class Common
         $mail->Port = $config->smtpPort;
         $mail->FromName = $config->emailFromName;
         $mail->From = $config->emailFrom;
-        $mail->AddAddress($config->emailTo);
+        $emails = explode(';', $config->emailTo);
+        
+        foreach($emails as $email) {
+        
+        	$mail->AddAddress($email);
+        
+        }
+        
 
         if ($config->smtpUser && $config->smtpPassword) {
             $mail->SMTPAuth = true;
@@ -249,6 +257,7 @@ class Common
         } else {
             return true;
         }
+        
     }
 
 
