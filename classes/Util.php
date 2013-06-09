@@ -7,21 +7,26 @@ class Util {
 	 * @return boolean
 	 */
     public static function isSunDown($correction=300) {
-        $sun_info = date_sun_info(time(), session::getConfig()->latitude , session::getConfig()->longitude);
-        return time()<($sun_info['sunrise']+$correction) || time()>($sun_info['sunset']-$correction);
+    	if (Session::getConfig()->isValidCoords()) {
+	        $sun_info = date_sun_info(time(), Session::getConfig()->latitude , Session::getConfig()->longitude);
+	        return time()<($sun_info['sunrise']+$correction) || time()>($sun_info['sunset']-$correction);
+    	}
+		return false;    	
     }
     
     public static function getSunInfo($config,$startDate) {
-    	
-    	$startDate= strtotime($startDate);
-    	
-    	if($startDate == null){
-    		$startDate = strtotime(date("Ymd"));
-    	}else{
-    		$startDate = strtotime(date("Y",$startDate)."".date("m",$startDate)."".date("d",$startDate));
+    	if (Session::getConfig()->isValidCoords()) {
+	    	$startDate= strtotime($startDate);
+	    	
+	    	if($startDate == null){
+	    		$startDate = strtotime(date("Ymd"));
+	    	}else{
+	    		$startDate = strtotime(date("Y",$startDate)."".date("m",$startDate)."".date("d",$startDate));
+	    	}
+	
+	    	return date_sun_info($startDate, $config->latitude , $config->longitude);
     	}
-
-    	return date_sun_info($startDate, $config->latitude , $config->longitude);
+    	// Return nothing
     }
     
     public static function getDataLockFile() {

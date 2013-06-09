@@ -168,17 +168,25 @@ class Config
 	/**
 	 * @Deprecated
 	 */
-	function getInverterConfig($deviceId) {
+	public function getInverterConfig($deviceId) {
 		return $this->getDeviceConfig($deviceId);
 	}
 	
-	function getDeviceConfig($deviceId) {
+	public function getDeviceConfig($deviceId) {
 		foreach ($this->devices as $device) {
 			if ($device->id == $deviceId) {
 				return $device;
 			}
 		}
-	}	
+	}
+
+	public function isValidCoords() {
+		return ($this->isValidCoord($this->latitude) && $this->isValidCoord($this->longitude));
+	}
+		
+	private function isValidCoord($coord) {
+		return preg_match("/^[+-]?\d+\.\d+$/", $coord);
+	}
 }
 
 ?>

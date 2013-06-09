@@ -210,6 +210,10 @@ class PDODataAdapter {
 			}
 			//set timestamp to overrule standard timestamp
 			$timestamp = Util::getSunInfo($config,$startDate);
+			if (!is_array($timestamp)) {
+				// use dummy time
+				$timestamp = array("sunrise"=>strtotime("06:00"), "sunset"=>strtotime("21:00"));
+			}
 			$graph->timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
 
 			$graph->metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
