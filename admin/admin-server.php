@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require_once("classes/classloader.php");
+require_once("../classes/classloader.php");
 Session::initialize();
 
 $config = Session::getConfig();
