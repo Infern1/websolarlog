@@ -695,9 +695,9 @@ switch ($settingstype) {
 	case 'current-trunk-version':
 		$config = Session::getConfig();
 		$versions = Updater::getVersions(true);
-		foreach ($versions as $version){
-			if($version['name']=='trunk'){
-				$data['trunkNotifier'] = ($version['revision'] > $config->version_revision) ? true : false;
+		foreach ($versions as $key => $version){
+			if($key=='trunk'){
+				$data['trunkNotifier'] = ($version[0]['revision'] > $config->version_revision) ? true : false;
 			}
 		}
 		break;
