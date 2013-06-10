@@ -11,8 +11,9 @@ class PvOutputAddon {
 			if ($device->pvoutputEnabled) {
 				$date = date("Ymd", $live->time);
 				$time = date("H:i", $live->time);
+				$temp = $this->getWeatherData($live->time);
 				
-				$result = $this->sendStatus($device, $date, $time, $live->KWHT, $live->GP, $live->GV);
+				$result = $this->sendStatus($device, $date, $time, $live->KWHT, $live->GP, $live->GV, $temp);
 				if ($result['info']['http_code'] == "200") {
 					$live->pvoutput = 1;
 					R::store($live);
@@ -29,13 +30,31 @@ class PvOutputAddon {
 		}
 	}
 	
+	
+
 	private function getUnsendHistory() {
 		$date = mktime(0, 0, 0, date('m'), date('d')-13, date('Y'));
 		$beans =  R::find( 'history', 'time > :time and (pvoutput is null or pvoutput = "" or pvoutput = 0) order by time ASC', array( 'time' => $date));
 		return $beans;
 	}
 	
-	private function sendStatus(Device $device, $date, $time, $KWHDtot, $GPtot, $GV) {
+	
+	/**
+	 * 
+	 * @param str $time timestamp
+	 * @return Ambigous <>|string
+	 */
+	private function getWeatherData($time) {
+		$bean =  R::findOne( 'weather', ' time = :time ', array( 'time' => $time));
+		if($bean){
+			return $bean['temp'];
+		}else{
+			return "0";
+		}
+	}
+	
+	
+	private function sendStatus(Device $device, $date, $time, $KWHDtot, $GPtot, $GV, $temp) {
 		$headerInfo = array();
 		try {
 			$vars = array(
@@ -45,7 +64,7 @@ class PvOutputAddon {
 	                'v2' => $GPtot, // Power Generation (Watts)
 	                //'v3' => '10000', // Power Consumption (Watt hours)
 	                //'v4' => '2000', // Energy Consumption (Watts)
-	                //'v5' => '23.4', // Temperature (Celsius)
+	                'v5' => $temp, // Temperature (Celsius)
 	                'v6' => $GV, // Voltage (volts)
 					'c1' => '1', // Cumulative
 					
@@ -235,3 +254,4 @@ class PvOutputAddon {
 	}
 
 }
+?>
