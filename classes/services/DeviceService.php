@@ -73,13 +73,27 @@ class DeviceService {
 		}
 		return $objects;
 	}
-	
+
 	/**
 	 * Retrieves all active devices
 	 * @return Array of Device
 	 */
 	public function getActiveDevices() {
 		$bObjects = R::find( self::$tbl, ' active = 1 ');
+		$objects = array();
+		foreach ($bObjects as $bObject) {
+			$objects[] = $this->toObject($bObject);
+		}
+		return $objects;
+	}
+	
+
+	/**
+	 * Retrieves all active devices
+	 * @return Array of Device
+	 */
+	public function getAllDevices() {
+		$bObjects = R::find( self::$tbl);
 		$objects = array();
 		foreach ($bObjects as $bObject) {
 			$objects[] = $this->toObject($bObject);
