@@ -791,14 +791,16 @@ function init_general() {
 
 }
 
+
 function checkCheckboxesHiddenFields(){
 	
 	$('input:hidden').each(function () {
-		 	if($('input:checkbox[name='+$(this).attr('name')+']').attr('checked')){
+		 	if($('input:checkbox[name='+$(this).attr('name')+']:checked').length){
 		 		$('input:hidden[name='+$(this).attr('name')+']').remove();
 		 	}
 	});
 }
+
 
 function init_devices(selected_inverterId) {
     $.getJSON('admin-server.php?s=inverters', function(data) {
