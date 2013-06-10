@@ -27,6 +27,9 @@ session_start();
 <script type="text/javascript" src="js/admin.js"></script>
 <script type="text/javascript" src="../js/SlickGrid/slick.core.js"></script>
 <script type="text/javascript" src="../js/SlickGrid/slick.grid.js"></script>
+<script type="text/javascript" src="../js/SlickGrid/slick.formatters.js"></script>
+<script type="text/javascript" src="../js/SlickGrid/slick.editors.js"></script>
+<script type="text/javascript" src="../js/SlickGrid/slick.dataview.js"></script>
 </head>
 <body>
 	<!-- Wrapper -->

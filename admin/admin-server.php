@@ -707,14 +707,50 @@ switch ($settingstype) {
 	case 'dbm_getTables':
 		$data['tables'] = R::$writer->getTables();
 		break;
-		
 	case 'dbm_getTableData':
-		$dbname = Common::getValue("dbname");
-		$columns = R::$writer->getColumns($dbname);
-		$data = R::getAll("select * from " + $dbname); // TODO convert to named params
-		$data['dbname'] = $dbname;
-		$data['columns'] = $columns;
-		$data['data'] = $data;
+		$tableName = Common::getValue("tableName", null);
+		if ($tableName) {
+			$db_columns = array();
+			$columns = R::$writer->getColumns($tableName);
+			foreach ($columns as $columnname=>$columntype) {
+				// Which editor do we need?				
+				$editor = "Slick.Editors.Text";
+				if ($columntype == "INTEGER") {
+					$editor = "Slick.Editors.Integer"; // only full Integers (no decimals!)
+				}
+				
+				$db_column = array();
+				$db_column['id'] = $columnname;
+				$db_column['name'] = $columnname;
+				$db_column['field'] = $columnname;
+				$db_column['editor'] = $editor;
+				$db_column['toolTip'] = $columntype;
+				$db_columns[] = $db_column;
+			}
+			
+			$data['dbname'] = $tableName;
+			$data['columns'] = $db_columns;
+			$data['data'] = R::getAll( 'select * from ' . $tableName);
+		}
+		break;
+	case 'dbm_saveTableData':
+		$tableName=Common::getValue("tableName");
+		$id=Common::getValue('id');
+		
+		
+		$oBean = R::load($tableName, $id);
+		// TODO If not id quit
+		
+		// Use the values send and save
+		foreach($_POST as $key => $val) {
+			if ($key == "id") {
+				continue; // skip the id
+			}
+			$oBean[$key] = $val;
+		}
+		R::store($oBean);
+		$data['status'] = 'saved';
+		break;
 }
 
 if(Session::isLogin()){
