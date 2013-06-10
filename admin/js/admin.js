@@ -1,5 +1,3 @@
-var dbm_grid;
-
 // Don't know why but slickgrid seems to think we dont have drag support
 if (!jQuery.fn.drag) {
 	jQuery.fn.drag = function(){};
@@ -947,7 +945,7 @@ function load_device(inverterId) {
                 	$('#btnDeviceSubmit').attr("disabled", "disabled");
                 	checkCheckboxesHiddenFields();
                     //var data = $(this).parent().parent().serialize();
-                    var data = $('#deviceFormId').serialize();
+                	var data = $(this).closest('form').serialize();
                     $.post('admin-server.php', data, function(result){
                         init_devices(result.id);                        
                         $.pnotify({
@@ -1040,6 +1038,11 @@ function load_device(inverterId) {
             dataType : 'text'
         });        
     });
+}
+
+function init_grid() {
+    alert("grid");
+    
 }
 
 function init_email() {
@@ -1319,12 +1322,13 @@ function init_dataMaintenance() {
         		 var html = template({'data' : data });
         		 $('#updaterMonitor').html(html);
         		 $('#sidebar').html(html);
+        		 $('button').bind('click', function(){$('#page-title').text($(this).attr('id'));});
         		 $('#page-title').text("Use with care");
         		 
         		 
         		 // Get data and display in grid
         		 
-        		  
+        		  var grid;
         		  var columns = [
         		    {id: "title", name: "Title", field: "title"},
         		    {id: "duration", name: "Duration", field: "duration"},
@@ -1352,7 +1356,7 @@ function init_dataMaintenance() {
         		      };
         		    }
 
-        		    //grid = new Slick.Grid("#dbtable", data, columns, options);
+        		    grid = new Slick.Grid("#dbtable", data, columns, options);
         		  })
 	         },
 	         dataType : 'text'
