@@ -375,6 +375,7 @@ class PDODataAdapter {
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
 			
 			$config->devices = $this->deviceService->getActiveDevices();
+			$config->allDevices = $this->deviceService->getAllDevices();
 			$config->inverters = $config->devices; // @Deprecated
 			
 			$config->graphSeries = $this->getGraphSeries();
