@@ -91,7 +91,7 @@ class MailAddon {
 		$report = str_replace("{{inverter.name}}", $device->name, $report);
 		$report = str_replace("{{totalkwh}}", $production, $report);
 		$report = str_replace("{{maxwatt}}", $maxwatt, $report);
-		$report = str_replace("{{maxtime}}", date('h:n', $maxPowerToday->time), $report);
+		$report = str_replace("{{maxtime}}", date('H:i', $maxPowerToday->time), $report);
 		return $report;
 	}
 }
