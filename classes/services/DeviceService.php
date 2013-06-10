@@ -87,20 +87,6 @@ class DeviceService {
 		return $objects;
 	}
 	
-
-	/**
-	 * Retrieves all active devices
-	 * @return Array of Device
-	 */
-	public function getAllDevices() {
-		$bObjects = R::find( self::$tbl);
-		$objects = array();
-		foreach ($bObjects as $bObject) {
-			$objects[] = $this->toObject($bObject);
-		}
-		return $objects;
-	}
-	
 	/**
 	 * change the status off the device
 	 * @param int $status // 1=active, 0=sleep
