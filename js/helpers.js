@@ -162,7 +162,7 @@
 	
 	Handlebars.registerHelper("checkboxWithHidden", function(name, state, value) {
 		if(state==1 || state==true || state == 'checked'){
-			var checked = 'checked="checked"';
+			var checked = 'checked';
 		}else{
 			var checked = '';
 		}
