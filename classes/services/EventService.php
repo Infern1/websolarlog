@@ -98,6 +98,9 @@ class EventService {
 	
 	public function janitorDbCheck() {
 		HookHandler::getInstance()->fire("onDebug", "EventService janitor DB Check");
+		
+		// Delete Info events older the 1 week;
+		R::exec("DELETE FROM Event WHERE Type=\"Info\" AND time < :weekago", array("weekago", strtotime("-1 week")));
 	}
 }
 ?>
