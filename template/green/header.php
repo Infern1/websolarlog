@@ -20,7 +20,7 @@ $config = Session::getConfig();
 	<link rel="stylesheet" href="css/jquery.pnotify.default.css" type="text/css" />
 
 	<link rel="stylesheet" href="js/jqueryuicss/jquery-ui.min.css" type="text/css" />
-	<link rel="stylesheet" href="css/jquery.ui.overrule.css" type="text/css" />
+	<link rel="stylesheet" href="js/jqueryuicss/jquery.ui.overrule.css" type="text/css" />
 	<link rel="stylesheet" href="template/green/css/custom.css" type="text/css" media="all" />
 	
 	<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
