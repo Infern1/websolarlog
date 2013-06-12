@@ -1120,7 +1120,7 @@ function init_test() {
                 });
                 $('#content').html(html);
                 $('#btnCheckDb').bind('click', function() {
-                	$.getJSON('../api.php/Janitor/dbCheck');
+                	$.getJSON('../api.php/Janitor/DbCheck');
                 }); 
             },
             dataType : 'text'
