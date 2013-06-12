@@ -60,8 +60,8 @@
 		{{#each data.monthData.data.minMaxEnergy}}
 			<h3 style="margin:0px;">Inv. 1</h3>
 			<div class="innerAccordionPeriod">
-				<div class="column span-3" style="text-align:right;">&nbsp;</div>
-				<div class="column span-3" style="text-align:right;">{{../lang.watt}}</div>
+				<div class="column span-4" style="text-align:right;">&nbsp;</div>
+				<div class="column span-3" style="text-align:right;">{{../lang.kwh}}</div>
 				<div class="column span-9 last">{{../lang.date}}</div>
 				
 				<div class="column span-4">The Best:</div>
