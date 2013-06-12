@@ -202,7 +202,7 @@ switch ($settingstype) {
 		$data['timezones'] = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
 		break;
 	case 'inverters':
-		$data['inverters'] = $config->devices;
+		$data['inverters'] = $config->allDevices;
 		break;
 	case 'inverter':
 		$deviceId = $_GET['id'];
@@ -413,7 +413,7 @@ switch ($settingstype) {
 		$device->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
 		$device->refreshTime = Common::getValue("refreshTime");
 		$device->historyRate = Common::getValue("historyRate");
-		$device->active = 1;
+		$device->active = Common::getValue("deviceActive");
 		$data['id'] = $deviceService->save($device)->id;
 		break;
 	case 'save-panel':
@@ -790,6 +790,7 @@ function updaterJsonFile($state, $info, $percentage) {
  * @return array
  */
 function checkSQLite() {
+	$config = Session::getConfig();
 	$result = array();
 	$result['sqlite'] = false;
 	$result['available_drivers'] = PDO::getAvailableDrivers();
@@ -800,6 +801,8 @@ function checkSQLite() {
 		}
 	}
 	
+	$result['logs'][] = array('url' => 'http://'.$config->url.'log/debug.log','location' => Session::getBasePath().'log/debug.log', 'name' => 'Debug');
+	$result['logs'][] = array('url' => 'http://'.$config->url.'log/error.log','location' => Session::getBasePath().'log/error.log', 'name' => 'Error');
 	$PidFilename = Session::getBasePath().'/scripts/server.php.pid';
 	$result['currentTime']=time();
 	if (file_exists($PidFilename)) {
