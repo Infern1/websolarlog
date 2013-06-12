@@ -19,17 +19,18 @@ $config = Session::getConfig();
 	<link rel="stylesheet" href="css/jquery.pnotify.default.css" type="text/css" />
 	<link rel="stylesheet" href="css/jquery.pnotify.default.css" type="text/css" />
 
-	<link rel="stylesheet" href="js/jqueryuicss/jquery-ui-custom.css" type="text/css" />
+	<link rel="stylesheet" href="js/jqueryuicss/jquery-ui.min.css" type="text/css" />
+	<link rel="stylesheet" href="css/jquery.ui.overrule.css" type="text/css" />
 	<link rel="stylesheet" href="template/green/css/custom.css" type="text/css" media="all" />
 	
 	<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
-	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.10.2.min.js"></script>
-	<script type="text/javascript" src="js/jquery.pnotify.min.js"></script>
-	<script type="text/javascript" src="js/moment.min.js"></script>
-	<script type="text/javascript" src="js/handlebars.js"></script>
+	<script type="text/javascript" src="js/jquery-1.10.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.10.3.min.js"></script>
+	<script type="text/javascript" src="js/jquery.pnotify-1.2.0.min.js"></script>
+	<script type="text/javascript" src="js/moment-2.0.0.min.js"></script>
+	<script type="text/javascript" src="js/handlebars-1.0.0.js"></script>
 	<script type="text/javascript" src="js/helpers.js"></script>
-	<script type="text/javascript" src="js/jquery.jqplot.min.js"></script>
+	<script type="text/javascript" src="js/jquery.jqplot-1.0.8r1250.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.json2.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.barRenderer.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.canvasTextRenderer.min.js"></script>
