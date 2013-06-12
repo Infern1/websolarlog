@@ -30,6 +30,9 @@ function getClosest(theArray, goal){
 	return arrReturn;
 }
 
+function setGraphTitle(graphTitle, element){
+	$(graphTitle).insertAfter(element+' .jqplot-grid-canvas');
+}
 
 $(window).blur(function() {
 	// set time on blur
@@ -472,16 +475,12 @@ function populateTabs(tabIndex) {
 				$("#datepicker").datepicker("option", "dateFormat", "dd-mm-yy" );
 				
 				$("#datepicker").datepicker('setDate', new Date());
+
+				//fix for Graph Tooltip
+				$("#datepicker").css('z-index',0);
+				// fix for Graph Tooltip
 				
 				var invtnum = $('#pickerInv').val();
-
-				$(".mainTabContainer").hover(function() {
-					$("#pickerFilterDiv").hide();
-					$("#datepicker").datepicker("hide");
-				}, function() {
-					$("#pickerFilterDiv").show();
-				});
-
 
 				$('#next').unbind('click');
 				$('#previous').unbind('click');
@@ -948,6 +947,14 @@ var WSL = {
 							populateTabs();
 						}
 					});
+				    // fix the classes
+				    $( ".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *" )
+				      .removeClass( "ui-corner-all ui-corner-top" )
+				      .addClass( "ui-corner-bottom" );
+				 
+				    // move the nav to the bottom
+				    $( ".tabs-bottom .ui-tabs-nav" ).appendTo( ".tabs-bottom" );
+
 					success.call();
 				},
 				dataType : 'text',
@@ -960,13 +967,13 @@ var WSL = {
 		WSL.api.live(function(data) {
 			$.each(data, function(){
 				if (this.type == "production") {
-					console.log("production");
+					//console.log("production");
 				}
 				if (this.type == "metering") {
-					console.log("metering");
+					//console.log("metering");
 				}
 				if (this.type == "weather") {
-					console.log("weather");
+					//console.log("weather");
 					$('#weather').html(this.data.temp + ' &deg;C');
 				}
 			});
@@ -1102,66 +1109,67 @@ var WSL = {
 							$(".accordion").accordion({collapsible : true});
 							$(".accordion").accordion({collapsible : true});
 						});
-
-						$.ajax({
-							url : 'js/templates/pageDateFilter.hb',
-							beforeSend : function(xhr) {
-								if (getWindowsState() == false) {
-									ajaxAbort(xhr,'');
-								}
-							},
-							success : function(source) {
-								var template = Handlebars
-										.compile(source);
-								var html = template({
-									'data' : data,
-									'lang' : data.lang
-								});
-								$('#pageMonthDateFilter').html(html);
-								if (!pickerDate) {
-									$("#datePickerPeriod").datepicker({
-										dateFormat : 'mm-yy',
-										changeMonth : true,
-										changeYear : true,
-										onClose : function(dateText,inst) {
-											var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-											var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-											// new Date(year,month,day)  W3schools
-											$(this).val($.datepicker.formatDate('mm-yy',new Date(year,month,1)));
-											WSL.init_PageMonthValues("#columns","#periodList"); // Initial loadfast
-										}
+						$.getJSON('server.php?method=getPeriodFilter&type=all', function(PeriodFilter) {
+							$.ajax({
+								url : 'js/templates/pageDateFilter.hb',
+								beforeSend : function(xhr) {
+									if (getWindowsState() == false) {
+										ajaxAbort(xhr,'');
+									}
+								},
+								success : function(source) {
+									
+									var template = Handlebars.compile(source);
+									var html = template({
+										'data' : PeriodFilter,
+										'lang' : PeriodFilter.lang
 									});
-									// new Date(year, month, day) // W3schools
-									$("#datePickerPeriod").datepicker('setDate',new Date());
-								} else {
-									$("#datePickerPeriod").datepicker({
-										dateFormat : 'mm-yy',
-										changeMonth : true,
-										changeYear : true,
-										onClose : function(dateText,inst) {
-											var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-											var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();// new Date(year, month, day)// W3schools
-											$(this).val($.datepicker.formatDate('mm-yy',new Date(year,month,1)));
-											WSL.init_PageMonthValues("#columns","#periodList"); // Initial
-											// load fast
-										}
+									$('#pageMonthDateFilter').html(html);
+									if (!pickerDate) {
+										$("#datePickerPeriod").datepicker({
+											dateFormat : 'mm-yy',
+											changeMonth : true,
+											changeYear : true,
+											onClose : function(dateText,inst) {
+												var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+												var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+												// new Date(year,month,day)  W3schools
+												$(this).val($.datepicker.formatDate('mm-yy',new Date(year,month,1)));
+												WSL.init_PageMonthValues("#columns","#periodList"); // Initial loadfast
+											}
+										});
+										// new Date(year, month, day) // W3schools
+										$("#datePickerPeriod").datepicker('setDate',new Date());
+									} else {
+										$("#datePickerPeriod").datepicker({
+											dateFormat : 'mm-yy',
+											changeMonth : true,
+											changeYear : true,
+											onClose : function(dateText,inst) {
+												var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+												var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();// new Date(year, month, day)// W3schools
+												$(this).val($.datepicker.formatDate('mm-yy',new Date(year,month,1)));
+												WSL.init_PageMonthValues("#columns","#periodList"); // Initial
+												// load fast
+											}
+										});
+										pickerDate = pickerDate.split('-'); // 01-2012
+										// (month-year)
+										pickerDate[0] = pickerDate[0] - 1;
+										// new
+										// Date(year,
+										// month, day)
+										// // W3schools
+										$("#datePickerPeriod").datepicker('setDate',new Date(pickerDate[1],pickerDate[0],1));
+									}
+									$("#datePickerPeriod").focus(
+										function() {
+											$(".ui-datepicker-calendar").hide();
+											$("#ui-datepicker-div").position({my : "center top",at : "center bottom",of : $(this)});
 									});
-									pickerDate = pickerDate.split('-'); // 01-2012
-									// (month-year)
-									pickerDate[0] = pickerDate[0] - 1;
-									// new
-									// Date(year,
-									// month, day)
-									// // W3schools
-									$("#datePickerPeriod").datepicker('setDate',new Date(pickerDate[1],pickerDate[0],1));
-								}
-								$("#datePickerPeriod").focus(
-									function() {
-										$(".ui-datepicker-calendar").hide();
-										$("#ui-datepicker-div").position({my : "center top",at : "center bottom",of : $(this)});
-								});
-							},
-							dataType : 'text',
+								},
+								dataType : 'text',
+							});
 						});
 					},
 					dataType : 'text',
@@ -1209,6 +1217,7 @@ var WSL = {
 							collapsible : true
 						});
 					});
+					$.getJSON('server.php?method=getPeriodFilter&type=all', function(PeriodFilter) {
 					$.ajax({
 						url : 'js/templates/pageDateFilter.hb',
 						beforeSend : function(xhr) {
@@ -1219,8 +1228,8 @@ var WSL = {
 						success : function(source) {
 							var template = Handlebars.compile(source);
 							var html = template({
-								'data' : data,
-								'lang' : data.lang
+								'data' : PeriodFilter,
+								'lang' : PeriodFilter.lang
 							});
 							$('#pageYearDateFilter').html(html);
 							if (!pickerDate) {
@@ -1262,6 +1271,7 @@ var WSL = {
 							});
 						},
 						dataType : 'text',
+					});
 					});
 				},
 				dataType : 'text',
@@ -1442,7 +1452,7 @@ var WSL = {
 						$("#graph" + tab + "Content").empty();
 						$("#graph" + tab + "Content").html('<div id="loading">refreshing graph...</div>');
 					}
-	
+
 					handle = null;
 					delete handle;
 					
@@ -1482,18 +1492,23 @@ var WSL = {
 							i = i + 1;
 						});
 	
+					//
+					// make graph title 
+					//
+					var graphTitle = '<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+ 
+							result.lang.generated+ ': '+ 
+							result.dayData.graph.metaData.KWH.cumPower + ' '+ 
+							result.dayData.graph.metaData.KWH.KWHTUnit + ' ('+ 
+							result.dayData.graph.metaData.KWH.KWHKWP + ' kWh/kWp)&nbsp&nbsp;'+ 
+							result.lang.max + ': '+ 
+							totalPower + ' '+ 
+							result.dayData.graph.metaData.KWH.KWHTUnit + ' ('+ 
+							 totalKWhkWp +
+							' kWh/kWp)</div>';
+					
 					delete seriesData, graphOptions;
 					if (typeof (result.dayData.graph.metaData.KWH) !== "undefined") {
-						mytitle = $('<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+ 
-								result.lang.generated+ ': '+ 
-								result.dayData.graph.metaData.KWH.cumPower + ' '+ 
-								result.dayData.graph.metaData.KWH.KWHTUnit + ' ('+ 
-								result.dayData.graph.metaData.KWH.KWHKWP + ' kWh/kWp)&nbsp&nbsp;'+ 
-								result.lang.max + ': '+ 
-								totalPower + ' '+ 
-								result.dayData.graph.metaData.KWH.KWHTUnit + ' ('+ 
-								 totalKWhkWp +
-								' kWh/kWp)</div>').insertAfter('#graph'+ getDay+ ' .jqplot-grid-canvas');
+						setGraphTitle(graphTitle,'#graph'+ getDay);
 					}
 					fnFinish.call(this, handle);
 					ajaxReady();
@@ -1835,14 +1850,10 @@ var WSL = {
 						var invtnum = $('#pickerInv').val();
 						(queryDate != "undefined") ? date = queryDate : date = date;
 
-						$(".mainTabContainer").hover(
-							function() {
-								$("#pickerFilterDiv").hide();
-								$("#datepicker").datepicker("hide");
-							},
-							function() {
-								$("#pickerFilterDiv").show();
-							});
+						//fix for Graph Tooltip
+						$("#datepicker").css('z-index',0);
+						// fix for Graph Tooltip
+						
 						$('datePeriodFilter').on('change', '#pickerPeriod', function(){
 							WSL.createDetailsGraph(invtnum, divId,date);
 						});
@@ -2112,6 +2123,7 @@ var WSL = {
 								   modLegenda(handle);
 							   }
 							}
+							
 							$('#detailsSwitches').on('change', '[type=checkbox]', function() {
 									var id = $(this).attr("id");
 									if (id == 'every') {
