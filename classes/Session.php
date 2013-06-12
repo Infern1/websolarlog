@@ -43,6 +43,13 @@ class Session
     	self::setTimezone();
     	self::setLanguage(); 
     	self::registerHooks();
+    	
+    	/**
+    	 * Below we intialize some device to make sure the dbcheck hooks are registerd
+    	 * When hooks are loaded from the database, this should be removed and fixed		
+    	 */
+    	$deviceService = new DeviceService();
+    	$energyService = new EnergyService();
     }
     
     private static $config;
@@ -53,7 +60,6 @@ class Session
      * @return Config
      */
     public static function getConfig($reload=false,$usedb=true) {
-    	$deviceService = new DeviceService();
     	if (!$usedb) {
     		$config = new Config();
     		// Get dbase settings

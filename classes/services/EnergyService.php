@@ -2,6 +2,10 @@
 class EnergyService {
 	public static $tbl = "energy";
 	
+	function __construct() {
+		HookHandler::getInstance()->add("onJanitorDbCheck", "EnergyService.janitorDbCheck");
+	}
+	
 	/**
 	 * Save the object to the database
 	 * @param Energy $object
@@ -69,6 +73,13 @@ class EnergyService {
 		}
 	
 		return $this->toObject($bean);
+	}
+	
+	public function janitorDbCheck() {
+		HookHandler::getInstance()->fire("onDebug", "EnergyService janitor DB Check");
+		
+		// Delete empty rows
+		R::exec("DELETE FROM Energy WHERE kwh=0 AND kwht is null;");
 	}
 	
 	private function toBean($object, $bObject) {

@@ -60,6 +60,9 @@ QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(3
 // Janitor clean 1x per uur
 QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(3600), "JanitorRest.clean", "", true, 3600));
 
+$checkDataBaseStartTime = Util::createOnceADayJob("01", "00"); // Only run at night
+QueueServer::getInstance()->add(new QueueItem($checkDataBaseStartTime, "JanitorRest.DbCheck", "", true, 24 * 60 * 60));
+
 // Start the queue server
 QueueServer::getInstance()->start();
 
