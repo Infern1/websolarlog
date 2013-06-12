@@ -44,7 +44,11 @@ class EnergyService {
 		}
 	
 		$bean = $this->toBean($energy, $bean);
-		$energy->id = R::store($bean);
+		
+		// Only save record if there is something
+		if (!empty($energy->KWH) && !empty($energy->KWHT)) {
+			$energy->id = R::store($bean);
+		}
 		return $energy;
 	}
 	
