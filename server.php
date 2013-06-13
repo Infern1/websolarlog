@@ -269,7 +269,7 @@ try {
 	
 			foreach ($config->devices as $device){
 				if($device->graphOnFrontend){
-					$data['inverters'][] = array('id'=>$device->id,'name'=>$device->name);
+					$data['devices'][] = array('id'=>$device->id,'name'=>$device->name);
 				}
 			}
 			$lang = array();
@@ -594,9 +594,15 @@ try {
 	}
 	echo json_encode($data);
 } catch (Exception $e) {
+	// get ErrorMessage
+	$errorMessage = $e->getMessage();
+	// log ErrorMessage
+	$hookGraph = HookHandler::getInstance()->fire("onDebug",$errorMessage);
+	
+	// set JSON responses
 	$data = array();
 	$data["success"] = false;
-	$data["message"] = $e->getMessage();
+	$data["message"] = $errorMessage();
 	echo json_encode($data);
 }
 exit();
