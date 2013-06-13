@@ -154,6 +154,7 @@ var Month=new Array('jan','feb','mar','apr','may','jun','jul','aug','sep','oct',
  *  Init PowerPreset value's
  */
 function init_KWHcalc(inv_data){
+	if(typeof (inv_data.inverter)=='object'){
     var data = [];
     data['inverterId'] = $('input[name="id"]').val();
     data['month_perc'] = [];
@@ -229,6 +230,7 @@ function init_KWHcalc(inv_data){
             
         }
     });
+	}
 }
 
 /**
