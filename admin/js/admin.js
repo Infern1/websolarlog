@@ -397,30 +397,52 @@ function dropboxSync(notice){
 	    });
 	    $.getJSON('admin-server.php?s=dropboxSyncFiles', function(data) {
 	        $.ajax({
-	        	 async: true,
+	        	async: true,
 	        	url : 'js/templates/dropboxFiles.hb',
 	            success : function(source) { 
 	                var template = Handlebars.compile(source);
 	                var html = template({
 	                    'data' : data
 	                });
-	                $('#content').html(html);
-		            $('.deleteFile').bind('click', function(){deleteFiles(this);});
-	                $('#makeBackup').bind('click', function(){makeBackup();});
-	                $('#dropboxSync').bind('click', function(){dropboxSync();});
-	                
-	                
-	                $('#requestActive').val(0);
-		   	       
-		   	       var SyncNotice = $.pnotify({
-		   	 	        title: 'Dropbox',
-		   	 	        text: 'Sync ready.',
-		   	 	        nonblock: true,
-		   	 	        hide: true,
-		   	 	        closer: true,
-		   	 	        sticker: false,
-		   	 	        type:'success'
-		   	 	    });
+	                if(data.success){
+		                $('#content').html(html);
+			            $('.deleteFile').bind('click', function(){deleteFiles(this);});
+		                $('#makeBackup').bind('click', function(){makeBackup();});
+		                $('#dropboxSync').bind('click', function(){dropboxSync();});
+		                
+		                
+		                $('#requestActive').val(0);
+			   	       
+		                var SyncNotice = $.pnotify({
+		                	title: 'Dropbox',
+			   	 	        text: 'Sync ready.',
+			   	 	        nonblock: true,
+			   	 	        hide: true,
+			   	 	        closer: true,
+			   	 	        sticker: false,
+			   	 	        type:'success'
+		                });
+	                }else{
+	                	$.pnotify({
+			   	 	        title: 'Dropbox',
+			   	 	        text: 'Something went wrong:<br>'+data.message+'<br><br>We deleted this token, so you need to re-autorize with Dropbox.',
+			   	 	        nonblock: true,
+			   	 	        hide: true,
+			   	 	        closer: true,
+			   	 	        sticker: false,
+			   	 	        type:'error'
+	                	});
+	                	$('#requestActive').val(0);
+	                	$.ajax({
+	                		type: "POST",
+	                		url: 'admin-server.php?s=detachDropbox',
+	                		data: data,
+	                		success: function(data){
+	                			init_backup();
+	                		},
+	                		dataType: 'json'
+	                	});
+	                }
 	            },
 	            dataType : 'text'
 	        }).done(function() { SyncNotice.pnotify_remove(); });
@@ -469,7 +491,7 @@ function makeBackup(){
 			   	 	        sticker: false,
 			   	 	        type:'success'
 			   	 	    });
-	   	               $('#requestActive').val(0)
+	   	               $('#requestActive').val(0);
 	               },
 	               dataType : 'text'
 	           });
@@ -502,8 +524,18 @@ function deleteFiles(vars){
             closer: false,
             sticker: false
         });
-        $.post('admin-server.php?s=dropboxDeleteFile',{path: fullPath} , function(){
-            if (SyncNotice.pnotify_remove) SyncNotice.pnotify_remove();
+        $.getJSON('admin-server.php?s=dropboxDeleteFile',{path: fullPath} , function(data,SyncNotice){
+            if (SyncNotice.pnotify_remove){ 
+            	SyncNotice.pnotify_remove();
+            	}
+            var SyncNotice = $.pnotify({
+                title: 'Dropbox',
+                text: data.message,
+                nonblock: true,
+                hide: false,
+                closer: false,
+                sticker: false
+            });
         });
 }
 

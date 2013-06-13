@@ -513,7 +513,6 @@ switch ($settingstype) {
 		$hybridFacebook = new FacebookAddon();
 		$hybridFacebook->sendFacebook();
 		break;
-
 	case 'attachDropbox':
 		// getting back from Dropbox with the UID and oauth_token as $_get values
 		if((Common::getValue('uid')) && (Common::getValue('oauth_token'))){
@@ -529,22 +528,23 @@ switch ($settingstype) {
 		}
 		break;
 	case 'dropboxMakeBackup':
+		$data = array();
+		$data['files'] = array();
 		$dropbox = new Dropbox;
-		$config = Session::getConfig();
-
+		
 		/* not needed till we can switch DB-engines
+		$config = Session::getConfig();
 		$dbName = explode('/',$config->dbHost);
 		$dbName = explode('.',$dbName[count($dbName)-1]);
 		$backupFileName = $dbName[0].'_'.date('Ymd').''.date('His').'.backup';
 		*/
 		
-		$dbName = 'wsl';
+		$dbName = 'wsl_fake';
 		$backupFileName = $dbName.'_'.date('Ymd').''.date('His').'.backup';
 		
-		$dbPath = '../database/wsl.sdb';
+		$dbPath = '../database/'.$dbName.'.sdb';
 		$data['dropboxResponse']= $dropbox->dropbox->putFile($dbPath, $backupFileName);
-		//var_dump($data['dropboxResponse']);
-		$path = $dropbox->dropbox->media($data['dropboxResponse']['body']->path);
+		$path = $dropbox->dropbox->media(str_replace("/","",$data['dropboxResponse']['body']->path));
 		$data['files'][0]->fullPath = $path['body']->url;
 			
 		//$file->client_mtime = "Tue, 04 Dec 2012 13:00:59 +0000";
@@ -555,11 +555,9 @@ switch ($settingstype) {
 		//make timestamp and generate new timesting
 		$dateTime = strtotime($client_mtime);
 		// replace client_mtime with new timestring
-		$data['files'][0]->client_mtime = $dateTime;
-		$data['files'][0]->path = $data['dropboxResponse']['body']->path;
-		$data['files'][0]->bytes = $data['dropboxResponse']['body']->bytes;
+		$data['files'] = array('client_mtime' => $dateTime,'fullPath' => $data['files'][0]->fullPath,'path' => $data['dropboxResponse']['body']->path, 'bytes' => $data['dropboxResponse']['body']->bytes);
 
-		$adapter->dropboxSaveFile($data['files'][0]);
+		$adapter->dropboxSaveFile($data['files']);
 			
 		break;
 	case 'detachDropbox':
@@ -575,56 +573,67 @@ switch ($settingstype) {
 		}
 		break;
 	case 'dropboxSyncFiles':
-		// get Dropbox things
-		$dropbox = new Dropbox;
+		try {
+	
+			// get Dropbox things
+			$dropbox = new Dropbox;
 			
-		//get all the dropbox files
-		$meta = $dropbox->dropbox->metaData();
-		//var_dump($meta);
-		$data['success'] = true;
-		//we only need the file content
-		$data['files'] = $meta['body']->contents;
-		// reverse the order (last added file to 0-key of array)
-		$data['files'] = array_reverse($data['files']);
+			//get all the dropbox files
+			$meta = $dropbox->dropbox->metaData();
 
-		//init
-		$totalBackupSize = 0;
-		$i=0;
-
-		// walkthrough the dropbox files
-		foreach ($data['files'] as $file) {
-
-			// set fullPath to the files array
-			$data['files'][$i]->fullPath = $path['body']->url;
-
-			//$file->client_mtime = "Tue, 04 Dec 2012 13:00:59 +0000";
-			// explode client_mtime
-			$exDateTime = explode(' ',$file->client_mtime);
-			// re-org timeformat
-			$client_mtime = $exDateTime[2].' '.$exDateTime[1].' '.$exDateTime[3].' '.$exDateTime[4];
-			//make timestamp and generate new timesting
-			$dateTime = strtotime($client_mtime);
-			// replace client_mtime with new timestring
-			$data['files'][$i]->client_mtime = $dateTime;
-			//add a files id to the array
-			$data['files'][$i]->id = $i;
-			//add a file number to the array
-			$data['files'][$i]->num = $i+1;
-			//lets see if we need to save the file to the database.
-			$adapter->dropboxSaveFile($data['files'][$i]);
-			// sum the filesizes for some nice figures
-			$totalBackupSize += $file->bytes;
-			$i++;
+			$data['success'] = true;
+			//we only need the file content
+			$data['files'] = $meta['body']->contents;
+			// reverse the order (last added file to 0-key of array)
+			$data['files'] = array_reverse($data['files']);
+	
+			//init
+			$totalBackupSize = 0;
+			$i=0;
+	
+			// walkthrough the dropbox files
+			foreach ($data['files'] as $file) {
+				echo str_replace("/","",$file->path);
+				$fileMeta = $dropbox->dropbox->metaData(str_replace("/","",$file->path));
+				var_dump($fileMeta);
+				// set fullPath to the files array
+	
+				//$file->client_mtime = "Tue, 04 Dec 2012 13:00:59 +0000";
+				// explode client_mtime
+				$exDateTime = explode(' ',$file->client_mtime);
+				// re-org timeformat
+				$client_mtime = $exDateTime[2].' '.$exDateTime[1].' '.$exDateTime[3].' '.$exDateTime[4];
+				//make timestamp and generate new timesting
+				$dateTime = strtotime($client_mtime);
+				
+				$dropbboxFile = array(
+						'client_mtime' => $dateTime,
+						'path' => $file->path,
+						'id' => $i,
+						'num' => $i+1,						
+				);
+				var_dump($dropbboxFile);
+				//lets see if we need to save the file to the database.
+				$adapter->dropboxSaveFile($dropbboxFile);
+				// sum the filesizes for some nice figures
+				$totalBackupSize += $file->bytes;
+				$data['files'][] = $dropbboxFile;
+				$i++;
+			}
+			$data['totalBackups'] = $i+1;
+			$data['totalBackupSize'] = number_format($totalBackupSize/1000000,2,'.',''); // Bytes -> MegaByte
+			$data['avarageBackupSize'] = number_format((totalBackupSize/($i+1))/1000000,2,'.',''); // Bytes -> MegaByte
+				
+			// sync dropbox-files with database records (remove file from DB if the are not in dropbox-file-array)
+			$adapter->dropboxCheckActive($data['files']);
+			$data['files'] = null;
+			$data =$adapter->dropboxGetFilesFromDB();
+			$data['success'] = true;
+		} catch (Exception $e) {
+			//echo $e->getMessage();
+			$data['message'] = $e->getMessage();
+			$data['success'] = false;
 		}
-		$data['totalBackups'] = $i+1;
-		$data['totalBackupSize'] = number_format($totalBackupSize/1000000,2,'.',''); // Bytes -> MegaByte
-		$data['avarageBackupSize'] = number_format((totalBackupSize/($i+1))/1000000,2,'.',''); // Bytes -> MegaByte
-			
-		// sync dropbox-files with database records (remove file from DB if the are not in dropbox-file-array)
-		$adapter->dropboxCheckActive($data['files']);
-		$data['files'] = null;
-		$data =$adapter->dropboxGetFilesFromDB();
-		$data['success'] = true;
 		break;
 	case 'dropboxGetFiles':
 		$data =$adapter->dropboxGetFilesFromDB();
@@ -641,11 +650,12 @@ switch ($settingstype) {
 			$delete = $dropbox->dropbox->delete($path);
 			if ($delete){
 				$adapter->dropboxDropFile($path);
-				$data['message'] = "File '$path' is delete from your dropbox.";
+				$data['message'] = "File '$path' deleted from your dropbox and WebSolarLog.";
 				$data['success'] = true;
 			}
 		} catch (Exception $e) {
-			$data['message'] = "File doesn't exists in your dropbox.";
+			$adapter->dropboxDropFile($path);
+			$data['message'] = "File '$path' doesn't exist in your dropbox.<br>So we only deleted it from WebSolarLog";
 			$data['success'] = false;
 		}
 		break;

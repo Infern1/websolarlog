@@ -1930,6 +1930,17 @@ class PDODataAdapter {
 		}
 	}
 	
+
+	public function dropboxDisconnect($id){
+		try{
+			$bean =  R::findOne('dropboxOauthTokens',' userid = :userid ',array(':userid'=>1));
+			R::trash( $bean );
+			return true;
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
 	
 	public function dropboxTokenExists(){
 		$beans =  R::findAndExport('dropboxOauthTokens',' id >0');
@@ -1939,15 +1950,14 @@ class PDODataAdapter {
 	public function dropboxSaveFile($file){
 
 
-		$bean = R::findOne('dropboxFilenameCaching',' path = :path ',array(':path'=>$file->path));
+		$bean = R::findOne('dropboxFilenameCaching',' path = :path ',array(':path'=>$file['path']));
 
 		if(!$bean){
 			$bean = R::dispense('dropboxFilenameCaching');
-
-			$bean->path = $file->path;
-			$bean->fullPath = $file->fullPath;
-			$bean->client_mtime = $file->client_mtime;
-			$bean->bytes = $file->bytes;
+			$bean->path = $file['path'];
+			$bean->fullPath = $file['fullPath'];
+			$bean->client_mtime = $file['client_mtime'];
+			$bean->bytes = $file['bytes'];
 			$bean->active = 1;
 			//Store the bean
 
@@ -1956,9 +1966,7 @@ class PDODataAdapter {
 
 	}
 	public function dropboxDropFile($path){
-
-		return R::exec( 'delete from dropboxFilenameCaching where path=:path',array(':path'=>$path));
-
+		return R::exec( 'delete from dropboxFilenameCaching where path like \'%:path%\'',array(':path'=>$path));
 	}
 
 
