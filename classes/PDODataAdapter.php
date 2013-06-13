@@ -1948,8 +1948,7 @@ class PDODataAdapter {
 	}
 
 	public function dropboxSaveFile($file){
-
-
+		//echo $file['path'];
 		$bean = R::findOne('dropboxFilenameCaching',' path = :path ',array(':path'=>$file['path']));
 
 		if(!$bean){
@@ -1966,7 +1965,15 @@ class PDODataAdapter {
 
 	}
 	public function dropboxDropFile($path){
-		return R::exec( 'delete from dropboxFilenameCaching where path like \'%:path%\'',array(':path'=>$path));
+		//echo $path;
+		//echo "xx".$path."x";
+		//echo  R::exec( 'delete from  where  like %'.$path.'%');
+		
+		
+		$bean = R::findOne('dropboxFilenameCaching', ' path = ? ', array($path));
+		R::trash($bean); // Use trash to delete the student
+		
+		
 	}
 
 
@@ -1987,7 +1994,7 @@ class PDODataAdapter {
 			foreach ($beans as $bean) {
 				$datas['client_mtime'] = date("D d-m-Y H:i",$bean['client_mtime']);
 				$datas['fullPath'] = $bean['fullPath'];
-				$datas['path'] = substr($bean['path'], 1, strlen($bean['path']));
+				$datas['path'] = $bean['path'];
 				$datas['id'] = $i;
 				$datas['num'] = $i+1;
 				$datas['size'] = number_format($bean['bytes']/1000000,2,'.',''); // Bytes -> MegaByte

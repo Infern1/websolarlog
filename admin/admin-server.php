@@ -543,9 +543,11 @@ switch ($settingstype) {
 		$backupFileName = $dbName.'_'.date('Ymd').''.date('His').'.backup';
 		
 		$dbPath = '../database/'.$dbName.'.sdb';
-		$data['dropboxResponse']= $dropbox->dropbox->putFile($dbPath, $backupFileName);
-		$path = $dropbox->dropbox->media(str_replace("/","",$data['dropboxResponse']['body']->path));
-		$data['files'][0]->fullPath = $path['body']->url;
+		
+		$data['dropboxResponse'] = $dropbox->dropbox->putFile($dbPath, $backupFileName);
+
+		$path = $dropbox->dropbox->media($data['dropboxResponse']['body']->path);
+		//$data['files'][0]->fullPath = $path['body']->url;
 			
 		//$file->client_mtime = "Tue, 04 Dec 2012 13:00:59 +0000";
 		// explode client_mtime
@@ -555,7 +557,7 @@ switch ($settingstype) {
 		//make timestamp and generate new timesting
 		$dateTime = strtotime($client_mtime);
 		// replace client_mtime with new timestring
-		$data['files'] = array('client_mtime' => $dateTime,'fullPath' => $data['files'][0]->fullPath,'path' => $data['dropboxResponse']['body']->path, 'bytes' => $data['dropboxResponse']['body']->bytes);
+		$data['files'] = array('client_mtime' => $dateTime,'fullPath' => $path['body']->url,'path' => str_replace("/","",$data['dropboxResponse']['body']->path), 'bytes' => $data['dropboxResponse']['body']->bytes);
 
 		$adapter->dropboxSaveFile($data['files']);
 			
@@ -593,9 +595,9 @@ switch ($settingstype) {
 	
 			// walkthrough the dropbox files
 			foreach ($data['files'] as $file) {
-				echo str_replace("/","",$file->path);
-				$fileMeta = $dropbox->dropbox->metaData(str_replace("/","",$file->path));
-				var_dump($fileMeta);
+				//echo str_replace("/","",$file->path);
+				$fileMedia = $dropbox->dropbox->media($file->path);
+				
 				// set fullPath to the files array
 	
 				//$file->client_mtime = "Tue, 04 Dec 2012 13:00:59 +0000";
@@ -609,10 +611,11 @@ switch ($settingstype) {
 				$dropbboxFile = array(
 						'client_mtime' => $dateTime,
 						'path' => $file->path,
+						'fullPath' => $fileMedia['body']->url,
 						'id' => $i,
 						'num' => $i+1,						
 				);
-				var_dump($dropbboxFile);
+				//var_dump($dropbboxFile);
 				//lets see if we need to save the file to the database.
 				$adapter->dropboxSaveFile($dropbboxFile);
 				// sum the filesizes for some nice figures
@@ -644,11 +647,12 @@ switch ($settingstype) {
 	case 'dropboxDeleteFile':
 		$dropbox = new Dropbox;
 		$path = Common::getValue("path");
-			
+		//echo $path;
 		// Output the result
 		try {
 			$delete = $dropbox->dropbox->delete($path);
 			if ($delete){
+				
 				$adapter->dropboxDropFile($path);
 				$data['message'] = "File '$path' deleted from your dropbox and WebSolarLog.";
 				$data['success'] = true;
