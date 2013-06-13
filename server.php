@@ -597,12 +597,12 @@ try {
 	// get ErrorMessage
 	$errorMessage = $e->getMessage();
 	// log ErrorMessage
-	$hookGraph = HookHandler::getInstance()->fire("onDebug",$errorMessage);
+	HookHandler::getInstance()->fire("onDebug",$errorMessage);
 	
 	// set JSON responses
 	$data = array();
 	$data["success"] = false;
-	$data["message"] = $errorMessage();
+	$data["message"] = $errorMessage;
 	echo json_encode($data);
 }
 exit();
