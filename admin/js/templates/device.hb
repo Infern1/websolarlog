@@ -5,12 +5,16 @@
     <legend>Device: {{data.inverter.name}}</legend>
     Name and description of device:<br>
     <label for="name">name:</label><input type="text" name="name" value="{{data.inverter.name}}" />   <br />   
-    <label for="description">description:</label><input type="text" name="description" value="{{data.inverter.description}}" />   <br />       
-    <label for="liveOnFrontend">Show livedata@frontend:</label>
+    <label for="description">description:</label><input type="text" name="description" value="{{data.inverter.description}}" />   <br />
+    <label for="active">Active:</label>
+    {{checkboxWithHidden 'deviceActive' data.inverter.active}}
+    {{infoTooltip title="If a device is not active, we will leave the device alone and not try to get data from it.<br> You can use this when you get a new device(inverter) and want to keep the data from the old device(inverter).<br>You could make the old device(inverter) in-active and create a new device(inverter).<br>We won't request the old inverter and the old data is still on the frontend."}}<br />
+    <hr>      
+    <!--<label for="liveOnFrontend">Show livedata@frontend:</label>
     {{checkboxWithHidden 'liveOnFrontend' data.inverter.liveOnFrontend}}<br />   
     <label for="graphOnFrontend">Show history@graph:</label>
     {{checkboxWithHidden 'graphOnFrontend' data.inverter.graphOnFrontend}}<br />   
-    <hr>
+    <hr>-->
     kWh the inverter already generated without WSL and the installation date of the inverter;<br>
     <label for="initialkwh">initial kWh:</label><input type="text" name="initialkwh" value="{{data.inverter.initialkwh}}" />{{infoTooltip title="kWh"}}<br />       
     <label for="producesSince">produces since:</label><input type="text" name="producesSince" value="{{data.inverter.producesSince}}" />{{infoTooltip title="(31-12-2000)"}}<br />   
@@ -51,8 +55,7 @@
     <div>
     <div id="sliderLiveRate" class="span-20"></div><br>
     <input type="text" name="refreshTime" id="refreshTime" value="{{data.inverter.refreshTime}}" />
-    
-    {{infoTooltip title="How often do we need to poll this device?<br>1-3600 sec."}}<br />
+    {{infoTooltip title="How often should this device be queried for live data?<br>1 - 60 seconds"}}<br />
     </div>  </div>
     
         <div class="span-8 first">
@@ -64,11 +67,8 @@
     <div>
     <div id="sliderHistoryRate" class="span-20"></div><br>
     <input type="text" name="historyRate" id="historyRate" value="{{data.inverter.historyRate}}" />
-    
-    {{infoTooltip title="How often do we need to poll this device?<br>1-3600 sec."}}<br />
-    </div>  </div>
-    
-    
+    {{infoTooltip title="How often should this device create a history data(graph) point?<br>1 - 3600 seconds"}}<br />
+    </div></div>    
     <hr>
     <label for="comLog">Log comm:</label>
     {{checkboxWithHidden 'comLog' data.inverter.comLog}}<br />
@@ -88,13 +88,13 @@
     {{else}}
     <a href="#social">This device is no member of the WSL team</a>{{infoTooltip title=":( This device is no member of our great team.... <br>Go to the Social tab and add this device to the team :) "}}
     {{/if}}
-    
+
     <br /><br />
         <div class="span-20 first">
         	<button type="button" id="btnDeviceSubmit">Save</button>
         </div>
         <div class="span-6 last">
-        	{{checkboxWithHidden 'removeDevice' '' data.inverter.id}}&nbsp;remove this device<br />
+        	{{checkboxWithHidden 'removeDevice' '' inverterId}}&nbsp;remove this device<br />
         </div>
     
   </fieldset>

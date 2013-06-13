@@ -939,6 +939,7 @@ function load_device(inverterId) {
             success : function(source) {
                 var template = Handlebars.compile(source);
                 var html = template({
+                	'inverterId' : inverterId,
                     'data' : inv_data
                 });
                 $('#content').html(html);
