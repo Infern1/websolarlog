@@ -154,82 +154,82 @@ var Month=new Array('jan','feb','mar','apr','may','jun','jul','aug','sep','oct',
  *  Init PowerPreset value's
  */
 function init_KWHcalc(inv_data){
-	if(typeof (inv_data.inverter)=='object'){
-    var data = [];
-    data['inverterId'] = $('input[name="id"]').val();
-    data['month_perc'] = [];
-    var newPerc = [];
-    
-    // Merge month with percentages from live stream if not null or empty
-    $.each(Month, function(){
-        var perc = inv_data.inverter["expected"+this.toUpperCase()];
-        var month_perc = [];
-        month_perc['month'] = this;
-        month_perc['perc'] = perc;
-        if (typeof (perc) != 'undefined' && perc != null && perc != "" ) {
-            newPerc.push(perc);            
-        }
-        data['month_perc'].push(month_perc);
-    });
-
-    // Replace Perc if we have received an valid value for all months!
-    if (newPerc.length==12) {
-        Perc = newPerc;        
-    } else {
-        Perc = originalPerc;
-    }
-    
-    $.ajax({
-        url : 'js/templates/expectation.hb',
-        dataType : 'text',
-        success : function(source) {
-            var template = Handlebars.compile(source);
-            var html = template({
-                'data' : data
-            });
-
-            $('#content').append(html);
-            $("input[id$='KWH']").bind("keyup", function(){
-                object = this;
-                KWHcalc(object,Perc,Month);
-            });
-            $("#totalKWHProd").bind("keyup", function(){
-                object = this;
-                KWHcalc(object,Perc,Month);
-                $('input[name="expectedkwh"]').val($("#totalKWHProd").val());
-            });
-            
-            $("#totalKWHProd").bind("keyup", function(){
-                object = this;
-                KWHcalc(object,Perc,Month);
-                $('input[name="expectedkwh"]').val($("#totalKWHProd").val());
-            });
-            $('input[name="expectedkwh"]').bind("keyup", function(){
-            	$("#totalKWHProd").val( $('input[name="expectedkwh"]').val());
-            }),
-            
-            $("#totalKWHProd").val($('input[name="expectedkwh"]').val()).trigger("keyup");
-            
-            $('#btnExpectationSubmit').bind('click', function(){
-                var inverterId = $('input[name="id"]').val();
-                checkCheckboxesHiddenFields();
-                var data = $('#expectationFormId').serialize();
-                $.post('admin-server.php', data, function(){
-                    init_devices(inverterId);                        
-                    $.pnotify({
-                        title: 'Saved',
-                        text: 'You\'re changes have been saved.',
-                    });
-                });
-            });
-            
-            $('#btnExpectationDefault').bind('click', function(){
-                Perc = originalPerc;
-                $("#totalKWHProd").val($('input[name="expectedkwh"]').val()).trigger("keyup");
-            });
-            
-        }
-    });
+	if(inv_data.inverter!=null){
+	    var data = [];
+	    data['inverterId'] = $('input[name="id"]').val();
+	    data['month_perc'] = [];
+	    var newPerc = [];
+	    
+	    // Merge month with percentages from live stream if not null or empty
+	    $.each(Month, function(){
+	        var perc = inv_data.inverter["expected"+this.toUpperCase()];
+	        var month_perc = [];
+	        month_perc['month'] = this;
+	        month_perc['perc'] = perc;
+	        if (typeof (perc) != 'undefined' && perc != null && perc != "" ) {
+	            newPerc.push(perc);            
+	        }
+	        data['month_perc'].push(month_perc);
+	    });
+	
+	    // Replace Perc if we have received an valid value for all months!
+	    if (newPerc.length==12) {
+	        Perc = newPerc;        
+	    } else {
+	        Perc = originalPerc;
+	    }
+	    
+	    $.ajax({
+	        url : 'js/templates/expectation.hb',
+	        dataType : 'text',
+	        success : function(source) {
+	            var template = Handlebars.compile(source);
+	            var html = template({
+	                'data' : data
+	            });
+	
+	            $('#content').append(html);
+	            $("input[id$='KWH']").bind("keyup", function(){
+	                object = this;
+	                KWHcalc(object,Perc,Month);
+	            });
+	            $("#totalKWHProd").bind("keyup", function(){
+	                object = this;
+	                KWHcalc(object,Perc,Month);
+	                $('input[name="expectedkwh"]').val($("#totalKWHProd").val());
+	            });
+	            
+	            $("#totalKWHProd").bind("keyup", function(){
+	                object = this;
+	                KWHcalc(object,Perc,Month);
+	                $('input[name="expectedkwh"]').val($("#totalKWHProd").val());
+	            });
+	            $('input[name="expectedkwh"]').bind("keyup", function(){
+	            	$("#totalKWHProd").val( $('input[name="expectedkwh"]').val());
+	            }),
+	            
+	            $("#totalKWHProd").val($('input[name="expectedkwh"]').val()).trigger("keyup");
+	            
+	            $('#btnExpectationSubmit').bind('click', function(){
+	                var inverterId = $('input[name="id"]').val();
+	                checkCheckboxesHiddenFields();
+	                var data = $('#expectationFormId').serialize();
+	                $.post('admin-server.php', data, function(){
+	                    init_devices(inverterId);                        
+	                    $.pnotify({
+	                        title: 'Saved',
+	                        text: 'You\'re changes have been saved.',
+	                    });
+	                });
+	            });
+	            
+	            $('#btnExpectationDefault').bind('click', function(){
+	                Perc = originalPerc;
+	                $("#totalKWHProd").val($('input[name="expectedkwh"]').val()).trigger("keyup");
+	            });
+	            
+	        }
+	    });
 	}
 }
 
