@@ -563,8 +563,7 @@ switch ($settingstype) {
 			
 		break;
 	case 'detachDropbox':
-		$dropbox = new Dropbox;
-		$dropbox->storage->delete();
+		$data = $adapter->dropboxDisconnect();
 		break;
 	case 'dropbox':
 		if($adapter->sqlEngine=='sqlite'){
