@@ -539,7 +539,7 @@ switch ($settingstype) {
 		$backupFileName = $dbName[0].'_'.date('Ymd').''.date('His').'.backup';
 		*/
 		
-		$dbName = 'wsl_fake';
+		$dbName = 'wsl';
 		$backupFileName = $dbName.'_'.date('Ymd').''.date('His').'.backup';
 		
 		$dbPath = '../database/'.$dbName.'.sdb';

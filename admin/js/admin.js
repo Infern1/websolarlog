@@ -363,7 +363,9 @@ function init_backup() {
 
     		            $('.deleteFile').bind('click', function(){deleteFiles(this);});
 	                    $('#makeBackup').bind('click', function(){makeBackup();});
-	                    $('#dropboxSync').bind('click', function(){dropboxSync();}); 
+	                    $('#dropboxSync').bind('click', function(){dropboxSync();});
+	                    $('#detachDropbox').bind('click', function(){detachDropbox();});
+	                    
     	            },
     	            dataType : 'text'
     	        });
@@ -382,6 +384,12 @@ function init_backup() {
             });
     	}
     });
+}
+
+function detachDropbox(){
+	$.getJSON('admin-server.php?s=detachDropbox', function(data) {
+		
+	});
 }
 
 function dropboxSync(notice){

@@ -43,6 +43,7 @@
 <input type="hidden" value="0" id="requestActive" />
 <div id="makeBackup" class="column span-5 first icon"><img src="images/lock_go.png"/>Make backup</div>
 <div id="dropboxSync" class="column  span-6 icon" ><img src="images/arrow_refresh.png"/>Sync with dropbox</div>
+<div id="detachDropbox" class="column  span-8 icon" ><img src="images/link_delete.png"/>Disconnect dropbox</div>
 <br>
 </div>
   </fieldset>
