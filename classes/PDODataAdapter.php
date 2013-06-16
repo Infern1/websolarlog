@@ -340,11 +340,12 @@ class PDODataAdapter {
 			$config->subtitle = $bean->subtitle;
 			$config->url = ($bean->url != "") ? $bean->url : $config->url;
 			$config->location = $bean->location;
-			$config->latitude = $bean->latitude;
 			$config->gaugeMaxType = $bean->gaugeMaxType;
-			$config->longitude = $bean->longitude;
-			$config->timezone = $bean->timezone;
+			$config->latitude = ($bean->latitude != "") ? $bean->latitude : $config->latitude;
+			$config->longitude = ($bean->longitude != "") ? $bean->longitude : $config->longitude;
+			$config->timezone = ($bean->timezone != "") ? $bean->timezone : $config->timezone;
 			$config->debugmode = ($bean->debugmode != "") ? $bean->debugmode : $config->debugmode;
+			
 
 			$config->comPort = $bean->comPort;
 			$config->comOptions = $bean->comOptions;

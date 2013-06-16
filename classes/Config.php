@@ -50,6 +50,7 @@ class Config
     
     public $graphSeries; // Contains an array of Graph Series
     public $graphAxes; // Contains an array of Graph axes
+    public $graphShowACDC; // Should we show AC, DC of Both values in Graph?
 
     public $co2kwh;
     public $co2gas;
@@ -101,8 +102,8 @@ class Config
 		$this->url=Common::getDomain();
 		//$this->gaugeMaxType = 'panels';
 		$this->location='Home Sweet Home';
-		$this->latitude = '52.061152';
-		$this->longitude = '4.493330';
+		$this->latitude = '51.618017';
+		$this->longitude = '2.48291';
 		$this->timezone = 'UTC';
 
 		// ### Communication
@@ -118,6 +119,9 @@ class Config
 		
 		// ### Graph axes
 		$this->graphAxes = array();
+		
+		// ### Which Power data should we show? AC, DC of Both?
+		$this->graphShowACDC = 'AC';
 
 		// ### FRONT PAGE
 		$this->YMAX='4600';
