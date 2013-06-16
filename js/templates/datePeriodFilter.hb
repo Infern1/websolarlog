@@ -1,7 +1,7 @@
 <div id="pickerFilterDiv">
 {{lang.inv}}:<select id="pickerInv">
 <option value="0">All</option>
-{{#each data.inverters}}<option value="{{this.id}}">{{this.name}}</option>{{/each}}
+{{#each data.devices}}<option value="{{this.id}}">{{this.name}}</option>{{/each}}
 </select>
 {{lang.periode}}:
 <input type="button" id="previous" value="{{lang.previous}}">

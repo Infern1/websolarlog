@@ -268,9 +268,9 @@ try {
 			}
 	
 			foreach ($config->devices as $device){
-				if($device->graphOnFrontend){
+				//if($device->graphOnFrontend){
 					$data['devices'][] = array('id'=>$device->id,'name'=>$device->name);
-				}
+				//}
 			}
 			$lang = array();
 			$lang['date'] = _('date');
@@ -543,6 +543,7 @@ try {
 			$data['inverters'] = $indexValues['inverters'];
 			$data['maxGauges'] = $gaugeMaxPower;
 			$data['sumInverters'] = $indexValues['sum'];
+			
 			break;
 		case 'getPageIndexBlurLiveValues':
 			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
@@ -580,8 +581,8 @@ try {
 			}
 			break;
 		case "test":
-			$updater = new Updater();
-			$versions = $updater->isUpdateable();
+			$SmartMeterAddon = new SmartMeterAddon();
+			$SmartMeterAddon->installAddon();
 			//var_dump($versions);
 		case "phpinfo":
 			$phpinfo = new Util();
