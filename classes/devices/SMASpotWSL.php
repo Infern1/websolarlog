@@ -89,6 +89,10 @@ SMAspot [-scan] [-d#] [-v#] [-ad#] [-am#] [-cfgX.Y] [-u] [-finq] [-q] [-nocsv]
     }
 
     private function execute($options) {
+    	// this make multi inverter possible for SMAspot users
+    	// if we have a "adress"/configfile, then we add "-cfg/adress/to/config-file" to the options.
+    	($this->ADR) ? $options .= ' -cfg'.$this->ADR : $options = $options;
+    	
         return shell_exec($this->PATH . ' ' . $options);
     }
 
