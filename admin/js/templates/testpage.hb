@@ -49,9 +49,25 @@ or atleast check the running state with:<br>
     	<font style="color:#FF0000">doesn't exists.<br></font>
     	{{/if}}
     	<strong>Writes?</strong><br>
-		<label>DB changed(<10 sec):</label>{{#if data.test.sdb.dbChanged}}True(this is good){{else}}false(this is bad){{/if}}<br />
+		<label>DB changed(<10 sec):</label>{{#if data.test.sdb.dbChanged}}True{{else}}false{{/if}}<br />
 		<label>Currenttime:</label>{{timestampDateFormat data.test.currentTime format="DD-MM-YYYY HH:mm:ss "}}<br />
 		<label>last change:</label>{{timestampDateFormat data.test.sdb.ctime format="DD-MM-YYYY HH:mm:ss "}}<br />
+		{{#if data.test.sdb.dbChanged}}
+    	exists<br />
+    	<font style="color:#4B8902">This is good.<br>
+    	It looks like the WebSolarLog process is running.
+    	See above for the start/stop/restart/status commands.
+    	</font>
+    	{{else}}
+    	<font style="color:#FF0000">This is not good.<br>
+    	Try to (re)start WebSolarLog.
+    	WebSolarLog runs on a continuous process.<br>
+    	Therefore we should see atleast every 10 seconds a Database change.<br>
+    	See above for the start/stop/restart/status commands.<br>
+    	</font>
+    	{{/if}}
+
+    	
 		<br>
 		We check the DB file permissions:<br>
 		{{#each data.test.dbRights.rights}}
