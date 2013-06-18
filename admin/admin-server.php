@@ -845,14 +845,13 @@ function checkSQLite() {
 		$result['pid']['mtime']=$stat['mtime'];
 		$result['pid']['ctime']=$stat['ctime'];
 	} else {
-		$result['commands']['start'] = Session::getBasePath().'/scripts/./wsl.sh start';
-		$result['commands']['stop'] = Session::getBasePath().'/scripts/./wsl.sh stop';
-		$result['commands']['restart'] = Session::getBasePath().'/scripts/./wsl.sh restart';
-		$result['commands']['status'] = Session::getBasePath().'/scripts/./wsl.sh status';
-		
 		$result['pid']['exists']=false;
 	}
-		
+	$result['commands']['start'] = Session::getBasePath().'/scripts/./wsl.sh start';
+	$result['commands']['stop'] = Session::getBasePath().'/scripts/./wsl.sh stop';
+	$result['commands']['restart'] = Session::getBasePath().'/scripts/./wsl.sh restart';
+	$result['commands']['status'] = Session::getBasePath().'/scripts/./wsl.sh status';
+	
 	$SDBFilename = Session::getBasePath().'/database/wsl.sdb';
 	$result['dbRights'] = Util::file_perms($SDBFilename);
 	if (file_exists($SDBFilename)) {
