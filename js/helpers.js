@@ -135,7 +135,22 @@
             return options.inverse(this);
         return options.fn(this);
     });
+    
+    
+    /**
+     * String contains
+     * str_contains this look_for=that
+     */
+    Handlebars.registerHelper('str_contains', function(context, options) {
+    	if(context.indexOf(options.hash.look_for))
+                return options.inverse(this);
+        return options.fn(this);
+    });
 
+    //var s = "foo";
+    //alert(s.indexOf("oo") !== -1);
+    
+    
     /**
      * Convert new line (\n\r) to <br>
      * from http://phpjs.org/functions/nl2br:480

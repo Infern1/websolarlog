@@ -836,7 +836,7 @@ function checkSQLite() {
 		$result['pid']['timeDiff'] = time()-$stat['atime'];
 		if($result['pid']['timeDiff'] >= 65){
 			$result['pid']['WSLRunningState']=false;
-			$result['startWSL'] = Session::getBasePath().'/scripts/./wsl.sh start';
+
 		}else{ 
 			$result['pid']['WSLRunningState']=true;
 		}
@@ -845,7 +845,11 @@ function checkSQLite() {
 		$result['pid']['mtime']=$stat['mtime'];
 		$result['pid']['ctime']=$stat['ctime'];
 	} else {
-		$result['startWSL'] = Session::getBasePath().'/scripts/./wsl.sh start';
+		$result['commands']['start'] = Session::getBasePath().'/scripts/./wsl.sh start';
+		$result['commands']['stop'] = Session::getBasePath().'/scripts/./wsl.sh stop';
+		$result['commands']['restart'] = Session::getBasePath().'/scripts/./wsl.sh restart';
+		$result['commands']['status'] = Session::getBasePath().'/scripts/./wsl.sh status';
+		
 		$result['pid']['exists']=false;
 	}
 		
@@ -868,16 +872,21 @@ function checkSQLite() {
 	if ($result['sqlite'] === true) {
 		$filename = tempnam(sys_get_temp_dir(), 'empty'); // use a temporary empty db file for version check
 		$conn = new PDO('sqlite:' . $filename);
-		$result['sqlite_version'] = $conn->getAttribute(constant("PDO::ATTR_SERVER_VERSION"));
+		$result['sqliteVersion'] = $conn->getAttribute(constant("PDO::ATTR_SERVER_VERSION"));
+		$result['sqliteVersionCheck'] = (version_compare($result['sqliteVersion'], '3.7.11', '>=')) ? true : false ;
+		
 		$conn = null; // Close the connection and free resources
 	}
 
 	// Check if the following extensions are installed/activated
-	$checkExtensions = array('curl','sqlite','sqlite3','json','calendar','mcrypt');
+	$checkExtensions = array('curl','sqlite','sqlite3'	,'json','calendar','mcrypt');
 	foreach ($checkExtensions as $extension) {
-		$extensions[] = Util::checkIfModuleLoaded($extension);
+		$extensions[$extension] = Util::checkIfModuleLoaded($extension);
+	
 	}
-
+	$result['sqliteVersionMixed'] = ($extensions['sqlite']['status']==true && $extensions['sqlite3']['status']==false) ? true : false ;
+	
+	
 	$result['extensions'] = $extensions;
 
 	// Encryption/Decryption test

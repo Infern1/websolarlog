@@ -107,9 +107,9 @@ class Util {
 
     public static function checkIfModuleLoaded($module) {
     	if  (in_array  ($module, get_loaded_extensions())) {
-			$status = 'Loaded';
+			$status = true;
     	}else{
-    		$status = '-NOT- loaded';
+    		$status = false;
     	}
     	return array('name'=>$module,'status'=>$status);
     }

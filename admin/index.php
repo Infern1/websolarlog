@@ -63,7 +63,7 @@ session_start();
 					<li><a href="#backup" id="btnBackup">Backup</a></li>
 					<li><a href="#plugwise" id="btnPlugwise">Plugwise</a></li>
 					<!-- li><a href="#DataMaintenance" id="btnDataMaintenance">DBM</a></li -->
-					<li class="nav-end"><a href="#test" id="btnTestPage">Test page</a></li>
+					<li class="nav-end"><a href="#test" id="btnTestPage">Diagnostics</a></li>
 				</ul>
 				<div class="cl"></div>
 			</div>
