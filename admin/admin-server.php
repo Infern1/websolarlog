@@ -880,19 +880,23 @@ function checkSQLite() {
 	// Check if the following extensions are installed/activated
 	$checkExtensions = array('curl','sqlite','sqlite3'	,'json','calendar','mcrypt');
 	foreach ($checkExtensions as $extension) {
-		$extensions[$extension] = Util::checkIfModuleLoaded($extension);
+		$extensions[$extension] = Util::checkIfModuleLoaded($extension,$type='extension');
 	
 	}
+	$name = "mcrypt_module_open";
+	$extensions[$name] = array('name'=>$name,'status'=>function_exists($name),'type'=>'function');
+	$result['extensions'] = $extensions;
+	
 	$result['sqliteVersionMixed'] = ($extensions['sqlite']['status']==true && $extensions['sqlite3']['status']==false) ? true : false ;
 	
 	
-	$result['extensions'] = $extensions;
+	
 
 	// Encryption/Decryption test
 	$testphrase ="This is an test sentence";
 	$encrypted = Encryption::encrypt($testphrase);
 	$decrypted = Encryption::decrypt($encrypted);
-	$result['mcrypt_module_open'] = function_exists("mcrypt_module_open");
+	
 	$result['encrypting'] = ($testphrase === $decrypted);
 
 	return $result;

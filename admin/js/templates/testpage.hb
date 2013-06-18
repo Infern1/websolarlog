@@ -41,22 +41,21 @@ or atleast check the running state with:<br>
 <fieldset>
     <legend>DB state:</legend>
     	<strong>Exists?</strong><br>
-    	<label>SQLite DB file:</label>
+    	<label>Does the SQLite DB exists?</label>
     	{{#if data.test.sdb.exists}}
-    	exists<br />
-    	<font style="color:#4B8902">This is good.<br></font>
+    	It looks like the DB exist<br /><font style="color:#4B8902">This is good.<br></font>
     	{{else}}
-    	<font style="color:#FF0000">doesn't exists.<br></font>
+    	It looks like the DB exist<font style="color:#FF0000">This is not good.<br></font>
     	{{/if}}
-    	<strong>Writes?</strong><br>
-		<label>DB changed(<10 sec):</label>{{#if data.test.sdb.dbChanged}}True{{else}}false{{/if}}<br />
+    	<br>
+    	<strong>Is the DB changing?</strong><br>
 		<label>Currenttime:</label>{{timestampDateFormat data.test.currentTime format="DD-MM-YYYY HH:mm:ss "}}<br />
 		<label>last change:</label>{{timestampDateFormat data.test.sdb.ctime format="DD-MM-YYYY HH:mm:ss "}}<br />
+		<label>DB changed(<10 sec):</label>{{#if data.test.sdb.dbChanged}}Within the last 10 sec.{{else}}Longer then 10 sec. ago.{{/if}}<br />
 		{{#if data.test.sdb.dbChanged}}
-    	exists<br />
     	<font style="color:#4B8902">This is good.<br>
-    	It looks like the WebSolarLog process is running.
-    	See above for the start/stop/restart/status commands.
+    	It looks like the WebSolarLog process is running.<br>
+    	See above for the start/stop/restart/status commands.<br>
     	</font>
     	{{else}}
     	<font style="color:#FF0000">This is not good.<br>
@@ -66,10 +65,8 @@ or atleast check the running state with:<br>
     	See above for the start/stop/restart/status commands.<br>
     	</font>
     	{{/if}}
-
-    	
 		<br>
-		We check the DB file permissions:<br>
+		What are the DB permissions on the filesystem?<br>
 		{{#each data.test.dbRights.rights}}
 		<div class="column span-18">
 		<div class="column span-3 first"><strong>{{@key}}</strong></div>
@@ -118,48 +115,91 @@ or atleast check the running state with:<br>
 <div id="extensions">
     <div>
     Check if extensions are loaded:<br>
-			{{#each data.test.extensions}}
-					- {{@key}}:
-					{{#str_contains @key look_for="sqlite"}}
-						{{#if this.status}}
-							{{#if ../../../data.test.sqliteVersionMixed}}
-								 <strong>Loaded</strong><br><font style="color:#FF0000">It looks like the SQLite DB plugins are mixed.<br>We need SQLite3 and your system got SQLite.</font>
-							{{else}}
-								 <strong>Loaded</strong><br><font style="color:#4B8902">This looks good.</font>
-							{{/if}}
-						{{else}}
-							{{#if ../../../data.test.sqliteVersionMixed}}
-								<strong> Not loaded</strong><br><font style="color:#FF0000">It looks like the SQLite DB plugins are mixed.<br>We need SQLite3 and your system got SQLite.</font>
-							{{else}}
-								 <strong>Not loaded</strong><br><font style="color:#4B8902">This looks good.</font>
-							{{/if}}
-						{{/if}}
+		{{#each data.test.extensions}}
+			- {{this.type}} "{{@key}}":
+			{{#str_contains @key look_for="sqlite"}}
+				{{#if this.status}}
+					{{#if ../../../data.test.sqliteVersionMixed}}
+						 <strong>
+						 {{#if_eq this.type compare="extension"}}
+						 	Loaded
+						 {{else}}
+						 	Exists
+						 {{/if_eq}}
+						 </strong><br><font style="color:#FF0000">It looks like the SQLite DB plugins are mixed.<br>We need SQLite3 and your system got SQLite.</font>
 					{{else}}
-						{{#if this.status}}
-							<strong>Loaded</strong><br><font style="color:#4B8902">This looks good.</font>
-						{{else}}
-							<strong>Not loaded</strong><br><font style="color:#FF0000">This looks NOT good.</font>
-						{{/if}}
-					{{/str_contains}}
-				<br>
-			{{/each}}
+						 <strong>
+						 {{#if_eq this.type compare="extension"}}
+						 	Loaded
+						 {{else}}
+						 	Exists
+						 {{/if_eq}}</strong><br><font style="color:#4B8902">This looks good.</font>
+					{{/if}}
+				{{else}}
+					{{#if ../../../data.test.sqliteVersionMixed}}
+						<strong>
+						{{#if_eq this.type compare="extension"}}
+						 	NOT Loaded
+						 {{else}}
+						 	NOT Exists
+						 {{/if_eq}}
+						 </strong><br><font style="color:#FF0000">It looks like the SQLite DB plugins are mixed.<br>We need SQLite3 and your system got SQLite.</font>
+					{{else}}
+						 <strong>
+						 {{#if_eq this.type compare="extension"}}
+						 	NOT Loaded
+						 {{else}}
+						 	NOT Exists
+						 {{/if_eq}}</strong><br><font style="color:#4B8902">This looks good.</font>
+					{{/if}}
+				{{/if}}
+			{{else}}
+				{{#if this.status}}
+					<strong>
+						{{#if_eq this.type compare="extension"}}
+						 	Loaded
+						 {{else}}
+						 	Exists
+						 {{/if_eq}}
+						 </strong><br><font style="color:#4B8902">This looks good.</font>
+				{{else}}
+					<strong>						
+					{{#if_eq this.type compare="extension"}}
+						 	NOT Loaded
+					{{else}}
+						 	NOT Exists
+					{{/if_eq}}
+					</strong><br><font style="color:#FF0000">This looks NOT good.</font>
+				{{/if}}
+			{{/str_contains}}
+			<hr>
+		{{/each}}
 	</div>
 </div>
 <br />
 <div id="encryptiontest">
-    mcrypt_module_open function exists <b>{{#if data.test.mcrypt_module_open}}passed{{else}}failed{{/if}}</b><br />
-    Encrypting test <b>{{#if data.test.encrypting}}passed{{else}}failed{{/if}}</b><br />
+    Encrypting test
+    {{#if data.test.encrypting}}
+    	<strong>passed</strong><br>
+    	<font style="color:#4B8902">This looks good.</font>
+    {{else}}
+    	<strong>failed</strong><br>
+    	<font style="color:#FF0000">This looks NOT good.
+    	{{#if_eq data.test.extensions.mcrypt_module_open.status compare=false}}
+    	<br>This probably caused by the "mcrypt_module_open" function thats missing, please install it.
+    	{{/if_eq}}</font>
+    {{/if}}<br />
+    
     <br>
 </div>
 <div id="sqlite">
 	Because of a bug in SQLite3 we need atleast version 3.7.11.<br>
     <label>You are on version:</label>{{data.test.sqliteVersion}}<br>
     {{#if data.test.sqliteVersionCheck}}
-    <font style="color:#4B8902">This is good.</font>
+    	<font style="color:#4B8902">This is good.</font>
     {{else}}
-    <font style="color:#FF0000">Your SQLite version is to old and you may experiance unexpected behaviour.<br>Please update your SQLite version to atleast 3.7.11</font>
+    	<font style="color:#FF0000">Your SQLite version is to old and you may experiance unexpected behaviour.<br>Please update your SQLite version to atleast 3.7.11</font>
     {{/if}}
-
 </div>
 </fieldset>
 </form>

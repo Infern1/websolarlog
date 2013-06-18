@@ -105,13 +105,13 @@ class Util {
     }
 
 
-    public static function checkIfModuleLoaded($module) {
+    public static function checkIfModuleLoaded($module,$type) {
     	if  (in_array  ($module, get_loaded_extensions())) {
 			$status = true;
     	}else{
     		$status = false;
     	}
-    	return array('name'=>$module,'status'=>$status);
+    	return array('name'=>$module,'status'=>$status,'type'=>$type);
     }
 
     /**
