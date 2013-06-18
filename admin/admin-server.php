@@ -194,6 +194,7 @@ switch ($settingstype) {
 		$data['subtitle'] = $config->subtitle;
 		$data['url'] = $config->url;
 		$data['gaugeMaxType'] = $config->gaugeMaxType;
+		$data['graphShowACDC'] = $config->graphShowACDC;
 		$data['location'] = $config->location;
 		$data['latitude'] = $config->latitude;
 		$data['longitude'] = $config->longitude;
@@ -379,6 +380,7 @@ switch ($settingstype) {
 		$config->subtitle = Common::getValue("subtitle");
 		$config->url = Common::getValue("url");
 		$config->gaugeMaxType = Common::getValue("gaugeMaxType");
+		$config->graphShowACDC = Common::getValue("graphShowACDC");
 		$config->location = Common::getValue("location");
 		$config->latitude = Common::getValue("latitude");
 		$config->longitude = Common::getValue("longitude");
@@ -717,6 +719,16 @@ switch ($settingstype) {
 	case 'test':
 		$data['test'] = checkSQLite();
 		break;
+	case 'getGraphObject':
+		$graph = new Graph();
+
+		$getGraphAxes = HookHandler::getInstance()->fire("getGraphAxes","SmartMeterAddon.getAxes");
+		var_dump($getGraphAxes);
+		$graph->axes = $graph->getGraphAxes();
+		$graph->series = $graph->getGraphSeries();
+		
+		$data['graphObject'] = $graph;
+		break;
 	case 'dbm_getTables':
 		$data['tables'] = R::$writer->getTables();
 		break;
@@ -838,6 +850,7 @@ function checkSQLite() {
 	}
 		
 	$SDBFilename = Session::getBasePath().'/database/wsl.sdb';
+	$result['dbRights'] = Util::file_perms($SDBFilename);
 	if (file_exists($SDBFilename)) {
 		$stat = stat($SDBFilename);
 		$result['sdb']['exists']=true;

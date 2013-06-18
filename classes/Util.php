@@ -278,5 +278,76 @@ class Util {
     public static function createTimeForWholeInterval($interval) {
     	return (time() + $interval) - (time() % $interval);
     }
+    
+    public static function file_perms($file, $octal = false)
+    {
+    	if(!file_exists($file)) return false;
+    	$fileExists = true;
+    	$perms = fileperms($file);
+    
+    	$cut = $octal ? 2 : 3;
+    
+    	
+    	if (($perms & 0xC000) == 0xC000) {
+    		// Socket
+    		$info = 's';
+    	} elseif (($perms & 0xA000) == 0xA000) {
+    		// Symbolic Link
+    		$info = 'l';
+    	} elseif (($perms & 0x8000) == 0x8000) {
+    		// Regular
+    		$info = '-';
+    	} elseif (($perms & 0x6000) == 0x6000) {
+    		// Block special
+    		$info = 'b';
+    	} elseif (($perms & 0x4000) == 0x4000) {
+    		// Directory
+    		$info = 'd';
+    	} elseif (($perms & 0x2000) == 0x2000) {
+    		// Character special
+    		$info = 'c';
+    	} elseif (($perms & 0x1000) == 0x1000) {
+    		// FIFO pipe
+    		$info = 'p';
+    	} else {
+    		// Unknown
+    		$info = 'u';
+    	}
+    	$owner = [];
+    	$group = [];
+    	$world = [];
+    	$rightsDigits = [];
+    	
+    	$rightsDigits = str_split(substr(decoct($perms), $cut));
+    	
+    	// Owner
+    	$owner[] = $rightsDigits[0];
+    	$owner[] = (($perms & 0x0100) ? array('r','read') : array('-','-'));
+    	$owner[] = (($perms & 0x0080) ? array('w','write') : array('-','-'));
+    	$owner[] = (($perms & 0x0040) ? (($perms & 0x0800) ? array('s','s') : array('x','execute') ) : (($perms & 0x0800) ? array('S','S') : array('-','-')));
+    	
+    	// Group
+    	$group[] = $rightsDigits[1];
+    	$group[] = (($perms & 0x0020) ? array('r','read') : array('-','-'));
+    	$group[] = (($perms & 0x0010) ? array('w','write') : array('-','-'));
+    	$group[] = (($perms & 0x0008) ? (($perms & 0x0400) ? array('s','s') : array('x','execute') ) : (($perms & 0x0400) ? array('S','S') : array('-','-')));
+    	
+    	// World
+    	$world[] = $rightsDigits[2];
+    	$world[] = (($perms & 0x0004) ? array('r','read') : array('-','-'));
+    	$world[] = (($perms & 0x0002) ? array('w','write') : array('-','-'));
+    	$world[] = (($perms & 0x0001) ? (($perms & 0x0200) ? array('t','t') : array('x','execute') ) : (($perms & 0x0200) ? array('T','T') : array('-','-')));
+    	
+    	
+    	
+    	$fileMinRW = ($rightsDigits[0]>=6) ? true : false;
+    	
+    	return array(
+    			'fileExists'=>$fileExists,
+    			'rights'=> array('owner'=>$owner,'group'=>$group,'world'=>$world), 
+    			'RWXNumber'=>$rightsDigits,
+    			'fileMinRW'=>$fileMinRW);
+    }
+    
 }
 ?>
