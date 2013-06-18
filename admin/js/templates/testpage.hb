@@ -20,7 +20,7 @@ When you want to report a bug of have a feature request;<br>
 		<label>Currenttime:</label>{{timestampDateFormat data.test.currentTime format="DD-MM-YYYY HH:mm:ss "}}<br />
 		<label>last change:</label>{{timestampDateFormat data.test.pid.ctime format="DD-MM-YYYY HH:mm:ss "}}<br />
 <div class="cl"></div>
-{{#if data.test.WSLRunningState}}
+{{#if data.test.pid.WSLRunningState}}
 <font style="color:#FFCC00">WebSolarLog is running.</font><br />Please run the following command on the prompt of your Linux system to start WebSolarLog:<br />
 If you want to stop WebSolarLog run:<br>
 <font style="color:#4B8902">sudo {{data.test.commands.stop}}</font><br>
@@ -139,11 +139,11 @@ or atleast check the running state with:<br>
 	Because of a bug in SQLite3 we need atleast version 3.7.11.<br>
     <label>You are on version:</label>{{data.test.sqliteVersion}}<br>
     {{#if data.test.sqliteVersionCheck}}
-    <font style="color:#4B8902">We are good on this.</font>
+    <font style="color:#4B8902">This is good.</font>
     {{else}}
     <font style="color:#FF0000">Your SQLite version is to old and you may experiance unexpected behaviour.<br>Please update your SQLite version to atleast 3.7.11</font>
     {{/if}}
-    
+
 </div>
 </fieldset>
 </form>
