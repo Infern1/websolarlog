@@ -7,6 +7,7 @@ class Device {
     public $name;
     public $liveOnFrontend;
     public $graphOnFrontend;
+    public $graphShowACDC;
     public $description;
     public $initialkwh;
     public $producesSince;
@@ -22,6 +23,7 @@ class Device {
     public $state;
     public $refreshTime;
     public $historyRate;
+    public $active;
 
     public $expectedJAN;
     public $expectedFEB;
@@ -49,7 +51,7 @@ class Device {
         $this->initialkwh = 0;
         $this->expectedkwh = 0;
         $this->plantpower = 0;
-        $this->comAddress = 2;
+        $this->comAddress = '';
         $this->comLog = false;
         $this->syncTime = false;
         $this->pvoutputWSLTeamMember=false;
