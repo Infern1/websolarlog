@@ -251,7 +251,7 @@ switch ($settingstype) {
 		$data['chkNewTrunk'] = ($config->checkNewTrunk=='true') ? true : false;
 		$data['currentVersionTitle'] = $config->version_title;
 		$data['currentVersionRevision'] = $config->version_revision;
-		$data['currentVersionReleaseTime'] = $config->version_release_time;
+		$data['currentVersionReleaseTime'] = date("Y-m-d H:i:s",$config->version_release_time);
 		$data['currentVersionReleaseDescription'] = $config->version_release_description;
 		$data['currentVersionUpdateTime'] = date("Y-m-d H:i:s",$config->version_update_time);
 		if (Updater::isUpdateable()) {
