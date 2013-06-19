@@ -253,7 +253,7 @@ switch ($settingstype) {
 		$data['currentVersionRevision'] = $config->version_revision;
 		$data['currentVersionReleaseTime'] = $config->version_release_time;
 		$data['currentVersionReleaseDescription'] = $config->version_release_description;
-		$data['currentVersionUpdateTime'] = $config->version_update_time;
+		$data['currentVersionUpdateTime'] = date("Y-m-d H:i:s",$config->version_update_time);
 		if (Updater::isUpdateable()) {
 			$data['result'] = true;
 			$data['versions'] = Updater::getVersions($experimental,$beta);
@@ -270,6 +270,7 @@ switch ($settingstype) {
 		$version = $versioninfo[0];
 		$revision = $versioninfo[1];
 		$releaseTime = $versioninfo[2];
+		$releaseDescription = $versioninfo[3];
 		
 		if ($version === "none") {
 			HookHandler::getInstance()->fire("onInfo", "Update error: No version selected");
@@ -315,6 +316,8 @@ switch ($settingstype) {
 		$config->version_revision = $revision;
 		$config->version_release_time = $releaseTime;
 		$config->version_update_time = time();
+		$config->version_release_description = $releaseDescription;
+		
 		$adapter->writeConfig($config);
 		
 		HookHandler::getInstance()->fire("onInfo", "Update ready: " . $version . " (" . $revision . ")");
