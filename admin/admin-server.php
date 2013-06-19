@@ -717,7 +717,7 @@ switch ($settingstype) {
 		}
 		break;
 	case 'test':
-		$data['test'] = checkSQLite();
+		$data['test'] = diagnostics();
 		break;
 	case 'getGraphObject':
 		$graph = new Graph();
@@ -810,11 +810,11 @@ function updaterJsonFile($state, $info, $percentage) {
 }
 
 /**
- * This function will check if sqlite is installed an which version
- * It also returns other available drivers
+ * The diagnostics() function runs a number of test for us.
+ * It also returns the available drivers/extensions/classes, version check, DB info, log paths etc... 
  * @return array
  */
-function checkSQLite() {
+function diagnostics() {
 	$config = Session::getConfig();
 	$result = array();
 	$result['sqlite'] = false;
@@ -825,11 +825,16 @@ function checkSQLite() {
 			$result['sqlite'] = true;
 		}
 	}
+	// check path is ending with a slash(/)
+	$configURL = 'http://'.$config->url.((substr($config->url, -1)=='/') ? '' : '/');
+	$basePath = Session::getBasePath().((substr(Session::getBasePath(), -1)=='/') ? '' : '/');
 	
-	$result['logs'][] = array('url' => 'http://'.$config->url.'log/debug.log','location' => Session::getBasePath().'log/debug.log', 'name' => 'Debug');
-	$result['logs'][] = array('url' => 'http://'.$config->url.'log/error.log','location' => Session::getBasePath().'log/error.log', 'name' => 'Error');
-	$PidFilename = Session::getBasePath().'/scripts/server.php.pid';
+	$result['logs'][] = array('url' => $configURL.'log/debug.log','location' => $basePath.'log/debug.log', 'name' => 'Debug');
+	$result['logs'][] = array('url' => $configURL.'log/error.log','location' => $basePath.'log/error.log', 'name' => 'Error');
+	$PidFilename = $basePath.'scripts/server.php.pid';
+	
 	$result['currentTime']=time();
+	
 	if (file_exists($PidFilename)) {
 		$stat = stat($PidFilename);
 		$result['pid']['exists']=true;
@@ -847,10 +852,10 @@ function checkSQLite() {
 	} else {
 		$result['pid']['exists']=false;
 	}
-	$result['commands']['start'] = Session::getBasePath().'/scripts/./wsl.sh start';
-	$result['commands']['stop'] = Session::getBasePath().'/scripts/./wsl.sh stop';
-	$result['commands']['restart'] = Session::getBasePath().'/scripts/./wsl.sh restart';
-	$result['commands']['status'] = Session::getBasePath().'/scripts/./wsl.sh status';
+	$result['commands']['start'] = $basePath.'scripts/./wsl.sh start';
+	$result['commands']['stop'] = $basePath.'scripts/./wsl.sh stop';
+	$result['commands']['restart'] = $basePath.'scripts/./wsl.sh restart';
+	$result['commands']['status'] = $basePath.'scripts/./wsl.sh status';
 	
 	$SDBFilename = Session::getBasePath().'/database/wsl.sdb';
 	$result['dbRights'] = Util::file_perms($SDBFilename);
@@ -873,24 +878,37 @@ function checkSQLite() {
 		$conn = new PDO('sqlite:' . $filename);
 		$result['sqliteVersion'] = $conn->getAttribute(constant("PDO::ATTR_SERVER_VERSION"));
 		$result['sqliteVersionCheck'] = (version_compare($result['sqliteVersion'], '3.7.11', '>=')) ? true : false ;
-		
 		$conn = null; // Close the connection and free resources
+	}else{
+		
 	}
 
 	// Check if the following extensions are installed/activated
 	$checkExtensions = array('curl','sqlite','sqlite3'	,'json','calendar','mcrypt');
 	foreach ($checkExtensions as $extension) {
 		$extensions[$extension] = Util::checkIfModuleLoaded($extension,$type='extension');
-	
 	}
+
+	// check functions
 	$name = "mcrypt_module_open";
 	$extensions[$name] = array('name'=>$name,'status'=>function_exists($name),'type'=>'function');
 	$result['extensions'] = $extensions;
+
+	/*
+	 * 
+	 * Not used for now.....
+	 * 
+	// check classes
+	$name = "OAuth";
+	$extensions[$name] = array('name'=>$name,'status'=>class_exists($name,false),'type'=>'class');
+	$result['extensions'] = $extensions;
+	*/
+
+	
+	$result['phpVersion'] = phpversion(); 
+	$result['phpVersionCheck'] = (version_compare($result['phpVersion'], '5.3.10', '>=')) ? true : false ;
 	
 	$result['sqliteVersionMixed'] = ($extensions['sqlite']['status']==true && $extensions['sqlite3']['status']==false) ? true : false ;
-	
-	
-	
 
 	// Encryption/Decryption test
 	$testphrase ="This is an test sentence";

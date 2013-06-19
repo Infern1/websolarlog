@@ -193,12 +193,24 @@ or atleast check the running state with:<br>
     <br>
 </div>
 <div id="sqlite">
-	Because of a bug in SQLite3 we need atleast version 3.7.11.<br>
+	SQLite3:<Br>
+	We need atleast version 3.7.11.<br>
     <label>You are on version:</label>{{data.test.sqliteVersion}}<br>
     {{#if data.test.sqliteVersionCheck}}
     	<font style="color:#4B8902">This is good.</font>
     {{else}}
     	<font style="color:#FF0000">Your SQLite version is to old and you may experiance unexpected behaviour.<br>Please update your SQLite version to atleast 3.7.11</font>
+    {{/if}}
+    <br><Br>
+</div>
+<div id="sqlite">
+	PHP:<Br>
+	We need atleast version 5.3.10<br>
+    <label>You are on version:</label>{{data.test.phpVersion}}<br>
+    {{#if data.test.phpVersionCheck}}
+    	<font style="color:#4B8902">This is good.</font>
+    {{else}}
+    	<font style="color:#FF0000">Your PHP version is to old and you may experiance unexpected behaviour.<br>Please update your SQLite version to atleast 3.7.11</font>
     {{/if}}
 </div>
 </fieldset>
