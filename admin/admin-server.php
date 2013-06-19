@@ -251,6 +251,9 @@ switch ($settingstype) {
 		$data['chkNewTrunk'] = ($config->checkNewTrunk=='true') ? true : false;
 		$data['currentVersionTitle'] = $config->version_title;
 		$data['currentVersionRevision'] = $config->version_revision;
+		$data['currentVersionReleaseTime'] = $config->version_release_time;
+		$data['currentVersionReleaseDescription'] = $config->version_release_description;
+		$data['currentVersionUpdateTime'] = $config->version_update_time;
 		if (Updater::isUpdateable()) {
 			$data['result'] = true;
 			$data['versions'] = Updater::getVersions($experimental,$beta);
@@ -266,7 +269,8 @@ switch ($settingstype) {
 		$versioninfo = explode("*",Common::getValue("version", "none"));
 		$version = $versioninfo[0];
 		$revision = $versioninfo[1];
-
+		$releaseTime = $versioninfo[2];
+		
 		if ($version === "none") {
 			HookHandler::getInstance()->fire("onInfo", "Update error: No version selected");
 			updaterJsonFile("error", "No Version selected", 1);
@@ -309,6 +313,8 @@ switch ($settingstype) {
 		// Everything ok, save version info to db
 		$config->version_title = $version;
 		$config->version_revision = $revision;
+		$config->version_release_time = $releaseTime;
+		$config->version_update_time = time();
 		$adapter->writeConfig($config);
 		
 		HookHandler::getInstance()->fire("onInfo", "Update ready: " . $version . " (" . $revision . ")");

@@ -267,6 +267,9 @@ class PDODataAdapter {
 
 		$bean->version_title = $config->version_title;
 		$bean->version_revision = $config->version_revision;
+		$bean->version_release_time = $config->version_release_time;
+		$bean->version_release_description = $config->version_release_description;
+		$bean->version_update_time = $config->version_update_time;
 		$bean->checkNewTrunk = $config->checkNewTrunk;
 
 		$bean->title = $config->title;
@@ -335,6 +338,9 @@ class PDODataAdapter {
 		if ($bean) {
 			$config->version_title = $bean->version_title;
 			$config->version_revision = $bean->version_revision;
+			$config->version_release_time = $bean->version_release_time;
+			$config->version_release_description = $bean->version_release_description;
+			$config->version_update_time = $bean->version_update_time;
 			$config->checkNewTrunk = $bean->checkNewTrunk;
 			$config->title = $bean->title;
 			$config->subtitle = $bean->subtitle;

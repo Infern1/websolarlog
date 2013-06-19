@@ -10,6 +10,9 @@ class Config
 	
     public $version_title;
     public $version_revision;
+    public $version_release_time;
+    public $version_release_description;
+    public $version_update_time;
     public $checkNewTrunk;
 
     public $title;

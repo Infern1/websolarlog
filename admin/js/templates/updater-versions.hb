@@ -1,4 +1,16 @@
 <br /><br />
+<h3>Info about your current version:</h3>
+		<div class="span span-30">
+
+			<ul style="list-style-type: none;"><li>
+				<ul>
+				<li>Name:<br>{{data.currentVersionTitle}}</li>
+				<li>Release date(revision):</li>
+				<li style="list-style-type: none;">{{data.currentVersionReleaseTime}}({{data.currentVersionRevision}})</li>
+				<li>You updated on:</li>
+				<li style="list-style-type: none;">{{data.currentVersionUpdateTime}}</li>
+				<li>Description:</li><li style="list-style-type: none;">{{data.currentVersionReleaseDescription}}</li></ul></ul>
+				</li></ul></div>
 <h3>We found the following available versions:</h3>
 <form>
 	{{updaterVersionsList data.versions}}
