@@ -1258,11 +1258,25 @@ function init_update(experimental,beta) {
                     var template = Handlebars.compile(source);
                     var html = template({ 'data' : data });
                     $('#content').html(html);
+                    $('#btnUpdateSubmit').attr('disabled', true);
+
+                    // bind to radio button of version selection
+                    $('input[name="version"]').bind('click',function(){
+                    	//if clicked, check if button is checked
+                    	if($('input[name="version"]:checked')){
+                    		// undo disabling 
+                    		$('#btnUpdateSubmit').attr('disabled', false);
+                    	}
+                    });
                     
                     $('#btnUpdateSubmit').bind('click', function(){
+                    	
+                    	// scroll to button..
+                    	$('html, body').animate({
+                            scrollTop: $("#btnUpdateSubmit").offset().top
+                        }, 2000);
                         var button = $(this);
                         button.attr('disabled', true);
-
                         var updateNotice = $.pnotify({
                             title: 'Update',
                             text: 'Busy with updating, please wait for this message to dissapear.',
