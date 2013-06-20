@@ -242,7 +242,7 @@ function init_menu() {
     $("#btnDevices").bind('click', function() { init_devices(); });
     $("#btnGrid").bind('click', function() { init_grid();});
     $("#btnEmail").bind('click', function() { init_email(); });
-    $("#btnTestPage").bind('click', function() { init_test(); });
+    $("#btnDiagnostics").bind('click', function() { init_diagnostics(); });
     $("#btnTariff").bind('click', function() { init_tariff(); });
     $("#btnSocial").bind('click', function() { init_social(); });
     $("#btnUpdate").bind('click', function() { init_update(); });
@@ -1151,7 +1151,7 @@ function init_email() {
     });
 }
 
-function init_test() {
+function init_diagnostics() {
     $('#sidebar').html("");
     $.getJSON('admin-server.php?s=test', function(data) {
         $.ajax({
