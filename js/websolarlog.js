@@ -431,7 +431,7 @@ function twoDigits(value) {
 
 function handleGraphs(request, devicenum) {
 	// set inverter
-	devicenum = $('#pickerDevice').val();
+	devicenum = $('#devicenum').val();
 	// get activated Tab;
 	var tabSelected = $('#tabs').tabs('option', 'active');
 	
@@ -531,14 +531,14 @@ function populateTabs(tabIndex) {
 				$("#datepicker").css('z-index',0);
 				// fix for Graph Tooltip
 				
-				var devicenum = $('#pickerDevice').val();
+				var devicenum = $('#devicenum').val();
 
 				$('#next').unbind('click');
 				$('#previous').unbind('click');
 				$('#pickerPeriod').unbind('click');
-				$('#pickerDevice').unbind('click');
+				$('#devicenum').unbind('click');
 
-				$('#pickerDevice').click(function() {
+				$('#devicenum').click(function() {
 					var picker = $("#datepicker");
 					var date = new Date(picker.datepicker('getDate'));
 					picker.datepicker('setDate', date);
@@ -1721,7 +1721,7 @@ var WSL = {
 								$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
 								$("#graphContainer").html('reloading....');
 								$("#figuresContainer").html('reloading....');
-								devicenum = $('#pickerDevice').val();
+								devicenum = $('#devicenum').val();
 								WSL.createProductionGraph(devicenum,'graphContainer','1-1-'+year); // Initial load fast
 							}
 						}
@@ -1730,7 +1730,7 @@ var WSL = {
 					var pickerDate = $('#datePickerPeriod').val();
 					// new Date(year,month, day) // W3schools
 					$(this).val($.datepicker.formatDate('yy',new Date(pickerDate,1,1)));
-					devicenum = $('#pickerDevice').val();
+					var devicenum = $('#devicenum').val();
 					WSL.createProductionGraph(devicenum,'graphContainer',pickerDate); // Initial load fast
 					
 					$("#datePickerPeriod").focus(function() {
