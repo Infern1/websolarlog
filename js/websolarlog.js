@@ -66,6 +66,57 @@ function ajaxAbort(xhr) {
 	}
 }
 
+function generatePanelClearSky(result,roofOrientation,roofPitch,panelPower,date){
+	var gl_date = dateConverter(date, "year+''+month+''+day");
+	var longitude = result.slimConfig.long;
+	var latitude = result.slimConfig.lat;
+	var pv_az = roofOrientation; 
+	var pv_roof = roofPitch;
+	var pv_temp_coeff = -0.48;
+	var skydome_coeff = 1;
+	var Wp_panels = panelPower;
+	var timezone = result.timezoneOffset;
+	init_astrocalc(gl_date,longitude,latitude,pv_az,pv_roof,pv_temp_coeff,timezone);
+	
+    var coeff = 1000 * 60 * 5;
+    var sunrise = new Date((result.sunInfo.sunrise-1000)*1000);  //or use any other date
+    var sunriseRounded = Math.round(sunrise.getTime() / coeff) * coeff;
+
+	var sunset = new Date(result.sunInfo.sunset*1000);  //or use any other date
+	var sunsetRounded = (Math.round(sunset.getTime() / coeff) * coeff)+coeff*6;
+	var maxPower = [];
+	var totalPower = 0;
+	for (var i=sunriseRounded; i<=sunsetRounded; i=i+coeff){
+		maxPowerTime=[];
+		currentTime = new Date(i);
+		if(currentTime.getMinutes()<10){
+			var minutes = 0+""+currentTime.getMinutes();
+		}else{
+			var minutes = currentTime.getMinutes();
+		}
+		if(currentTime.getHours()<10){
+			var hours = 0+""+currentTime.getHours();
+		}else{
+			var hours = currentTime.getHours();
+		}
+		var coor=azimuthhight(timeStringToFloat(hours+':'+minutes)); 
+		maxPowerTime.push(i,Math.round(coor.tot_en/1000*Wp_panels));
+		totalPower = totalPower + Math.round((coor.tot_en/1000*Wp_panels)/12);
+		maxPower.push(maxPowerTime);
+	}
+	
+	totalKWhkWp = Math.round((totalPower/Wp_panels) *100)/100;
+	totalPower = Math.round((totalPower/1000) *100)/100;
+	
+	var result = [];
+	result.push(maxPowerTime);
+	result.push(maxPower);
+	result.push(totalKWhkWp);
+	result.push(totalPower);
+	return result; 
+}
+
+
 function analyticsJSCodeBlock() {
 	$.getJSON('server.php?method=analyticsSettings', function(data) {
 		if (data.googleSuccess) {
@@ -378,9 +429,9 @@ function twoDigits(value) {
 }
 
 
-function handleGraphs(request, invtnum) {
+function handleGraphs(request, devicenum) {
 	// set inverter
-	invtnum = $('#pickerInv').val();
+	devicenum = $('#pickerDevice').val();
 	// get activated Tab;
 	var tabSelected = $('#tabs').tabs('option', 'active');
 	
@@ -408,14 +459,14 @@ function handleGraphs(request, invtnum) {
 		$('#lastCall').val('picker');
 		period = $('#pickerPeriod').val();
 		if (period == "Today") {
-			WSL.createDayGraph(invtnum, "Today", tab, date,
+			WSL.createDayGraph(devicenum, "Today", tab, date,
 					currentGraphHandler, function(handler) {
 						currentGraphHandler = handler;
 						$("#loading").remove();
 					});
 		} else {
 
-			WSL.createPeriodGraph(invtnum, period, 1, date, "graph" + tab+ "Content", function(handler) {
+			WSL.createPeriodGraph(devicenum, period, 1, date, "graph" + tab+ "Content", function(handler) {
 				currentGraphHandler = handler;
 				$("#loading").remove();
 			});
@@ -426,13 +477,13 @@ function handleGraphs(request, invtnum) {
 			if(tab == "Yesterday"){
 				date = moment().subtract('days', 1).format('DD-MM-YYYY');
 			}
-			WSL.createDayGraph(invtnum, "Today", tab, date,
+			WSL.createDayGraph(devicenum, "Today", tab, date,
 					currentGraphHandler, function(handler) {
 						currentGraphHandler = handler;
 						$("#loading").remove();
 					});
 		} else {
-			WSL.createPeriodGraph(invtnum, period, 1, date, "graph" + tab+ "Content", function(handler) {
+			WSL.createPeriodGraph(devicenum, period, 1, date, "graph" + tab+ "Content", function(handler) {
 				currentGraphHandler = handler;
 				$("#loading").remove();
 			});
@@ -441,7 +492,7 @@ function handleGraphs(request, invtnum) {
 	// Refresh only the Today tab
 	if (tab == "Today" && $('#lastCall').val() == 'normal') {
 		todayTimerHandler = window.setInterval(function() {
-			WSL.createDayGraph(invtnum, "Today", tab, date,
+			WSL.createDayGraph(devicenum, "Today", tab, date,
 					currentGraphHandler, function(handler) {
 						currentGraphHandler = handler;
 						$("#loading").remove();
@@ -469,7 +520,7 @@ function populateTabs(tabIndex) {
 				$("#pickerFilter").html(html);
 				$("#datepicker").datepicker({
 				        onSelect: function(date) {
-				        	handleGraphs('picker', invtnum);
+				        	handleGraphs('picker', devicenum);
 				        }
 				});
 				$("#datepicker").datepicker("option", "dateFormat", "dd-mm-yy" );
@@ -480,12 +531,21 @@ function populateTabs(tabIndex) {
 				$("#datepicker").css('z-index',0);
 				// fix for Graph Tooltip
 				
-				var invtnum = $('#pickerInv').val();
+				var devicenum = $('#pickerDevice').val();
 
 				$('#next').unbind('click');
 				$('#previous').unbind('click');
 				$('#pickerPeriod').unbind('click');
+				$('#pickerDevice').unbind('click');
 
+				$('#pickerDevice').click(function() {
+					var picker = $("#datepicker");
+					var date = new Date(picker.datepicker('getDate'));
+					picker.datepicker('setDate', date);
+					handleGraphs('picker', devicenum);
+				});
+
+				
 				$('#next').click(function() {
 					var picker = $("#datepicker");
 					var date = new Date(picker.datepicker('getDate'));
@@ -502,7 +562,7 @@ function populateTabs(tabIndex) {
 						date.setFullYear(value);
 					}
 					picker.datepicker('setDate', date);
-					handleGraphs('picker', invtnum);
+					handleGraphs('picker', devicenum);
 				});
 
 				$('#previous').click(function() {
@@ -521,9 +581,9 @@ function populateTabs(tabIndex) {
 						date.setFullYear(value);
 					}
 					picker.datepicker('setDate', date);
-					handleGraphs('picker', invtnum);
+					handleGraphs('picker', devicenum);
 				});
-				handleGraphs('standard', invtnum);
+				handleGraphs('standard', devicenum);
 			},
 			dataType : 'text'
 		});
@@ -816,10 +876,10 @@ var WSL = {
 		}
 	},
 
-	init_misc : function(invtnum, divId) {
+	init_misc : function(devicenum, divId) {
 		// Retrieve the error events
 		ajaxStart();
-		WSL.api.getMisc(invtnum, function(data) {
+		WSL.api.getMisc(devicenum, function(data) {
 			$.ajax({
 				url : 'js/templates/misc.hb',
 				beforeSend : function(xhr) {
@@ -844,10 +904,10 @@ var WSL = {
 		});
 	},
 
-	init_plantInfo : function(invtnum, divId) {
+	init_plantInfo : function(devicenum, divId) {
 		ajaxStart();
 		// Retrieve the error events
-		WSL.api.getPlantInfo(invtnum, function(data) {
+		WSL.api.getPlantInfo(devicenum, function(data) {
 			if (data.plantInfo.success) {
 				$.ajax({
 					url : 'js/templates/plantinfo.hb',
@@ -1109,22 +1169,9 @@ var WSL = {
 							$(".accordion").accordion({collapsible : true});
 							$(".accordion").accordion({collapsible : true});
 						});
-						$.getJSON('server.php?method=getPeriodFilter&type=all', function(PeriodFilter) {
-							$.ajax({
-								url : 'js/templates/pageDateFilter.hb',
-								beforeSend : function(xhr) {
-									if (getWindowsState() == false) {
-										ajaxAbort(xhr,'');
-									}
-								},
-								success : function(source) {
-									
-									var template = Handlebars.compile(source);
-									var html = template({
-										'data' : PeriodFilter,
-										'lang' : PeriodFilter.lang
-									});
-									$('#pageMonthDateFilter').html(html);
+
+
+									//$('#pageMonthDateFilter').html(html);
 									if (!pickerDate) {
 										$("#datePickerPeriod").datepicker({
 											dateFormat : 'mm-yy',
@@ -1171,10 +1218,7 @@ var WSL = {
 								dataType : 'text',
 							});
 						});
-					},
-					dataType : 'text',
-				});
-			});
+
 		ajaxReady();
 	},
 
@@ -1280,7 +1324,7 @@ var WSL = {
 		ajaxReady();
 	},
 
-	createDayGraph : function(invtnum, getDay, tab, date, currentHandler,fnFinish) {
+	createDayGraph : function(devicenum, getDay, tab, date, currentHandler,fnFinish) {
 		ajaxStart();
 
 		var graphOptions = {
@@ -1334,7 +1378,7 @@ var WSL = {
 			return $.jsDate.strftime(val, format);
 		};
 		$.ajax({
-			url : "server.php?method=getGraphDayPoints&type=" + getDay + "&date=" + date + "&invtnum=" + invtnum,
+			url : "server.php?method=getGraphDayPoints&type=" + getDay + "&date=" + date + "&devicenum=" + devicenum,
 			beforeSend : function(xhr) {
 				if (getWindowsState() == false) {
 					ajaxAbort(xhr, '');
@@ -1345,47 +1389,42 @@ var WSL = {
 			success : function(result) {
 				// add a custom tick formatter, so that you don't have
 				// to include the entire date renderer library.
-				var gl_date = dateConverter(date, "year+''+month+''+day");
-				var longitude = result.slimConfig.long;
-				var latitude = result.slimConfig.lat;
-				var pv_az = result.slimConfig.inverters[0].panels[0].roofOrientation; 
-				var pv_roof = result.slimConfig.inverters[0].panels[0].roofPitch;
-				var pv_temp_coeff = -0.48;
-				var skydome_coeff = 1;
-				var Wp_panels = result.slimConfig.inverters[0].plantPower;
-				var timezone = result.timezoneOffset;
-				init_astrocalc(gl_date,longitude,latitude,pv_az,pv_roof,pv_temp_coeff,timezone);
 				
-                var coeff = 1000 * 60 * 5;
-                var sunrise = new Date((result.sunInfo.sunrise-1000)*1000);  //or use any other date
-                var sunriseRounded = Math.round(sunrise.getTime() / coeff) * coeff;
-
-				var sunset = new Date(result.sunInfo.sunset*1000);  //or use any other date
-				var sunsetRounded = (Math.round(sunset.getTime() / coeff) * coeff)+coeff*6;
-				var maxPower = [];
-				var maxPowerTime = [];
-				var totalPower = 0;
-				for (var i=sunriseRounded; i<=sunsetRounded; i=i+coeff){
-					maxPowerTime=[];
-					currentTime = new Date(i);
-					if(currentTime.getMinutes()<10){
-						var minutes = 0+""+currentTime.getMinutes();
-					}else{
-						var minutes = currentTime.getMinutes();
+				var clearSky = []; 
+				var clearSkyGenerated = [];
+				var plantTotalPower = 0;
+				var config = [];
+				config = result.slimConfig;
+				for (var i = 0; i < config.inverters.length; i++) {
+					for (var ii = 0; ii < config.inverters[i].panels.length; ii++) {
+						var lat = config.lat;
+						var long = config.long;
+						var totalWp = config.inverters[i].panels[ii].totalWp;
+						var roofPitch = config.inverters[i].panels[ii].roofPitch;
+						var roofOrientation = config.inverters[i].panels[ii].roofOrientation;
+						var clearSkyGenerated = generatePanelClearSky(result,roofOrientation,roofPitch,totalWp,date);
+						var plantTotalPower = plantTotalPower + clearSkyGenerated[3];
+						clearSky.push(clearSkyGenerated[1]);
 					}
-					if(currentTime.getHours()<10){
-						var hours = 0+""+currentTime.getHours();
-					}else{
-						var hours = currentTime.getHours();
-					}
-					var coor=azimuthhight(timeStringToFloat(hours+':'+minutes)); 
-					maxPowerTime.push(i,Math.round(coor.tot_en/1000*Wp_panels));
-					totalPower = totalPower + Math.round((coor.tot_en/1000*Wp_panels)/12);
-					maxPower.push(maxPowerTime);
 				}
-				
-				totalKWhkWp = Math.round((totalPower/Wp_panels) *100)/100;
-				totalPower = Math.round((totalPower/1000) *100)/100;
+
+				var sums = {}; // will keep a map of number => sum
+				// for each input array (insert as many as you like)
+				clearSky.forEach(function(array) {
+				    //for each pair in that array
+				    array.forEach(function(pair) {
+				        // increase the appropriate sum
+				        sums[pair[0]] = pair[1] + (sums[pair[0]] || 0);
+				    });
+				});
+
+				// now transform the object sums back into an array of pairs
+				var results = [];
+				for(var key in sums) {
+				    results.push([parseInt(key), sums[key]]);
+				}
+				clearSky.push(results);
+
 				seriesData = [];
 				var clearSkySeriesObject ={}; 
 				var json = [];
@@ -1402,17 +1441,20 @@ var WSL = {
 							}
 							seriesData.push(json);
 							if(seriesData.length==2){
-								seriesData.push(maxPower);
-								clearSkySeriesObject['label'] = 'Clear Sky';
-								clearSkySeriesObject['yaxis'] = 'yaxis';
-								result.dayData.graph.series.splice(2, 0, clearSkySeriesObject);
-								result.dayData.graph.series.join();
+								var axesNumber = 2;
+								for (var i = 0; i < clearSky.length; i++) {
+									seriesData.push(clearSky[i]);
+									clearSkySeriesObject['label'] = 'C.S.';
+									clearSkySeriesObject['yaxis'] = 'yaxis';
+									result.dayData.graph.series.splice(axesNumber, 0, clearSkySeriesObject);
+									result.dayData.graph.series.join();
+									axesNumber++;
+								}
 							}
 							
 						}
-						
-						//graphOptions.legend.labels = result.dayData.graph.labels;
-						
+						//console.log(result.dayData.graph.series);
+
 						if(result.dayData.graph.metaData.legend != ''){
 							if (result.dayData.graph.metaData.legend.renderer == 'EnhancedLegendRenderer') {
 								result.dayData.graph.metaData.legend.renderer = $.jqplot.EnhancedLegendRenderer;
@@ -1501,7 +1543,7 @@ var WSL = {
 							result.dayData.graph.metaData.KWH.KWHTUnit + ' ('+ 
 							result.dayData.graph.metaData.KWH.KWHKWP + ' kWh/kWp)&nbsp&nbsp;'+ 
 							result.lang.max + ': '+ 
-							totalPower + ' '+ 
+							plantTotalPower + ' '+ 
 							result.dayData.graph.metaData.KWH.KWHTUnit + ' ('+ 
 							 totalKWhkWp +
 							' kWh/kWp)</div>';
@@ -1516,10 +1558,10 @@ var WSL = {
 			}
 		});
 	},
-	createPeriodGraph : function(invtnum, type, count, date, divId, fnFinish) {
+	createPeriodGraph : function(devicenum, type, count, date, divId, fnFinish) {
 		ajaxStart();
 		$.ajax({
-			url : "server.php?method=getGraphPoints&type=" + type+ "&count=" + count + "&date=" + date + "&invtnum="+ invtnum,
+			url : "server.php?method=getGraphPoints&type=" + type+ "&count=" + count + "&date=" + date + "&devicenum="+ devicenum,
 			beforeSend : function(xhr) {
 				if (getWindowsState() == false) {
 					ajaxAbort(xhr, '');
@@ -1679,8 +1721,8 @@ var WSL = {
 								$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
 								$("#graphContainer").html('reloading....');
 								$("#figuresContainer").html('reloading....');
-								invtnum = $('#invtnum').val();
-								WSL.createProductionGraph(invtnum,'graphContainer','1-1-'+year); // Initial load fast
+								devicenum = $('#pickerDevice').val();
+								WSL.createProductionGraph(devicenum,'graphContainer','1-1-'+year); // Initial load fast
 							}
 						}
 					});
@@ -1688,8 +1730,8 @@ var WSL = {
 					var pickerDate = $('#datePickerPeriod').val();
 					// new Date(year,month, day) // W3schools
 					$(this).val($.datepicker.formatDate('yy',new Date(pickerDate,1,1)));
-					invtnum = $('#invtnum').val();
-					WSL.createProductionGraph(invtnum,'graphContainer',pickerDate); // Initial load fast
+					devicenum = $('#pickerDevice').val();
+					WSL.createProductionGraph(devicenum,'graphContainer',pickerDate); // Initial load fast
 					
 					$("#datePickerPeriod").focus(function() {
 						$(".ui-datepicker-calendar").hide();
@@ -1705,10 +1747,10 @@ var WSL = {
 
 	},
 
-	createProductionGraph : function(invtnum, divId, year) {
+	createProductionGraph : function(devicenum, divId, year) {
 		ajaxStart();
 		$.ajax({
-			url : "server.php?method=getProductionGraph&invtnum="+ invtnum+"&year="+year,
+			url : "server.php?method=getProductionGraph&devicenum="+ devicenum+"&year="+year,
 			beforeSend : function(xhr) {
 				if (getWindowsState() == false) {
 					ajaxAbort(xhr, '');
@@ -1808,7 +1850,6 @@ var WSL = {
 			}
 		});
 	},
-
 	init_details : function(divId, queryDate) {
 		$("#main-middle").prepend('<div id="datePeriodFilter"></div><div id="detailsGraph"></div><div id="detailsSwitches"></div>');
 		$.getJSON('server.php?method=getDetailsSwitches', function(data) {
@@ -1847,21 +1888,24 @@ var WSL = {
 							'lang' : data.lang
 						});
 						$('#datePeriodFilter').html(html);
-						var invtnum = $('#pickerInv').val();
+						var devicenum = $('#pickerInv').val();
 						(queryDate != "undefined") ? date = queryDate : date = date;
 
+						$("#datepicker").datepicker('setDate',new Date());
+						
 						//fix for Graph Tooltip
 						$("#datepicker").css('z-index',0);
 						// fix for Graph Tooltip
 						
+						
 						$('datePeriodFilter').on('change', '#pickerPeriod', function(){
-							WSL.createDetailsGraph(invtnum, divId,date);
+							WSL.createDetailsGraph(devicenum, divId,date);
 						});
 						$('datePeriodFilter').on('change', '#datepicker', function(){
-							WSL.createDetailsGraph(invtnum, divId, date);
+							WSL.createDetailsGraph(devicenum, divId, date);
 						});
 						$('datePeriodFilter').on('change', '#pickerInv', function(){
-							WSL.createDetailsGraph(invtnum, divId, date);
+							WSL.createDetailsGraph(devicenum, divId, date);
 						});
 						
 						$('#next').unbind('click');
@@ -1886,7 +1930,7 @@ var WSL = {
 								}
 								picker.datepicker('setDate',date);
 								var splitDate = $('#datepicker').val().split('-');
-								WSL.createDetailsGraph(invtnum,divId,splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2]);
+								WSL.createDetailsGraph(devicenum,divId,splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2]);
 							});
 
 						$('#previous').click(
@@ -1907,20 +1951,19 @@ var WSL = {
 								}
 								picker.datepicker('setDate',date);
 								var splitDate = $('#datepicker').val().split('-');
-								WSL.createDetailsGraph(invtnum,divId,splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2]);
+								WSL.createDetailsGraph(devicenum,divId,splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2]);
 							});
-						var invtnum = $('#pickerInv').val();
-						WSL.createDetailsGraph(invtnum,divId, date);
+						var devicenum = $('#pickerInv').val();
+						WSL.createDetailsGraph(devicenum,divId, date);
 					},
 					dataType : 'text'
 				});
 		});
 	},
 
-	createDetailsGraph : function(invtnum, divId, date) {
+	createDetailsGraph : function(devicenum, divId, date) {
 		$.ajax({
-					url : "server.php?method=getDetailsGraph&invtnum="
-							+ invtnum + "&date=" + date,
+					url : "server.php?method=getDetailsGraph&devicenum="+ devicenum + "&date=" + date,
 					method : 'GET',
 					dataType : 'json',
 					beforeSend : function(xhr) {
@@ -2178,22 +2221,22 @@ var WSL = {
 						'lang' : data.lang
 					});
 					$(divId).html(html);
-					WSL.createCompareGraph($('#invtnum').val(), whichMonth, whichYear,compareMonth, compareYear, 0);
+					WSL.createCompareGraph($('#devicenum').val(), whichMonth, whichYear,compareMonth, compareYear, 0);
 					
-					$('#compareFilter').on('change', '#invtnum', function() {
-						WSL.createCompareGraph($('#invtnum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+					$('#compareFilter').on('change', '#devicenum', function() {
+						WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
 					});
 					$('#compareFilter').on('change','#whichMonth', function() {
-						WSL.createCompareGraph($('#invtnum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+						WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
 					});
 					$('#compareFilter').on('change', '#whichYear', function() {
-						WSL.createCompareGraph($('#invtnum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+						WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
 					});
 					$('#compareFilter').on('change', '#compareMonth', function() {
-						WSL.createCompareGraph($('#invtnum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+						WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
 					});
 					$('#compareFilter').on('change', '#compareYear', function() {
-						WSL.createCompareGraph($('#invtnum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+						WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
 					});
 					ajaxReady();
 				},
@@ -2204,7 +2247,7 @@ var WSL = {
 
 	},
 
-	createCompareGraph : function(invtnum, whichMonth, whichYear, compareMonth,compareYear, type) {
+	createCompareGraph : function(devicenum, whichMonth, whichYear, compareMonth,compareYear, type) {
 		$('#whichMonth').val(whichMonth);
 		$('#whichYear').val(whichYear);
 		$('#compareMonth').val(compareMonth);
@@ -2279,7 +2322,7 @@ var WSL = {
 			}
 		};
 
-		$.ajax({url : "server.php?method=getCompareGraph&invtnum="+ invtnum + '&whichMonth=' + whichMonth+ '&whichYear=' + whichYear + '&compareMonth='+ compareMonth + '&compareYear=' + compareYear,
+		$.ajax({url : "server.php?method=getCompareGraph&devicenum="+ devicenum + '&whichMonth=' + whichMonth+ '&whichYear=' + whichYear + '&compareMonth='+ compareMonth + '&compareYear=' + compareYear,
 					beforeSend : function(xhr) {
 						if (getWindowsState() == false) {
 							ajaxAbort(xhr, '');
@@ -2455,14 +2498,14 @@ WSL.api.getPageYearValues = function(date, success) {
 	wslGetJSON('server.php?method=getPageYearValues&date='+date,'json',success,false);
 };
 
-WSL.api.getMisc = function(invtnum, success) {
+WSL.api.getMisc = function(devicenum, success) {
 	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getMisc&invtnum='+invtnum,'json',success,false);
+	wslGetJSON('server.php?method=getMisc&devicenum='+devicenum,'json',success,false);
 };
 
 WSL.api.getInvInfo = function(success) {
 	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getInvInfo&invtnum='+invtnum,'json',success,false);
+	wslGetJSON('server.php?method=getInvInfo&devicenum='+devicenum,'json',success,false);
 };
 
 WSL.api.getInverters = function(success) {
@@ -2470,14 +2513,14 @@ WSL.api.getInverters = function(success) {
 	wslGetJSON('server.php?method=getInverters','json',success,false);
 };
 
-WSL.api.getLiveData = function(invtnum, success) {
+WSL.api.getLiveData = function(devicenum, success) {
 	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getLiveData&invtnum='+invtnum,'json',success,false);
+	wslGetJSON('server.php?method=getLiveData&devicenum='+devicenum,'json',success,false);
 };
 
-WSL.api.getPlantInfo = function(invtnum, success) {
+WSL.api.getPlantInfo = function(devicenum, success) {
 	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getPlantInfo&invtnum='+invtnum,'json',success,false);
+	wslGetJSON('server.php?method=getPlantInfo&devicenum='+devicenum,'json',success,false);
 };
 
 WSL.api.getLanguages = function(success) {

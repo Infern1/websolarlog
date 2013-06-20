@@ -1,5 +1,5 @@
 <div id="pickerFilterDiv">
-{{lang.inv}}:<select id="pickerInv">
+{{lang.inv}}:<select id="devicenum">
 <option value="0">All</option>
 {{#each data.devices}}<option value="{{this.id}}">{{this.name}}</option>{{/each}}
 </select>
