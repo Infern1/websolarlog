@@ -1262,6 +1262,7 @@ function init_update(experimental,beta) {
                     $('#btnUpdateSubmit').bind('click', function(){
                         var button = $(this);
                         button.attr('disabled', true);
+                        scrollTop: $("#updaterMonitor").offset().top;
                         var updateNotice = $.pnotify({
                             title: 'Update',
                             text: 'Busy with updating, please wait for this message to dissapear.',
