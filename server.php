@@ -22,7 +22,7 @@ try {
 	$config = Session::getConfig();
 	
 	$data = array();
-	$invtnum = Common::getValue('invtnum', 0);
+	$devicenum = Common::getValue('devicenum', 0);
 	$page = Common::getValue('page', 0);
 	$count = Common::getValue('count', 0);
 	$type = Common::getValue('type', 0);
@@ -179,7 +179,7 @@ try {
 			$dtz = new DateTimeZone($config->timezone);
 			$timezoneOffset = new DateTime('now', $dtz);
 			$data['timezoneOffset'] = $dtz->getOffset( $timezoneOffset )/3600;
-			$lines = $dataAdapter->getGraphDayPoint($invtnum, $type, $date);
+			$lines = $dataAdapter->getGraphDayPoint($devicenum, $type, $date);
 			$slimConfig = array();
 			$slimConfig['lat'] = number_format($config->latitude,2,'.','');
 			$slimConfig['long'] = number_format($config->longitude,2,'.','');
@@ -234,7 +234,7 @@ try {
 			$data['dayData'] = $dayData;
 			break;
 		case 'getDetailsGraph':
-			$lines = $dataAdapter->getDetailsHistory($invtnum,$date);
+			$lines = $dataAdapter->getDetailsHistory($devicenum,$date);
 			
 			$dayData = new DayDataResult();
 			$dayData->data = $lines['details'];
@@ -301,8 +301,8 @@ try {
 			break;
 		case 'getProductionGraph':
 			(!$year)?$year=date("Y"):$year=$year;
-			(!$invtnum)?$invtnum=1:$invtnum=$invtnum;
-			$lines = $dataAdapter->getYearSumPowerPerMonth($invtnum, $year);
+			(!$devicenum)?$devicenum=1:$devicenum=$devicenum;
+			$lines = $dataAdapter->getYearSumPowerPerMonth($devicenum, $year);
 	
 			$dayData = new DayDataResult();
 			$dayData->data = $lines['energy']->points;
@@ -450,13 +450,12 @@ try {
 			$whichYear = Common::getValue('whichYear', 0);
 			$compareMonth = Common::getValue('compareMonth', 0);
 			$compareYear = Common::getValue('compareYear', 0);
-			$invtnum = Common::getValue('invtnum', 0);
 			
 			foreach ($config->devices as $device){
 				$inverter[] = array("name"=>$device->name,"id"=>$device->id);
 			}
 	
-			$lines = $dataAdapter->getCompareGraph($invtnum, $whichMonth,$whichYear,$compareMonth,$compareYear);
+			$lines = $dataAdapter->getCompareGraph($devicenum, $whichMonth,$whichYear,$compareMonth,$compareYear);
 			
 			$lang = array();
 			$lang['today'] = _("Today");
@@ -580,13 +579,24 @@ try {
 				HookHandler::getInstance()->fire($hookname);
 			}
 			break;
-		case "test":
+		case "installSmartMeter":
 			$SmartMeterAddon = new SmartMeterAddon();
 			$SmartMeterAddon->installAddon();
 			//var_dump($versions);
+		case "save-graph":
+			$graph = new Graph();
+			$graphService = new GraphService();
+			$graph->name = Common::getValue("name", "");
+			$graphService->save($graph);
+			//var_dump($versions);
+		case "load-graph":
+			$graph = new Graph();
+			$graphService = new GraphService();
+			$graph->name = Common::getValue("name", "");
+			$graphService->load($graph);
+			//var_dump($versions);			
 		case "phpinfo":
-			$phpinfo = new Util();
-			
+			$phpinfo = new SMASpotWSL('/home/pi/smaspot/bin/Release/./SMAspot', '/home/pi/smaspot/bin/Release/test.cfg', '', '', false);
 			//var_dump($phpinfo->phpInfo());
 			
 			break;
