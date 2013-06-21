@@ -2547,6 +2547,20 @@ WSL.connect.post = function(url, type, data, success, error) {
 };
 
 /**
+ * Send some data too the given url
+ * (Add Type to delete as it is an object property)
+ * @param url
+ * @param type
+ * @param data
+ * @param success
+ * @param error
+ */
+WSL.connect.deleteType = function(url, type, data, success, error) {
+	WSL.connect.__ajax(url, 'DELETE', type, data, success, error, false);
+};
+
+
+/**
  * Retrieves some JSON data from the given url
  * @param url
  * @param success
@@ -2565,6 +2579,17 @@ WSL.connect.getJSON = function(url, success, error) {
  */
 WSL.connect.postJSON = function(url, data, success, error) {
 	WSL.connect.post(url, 'json', data, success, error);
+};
+
+/**
+ * Send some data too the given url
+ * @param url
+ * @param data
+ * @param success
+ * @param error
+ */
+WSL.connect.deleteJSON = function(url, data, success, error) {
+	WSL.connect.deleteType(url, 'json', data, success, error);
 };
 
 /**
