@@ -1297,6 +1297,9 @@ function init_update(experimental,beta) {
                             	var experimental = $('#chkExperimental').is(':checked');
                             	var beta = $('#chkBeta').is(':checked');
                             	init_update(experimental,beta);
+                            	$('html, body').animate({
+                                    scrollTop: $("#content").offset().top
+                                }, 2000);
                             } else {
                                 $.pnotify({
                                     title: 'Update',
