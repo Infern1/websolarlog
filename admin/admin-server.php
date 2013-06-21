@@ -893,11 +893,19 @@ function diagnostics() {
 	}
 
 	// Check if the following extensions are installed/activated
-	$checkExtensions = array('curl','sqlite','sqlite3'	,'json','calendar','mcrypt');
+	$checkExtensions = array('curl','sqlite3','sqlite','json','calendar','mcrypt');
 	foreach ($checkExtensions as $extension) {
-		$extensions[$extension] = Util::checkIfModuleLoaded($extension,$type='extension');
+		if($extension == 'sqlite'){
+			if(!$extensions['sqlite3']['status']){
+				$extensions[$extension] = Util::checkIfModuleLoaded($extension,$type='extension');
+			}
+		}else{
+				$extensions[$extension] = Util::checkIfModuleLoaded($extension,$type='extension');
+		}
 	}
-
+	
+	
+	
 	// check functions
 	$name = "mcrypt_module_open";
 	$extensions[$name] = array('name'=>$name,'status'=>function_exists($name),'type'=>'function');
@@ -906,7 +914,7 @@ function diagnostics() {
 	$result['phpVersion'] = phpversion(); 
 	$result['phpVersionCheck'] = (version_compare($result['phpVersion'], '5.3.10', '>=')) ? true : false ;
 	
-	$result['sqliteVersionMixed'] = ($extensions['sqlite']['status']==true && $extensions['sqlite3']['status']==false) ? true : false ;
+	$result['sqliteVersionMixed'] = ($extensions['sqlite']['status'] && !$extensions['sqlite3']['status']) ? true : false ;
 
 	// Encryption/Decryption test
 	$testphrase ="This is an test sentence";
