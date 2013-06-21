@@ -1256,7 +1256,7 @@ function init_update(experimental,beta) {
                     var html = template({ 'data' : data });
                     $('#content').html(html);
                 	$('html, body').animate({
-                        scrollTop: $("#content").offset().top
+                        scrollTop: $("#navigation").offset().top
                     }, 2000);
                     $('#btnUpdateSubmit').attr('disabled', true);
 
