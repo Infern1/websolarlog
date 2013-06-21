@@ -137,7 +137,7 @@ class CoreAddon {
 			$alarm->alarmSend = false;
 			HookHandler::getInstance()->fire("onError", $e->getMessage());
 		}
-		$this->eventService->save($event);
+		$this->eventService->save($alarm);
 		HookHandler::getInstance()->fire("newAlarm", $device, $alarm);		
 	}
 	
