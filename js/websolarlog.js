@@ -2576,7 +2576,10 @@ WSL.connect.postJSON = function(url, data, success, error) {
  * @param success = Success function
  * @param runOnBlur = should this request run on Blur? (Only for GET requests)
  */
-WSL.connections = 0;
+WSL.connect.stats = {};
+WSL.connect.stats.success = 0;
+WSL.connect.stats.error = 0;
+WSL.connect.stats.connections = 0;
 WSL.connect.__ajax = function (url, type, dataType, data, success, error, runOnBlur) {
 	$.ajax({
 		url: url,
@@ -2587,15 +2590,19 @@ WSL.connect.__ajax = function (url, type, dataType, data, success, error, runOnB
 			if (type == 'GET' && getWindowsState() == runOnBlur) {
 				ajaxAbort(xhr);
 			}
-		},
-		success : function(data){
-			if (WSL.isSuccess(data)) {
-				success(data);				
-			} else if (typeof error !== 'undefined' && error != null) {
-				error(data);
-			}
 		}
+	}).done(function(data){
+		console.log('test');
+		WSL.connect.stats.success++;			
+		if (WSL.isSuccess(data)) {
+			success(data);				
+		} else if (typeof error !== 'undefined' && error != null) {
+			error(data);
+		}
+	}).fail(function() {
+		WSL.connect.stats.error++;			
+	}).always(function() {
+		WSL.connect.stats.connections++;			
+		//console.info(WSL.connect.stats);
 	});
-	WSL.connections++;
-	//console.info(WSL.connections);
 };
