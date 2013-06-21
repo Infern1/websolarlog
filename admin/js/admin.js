@@ -1172,8 +1172,8 @@ function init_update(experimental,beta) {
     if (typeof experimental === 'undefined' ) {
         experimental = false;
     }
-
-    $.getJSON('admin-server.php?s=updater-getversions&experimental=' + experimental+ '&beta=' + beta, function(data) {
+    
+    WSL.connect.getJSON('admin-server.php?s=updater-getversions&experimental=' + experimental+ '&beta=' + beta, function(data) {
         if (data.result === false) {
             $.ajax({
                 url : 'js/templates/updater-problems.hb',
@@ -1186,6 +1186,7 @@ function init_update(experimental,beta) {
             });
         } else {
 
+        	
             $.ajax({
                 url : 'js/templates/updater-experimental.hb',
                 success : function(source) {
@@ -1285,7 +1286,8 @@ function init_update(experimental,beta) {
                         startUpdaterMonitor(updateNotice, button);
                         checkCheckboxesHiddenFields();
                         var data = $(this).parent().serialize();
-                        $.post('admin-server.php', data, function(updateresult){
+                        
+                        WSL.connect.postJSON('admin-server.php', data, function(updateresult){
                             if (updateresult.result === true) {
                                 $.pnotify({
                                     title: 'Update',
