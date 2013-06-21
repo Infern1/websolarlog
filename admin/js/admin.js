@@ -1255,6 +1255,9 @@ function init_update(experimental,beta) {
                     var template = Handlebars.compile(source);
                     var html = template({ 'data' : data });
                     $('#content').html(html);
+                	$('html, body').animate({
+                        scrollTop: $("#content").offset().top
+                    }, 2000);
                     $('#btnUpdateSubmit').attr('disabled', true);
 
                     // bind to radio button of version selection
@@ -1297,9 +1300,6 @@ function init_update(experimental,beta) {
                             	var experimental = $('#chkExperimental').is(':checked');
                             	var beta = $('#chkBeta').is(':checked');
                             	init_update(experimental,beta);
-                            	$('html, body').animate({
-                                    scrollTop: $("#content").offset().top
-                                }, 2000);
                             } else {
                                 $.pnotify({
                                     title: 'Update',
