@@ -62,14 +62,13 @@ class TwitterAddon {
 	function detachTwitter(){
 		HookHandler::getInstance()->fire("onDebug", 'Fire(DetachTwitter)');
 
+		$detached = $this->adapter->remove_hybridauth_session(1,'twitter');
 
-			
-			$detached = $this->adapter->remove_hybridauth_session(1,'twitter');
-
-			if($detached){
-				$data['message'] = 'Detached';
-			}
-			$twitter->logout();
+		if($detached){
+			$data['message'] = 'Detached';
+		}
+		$twitter = $this->hybridauth->getAdapter( "Twitter" );
+		$twitter->logout();
 	}
 	
 	function sendTweet(){
