@@ -77,6 +77,11 @@ class CoreAddon {
 		$timestamp = $args[2];
 		
 		$arHistory = $this->historyService->getArrayByDeviceAndTime($device, null);
+		
+		if (count($arHistory) < 1) {
+			// We can only calculate energy if we have history lines
+			return;
+		}
 	
 		$first = reset($arHistory);
 		$last = end($arHistory);
