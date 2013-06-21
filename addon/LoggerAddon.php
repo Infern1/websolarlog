@@ -54,8 +54,10 @@ class LoggerAddon {
 		}
 		
 		// Check if we can write to the file
-		if (!is_writable($fileName)) {
-			throw new SetupException("Log file is not writable" . $fileName);
+		if (file_exists($fileName)) {
+			if (!is_writable($fileName)) {
+				throw new SetupException("Log file is not writable" . $fileName);
+			}
 		}
 		
 		$message = str_replace("\n", " ", $message);
