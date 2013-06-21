@@ -1294,6 +1294,9 @@ function init_update(experimental,beta) {
                                     text: 'The update is ready.',
                                     type: 'success'
                                 });
+                            	var experimental = $('#chkExperimental').is(':checked');
+                            	var beta = $('#chkBeta').is(':checked');
+                            	init_update(experimental,beta);
                             } else {
                                 $.pnotify({
                                     title: 'Update',
