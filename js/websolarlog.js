@@ -715,6 +715,7 @@ var graphProductionOptions = {
 // WSL class
 var WSL = {
 	api : {},
+	connect : {},
 	init_nextRelease : function(divId) {
 		$(divId).html("<br/><br/><H1>WSL::NextRelease();</h1>");
 	},
@@ -2321,7 +2322,7 @@ var WSL = {
 				show : true
 			}
 		};
-
+		
 		$.ajax({url : "server.php?method=getCompareGraph&devicenum="+ devicenum + '&whichMonth=' + whichMonth+ '&whichYear=' + whichYear + '&compareMonth='+ compareMonth + '&compareYear=' + compareYear,
 					beforeSend : function(xhr) {
 						if (getWindowsState() == false) {
@@ -2404,136 +2405,197 @@ var WSL = {
 						}
 					}
 				});
+	},
+	isSuccess : function (result) {
+		isError = false;
+		
+		
+		// Try to detect if there was an error
+		if (typeof result === 'undefined' ) {
+			return true; // Nothing to check so expect that its good ???
+		}
+		if (typeof result.result !== 'undefined' && result.result === 'error'  ) {
+			isError = true;
+		}
+		if (typeof result.success !== 'undefined' && !result.success ) {
+			isError = true;
+		}
+		
+		// If we have an error display an message
+		if (isError) {
+			$.pnotify({
+				title: 'Error :: ' + result.exception,
+				text: 'Something went wrong:<br />'+result.message,
+				nonblock: true,
+				hide: true,
+				closer: true,
+				sticker: false,
+				type:'error'
+			});			
+		}
+		
+		return !isError;
 	}
 };
 
+// api class
+WSL.api.getHistoryValues = function(success) {
+	WSL.connect.getJSON('server.php?method=getHistoryValues', success);
+};
+
+WSL.api.getTabs = function(page, success) {
+	WSL.connect.getJSON('server.php?method=getTabs&page='+page, success);
+};
+
+WSL.api.getCompare = function(success) {
+	WSL.connect.getJSON('server.php?method=getCompareGraph', success);
+};
+
+WSL.api.getCompareFilters = function(succes) {
+	WSL.connect.getJSON('server.php?method=getCompareFilters', success);
+};
+
+WSL.api.getPageIndexTotalValues = function(success) {
+	WSL.connect.getJSON('server.php?method=getPageIndexTotalValues', success);
+};
+
+WSL.api.getWeatherValues = function(success) {
+	WSL.connect.getJSON('api.php/Weather/live', success);
+};
+
+WSL.api.init_PageLiveValues = function(success) {
+	WSL.connect.getJSON('server.php?method=getPageLiveValues', success);
+};
+
+WSL.api.getPageIndexValues = function(success) {
+	WSL.connect.getJSON('server.php?method=getPageIndexValues', success);
+};
+
+WSL.api.getPageIndexBlurLiveValues = function(success) {
+	WSL.connect.getJSON('server.php?method=getPageIndexBlurLiveValues', success);
+};
+
+WSL.api.getPageIndexLiveValues = function(success) {
+	WSL.connect.getJSON('server.php?method=getPageIndexLiveValues', success);
+};
+
+WSL.api.getPageTodayValues = function(success) {
+	WSL.connect.getJSON('server.php?method=getPageTodayValues', success);
+};
+
+WSL.api.getPageMonthValues = function(date, success) {
+	WSL.connect.getJSON('server.php?method=getPageMonthValues&date='+date, success);
+};
+
+WSL.api.getPageYearValues = function(date, success) {
+	WSL.connect.getJSON('server.php?method=getPageYearValues&date='+date, success);
+};
+
+WSL.api.getMisc = function(devicenum, success) {
+	WSL.connect.getJSON('server.php?method=getMisc&devicenum='+devicenum, success);
+};
+
+WSL.api.getInvInfo = function(devicenum, success) {
+	WSL.connect.getJSON('server.php?method=getInvInfo&devicenum='+devicenum, success);
+};
+
+WSL.api.getInverters = function(success) {
+	WSL.connect.getJSON('server.php?method=getInverters', success);
+};
+
+WSL.api.getLiveData = function(devicenum, success) {
+	WSL.connect.getJSON('server.php?method=getLiveData&devicenum='+devicenum, success);
+};
+
+WSL.api.getPlantInfo = function(devicenum, success) {
+	WSL.connect.getJSON('server.php?method=getPlantInfo&devicenum='+devicenum, success);
+};
+
+WSL.api.getLanguages = function(success) {
+	WSL.connect.getJSON('server.php?method=getLanguages', success);
+};
+
+WSL.api.getMenu = function(success) {
+	WSL.connect.getJSON('server.php?method=getMenu', success);
+};
+
+WSL.api.live = function(success) {
+	WSL.connect.getJSON('api.php/Live', success);
+};
+
 /**
- * 
- * @param url = $.ajax request URL
- * @param dataType = $.ajax dataType (default: Intelligent Guess (xml, json, script, or html))
- * @param success = Success function
- * @param runOnBlur = should this request run on Blur?
+ * Retrieves some data from the given url
+ * @param url
+ * @param type
+ * @param success
+ * @param error
  */
-function wslGetJSON(url,dataType,success,runOnBlur){
+WSL.connect.get = function(url, type, success, error) {
+	WSL.connect.__ajax(url, 'GET', type, null, success, error, false);
+};
+
+/**
+ * Send some data too the given url
+ * @param url
+ * @param type
+ * @param data
+ * @param success
+ * @param error
+ */
+WSL.connect.post = function(url, type, data, success, error) {
+	WSL.connect.__ajax(url, 'POST', type, data, success, error, false);
+};
+
+/**
+ * Retrieves some JSON data from the given url
+ * @param url
+ * @param success
+ * @param error
+ */
+WSL.connect.getJSON = function(url, success, error) {
+	WSL.connect.get(url, 'json', success, error, false);	
+};
+
+/**
+ * Send some data too the given url
+ * @param url
+ * @param data
+ * @param success
+ * @param error
+ */
+WSL.connect.postJSON = function(url, data, success, error) {
+	WSL.connect.post(url, 'json', data, success, error);
+};
+
+/**
+ * handles the connections made by wsl 
+ * @param url = $.ajax request URL
+ * @param type = method (GET/POST/DELETE)
+ * @param dataType = $.ajax dataType (default: Intelligent Guess (xml, json, script, or html))
+ * @param data = array with fields to submit or null for nothing
+ * @param success = Success function
+ * @param runOnBlur = should this request run on Blur? (Only for GET requests)
+ */
+WSL.connections = 0;
+WSL.connect.__ajax = function (url, type, dataType, data, success, error, runOnBlur) {
 	$.ajax({
-		url: url, 
+		url: url,
+		type: type,
 		dataType : dataType,
+		data: data,
 		beforeSend : function(xhr) {
-			if (getWindowsState() == runOnBlur) {
+			if (type == 'GET' && getWindowsState() == runOnBlur) {
 				ajaxAbort(xhr);
 			}
 		},
 		success : function(data){
-			success(data);
+			if (WSL.isSuccess(data)) {
+				success(data);				
+			} else if (typeof error !== 'undefined' && error != null) {
+				error(data);
+			}
 		}
 	});
-}
-
-
-// api class
-WSL.api.getHistoryValues = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getHistoryValues','json',success,false);
-};
-
-WSL.api.getTabs = function(page, success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getTabs&page='+page,'json',success,false);
-};
-
-WSL.api.getCompare = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getCompareGraph','json',success,false);
-};
-
-WSL.api.getCompareFilters = function(succes) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getCompareFilters','json',success,false);
-}
-
-WSL.api.getPageIndexTotalValues = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getPageIndexTotalValues','json',success,false);
-};
-
-
-WSL.api.getWeatherValues = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('api.php/Weather/live','json',success,false);
-};
-
-
-WSL.api.init_PageLiveValues = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getPageLiveValues','json',success,false);
-};
-
-WSL.api.getPageIndexValues = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getPageIndexValues','json',success,false);
-};
-
-WSL.api.getPageIndexBlurLiveValues = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getPageIndexBlurLiveValues','json',success,true);
-};
-
-WSL.api.getPageIndexLiveValues = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getPageIndexLiveValues','json',success,false);
-};
-
-WSL.api.getPageTodayValues = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getPageTodayValues','json',success,false);
-};
-
-WSL.api.getPageMonthValues = function(date, success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getPageMonthValues&date='+date,'json',success,false);
-};
-
-WSL.api.getPageYearValues = function(date, success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getPageYearValues&date='+date,'json',success,false);
-};
-
-WSL.api.getMisc = function(devicenum, success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getMisc&devicenum='+devicenum,'json',success,false);
-};
-
-WSL.api.getInvInfo = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getInvInfo&devicenum='+devicenum,'json',success,false);
-};
-
-WSL.api.getInverters = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getInverters','json',success,false);
-};
-
-WSL.api.getLiveData = function(devicenum, success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getLiveData&devicenum='+devicenum,'json',success,false);
-};
-
-WSL.api.getPlantInfo = function(devicenum, success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getPlantInfo&devicenum='+devicenum,'json',success,false);
-};
-
-WSL.api.getLanguages = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getLanguages','json',success,false);
-};
-
-WSL.api.getMenu = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('server.php?method=getMenu','json',success,false);
-};
-
-WSL.api.live = function(success) {
-	//wslGetJSON(url,dataType,success,runOnBlur);
-	wslGetJSON('api.php/Live','json' ,success ,false);
+	WSL.connections++;
+	//console.info(WSL.connections);
 };

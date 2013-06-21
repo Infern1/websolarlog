@@ -79,6 +79,9 @@ class HookHandler {
 	        		if ($hookResult) {
 	        			$result[] = array("name"=>$name,"result"=>$hookResult);
 	        		}
+        		} catch (SetupException $exception) {
+        			echo (json_encode(Util::createErrorMessage($exception)));
+        			exit();
         		} catch (Exception $e) {
         			try {
         				$this->fire('onError', "Error in hook " . $callback . " error: " . $e->getMessage());

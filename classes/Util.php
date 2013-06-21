@@ -349,5 +349,9 @@ class Util {
     			'fileMinRW'=>$fileMinRW);
     }
     
+    public static function createErrorMessage (Exception $exception) {
+    	$msg = $exception->getMessage() . " in file " . $exception->getFile() . '[' . $exception->getLine() . ']';
+    	return array('result'=>'error', 'success'=>false, 'exception'=>get_class($exception), 'message'=>$msg);
+    }
 }
 ?>

@@ -44,23 +44,28 @@ class LoggerAddon {
 	
 	private function write2file($level, $message) {
 		$logPath = Common::getRootPath() . "/log";
+		$fileName = $logPath . "/" . $level . ".log";
 		
 		// Check if the log directory is available
 		if (!is_dir($logPath)) {
 			if (!mkdir($logPath)) {
-				exit("Log directory is not available and we can't create it! " . $logPath);
+				throw new SetupException("Log directory is not available and we can't create it! " . $logPath);
 			}
+		}
+		
+		// Check if we can write to the file
+		if (!is_writable($fileName)) {
+			throw new SetupException("Log file is not writable" . $fileName);
 		}
 		
 		$message = str_replace("\n", " ", $message);
 		$logmsg = date("Ymd His") . "\t" . $message . "\n";
 		
-		$fh = fopen($logPath . "/" . $level . ".log", "a+");
+		$fh = fopen($fileName, "a+");
 		if ($fh) {
 			fwrite($fh, $logmsg);
 			fclose($fh);
 		}
-		
 	}
 }
 ?>

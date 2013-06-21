@@ -28,6 +28,19 @@ class DeviceRest {
 	}
 	
 	/**
+	 * Returns devices with just a few fields
+	 * @param unknown $options
+	 * @return multitype:multitype:NULL
+	 */
+	public function getShortList($options) {
+		$result = array();
+		foreach (Session::getConfig()->devices as $device) {
+			$result[] = array("id"=>$device->id, "name"=>$device->name,"type"=>$device->type);
+		}
+		return $result;
+	}
+	
+	/**
 	 * 
 	 * @param unknown $request
 	 * @param unknown $options

@@ -797,11 +797,13 @@ function init_general() {
                 $('#btnGeneralSubmit').bind('click', function(){
                 	checkCheckboxesHiddenFields();
                     var data = $(this).parent().parent().serialize();
-                    $.post('admin-server.php', data, function(){
-                        $.pnotify({
-                            title: 'Saved',
-                            text: 'You\'re changes have been saved.'
-                        });
+                    $.post('admin-server.php', data, function(result){
+                    	if (WSL.isSuccess(result)) {
+                    		$.pnotify({
+                    			title: 'Saved',
+                    			text: 'You\'re changes have been saved.'
+                    		});
+                    	}
                     });
                 });
 
@@ -971,9 +973,6 @@ function showAlertOverlay($this,inverterId,typeName) {
     });
 }
 
-
-
-
 function load_device(inverterId) {
     $.getJSON('admin-server.php?s=inverter&id='+inverterId, function(inv_data) {
         $.ajax({
@@ -991,15 +990,12 @@ function load_device(inverterId) {
                 	checkCheckboxesHiddenFields();
                     //var data = $(this).parent().parent().serialize();
                 	var data = $(this).closest('form').serialize();
-                    $.post('admin-server.php', data, function(result){
+                	WSL.connect.postJSON('admin-server.php', data, function(result) {
                         init_devices(result.id);                        
-                        $.pnotify({
-                            title: 'Saved',
-                            text: 'You\'re changes have been saved.'
-                        });
+                        $.pnotify({ title: 'Saved', text: 'You\'re changes have been saved.'});
                         $('#btnDeviceSubmit').removeAttr("disabled");
                         window.location.hash = '#devices-'+result.id;
-                    });
+                    }, function($resultError){$('#btnDeviceSubmit').removeAttr("disabled");});
                 });
                 
                 $( "#sliderLiveRate" ).slider({
