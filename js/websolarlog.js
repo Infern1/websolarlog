@@ -2617,7 +2617,6 @@ WSL.connect.__ajax = function (url, type, dataType, data, success, error, runOnB
 			}
 		}
 	}).done(function(data){
-		console.log('test');
 		WSL.connect.stats.success++;			
 		if (WSL.isSuccess(data)) {
 			success(data);				
