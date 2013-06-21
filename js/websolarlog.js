@@ -716,6 +716,7 @@ var graphProductionOptions = {
 var WSL = {
 	api : {},
 	connect : {},
+	template : {},
 	init_nextRelease : function(divId) {
 		$(divId).html("<br/><br/><H1>WSL::NextRelease();</h1>");
 	},
@@ -825,7 +826,39 @@ var WSL = {
 					}
 				};
 				delete data;
+				
+				html = WSL.template.get('liveInverters', {'data' : data, 'lang' : data.lang});
+				$(divId).html(html);
+				
+				if (gaugeGP) {
+					gaugeGP.destroy();
+				}
+				$('#gaugeGP').empty();
+				gaugeGP = $.jqplot('gaugeGP',[ [ 0.1 ] ], gaugeGPOptions);
+				gaugeGP.series[0].data = [ [ 'W',data.sumInverters.GP ] ];
+				gaugeGP.series[0].label = data.sumInverters.GP;
+				document.title = '('+ data.sumInverters.GP+ ' W) WebSolarLog';
+				gaugeGP.replot();
 
+				if (gaugeIP) {
+					gaugeIP.destroy();
+				}
+				$('#gaugeIP').empty();
+				gaugeIP = $.jqplot('gaugeIP',[ [ 0.1 ] ], gaugeIPOptions);
+				gaugeIP.series[0].data = [ [ 'W',data.sumInverters.IP ] ];
+				gaugeIP.series[0].label = data.sumInverters.IP;
+				gaugeIP.replot();
+
+				if (gaugeEFF) {
+					gaugeEFF.destroy();
+				}
+				$('#gaugeEFF').empty();
+				gaugeEFF = $.jqplot('gaugeEFF',[ [ 0.1 ] ], gaugeEFFOptions);
+				gaugeEFF.series[0].data = [ [ 'W',data.sumInverters.EFF ] ];
+				gaugeEFF.series[0].label = data.sumInverters.EFF+ ' %';
+				gaugeEFF.replot();
+
+				/*
 				$.ajax({
 					url : 'js/templates/liveInverters.hb',
 					beforeSend : function(xhr) {
@@ -873,6 +906,7 @@ var WSL = {
 					},
 					dataType : 'text',
 				});
+				 */
 			});
 		}
 	},
@@ -2523,6 +2557,11 @@ WSL.api.live = function(success) {
 	WSL.connect.getJSON('api.php/Live', success);
 };
 
+
+/**
+ ****** connect class *******
+ */
+
 /**
  * Retrieves some data from the given url
  * @param url
@@ -2531,7 +2570,7 @@ WSL.api.live = function(success) {
  * @param error
  */
 WSL.connect.get = function(url, type, success, error) {
-	WSL.connect.__ajax(url, 'GET', type, null, success, error, false);
+	WSL.connect.__ajax(url, 'GET', type, null, true, success, error, false);
 };
 
 /**
@@ -2543,7 +2582,7 @@ WSL.connect.get = function(url, type, success, error) {
  * @param error
  */
 WSL.connect.post = function(url, type, data, success, error) {
-	WSL.connect.__ajax(url, 'POST', type, data, success, error, false);
+	WSL.connect.__ajax(url, 'POST', type, data, true, success, error, false);
 };
 
 /**
@@ -2556,7 +2595,7 @@ WSL.connect.post = function(url, type, data, success, error) {
  * @param error
  */
 WSL.connect.deleteType = function(url, type, data, success, error) {
-	WSL.connect.__ajax(url, 'DELETE', type, data, success, error, false);
+	WSL.connect.__ajax(url, 'DELETE', type, data, true, success, error, false);
 };
 
 
@@ -2593,6 +2632,17 @@ WSL.connect.deleteJSON = function(url, data, success, error) {
 };
 
 /**
+ * Retrieves some data from the given url in SYNC mode
+ * @param url
+ * @param type
+ * @param success
+ * @param error
+ */
+WSL.connect.getAjaxSync = function(url, type, success, error) {
+	WSL.connect.__ajax(url, 'GET', type, null, false, success, error, false);
+};
+
+/**
  * handles the connections made by wsl 
  * @param url = $.ajax request URL
  * @param type = method (GET/POST/DELETE)
@@ -2605,12 +2655,8 @@ WSL.connect.stats = {};
 WSL.connect.stats.success = 0;
 WSL.connect.stats.error = 0;
 WSL.connect.stats.connections = 0;
-WSL.connect.__ajax = function (url, type, dataType, data, success, error, runOnBlur) {
-	$.ajax({
-		url: url,
-		type: type,
-		dataType : dataType,
-		data: data,
+WSL.connect.__ajax = function (url, type, dataType, data, async, success, error, runOnBlur) {
+	$.ajax({ url: url, type: type, dataType : dataType, data: data, async: async, 
 		beforeSend : function(xhr) {
 			if (type == 'GET' && getWindowsState() == runOnBlur) {
 				ajaxAbort(xhr);
@@ -2629,4 +2675,26 @@ WSL.connect.__ajax = function (url, type, dataType, data, success, error, runOnB
 		WSL.connect.stats.connections++;			
 		//console.info(WSL.connect.stats);
 	});
+};
+
+
+/**
+ ****** template class *******
+ */
+WSL.template.cache = {}; // template cache
+WSL.template.baseUrl = 'js/templates/';
+WSL.template.get = function (url, data) {
+	template = WSL.template.getTemplate(url);
+	return template(data);
+};
+WSL.template.getTemplate = function(url) {
+	var template = WSL.template.cache[url];
+	if (template == null) {
+		WSL.connect.getAjaxSync(WSL.template.baseUrl + url + ".hb", 'text', function(source) { template = Handlebars.compile(source); });
+		WSL.template.cache[url] = template;
+	}
+	return template;
+};
+WSL.template.preLoadTemplate = function (url) {
+	WSL.template.getTemplate(url);
 };
