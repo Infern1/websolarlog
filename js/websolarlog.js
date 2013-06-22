@@ -717,6 +717,7 @@ var WSL = {
 	api : {},
 	connect : {},
 	template : {},
+	scrollTo : {},
 	init_nextRelease : function(divId) {
 		$(divId).html("<br/><br/><H1>WSL::NextRelease();</h1>");
 	},
@@ -2698,3 +2699,13 @@ WSL.template.getTemplate = function(url) {
 WSL.template.preLoadTemplate = function (url) {
 	WSL.template.getTemplate(url);
 };
+
+/**
+ ****** scrollTo class ? *******
+ */
+WSL.scrollTo = function(element, time){
+	if(typeof(time)==='undefined') time = 1500;
+	$('html, body').animate({
+        scrollTop: $(element).offset().top
+    }, time);
+}
