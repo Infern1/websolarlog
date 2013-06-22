@@ -1168,7 +1168,7 @@ function init_diagnostics() {
         
 }
 
-function init_update(experimental,beta) {
+function init_update(experimental,beta,scrollTo) {
     if (typeof experimental === 'undefined' ) {
         experimental = false;
     }
@@ -1197,12 +1197,22 @@ function init_update(experimental,beta) {
                     $('#chkExperimental').bind('click', function(){
                     	var experimental = $('#chkExperimental').is(':checked');
                     	var beta = $('#chkBeta').is(':checked');
-                    	init_update(experimental,beta);
+                    	if($(this).is(':checked')){
+                    		scrollTo = '#trunk';
+                    	}else{
+                    		scrollTo = '';
+                    	}
+                    	init_update(experimental,beta,scrollTo);
                     });
                     $('#chkBeta').bind('click', function(){
                     	var experimental = $('#chkExperimental').is(':checked');
                     	var beta = $('#chkBeta').is(':checked');
-                    	init_update(experimental,beta);
+                    	if($(this).is(':checked')){
+                    		scrollTo = '#beta';
+                    	}else{
+                    		scrollTo = '';
+                    	}
+                    	init_update(experimental,beta,scrollTo);
                     });
                     
                     $("input[name = 'chkNewTrunk']").bind('click', function(){                        
@@ -1255,9 +1265,13 @@ function init_update(experimental,beta) {
                     var template = Handlebars.compile(source);
                     var html = template({ 'data' : data });
                     $('#content').html(html);
-                	$('html, body').animate({
-                        scrollTop: $("#navigation").offset().top
-                    }, 2000);
+                    
+                    if(!scrollTo){
+                    	WSL.scrollTo("#navigation");
+                    }else{
+                    	WSL.scrollTo(scrollTo);
+                    }
+                    
                     $('#btnUpdateSubmit').attr('disabled', true);
 
                     // bind to radio button of version selection
@@ -1272,9 +1286,8 @@ function init_update(experimental,beta) {
                     $('#btnUpdateSubmit').bind('click', function(){
                     	
                     	// scroll to button..
-                    	$('html, body').animate({
-                            scrollTop: $("#btnUpdateSubmit").offset().top
-                        }, 2000);
+                    	WSL.scrollTo("#btnUpdateSubmit");
+
                         var button = $(this);
                         button.attr('disabled', true);
                         var updateNotice = $.pnotify({
