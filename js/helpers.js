@@ -187,11 +187,23 @@
 		return new Handlebars.SafeString("<input type=\"hidden\" name=\""+name+"\" value=\"0\"/><input type=\"checkbox\" "+checked+" name=\""+name+"\" value=\""+value+"\"/>");
 	});
     
-	
+
 	Handlebars.registerHelper("infoTooltip", function(context,block) {
 		return new Handlebars.SafeString("<img src=\"images/information.png\" class=\"tooltip\" title=\""+context.hash.title+"\"/>");
 	});
     
+	
+
+	Handlebars.registerHelper("capitalizer", function(context,block) {
+		return new Handlebars.SafeString(context.hash.title.capitalize());
+	});
+
+
+	Handlebars.registerHelper("humanIndexKey", function(context,block) {
+		return new Handlebars.SafeString(parseInt(context.hash.int+1));
+	});
+
+	
 	Handlebars.registerHelper("updaterVersionsList", function(context,block) {
 		var list = '<div class="span span-30">';
 		$.each( context, function( key, type ) {
