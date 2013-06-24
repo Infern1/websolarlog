@@ -51,7 +51,7 @@ class Device {
         $this->initialkwh = 0;
         $this->expectedkwh = 0;
         $this->plantpower = 0;
-        $this->comAddress = '';
+        $this->comAddress = '2';
         $this->comLog = false;
         $this->syncTime = false;
         $this->pvoutputWSLTeamMember=false;

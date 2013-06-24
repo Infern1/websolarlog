@@ -997,9 +997,17 @@ function load_device(inverterId,deviceApi,deviceType) {
                 	$(domElem).hide();
                	});
 
-                // display only the field for this device type
-            	$('.'+inv_data.inverter.type).show();
 
+                // display only the field for this device type
+                if(inverterId<0){
+                	$('.create_new').show();
+                }else{
+                	console.log(inv_data.inverter.type);
+                	$('.'+inv_data.inverter.type).show();
+                }
+
+                
+            	
                 if(inv_data.inverter.id > 0 && inv_data.inverter.panels.length==0 && inv_data.inverter.type == 'production'){
                 	$.pnotify({ title: 'No System Panels', text: 'Please add one or more panels. We need panels for some calculations.'});
                 	WSL.scrollTo($("#new_panels").closest('form'));
@@ -1102,7 +1110,6 @@ function load_device(inverterId,deviceApi,deviceType) {
 
 function init_grid() {
     alert("grid");
-    
 }
 
 function init_email() {

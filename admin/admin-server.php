@@ -209,26 +209,31 @@ switch ($settingstype) {
 		break;
 	case 'inverter':
 		$deviceId = $_GET['id'];
+		//var_dump($deviceId);
 		$data['SMAspotDevices'] = 0;
 		$deviceService = new DeviceService();
 		$data['supportedDevices'] = $deviceService->getSupportedDevices();
 		
 
 		$data['inverter'] = $config->getDeviceConfig($deviceId);
+		//var_dump($data['inverter']);
+		// if we don't have a SMA-BT-WSL device, we don't want to use "special" config file and reset comAdress.
+
 		if ($deviceId == -1) {
 			$data['inverter'] = new Device();
 		}
-		
+
 		// check if we have already a SMA-BT-WSL
 		foreach($config->allDevices as $device){
 			if($device->deviceApi == "SMA-BT-WSL"){
 				$data['SMAspotDevices']++;
 			}
 		}
-		// if we don't have a SMA-BT-WSL device, we don't want to use "special" config file and reset comAdress.
 		if($data['SMAspotDevices']==0){
 			$data['inverter']->comAddress = '';
 		}
+
+
 		break;
 	case 'panel':
 		$id = $_GET['id'];

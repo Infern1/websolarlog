@@ -2,7 +2,7 @@
   <input type="hidden" name="s" value="save-inverter" />   
   <input type="hidden" name="id" value="{{data.inverter.id}}" />   
   <fieldset style="width:560px;">
-    <legend>Device: {{data.inverter.name}}</legend>
+    <legend>{{capitalizer title=data.inverter.type}} device: {{data.inverter.name}}</legend>
     Name and description of device:<br>
     <label for="name">name:</label><input type="text" name="name" value="{{data.inverter.name}}" />   <br />   
     <label for="description">description:</label><input type="text" name="description" value="{{data.inverter.description}}" />   <br />
@@ -30,7 +30,7 @@
     <label for="plantpower">plant power:</label><input type="text" name="plantpower" value="{{data.inverter.plantpower}}" readonly="true" />{{infoTooltip title="Calculated by the panels, see the bottom of this page."}}<br />   
 	<hr>
 	</div>
-	<div class="all metering production weather deviceApi">
+	<div class="all create_new metering production weather deviceApi">
 		Select the program you use to communicate with the device,what type of device it is and if needed the address of the device:<br>
 	    <label for="deviceApi">Device Api:</label>
 	    
@@ -43,7 +43,7 @@
         <br />   
     </div>
     
-	<div class="all metering production weather deviceApi">
+	<div class="all create_new metering production weather deviceApi">
     <label for="deviceType">Device Type:</label>
             <select name="deviceType" style="width:148px;" disabled="disabled">
             <option value="production" {{#if_eq data.inverter.type compare="production"}}selected=selected{{/if_eq}}>Production</option>
@@ -52,7 +52,7 @@
         </select>{{infoTooltip title="Select the device type;<br>- production: (wind/solar)inverter<br>- metering: SmartMeter<Br>- weather: Collect Weather data"}}
         <br />   
     </div>
-    <div class="all metering production deviceApi">
+    <div class="all create_new metering production deviceApi">
     <label for="comAddress">(RS485/IP) address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" />{{infoTooltip title="RS485: 1-255<br>IP: v4 of v6 address"}}<br />
     </div>
     <div class="span-8 first">
@@ -127,7 +127,7 @@
       <input type="hidden" name="id" value="{{this.id}}" />   
       <input type="hidden" name="inverterId" value="{{this.inverterId}}" />   
       <fieldset>
-    <legend>Panel/String: {{this.id}}</legend>
+    <legend>Panel/String: {{humanIndexKey int=@index}}</legend>
         <label for="description">Description:</label><input type="text" name="description" value="{{this.description}}" />{{infoTooltip title="example: SolarPanel 265Wp 123-32/23+"}}<br />   
         <label for="roofOrientation">Orientation:</label><input type="text" name="roofOrientation" value="{{this.roofOrientation}}" />{{infoTooltip title="example: 0=north,90=east,180=south,270=west"}}<br />   
         <label for="roofPitch">Array tilt:</label><input type="text" name="roofPitch" value="{{this.roofPitch}}" />{{infoTooltip title="example: 0 = horizontal, 90 = vertical"}}<br />   
@@ -149,7 +149,7 @@
     You make 2 panels and fillout the field with the information you now of what is your best guess.<br>
     
 {{#if_gt data.inverter.id compare=0}}
-    <button type="button" id="btn_newPanel">new panel</button><br/>   
+    <button type="button" id="btnNewPanel">new panel</button><br/>   
 {{else}}
 Panels can be added after saving the new inverter
 {{/if_gt}}
