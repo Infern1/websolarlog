@@ -87,6 +87,20 @@ class DeviceService {
 		return $objects;
 	}
 	
+	public function getSupportedDevices(){
+		return array(
+				array('value'=>'AURORA','type'=>'production','name'=>'Aurora'),
+				array('value'=>'Diehl-ethernet','type'=>'production','name'=>'Diehl Ethernet'),
+				array('value'=>'DutchSmartMeter','type'=>'metering','name'=>'Dutch Smart Meter'),
+				array('value'=>'DutchSmartMeterRemote','type'=>'metering','name'=>'Dutch Smart Meter Remote'),
+				array('value'=>'MasterVolt','type'=>'production','name'=>'MasterVolt'),
+				array('value'=>'Open-Weather-Map','type'=>'weather','name'=>'Open Weather Map'),
+				array('value'=>'SMA-RS485','type'=>'production','name'=>'SMA RS485'),
+				array('value'=>'SMA-BT','type'=>'production','name'=>'SMA-spot-2.0.4 BlueTooth'),
+				array('value'=>'SMA-BT-WSL','type'=>'production','name'=>'SMA-spot-2.0.6 BlueTooth')
+		);
+	}
+	
 	/**
 	 * change the status off the device
 	 * @param int $status // 1=active, 0=sleep

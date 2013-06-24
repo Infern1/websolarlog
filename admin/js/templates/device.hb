@@ -9,43 +9,52 @@
     <label for="active">Active:</label>
     {{checkboxWithHidden 'deviceActive' data.inverter.active}}
     {{infoTooltip title="If a device is not active, we will leave the device alone and not try to get data from it.<br> You can use this when you get a new device(inverter) and want to keep the data from the old device(inverter).<br>You could make the old device(inverter) in-active and create a new device(inverter).<br>We won't request the old inverter and the old data is still on the frontend."}}<br />
-    <hr>      
-    <!--<label for="liveOnFrontend">Show livedata@frontend:</label>
-    {{checkboxWithHidden 'liveOnFrontend' data.inverter.liveOnFrontend}}<br />   
-    <label for="graphOnFrontend">Show history@graph:</label>
-    {{checkboxWithHidden 'graphOnFrontend' data.inverter.graphOnFrontend}}<br />   
-    <hr>-->
+    <hr>
+    <div class="all production weather metering">
+    	<label for="liveOnFrontend">Show livedata@frontend:</label>
+    	{{checkboxWithHidden 'liveOnFrontend' data.inverter.liveOnFrontend}}<br />
+    	<label for="graphOnFrontend">Show history@graph:</label>
+    	{{checkboxWithHidden 'graphOnFrontend' data.inverter.graphOnFrontend}}<br />
+    	<hr>
+    </div>   
+    
+    <div class="all production initial">
     kWh the inverter already generated without WSL and the installation date of the inverter;<br>
     <label for="initialkwh">initial kWh:</label><input type="text" name="initialkwh" value="{{data.inverter.initialkwh}}" />{{infoTooltip title="kWh"}}<br />       
     <label for="producesSince">produces since:</label><input type="text" name="producesSince" value="{{data.inverter.producesSince}}" />{{infoTooltip title="(31-12-2000)"}}<br />   
     <hr>
+    </div>
+    <div class="all production expectations">
     What is the expected production in kWh for this inverter. The plant power is calculated by the panels below:<br>
     <label for="expectedkwh">expected kWh:</label><input type="text" name="expectedkwh" value="{{data.inverter.expectedkwh}}" />{{infoTooltip title="kWh"}}<br />   
     <label for="plantpower">plant power:</label><input type="text" name="plantpower" value="{{data.inverter.plantpower}}" readonly="true" />{{infoTooltip title="Calculated by the panels, see the bottom of this page."}}<br />   
 	<hr>
-	Select the program you use to communicate with the device,what type of device it is and if needed the address of the device:<br>
-    <label for="deviceApi">Device Api:</label>
-        <select name="deviceApi" style="width:148px;">
-            <option value="AURORA" {{#if_eq data.inverter.deviceApi compare="AURORA"}}selected=selected{{/if_eq}}>Aurora</option>
-            <option value="SMA-RS485" {{#if_eq data.inverter.deviceApi compare="SMA-RS485"}}selected=selected{{/if_eq}}>SMA RS485</option>
-            <option value="SMA-BT" {{#if_eq data.inverter.deviceApi compare="SMA-BT"}}selected=selected{{/if_eq}}>SMA-spot-2.0.4 BlueTooth</option>
-            <option value="SMA-BT-WSL" {{#if_eq data.inverter.deviceApi compare="SMA-BT-WSL"}}selected=selected{{/if_eq}}>SMA-spot-2.0.6 BlueTooth</option>
-            <option value="Diehl-ethernet" {{#if_eq data.inverter.deviceApi compare="Diehl-ethernet"}}selected=selected{{/if_eq}}>Diehl Ethernet</option>
-            <option value="DutchSmartMeter" {{#if_eq data.inverter.deviceApi compare="DutchSmartMeter"}}selected=selected{{/if_eq}}>Dutch Smart Meter</option>
-            <option value="DutchSmartMeterRemote" {{#if_eq data.inverter.deviceApi compare="DutchSmartMeterRemote"}}selected=selected{{/if_eq}}>Dutch Smart Meter Remote</option>
-            <option value="MasterVolt" {{#if_eq data.inverter.deviceApi compare="MasterVolt"}}selected=selected{{/if_eq}}>MasterVolt</option>
-            <option value="Open-Weather-Map" {{#if_eq data.inverter.deviceApi compare="Open-Weather-Map"}}selected=selected{{/if_eq}}>Open Weather Map</option>
+	</div>
+	<div class="all metering production weather deviceApi">
+		Select the program you use to communicate with the device,what type of device it is and if needed the address of the device:<br>
+	    <label for="deviceApi">Device Api:</label>
+	    
+       	<select name="deviceApi" style="width:148px;" disabled="disabled">       	
+       	{{#data.supportedDevices}}
+			<option value="{{this.value}}" 
+			{{#if_eq ../data.inverter.deviceApi compare=this.value}}selected=selected{{/if_eq}} class="inverter_select">{{this.name}}</option>
+		{{/data.supportedDevices}}
         </select>{{infoTooltip title="Select the device/brand you use"}}
-    <br />   
+        <br />   
+    </div>
+    
+	<div class="all metering production weather deviceApi">
     <label for="deviceType">Device Type:</label>
-            <select name="deviceType" style="width:148px;">
+            <select name="deviceType" style="width:148px;" disabled="disabled">
             <option value="production" {{#if_eq data.inverter.type compare="production"}}selected=selected{{/if_eq}}>Production</option>
             <option value="metering" {{#if_eq data.inverter.type compare="metering"}}selected=selected{{/if_eq}}>Metering</option>
             <option value="weather" {{#if_eq data.inverter.type compare="weather"}}selected=selected{{/if_eq}}>Weather</option>
         </select>{{infoTooltip title="Select the device type;<br>- production: (wind/solar)inverter<br>- metering: SmartMeter<Br>- weather: Collect Weather data"}}
         <br />   
+    </div>
+    <div class="all metering production deviceApi">
     <label for="comAddress">(RS485/IP) address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" />{{infoTooltip title="RS485: 1-255<br>IP: v4 of v6 address"}}<br />
-    
+    </div>
     <div class="span-8 first">
     <br>
     <label for="liveRate" style="float:left;">Live poll Rate:</label>
@@ -70,17 +79,23 @@
     {{infoTooltip title="How often should this device create a history data(graph) point?<br>1 - 3600 seconds"}}<br />
     </div></div>    
     <hr>
+    <div class="all production logcomm">
     <label for="comLog">Log comm:</label>
     {{checkboxWithHidden 'comLog' data.inverter.comLog}}<br />
-    
+    </div>
+    <div class="all production synctime">
     <label for="syncTime">Synchronize time:</label>
-    {{checkboxWithHidden 'syncTime' data.inverter.syncTime}}<br>   
-    <hr><a name="pvoutput"/>
+    {{checkboxWithHidden 'syncTime' data.inverter.syncTime}}<br>
+    <hr>
+    </div>   
+	
+	<div class="all production pvoutput"> 
+    <a name="pvoutput"/>
     PVoutput config for this inverter;<br>
     
     <label for="pvoutputEnabled">PVOutput Enabled:</label>
     {{checkboxWithHidden 'pvoutputEnabled' data.inverter.pvoutputEnabled}}<br />   
-    <label for="pvoutputApikey">PVOutput Api key:</label><input type="text" name="pvoutputApikey" value="{{data.inverter.pvoutputApikey}}" />{{infoTooltip title="See your PVoutput account/settings page."}}<br />   
+    <label for="pvoutputApikey">PVOutput Api key:</label><input type="text" name="pvoutputApikey" value="{{data.inverter.pvoutputApikey}}" />{{infoTooltip title="See your PVoutput account/settings page."}}<br />
     <label for="pvoutputSystemId">PVOutput System id:</label><input type="text" name="pvoutputSystemId" value="{{data.inverter.pvoutputSystemId}}" />{{infoTooltip title="See your PVoutput account/settings page."}}<br />
     <label for="pvoutputWSLTeamMember">WSL Team Member:</label>
     {{#if data.inverter.pvoutputWSLTeamMember}}
@@ -88,7 +103,7 @@
     {{else}}
     <a href="#social">This device is no member of the WSL team</a>{{infoTooltip title=":( This device is no member of our great team.... <br>Go to the Social tab and add this device to the team :) "}}
     {{/if}}
-
+    </div>
     <br /><br />
         <div class="span-20 first">
         	<button type="button" id="btnDeviceSubmit">Save</button>
@@ -101,6 +116,7 @@
 </form> 
 
 <br />
+<div class="all production panels">
 <form>
       <fieldset>
     <legend>System Panels</legend>
@@ -133,9 +149,11 @@
     You make 2 panels and fillout the field with the information you now of what is your best guess.<br>
     
 {{#if_gt data.inverter.id compare=0}}
-    <button type="button" id="btnNewPanel">New panel</button><br/>   
+    <button type="button" id="btn_newPanel">new panel</button><br/>   
 {{else}}
 Panels can be added after saving the new inverter
 {{/if_gt}}
       </fieldset>
     </form>
+    </div>
+    <div class="all production expectations" id="expectations"></div>

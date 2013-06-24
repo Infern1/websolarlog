@@ -188,7 +188,7 @@ function init_KWHcalc(inv_data){
 	                'data' : data
 	            });
 	
-	            $('#content').append(html);
+	            $('#expectations').html(html);
 	            $("input[id$='KWH']").bind("keyup", function(){
 	                object = this;
 	                KWHcalc(object,Perc,Month);
@@ -873,16 +873,17 @@ function init_devices(selected_inverterId) {
                     var button = $(this);
                     var inverterId = button.attr('id').split("_")[1];
                     window.location.hash = shortcutFunction+"-"+inverterId;
+
+                    load_device(inverterId);
                 });
                 
-                $('.inverter_select').each(function(){
-                    var button = $(this);
-                    var inverterId = button.attr('id').split("_")[1];
-                    
-                    button.bind('click', function() {
-                        load_device(inverterId);
-                    }); 
+                $('#new_device').bind("click",function(){
+                	var createDevice = $("select[id='createDevice']",$(this).closest('form')).val();
+                	var deviceApi = createDevice.split("_")[0];
+                	var deviceType = createDevice.split("_")[1];
+                	load_device(-1,deviceApi,deviceType);
                 });
+                
             },
             dataType : 'text'
         });        
@@ -973,11 +974,17 @@ function showAlertOverlay($this,inverterId,typeName) {
     });
 }
 
-function load_device(inverterId) {
+function load_device(inverterId,deviceApi,deviceType) {
     $.getJSON('admin-server.php?s=inverter&id='+inverterId, function(inv_data) {
         $.ajax({
             url : 'js/templates/device.hb',
             success : function(source) {
+            	if(deviceApi){
+            		inv_data.inverter.deviceApi = deviceApi; 
+            	}
+            	if(deviceType){
+            		inv_data.inverter.type = deviceType; 
+            	}
                 var template = Handlebars.compile(source);
                 var html = template({
                 	'inverterId' : inverterId,
@@ -985,13 +992,25 @@ function load_device(inverterId) {
                 });
                 $('#content').html(html);
                 
+                // hide ALL elements with (sub)class 'all'
+                $("#content").find("[class*='all']").each(function(index, domElem){
+                	$(domElem).hide();
+               	});
+
+                // display only the field for this device type
+            	$('.'+inv_data.inverter.type).show();
+
+                if(inv_data.inverter.id > 0 && inv_data.inverter.panels.length==0 && inv_data.inverter.type == 'production'){
+                	$.pnotify({ title: 'No System Panels', text: 'Please add one or more panels. We need panels for some calculations.'});
+                	WSL.scrollTo($("#new_panels").closest('form'));
+                }
+
                 $('#btnDeviceSubmit').bind('click', function(){
                 	$('#btnDeviceSubmit').attr("disabled", "disabled");
                 	checkCheckboxesHiddenFields();
-                    //var data = $(this).parent().parent().serialize();
                 	var data = $(this).closest('form').serialize();
                 	WSL.connect.postJSON('admin-server.php', data, function(result) {
-                        init_devices(result.id);                        
+                        init_devices(result.id);
                         $.pnotify({ title: 'Saved', text: 'You\'re changes have been saved.'});
                         $('#btnDeviceSubmit').removeAttr("disabled");
                         window.location.hash = '#devices-'+result.id;

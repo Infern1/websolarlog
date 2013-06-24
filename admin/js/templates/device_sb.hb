@@ -2,7 +2,20 @@
 <button type="button" id="btnInverter_{{this.id}}" class="inverter_select" style="width:100%;">{{this.name}}</button><br/>
 {{/data.inverters}}
 <br />
-<button type="button" id="btnInverter_-1" class="inverter_select" style="width:100%;">New devices</button><br/><br>
+<hr>
+
+<form>
+	<strong>Create a new device</strong><br>
+	Select device:
+	<select name="createDevice" id="createDevice" style="width:100%;">
+		{{#data.supportedDevices}}
+			<option value="{{this.value}}_{{this.type}}"  class="inverter_select">{{this.name}}</option>
+		{{/data.supportedDevices}}
+	</select>
+	<br><br>
+	<button type="button" id="new_device" style="width:100%;">Create device</button><br/><br/>
+</form>
+
 WSL supports:<br>
 <br>
 Solar inverters:<br>

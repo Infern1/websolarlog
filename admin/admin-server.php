@@ -203,13 +203,31 @@ switch ($settingstype) {
 		$data['timezones'] = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
 		break;
 	case 'inverters':
+		$deviceService = new DeviceService();
+		$data['supportedDevices'] = $deviceService->getSupportedDevices();
 		$data['inverters'] = $config->allDevices;
 		break;
 	case 'inverter':
 		$deviceId = $_GET['id'];
+		$data['SMAspotDevices'] = 0;
+		$deviceService = new DeviceService();
+		$data['supportedDevices'] = $deviceService->getSupportedDevices();
+		
+
 		$data['inverter'] = $config->getDeviceConfig($deviceId);
 		if ($deviceId == -1) {
 			$data['inverter'] = new Device();
+		}
+		
+		// check if we have already a SMA-BT-WSL
+		foreach($config->allDevices as $device){
+			if($device->deviceApi == "SMA-BT-WSL"){
+				$data['SMAspotDevices']++;
+			}
+		}
+		// if we don't have a SMA-BT-WSL device, we don't want to use "special" config file and reset comAdress.
+		if($data['SMAspotDevices']==0){
+			$data['inverter']->comAddress = '';
 		}
 		break;
 	case 'panel':
@@ -399,8 +417,10 @@ switch ($settingstype) {
 		break;
 	case 'save-inverter':
 		$deviceService = new DeviceService();
-		$id = Common::getValue("id", -1);
 		$device = new Device();
+		
+		$id = Common::getValue("id", -1);
+
 		if ($id > 0) {
 			// get the current data
 			$device = $deviceService->load($id);
@@ -414,7 +434,7 @@ switch ($settingstype) {
 		$device->expectedkwh = Common::getValue("expectedkwh");
 		$device->plantpower = Common::getValue("plantpower");
 		$device->deviceApi = Common::getValue("deviceApi");
-		$device->type = Common::getValue("deviceType");
+		$device->type = Common::getValue("deviceType"); 
 		$device->comAddress = Common::getValue("comAddress");
 		$device->comLog = Common::getValue("comLog");
 		$device->syncTime = Common::getValue("syncTime");
