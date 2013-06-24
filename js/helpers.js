@@ -195,7 +195,7 @@
 	Handlebars.registerHelper("updaterVersionsList", function(context,block) {
 		var list = '<div class="span span-30">';
 		$.each( context, function( key, type ) {
-			list += '<ul style="list-style-type: none;"><li>'+key.capitalize()+"";
+			list += '<div id="'+key+'"></div><ul style="list-style-type: none;"><li>'+key.capitalize()+"";
 			$.each( type, function( key, value ) {
 				list += '<ul><li style="list-style-type: none;"><input type="radio" name="version" value="'+value.name+'*'+value.revision+'*'+value.timestamp+'*'+value.description+'"><span style="color:'+value.displayColor+'">&nbsp;&nbsp;'+value.displayName+'</span></input>';
 				list += '<ul><li>Release date(revision):</li>';
