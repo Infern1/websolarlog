@@ -21,8 +21,9 @@ WSL supports:<br>
 Solar inverters:<br>
 <div class="span span-16">
 <ul>
-	<li>PowerOne (Aurora RS485)</li>
+	<li>MasterVolt(TESTING)</li>
 	<li>Diehl (Ethernet)</li>
+	<li>PowerOne (Aurora RS485)</li>
 	<li>SMA (SMA-get RS485)</li>
 	<li>SMA (SMA-spot BlueTooth)</li>
 </ul>
