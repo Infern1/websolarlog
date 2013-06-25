@@ -229,7 +229,7 @@ switch ($settingstype) {
 				$data['SMAspotDevices']++;
 			}
 		}
-		if($data['SMAspotDevices']==0){
+		if($data['SMAspotDevices']==0 && $device->deviceApi == "SMA-BT-WSL"){
 			$data['inverter']->comAddress = '';
 		}
 
@@ -948,6 +948,11 @@ function diagnostics() {
 	
 	$result['encrypting'] = ($testphrase === $decrypted);
 
+	
+	$result['browserLanguages'] = Util::getBrowserDefaultLanguage();
+	$result['supportedLanguages'] = Session::supportedLanguages($result['browserLanguage']);
+	$result['setLanguage'] = Session::setLanguage();
+	$result['sessionLanguage'] = $_SESSION['WSL_LANGUAGE'];	
 	return $result;
 }
 ?>

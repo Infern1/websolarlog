@@ -215,3 +215,19 @@ or atleast check the running state with:<br>
 </div>
 </fieldset>
 </form>
+<form>
+<fieldset>
+    <legend>language:</legend>
+    	Your browser supports the following languages:
+    	<ul style="list-style-type: none;">
+    	{{#each data.test.browserLanguages}}
+    		<li>- <b>{{this}}</b></li>
+    	{{/each}}
+    	</ul>
+    	WebSolarLog tries to set:<br>
+    	locale: <b>{{data.test.setLanguage.locale}}</b><br>
+    	domain: <b>{{data.test.setLanguage.domain}}</b><br>
+    	WebSolarLog session language set to:<br>
+    	session language: <b>{{data.test.sessionLanguage}}</b><br>
+    </fieldset>
+</form>
