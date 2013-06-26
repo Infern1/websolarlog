@@ -57,32 +57,6 @@ var hashId;
 var get;
 var shortcutFunction;
 
-function checkURL(){
-
-    hash = document.URL.split('#');// split on #
-    // go further if there is a split and more than 1 element in the array
-    if(hash.length>1){    	
-    	shortcutFunction = hash[1];
-    	hash = hash[1];
-    	// #devices-1?id=1
-    	// loses: ?id=1
-    	if(hash.indexOf('?')>0){
-    		var splitHash = hash.split('?');
-    		get = splitHash[1]; // remove querystring params
-    		hash = splitHash[0];
-    		shortcutFunction = hash;
-    		// gives: #devices-1
-    	}
-    	// #devices-1?id=1
-    	// loses: -1
-    	if(hash.indexOf('-')>0){
-    		shortcut = hash.split('-'); // remove querystring params
-    		shortcutFunction = shortcut[0];
-    		hashId = shortcut[1];
-    		// gives: #devices
-    	}
-    }
-}
 
 $(function()
 {
@@ -94,7 +68,7 @@ $(function()
         if (data.result === true) {
             init_menu();
 
-            checkURL();
+            WSL.checkURL();
             // check if there is a function
             if(shortcutFunction){
             	// call the #xxxxxx function // example: '/admin/#backup' load the backup page.
@@ -252,6 +226,7 @@ function init_menu() {
 }
 
 function init_plugwise(){
+	WSL.checkURL();
 	$('#sidebar').html("");
 	$.getJSON('admin-server.php?s=getAllPlugs', function(data) {
         $.ajax({
@@ -326,6 +301,7 @@ function init_plugwise(){
 
 
 function init_tariff(){
+	WSL.checkURL();
     $('#sidebar').html("");
     var content = $('#content');
     content.html('<div id="c_general"></div><div id="c_communication"></div><div id="c_security"></div>'); // Clear old data
@@ -347,6 +323,7 @@ function init_tariff(){
 }
 
 function init_backup() {
+	WSL.checkURL();
     $('#sidebar').html("");
     
     $.getJSON('admin-server.php?s=dropbox', function(data) {
@@ -548,6 +525,7 @@ function deleteFiles(vars){
 }
 
 function init_advanced() {
+	WSL.checkURL();
     $('#sidebar').html("");
     
     $.getJSON('admin-server.php?s=advanced', function(data) {
@@ -580,7 +558,7 @@ function init_advanced() {
 
 
 function init_social(){
-	
+	WSL.checkURL();
     $('#sidebar').html("");
     var content = $('#content');
     content.html('<div id="c_social"></div>'); // Clear old data
@@ -758,6 +736,7 @@ function deviceStatuses(){
 
 
 function init_general() {
+	WSL.checkURL();
     $('#sidebar').html("");
     var content = $('#content');
     content.html('<div id="c_general"></div><div id="c_communication"></div><div id="c_security"></div>'); // Clear old data
@@ -863,7 +842,7 @@ function init_devices(selected_inverterId) {
                     $('#content').html("<br /><h2>Choose or create an inverter on the right side --></h2>");                    
                 }
                 // get hash...
-                checkURL();
+                WSL.checkURL();
                 
                 if(hashId){
                 	load_device(hashId);
@@ -1004,13 +983,11 @@ function load_device(inverterId,deviceApi,deviceType) {
                 }else{
                 	console.log(inv_data.inverter.type);
                 	$('.'+inv_data.inverter.type).show();
-                }
-
-                
+                }              
             	
                 if(inv_data.inverter.id > 0 && inv_data.inverter.panels.length==0 && inv_data.inverter.type == 'production'){
                 	$.pnotify({ title: 'No System Panels', text: 'Please add one or more panels. We need panels for some calculations.'});
-                	WSL.scrollTo($("#new_panels").closest('form'));
+                	WSL.scrollTo({element : $("#new_panels").closest('form'),time : '', offset : 0});
                 }
 
                 $('#btnDeviceSubmit').bind('click', function(){
@@ -1115,6 +1092,7 @@ function init_grid() {
 function init_email() {
     $('#sidebar').html("");
     var content = $('#content');
+    WSL.checkURL();
     content.html('<div id="c_mail"></div><div id="c_smtp"></div>');
     $.getJSON('admin-server.php?s=email', function(data) {
         $.ajax({
@@ -1174,7 +1152,8 @@ function init_email() {
 }
 
 function init_diagnostics() {
-    $('#sidebar').html("");
+	WSL.checkURL();
+	$('#sidebar').html("");
     $.getJSON('admin-server.php?s=test', function(data) {
         $.ajax({
             url : 'js/templates/testpage.hb',
@@ -1226,7 +1205,7 @@ function init_update(experimental,beta,scrollTo) {
                     	if($(this).is(':checked')){
                     		scrollTo = '#trunk';
                     	}else{
-                    		scrollTo = '';
+                    		scrollTo = '#navigation';
                     	}
                     	init_update(experimental,beta,scrollTo);
                     });
@@ -1236,7 +1215,7 @@ function init_update(experimental,beta,scrollTo) {
                     	if($(this).is(':checked')){
                     		scrollTo = '#beta';
                     	}else{
-                    		scrollTo = '';
+                    		scrollTo = '#navigation';
                     	}
                     	init_update(experimental,beta,scrollTo);
                     });
@@ -1293,9 +1272,11 @@ function init_update(experimental,beta,scrollTo) {
                     $('#content').html(html);
                     
                     if(!scrollTo){
-                    	WSL.scrollTo("#navigation");
+                    	//console.log('aaaa');
+                    	WSL.scrollTo({element : '#navigation',time : 0, offset : 0});
                     }else{
-                    	WSL.scrollTo(scrollTo);
+                    	//console.log('vvv'+scrollTo)
+                    	WSL.scrollTo({element : scrollTo,time : 0, offset : 0});
                     }
                     
                     $('#btnUpdateSubmit').attr('disabled', true);
@@ -1312,8 +1293,7 @@ function init_update(experimental,beta,scrollTo) {
                     $('#btnUpdateSubmit').bind('click', function(){
                     	
                     	// scroll to button..
-                    	WSL.scrollTo("#btnUpdateSubmit");
-
+                    	WSL.scrollTo({element : '#btnUpdateSubmit',time : '', offset : 0});
                         var button = $(this);
                         button.attr('disabled', true);
                         var updateNotice = $.pnotify({

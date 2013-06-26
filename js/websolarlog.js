@@ -5,6 +5,14 @@ var windowState = true;
 var ajax = $.ajaxSetup({
 	cache : true
 });
+
+
+// activate stickyNavigation bar
+$(function(){
+	WSL.stickyNavigation();
+});
+
+
 /**
  * 
  * @param theArray
@@ -169,14 +177,37 @@ function ajaxStart() {
 	$('.ui-tooltip').remove();
 }
 
-jQuery.fn.center = function() {
+jQuery.fn.center = function(left,top,position) {
 	$this = $(this);
 	var w = $($this.parent());
+	
+	
+	if(left==''){
+		left = 0;
+	}else{
+		left =  Math.abs(((w.width() - this.outerWidth()) / 2)+ w.scrollLeft());
+	}
+	
+	if(top==''){
+		top = 0;
+	}else{
+		top = Math.abs(((w.height() - this.outerHeight()) / 2)+ w.scrollTop());
+	}
+
+	if(typeof(position)==='undefined'){
+		position = 'absolute';
+	}else{
+		position = '';
+	}
+
+	//console.log(position+" "+top+" "+left);
+	
 	this.css({
-		'position' : 'absolute',
-		'top' : Math.abs(((w.height() - this.outerHeight()) / 2)+ w.scrollTop()),
-		'left' : Math.abs(((w.width() - this.outerWidth()) / 2)+ w.scrollLeft())
+		'position' : position,
+		'top' : top,
+		'left' : left
 	});
+	
 	return this;
 }
 
@@ -321,9 +352,6 @@ function tooltipProductionContentEditor(str, seriesIndex, pointIndex, plot,
 	return returned;
 }
 
-String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-}
 
 if (!String.prototype.trim) {
 	String.prototype.trim = function() {
@@ -718,10 +746,11 @@ var WSL = {
 	connect : {},
 	template : {},
 	scrollTo : {},
+	stickyNavigation : {},
+	capitalize : {},
 	init_nextRelease : function(divId) {
 		$(divId).html("<br/><br/><H1>WSL::NextRelease();</h1>");
 	},
-
 	init_PageTodayHistoryValues : function(divId) {
 		ajaxStart();
 		// Retrieve the error events
@@ -1753,7 +1782,7 @@ var WSL = {
 							var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
 							// new Date(year,month, day) // W3schools
 							if(currentYear != year){
-								console.log(year);
+								//console.log(year);
 								$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
 								$("#graphContainer").html('reloading....');
 								$("#figuresContainer").html('reloading....');
@@ -2394,10 +2423,10 @@ var WSL = {
 									"displayKWH" : object[3],
 									"harvested" : object[4],
 								};
-								console.log(item);
+								//console.log(item);
 								whichTable.push([ item ]);
 							}
-							console.log(compareTable);
+							//console.log(compareTable);
 							$("#content").append('<div id="compareGraph"></div>');
 							$('#content').append('<div id="compareFigures"></div>');
 							$("#compareGraph").height(500);
@@ -2679,6 +2708,7 @@ WSL.connect.__ajax = function (url, type, dataType, data, async, success, error,
 };
 
 
+
 /**
  ****** template class *******
  */
@@ -2703,9 +2733,78 @@ WSL.template.preLoadTemplate = function (url) {
 /**
  ****** scrollTo class ? *******
  */
-WSL.scrollTo = function(element, time){
-	if(typeof(time)==='undefined') time = 1500;
-	$('html, body').animate({
-        scrollTop: $(element).offset().top
-    }, time);
+WSL.scrollTo = function(options){
+	if(typeof(options.time)=='') options.time = 350;
+	//console.log(options);
+	$('body').animate({
+        scrollTop: parseInt($(options.element).offset().top + options.offset)
+    }, options.time);
+}
+/**
+ ****** scrollTo class ? *******
+ */
+WSL.checkURL = function(){
+    hash = document.URL.split('#');// split on #
+    // go further if there is a split and more than 1 element in the array
+    if(hash.length>1){    	
+    	shortcutFunction = hash[1];
+    	hash = hash[1];
+    	// #devices-1?id=1
+    	// loses: ?id=1
+    	if(hash.indexOf('?')>0){
+    		var splitHash = hash.split('?');
+    		get = splitHash[1]; // remove querystring params
+    		hash = splitHash[0];
+    		shortcutFunction = hash;
+    		// gives: #devices-1
+    	}
+    	// #devices-1?id=1
+    	// loses: -1
+    	if(hash.indexOf('-')>0){
+    		shortcut = hash.split('-'); // remove querystring params
+    		shortcutFunction = shortcut[0];
+    		hashId = shortcut[1];
+    		// gives: #devices
+    	}
+    }
+    WSL.scrollTo({element : '#navigation',time : '', offset : 0});
+}
+
+/*
+ * Create StickyNavigation bar on top of page.
+ */
+WSL.stickyNavigation =  function(){ 
+	// grab the initial top offset of the navigation 
+	var sticky_navigation_offset_top = $('#navigation').offset().top;
+	
+	$('#navigation').after('<div id="navigation_sticky"></div>');
+	$('#navigation_sticky').html('<div class="shell_sticky">'+$('#navigation').html()+'<div id="main-top"></div></div>').hide();
+	
+	// our function that decides weather the navigation bar should have "fixed" css position or not.
+	var sticky_navigation = function(){
+	    var scroll_top = $(window).scrollTop(); // our current vertical position from the top
+	     
+	    // if we've scrolled more than the navigation, change its position to fixed to stick to top,
+	    // otherwise change it back to relative
+	    if (scroll_top > sticky_navigation_offset_top) {
+	        $('#navigation_sticky').css({ 'position': 'fixed', 'top':0, 'width':'100%',  'z-index':1110, 'left':0 }).show();
+	    }
+	    if (scroll_top < sticky_navigation_offset_top) {
+	        $('#navigation_sticky').css({}).hide(); 
+	    }   
+	};
+	// run our function on load
+	sticky_navigation();
+	 
+	// and run it again every time you scroll
+	$(window).scroll(function() {
+	     sticky_navigation();
+	});
+}
+
+/**
+ * Capitalize String
+ */
+WSL.capitalize = function(string){
+	 return string.charAt(0).toUpperCase() + string.slice(1);
 }
