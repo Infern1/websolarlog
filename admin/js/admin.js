@@ -981,17 +981,26 @@ function load_device(inverterId,deviceApi,deviceType) {
                 if(inverterId<0){
                 	$('.create_new').show();
                 }else{
-                	console.log(inv_data.inverter.type);
-                	$('.'+inv_data.inverter.type).show();
+                	//console.log(inv_data.inverter.type);
+                	if(inv_data.inverter.type){
+                		$('.'+inv_data.inverter.type).show();
+                	}else{
+                		$('.all').show();
+                	}
                 }              
             	
                 if(inv_data.inverter.id > 0 && inv_data.inverter.panels.length==0 && inv_data.inverter.type == 'production'){
                 	$.pnotify({ title: 'No System Panels', text: 'Please add one or more panels. We need panels for some calculations.'});
                 	WSL.scrollTo({element : $("#new_panels").closest('form'),time : '', offset : 0});
                 }
-
+                
+                
                 $('#btnDeviceSubmit').bind('click', function(){
                 	$('#btnDeviceSubmit').attr("disabled", "disabled");
+                	
+                	// remove disabled attr so POST will process it.
+                	$('[disabled="disabled"]').each(function(){$(this).removeAttr('disabled');});
+                	
                 	checkCheckboxesHiddenFields();
                 	var data = $(this).closest('form').serialize();
                 	WSL.connect.postJSON('admin-server.php', data, function(result) {
