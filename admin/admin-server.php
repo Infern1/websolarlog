@@ -215,7 +215,7 @@ switch ($settingstype) {
 		$data['supportedDevices'] = $deviceService->getSupportedDevices();
 		
 
-		$data['inverter'] = $config->getDeviceConfig($deviceId);
+		$data['inverter'] = $deviceService->load($deviceId);
 		//var_dump($data['inverter']);
 		// if we don't have a SMA-BT-WSL device, we don't want to use "special" config file and reset comAdress.
 
