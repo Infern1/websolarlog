@@ -53,17 +53,17 @@ session_start();
 			<!-- Navigation -->
 			<div id="navigation">
 				<ul>
-					<li class="nav-start"><a href="#" id="btnGeneral">General</a></li>
-					<li><a href="#devices" id="btnDevices">Devices</a></li>
-					<li><a href="#email" id="btnEmail">eMail</a></li>
-					<li><a href="#advanced" id="btnAdvanced">Advanced</a></li>
-					<li><a href="#social" id="btnSocial">Social</a></li>
+					<li class="nav-start"><a href="#" class="btnGeneral">General</a></li>
+					<li><a href="#devices" class="btnDevices">Devices</a></li>
+					<li><a href="#email" class="btnEmail">eMail</a></li>
+					<li><a href="#advanced" class="btnAdvanced">Advanced</a></li>
+					<li><a href="#social" class="btnSocial">Social</a></li>
 					<!-- <li><a href="#tariff" id="btnTariff">Tariff</a></li>-->
-					<li><a href="#update" id="btnUpdate">Update</a></li>
-					<li><a href="#backup" id="btnBackup">Backup</a></li>
-					<li><a href="#plugwise" id="btnPlugwise">Plugwise</a></li>
+					<li><a href="#update" class="btnUpdate">Update</a></li>
+					<li><a href="#backup" class="btnBackup">Backup</a></li>
+					<li><a href="#plugwise" class="btnPlugwise">Plugwise</a></li>
 					<!-- li><a href="#DataMaintenance" id="btnDataMaintenance">DBM</a></li -->
-					<li class="nav-end"><a href="#diagnostics" id="btnDiagnostics">Diagnostics</a></li>
+					<li class="nav-end"><a href="#diagnostics" class="btnDiagnostics">Diagnostics</a></li>
 				</ul>
 				<div class="cl"></div>
 			</div>

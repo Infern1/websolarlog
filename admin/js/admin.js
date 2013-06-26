@@ -211,18 +211,18 @@ function init_KWHcalc(inv_data){
  * Init menu buttons
  */
 function init_menu() {
-    $("#btnAdvanced").bind('click', function() { init_advanced();});
-    $("#btnGeneral").bind('click', function() { init_general();});
-    $("#btnDevices").bind('click', function() { init_devices(); });
-    $("#btnGrid").bind('click', function() { init_grid();});
-    $("#btnEmail").bind('click', function() { init_email(); });
-    $("#btnDiagnostics").bind('click', function() { init_diagnostics(); });
-    $("#btnTariff").bind('click', function() { init_tariff(); });
-    $("#btnSocial").bind('click', function() { init_social(); });
-    $("#btnUpdate").bind('click', function() { init_update(); });
-    $("#btnBackup").bind('click', function() { init_backup(); });
-    $("#btnPlugwise").bind('click', function() { init_plugwise(); });
-    $("#btnDataMaintenance").bind('click', function() { init_dataMaintenance(); });
+    $(".btnAdvanced").bind('click', function() { init_advanced();});
+    $(".btnGeneral").bind('click', function() { init_general();});
+    $(".btnDevices").bind('click', function() { init_devices(); });
+    $(".btnGrid").bind('click', function() { init_grid();});
+    $(".btnEmail").bind('click', function() { init_email(); });
+    $(".btnDiagnostics").bind('click', function() { init_diagnostics(); });
+    $(".btnTariff").bind('click', function() { init_tariff(); });
+    $(".btnSocial").bind('click', function() { init_social(); });
+    $(".btnUpdate").bind('click', function() { init_update(); });
+    $(".btnBackup").bind('click', function() { init_backup(); });
+    $(".btnPlugwise").bind('click', function() { init_plugwise(); });
+    $(".btnDataMaintenance").bind('click', function() { init_dataMaintenance(); });
 }
 
 function init_plugwise(){
