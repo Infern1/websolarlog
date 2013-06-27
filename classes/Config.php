@@ -64,6 +64,7 @@ class Config
     public $smagetpath; // The path to sma-get
     public $smaspotpath; // The path to sma-spot
     public $smaspotWSLpath; // The path to sma-spot -wsl
+    public $kostalpikopath; // The path to Piko.py
     public $plugwiseStrech20IP;
     public $plugwiseStrech20ID;
     public $smartmeterpath;

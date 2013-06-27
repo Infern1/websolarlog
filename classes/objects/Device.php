@@ -71,7 +71,7 @@ class Device {
     	if ($this->deviceApi == "SMA-BT") {
 	    	return new SMABlueTooth($config->smaspotpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
 	    }
-	    if ($this->deviceApi == "SMA-BT-WSL") {
+    	    if ($this->deviceApi == "SMA-BT-WSL") {
 	    	return new SMASpotWSL($config->smaspotWSLpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
 	    }
 	    if ($this->deviceApi == "Diehl-ethernet") {
@@ -88,6 +88,9 @@ class Device {
 	    }
     	if ($this->deviceApi == "Open-Weather-Map") {
 	    	return new WeatherOWM($config->latitude, $config->longitude);
+	    }
+	    if ($this->deviceApi == "KostalPiko") {
+	    	return new KostalPiko($config->kostalpikopath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
 	    }
     }
 }

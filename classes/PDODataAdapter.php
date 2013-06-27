@@ -304,6 +304,7 @@ class PDODataAdapter {
 		$bean->smagetpath = $config->smagetpath;
 		$bean->smaspotpath = $config->smaspotpath;
 		$bean->smaspotWSLpath = $config->smaspotWSLpath;
+		$bean->kostalpikopath = $config->kostalpikopath;
 		$bean->plugwiseStrech20IP = $config->plugwiseStrech20IP;
 		$bean->plugwiseStrech20ID = $config->plugwiseStrech20ID;
 		$bean->smartmeterpath = $config->smartmeterpath;
@@ -375,6 +376,7 @@ class PDODataAdapter {
 			$config->smagetpath = ($bean->smagetpath != "") ? $bean->smagetpath : $config->smagetpath;
 			$config->smaspotpath = ($bean->smaspotpath != "") ? $bean->smaspotpath : $config->smaspotpath;
 			$config->smaspotWSLpath = ($bean->smaspotWSLpath != "") ? $bean->smaspotWSLpath : $config->smaspotWSLpath;
+			$config->kostalpikopath = ($bean->kostalpikopath != "") ? $bean->kostalpikopath : $config->kostalpikopath;
 			$config->plugwiseStrech20IP = ($bean->plugwiseStrech20IP != "") ? $bean->plugwiseStrech20IP : $config->plugwiseStrech20IP;
 			$config->plugwiseStrech20ID = ($bean->plugwiseStrech20ID != "") ? $bean->plugwiseStrech20ID : $config->plugwiseStrech20ID;
 			$config->smartmeterpath = ($bean->smartmeterpath != "") ? $bean->smartmeterpath : $config->smartmeterpath;

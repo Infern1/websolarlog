@@ -24,6 +24,7 @@ class ProductionDeviceHandler {
 		if (!empty($live->IP)) {
 			$live->I1Ratio = round(($live->I1P/$live->IP)*100,3);
 			$live->I2Ratio = round(($live->I2P/$live->IP)*100,3);
+			$live->I3Ratio = round(($live->I3P/$live->IP)*100,3);
 		}
 		
 		// Round some variables

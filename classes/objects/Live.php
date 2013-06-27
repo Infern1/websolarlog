@@ -11,9 +11,22 @@ class Live {
 	public $I2A;
 	public $I2P;
 	public $I2Ratio;
+	public $I3V;
+	public $I3A;
+	public $I3P;
+	public $I3Ratio;
+	
 	public $GV;
 	public $GA;
 	public $GP;
+	//
+	public $GV2;
+	public $GA2;
+	public $GP2;
+	//
+	public $GV3;
+	public $GA3;
+	public $GP3;
 	public $SDTE;
 	public $time;
 	public $FRQ;
@@ -22,6 +35,7 @@ class Live {
 	public $BOOT;
 	public $KWHT;
 	public $IP;
+	public $ACP;
 
 	/**
 	 * below are transient variables
@@ -50,9 +64,24 @@ class Live {
 		$history->I2A = $this->I2A;
 		$history->I2P = $this->I2P;
 		$history->I2Ratio = $this->I2Ratio;
+		
+		$history->I3V = $this->I3V;
+		$history->I3A = $this->I3A;
+		$history->I3P = $this->I3P;
+		$history->I3Ratio = $this->I3Ratio;
+		
 		$history->GV = $this->GV;
 		$history->GA = $this->GA;
 		$history->GP = $this->GP;
+
+		$history->GV2 = $this->GV2;
+		$history->GA2 = $this->GA2;
+		$history->GP2 = $this->GP2;
+
+		$history->GV3 = $this->GV3;
+		$history->GA3 = $this->GA3;
+		$history->GP3 = $this->GP3;
+		
 		$history->FRQ = $this->FRQ;
 		$history->EFF = $this->EFF;
 		$history->INVT = $this->INVT;
