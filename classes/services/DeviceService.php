@@ -93,6 +93,7 @@ class DeviceService {
 				array('value'=>'Diehl-ethernet','type'=>'production','name'=>'Diehl Ethernet'),
 				array('value'=>'DutchSmartMeter','type'=>'metering','name'=>'Dutch Smart Meter'),
 				array('value'=>'DutchSmartMeterRemote','type'=>'metering','name'=>'Dutch Smart Meter Remote'),
+				array('value'=>'KostalPiko','type'=>'production','name'=>'Kostal Piko'),
 				array('value'=>'MasterVolt','type'=>'production','name'=>'MasterVolt'),
 				array('value'=>'Open-Weather-Map','type'=>'weather','name'=>'Open Weather Map'),
 				array('value'=>'SMA-RS485','type'=>'production','name'=>'SMA RS485'),
