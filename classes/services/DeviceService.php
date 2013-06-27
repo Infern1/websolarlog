@@ -97,7 +97,6 @@ class DeviceService {
 				array('value'=>'MasterVolt','type'=>'production','name'=>'MasterVolt'),
 				array('value'=>'Open-Weather-Map','type'=>'weather','name'=>'Open Weather Map'),
 				array('value'=>'SMA-RS485','type'=>'production','name'=>'SMA RS485'),
-				array('value'=>'SMA-BT','type'=>'production','name'=>'SMA-spot-2.0.4 BlueTooth'),
 				array('value'=>'SMA-BT-WSL','type'=>'production','name'=>'SMA-spot-2.0.6 BlueTooth')
 		);
 	}
