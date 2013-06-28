@@ -1635,22 +1635,25 @@ class PDODataAdapter {
 				}else{
 					$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
 
-					if($liveBean['I1P']>0 AND $liveBean['I2P']==0){
-						$ITP = round($liveBean['I1P'],2);
-					}else{
-						$ITP = round($liveBean['I1P'],2)+round($liveBean['I2P'],2);
-					}
-
-					$GP  += $liveBean['GP'];
+					
 					$I1P += $liveBean['I1P'];
 					$I2P += $liveBean['I2P'];
-					$IP  += $ITP;
-					$EFF += $liveBean['EFF'];
+					$I3P += $liveBean['I3P'];
+					
+					// sum system (all devices) power values
+					$totalSystemIP  += $liveBean['I1P'] + $liveBean['I2P'] + $liveBean['I3P'];
+					$totalSystemACP  += $liveBean['GP'] + $liveBean['GP2'] + $liveBean['GP3'];
+
 
 					$live = new Live();
 					$live->name = $device->name;
 					$live->status = 'online';
 					$live->time = date("H:i:s",$liveBean['time']);
+
+					// sum device power values
+					$live->totalDeviceIP  = round($liveBean['I1P'] + $liveBean['I2P'] + $liveBean['I3P'],2);
+					$live->totalDeviceACP  = round($liveBean['GP'] + $liveBean['GP2'] + $liveBean['GP3'],2);
+										
 					$live->INV = $liveBean['INV'];
 					$live->GP = ($liveBean['GP']<1000) ? number_format($liveBean['GP'],1,'.','') : number_format($liveBean['GP'],0,'','');
 					$live->GA = ($liveBean['GA']<1000) ? number_format($liveBean['GA'],1,'.','') : number_format($liveBean['GA'],0,'','');
@@ -1680,6 +1683,7 @@ class PDODataAdapter {
 					$live->I3Ratio = ($liveBean['I3Ratio']<1000) ? number_format($liveBean['I3Ratio'],1,'.','') : number_format($liveBean['I3Ratio'],0,'','');
 					
 					$live->IP = ($liveBean['IP']<1000) ? number_format($liveBean['IP'],1,'.','') : number_format($liveBean['IP'],0,'','');
+					$live->ACP = ($liveBean['ACP']<1000) ? number_format($liveBean['ACP'],1,'.','') : number_format($liveBean['ACP'],0,'','');
 					$live->EFF = ($liveBean['EFF']<1000) ? number_format($liveBean['EFF'],1,'.','') : number_format($liveBean['EFF'],0,'','');
 						
 					$avgPower = $this->readCache("","index","live",$device->id,"trend");
@@ -1701,8 +1705,11 @@ class PDODataAdapter {
 		$sum['I1P'] = ($I1P<1000) ? number_format($I1P,1,'.','') : number_format($I1P,0,'','');
 		$sum['I2P'] = ($I2P<1000) ? number_format($I2P,1,'.','') : number_format($I2P,0,'','');
 		$sum['I3P'] = ($I3P<1000) ? number_format($I3P,1,'.','') : number_format($I3P,0,'','');
-		$sum['IP'] = ($IP<1000) ? number_format($IP,1,'.','') : number_format($IP,0,'','');
-		$sum['EFF'] = ($EFF<100) ? number_format($EFF,1,'.','') : number_format($EFF,0,'','');
+		$sum['totalSystemACP'] = ($totalSystemACP<1000) ? number_format($totalSystemACP,1,'.','') : number_format($totalSystemACP,0,'','');
+		$sum['totalSystemIP'] = ($totalSystemIP<1000) ? number_format($totalSystemIP,1,'.','') : number_format($totalSystemIP,0,'','');
+		$totalSystemEff = ($totalSystemACP / $totalSystemIP) * 100;
+		
+		$sum['EFF'] = ($totalSystemEff>0) ? number_format($totalSystemEff,1,'.','') : '0,0';
 		return array('inverters'=>$inverters,'sum'=>$sum);
 	}
 
@@ -2114,7 +2121,9 @@ class PDODataAdapter {
 
 		switch ($type) {
 			case 'panels':
-				$average['recent'] = $this->readPlantPower();
+				foreach (Session::getConfig()->devices as $device) {
+					$average['recent'] += $device->plantpower;
+				}
 				break;
 			case 'average':
 
