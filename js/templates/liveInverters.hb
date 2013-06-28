@@ -20,6 +20,6 @@
 <div class="column span-4 tooltip" title="{{this.live.I1P}} W = {{this.live.I1V}} V * {{this.live.I1A}} A">{{this.live.I1P}} ({{this.live.I1Ratio}})</div>
 <div class="column span-4 tooltip" title="{{this.live.I2P}} W = {{this.live.I2V}} V * {{this.live.I2A}} A">{{this.live.I2P}} ({{this.live.I2Ratio}})</div>
 <div class="column span-3 last tooltip" title="{{this.live.IP}} W = {{this.live.I1P}} W + {{this.live.I2P}} W  {{#if_gt this.live.I3P compare=0}} + {{this.live.I3P}} W {{/if_gt}}
-">{{this.live.totalDeviceACP}}</div>
+">{{this.live.totalDeviceIP}}</div>
 </div>
 {{/each}}
