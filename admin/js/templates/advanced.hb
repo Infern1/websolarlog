@@ -26,6 +26,7 @@
    <span style="color:#f00;">We recommend to use SMAspot >=2.0.6</span><br>
     <label for="smaspotWSLpath">SMAspot <span style="color:#f00;">>2.0.6</span>(BT):</label><input type="text" name="smaspotWSLpath" value="{{data.smaspotWSLpath}}"  size="50"/><br />
     <label for="smartmeterpath">smartmeter:</label><input type="text" name="smartmeterpath" value="{{data.smartmeterpath}}"  size="50"/><br />
+    <label for="kostalpikopath">Piko.py:</label><input type="text" name="kostalpikopath" value="{{data.kostalpikopath}}"  size="50"/><br />
     <label for="plugwiseStrech20IP">Plugwise Stretch 2.0:</label><input type="text" name="plugwiseStrech20IP" value="{{data.plugwiseStrech20IP}}"  size="30"/>Stretch IP adress<br />
     <label for="plugwiseStrech20ID">Plugwise Stretch 2.0:</label><input type="text" name="plugwiseStrech20ID" value="{{data.plugwiseStrech20ID}}"  size="30"/>Stretch ID<br />
     <div class="examples">

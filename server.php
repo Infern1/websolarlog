@@ -583,6 +583,11 @@ try {
 			$SmartMeterAddon = new SmartMeterAddon();
 			$SmartMeterAddon->installAddon();
 			//var_dump($versions);
+		case "kostal":
+			$kostal = new KostalPiko('python /home/marco/piko/Piko_dev.py --host=hansenmieke.dlinkddns.com --port=9996', '-csv -q', $port, $comoption, false);
+			$data['live'] = $kostal->getLiveData();
+			
+			break;
 		case "save-graph":
 			$graph = new Graph();
 			$graphService = new GraphService();
@@ -594,7 +599,11 @@ try {
 			$graphService = new GraphService();
 			$graph->name = Common::getValue("name", "");
 			$graphService->load($graph);
-			//var_dump($versions);			
+			//var_dump($versions);
+		case "kostal":
+			$kostal = new KostalPiko('python /home/marco/piko/Piko_dev.py --host=hansenmieke.dlinkddns.com --port=9996 -csv -q', $address, $port, $comoption, $debug);
+			echo $kostal->getLiveData();
+			break;			
 		case "phpinfo":
 			$phpinfo = new SMASpotWSL('/home/pi/smaspot/bin/Release/./SMAspot', '/home/pi/smaspot/bin/Release/test.cfg', '', '', false);
 			//var_dump($phpinfo->phpInfo());

@@ -790,32 +790,6 @@ class PDODataAdapter {
 		$labels[]= "Boos. "._('Temperature');
 		$labels[]= "Inv. "._('Temperature');
 
-		$switches['P'][] = 0;
-		$switches['P'][] = 4;
-		$switches['P'][] = 8;
-		$switches['V'][] = 1;
-		$switches['V'][] = 5;
-		$switches['V'][] = 9;
-		$switches['A'][] = 2;
-		$switches['A'][] = 6;
-		$switches['A'][] = 10;
-		$switches['R'][] = 7;
-		$switches['R'][] = 11;
-		$switches['G'][] = 0;
-		$switches['G'][] = 1;
-		$switches['G'][] = 2;
-		$switches['G'][] = 3;
-		$switches['I1'][] = 4;
-		$switches['I1'][] = 5;
-		$switches['I1'][] = 6;
-		$switches['I1'][] = 7;
-		$switches['I2'][] = 8;
-		$switches['I2'][] = 9;
-		$switches['I2'][] = 10;
-		$switches['I2'][] = 11;
-		$switches['EFF'][] = 12;
-		$switches['TEMP'][] = 13;
-		$switches['TEMP'][] = 14;
 
 		$max = array();
 		$max['P'] = 0;
@@ -838,7 +812,8 @@ class PDODataAdapter {
 
 			$live->GA[] 	= array($bean['time'],(float)$bean['GA']);
 			($bean['GA'] > $max['A'])? $max['A'] = (float)$bean['GA'] : $max['A'] = $max['A'];
-
+			
+				
 			$live->FRQ[] 	= array($bean['time'],(float)$bean['FRQ']);
 			($bean['FRQ'] > $max['FRQ'])? $max['FRQ'] = (float)$bean['FRQ'] : $max['FRQ'] = $max['FRQ'];
 
@@ -856,16 +831,16 @@ class PDODataAdapter {
 
 			$live->I2P[] 	= array($bean['time'],(float)$bean['I2P']);
 			($bean['I2P'] > $max['P'])? $max['P'] = (float)$bean['I2P'] : $max['P'] = $max['P'];
-
+			
 			$live->I2V[] 	= array($bean['time'],(float)$bean['I2V']);
 			($bean['I2V'] > $max['V'])? $max['V'] = (float)$bean['I2V'] : $max['V'] = $max['V'];
-
+			
 			$live->I2A[] 	= array($bean['time'],(float)$bean['I2A']);
 			($bean['I2A'] > $max['A'])? $max['A'] = (float)$bean['I2A'] : $max['A'] = $max['A'];
-
+			
 			$live->I2Ratio[]= array($bean['time'],(float)$bean['I2Ratio']);
 			($bean['I2Ratio'] > $max['Ratio'])? $max['Ratio'] = (float)$bean['I2Ratio'] : $max['Ratio'] = $max['Ratio'];
-
+				
 			$live->EFF[] 	= array($bean['time'],(float)$bean['EFF']);
 			($bean['EFF'] > $max['EFF'])? $max['EFF'] = (float)$bean['EFF'] : $max['EFF'] = $max['EFF'];
 
@@ -881,6 +856,12 @@ class PDODataAdapter {
 			$live->GP[] 	= array(time()*1000,0);//0
 			$live->GV[] 	= array(time()*1000,0);//1
 			$live->GA[] 	= array(time()*1000,0);//2
+			$live->GP2[] 	= array(time()*1000,0);//0
+			$live->GV2[] 	= array(time()*1000,0);//1
+			$live->GA2[] 	= array(time()*1000,0);//2
+			$live->GP3[] 	= array(time()*1000,0);//0
+			$live->GV3[] 	= array(time()*1000,0);//1
+			$live->GA3[] 	= array(time()*1000,0);//2
 			$live->FRQ[] 	= array(time()*1000,0);//3
 			$live->I1P[] 	= array(time()*1000,0);//4
 			$live->I1V[] 	= array(time()*1000,0);//5
@@ -890,6 +871,10 @@ class PDODataAdapter {
 			$live->I2V[] 	= array(time()*1000,0);//9
 			$live->I2A[] 	= array(time()*1000,0);//10
 			$live->I2Ratio[]= array(time()*1000,0);//11
+			$live->I3P[] 	= array(time()*1000,0);//8
+			$live->I3V[] 	= array(time()*1000,0);//9
+			$live->I3A[] 	= array(time()*1000,0);//10
+			$live->I3Ratio[]= array(time()*1000,0);//11
 			$live->EFF[] 	= array(time()*1000,0);//12
 			$live->BOOT[]	= array(time()*1000,0);//13
 			$live->INVT[] 	= array(time()*1000,0);//14
@@ -1608,6 +1593,7 @@ class PDODataAdapter {
 		$GP  = 0;
 		$I1P = 0;
 		$I2P = 0;
+		$I3P = 0;
 		$IP  = 0;
 		$EFF = 0;
 
@@ -1637,6 +1623,10 @@ class PDODataAdapter {
 					$live->I2A = number_format(0,2,',','');
 					$live->I2V = number_format(0,2,',','');
 					$live->I2Ratio = number_format(0,2,',','');
+					$live->I3P = number_format(0,2,',','');
+					$live->I3A = number_format(0,2,',','');
+					$live->I3V = number_format(0,2,',','');
+					$live->I3Ratio = number_format(0,2,',','');
 
 					$live->IP = number_format(0,2,',','');
 					$live->EFF = number_format(0,2,',','');
@@ -1665,6 +1655,14 @@ class PDODataAdapter {
 					$live->GP = ($liveBean['GP']<1000) ? number_format($liveBean['GP'],1,'.','') : number_format($liveBean['GP'],0,'','');
 					$live->GA = ($liveBean['GA']<1000) ? number_format($liveBean['GA'],1,'.','') : number_format($liveBean['GA'],0,'','');
 					$live->GV = ($liveBean['GV']<1000) ? number_format($liveBean['GV'],1,'.','') : number_format($liveBean['GV'],0,'','');
+					
+					$live->GP2 = ($liveBean['GP2']<1000) ? number_format($liveBean['GP2'],1,'.','') : number_format($liveBean['GP2'],0,'','');
+					$live->GA2 = ($liveBean['GA2']<1000) ? number_format($liveBean['GA2'],1,'.','') : number_format($liveBean['GA2'],0,'','');
+					$live->GV2 = ($liveBean['GV2']<1000) ? number_format($liveBean['GV2'],1,'.','') : number_format($liveBean['GV2'],0,'','');
+					
+					$live->GP3 = ($liveBean['GP3']<1000) ? number_format($liveBean['GP3'],1,'.','') : number_format($liveBean['GP3'],0,'','');
+					$live->GA3 = ($liveBean['GA3']<1000) ? number_format($liveBean['GA3'],1,'.','') : number_format($liveBean['GA3'],0,'','');
+					$live->GV3 = ($liveBean['GV3']<1000) ? number_format($liveBean['GV3'],1,'.','') : number_format($liveBean['GV3'],0,'','');
 
 					$live->I1P = ($liveBean['I1P']<1000) ? number_format($liveBean['I1P'],1,'.','') : number_format($liveBean['I1P'],0,'','');
 					$live->I1A = ($liveBean['I1A']<1000) ? number_format($liveBean['I1A'],1,'.','') : number_format($liveBean['I1A'],0,'','');
@@ -1675,6 +1673,12 @@ class PDODataAdapter {
 					$live->I2A = ($liveBean['I2A']<1000) ? number_format($liveBean['I2A'],1,'.','') : number_format($liveBean['I2A'],0,'','');
 					$live->I2V = ($liveBean['I2V']<1000) ? number_format($liveBean['I2V'],1,'.','') : number_format($liveBean['I2V'],0,'','');
 					$live->I2Ratio = ($liveBean['I2Ratio']<1000) ? number_format($liveBean['I2Ratio'],1,'.','') : number_format($liveBean['I2Ratio'],0,'','');
+					
+					$live->I3P = ($liveBean['I3P']<1000) ? number_format($liveBean['I3P'],1,'.','') : number_format($liveBean['I3P'],0,'','');
+					$live->I3A = ($liveBean['I3A']<1000) ? number_format($liveBean['I3A'],1,'.','') : number_format($liveBean['I3A'],0,'','');
+					$live->I3V = ($liveBean['I3V']<1000) ? number_format($liveBean['I3V'],1,'.','') : number_format($liveBean['I3V'],0,'','');
+					$live->I3Ratio = ($liveBean['I3Ratio']<1000) ? number_format($liveBean['I3Ratio'],1,'.','') : number_format($liveBean['I3Ratio'],0,'','');
+					
 					$live->IP = ($liveBean['IP']<1000) ? number_format($liveBean['IP'],1,'.','') : number_format($liveBean['IP'],0,'','');
 					$live->EFF = ($liveBean['EFF']<1000) ? number_format($liveBean['EFF'],1,'.','') : number_format($liveBean['EFF'],0,'','');
 						
@@ -1692,8 +1696,11 @@ class PDODataAdapter {
 
 		$sum = array();
 		$sum['GP'] = ($GP<1000) ? number_format($GP,1,'.','') : number_format($GP,0,'','');
+		$sum['GP2'] = ($GP2<1000) ? number_format($GP2,1,'.','') : number_format($GP2,0,'','');
+		$sum['GP3'] = ($GP3<1000) ? number_format($GP3,1,'.','') : number_format($GP3,0,'','');
 		$sum['I1P'] = ($I1P<1000) ? number_format($I1P,1,'.','') : number_format($I1P,0,'','');
 		$sum['I2P'] = ($I2P<1000) ? number_format($I2P,1,'.','') : number_format($I2P,0,'','');
+		$sum['I3P'] = ($I3P<1000) ? number_format($I3P,1,'.','') : number_format($I3P,0,'','');
 		$sum['IP'] = ($IP<1000) ? number_format($IP,1,'.','') : number_format($IP,0,'','');
 		$sum['EFF'] = ($EFF<100) ? number_format($EFF,1,'.','') : number_format($EFF,0,'','');
 		return array('inverters'=>$inverters,'sum'=>$sum);

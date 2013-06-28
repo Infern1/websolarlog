@@ -7,10 +7,12 @@ class Live {
 	public $I1A;
 	public $I1P;
 	public $I1Ratio;
+	
 	public $I2V;
 	public $I2A;
 	public $I2P;
 	public $I2Ratio;
+	
 	public $I3V;
 	public $I3A;
 	public $I3P;
@@ -27,6 +29,7 @@ class Live {
 	public $GV3;
 	public $GA3;
 	public $GP3;
+	
 	public $SDTE;
 	public $time;
 	public $FRQ;
@@ -56,10 +59,12 @@ class Live {
 		$history->deviceId = $this->deviceId;
 		$history->SDTE = $this->SDTE;
 		$history->time = $this->time;
+		
 		$history->I1V = $this->I1V;
 		$history->I1A = $this->I1A;
 		$history->I1P = $this->I1P;
 		$history->I1Ratio = $this->I1Ratio;
+		
 		$history->I2V = $this->I2V;
 		$history->I2A = $this->I2A;
 		$history->I2P = $this->I2P;
@@ -81,6 +86,9 @@ class Live {
 		$history->GV3 = $this->GV3;
 		$history->GA3 = $this->GA3;
 		$history->GP3 = $this->GP3;
+		
+		$history->ACP = $this->ACP;
+		$history->IP  = $this->IP;
 		
 		$history->FRQ = $this->FRQ;
 		$history->EFF = $this->EFF;
