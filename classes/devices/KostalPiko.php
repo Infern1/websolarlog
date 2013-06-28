@@ -32,7 +32,6 @@ Class KostalPiko implements DeviceApi {
 
     public function getData() {
         if ($this->DEBUG) {
-            //return $this->execute('-b -c -T ' . $this->COMOPTION . ' -d0 -e 2>'. Util::getErrorFile($this->INVTNUM));
             return "PRO,Piko,1,1.3.0-Beta,20130626
 INF,12345ABC67890,DeviceName
 STA,3,Running,28,---L123
@@ -92,7 +91,9 @@ AC3,228.0,1.45,313,89.93,5120";
     }
 
     private function execute($options) {
-       return shell_exec($this->PATH . ' ' . $options);
+    	$exec = shell_exec($this->PATH . ' ' . $options);
+    	HookHandler::getInstance()->fire("onDebug", print_r($exec,true));
+		return $exec;
     }
 }
 ?>
