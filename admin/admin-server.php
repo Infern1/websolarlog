@@ -23,6 +23,7 @@ switch ($settingstype) {
 		$data['smaspotpath'] = $config->smaspotpath;
 		$data['smaspotWSLpath'] = $config->smaspotWSLpath;
 		$data['smartmeterpath'] = $config->smartmeterpath;
+		$data['kostalpikopath'] = $config->kostalpikopath;
 		$data['plugwiseStrech20IP'] = $config->plugwiseStrech20IP;
 		$data['plugwiseStrech20ID'] = $config->plugwiseStrech20ID;
 		$data['debugmode'] = $config->debugmode;
@@ -392,6 +393,7 @@ switch ($settingstype) {
 		$config->smagetpath =Common::getValue("smagetpath");
 		$config->smaspotpath =Common::getValue("smaspotpath");
 		$config->smaspotWSLpath =Common::getValue("smaspotWSLpath");
+		$config->kostalpikopath =Common::getValue("kostalpikopath");
 		$config->plugwiseStrech20IP =Common::getValue("plugwiseStrech20IP");
 		$config->plugwiseStrech20ID =Common::getValue("plugwiseStrech20ID");
 		$config->smartmeterpath =Common::getValue("smartmeterpath");

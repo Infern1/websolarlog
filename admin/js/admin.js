@@ -991,7 +991,7 @@ function load_device(inverterId,deviceApi,deviceType) {
             	
                 if(inv_data.inverter.id > 0 && inv_data.inverter.panels.length==0 && inv_data.inverter.type == 'production'){
                 	$.pnotify({ title: 'No System Panels', text: 'Please add one or more panels. We need panels for some calculations.'});
-                	WSL.scrollTo({element : $("#new_panels").closest('form'),time : '', offset : 0});
+                	WSL.scrollTo({element : $("#new_panels").closest('form'),time : '', offset : -70});
                 }
                 
                 
