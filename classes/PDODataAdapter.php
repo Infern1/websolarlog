@@ -1596,7 +1596,9 @@ class PDODataAdapter {
 		$I3P = 0;
 		$IP  = 0;
 		$EFF = 0;
-
+		$totalSystemIP = 0;
+		$totalSystemACP = 0;
+		
 		$liveBean = array();
 
 		foreach ($config->devices as $device){
