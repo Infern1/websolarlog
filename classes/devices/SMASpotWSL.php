@@ -91,6 +91,29 @@ SMAspot [-scan] [-d#] [-v#] [-ad#] [-am#] [-cfgX.Y] [-u] [-finq] [-q] [-nocsv]
     private function execute($options) {
     	// this make multi inverter possible for SMAspot users
     	// if we have a "adress"/configfile, then we add "-cfg/adress/to/config-file" to the options.
+    	
+    	// "dirty fix"
+    	// TODO
+    	/*
+    	 * onInverterError - 
+    	 * SMA SB2000HF30 - SMAspot V2.0.6<br /> 
+    	 * Yet another tool to read power production of SMA solar inverters<br /> 
+    	 * (c) 2012-2013, SBF (http://code.google.com/p/sma-spot)<br /> <br /> 
+    	 * Commandline Args: -cfg2<br /> Error! Could not open file 2 
+    	 */ 
+    	
+    	$config = Session::getConfig();
+    	// check if we have already a SMA-BT-WSL
+    	foreach($config->allDevices as $device){
+    		if($device->deviceApi == "SMA-BT-WSL"){
+    			$data['SMAspotDevices']++;
+    		}
+    	}
+    	if($data['SMAspotDevices']==0){
+    		// We are not in Multi SMA inverter setup, so clear $this->ADR
+    		$this->ADR = '';
+    	}
+    	
     	($this->ADR) ? $options .= ' -cfg'.$this->ADR : $options = $options;
     	
         return shell_exec($this->PATH . ' ' . $options);
