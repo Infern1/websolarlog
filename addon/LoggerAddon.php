@@ -49,13 +49,13 @@ class LoggerAddon {
 		// Check if the log directory is available
 		if (!is_dir($logPath)) {
 			if (!mkdir($logPath)) {
-				throw new SetupException("Log directory is not available and we can't create it! " . $logPath);
+				throw new SetupException("Log directory is not available and we can't create it!<br>" . $logPath."<br>Please create the directory and make it writable with chmod.");
 			}
 		}
 		
 		// Check if the file exists and if we can write to the file
 		if (file_exists($fileName) && !is_writable($fileName)) {
-			throw new SetupException("Log file is not writable" . $fileName);
+			throw new SetupException("Log file is not writable " . $fileName . ".<br>Please make it writable with chmod.");
 		}
 		
 		$message = str_replace("\n", " ", $message);
