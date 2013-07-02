@@ -954,7 +954,19 @@ function diagnostics() {
 	$result['browserLanguages'] = Util::getBrowserDefaultLanguage();
 	$result['supportedLanguages'] = Session::supportedLanguages($result['browserLanguage']);
 	$result['setLanguage'] = Session::setLanguage();
-	$result['sessionLanguage'] = $_SESSION['WSL_LANGUAGE'];	
+	$result['sessionLanguage'] = $_SESSION['WSL_LANGUAGE'];
+
+	$dateTimeZoneUTC = new DateTimeZone("utc");
+	$dateTimeZoneConfig = new DateTimeZone($config->timezone);
+	
+	$dateTimeUTC = new DateTime("now", $dateTimeZoneUTC);
+	$dateTimeConfig = new DateTime("now", $dateTimeZoneConfig);
+	
+	$offset = $dateTimeZoneConfig->getOffset($dateTimeUTC);
+	
+	$result['time']['offset'] =  ($offset>0) ? $offset/3600 : $offset;
+	$result['time']['dateTimeUTC'] = $dateTimeUTC;
+	$result['time']['dateTimeLocation'] = $dateTimeConfig;
 	return $result;
 }
 ?>

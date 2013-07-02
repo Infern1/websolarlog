@@ -110,6 +110,27 @@ or atleast check the running state with:<br>
 
 <form>
 <fieldset>
+    <legend>Time settings:</legend>
+<div id="timesettings">
+    <div>
+    WSL needs correct date/time and timezone settings:<br>
+    <br>
+    <strong>UCT timezone:</strong><br>
+    date and time: {{data.test.time.dateTimeUTC.date}}<br>
+    <br>
+    <strong>Your system:</strong><br>
+    Timezone: {{data.test.time.dateTimeLocation.timezone}}<br>
+    date and time: {{data.test.time.dateTimeLocation.date}}<br>
+    <br>
+    offset between UTC and {{data.test.time.dateTimeLocation.timezone}}:<br>
+    {{data.test.time.offset}} hour(s)
+	</div>
+</div>
+</fieldset>
+</form>
+
+<form>
+<fieldset>
     <legend>Check functions/extensions:</legend>
     Here we check if necessary functions and extensions are loaded and working.
 <div id="extensions">
