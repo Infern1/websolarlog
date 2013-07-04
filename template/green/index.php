@@ -104,7 +104,7 @@
 			<a href="http://www.sma.de/en/products/overview.html" target="_blank" class="leftFooter">SMA RS485</a> <a href="http://code.google.com/p/sma-get/" target="_blank">(SMA-get)</a><br/>
 			<a href="http://www.sma.de/en/products/overview.html" target="_blank" class="leftFooter">SMA BlueTooth</a> <a href="http://code.google.com/p/sma-spot/" target="_blank">(SMA-spot)</a><br/>
 			<a href="http://www.diehl.com/en/diehl-controls/photovoltaics/wechselrichter.html" target="_blank" class="leftFooter">Diehl</a>(not needed)<br/>			
-			<a href="http://www.kostal.com/" target="_blank" class="leftFooter">Kostal Piko</a> <a href="http://sourceforge.net/projects/piko/" target="_blank">(Piko script)</a><br/>
+			<a href="http://www.kostal-solar-electric.com/" target="_blank" class="leftFooter">Kostal Piko</a> <a href="http://sourceforge.net/projects/piko/" target="_blank">(Piko script)</a><br/>
 			<a href="http://www.websolarlog.com/" target="_blank" class="leftFooter">Dutch SmartMeter</a> (software)<br/>
 			<a href="http://www.openweathermap.com" target="_blank" class="leftFooter">OpenWeatherMap</a> (Webservice)<br/>
 			</div>
