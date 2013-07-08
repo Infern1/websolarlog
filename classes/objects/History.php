@@ -29,6 +29,9 @@ class History {
 	public $GV3;
 	public $GA3;
 	public $GP3;
+
+	public $IP;
+	public $ACP;
 	
 	public $SDTE;
 	public $time;
