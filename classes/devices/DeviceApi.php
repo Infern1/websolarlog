@@ -20,6 +20,11 @@ interface DeviceApi {
     public function getData();
     
     /**
+     * Returns live data in an Live object 
+     */
+    public function getLiveData();
+    
+    /**
      * Get information of the device like the model, type, serial, etc
      */
     public function getInfo();

@@ -47,9 +47,14 @@ class Util {
     	$year = substr($text, 0, 4);
     	$month = substr($text, 4, 2);
     	$day = substr($text, 6, 2);
-    	$hour = substr($text, 9, 2);
-    	$minute = substr($text, 12, 2);
-    	$seconde = substr($text, 15, 2);
+    	$hour = 0;
+    	$minute = 0;
+    	$seconde = 1;
+    	if (strlen($text) > 8) {
+	    	$hour = substr($text, 9, 2);
+	    	$minute = substr($text, 12, 2);
+	    	$seconde = substr($text, 15, 2);
+    	}
     	return strtotime ($year."-".$month."-".$day." ".$hour.":".$minute.":".$seconde);
     }
 

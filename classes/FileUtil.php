@@ -41,5 +41,36 @@ class FileUtil {
     		HookHandler::getInstance()->fire("onError", "writeObjectToJsonFile: " . $e->getMessage());
     	}
     }
+    
+    /**
+     * Get all fileNames in the given Folder
+     * @param string $path
+     * @return multitype:unknown
+     */
+    public static function getFileNamesInFolder($path) {
+    	$result = array();
+    	foreach (scandir($path) as $file) {
+    		if (is_file($path.$file))  {
+    			$result[] = $file;
+    		}
+    	}
+    	return $result;
+    }
+
+    /**
+     * Get all dirNames in the given Folder
+     * @param string $path
+     * @return multitype:unknown
+     */
+    public static function getDirNamesInFolder($path) {
+    	$result = array();
+    	foreach (scandir($path) as $file) {
+    		if ($file != "." && $file != ".." && is_dir($path.$file))  {
+    			$result[] = $file;
+    		}
+    	}
+    	return $result;
+    }
+    
 }
 ?>

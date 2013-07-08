@@ -49,6 +49,10 @@ Class WeatherOWM implements DeviceApi {
 		return $weather;
 	}
 	
+	public function getLiveData() {
+		return $this->getData();
+	}
+	
 	public function getInfo() {
 		return "www.openweathermap.org";	
 	}

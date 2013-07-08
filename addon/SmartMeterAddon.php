@@ -282,6 +282,12 @@ class SmartMeterAddon {
 		*/
 		$i=0;
 		foreach ($beans as $bean){
+			// Do we have data?
+			if (empty($bean['time']) || empty($bean['gasUsage'])) {
+				// Next record
+				continue;
+			}
+			
 			if ($i==0){
 				$firstBean = $bean;
 				$preBean = $bean;

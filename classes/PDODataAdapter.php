@@ -16,25 +16,6 @@ class PDODataAdapter {
 
 
 	function __construct() {
-		$config = Session::getConfig(true, false); // We dont need data from dbase
-		if ($config->getDatabaseUser() != "" && $config->getDatabasePassword() != "") {
-			R::setup($config->dbDSN, $config->getDatabaseUser(), $config->getDatabasePassword());
-		} else {
-			R::setup($config->dbDSN);
-		}
-
-		// Only use on sqlite for speedup
-		if (strpos($config->dbDSN,'sqlite') !== false) {
-			R::exec("PRAGMA synchronous = NORMAL"); // A little less secure then FULL, but much less IO
-			R::exec("PRAGMA PRAGMA temp_store = 2"); // In memory (IO on SD is slow)
-			$this->sqlEngine = 'sqlite'; //set db-engine dependent dateFunction
-		}elseif(strpos($config->dbDSN,'mysql') !== false){
-			$this->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
-		}
-		RedBean_OODBBean::setFlagBeautifulColumnNames(false);
-		R::debug(false);
-		R::setStrictTyping(false);
-		
 		$this->deviceService = new DeviceService();
 	}
 
@@ -2191,6 +2172,10 @@ class PDODataAdapter {
 
 	public function checkDefaultPassword(){
 		$bean = R::findAndExport('config');
+		if (!isset($bean)) {
+			// No config leaving
+			return;
+		}
 		//below is the default SHA1() hash for "admin"
 		//d033e22ae348aeb5660fc2140aec35850c4da997
 		if($bean[1]['adminpasswd']=='d033e22ae348aeb5660fc2140aec35850c4da997'){

@@ -197,7 +197,7 @@ try {
 					}
 					$inverters[] = array(
 						'plantPower'=>$device->plantpower,
-						'panels'=>$panels
+						'panels'=> (isset($panels) ? $panels : 0)
 					);
 				}
 			}

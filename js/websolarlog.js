@@ -1612,7 +1612,7 @@ var WSL = {
 							result.lang.max + ': '+ 
 							plantTotalPower + ' '+ 
 							result.dayData.graph.metaData.KWH.KWHTUnit + ' ('+ 
-							 totalKWhkWp +
+							 ((typeof totalKWhkWp === 'undefined') ? 0 : totalKWhkWp) +
 							' kWh/kWp)</div>';
 					
 					delete seriesData, graphOptions;
