@@ -214,6 +214,7 @@ function init_menu() {
     $(".btnAdvanced").bind('click', function() { init_advanced();});
     $(".btnGeneral").bind('click', function() { init_general();});
     $(".btnDevices").bind('click', function() { init_devices(); });
+    $(".btnCommunication").bind('click', function() { init_communication(); });
     $(".btnGrid").bind('click', function() { init_grid();});
     $(".btnEmail").bind('click', function() { init_email(); });
     $(".btnDiagnostics").bind('click', function() { init_diagnostics(); });
@@ -361,6 +362,74 @@ function init_backup() {
             });
     	}
     });
+}
+
+function init_communication() {
+	var sidebar = $('#sidebar');
+    var content = $('#content');
+    
+    WSL.checkURL();
+    
+    // Initialize the html holders
+    content.html('<div id="pnl_communication"></div><div id="pnl_communication_test"></div>');
+    sidebar.html('');
+    
+    var load_edit = function (data) {
+    	$('#pnl_communication').html(WSL.template.get('communication', {data: data}));
+    	
+    	$('#btnCommunicationSubmit').bind('click',function(){
+    		var postdata = $(this).closest('form').serialize();
+    		WSL.connect.postJSON("../api.php/Communication", postdata, function(){console.log('success')});
+    	});
+    	
+    	load_test();
+    };
+    
+    var load_test= function() {
+    	WSL.connect.getJSON('../api.php/Device/ShortList', function(devices) {
+    		var data = {devices: devices};
+    		$('#pnl_communication_test').html(WSL.template.get('communication_test', data));
+    		
+    		$('#deviceSelect').bind('change', function(){
+    			if ($(this).val() == -1) {
+    				$('#device_info').hide();
+    			} else {
+    				WSL.connect.getJSON('../api.php/Device/' + $(this).val(), function(device) {
+    					$('#device_id').val(device.id);
+    					$('#device_name').val(device.name);
+    					$('#device_address').val(device.comAddress);
+    					$('#device_api').text(device.deviceApi);
+    					$('#device_info').show();
+    					
+    					$('#btnTestCommunication').bind('click', function(){
+    						// Do some great stuff
+    						$('#test_results').text("Needs some more development!");
+    					});
+    				});
+    			}
+    		});
+    	});
+    	
+    };
+    
+    // Load the screen
+    WSL.connect.getJSON('../api.php/Communication', 
+    	function(data) {
+	    	sidebar.html(WSL.template.get('communication_sb', {data: data}));
+	    	
+	    	$('#new_communication').bind('click', function(){
+	    		load_edit({id:-1, name:'New'});
+	    	});
+	    	
+	    	$('.communication_select').bind('click', function(){
+                var id = $(this).attr('id').split("_")[1];
+                window.location.hash = shortcutFunction+"-"+id;
+                WSL.connect.getJSON('../api.php/Communication/'+id, function(data){
+                	load_edit(data);
+                });
+	    	});
+    	}
+    ); 
 }
 
 function detachDropbox(){

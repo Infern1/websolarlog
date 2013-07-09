@@ -13,6 +13,7 @@ class Device {
     public $producesSince;
     public $expectedkwh;
     public $plantpower;
+    public $communicationId;
     public $comAddress;
     public $comLog;
     public $syncTime;

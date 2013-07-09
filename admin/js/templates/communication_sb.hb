@@ -1,0 +1,11 @@
+{{#data}}
+<button type="button" id="btnCommunication_{{this.id}}" class="communication_select" style="width:100%;">{{this.name}}</button><br/>
+{{/data}}
+<br />
+<hr>
+
+<form>
+	<strong>Create a new communication</strong><br>
+	<br>
+	<button type="button" id="new_communication" style="width:100%;">Create communication</button><br/><br/>
+</form>

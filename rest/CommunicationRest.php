@@ -1,19 +1,19 @@
 <?php
-class DeviceRest {
-	private $deviceService;
+class CommunicationRest {
+	private $communicationService;
 	
 	/**
 	 * Constructor
 	 */
 	function __construct() {
-		$this->deviceService = new DeviceService();
+		$this->communicationService = new CommunicationService();
 	}
 	
 	/**
 	 * Destructor
 	 */
 	function __destruct() {
-		$this->deviceService = null;
+		$this->communicationService = null;
 	}
 
 	/**
@@ -25,14 +25,26 @@ class DeviceRest {
 			$id = (trim($options[0]) != "") ? strtolower($options[0]) : $type;
 		}
 		if ($id > 0) {
-			return $this->deviceService->load($id);
+			return $this->communicationService->load($id);
+		}
+		return $this->communicationService->getList();
+	}
+	
+	public function POST($request, $options) {
+		if (!Session::isLogin()) {
+			throw new AuthenticationException("Not enough rights");
 		}
 		
-		$result = array();
-		foreach (Session::getConfig()->devices as $device) {
-			$result[] = $this->deviceService->load($device->id);
+		// Try to fill the object based on its public properties
+		$postCommunication = new Communication();
+		$publicProperties = get_object_vars($postCommunication);
+		foreach ($publicProperties as $key=>$value) {
+			if (isset($_POST[$key])) {
+				$postCommunication->$key = $_POST[$key];
+			}
 		}
-		return $result;
+		
+		return $this->communicationService->save($postCommunication);
 	}
 	
 	/**
