@@ -5,13 +5,13 @@ ini_set('display_errors', '1');
 
 require_once '../classes/classloader.php';
 Session::initialize();
-if (strpos($config->dbDSN,'sqlite') !== false) {
-	R::exec("PRAGMA temp_store = 2");
-	R::exec("PRAGMA ignore_check_constraints = TRUE");
-	R::exec("PRAGMA journal_mode = MEMORY");
-	R::exec("PRAGMA locking_mode = EXCLUSIVE");
-	R::exec("PRAGMA synchronous = OFF");
-}
+// Remove below PRAGMA lines if you don't want to use an sqlite db
+// FYI: Everything is only testen on sqlite new database
+R::exec("PRAGMA temp_store = 2");
+R::exec("PRAGMA ignore_check_constraints = TRUE");
+R::exec("PRAGMA journal_mode = MEMORY");
+R::exec("PRAGMA locking_mode = EXCLUSIVE");
+R::exec("PRAGMA synchronous = OFF");
 R::freeze(false);
 
 // Check CLI or browser
