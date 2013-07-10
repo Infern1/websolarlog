@@ -818,7 +818,17 @@ function init_general() {
                     'data' : data
                 });
                 $('#c_general', content).html(html);
+	 			
                 
+                // prevent comma in latitude value
+                $("input[name=latitude]").bind('keyup',function(){
+                	$("input[name=latitude]").val($("input[name=latitude]").val().replace(/,/g,"."));
+                });
+                // prevent comma in longitude value
+                $("input[name=longitude]").bind('keyup',function(){
+                	$("input[name=longitude]").val($("input[name=longitude]").val().replace(/,/g,"."));
+                });
+				
                 $('#btnSetLatLong').bind('click',function(){
                 	$('#content').append('<div id="mapsDialog"></div>');
 					var lat = $("input[name=latitude]").val();
