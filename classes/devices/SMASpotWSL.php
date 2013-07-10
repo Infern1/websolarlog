@@ -61,7 +61,7 @@ SMAspot [-scan] [-d#] [-v#] [-ad#] [-am#] [-cfgX.Y] [-u] [-finq] [-q] [-nocsv]
  -nocsv  Disables CSV export (Overrules CSV_Export in config)
 			 
 			  */
-			  return trim($this->execute('-finq -q -wsl'));
+			  return trim($this->execute('-finq -q -wsl -nocsv'));
         }
     }
     
