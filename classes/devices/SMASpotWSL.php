@@ -101,15 +101,15 @@ SMAspot [-scan] [-d#] [-v#] [-ad#] [-am#] [-cfgX.Y] [-u] [-finq] [-q] [-nocsv]
     	 * (c) 2012-2013, SBF (http://code.google.com/p/sma-spot)<br /> <br /> 
     	 * Commandline Args: -cfg2<br /> Error! Could not open file 2 
     	 */ 
-    	
+    	$SMAspotDevices = 0;
     	$config = Session::getConfig();
     	// check if we have already a SMA-BT-WSL
     	foreach($config->allDevices as $device){
     		if($device->deviceApi == "SMA-BT-WSL"){
-    			$data['SMAspotDevices']++;
+    			$SMAspotDevices++;
     		}
     	}
-    	if($data['SMAspotDevices']==0){
+    	if($SMAspotDevices==0){
     		// We are not in Multi SMA inverter setup, so clear $this->ADR
     		$this->ADR = '';
     	}
