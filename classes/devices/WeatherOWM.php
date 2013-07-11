@@ -40,7 +40,7 @@ Class WeatherOWM implements DeviceApi {
 				$weather->rain3h = $result->list[0]->rain->{'3h'};
 			}
 		}
-		if(isset($result->list[0]->clouds){
+		if(isset($result->list[0]->clouds)){
 			$weather->clouds = $result->list[0]->clouds->all;
 		}
 		$weather->wind_speed = $result->list[0]->wind->speed;
