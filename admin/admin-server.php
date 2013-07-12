@@ -449,8 +449,8 @@ switch ($settingstype) {
 		$device->pvoutputApikey = Common::getValue("pvoutputApikey");
 		$device->pvoutputSystemId = Common::getValue("pvoutputSystemId");
 		$device->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
-		$device->refreshTime = Common::getValue("refreshTime");
-		$device->historyRate = (Common::getValue("historyRate")<30) ? 30 : Common::getValue("historyRate");
+		$device->refreshTime = (Common::getValue("historyRate")< 2) ? 2 : Common::getValue("historyRate");
+		$device->historyRate = (Common::getValue("historyRate")<60) ? 60 : Common::getValue("historyRate");
 		$device->active = Common::getValue("deviceActive");
 		$data['id'] = $deviceService->save($device)->id;
 		break;

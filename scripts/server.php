@@ -14,7 +14,7 @@ if($pid->isAlreadyRunning) {
 
 // TODO
 //   could be deleted. //
-$historyUpdateRate = ($device->historyRate < 30) ? 30 : $device->historyRate; // 5 minute refreshrate
+$historyUpdateRate = ($device->historyRate < 60) ? 60 : $device->historyRate; // 5 minute refreshrate
 $historyStartTime = Util::createTimeForWholeInterval($historyUpdateRate);
 //  /could be deleted. //
 
