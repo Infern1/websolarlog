@@ -43,6 +43,7 @@ class SMASpotWSLConverter
     {    	
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
+        	HookHandler::getInstance()->fire("onError", "SMAspot returned NULL/Nothing/Empty");
             return null;
         }
 
@@ -50,7 +51,8 @@ class SMASpotWSLConverter
         $data = preg_split("/;/",$inputLine);
         
         // Check if the record is okay
-		if(($data[0]!="WSL_START") || ($data[count($data)-1]!="WSL_END")){
+    	if(($data[0]!="WSL_START") || ($data[count($data)-1]!="WSL_END")){
+			HookHandler::getInstance()->fire("onError", "Unexpected response from SMAspot:\r\n".print_r($inputLine,true));
             return null;
         }
         
@@ -121,10 +123,11 @@ class SMASpotWSLConverter
 
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->GP)) {
+        	HookHandler::getInstance()->fire("onError", "SMAspot didn't return KWHT or GP is empty! We need these values for calculations");
         	return null;
         }
         // TODO temporary debugging, needs to be removed. 
-        HookHandler::getInstance()->fire("onDebug", "Live output: " . print_r($live, true));
+        //HookHandler::getInstance()->fire("onDebug", "Live output: " . print_r($live, true));
         return $live;
     }
     

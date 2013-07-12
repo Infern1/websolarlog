@@ -27,6 +27,7 @@ class EffektaConverter
     	//14 OK
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
+        	HookHandler::getInstance()->fire("onError", "Effekta returned NULL/Nothing/Empty");
             return null;
         }
 
@@ -35,6 +36,7 @@ class EffektaConverter
 
         // Check if the record is okay
         if (!empty($data[14]) && trim($data[14]) != "OK") {
+        	HookHandler::getInstance()->fire("onError", "Unexpected response from EFfekta:\r\n".print_r($inputLine,true));
             return null;
         }
 
@@ -86,6 +88,7 @@ class EffektaConverter
         
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->GP)) {
+        	HookHandler::getInstance()->fire("onError", "Effekta didn't return KWHT or GP is empty! We need these values for calculations");
         	return null;
         }
 

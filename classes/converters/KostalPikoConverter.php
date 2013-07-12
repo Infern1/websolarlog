@@ -11,6 +11,7 @@ class KostalPikoConverter
     {
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
+        	HookHandler::getInstance()->fire("onError", "Piko.py returned NULL/Nothing/Empty");
             return null;
         }
 
@@ -22,6 +23,7 @@ class KostalPikoConverter
         }
         // Check if the record is okay
         if (!empty($data[22]) && trim($data[22]) != "OK") {
+        	HookHandler::getInstance()->fire("onError", "Unexpected response from Piko.py:\r\n".print_r($inputLine,true));
             return null;
         }
         
@@ -94,6 +96,7 @@ class KostalPikoConverter
         
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->ACP)) {
+        	HookHandler::getInstance()->fire("onError", "Piko.py didn't return KWHT or GP is empty! We need these values for calculations");
         	return null;
         }
         

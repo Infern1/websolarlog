@@ -11,6 +11,7 @@ class AuroraConverter
     {
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
+        	HookHandler::getInstance()->fire("onError", "Aurora returned NULL/Nothing/Empty");
             return null;
         }
 
@@ -19,9 +20,10 @@ class AuroraConverter
 
         // Check if the record is okay
         if (!empty($data[22]) && trim($data[22]) != "OK") {
+			HookHandler::getInstance()->fire("onError", "Unexpected response from Aurora:\r\n".print_r($inputLine,true));
             return null;
         }
-
+        
         $live = new Live();
         $live->type = 'production';
         if (!empty ($data[0])) {
@@ -73,6 +75,7 @@ class AuroraConverter
         
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->GP)) {
+        	HookHandler::getInstance()->fire("onError", "Aurora didn't return KWHT or GP is empty! We need these values for calculations");
         	return null;
         }
 

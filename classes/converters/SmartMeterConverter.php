@@ -10,6 +10,7 @@ class SmartMeterConverter
 	{
 		// Check if the input line is valid
 		if (count($inputArray) == 0 || !is_array($inputArray)) {
+			HookHandler::getInstance()->fire("onError", "SmartMeter returned NULL/Nothing/Empty");
 			return null;
 		}
 
@@ -27,13 +28,13 @@ class SmartMeterConverter
 		
 		// Check if we hava an valid fist line
 		if (empty($firstLine) || substr($firstLine, 0, 1) != "/") {
-			echo "SmartMeter :: Invalid first line \n";
+			HookHandler::getInstance()->fire("onError", "SmartMeter :: Invalid first line \n");
 			return null;
 		}
 
 		// Check if we have an valid last line
 		if (empty($lastLine) || trim($lastLine) != "!") {
-			echo "SmartMeter :: Invalid last line \n";
+			HookHandler::getInstance()->fire("onError", "SmartMeter :: Invalid last line");
 			return null;
 		}
 

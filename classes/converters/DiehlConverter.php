@@ -36,6 +36,7 @@ class DiehlConverter
 	public static function toStatus($inputLine){
 		// Check if the input line is valid
 		if ($inputLine == null || trim($inputLine) == "") {
+			HookHandler::getInstance()->fire("onError", "DIEHL::toStatus returned NULL/Nothing/Empty");
 			return null;
 		}
 		
@@ -96,6 +97,7 @@ class DiehlConverter
     {
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
+        	HookHandler::getInstance()->fire("onError", "DIEHL::toLive returned NULL/Nothing/Empty");
             return null;
         }
         $live = new Live();
@@ -139,6 +141,7 @@ class DiehlConverter
 		        
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->GP)) {
+        	HookHandler::getInstance()->fire("onError", "DIEHL didn't return KWHT or GP is empty! We need these values for calculations");
         	return null;
         }
 
