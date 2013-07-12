@@ -450,7 +450,7 @@ switch ($settingstype) {
 		$device->pvoutputSystemId = Common::getValue("pvoutputSystemId");
 		$device->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
 		$device->refreshTime = Common::getValue("refreshTime");
-		$device->historyRate = Common::getValue("historyRate");
+		$device->historyRate = (Common::getValue("historyRate")<30) ? 30 : Common::getValue("historyRate");
 		$device->active = Common::getValue("deviceActive");
 		$data['id'] = $deviceService->save($device)->id;
 		break;
@@ -755,11 +755,15 @@ switch ($settingstype) {
 	case 'test':
 		$data['test'] = diagnostics();
 		break;
+	case 'graphs':
+		$graphService = new GraphService();
+		$data['graphs'] = $graphService->loadDaily();
+		break;
 	case 'getGraphObject':
 		$graph = new Graph();
 
 		$getGraphAxes = HookHandler::getInstance()->fire("getGraphAxes","SmartMeterAddon.getAxes");
-		var_dump($getGraphAxes);
+		//var_dump($getGraphAxes);
 		$graph->axes = $graph->getGraphAxes();
 		$graph->series = $graph->getGraphSeries();
 		
