@@ -12,12 +12,6 @@ if($pid->isAlreadyRunning) {
 	exit;
 }
 
-// TODO
-//   could be deleted. //
-$historyUpdateRate = ($device->historyRate < 60) ? 60 : $device->historyRate; // 5 minute refreshrate
-$historyStartTime = Util::createTimeForWholeInterval($historyUpdateRate);
-//  /could be deleted. //
-
 $energyUpdateRate = 10 * 60; // 10 minute refreshrate
 $energyStartTime = Util::createTimeForWholeInterval($energyUpdateRate);
 
@@ -32,6 +26,10 @@ $historyDataStartTime = Util::createOnceADayJob("12", "30"); // Only run at 12:3
 
 // Create the device jobs
 foreach (Session::getConfig()->devices as $device) {
+	// TODO
+	$historyUpdateRate = ($device->historyRate < 60) ? 60 : $device->historyRate; // prevent faster interval then 60sec.
+	$historyStartTime = Util::createTimeForWholeInterval($historyUpdateRate);
+	
 	QueueServer::getInstance()->add(new QueueItem(time(), "DeviceHandler.handleLive", array($device), true, $device->refreshTime));
 	QueueServer::getInstance()->add(new QueueItem($historyStartTime, "DeviceHandler.handleHistory", array($device), true, $historyUpdateRate));
 	QueueServer::getInstance()->add(new QueueItem($energyStartTime, "DeviceHandler.handleEnergy", array($device), true, $energyUpdateRate));
