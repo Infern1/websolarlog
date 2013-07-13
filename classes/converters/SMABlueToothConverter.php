@@ -87,7 +87,7 @@ class SMABlueToothConverter
 
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->GP)) {
-        	HookHandler::getInstance()->fire("onError", "SMABlueTooth didn't return KWHT or GP is empty! We need these values for calculations");
+        	//HookHandler::getInstance()->fire("onDebug", "SMABlueTooth didn't return KWHT or GP is empty! We need these values for calculations");
         	return null;
         }
         return $live;

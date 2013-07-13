@@ -123,7 +123,7 @@ class SMASpotWSLConverter
 
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->GP)) {
-        	HookHandler::getInstance()->fire("onError", "SMAspot didn't return KWHT or GP is empty! We need these values for calculations");
+        	//HookHandler::getInstance()->fire("onDebug", "SMAspot didn't return KWHT or GP is empty! We need these values for calculations");
         	return null;
         }
         // TODO temporary debugging, needs to be removed. 

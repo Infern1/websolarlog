@@ -75,7 +75,7 @@ class AuroraConverter
         
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->GP)) {
-        	HookHandler::getInstance()->fire("onError", "Aurora didn't return KWHT or GP is empty! We need these values for calculations");
+        	//HookHandler::getInstance()->fire("onDebug", "Aurora didn't return KWHT or GP is empty! We need these values for calculations");
         	return null;
         }
 
