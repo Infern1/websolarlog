@@ -182,6 +182,9 @@ try {
 		case 'getGraphDayPoints':
 			$dtz = new DateTimeZone($config->timezone);
 			$timezoneOffset = new DateTime('now', $dtz);
+			
+			$lines = $dataAdapter->getGraphDayPoint($devicenum, $type, $date);
+			
 			$data['timezoneOffset'] = $dtz->getOffset( $timezoneOffset )/3600;
 			
 
@@ -207,7 +210,7 @@ try {
 				}
 			}
 			$slimConfig['inverters'] = $inverters;
-			
+			/*
 			$graphService = new GraphService();
 			$dayData = new DayDataResult();
 			$options['deviceNum'] = $devicenum;
@@ -215,6 +218,10 @@ try {
 			$options['date'] = $date;
 			$options['mode'] = 'frontend';
 			$data['graph'] = $graphService->loadGraph($options);
+			*/
+			$dayData = new DayDataResult();
+			$dayData->graph = $lines['graph'];
+			
 			$dayData->success = true;
 			$lang = array();
 			$lang['cumPowerW'] = _('cum. Power (W)');
