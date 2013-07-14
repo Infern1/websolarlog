@@ -6,6 +6,63 @@
 {{data.serverUptime.day}} {{lang.days}},{{data.serverUptime.hour}} {{lang.hours}},{{data.serverUptime.min}} {{lang.mins}}<br>
 <br>
 </div>
+<div class="cl"></div>
+<div class="col posts">
+<div class="column span-22 last">
+		<h3>Third Party software</h3>
+			<div class="post">		
+				<div  class="column span-22 accordion">
+			{{#each data.slimConfig.devices}}
+			<h3>{{this.name}}</h3>
+			<div class="innerAccordionPeriod">
+				<div class="post">
+				{{#if_eq this.deviceApi compare="DutchSmartMeter"}}
+				This device is using a custom made Python script to get data from the SmartMeter.
+				{{/if_eq}}
+				{{#if_eq this.deviceApi compare="DutchSmartMeterRemote"}}
+				This device is using a custom made PHP appoarch to get data from the SmartMeter.
+				{{/if_eq}}
+				
+				{{#if_eq this.deviceApi compare="Diehl-ethernet"}}
+				This device is using the Diehl's ethernet connection and "API" to gather data.<br> 
+				{{/if_eq}}
+				
+				{{#if_eq this.deviceApi compare="Open-Weather-Map"}}
+				This device is using the Open Weather Map APi.<br> 
+				<a href="http://openweathermap.org/" target="_blank">http://openweathermap.org/</a>
+				{{/if_eq}}
+				
+				{{#if_eq this.deviceApi compare="AURORA"}}
+				This device is using the Aurora software.<br>
+				The software can be found here:<br>
+				<a href="http://www.curtronics.com/Solar/AuroraData.html" target="_blank">http://www.curtronics.com/Solar/AuroraData.html</a>
+				{{/if_eq}}
+				
+				{{#if_eq this.deviceApi compare="SMA-BT-WSL"}}
+				This device is using the SMA-spot software.<br>
+				The software can be found here:<br>
+				<a href="http://code.google.com/p/sma-spot/" target="_blank">http://code.google.com/p/sma-spot/</a>
+				{{/if_eq}}
+				
+				{{#if_eq this.deviceApi compare="SMA-BT"}}
+				This device is using the SMA-spot software.<br>
+				The software can be found here:<br>
+				<a href="http://code.google.com/p/sma-spot/" target="_blank">http://code.google.com/p/sma-spot/</a>
+				{{/if_eq}}
+				
+				{{#if_eq this.deviceApi compare="SMA-RS485"}}
+				This device is using the SMA-get software.<br>
+				The software can be found here:<br>
+				<a href="http://code.google.com/p/sma-get/" target="_blank">http://code.google.com/p/sma-get/</a>
+				{{/if_eq}}
+				
+				
+				
+				</div>
+			</div>
+			{{/each}}
+			</div></div></div>
+</div>
 <div class="col posts">
 	<div class="column span-22 last">
 		<h3>PVoutput {{lang.information}}</h3>

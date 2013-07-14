@@ -130,6 +130,7 @@ try {
 				$devices[] = array(
 					'name'=>$device->name,
 					'type'=>$device->type,
+					'deviceApi'=>$device->deviceApi,
 					'pvoutputWSLTeamMember'=>$device->pvoutputWSLTeamMember,
 					'pvoutputSystemId'=>$device->pvoutputSystemId,
 					'pvoutputEnabled'=>$device->pvoutputEnabled,
