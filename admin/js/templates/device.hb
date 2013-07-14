@@ -64,7 +64,9 @@
     <div>
     <div id="sliderLiveRate" class="span-20"></div><br>
     <input type="text" name="refreshTime" id="refreshTime" value="{{data.inverter.refreshTime}}" />
-    {{infoTooltip title="How often should this device be queried for live data?<br>1 - 60 seconds"}}<br />
+    {{infoTooltip title="How often should this device be queried for live data thats shown on the frontend?<br>1 - 60 seconds"}}
+    For slow connection device, such as BlueTooth, we recommend a value >=8 seconds.<br>A smaller value could result in a WSL or Device hang.<br>
+    <br />
     </div>  </div>
     
         <div class="span-8 first">
@@ -76,7 +78,9 @@
     <div>
     <div id="sliderHistoryRate" class="span-20"></div><br>
     <input type="text" name="historyRate" id="historyRate" value="{{data.inverter.historyRate}}" />
-    {{infoTooltip title="How often should this device create a history data(graph) point?<br>1 - 3600 seconds"}}<br />
+    {{infoTooltip title="How often should this device create a history data(graph) point?<br>60 - 3600 seconds<br>
+    Small value will result in a detailed graph with more spikes.<br>
+    Big value will result in a less detaild and flatten/smoother graph."}}<br />
     </div></div>    
     <hr>
     <div class="all production logcomm">
