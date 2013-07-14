@@ -29,7 +29,8 @@
 						{{/if_eq}}
 					
 					{{else}}
-						I'm not using PVoutput.
+						This device itself is not submitting to PVoutput.<br>
+						It could be that the data from this device is used by another device to submit is.<br>
 					{{/if_eq}}
 					
 					</table>
