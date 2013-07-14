@@ -130,6 +130,9 @@ try {
 				$devices[] = array(
 					'name'=>$device->name,
 					'type'=>$device->type,
+					'pvoutputWSLTeamMember'=>$device->pvoutputWSLTeamMember,
+					'pvoutputSystemId'=>$device->pvoutputSystemId,
+					'pvoutputEnabled'=>$device->pvoutputEnabled,
 					'expectedKWH'=>$device->expectedkwh,
 					'plantPower'=>$device->plantpower,
 					'panels'=>$panels,
@@ -179,7 +182,8 @@ try {
 			$dtz = new DateTimeZone($config->timezone);
 			$timezoneOffset = new DateTime('now', $dtz);
 			$data['timezoneOffset'] = $dtz->getOffset( $timezoneOffset )/3600;
-			$lines = $dataAdapter->getGraphDayPoint($devicenum, $type, $date);
+			
+
 			$slimConfig = array();
 			$slimConfig['lat'] = number_format($config->latitude,2,'.','');
 			$slimConfig['long'] = number_format($config->longitude,2,'.','');
@@ -203,8 +207,13 @@ try {
 			}
 			$slimConfig['inverters'] = $inverters;
 			
+			$graphService = new GraphService();
 			$dayData = new DayDataResult();
-			$dayData->graph = $lines['graph'];
+			$options['deviceNum'] = $devicenum;
+			$options['type'] = $type;
+			$options['date'] = $date;
+			$options['mode'] = 'frontend';
+			$data['graph'] = $graphService->loadGraph($options);
 			$dayData->success = true;
 			$lang = array();
 			$lang['cumPowerW'] = _('cum. Power (W)');
@@ -594,15 +603,61 @@ try {
 			$graph->name = Common::getValue("name", "");
 			$graphService->save($graph);
 			//var_dump($versions);
-		case "load-graph":
+			break;
+		case "loadDaily":
 			$graph = new Graph();
 			$graphService = new GraphService();
-			$graph->name = Common::getValue("name", "");
-			$graphService->load($graph);
+			$data = $graphService->loadDaily();
 			//var_dump($versions);
-		case "kostal":
-			$kostal = new KostalPiko('python /home/marco/piko/Piko_dev.py --host=hansenmieke.dlinkddns.com --port=9996 -csv -q', $address, $port, $comoption, $debug);
-			echo $kostal->getLiveData();
+			break;
+		case "graph";
+		
+/*
+		$axe = R::dispense('axe',2);
+		//var_dump($axe);
+		$axe[0]->name = 'as1';
+		$axe[0]->options = 'json{label:1}';
+		$axe[1]->name = 'as2';
+		$axe[1]->options = 'json{label:2}';
+		R::storeAll($axe);
+		var_dump($axe);
+		//$axe = R::graph($axe);*/
+		
+/*
+		$serie = R::dispense('serie',3);
+		$serie[0]->name = 'serie1';
+		$serie[0]->options = 'json{label:1}';
+
+		$graph = R::load('graph',1);
+		if(!$graph){
+			$graph = R::dispense('graph');
+		}
+*/
+		
+		//$graph->sharedSerie[] = $serie;
+		//$graph->sharedAxe[] = $axe;
+		//R::store($graph);
+		
+		/*
+		$graph = R::load('graph',1);
+		//var_dump($graph);
+		$series = $graph->sharedSerie;
+		$axes = $graph->sharedAxe;
+		
+		var_dump($series);
+		echo "<br>\r\n";
+		var_dump($axes);
+		echo "<br>\r\n";
+		var_dump($graph->ownGraph = $graph);
+		//var_dump($sharedGraph);
+*/
+		
+		GraphService::installGraph();
+		
+			break;
+		case "testen":
+			//$kostal = new KostalPiko('python /home/marco/piko/Piko_dev.py --host=hansenmieke.dlinkddns.com --port=9996 -csv -q', $address, $port, $comoption, $debug);
+			//echo $kostal->getLiveData();
 			break;			
 		case "phpinfo":
 			$phpinfo = new SMASpotWSL('/home/pi/smaspot/bin/Release/./SMAspot', '/home/pi/smaspot/bin/Release/test.cfg', '', '', false);

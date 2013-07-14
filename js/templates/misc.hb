@@ -7,6 +7,36 @@
 <br>
 </div>
 <div class="col posts">
+	<div class="column span-22 last">
+		<h3>PVoutput {{lang.information}}</h3>
+			<div class="post">		
+				{{lang.events}}
+				
+				<div  class="column span-22 accordion">
+			{{#each data.slimConfig.devices}}
+			<h3>{{this.name}}</h3>
+			<div class="innerAccordionPeriod">
+				<div class="post">		
+					{{lang.events}}
+					<table width="100%">
+					{{#if_eq this.pvoutputEnabled compare=1}}
+						This device is submitting to PVoutput:<br>
+						<a href="http://pvoutput.org/list.jsp?sid={{this.pvoutputSystemId}}" target="_blank">Checkout my PVoutput page</a><br><br>
+						{{#if_eq this.pvoutputWSLTeamMember compare=1}}
+							and I'm a proud member of the <a href="http://pvoutput.org/listteam.jsp?tid=602" target="_blank">PVoutput WebSolarLog team</a> :)
+						{{else}}
+							and unfortunately i'm not a member of the <a href="http://pvoutput.org/listteam.jsp?tid=602" target="_blank">WebSolarLog team</a> :(
+						{{/if_eq}}
+					
+					{{else}}
+						I'm not using PVoutput.
+					{{/if_eq}}
+					
+					</table>
+				</div>
+			</div>
+			{{/each}}
+			</div></div></div>
 </div>
 <div class="cl"></div>
 <div class="col posts">
@@ -29,12 +59,11 @@
 			{{/each}}
 		</div>
 	</div>
-</div><div class="col posts">
+</div>
+<div class="col posts">
 	<div class="column span-22 last">
     	<h3>{{lang.Inverter}} {{lang.systemInfo}}</h3>
-		<div class="post">		
-
-
+		<div class="post">
 <div  class="column span-22 accordion">
 {{#each data.slimConfig.devices}}
 {{#if_eq this.type compare="production"}}
