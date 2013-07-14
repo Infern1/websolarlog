@@ -64,11 +64,10 @@
     <div>
     <div id="sliderLiveRate" class="span-20"></div><br>
     <input type="text" name="refreshTime" id="refreshTime" value="{{data.inverter.refreshTime}}" />
-    {{infoTooltip title="How often should this device be queried for live data thats shown on the frontend?<br>1 - 60 seconds"}}
-    For slow connection device, such as BlueTooth, we recommend a value >=8 seconds.<br>A smaller value could result in a WSL or Device hang.<br>
+    {{infoTooltip title="How often should this device be queried for live data thats shown on the frontend?<br>1 - 60 seconds<br>
+    For slow connection device, such as BlueTooth, we recommend a value >=8 seconds.<br>A smaller value could result in a WSL or Device hang."}}    
     <br />
-    </div>  </div>
-    
+    </div></div>
         <div class="span-8 first">
     <br>
     <label for="historyRate" style="float:left;">History poll Rate:</label>
