@@ -214,6 +214,7 @@ function init_menu() {
     $(".btnAdvanced").bind('click', function() { init_advanced();});
     $(".btnGeneral").bind('click', function() { init_general();});
     $(".btnDevices").bind('click', function() { init_devices(); });
+    $(".btnGraphs").bind('click', function() { init_graphs(); });
     $(".btnCommunication").bind('click', function() { init_communication(); });
     $(".btnGrid").bind('click', function() { init_grid();});
     $(".btnEmail").bind('click', function() { init_email(); });
@@ -949,6 +950,44 @@ function init_devices(selected_inverterId) {
 }
 
 
+function init_graphs(selected_graphId) {
+	WSL.connect.getJSON('../api.php/Graph/Graphs', function(graphs) {
+        $.ajax({
+            url : 'js/templates/graph_sb.hb',
+            success : function(source) {
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : graphs
+                });
+                $('#sidebar').html(html);
+
+                if (selected_graphId) {
+                    load_graph(selected_graphId);
+                } else {
+                    $('#content').html("<br /><h2>Choose an graph on the right side --></h2>");                    
+                }
+                // get hash...
+                WSL.checkURL();
+                
+                if(hashId){
+                	load_graph(hashId);
+                }
+                
+                $('.graph_select').bind("click",function(){
+                    var button = $(this);
+                    var graphId = button.attr('id').split("_")[1];
+                    window.location.hash = shortcutFunction+"-"+graphId;
+                    //console.log(graphId);
+                    load_graph(graphId);
+                });
+                
+            },
+            dataType : 'text'
+        });        
+    });
+}
+
+
 
 function showAlertOverlay($this,inverterId,typeName) {
 	
@@ -1091,7 +1130,7 @@ function load_device(inverterId,deviceApi,deviceType) {
                 });
                 
                 $( "#sliderLiveRate" ).slider({
-                    min: 1,
+                    min: 2,
                     max: 60,
                     step: 1,
                     slide: function( event, ui ) {
@@ -1107,7 +1146,7 @@ function load_device(inverterId,deviceApi,deviceType) {
               	});
 
                 $( "#sliderHistoryRate" ).slider({
-                    min: 1,
+                    min: 60,
                     max: 3600,
                     step: 1,
                     slide: function( event, ui ) {
@@ -1172,6 +1211,43 @@ function load_device(inverterId,deviceApi,deviceType) {
         });        
     });
 }
+
+
+
+function load_graph(graphId) {
+	WSL.connect.getJSON('../api.php/Graph/'+graphId, function(graph) {
+        $.ajax({
+            url : 'js/templates/graph.hb',
+            success : function(source) {
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : graph
+                });
+                $('#content').html(html);
+                
+                $('#btnDeviceSubmit').bind('click', function(){
+                	$('#btnDeviceSubmit').attr("disabled", "disabled");
+                	
+                	// remove disabled attr so POST will process it.
+                	$('[disabled="disabled"]').each(function(){$(this).removeAttr('disabled');});
+                	
+                	checkCheckboxesHiddenFields();
+                	var data = $(this).closest('form').serialize();
+                	WSL.connect.postJSON('admin-server.php', data, function(result) {
+                        init_devices(result.id);
+                        $.pnotify({ title: 'Saved', text: 'You\'re changes have been saved.'});
+                        $('#btnDeviceSubmit').removeAttr("disabled");
+                        window.location.hash = '#devices-'+result.id;
+                    }, function($resultError){$('#btnDeviceSubmit').removeAttr("disabled");});
+                });
+
+            },
+            dataType : 'text'
+        });        
+    });
+}
+
+
 
 function init_grid() {
     alert("grid");
