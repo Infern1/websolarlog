@@ -420,6 +420,10 @@ Class Diehl implements DeviceApi {
     public function syncTime() {
         return $this->execute('-L');
     }
+    
+    public function doCommunicationTest() {
+    	return "Not yet implemented";
+    }
 
     private function execute($options) {
         $ch = curl_init();

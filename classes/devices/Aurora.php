@@ -80,6 +80,10 @@ Class Aurora implements DeviceApi {
     public function syncTime() {
         return $this->execute('-L');
     }
+    
+    public function doCommunicationTest() {
+    	return "Not yet implemented";
+    }
 
     private function execute($options) {
         $cmd = $this->PATH . ' -a' . $this->ADR . ' ' . $options . ' ' . $this->PORT;

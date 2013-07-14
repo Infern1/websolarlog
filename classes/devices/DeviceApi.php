@@ -38,5 +38,10 @@ interface DeviceApi {
      * Try to retrieve the history data off the device
      */
     public function getHistoryData();
+    
+    /**
+     * Try to make an connection to the device and return some test information
+     */
+    public function doCommunicationTest();
 }
 ?>

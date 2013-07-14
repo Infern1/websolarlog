@@ -89,6 +89,10 @@ AC3,228.0,1.45,313,89.93,5120";
     public function syncTime() {
         return $this->execute('-L');
     }
+    
+    public function doCommunicationTest() {
+    	return "Not yet implemented";
+    }
 
     private function execute($options) {
     	$exec = shell_exec($this->PATH . ' ' . $options);

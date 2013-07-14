@@ -61,6 +61,10 @@ Class Sma implements DeviceApi {
         //return $this->execute('-L');
         // not supported
     }
+    
+    public function doCommunicationTest() {
+    	return "Not yet implemented";
+    }
 
     private function execute($options) {
         return shell_exec($this->PATH . ' -n' . $this->ADR . ' ' . $options);

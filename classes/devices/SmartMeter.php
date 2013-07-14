@@ -71,6 +71,10 @@ Class SmartMeter implements DeviceApi {
     public function syncTime() {
         // not supported
     }
+    
+    public function doCommunicationTest() {
+    	return "Not yet implemented";
+    }
 
     private function execute() {	
         // Check for dangerous programs

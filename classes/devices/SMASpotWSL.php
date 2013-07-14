@@ -87,6 +87,10 @@ SMAspot [-scan] [-d#] [-v#] [-ad#] [-am#] [-cfgX.Y] [-u] [-finq] [-q] [-nocsv]
         //return $this->execute('-L');
         // not supported
     }
+    
+    public function doCommunicationTest() {
+    	return "Not yet implemented";
+    }
 
     private function execute($options) {
     	// this make multi inverter possible for SMAspot users

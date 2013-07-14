@@ -61,6 +61,10 @@ Class WeatherOWM implements DeviceApi {
 		// not supported
 	}
 	
+	public function doCommunicationTest() {
+		return "Not yet implemented";
+	}
+	
 	public function getHistoryData() {
 		// not supported
 	}

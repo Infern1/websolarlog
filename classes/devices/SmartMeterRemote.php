@@ -73,6 +73,10 @@ Class SmartMeterRemote implements DeviceApi {
         //return $this->execute('-L');
         // not supported
     }
+    
+    public function doCommunicationTest() {
+    	return "Not yet implemented";
+    }
 
     private function execute() {
     	$address = explode(":", $this->ADR);
