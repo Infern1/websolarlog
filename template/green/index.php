@@ -111,7 +111,7 @@
 
 			<div style="float:left; width:200px;">
 			Solar Inverter Logger Demos:<br/>
-			<span class="leftFooter">PowerOne Inverter (RS485)<br/></span>
+			<a href="http://www.websolarlog.com/wsldemoproxy.php?brand=powerone&redir=true">PowerOne Inverter (RS485)</a><br/>
 			<span class="leftFooter">SMA Inverter (RS485)<br/></span>
 			<span class="leftFooter">SMA Inverter (BlueTooth)<br/></span>
 			<span class="leftFooter">Effekta Inverter (RS485)<br/></span>
