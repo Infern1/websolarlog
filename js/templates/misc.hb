@@ -56,6 +56,12 @@
 				<a href="http://code.google.com/p/sma-get/" target="_blank">http://code.google.com/p/sma-get/</a>
 				{{/if_eq}}
 				
+				{{#if_eq this.deviceApi compare="KostalPiko"}}
+				This device is using the Piko software.<br>
+				The software can be found here:<br>
+				<a href="http://sourceforge.net/projects/piko/" target="_blank">http://sourceforge.net/projects/piko/</a>
+				{{/if_eq}}
+				
 				
 				
 				</div>
