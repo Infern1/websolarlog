@@ -10,14 +10,14 @@ class ProductionDeviceHandler {
 			// Retrieve the device data
 			$live = $api->getLiveData();
 			if ($live == null) {
-				if ($device->state = 1) {
+				if ($device->state == 1) {
 					// No valid live data returned
 					HookHandler::getInstance()->fire("onNoLiveData", $device);					
 				}
 				return null;
 			}
 		} catch (ConverterException $e) {
-			if ($device->state = 1) {
+			if ($device->state == 1) {
 				HookHandler::getInstance()->fire("onInverterError", $device, $e->getMessage());
 				return null;
 			}
