@@ -162,7 +162,7 @@ class DeviceService {
 		$bObject->initialkwh = $object->initialkwh;
 		$bObject->producesSince = $object->producesSince;
 		$bObject->expectedkwh = $object->expectedkwh;
-		$bObject->communicationId = $object->comunicationId;
+		$bObject->communicationId = $object->communicationId;
 		$bObject->comAddress = $object->comAddress;
 		$bObject->comLog = $object->comLog;
 		$bObject->syncTime = $object->syncTime;
