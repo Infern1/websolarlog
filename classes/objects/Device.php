@@ -59,6 +59,7 @@ class Device {
         $this->pvoutputEnabled = false;
         $this->panels = array();
         $this->state = 0;
+        $this->historyRate = 300;
         $this->refreshTime = 2;
     }
 
@@ -72,7 +73,7 @@ class Device {
     	if ($this->deviceApi == "SMA-BT") {
 	    	return new SMABlueTooth($config->smaspotpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
 	    }
-    	    if ($this->deviceApi == "SMA-BT-WSL") {
+    	if ($this->deviceApi == "SMA-BT-WSL") {
 	    	return new SMASpotWSL($config->smaspotWSLpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
 	    }
 	    if ($this->deviceApi == "Diehl-ethernet") {
