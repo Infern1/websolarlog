@@ -5,12 +5,22 @@ class ProductionDeviceHandler {
 		// Get the api we need to use
 		$api = $device->getApi(Session::getConfig());
 		
-		// Retrieve the device data
-		$live = $api->getLiveData();
-		if ($live == null) {
-			// No valid live data returned
-			HookHandler::getInstance()->fire("onNoLiveData", $device);
-			return null;
+		$live = null;
+		try {
+			// Retrieve the device data
+			$live = $api->getLiveData();
+			if ($live == null) {
+				if ($device->active) {
+					// No valid live data returned
+					HookHandler::getInstance()->fire("onNoLiveData", $device);					
+				}
+				return null;
+			}
+		} catch (ConverterException $e) {
+			if ($device->active) {
+				HookHandler::getInstance()->fire("onInverterError", $device, $e->getMessage());
+				return null;
+			}
 		}
 		
 		// Set some variables
