@@ -27,7 +27,7 @@ $historyDataStartTime = Util::createOnceADayJob("12", "30"); // Only run at 12:3
 // Create the device jobs
 foreach (Session::getConfig()->devices as $device) {
 	// TODO
-	$historyUpdateRate = ($device->historyRate < 60) ? 60 : $device->historyRate; // prevent faster interval then 60sec.
+ 	$historyUpdateRate = (empty($device->historyRate)) ? 300 : $device->historyRate; // prevent faster interval then 60sec.
 	$historyStartTime = Util::createTimeForWholeInterval($historyUpdateRate);
 	
 	QueueServer::getInstance()->add(new QueueItem(time(), "DeviceHandler.handleLive", array($device), true, $device->refreshTime));
