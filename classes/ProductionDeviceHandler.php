@@ -19,8 +19,8 @@ class ProductionDeviceHandler {
 		} catch (ConverterException $e) {
 			if ($device->state == 1) {
 				HookHandler::getInstance()->fire("onInverterError", $device, $e->getMessage());
-				return null;
 			}
+			return null;
 		}
 		
 		// Set some variables
