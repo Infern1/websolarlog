@@ -98,6 +98,9 @@ class HistoryService {
 	
 	private function toObject($bObject) {
 		$object = new History();
+		if (!isset($bObject)) {
+			return $object;
+		}
 		$object->id = $bObject->id;
 		$object->INV = $bObject->INV;
 		$object->deviceId = $bObject->deviceId;

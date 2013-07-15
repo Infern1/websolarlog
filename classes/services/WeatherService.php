@@ -92,20 +92,22 @@ class WeatherService {
 	
 	private function toObject($bObject) {
 		$object = new Weather();
-		$object->id = $bObject->id;
-		$object->deviceId = $bObject->deviceId;
-		$object->time = $bObject->time;
-		$object->temp = $bObject->temp;
-		$object->temp_min = $bObject->temp_min;
-		$object->temp_max = $bObject->temp_max;
-		$object->pressure = $bObject->pressure;
-		$object->humidity = $bObject->humidity;
-		$object->conditionId = $bObject->conditionId;
-		$object->rain1h = $bObject->rain1h;
-		$object->rain3h = $bObject->rain3h;
-		$object->clouds = $bObject->clouds;
-		$object->wind_speed = $bObject->wind_speed;
-		$object->wind_direction = $bObject->wind_direction;
+		if (isset($bObject)) {
+			$object->id = $bObject->id;
+			$object->deviceId = $bObject->deviceId;
+			$object->time = $bObject->time;
+			$object->temp = $bObject->temp;
+			$object->temp_min = $bObject->temp_min;
+			$object->temp_max = $bObject->temp_max;
+			$object->pressure = $bObject->pressure;
+			$object->humidity = $bObject->humidity;
+			$object->conditionId = $bObject->conditionId;
+			$object->rain1h = $bObject->rain1h;
+			$object->rain3h = $bObject->rain3h;
+			$object->clouds = $bObject->clouds;
+			$object->wind_speed = $bObject->wind_speed;
+			$object->wind_direction = $bObject->wind_direction;
+		}
 		return $object;
 	}
 }

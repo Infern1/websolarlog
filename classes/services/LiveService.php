@@ -93,6 +93,9 @@ class LiveService {
 	
 	private function toObject($bObject) {
 		$object = new Live();
+		if (!isset($bObject)) {
+			return $object;
+		}
 		$object->id = $bObject->id;
 		$object->INV = $bObject->INV;
 		$object->deviceId = $bObject->deviceId;

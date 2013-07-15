@@ -53,19 +53,21 @@ class LiveSmartMeterService {
 	}
 	
 	private function toObject($bObject) {
-		$object = new LiveSmartMeter();		
-		$object->id = $bObject->id;
-		$object->time = $bObject->time;
-		$object->invtnum = $bObject->invtnum;
-		$object->deviceId = $bObject->deviceId;
-		$object->gasUsage = $bObject->gasUsage;
-		$object->liveGas = $bObject->liveGas;
-		$object->highReturn = $bObject->highReturn;
-		$object->lowReturn = $bObject->lowReturn;
-		$object->highUsage = $bObject->highUsage;
-		$object->lowUsage = $bObject->lowUsage;
-		$object->liveReturn = $bObject->liveReturn;
-		$object->liveUsage = $bObject->liveUsage;
+		$object = new LiveSmartMeter();
+		if (isset($bObject)) {
+			$object->id = $bObject->id;
+			$object->time = $bObject->time;
+			$object->invtnum = $bObject->invtnum;
+			$object->deviceId = $bObject->deviceId;
+			$object->gasUsage = $bObject->gasUsage;
+			$object->liveGas = $bObject->liveGas;
+			$object->highReturn = $bObject->highReturn;
+			$object->lowReturn = $bObject->lowReturn;
+			$object->highUsage = $bObject->highUsage;
+			$object->lowUsage = $bObject->lowUsage;
+			$object->liveReturn = $bObject->liveReturn;
+			$object->liveUsage = $bObject->liveUsage;
+		}
 		return $object;
 	}
 }

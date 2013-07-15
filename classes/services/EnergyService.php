@@ -96,15 +96,17 @@ class EnergyService {
 	
 	private function toObject($bObject) {
 		$object = new Energy();
-		$object->id = $bObject->id;
-		$object->INV = $bObject->INV;
-		$object->deviceId = $bObject->deviceId;
-		$object->SDTE = $bObject->SDTE;
-		$object->time = $bObject->time;
-		$object->KWH = $bObject->KWH;
-		$object->KWHT = $bObject->KWHT;
-		$object->KWHKWP = $bObject->KWHKWP;
-		$object->co2 = $bObject->co2;
+		if (isset($bObject)) {
+			$object->id = $bObject->id;
+			$object->INV = $bObject->INV;
+			$object->deviceId = $bObject->deviceId;
+			$object->SDTE = $bObject->SDTE;
+			$object->time = $bObject->time;
+			$object->KWH = $bObject->KWH;
+			$object->KWHT = $bObject->KWHT;
+			$object->KWHKWP = $bObject->KWHKWP;
+			$object->co2 = $bObject->co2;
+		}
 		return $object;
 	}
 }

@@ -74,11 +74,13 @@ class DeviceHistoryService {
 	
 	private function toObject($bObject) {
 		$object = new DeviceHistory();
-		$object->id = $bObject->id;
-		$object->deviceId = $bObject->deviceId;
-		$object->time = $bObject->time;
-		$object->amount = $bObject->amount;
-		$object->processed = $bObject->processed;
+		if (isset($bObject)) {
+			$object->id = $bObject->id;
+			$object->deviceId = $bObject->deviceId;
+			$object->time = $bObject->time;
+			$object->amount = $bObject->amount;
+			$object->processed = $bObject->processed;
+		}
 		return $object;
 	}
 }

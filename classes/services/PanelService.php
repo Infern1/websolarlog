@@ -69,14 +69,16 @@ class PanelService {
 	
 	private function toObject($bObject) {
 		$object = new Panel();
-		$object->id = $bObject->id;
-		$object->inverterId = $bObject->inverterId;
-		$object->deviceId = $bObject->deviceId;
-		$object->description = $bObject->description;
-		$object->roofOrientation = $bObject->roofOrientation;
-		$object->roofPitch = $bObject->roofPitch;
-		$object->amount = $bObject->amount;
-		$object->wp = $bObject->wp;
+		if (isset($bObject)) {
+			$object->id = $bObject->id;
+			$object->inverterId = $bObject->inverterId;
+			$object->deviceId = $bObject->deviceId;
+			$object->description = $bObject->description;
+			$object->roofOrientation = $bObject->roofOrientation;
+			$object->roofPitch = $bObject->roofPitch;
+			$object->amount = $bObject->amount;
+			$object->wp = $bObject->wp;
+		}
 		return $object;
 	}
 }

@@ -67,13 +67,15 @@ class CommunicationService {
 	
 	private function toObject($bObject) {
 		$object = new Communication();
-		$object->id = $bObject->id;
-		$object->type = $bObject->type;
-		$object->name = $bObject->name;
-		$object->uri = $bObject->uri;
-		$object->port = $bObject->port;
-		$object->timeout = $bObject->timeout;
-		$object->optional = $bObject->optional;
+		if (isset($bObject)) {
+			$object->id = $bObject->id;
+			$object->type = $bObject->type;
+			$object->name = $bObject->name;
+			$object->uri = $bObject->uri;
+			$object->port = $bObject->port;
+			$object->timeout = $bObject->timeout;
+			$object->optional = $bObject->optional;
+		}
 		return $object;
 	}
 }

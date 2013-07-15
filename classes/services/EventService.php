@@ -66,6 +66,9 @@ class EventService {
 	
 	private function toObject($bObject) {
 		$object = new Event($bObject->deviceId, $bObject->time, $bObject->Type, $bObject->Event);
+		if (!isset($bObject)) {
+			return $object;
+		}
 		$object->id = $bObject->id;
 		$object->INV = $bObject->INV;
 		$object->deviceId = $bObject->deviceId;

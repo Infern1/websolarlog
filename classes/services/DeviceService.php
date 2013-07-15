@@ -192,6 +192,9 @@ class DeviceService {
 	
 	private function toObject($bObject) {
 		$object = new Device();
+		if (!isset($bObject)) {
+			return $object;
+		}
 		$object->id = $bObject->id;
 		$object->active = $bObject->active;
 		$object->deviceApi = $bObject->deviceApi;
