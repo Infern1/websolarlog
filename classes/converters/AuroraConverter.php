@@ -11,8 +11,7 @@ class AuroraConverter
     {
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
-        	HookHandler::getInstance()->fire("onError", "Aurora returned NULL/Nothing/Empty");
-            return null;
+        	throw new ConverterException("Aurora returned NULL/Nothing/Empty");
         }
 
         // Split on a serie of spaces (not one)
