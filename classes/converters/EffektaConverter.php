@@ -27,7 +27,7 @@ class EffektaConverter
     	//14 OK
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
-        	HookHandler::getInstance()->fire("onError", "Effekta returned NULL/Nothing/Empty");
+        	throw new ConverterException("Empty LIVE response from Effekta:\r\n".print_r($inputLine,true));
             return null;
         }
 
@@ -36,7 +36,7 @@ class EffektaConverter
 
         // Check if the record is okay
         if (!empty($data[14]) && trim($data[14]) != "OK") {
-        	HookHandler::getInstance()->fire("onError", "Unexpected response from EFfekta:\r\n".print_r($inputLine,true));
+        	throw new ConverterException("not a OK response from Effekta:\r\n".print_r($inputLine,true));
             return null;
         }
 

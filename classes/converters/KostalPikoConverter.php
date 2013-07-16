@@ -11,7 +11,7 @@ class KostalPikoConverter
     {
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
-        	HookHandler::getInstance()->fire("onError", "Piko.py returned NULL/Nothing/Empty");
+        	throw new ConverterException("Empty LIVE response from KostalPiko:\r\n".print_r($inputLine,true));
             return null;
         }
 
@@ -23,7 +23,7 @@ class KostalPikoConverter
         }
         // Check if the record is okay
         if (!empty($data[22]) && trim($data[22]) != "OK") {
-        	HookHandler::getInstance()->fire("onError", "Unexpected response from Piko.py:\r\n".print_r($inputLine,true));
+        	throw new ConverterException("not a OK response from KostalPiko:\r\n".print_r($inputLine,true));
             return null;
         }
         

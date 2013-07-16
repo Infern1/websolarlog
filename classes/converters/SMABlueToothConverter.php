@@ -10,7 +10,7 @@ class SMABlueToothConverter
     {    	
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
-        	HookHandler::getInstance()->fire("onError", "SMABlueTooth returned NULL/Nothing/Empty");
+        	throw new ConverterException("Empty LIVE response from SMABlueTooth204:\r\n".print_r($inputLine,true));
             return null;
         }
 
@@ -26,7 +26,7 @@ class SMABlueToothConverter
 		}
         // Check if the record is okay
 		if(!preg_match("/^Done/",trim($data[count($data)-1]))){
-			HookHandler::getInstance()->fire("onError", "Unexpected response from SMABlueTooth:\r\n".print_r($inputLine,true));
+			throw new ConverterException("not a OK response from SMABlueTooth204:\r\n".print_r($inputLine,true));
             return null;
         }
         
@@ -87,7 +87,6 @@ class SMABlueToothConverter
 
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->GP)) {
-        	//HookHandler::getInstance()->fire("onDebug", "SMABlueTooth didn't return KWHT or GP is empty! We need these values for calculations");
         	return null;
         }
         return $live;

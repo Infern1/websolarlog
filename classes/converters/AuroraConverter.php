@@ -11,7 +11,7 @@ class AuroraConverter
     {
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
-        	throw new ConverterException("Aurora returned NULL/Nothing/Empty");
+        	throw new ConverterException("Empty LIVE response from Aurora:\r\n".print_r($inputLine,true));
         }
 
         // Split on a serie of spaces (not one)
@@ -19,7 +19,7 @@ class AuroraConverter
 
         // Check if the record is okay
         if (!empty($data[22]) && trim($data[22]) != "OK") {
-			HookHandler::getInstance()->fire("onError", "Unexpected response from Aurora:\r\n".print_r($inputLine,true));
+			throw new ConverterException("not a OK response from Aurora:\r\n".print_r($inputLine,true));
             return null;
         }
         
@@ -74,7 +74,6 @@ class AuroraConverter
         
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->GP)) {
-        	//HookHandler::getInstance()->fire("onDebug", "Aurora didn't return KWHT or GP is empty! We need these values for calculations");
         	return null;
         }
 

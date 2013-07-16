@@ -36,7 +36,7 @@ class DiehlConverter
 	public static function toStatus($inputLine){
 		// Check if the input line is valid
 		if ($inputLine == null || trim($inputLine) == "") {
-			HookHandler::getInstance()->fire("onError", "DIEHL::toStatus returned NULL/Nothing/Empty");
+			throw new ConverterException("Empty STATUS response from Diehl:\r\n".print_r($inputLine,true));
 			return null;
 		}
 		
@@ -97,7 +97,7 @@ class DiehlConverter
     {
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
-        	HookHandler::getInstance()->fire("onError", "DIEHL::toLive returned NULL/Nothing/Empty");
+        	throw new ConverterException("Empty LIVE response from Diehl:\r\n".print_r($inputLine,true));
             return null;
         }
         $live = new Live();
