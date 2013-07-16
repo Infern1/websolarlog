@@ -120,7 +120,7 @@ span.read-more a { font-family: Tahoma, arial, sans-serif; font-weight: bold; co
 #footer-bottom { font-size: 0; line-height: 0; text-indent: -4000px; height: 6px; background: url(images/footer-bottom.png) no-repeat 0 0; }
 
 
-#navigation_sticky { position: relative;width:100%;background: url(images/wrapper.jpg) repeat-x center 0;display;block; }
+#navigation_sticky { position: relative;width:100%;background: url(images/wrapper.jpg) repeat-x center 0;display:block; }
 #navigation_sticky ul { float: left; display: inline; position: relative; }
 #navigation_sticky ul li { display: inline; float: left; font-family: Tahoma, arial, sans-serif; font-size: 18px; color: #fff; line-height: 47px; text-shadow: 0 1px #5a8503; }
 /*#navigation_sticky ul li a { position: relative; float: left; height: 52px; color: #fff; background: url(images/nav-item.png) repeat-x 0 0px; width: 115px; text-align: center; }*/

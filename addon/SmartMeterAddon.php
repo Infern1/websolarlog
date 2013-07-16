@@ -19,6 +19,29 @@ class SmartMeterAddon {
 		$this->adapter = null;
 	}
 
+	
+	public function installGraph(){
+		$graph = R::dispense('graph');
+
+		$graph->series = self::defaultSeries();
+		//var_dump(json_decode($graph->series[0]['json'])->label);
+		$graph->metaData = array(
+				'legend'=>array(
+					"show"=>true,
+					"location"=>'s',
+					"placement"=>'outsideGrid',
+					"renderer"=>'EnhancedLegendRenderer',
+					"rendererOptions"=>array(
+							"seriesToggle"=>'normal',
+							"numberRows"=>2
+					),
+					"left"=>10,
+					"width"=>700
+				)
+		);
+		return $graph;
+	}
+	
 	/**
 	 * Handle hook onHistory
 	 * @param unknown $args
@@ -138,9 +161,6 @@ class SmartMeterAddon {
 		$live->deviceId = $invtnum;
 		$live->invtnum = $invtnum;
 		
-		
-		
-		
 		$bean = R::dispense('historySmartMeter');
 
 		// check if we have a "valid" Bean to store.
@@ -249,33 +269,92 @@ class SmartMeterAddon {
 	}
 
 	public function defaultAxes(){
-		$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-		$graph->axes['y3axis'] = array('label'=>_("Gas").''._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-		$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'labelRenderer'=>'CanvasAxisLabelRenderer');
-		return $graph;
+		$axe = R::dispense('axe',2);
+		//$axe[0]['json'] = json_encode(json_encode(array('axe'=>'yaxis','label'=>'Avg. Power(Wh)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer'));
+		$axe[0]['json'] = json_encode(array('axe'=>'y3axis','label'=>_("Gas").' '._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer'));
+		$axe[0]['show'] = 'true';
+		$axe[0]['AxeOrder'] = 3;
+		$axe[1]['json'] = json_encode(array('axe'=>'y4axis','label'=>_("Actual").''._("(W)"),'labelRenderer'=>'CanvasAxisLabelRenderer'));
+		$axe[1]['show'] = 'true';
+		$axe[1]['AxeOrder'] = 4;
+		return $axe;
 	}
 
 	public function defaultSeries(){
-		$graph->series[] = array('label'=>_("Cum.").' '._("Gas").''._("(l)"),'yaxis'=>'y2axis');
-		$graph->series[] = array('label'=>_("Smooth").' '._("Gas").''._("(l)") ,'yaxis'=>'y2axis');
-		$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
-		$graph->series[] = array('label'=>_("Cum.").' '._("high").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
-		$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("return").''._("(W)"),'yaxis'=>'y2axis');
-		$graph->series[] = array('label'=>_("Cum.").' '._("high").' '._("return").''._("(W)") ,'yaxis'=>'y2axis');
-		$graph->series[] = array('label'=>_("Low").' '._("usage").''._("(W)") ,'yaxis'=>'y3axis');
-		$graph->series[] = array('label'=>_("High").' '._("usage").''._("(W)") ,'yaxis'=>'y3axis');
-		$graph->series[] = array('label'=>_("Low").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
-		$graph->series[] = array('label'=>_("High").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
-		$graph->series[] = array('label'=>_("Actual").' '._("usage").''._("(W)"),'yaxis'=>'y4axis');
-		return $graph;
+		$serie = R::dispense('serie',11);
+		//$serie[0]['json'] = json_encode(json_encode(array('label'=>'Cum. Power(Wh)','yaxis'=>'y2axis'));
+		$serie[0]['json'] = json_encode(array('label'=>'Cum Gas (l)','yaxis'=>'y2axis'));
+		$serie[0]['name'] = 'cumGasL';
+		$serie[0]['disabled'] = 'false';
+		$serie[0]['show'] = 'true';
+		
+		$serie[1]['json'] = json_encode(array('label'=>'Smooth Gas (l)','yaxis'=>'y2axis'));
+		$serie[1]['name'] = 'smoothGasL';
+		$serie[1]['disabled'] = 'false';
+		$serie[1]['show'] = 'true';
+		
+		$serie[2]['json'] = json_encode(array('label'=>'Cum low usage (W)','yaxis'=>'y2axis'));
+		$serie[2]['name'] = 'cumLowUsageW';
+		$serie[2]['disabled'] = 'false';
+		$serie[2]['show'] = 'true';
+		
+		$serie[3]['json'] = json_encode(array('label'=>'Cum high usage (W)','yaxis'=>'y2axis'));
+		$serie[3]['name'] = 'cumHighUsageW';
+		$serie[3]['disabled'] = 'false';
+		$serie[3]['show'] = 'true';
+		
+		$serie[4]['json'] = json_encode(array('label'=>'Cum low return (W)','yaxis'=>'y2axis'));
+		$serie[4]['name'] = 'cumLowReturnW';
+		$serie[4]['disabled'] = 'false';
+		$serie[4]['show'] = 'true';
+		
+		$serie[5]['json'] = json_encode(array('label'=>'Cum high return (W)','yaxis'=>'y2axis'));
+		$serie[5]['name'] = 'cumHighReturnW';
+		$serie[5]['disabled'] = 'false';
+		$serie[5]['show'] = 'true';
+		
+		$serie[6]['json'] = json_encode(array('label'=>'Low usage (W)' ,'yaxis'=>'y3axis'));
+		$serie[6]['name'] = 'lowUsageW';
+		$serie[6]['disabled'] = 'false';
+		$serie[6]['show'] = 'true';
+		
+		$serie[7]['json'] = json_encode(array('label'=>'High usage (W)' ,'yaxis'=>'y3axis'));
+		$serie[7]['name'] = 'highUsageW';
+		$serie[7]['disabled'] = 'false';
+		$serie[7]['show'] = 'true';
+		
+		$serie[8]['json'] = json_encode(array('label'=>'Low return (W)','yaxis'=>'y3axis'));
+		$serie[8]['name'] = 'lowReturnW';
+		$serie[8]['disabled'] = 'false';
+		$serie[8]['show'] = 'true';
+		
+		$serie[9]['json'] = json_encode(array('label'=>'High return (W)','yaxis'=>'y3axis'));
+		$serie[9]['name'] = 'highReturnW';
+		$serie[9]['disabled'] = 'false';
+		$serie[9]['show'] = 'true';
+		
+		$serie[10]['json'] = json_encode(array('label'=>'Actual usage (W)','yaxis'=>'y4axis'));
+		$serie[10]['name'] = 'actualUsageW';
+		$serie[10]['disabled'] = 'false';
+		$serie[10]['show'] = 'true';
+		
+		return $serie;
 	}
-	
+	/**
+	 * 
+	 */
 	public function addSeries(){
 		$graph = new Graph();
 		$graph = $this->defaultSeries();
 	}
 	
-	public function DayBeansToGraphPoints($beans,$startDate){
+	/**
+	 * 
+	 * @param unknown $beans
+	 * @param unknown $startDate
+	 * @return Graph
+	 */
+	public function DayBeansToGraphPoints($beans,$startDate,$disabledSeries){
 		$graph = new Graph();
 		/*
 		 * Generate Graph Point and series
@@ -295,10 +374,15 @@ class SmartMeterAddon {
 			}
 			$UTCdate = $bean['time'];
 			$UTCtimeDiff = $UTCdate - $preBean['time'];
-			$graph->points['cumGasUsage'][] = array ($UTCdate ,$bean['gasUsage']-$firstBean['gasUsage'],date("H:i, d-m-Y",$bean['time']));
-			if($i==0){
-				$graph->points['smoothGasUsage'][] = array ($UTCdate ,$firstBean['gasUsage']-$bean['gasUsage']);
+			
+			
+
+			if(!in_array('cumGasL',$disabledSeries)){
+				$graph->points['cumGasUsage'][] = array ($UTCdate ,$bean['gasUsage']-$firstBean['gasUsage'],date("H:i, d-m-Y",$bean['time']));
 			}
+			//if($i==0){
+				$graph->points['smoothGasUsage'][] = array ($UTCdate ,$firstBean['gasUsage']-$bean['gasUsage']);
+			//}
 			
 			if( $bean['gasUsage']-$firstBean['gasUsage'] != $preBean['gasUsage']-$firstBean['gasUsage']){
 				$graph->points['smoothGasUsage'][] = array ($UTCdate,$bean['gasUsage']-$firstBean['gasUsage']);
@@ -309,7 +393,6 @@ class SmartMeterAddon {
 			$graph->points['cumHighReturn'][] = array ($UTCdate ,$bean['highReturn']-$firstBean['highReturn']);
 			
 			$lowUsage = Formulas::calcAveragePower($preBean['lowUsage'], $bean['lowUsage'], $preBean['time']-$bean['time'])/1000;
-			
 			$highUsage = Formulas::calcAveragePower($preBean['highUsage'], $bean['highUsage'], $preBean['time']-$bean['time'])/1000;
 			$lowReturn = Formulas::calcAveragePower($preBean['lowReturn'], $bean['lowReturn'], $preBean['time']-$bean['time'])/1000;
 			$highReturn = Formulas::calcAveragePower($preBean['highReturn'], $bean['highReturn'], $preBean['time']-$bean['time'])/1000;
@@ -332,65 +415,18 @@ class SmartMeterAddon {
 			$preBean = $bean;
 			$i++;
 		}
+
+		
 		
 		// see if we have more then 1 bean (the dummy bean)
 		if($i > 1){
-			/* Set Serie Labels, The order of the labels needs to be the same as the points above*/
-			/*$graph->series[] = array('label'=>_("Cum.").' '._("Gas").''._("(l)"),'yaxis'=>'y2axis');
-			$graph->series[] = array('label'=>_("Smooth").' '._("Gas").''._("(l)") ,'yaxis'=>'y2axis');
-			$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
-			$graph->series[] = array('label'=>_("Cum.").' '._("high").' '._("usage").''._("(W)"),'yaxis'=>'y2axis');
-			$graph->series[] = array('label'=>_("Cum.").' '._("low").' '._("return").''._("(W)"),'yaxis'=>'y2axis');
-			$graph->series[] = array('label'=>_("Cum.").' '._("high").' '._("return").''._("(W)") ,'yaxis'=>'y2axis');
-			$graph->series[] = array('label'=>_("Low").' '._("usage").''._("(W)") ,'yaxis'=>'y3axis');
-			$graph->series[] = array('label'=>_("High").' '._("usage").''._("(W)") ,'yaxis'=>'y3axis');
-			$graph->series[] = array('label'=>_("Low").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
-			$graph->series[] = array('label'=>_("High").' '._("return").''._("(W)"),'yaxis'=>'y3axis');
-			$graph->series[] = array('label'=>_("Actual").' '._("usage").''._("(W)"),'yaxis'=>'y4axis');
-			*/
-			
-			$defaultSeries = $this->defaultSeries();
-			$graph->series = $defaultSeries->series;
+
 			
 			$graph->timestamp = Util::getBeginEndDate('day', 1,$startDate);
 			($maxActual>0) ? $maxActual = ceil( ( ($maxActual*1.1)+100) / 100 ) * 100 : $maxActual= $maxActual;
 			($minActual<0) ? $minActual = ceil( ( ($minActual*1.1)+100) / 100 ) * 100 : $minActual = $minActual;
 			
-			$defaultAxes = $this->defaultAxes();
-			$graph->axes = $defaultAxes->axes;
-			/*$graph->axes['y2axis'] = array('label'=>_("Cum.").''._("(W)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-			$graph->axes['y3axis'] = array('label'=>_("Gas").''._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-			$graph->axes['y4axis'] = array('label'=>_("Actual").''._("(W)"),'min'=>$minActual,'max'=>$maxActual,'labelRenderer'=>'CanvasAxisLabelRenderer');
-			*/
-			// default hide graph lines.
-			$graph->metaData['hideSeries']= array(
-					'label'=>array(
-							$graph->series[0]['label'],
-							$graph->series[1]['label'],
-							$graph->series[2]['label'],
-							$graph->series[3]['label'],
-							$graph->series[4]['label'],
-							$graph->series[5]['label'],
-							$graph->series[6]['label'],
-							$graph->series[7]['label'],
-							$graph->series[8]['label'],
-							$graph->series[9]['label']
-					),
-			);
-			
-			//graph specific legenda.
-			$graph->metaData['legend']= array(
-							"show"=>true,
-							"location"=>'s',
-							"placement"=>'outsideGrid',
-							"renderer"=>'EnhancedLegendRenderer',
-							"rendererOptions"=>array(
-									"seriesToggle"=>'normal',
-									"numberRows"=>2
-							),
-							"left"=>10,
-							"width"=>700
-			);
+
 			
 		}else{
 			$graph->points=null;
@@ -404,19 +440,13 @@ class SmartMeterAddon {
 	 * @param date $labels[] = 'High Power(W)';$startDate ("Y-m-d") ("1900-12-31"), when no date given, the date of today is used.
 	 * @return array($beginDate, $endDate);
 	 */
-	// Hook fired with ("GraphDayPoints",$invtnum,$startDate,$type);
+	// Hook fired with ("GraphDayPoints",$invtnum,$startDate,$type,$hiddenSeries);
 	public function GraphDayPoints($args){
-
-		($args[3] == 'today')?$type='day':$type=$args[3];
-		$beans = $this->adapter->readTablesPeriodValues($args[1], 'historySmartMeter', $type, $args[2]);
-		$beans = $this->DayBeansToGraphPoints($beans,$args[2]);
+		(strtolower($args[3]) == 'today')?$type='day':$type=$args[3];
+		$graphDataService = new GraphDataService();
+		$beans = $graphDataService->readTablesPeriodValues($args[1], 'historySmartMeter', $type, $args[2]);
+		$beans = $this->DayBeansToGraphPoints($beans,$args[2],$args[4]);
 		return $beans;
 	}
-
-	/*
-	 public function getSmartMeterTotals(){
-	$energySmartMeter = $this->adapter->readTablesPeriodValues(0, "energySmartMeter", "today", date("d-m-Y"));
-	var_dump();
-	}*/
 }
 ?>

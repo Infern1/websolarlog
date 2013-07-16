@@ -56,6 +56,7 @@ session_start();
 					<li class="nav-start"><a href="#" class="btnGeneral">General</a></li>
 					<li><a href="#devices" class="btnDevices">Devices</a></li>
 					<li><a href="#communication" class="btnCommunication">Communication</a></li>
+					<li><a href="#graphs" class="btnGraphs">Graphs</a></li>
 					<li><a href="#email" class="btnEmail">eMail</a></li>
 					<li><a href="#advanced" class="btnAdvanced">Advanced</a></li>
 					<li><a href="#social" class="btnSocial">Social</a></li>

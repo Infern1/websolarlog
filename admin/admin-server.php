@@ -759,7 +759,7 @@ switch ($settingstype) {
 		$graphService = new GraphService();
 		$data['graphs'] = $graphService->loadDaily();
 		break;
-	case 'getGraphObject':
+	/*case 'getGraphObject':
 		$graph = new Graph();
 
 		$getGraphAxes = HookHandler::getInstance()->fire("getGraphAxes","SmartMeterAddon.getAxes");
@@ -768,7 +768,7 @@ switch ($settingstype) {
 		$graph->series = $graph->getGraphSeries();
 		
 		$data['graphObject'] = $graph;
-		break;
+		break;*/
 	case 'dbm_getTables':
 		$data['tables'] = R::$writer->getTables();
 		break;

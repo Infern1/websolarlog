@@ -1225,20 +1225,60 @@ function load_graph(graphId) {
                 });
                 $('#content').html(html);
                 
-                $('#btnDeviceSubmit').bind('click', function(){
-                	$('#btnDeviceSubmit').attr("disabled", "disabled");
+                $('.deleteAxe').on('click',function(){
+                	$.ajax({
+                        type: "DELETE",
+                        //url: "../api.php/Graph/axe/"+$(this).attr('id'),
+                        url: "../api.php/Graph/axe/9",
+                        success: function(response){
+            				if (response.type == 'axe'){
+            					if(response.success == true) {
+			    					$.pnotify({
+			    						title: 'Succes',
+			    				        text: 'Axe removed!',
+			    				        type: 'success'                                    
+			    					});     
+			    					init_graphs(graphId);
+			    					window.location.hash = '#graphs';
+			    				} else {
+			    					$.pnotify({
+			    				        title: 'Error',
+			    				        text: 'Axe not removed...',
+			    				        type: 'error'
+			    				    });      
+			    				}
+            				}
+                        }
+                        });
+                });
+                
+                $('.saveAxe').on('click',function(){
                 	
-                	// remove disabled attr so POST will process it.
-                	$('[disabled="disabled"]').each(function(){$(this).removeAttr('disabled');});
-                	
-                	checkCheckboxesHiddenFields();
-                	var data = $(this).closest('form').serialize();
-                	WSL.connect.postJSON('admin-server.php', data, function(result) {
-                        init_devices(result.id);
-                        $.pnotify({ title: 'Saved', text: 'You\'re changes have been saved.'});
-                        $('#btnDeviceSubmit').removeAttr("disabled");
-                        window.location.hash = '#devices-'+result.id;
-                    }, function($resultError){$('#btnDeviceSubmit').removeAttr("disabled");});
+                	$this = $(this).closest('.axeContainer');
+                	console.log($this.children('.axe').html());
+                	$.ajax({
+                        type: "POST",
+                        url: "../api.php/Graph/axe/9",
+                        success: function(response){
+            				if (response.type == 'axe'){
+            					if(response.success == true) {
+			    					$.pnotify({
+			    						title: 'Succes',
+			    				        text: 'Axe removed!',
+			    				        type: 'success'                                    
+			    					});     
+			    					init_graphs(graphId);
+			    					window.location.hash = '#graphs';
+			    				} else {
+			    					$.pnotify({
+			    				        title: 'Error',
+			    				        text: 'Axe not removed...',
+			    				        type: 'error'
+			    				    });      
+			    				}
+            				}
+                        }
+                        });
                 });
 
             },

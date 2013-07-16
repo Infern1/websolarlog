@@ -1495,57 +1495,75 @@ var WSL = {
 				seriesData = [];
 				var clearSkySeriesObject ={}; 
 				var json = [];
-				if (result.dayData) {
-					if (result.dayData.graph) {
-						for (line in result.dayData.graph.points) {
+				var newJsonSeries = [];
+				if (result) {
+					
+					if (result.graph) {
+						for (series in result.graph.series) {
+							result.graph.series[series] = $.parseJSON(result.graph.series[series].json);
+						}
+
+						
+						for (line in result.graph.dataPoints) {
+							
 							var json = [];
-							for (values in result.dayData.graph.points[line]) {
+							for (values in result.graph.dataPoints[line]) {
 								json.push([
-									result.dayData.graph.points[line][values][0]*1000,
-									result.dayData.graph.points[line][values][1]
+									result.graph.dataPoints[line][values][0]*1000,
+									result.graph.dataPoints[line][values][1]
 								]);
 							
 							}
 							seriesData.push(json);
+							newJsonSeries = [];
+
 							if(seriesData.length==2){
 								var axesNumber = 2;
 								for (var i = 0; i < clearSky.length; i++) {
 									seriesData.push(clearSky[i]);
 									clearSkySeriesObject['label'] = 'C.S.';
 									clearSkySeriesObject['yaxis'] = 'yaxis';
-									result.dayData.graph.series.splice(axesNumber, 0, clearSkySeriesObject);
-									result.dayData.graph.series.join();
+									result.graph.series.splice(axesNumber, 0, clearSkySeriesObject);
+									result.graph.series.join();
 									axesNumber++;
 								}
 							}
-							
+						
 						}
-						//console.log(result.dayData.graph.series);
+						if(result.graph.json.legend != ''){
+							if (result.graph.json.legend.renderer == 'EnhancedLegendRenderer') {
+								result.graph.json.legend.renderer = $.jqplot.EnhancedLegendRenderer;
+							}
+							graphOptions.legend = result.graph.json.legend;
+						}
+						var newAxes = [];
 
-						if(result.dayData.graph.metaData.legend != ''){
-							if (result.dayData.graph.metaData.legend.renderer == 'EnhancedLegendRenderer') {
-								result.dayData.graph.metaData.legend.renderer = $.jqplot.EnhancedLegendRenderer;
+						for (axes in result.graph.axes) {
+							var jsonAxe = $.parseJSON(result.graph.axes[axes].json);
+							
+							newAxes[jsonAxe.axe] = jsonAxe;
+							
+							if (newAxes[jsonAxe.axe]['renderer'] == 'DateAxisRenderer') {
+								newAxes[jsonAxe.axe]['renderer'] = $.jqplot.DateAxisRenderer;
 							}
-							graphOptions.legend = result.dayData.graph.metaData.legend;
+							if (newAxes[jsonAxe.axe]['tickRenderer'] == 'CanvasAxisTickRenderer') {
+								newAxes[jsonAxe.axe]['tickRenderer'] = $.jqplot.CanvasAxisTickRenderer;
+							}
+							if (newAxes[jsonAxe.axe]['labelRenderer'] == 'CanvasAxisLabelRenderer') {
+								newAxes[jsonAxe.axe]['labelRenderer'] = $.jqplot.CanvasAxisLabelRenderer;
+							}
+							if (newAxes[jsonAxe.axe]['formatter'] == 'DayDateTickFormatter') {
+								newAxes[jsonAxe.axe]['labelRenderer'] = $.jqplot.DayDateTickFormatter;
+							}
+							//delete newAxes[jsonAxe.axe].axe;
 						}
-						for (axes in result.dayData.graph.axes) {
-							if (result.dayData.graph.axes[axes]['renderer'] == 'DateAxisRenderer') {
-								result.dayData.graph.axes[axes]['renderer'] = $.jqplot.DateAxisRenderer;
-							}
-							if (result.dayData.graph.axes[axes]['tickRenderer'] == 'CanvasAxisTickRenderer') {
-								result.dayData.graph.axes[axes]['tickRenderer'] = $.jqplot.CanvasAxisTickRenderer;
-							}
-							if (result.dayData.graph.axes[axes]['labelRenderer'] == 'CanvasAxisLabelRenderer') {
-								result.dayData.graph.axes[axes]['labelRenderer'] = $.jqplot.CanvasAxisLabelRenderer;
-							}
-							if (result.dayData.graph.axes[axes]['formatter'] == 'DayDateTickFormatter') {
-								result.dayData.graph.axes[axes]['labelRenderer'] = $.jqplot.DayDateTickFormatter;
-							}
-						}
-						graphOptions.axes = result.dayData.graph.axes;
-						graphOptions.axes.xaxis.min = result.dayData.graph.timestamp.beginDate * 1000;
-						graphOptions.axes.xaxis.max = result.dayData.graph.timestamp.endDate * 1000;
-						graphOptions.series = result.dayData.graph.series;
+
+						graphOptions.axes = newAxes; 
+						
+						graphOptions.axes.xaxis.min = result.graph.timestamp.beginDate * 1000;
+						graphOptions.axes.xaxis.max = result.graph.timestamp.endDate * 1000;
+						graphOptions.series = result.graph.series;
+						
 					}
 					var seriesHidden = [];
 					// loop through all hidden
@@ -1564,13 +1582,14 @@ var WSL = {
 
 					handle = null;
 					delete handle;
-					
+					console.log(graphOptions);
+					console.log(seriesData);
 					handle = $.jqplot('graph' + tab + 'Content',seriesData, graphOptions);
-					if(result.dayData.graph.metaData.legend.left>0){
-						$('table.jqplot-table-legend').css('left',result.dayData.graph.metaData.legend.left);
+					if(result.graph.json.legend.left>0){
+						$('table.jqplot-table-legend').css('left',result.graph.json.legend.left);
 					}
-					if(result.dayData.graph.metaData.legend.width>0){
-						$('table.jqplot-table-legend').css('width',result.dayData.graph.metaData.legend);
+					if(result.graph.json.legend.width>0){
+						$('table.jqplot-table-legend').css('width',result.graph.json.legend);
 					}
 					
 					// iterator to keep track on the legenda items
@@ -1580,7 +1599,7 @@ var WSL = {
 						function() {
 							$this = $(this);
 							// walkthrough array with hidden lines
-							for (line in result.dayData.graph.metaData.hideSeries.label) {
+							for (line in result.graph.json.hideSeries) {
 								
 								// if legenda.text is equal to hideSeries text; 
 								// Click this legenda item to hide is
@@ -1591,7 +1610,7 @@ var WSL = {
 										$("td:contains("+$this.text()+")").click();
 									}
 								} else {
-									if ($this.text() == result.dayData.graph.metaData.hideSeries.label[line]) {
+									if ($this.text() == result.graph.json.hideSeries[line]) {
 										// CLICK!!
 										$("td:contains("+$this.text()+")").click();
 									}
@@ -1604,19 +1623,20 @@ var WSL = {
 					//
 					// make graph title 
 					//
+					/*
 					var graphTitle = '<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+ 
 							result.lang.generated+ ': '+ 
-							result.dayData.graph.metaData.KWH.cumPower + ' '+ 
-							result.dayData.graph.metaData.KWH.KWHTUnit + ' ('+ 
-							result.dayData.graph.metaData.KWH.KWHKWP + ' kWh/kWp)&nbsp&nbsp;'+ 
+							result.graph.json.KWH.cumPower + ' '+ 
+							result.graph.json.KWH.KWHTUnit + ' ('+ 
+							result.graph.json.KWH.KWHKWP + ' kWh/kWp)&nbsp&nbsp;'+ 
 							result.lang.max + ': '+ 
 							plantTotalPower + ' '+ 
-							result.dayData.graph.metaData.KWH.KWHTUnit + ' ('+ 
+							result.graph.json.KWH.KWHTUnit + ' ('+ 
 							 ((typeof totalKWhkWp === 'undefined') ? 0 : totalKWhkWp) +
 							' kWh/kWp)</div>';
-					
+					*/
 					delete seriesData, graphOptions;
-					if (typeof (result.dayData.graph.metaData.KWH) !== "undefined") {
+					if (typeof (result.graph.json.KWH) !== "undefined") {
 						setGraphTitle(graphTitle,'#graph'+ getDay);
 					}
 					fnFinish.call(this, handle);
@@ -1777,7 +1797,6 @@ var WSL = {
 						changeMonth : false,
 						changeYear : true,
 						onSelect : function(dateText,inst) {
-							console.log('select');
 							//$(this).val($('#datePickerPeriod').val());
 						},
 						onClose : function(dateText,inst) {

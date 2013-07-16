@@ -6,7 +6,4 @@ class Graph {
     public $series;
     public $metaData;
 }
-
-
 ?>
-

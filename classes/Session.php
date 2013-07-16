@@ -73,6 +73,7 @@ class Session
     	 */
     	$deviceService = new DeviceService();
     	$energyService = new EnergyService();
+    	$graphService  = new GraphService();
     }
     
     private static $config;
@@ -265,7 +266,11 @@ class Session
     	$hookHandler->add("onSmartMeterEnergy", "SmartMeterAddon.onSmartMeterEnergy"); // Will run at 00:00
     	
     	
-    	$hookHandler->add("GraphDayPoints", "SmartMeterAddon.GraphDayPoints"); // Will run at 00:00
+    	
+
+    	$hookHandler->add("defaultAxes", "SmartMeterAddon.defaultAxes");
+    	$hookHandler->add("defaultSeries", "SmartMeterAddon.defaultSeries");
+    	 
     	
     	// fire from frontend
     	$hookHandler->add("checkEnergy", "EnergyCheckAddon.checkEnergy");

@@ -138,7 +138,7 @@ span.read-more a { font-family: Tahoma, arial, sans-serif; font-weight: bold; co
 
 
 
-#navigation_sticky { position: relative;width:100%;background: url(images/wrapper.jpg) repeat-x center 0;display;block; }
+#navigation_sticky { position: relative;width:100%;background: url(images/wrapper.jpg) repeat-x center 0;display:block; }
 #navigation_sticky ul { float: left; display: inline; position: relative; }
 #navigation_sticky ul li { display: inline; float: left; font-family: Tahoma, arial, sans-serif; font-size: 18px; color: #fff; line-height: 35px; text-shadow: 0 1px #5a8503; }
 #navigation_sticky ul li a { position: relative; float: left; height: 35px; color: #fff; background: url(images/nav-item.png) repeat-x 0 0px; width: 115px; text-align: center; }

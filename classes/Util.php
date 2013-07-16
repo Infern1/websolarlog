@@ -358,5 +358,25 @@ class Util {
     	$msg = $exception->getMessage() . " in file " . $exception->getFile() . '[' . $exception->getLine() . ']';
     	return array('result'=>'error', 'success'=>false, 'exception'=>get_class($exception), 'message'=>$msg);
     }
+    
+    /**
+     * 
+     * @param unknown $array
+     * @param unknown $key
+     */
+    
+    public static function aasort (&$array, $key) {
+			$sorter=array();
+			$ret=array();
+			reset($array);
+			foreach ($array as $ii => $va) {
+				$sorter[$ii]=$va[$key];
+			}
+			asort($sorter);
+			foreach ($sorter as $ii => $va) {
+				$ret[$ii]=$array[$ii];
+			}
+			$array=$ret;
+		}
 }
 ?>
