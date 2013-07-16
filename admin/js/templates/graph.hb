@@ -1,7 +1,8 @@
-<form id="graphFormId">
+<div id="graphFormId">
   <fieldset style="width:560px;">
    <legend>{{capitalizer title=data.inverter.type}} graph: {{data.name}}</legend>
-  		
+  		<font style="color:red;font-size:15px;">!This page is under construction!
+Do not (NOT!), change anything!</font> 
 			<div class="column span-28">
 				<div class="column span-8 first">Location</div>
 				<div class="column span-6">Axe</div>
@@ -10,7 +11,7 @@
 			 </div>
 {{#data.axes}}
 <div class="column span-28 axeContainer" id="{{this.name}}">
-<form>
+<form name="xx">
 	<div class="column span-0 first" style="display:none;">{{this.id}}</div>
 	<div class="column span-8 first name">{{this.name}}</div>
 	<div class="column span-6 axe">{{this.axe}}</div>
@@ -66,4 +67,4 @@
         	<button type="button" id="btnGraphSubmit">Save</button>
         </div>
   </fieldset>
-</form> 
+</div> 
