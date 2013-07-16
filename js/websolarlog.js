@@ -1507,7 +1507,7 @@ var WSL = {
 						for (line in result.graph.dataPoints) {
 							
 							var json = [];
-							for (values in result.graph.dataPoints[line]) {
+							for (values in result.graph.points[line]) {
 								json.push([
 									result.graph.dataPoints[line][values][0]*1000,
 									result.graph.dataPoints[line][values][1]
