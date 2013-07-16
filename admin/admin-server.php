@@ -945,7 +945,7 @@ function diagnostics() {
 	$result['phpVersion'] = phpversion(); 
 	$result['phpVersionCheck'] = (version_compare($result['phpVersion'], '5.3.10', '>=')) ? true : false ;
 	
-	$result['sqliteVersionMixed'] = ($extensions['sqlite']['status'] && !$extensions['sqlite3']['status']) ? true : false ;
+	$result['sqliteVersionMixed'] = (isset($extensions['sqlite']) && $extensions['sqlite']['status'] && !$extensions['sqlite3']['status']);
 
 	// Encryption/Decryption test
 	$testphrase ="This is an test sentence";
@@ -956,7 +956,7 @@ function diagnostics() {
 
 	
 	$result['browserLanguages'] = Util::getBrowserDefaultLanguage();
-	$result['supportedLanguages'] = Session::supportedLanguages($result['browserLanguage']);
+	$result['supportedLanguages'] = Session::supportedLanguages($result['browserLanguages']);
 	$result['setLanguage'] = Session::setLanguage();
 	$result['sessionLanguage'] = $_SESSION['WSL_LANGUAGE'];
 
