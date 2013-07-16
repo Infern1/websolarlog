@@ -1504,13 +1504,13 @@ var WSL = {
 						}
 
 						
-						for (line in result.graph.points) {
+						for (line in result.graph.dataPoints) {
 							
 							var json = [];
-							for (values in result.graph.points[line]) {
+							for (values in result.graph.dataPoints[line]) {
 								json.push([
-									result.graph.points[line][values][0]*1000,
-									result.graph.points[line][values][1]
+									result.graph.dataPoints[line][values][0]*1000,
+									result.graph.dataPoints[line][values][1]
 								]);
 							
 							}
@@ -1539,7 +1539,7 @@ var WSL = {
 						var newAxes = [];
 
 						for (axes in result.graph.axes) {
-							var jsonAxe = $.parseJSON(result.graph.axes[axes].json);
+							var jsonAxe = result.graph.axes[axes].json;
 							
 							newAxes[jsonAxe.axe] = jsonAxe;
 							
