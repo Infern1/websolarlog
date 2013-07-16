@@ -266,8 +266,10 @@ class Session
     	$hookHandler->add("onSmartMeterEnergy", "SmartMeterAddon.onSmartMeterEnergy"); // Will run at 00:00
     	
     	
+    	$hookHandler->add("GraphDayPoints", "SmartMeterAddon.GraphDayPoints"); // Will run at 00:00
     	
-
+    	$hookHandler->add("installGraph", "SmartMeterAddon.installGraph"); // Will run at 00:00
+    	
     	$hookHandler->add("defaultAxes", "SmartMeterAddon.defaultAxes");
     	$hookHandler->add("defaultSeries", "SmartMeterAddon.defaultSeries");
     	 
