@@ -10,7 +10,7 @@ class GraphService {
 
 	public static function janitorDbCheck(){
 		HookHandler::getInstance()->fire("onDebug", "Run GraphService::janitorDbCheck");		
-		$this->installGraph();
+		self::installGraph();
 	}
 
 	public static function installGraph(){
