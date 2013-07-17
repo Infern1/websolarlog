@@ -27,7 +27,8 @@ class GraphService {
 				$graph = null;
 			}
 		}
-		if (!$graph){
+		
+		if (!$graph->id){
 		$graphBean = R::dispense('graph');
 		
 		$graphHook = HookHandler::getInstance()->fire("installGraph");
