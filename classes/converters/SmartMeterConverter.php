@@ -28,13 +28,13 @@ class SmartMeterConverter
 		
 		// Check if we hava an valid fist line
 		if (empty($firstLine) || substr($firstLine, 0, 1) != "/") {
-			throw new ConverterException("SmartMeter :: Invalid first line:\r\n".print_r($inputLine,true));
+			throw new ConverterException("SmartMeter :: Invalid first line:\r\n".print_r($lines,true));
 			return null;
 		}
 
 		// Check if we have an valid last line
 		if (empty($lastLine) || trim($lastLine) != "!") {
-			throw new ConverterException("SmartMeter :: Invalid last line:\r\n".print_r($inputLine,true));
+			throw new ConverterException("SmartMeter :: Invalid last line:\r\n".print_r($lines,true));
 			return null;
 		}
 
