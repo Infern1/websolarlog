@@ -24,6 +24,7 @@ class GraphService {
 				R::exec( 'DROP TABLE IF EXISTS graph;' );
 				R::exec( 'DROP TABLE IF EXISTS graph_serie;' );
 				R::exec( 'DROP TABLE IF EXISTS serie;' );
+				$graph = null;
 			}
 		}
 		if (!$graph){
