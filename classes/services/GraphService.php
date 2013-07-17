@@ -17,6 +17,15 @@ class GraphService {
 		HookHandler::getInstance()->fire("onDebug", "Run GraphService::janitorDbCheck->installGraph");
 		$graph = R::findOne('graph',' name = "daily" ');
 		
+		if ($graph){
+			if(is_empty($graph->json)){
+				R::exec( 'DROP TABLE IF EXISTS axe;' );
+				R::exec( 'DROP TABLE IF EXISTS axe_graph;' );
+				R::exec( 'DROP TABLE IF EXISTS graph;' );
+				R::exec( 'DROP TABLE IF EXISTS graph_serie;' );
+				R::exec( 'DROP TABLE IF EXISTS serie;' );
+			}
+		}
 		if (!$graph){
 		$graphBean = R::dispense('graph');
 		
@@ -31,8 +40,9 @@ class GraphService {
 						'width'=>0,
 						'left'=>0)
 		);
-		
-		$metaData = array_merge($metaData,$graphHook->metaData);
+		if(is_array($graphHook->metaData)){
+			$metaData = array_merge($metaData,$graphHook->metaData);
+		}
 		
 		$graphBean->name = 'daily';
 		$graphBean->json = json_encode($metaData);
@@ -174,7 +184,6 @@ class GraphService {
 				$i++;
 		}
 		$axes = $axeNew;
-
 		
 		if($options['mode']=='frontend'){
 		// get data of graph
