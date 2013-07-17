@@ -42,7 +42,7 @@ textarea { overflow: auto; }
 
 #navigation { width: 940px; position: relative; }
 #navigation ul { float: left; display: inline; position: relative; }
-#navigation ul li { display: inline; float: left; font-family: Tahoma, arial, sans-serif; font-size: 18px; color: #fff; line-height: 47px; text-shadow: 0 1px #5a8503; }
+#navigation ul li { display: inline; float: left; font-family: Tahoma, arial, sans-serif; font-size: 13px; color: #fff; line-height: 47px; text-shadow: 0 1px #5a8503; }
 /*#navigation ul li a { position: relative; float: left; height: 52px; color: #fff; background: url(images/nav-item.png) repeat-x 0 0px; width: 115px; text-align: center; }*/
 #navigation ul li a { position: relative; float: left; height: 52px; color: #fff; background: url(images/nav-item.png) repeat-x 0 0px; padding-left:15px;padding-right:15px; text-align: center; }
 #navigation ul li.nav-start a { background: url(images/nav-start.png) no-repeat 0 0; padding-left:15px;padding-right:15px; }
