@@ -33,7 +33,7 @@ class LiveSmartMeterService {
 	 * @return LiveSmartMeter
 	 */
 	public function getLiveByDevice(Device $device) {
-		$bObject = R::findOne( self::$tbl, ' invtnum = :deviceId ', array("deviceId"=>$device->id));
+		$bObject = R::findOne( self::$tbl, ' invtnum = :deviceId ORDER BY time DESC LIMIT 1', array("deviceId"=>$device->id));
 		return $this->toObject($bObject);
 	}
 	
