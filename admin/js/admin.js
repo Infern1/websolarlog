@@ -1122,8 +1122,8 @@ function load_device(inverterId,deviceApi,deviceType) {
                 	checkCheckboxesHiddenFields();
                 	var data = $(this).closest('form').serialize();
                 	
-                	$('.deviceType').attr('disabled','disabled');;
-                	$('.deviceApi').attr('disabled','disabled');;
+                	$('.deviceType').attr('disabled','disabled');
+                	$('.deviceApi').attr('disabled','disabled');
                 	
                 	WSL.connect.postJSON('admin-server.php', data, function(result) {
                         init_devices(result.id);
