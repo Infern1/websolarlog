@@ -1121,6 +1121,8 @@ function load_device(inverterId,deviceApi,deviceType) {
                 	
                 	checkCheckboxesHiddenFields();
                 	var data = $(this).closest('form').serialize();
+                	$('[disabled=""]').each(function(){$(this).attr('disabled','disabled');});
+                	
                 	WSL.connect.postJSON('admin-server.php', data, function(result) {
                         init_devices(result.id);
                         $.pnotify({ title: 'Saved', text: 'You\'re changes have been saved.'});
@@ -1254,8 +1256,8 @@ function load_graph(graphId) {
                 
                 $('.saveAxe').on('click',function(){
                 	
-                	$this = $(this).closest('.axeContainer');
-                	console.log($this.children('.axe').html());
+                	var postData = $(this).closest('form').submit().serialize();
+                	//console.log(postData);
                 	$.ajax({
                         type: "POST",
                         url: "../api.php/Graph/axe/9",
