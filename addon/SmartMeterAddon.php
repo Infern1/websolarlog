@@ -21,25 +21,34 @@ class SmartMeterAddon {
 
 	
 	public function installGraph(){
-		$graph = R::dispense('graph');
-
-		$graph->series = self::defaultSeries();
-		//var_dump(json_decode($graph->series[0]['json'])->label);
-		$graph->metaData = array(
-				'legend'=>array(
-					"show"=>true,
-					"location"=>'s',
-					"placement"=>'outsideGrid',
-					"renderer"=>'EnhancedLegendRenderer',
-					"rendererOptions"=>array(
-							"seriesToggle"=>'normal',
-							"numberRows"=>2
-					),
-					"left"=>10,
-					"width"=>700
-				)
-		);
-		return $graph;
+		foreach ($this->config->devices as $device) {
+			if($device->type == "metering"){
+				$metering = true;
+			}
+		}
+		if($metering){
+			$graph = R::dispense('graph');
+	
+			$graph->series = self::defaultSeries();
+			//var_dump(json_decode($graph->series[0]['json'])->label);
+			$graph->metaData = array(
+					'legend'=>array(
+						"show"=>true,
+						"location"=>'s',
+						"placement"=>'outsideGrid',
+						"renderer"=>'EnhancedLegendRenderer',
+						"rendererOptions"=>array(
+								"seriesToggle"=>'normal',
+								"numberRows"=>2
+						),
+						"left"=>10,
+						"width"=>700
+					)
+			);
+			return $graph;
+		}else{
+			return;
+		}
 	}
 	
 	/**
@@ -355,18 +364,12 @@ class SmartMeterAddon {
 	 * @return Graph
 	 */
 	public function DayBeansToGraphPoints($beans,$startDate,$disabledSeries){
-		$graph = new Graph();
+$graph = new Graph();
 		/*
 		 * Generate Graph Point and series
 		*/
 		$i=0;
 		foreach ($beans as $bean){
-			// Do we have data?
-			if (empty($bean['time']) || empty($bean['gasUsage'])) {
-				// Next record
-				continue;
-			}
-			
 			if ($i==0){
 				$firstBean = $bean;
 				$preBean = $bean;
@@ -374,15 +377,10 @@ class SmartMeterAddon {
 			}
 			$UTCdate = $bean['time'];
 			$UTCtimeDiff = $UTCdate - $preBean['time'];
-			
-			
-
-			if(!in_array('cumGasL',$disabledSeries)){
-				$graph->points['cumGasUsage'][] = array ($UTCdate ,$bean['gasUsage']-$firstBean['gasUsage'],date("H:i, d-m-Y",$bean['time']));
-			}
-			//if($i==0){
+			$graph->points['cumGasUsage'][] = array ($UTCdate ,$bean['gasUsage']-$firstBean['gasUsage'],date("H:i, d-m-Y",$bean['time']));
+			if($i==0){
 				$graph->points['smoothGasUsage'][] = array ($UTCdate ,$firstBean['gasUsage']-$bean['gasUsage']);
-			//}
+			}
 			
 			if( $bean['gasUsage']-$firstBean['gasUsage'] != $preBean['gasUsage']-$firstBean['gasUsage']){
 				$graph->points['smoothGasUsage'][] = array ($UTCdate,$bean['gasUsage']-$firstBean['gasUsage']);
@@ -393,6 +391,7 @@ class SmartMeterAddon {
 			$graph->points['cumHighReturn'][] = array ($UTCdate ,$bean['highReturn']-$firstBean['highReturn']);
 			
 			$lowUsage = Formulas::calcAveragePower($preBean['lowUsage'], $bean['lowUsage'], $preBean['time']-$bean['time'])/1000;
+			
 			$highUsage = Formulas::calcAveragePower($preBean['highUsage'], $bean['highUsage'], $preBean['time']-$bean['time'])/1000;
 			$lowReturn = Formulas::calcAveragePower($preBean['lowReturn'], $bean['lowReturn'], $preBean['time']-$bean['time'])/1000;
 			$highReturn = Formulas::calcAveragePower($preBean['highReturn'], $bean['highReturn'], $preBean['time']-$bean['time'])/1000;
@@ -415,18 +414,14 @@ class SmartMeterAddon {
 			$preBean = $bean;
 			$i++;
 		}
-
-		
 		
 		// see if we have more then 1 bean (the dummy bean)
 		if($i > 1){
-
 			
 			$graph->timestamp = Util::getBeginEndDate('day', 1,$startDate);
 			($maxActual>0) ? $maxActual = ceil( ( ($maxActual*1.1)+100) / 100 ) * 100 : $maxActual= $maxActual;
 			($minActual<0) ? $minActual = ceil( ( ($minActual*1.1)+100) / 100 ) * 100 : $minActual = $minActual;
 			
-
 			
 		}else{
 			$graph->points=null;

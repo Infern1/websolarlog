@@ -8,8 +8,7 @@ class GraphService {
 		HookHandler::getInstance()->add("onJanitorDbCheck", "GraphService.janitorDbCheck");
 	}
 
-	public static function janitorDbCheck(){
-		HookHandler::getInstance()->fire("onDebug", "Run GraphService::janitorDbCheck");		
+	public static function janitorDbCheck(){		
 		self::installGraph();
 	}
 
@@ -18,7 +17,7 @@ class GraphService {
 		$graph = R::findOne('graph',' name = "daily" ');
 		
 		if ($graph){
-			if(is_empty($graph->json)){
+			if($graph->json=='null'){
 				R::exec( 'DROP TABLE IF EXISTS axe;' );
 				R::exec( 'DROP TABLE IF EXISTS axe_graph;' );
 				R::exec( 'DROP TABLE IF EXISTS graph;' );
@@ -32,7 +31,7 @@ class GraphService {
 		$graphBean = R::dispense('graph');
 		
 		$graphHook = HookHandler::getInstance()->fire("installGraph");
-		//var_dump($graphHook->metaData);
+
 		$metaData = array(
 				'legend'=>array(
 						'show'=>true,
