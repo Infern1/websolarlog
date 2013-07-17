@@ -41,7 +41,7 @@ class GraphService {
 						'width'=>0,
 						'left'=>0)
 		);
-		if(is_array($graphHook->metaData)){
+		if(isset($graphHook->metaData) && is_array($graphHook->metaData)){
 			$metaData = array_merge($metaData,$graphHook->metaData);
 		}
 		

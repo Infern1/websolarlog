@@ -21,6 +21,7 @@ class SmartMeterAddon {
 
 	
 	public function installGraph(){
+		$metering = false;
 		foreach ($this->config->devices as $device) {
 			if($device->type == "metering"){
 				$metering = true;
