@@ -12,8 +12,8 @@ class GraphDataService {
 	 */
 	public static function loadData($options) {
 		if($options['type']=='Today'){
-		$beans = self::readTablesPeriodValues($options['deviceNum'], self::$tbl, $options['type'], $options['date']);
-		$graphPoints = self::DayBeansToGraphPoints($beans,$startDate);
+			$beans = self::readTablesPeriodValues($options['deviceNum'], self::$tbl, $options['type'], $options['date']);
+			$graphPoints = self::DayBeansToGraphPoints($beans,$startDate);
 		}
 		return $graphPoints;
 	}

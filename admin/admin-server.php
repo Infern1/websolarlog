@@ -816,6 +816,10 @@ switch ($settingstype) {
 		R::store($oBean);
 		$data['status'] = 'saved';
 		break;
+		case 'resetGraph':
+			$graphService = new GraphService();
+			$graphService->installGraph(true);
+			break;
 }
 
 if(Session::isLogin()){

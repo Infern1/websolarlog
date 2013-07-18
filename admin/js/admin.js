@@ -960,7 +960,12 @@ function init_graphs(selected_graphId) {
                     'data' : graphs
                 });
                 $('#sidebar').html(html);
-
+                $('#resetGraphs').bind("click",function(){
+                	WSL.connect.getJSON('admin-server.php?s=resetGraph', function(graphs) {
+                		console.log('resetGraph');
+                	});
+                });
+                
                 if (selected_graphId) {
                     load_graph(selected_graphId);
                 } else {
@@ -1118,13 +1123,8 @@ function load_device(inverterId,deviceApi,deviceType) {
                 	
                 	// remove disabled attr so POST will process it.
                 	$('[disabled="disabled"]').each(function(){$(this).removeAttr('disabled');});
-                	
                 	checkCheckboxesHiddenFields();
                 	var data = $(this).closest('form').serialize();
-                	
-                	$('.deviceType').attr('disabled','disabled');
-                	$('.deviceApi').attr('disabled','disabled');
-                	
                 	WSL.connect.postJSON('admin-server.php', data, function(result) {
                         init_devices(result.id);
                         $.pnotify({ title: 'Saved', text: 'You\'re changes have been saved.'});
@@ -1229,6 +1229,7 @@ function load_graph(graphId) {
                 });
                 $('#content').html(html);
                 
+
                 $('.deleteAxe').on('click',function(){
                 	$.ajax({
                         type: "DELETE",

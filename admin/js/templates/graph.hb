@@ -10,8 +10,8 @@ Do not (NOT!), change anything!</font>
 				<div class="column span-4">..</div>
 			 </div>
 {{#data.axes}}
-<div class="column span-28 axeContainer" id="{{this.name}}">
-<form name="xx">
+<div class="column span-28">
+<form>
 	<div class="column span-0 first" style="display:none;">{{this.id}}</div>
 	<div class="column span-8 first name">{{this.name}}</div>
 	<div class="column span-6 axe">{{this.axe}}</div>

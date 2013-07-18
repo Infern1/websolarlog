@@ -4,12 +4,20 @@ class SmartMeterAddon {
 	private $config;
 	private $deviceService;
 	private $liveSmartMeterService;
-
+	private $addon = "smartMeter";
+	private $install = false;
+	
 	function __construct() {
 		$this->adapter = PDODataAdapter::getInstance();
-		$this->config = Session::getConfig();
 		$this->deviceService = new DeviceHistoryService();
 		$this->liveSmartMeterService = new LiveSmartMeterService();
+		$this->config = Session::getConfig();
+		
+		foreach ($this->config->devices as $device) {
+			if($device->type == "metering"){
+				$this->install = true;
+			}
+		}
 	}
 
 	function __destruct() {
@@ -17,17 +25,13 @@ class SmartMeterAddon {
 		$this->deviceService = null;
 		$this->config = null;
 		$this->adapter = null;
+		$this->install = null;
 	}
 
 	
 	public function installGraph(){
-		$metering = false;
-		foreach ($this->config->devices as $device) {
-			if($device->type == "metering"){
-				$metering = true;
-			}
-		}
-		if($metering){
+		if($this->install==true){
+			HookHandler::getInstance()->fire("onDebug", "install SmartMeter");
 			$graph = R::dispense('graph');
 	
 			$graph->series = self::defaultSeries();
@@ -279,74 +283,103 @@ class SmartMeterAddon {
 	}
 
 	public function defaultAxes(){
-		$axe = R::dispense('axe',2);
+		$show = 'false';
+		foreach ($this->config->devices as $device) {
+			if($device->type == "metering"){
+				$show = 'true';
+			}
+		}
+		
+			$axe = R::dispense('axe',2);
+			
 		//$axe[0]['json'] = json_encode(json_encode(array('axe'=>'yaxis','label'=>'Avg. Power(Wh)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer'));
 		$axe[0]['json'] = json_encode(array('axe'=>'y3axis','label'=>_("Gas").' '._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer'));
-		$axe[0]['show'] = 'true';
+		$axe[0]['show'] = $show;
 		$axe[0]['AxeOrder'] = 3;
+		$axe[0]['addon'] = $addon;
 		$axe[1]['json'] = json_encode(array('axe'=>'y4axis','label'=>_("Actual").''._("(W)"),'labelRenderer'=>'CanvasAxisLabelRenderer'));
-		$axe[1]['show'] = 'true';
+		$axe[1]['show'] = $show;
 		$axe[1]['AxeOrder'] = 4;
+		$axe[1]['addon'] = $addon;
+
 		return $axe;
 	}
 
 	public function defaultSeries(){
+		$show = 'false';
+		foreach ($this->config->devices as $device) {
+			if($device->type == "metering"){
+				$show = 'true';
+			}
+		}
+
 		$serie = R::dispense('serie',11);
 		//$serie[0]['json'] = json_encode(json_encode(array('label'=>'Cum. Power(Wh)','yaxis'=>'y2axis'));
 		$serie[0]['json'] = json_encode(array('label'=>'Cum Gas (l)','yaxis'=>'y2axis'));
 		$serie[0]['name'] = 'cumGasL';
 		$serie[0]['disabled'] = 'false';
-		$serie[0]['show'] = 'true';
+		$serie[0]['show'] = $show;
+		$serie[0]['addon'] = $addon;
 		
 		$serie[1]['json'] = json_encode(array('label'=>'Smooth Gas (l)','yaxis'=>'y2axis'));
 		$serie[1]['name'] = 'smoothGasL';
 		$serie[1]['disabled'] = 'false';
-		$serie[1]['show'] = 'true';
+		$serie[1]['show'] = $show;
+		$serie[1]['addon'] = $addon;
 		
 		$serie[2]['json'] = json_encode(array('label'=>'Cum low usage (W)','yaxis'=>'y2axis'));
 		$serie[2]['name'] = 'cumLowUsageW';
 		$serie[2]['disabled'] = 'false';
-		$serie[2]['show'] = 'true';
+		$serie[2]['show'] = $show;
+		$serie[2]['addon'] = $addon;
 		
 		$serie[3]['json'] = json_encode(array('label'=>'Cum high usage (W)','yaxis'=>'y2axis'));
 		$serie[3]['name'] = 'cumHighUsageW';
 		$serie[3]['disabled'] = 'false';
-		$serie[3]['show'] = 'true';
+		$serie[3]['show'] = $show;
+		$serie[3]['addon'] = $addon;
 		
 		$serie[4]['json'] = json_encode(array('label'=>'Cum low return (W)','yaxis'=>'y2axis'));
 		$serie[4]['name'] = 'cumLowReturnW';
 		$serie[4]['disabled'] = 'false';
-		$serie[4]['show'] = 'true';
+		$serie[4]['show'] = $show;
+		$serie[4]['addon'] = $addon;
 		
 		$serie[5]['json'] = json_encode(array('label'=>'Cum high return (W)','yaxis'=>'y2axis'));
 		$serie[5]['name'] = 'cumHighReturnW';
 		$serie[5]['disabled'] = 'false';
-		$serie[5]['show'] = 'true';
+		$serie[5]['show'] = $show;
+		$serie[5]['addon'] = $addon;
 		
 		$serie[6]['json'] = json_encode(array('label'=>'Low usage (W)' ,'yaxis'=>'y3axis'));
 		$serie[6]['name'] = 'lowUsageW';
 		$serie[6]['disabled'] = 'false';
-		$serie[6]['show'] = 'true';
+		$serie[6]['show'] = $show;
+		$serie[6]['addon'] = $addon;
 		
 		$serie[7]['json'] = json_encode(array('label'=>'High usage (W)' ,'yaxis'=>'y3axis'));
 		$serie[7]['name'] = 'highUsageW';
 		$serie[7]['disabled'] = 'false';
-		$serie[7]['show'] = 'true';
+		$serie[7]['show'] = $show;
+		$serie[7]['addon'] = $addon;
 		
 		$serie[8]['json'] = json_encode(array('label'=>'Low return (W)','yaxis'=>'y3axis'));
 		$serie[8]['name'] = 'lowReturnW';
 		$serie[8]['disabled'] = 'false';
-		$serie[8]['show'] = 'true';
+		$serie[8]['show'] = $show;
+		$serie[8]['addon'] = $addon;
 		
 		$serie[9]['json'] = json_encode(array('label'=>'High return (W)','yaxis'=>'y3axis'));
 		$serie[9]['name'] = 'highReturnW';
 		$serie[9]['disabled'] = 'false';
-		$serie[9]['show'] = 'true';
+		$serie[9]['show'] = $show;
+		$serie[9]['addon'] = $addon;
 		
 		$serie[10]['json'] = json_encode(array('label'=>'Actual usage (W)','yaxis'=>'y4axis'));
 		$serie[10]['name'] = 'actualUsageW';
 		$serie[10]['disabled'] = 'false';
-		$serie[10]['show'] = 'true';
+		$serie[10]['show'] = $show;
+		$serie[10]['addon'] = $addon;
 		
 		return $serie;
 	}

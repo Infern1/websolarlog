@@ -3,8 +3,10 @@ class GraphService {
 	public static $tblGraph = "graph";
 	public static $tblAxes = "graph_axes";
 	public static $tblSeries = "graph_series";
+	private $config;
 	
 	function __construct() {
+		$this->config = Session::getConfig();
 		HookHandler::getInstance()->add("onJanitorDbCheck", "GraphService.janitorDbCheck");
 	}
 
@@ -12,12 +14,12 @@ class GraphService {
 		self::installGraph();
 	}
 
-	public static function installGraph(){
+	public static function installGraph($reset=false){
 		HookHandler::getInstance()->fire("onDebug", "Run GraphService::janitorDbCheck->installGraph");
 		$graph = R::findOne('graph',' name = "daily" ');
 		
-		if ($graph){
-			if($graph->json=='null'){
+		if ($graph || $reset == true){
+			if($graph->json=='null' || $reset == true){
 				R::exec( 'DROP TABLE IF EXISTS axe;' );
 				R::exec( 'DROP TABLE IF EXISTS axe_graph;' );
 				R::exec( 'DROP TABLE IF EXISTS graph;' );
@@ -27,7 +29,7 @@ class GraphService {
 			}
 		}
 		
-		if (!$graph->id){
+		if (!$graph){
 		$graphBean = R::dispense('graph');
 		
 		$graphHook = HookHandler::getInstance()->fire("installGraph");
@@ -60,31 +62,48 @@ class GraphService {
 	
 	
 	public static function defaultSeries(){
+		$show = 'false';
+		foreach (Session::getConfig()->devices as $device) {
+			if($device->type == "production"){
+				$show = 'true';
+			}
+		}
 		$serie = R::dispense('serie',2);
 		$serie[0]['json'] = json_encode(array('label'=>'Cum Power (Wh)','yaxis'=>'y2axis'));
 		$serie[0]['name'] = 'cumPowerWh';
-		$serie[0]['show'] = 'true';
+		$serie[0]['show'] = $show;
 		$serie[0]['disabled'] = 'false';
+		$serie[0]['addon'] = 'wsl';
 		$serie[1]['json'] = json_encode(array('label'=>'Avg Power (W)','yaxis'=>'yaxis'));
 		$serie[1]['name'] = 'avgPowerW';
-		$serie[1]['show'] = 'true';
+		$serie[1]['show'] = $show;
 		$serie[1]['disabled'] = 'false';
+		$serie[1]['addon'] = 'wsl';
 		return $serie;
 	}
 	
 	public static function defaultAxes(){
+		$show = 'false';
+		foreach (Session::getConfig()->devices as $device) {
+			if($device->type == "production"){
+				$show = 'true';
+			}
+		}
 		$axe = R::dispense('axe',3);
 		$axe[0]['json'] = json_encode(array('axe'=>'yaxis','label'=>'Avg Power (Wh)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer'));
-		$axe[0]['show'] = 'true';
+		$axe[0]['show'] = $show;
 		$axe[0]['AxeOrder'] = 1;
+		$axe[0]['addon'] = 'wsl';
 		$axe[1]['json'] = json_encode(array('axe'=>'y2axis','label'=>'Cum Power (W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer'));
-		$axe[1]['show'] = 'true';
+		$axe[1]['show'] = $show;
 		$axe[1]['AxeOrder'] = 2;
+		$axe[1]['addon'] = 'wsl';
 		$axe[2]['json'] = json_encode(
 				array('axe'=>'xaxis','label'=>'','renderer'=>'DateAxisRenderer','tickRenderer'=>'CanvasAxisTickRenderer','labelRenderer'=>'CanvasAxisLabelRenderer','tickInterval'=>3600,
 						'tickOptions'=>array('formatter'=>'DayDateTickFormatter','angle'=>-45)));
-		$axe[2]['show'] = 'true';
+		$axe[2]['show'] = $show;
 		$axe[2]['AxeOrder'] = 0;
+		$axe[2]['addon'] = 'wsl';
 		return $axe;
 	}
 	
@@ -187,28 +206,29 @@ class GraphService {
 		$axes = $axeNew;
 		
 		if($options['mode']=='frontend'){
-		// get data of graph
-		$graphDataService = new GraphDataService();
-		
-		$dataPoints = $graphDataService->loadData($options);
-		$dataPointsHook = HookHandler::getInstance()->fire("GraphDayPoints",$options['deviceNum'],$options['date'],$options['type'],$disabledSeries);
-
-		
-		//var_dump($dataPointsHook);
-		if(is_array($dataPointsHook->points)){
-			$dataPoints = array_merge($dataPoints,$dataPointsHook->points);
-		}	
-		//var_dump((array)json_decode($graph->json));
-		if(is_array($dataPointsHook->metaData)){
-			$graph->json = json_encode(array_merge((array)json_decode($graph->json),$dataPointsHook->metaData));
-		}
-		
-		//set timestamp to overrule standard timestamp
-		$timestamp = Util::getSunInfo($config,$startDate);
-		
-		if($dataPointsHook->timestamp){
-			$timestamp = array("beginDate"=>$dataPointsHook->timestamp['beginDate']-3600,"endDate"=>$dataPointsHook->timestamp['endDate']+3600);
-		}
+			// get data of graph
+			$graphDataService = new GraphDataService();
+			
+			$dataPoints = $graphDataService->loadData($options);
+			$dataPointsHook = HookHandler::getInstance()->fire("GraphDayPoints",$options['deviceNum'],$options['date'],$options['type'],$disabledSeries);
+	
+			
+			//var_dump($dataPointsHook);
+			if(is_array($dataPointsHook->points)){
+				$dataPoints = array_merge($dataPoints,$dataPointsHook->points);
+			}	
+			//var_dump((array)json_decode($graph->json));
+			if(is_array($dataPointsHook->metaData)){
+				$graph->json = json_encode(array_merge((array)json_decode($graph->json),$dataPointsHook->metaData));
+			}
+			
+			//set timestamp to overrule standard timestamp
+			$timestamp = Util::getSunInfo($config,$startDate);
+			$timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
+			
+			if($dataPointsHook->timestamp){
+				$timestamp = array("beginDate"=>$dataPointsHook->timestamp['beginDate']-3600,"endDate"=>$dataPointsHook->timestamp['endDate']+3600);
+			}
 		}
 		return array('dataPoints'=>$dataPoints,'json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','timestamp'=>$timestamp,'name'=>$graph->name);
 	}
