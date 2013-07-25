@@ -11,7 +11,7 @@ class AuroraConverter
     {
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
-        	throw new ConverterException("Empty LIVE response from Aurora:\r\n".print_r($inputLine,true));
+        	return null;
         }
 
         // Split on a serie of spaces (not one)
@@ -20,7 +20,6 @@ class AuroraConverter
         // Check if the record is okay
         if (!empty($data[22]) && trim($data[22]) != "OK") {
 			throw new ConverterException("not a OK response from Aurora:\r\n".print_r($inputLine,true));
-            return null;
         }
         
         $live = new Live();

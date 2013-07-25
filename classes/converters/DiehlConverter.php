@@ -36,7 +36,7 @@ class DiehlConverter
 	public static function toStatus($inputLine){
 		// Check if the input line is valid
 		if ($inputLine == null || trim($inputLine) == "") {
-			throw new ConverterException("Empty STATUS response from Diehl:\r\n".print_r($inputLine,true));
+			//throw new ConverterException("Empty STATUS response from Diehl:\r\n".print_r($inputLine,true));
 			return null;
 		}
 		

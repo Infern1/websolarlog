@@ -43,7 +43,6 @@ class SMASpotWSLConverter
     {    	
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
-        	throw new ConverterException("Empty LIVE response from SMASpotWSL:\r\n".print_r($inputLine,true));
             return null;
         }
 
@@ -53,7 +52,6 @@ class SMASpotWSLConverter
         // Check if the record is okay
     	if(($data[0]!="WSL_START") || ($data[count($data)-1]!="WSL_END")){
 			throw new ConverterException("not a OK response from  SMASpotWSL:\r\n".print_r($inputLine,true));
-            return null;
         }
         
         

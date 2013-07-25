@@ -10,7 +10,6 @@ class SMABlueToothConverter
     {    	
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
-        	throw new ConverterException("Empty LIVE response from SMABlueTooth204:\r\n".print_r($inputLine,true));
             return null;
         }
 
@@ -27,7 +26,6 @@ class SMABlueToothConverter
         // Check if the record is okay
 		if(!preg_match("/^Done/",trim($data[count($data)-1]))){
 			throw new ConverterException("not a OK response from SMABlueTooth204:\r\n".print_r($inputLine,true));
-            return null;
         }
         
         $live = new Live();
