@@ -6,6 +6,17 @@ class Communication {
 	public $uri; // HTTP URL or executable?
 	public $port;
 	public $timeout;
-	public $optional;	
+	public $optional;
+	public $lastTestTime;
+	public $lastTestSettings;
+	public $lastTestResult;
+	
+	public function toJson() {
+		return json_encode($this);
+	}
+
+	public function getSettings() {
+		return json_decode($this->lastTestSettings);
+	}
 }
 ?>

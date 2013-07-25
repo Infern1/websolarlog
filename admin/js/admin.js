@@ -383,12 +383,14 @@ function init_communication() {
     		WSL.connect.postJSON("../api.php/Communication", postdata, function(){console.log('success')});
     	});
     	
-    	load_test();
+    	if (data.id > 0) {
+    		load_test(data.id);    		
+    	}
     };
     
-    var load_test= function() {
+    var load_test= function(communicationId) {
     	WSL.connect.getJSON('../api.php/Device/ShortList', function(devices) {
-    		var data = {devices: devices};
+    		var data = {communicationId: communicationId, devices: devices};
     		$('#pnl_communication_test').html(WSL.template.get('communication_test', data));
     		
     		$('#deviceSelect').bind('change', function(){
@@ -404,7 +406,12 @@ function init_communication() {
     					
     					$('#btnTestCommunication').bind('click', function(){
     						// Do some great stuff
-    						$('#test_results').text("Needs some more development!");
+    						$('#test_results').text("Sending item to queue ...");
+    						var postdata = $(this).closest('form').serialize();
+    						WSL.connect.postJSON('../api.php/Communication/startTest', postdata, function(result) {
+    							$('#test_results').text(result);
+    							
+    						} );
     					});
     				});
     			}

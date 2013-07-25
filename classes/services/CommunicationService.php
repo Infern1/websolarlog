@@ -54,7 +54,6 @@ class CommunicationService {
 		return $objects;
 	}
 	
-	
 	private function toBean($object, $bObject) {
 		$bObject->type = $object->type;
 		$bObject->name = $object->name;
@@ -62,6 +61,9 @@ class CommunicationService {
 		$bObject->port = $object->port;
 		$bObject->timeout = $object->timeout;
 		$bObject->optional = $object->optional;
+		$bObject->lastTestTime  = $object->lastTestTime;
+		$bObject->lastTestSettings = $object->lastTestSettings;
+		$bObject->lastTestResult = $object->lastTestResult;
 		return $bObject;
 	}
 	
@@ -75,6 +77,9 @@ class CommunicationService {
 			$object->port = $bObject->port;
 			$object->timeout = $bObject->timeout;
 			$object->optional = $bObject->optional;
+			$object->lastTestTime  = $bObject->lastTestTime;
+			$object->lastTestSettings = $bObject->lastTestSettings;
+			$object->lastTestResult = $bObject->lastTestResult;
 		}
 		return $object;
 	}

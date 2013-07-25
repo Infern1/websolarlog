@@ -68,5 +68,11 @@ class CommunicationRest {
 	public function DELETE($request, $options){
 		return $this->deviceService->delete($options[0]);
 	}
+	
+	public function getStartTest($request) {
+		$communicationId = Common::getValue("communicationId", -1);
+		$deviceId = Common::getValue("deviceId", -1);
+		return array("results"=>"in development", "communicationId"=>$communicationId, "deviceId"=>$deviceId);
+	}
 }
 ?>

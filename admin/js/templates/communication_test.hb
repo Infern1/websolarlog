@@ -11,12 +11,15 @@
 </form>
 
 <div id="device_info" style="display:none">
-	<input type="hidden" name="device_id" />
-	<span style="width: 6em; display:inline-block;">name</span><input type="text" id="device_name" name="name" disabled="disabled"/><br />
-	<span style="width: 6em; display:inline-block;">address</span><input type="text" id="device_address" name="address" disabled="disabled"/><br />
-	<span style="width: 6em; display:inline-block;">device API</span><span id="device_api" /><br />
-	
-	<input type="button" id="btnTestCommunication" value="Start test" />
+	<form>
+		<input type="hidden" name="deviceId" id="device_id" />
+		<input type="hidden" name="communicationId" value="{{communicationId}}" />
+		<span style="width: 6em; display:inline-block;">name</span><input type="text" id="device_name" name="name" disabled="disabled"/><br />
+		<span style="width: 6em; display:inline-block;">address</span><input type="text" id="device_address" name="address" disabled="disabled"/><br />
+		<span style="width: 6em; display:inline-block;">device API</span><span id="device_api" /><br />
+		
+		<input type="button" id="btnTestCommunication" value="Start test" />
+	</form>
 </div>
 
 <div id="test_results" />
