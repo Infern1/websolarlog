@@ -326,7 +326,6 @@ class PDODataAdapter {
 			$config->longitude = ($bean->longitude != "") ? $bean->longitude : $config->longitude;
 			$config->timezone = ($bean->timezone != "") ? $bean->timezone : $config->timezone;
 			$config->debugmode = ($bean->debugmode != "") ? $bean->debugmode : $config->debugmode;
-			
 
 			$config->comPort = $bean->comPort;
 			$config->comOptions = $bean->comOptions;
@@ -347,6 +346,7 @@ class PDODataAdapter {
 
 			$config->template = ($bean->template != "") ? $bean->template : $config->template;
 			$config->aurorapath = ($bean->aurorapath != "") ? $bean->aurorapath : $config->aurorapath;
+			$config->mastervoltpath = ($bean->mastervoltpath != "") ? $bean->mastervoltpath : $config->mastervoltpath;
 			$config->smagetpath = ($bean->smagetpath != "") ? $bean->smagetpath : $config->smagetpath;
 			$config->smaspotpath = ($bean->smaspotpath != "") ? $bean->smaspotpath : $config->smaspotpath;
 			$config->smaspotWSLpath = ($bean->smaspotWSLpath != "") ? $bean->smaspotWSLpath : $config->smaspotWSLpath;
@@ -786,8 +786,7 @@ class PDODataAdapter {
 
 			$live->GA[] 	= array($bean['time'],(float)$bean['GA']);
 			($bean['GA'] > $max['A'])? $max['A'] = (float)$bean['GA'] : $max['A'] = $max['A'];
-			
-				
+
 			$live->FRQ[] 	= array($bean['time'],(float)$bean['FRQ']);
 			($bean['FRQ'] > $max['FRQ'])? $max['FRQ'] = (float)$bean['FRQ'] : $max['FRQ'] = $max['FRQ'];
 
@@ -805,16 +804,16 @@ class PDODataAdapter {
 
 			$live->I2P[] 	= array($bean['time'],(float)$bean['I2P']);
 			($bean['I2P'] > $max['P'])? $max['P'] = (float)$bean['I2P'] : $max['P'] = $max['P'];
-			
+
 			$live->I2V[] 	= array($bean['time'],(float)$bean['I2V']);
 			($bean['I2V'] > $max['V'])? $max['V'] = (float)$bean['I2V'] : $max['V'] = $max['V'];
-			
+
 			$live->I2A[] 	= array($bean['time'],(float)$bean['I2A']);
 			($bean['I2A'] > $max['A'])? $max['A'] = (float)$bean['I2A'] : $max['A'] = $max['A'];
-			
+
 			$live->I2Ratio[]= array($bean['time'],(float)$bean['I2Ratio']);
 			($bean['I2Ratio'] > $max['Ratio'])? $max['Ratio'] = (float)$bean['I2Ratio'] : $max['Ratio'] = $max['Ratio'];
-				
+
 			$live->EFF[] 	= array($bean['time'],(float)$bean['EFF']);
 			($bean['EFF'] > $max['EFF'])? $max['EFF'] = (float)$bean['EFF'] : $max['EFF'] = $max['EFF'];
 
@@ -940,7 +939,7 @@ class PDODataAdapter {
 		
 		return $getCompareBeans;
 	}
-	
+
 	/**
 	 *
 	 * @param unknown_type $invtnum
@@ -951,7 +950,6 @@ class PDODataAdapter {
 	 */
 	public function getCompareGraph($invtnum,$whichMonth,$whichYear,$compareMonth,$compareYear){
 		$beans = array();
-		
 		$whichBeans = array();
 		$compareBeans = array();
 		
@@ -961,7 +959,7 @@ class PDODataAdapter {
 		if($whichMonth >0 AND $whichYear>0){
 			if ($compareYear > 1970){
 				// get Which beans
-				
+					
 				$beans = $this->getCompareBeans($invtnum,$whichMonth,$whichYear);
 				$whichBeans =$beans['line'];
 
@@ -970,20 +968,19 @@ class PDODataAdapter {
 				
 				// move compareBeans to expectedBeans, so we pass it to JSON.
 				$expectedBeans  = $compareBeans;
-				
 				$diff = $this->getDiffCompare($whichBeans,$expectedBeans);
 				$type = "energy vs energy";
 			}else{
 				// get Which beans				
 				$beans = $this->getCompareBeans($invtnum,$whichMonth,$whichYear);
 				$whichBeans =$beans['line'];				
-				
+
 				//get expected beans
 				$expectedBeans = $this->expectedMonthProduction($invtnum,$compareMonth);
 
 				$type = "energy vs expected";
 				$diff = $this->getDiffCompare($whichBeans,$expectedBeans);
-			}
+				}
 		}
 
 		return array(
@@ -996,7 +993,7 @@ class PDODataAdapter {
 		);
 	}
 	
-	
+
 	function expectedMonthProduction($invtnum,$month,$year=0){
 		$config = Session::getConfig();
 		
@@ -1007,22 +1004,23 @@ class PDODataAdapter {
 		$expectedPerc = $config->getDeviceConfig($invtnum)->$expectedMonthString;
 		$expectedkwhYear = $config->getDeviceConfig($invtnum)->expectedkwh;
 		
-		// calculate month kWh = (year/100*month perc)
-		$expectedKWhMonth = ($expectedkwhYear / 100)*$expectedPerc;
-		// calculate daily expected, based on month day (28,29,30,31 days)
-		$expectedKwhPerDay = ($expectedKWhMonth/$expectedMonthDays);
-		
-		// create expected
-		for ($i = 0; $i < $expectedMonthDays; $i++) {
-			$iCompareDay = $i+1;
-			($i>0) ? $ii = $i-1 : $ii = 0;
+				// calculate month kWh = (year/100*month perc)
+				$expectedKWhMonth = ($expectedkwhYear / 100)*$expectedPerc;
+
+				// calculate daily expected, based on month day (28,29,30,31 days)
+				$expectedKwhPerDay = ($expectedKWhMonth/$expectedMonthDays);
+
+				// create expected
+				for ($i = 0; $i < $expectedMonthDays; $i++) {
+					$iCompareDay = $i+1;
+					($i>0) ? $ii = $i-1 : $ii = 0;
 			$expectedBeans[$i]['time'] = strtotime(date("Y")."/".$month."/".$iCompareDay);
-			$expectedBeans[$i]['KWH'] =  (float)number_format($expectedBeans[$ii]['KWH']+$expectedKwhPerDay,2,'.','');
-			$expectedBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$expectedBeans[$ii]['KWH']+(float)$expectedKwhPerDay);
-			$expectedBeans[$i]['harvested'] = (float)number_format((float)$expectedKwhPerDay,2,'.','');
-		}
+					$expectedBeans[$i]['KWH'] =  (float)number_format($expectedBeans[$ii]['KWH']+$expectedKwhPerDay,2,'.','');
+					$expectedBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$expectedBeans[$ii]['KWH']+(float)$expectedKwhPerDay);
+					$expectedBeans[$i]['harvested'] = (float)number_format((float)$expectedKwhPerDay,2,'.','');
+				}
 		return $expectedBeans;
-	}
+		}
 
 	/**
 	 * 
@@ -1035,9 +1033,10 @@ class PDODataAdapter {
 		$datesMonth=array();
 		for($i=0;$i<$num;$i++){
 			$datesMonth[strtotime(date(($i+1)."-".$month."-".$year))]=null;
-		}
+	}
 		return $datesMonth;
 	}
+
 
 	public function getDiffCompare($whichBeans,$expectedBeans){
 
@@ -1105,7 +1104,6 @@ class PDODataAdapter {
 					ORDER BY time ASC",
 					array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}
-		
 		if(count($beans)==0){
 			$newBean = null;
 		}else{
@@ -1313,7 +1311,6 @@ class PDODataAdapter {
 	public function CompareBeansToGraphPoints($beans){
 		$points = array();
 		$cumPower = 0;
-		
 		foreach ($beans as $bean){
 			$cumPower += $bean['KWH'];
 			$points[] = array (
@@ -1411,7 +1408,6 @@ class PDODataAdapter {
 		$Energy['KWH'] = 0;
 		$KWHT = 0;
 		$cum = 0;
-		
 		foreach ($energyBeans as $energyBean){
 			$invConfig = $this->deviceService->load($energyBean['INV']);
 			if($invConfig->id > 0){
@@ -1432,7 +1428,6 @@ class PDODataAdapter {
 			$KWHT += $energyBean['KWH'];
 			}
 			$energy[] = $Energy;
-			
 		}
 		return array($energy,$KWHT);
 	}
@@ -1572,7 +1567,7 @@ class PDODataAdapter {
 		$EFF = 0;
 		$totalSystemIP = 0;
 		$totalSystemACP = 0;
-		
+
 		$liveBean = array();
 
 		foreach ($config->devices as $device){
@@ -1611,11 +1606,11 @@ class PDODataAdapter {
 				}else{
 					$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
 
-					
+
 					$I1P += $liveBean['I1P'];
 					$I2P += $liveBean['I2P'];
 					$I3P += $liveBean['I3P'];
-					
+
 					// sum system (all devices) power values
 					$totalSystemIP  += $liveBean['I1P'] + $liveBean['I2P'] + $liveBean['I3P'];
 					$totalSystemACP  += $liveBean['GP'] + $liveBean['GP2'] + $liveBean['GP3'];
@@ -1634,7 +1629,7 @@ class PDODataAdapter {
 					$live->GP = ($liveBean['GP']<1000) ? number_format($liveBean['GP'],1,'.','') : number_format($liveBean['GP'],0,'','');
 					$live->GA = ($liveBean['GA']<1000) ? number_format($liveBean['GA'],1,'.','') : number_format($liveBean['GA'],0,'','');
 					$live->GV = ($liveBean['GV']<1000) ? number_format($liveBean['GV'],1,'.','') : number_format($liveBean['GV'],0,'','');
-					
+
 					$live->GP2 = ($liveBean['GP2']<1000) ? number_format($liveBean['GP2'],1,'.','') : number_format($liveBean['GP2'],0,'','');
 					$live->GA2 = ($liveBean['GA2']<1000) ? number_format($liveBean['GA2'],1,'.','') : number_format($liveBean['GA2'],0,'','');
 					$live->GV2 = ($liveBean['GV2']<1000) ? number_format($liveBean['GV2'],1,'.','') : number_format($liveBean['GV2'],0,'','');
@@ -1929,7 +1924,7 @@ class PDODataAdapter {
 		}
 	}
 	
-
+	
 	public function dropboxDisconnect($id){
 		try{
 			$bean =  R::findOne('dropboxOauthTokens',' userid = :userid ',array(':userid'=>1));
@@ -1967,8 +1962,8 @@ class PDODataAdapter {
 		//echo $path;
 		//echo "xx".$path."x";
 		//echo  R::exec( 'delete from  where  like %'.$path.'%');
-		
-		
+
+
 		$bean = R::findOne('dropboxFilenameCaching', ' path = ? ', array($path));
 		R::trash($bean); // Use trash to delete the student
 		

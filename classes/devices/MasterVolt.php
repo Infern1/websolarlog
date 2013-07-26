@@ -25,6 +25,7 @@ Class MasterVolt implements DeviceApi {
     	if ($this->DEBUG) {
     		return "W2223424".rand(0,9);
     	} else {
+            echo("GetAlarms Mastervolt\n");
     		return $this->execute('-A -Y 10');
     	}
 
@@ -33,52 +34,60 @@ Class MasterVolt implements DeviceApi {
     public function getData() {
         if ($this->DEBUG) {
             //return $this->execute('-b -c -T ' . $this->COMOPTION . ' -d0 -e 2>'. Util::getErrorFile($this->INVTNUM));
-            return date("Ymd")."-11:11:11 233.188904 6.021501 1404.147217 234.981598 5.776632 1357.402222 242.095657 10.767704 2585.816406 59.966419 93.636436 68.472496 41.846001 3.230 8441.378 0.000 8384.237 12519.938 14584.0 84 236.659 OK";
+            return "451 1,38 622 233 2,55 580 50,00 42 13,33 748 NoError";
         } else {
-            return trim($this->execute('-c -T ' . $this->COMOPTION . ' -d0 -e'));
+            //echo("GetData Mastervolt\n");
+        	return trim($this->execute( $this->COMOPTION ));
         }
     }
     
     public function getLiveData() {
     	$data = $this->getData();
-    	return AuroraConverter::toLive($data);
+        //echo("GetLiveData Mastervolt\n");
+    	return MasterVoltConverter::toLive($data);
     }
 
     public function getInfo() {
         if ($this->DEBUG) {
             return "PowerOne XXXXXX.XXXXXXXX";
         } else {
-           return $this->execute('-p -n -f -g -m -v -Y 10');
+            return "Mastervolt";
+            //echo("GetInfo Mastervolt\n");
+        //	return $this->execute('-p -n -f -g -m -v -Y 10');
         }
     }
 
     public function getHistoryData() {
     	// Try to retrieve the data of the last 366 days
-    	$result = $this->execute('-k366 -Y60'); // -K10 is not yet supported by aurora
+        echo("GetHistoryData Mastervolt\n");
+        return "No History Data";    	
+        //$result = $this->execute('-k366 -Y60'); // -K10 is not yet supported by aurora
         
-        if ($result) {
-        	HookHandler::getInstance()->fire("onDebug", "getHistoryData :: start processing the result");
-        	$deviceHistoryList = array();
-        	$lines = explode("\n", $result);
-        	foreach ($lines as $line) {
-        		$deviceHistory = AuroraConverter::toDeviceHistory($line);
-        		if ($deviceHistory != null) {
-        			$deviceHistory->amount = $deviceHistory->amount * 10; // Remove this line when -K10 is supported
-        			$deviceHistoryList[] = $deviceHistory;
-        		}
-        	}
-        	return $deviceHistoryList;
-        } else {
-        	if (Session::getConfig()->debugmode) {
-        		HookHandler::getInstance()->fire("onDebug", "getHistoryData :: nothing returned by inverter result=" + $result);
-        	}
-        }
-        
-        return null;
+        //if ($result) {
+        //	HookHandler::getInstance()->fire("onDebug", "getHistoryData :: start processing the result");
+        //	$deviceHistoryList = array();
+        //	$lines = explode("\n", $result);
+        //	foreach ($lines as $line) {
+        //		$deviceHistory = AuroraConverter::toDeviceHistory($line);
+        //		if ($deviceHistory != null) {
+        //			$deviceHistory->amount = $deviceHistory->amount * 10; // Remove this line when -K10 is supported
+        //			$deviceHistoryList[] = $deviceHistory;
+        //		}
+        //	}
+        //	return $deviceHistoryList;
+        //} else {
+        //	if (Session::getConfig()->debugmode) {
+        //		HookHandler::getInstance()->fire("onDebug", "getHistoryData :: nothing returned by inverter result=" + $result);
+        //	}
+        //}
+        //
+        //return null;
     }
 
     public function syncTime() {
-        return $this->execute('-L');
+        //echo("syncTime Mastervolt\n");
+    	//return $this->execute('-L');
+        return null;
     }
     
     public function doCommunicationTest() {
@@ -86,13 +95,12 @@ Class MasterVolt implements DeviceApi {
     }
 
     private function execute($options) {
-        $cmd = $this->PATH . ' -a' . $this->ADR . ' ' . $options . ' ' . $this->PORT;
-        echo("MasterVolt support is not yet ready.\n");
-        echo("This should be the command executed cmd=".$cmd.".\n");
+    	//echo("Path ".$this->PATH." ADR: ".$this->ADR." Options: ".$options." Port: ".$this->PORT." \n");
+        $cmd = $this->PATH." ".$this->ADR ;
+      //  echo("MasterVolt support is not yet ready.\n");
+        //echo("This should be the command executed cmd=".$cmd." \n");
         
-        /*
-         * We need to implement this class so do nothing
-         * 
+        
         $proc=proc_open($cmd,
         		array(
         				array("pipe","r"),
@@ -104,7 +112,7 @@ Class MasterVolt implements DeviceApi {
         $stderr = stream_get_contents($pipes[2]);
         
         proc_close($proc);
-        */
+        
         return trim($stdout);
     }
 }

@@ -19,6 +19,7 @@ switch ($settingstype) {
 	case 'advanced':
 		$data['co2kwh'] = $config->co2kwh;
 		$data['aurorapath'] = $config->aurorapath;
+		$data['mastervoltpath'] = $config->mastervoltpath;
 		$data['smagetpath'] = $config->smagetpath;
 		$data['smaspotpath'] = $config->smaspotpath;
 		$data['smaspotWSLpath'] = $config->smaspotWSLpath;
@@ -390,6 +391,7 @@ switch ($settingstype) {
 	case 'save-advanced':
 		$config->co2kwh = Common::getValue("co2kwh");
 		$config->aurorapath =Common::getValue("aurorapath");
+		$config->mastervoltpath =Common::getValue("mastervoltpath");
 		$config->smagetpath =Common::getValue("smagetpath");
 		$config->smaspotpath =Common::getValue("smaspotpath");
 		$config->smaspotWSLpath =Common::getValue("smaspotWSLpath");
@@ -551,6 +553,7 @@ switch ($settingstype) {
 		$hybridFacebook = new FacebookAddon();
 		$hybridFacebook->sendFacebook();
 		break;
+
 	case 'attachDropbox':
 		// getting back from Dropbox with the UID and oauth_token as $_get values
 		if((Common::getValue('uid')) && (Common::getValue('oauth_token'))){
@@ -569,7 +572,7 @@ switch ($settingstype) {
 		$data = array();
 		$data['files'] = array();
 		$dropbox = new Dropbox;
-		
+
 		/* not needed till we can switch DB-engines
 		$config = Session::getConfig();
 		$dbName = explode('/',$config->dbHost);
@@ -582,7 +585,7 @@ switch ($settingstype) {
 		
 		$dbPath = '../database/'.$dbName.'.sdb';
 		
-		$data['dropboxResponse'] = $dropbox->dropbox->putFile($dbPath, $backupFileName);
+		$data['dropboxResponse']= $dropbox->dropbox->putFile($dbPath, $backupFileName);
 
 		$path = $dropbox->dropbox->media($data['dropboxResponse']['body']->path);
 		//$data['files'][0]->fullPath = $path['body']->url;
@@ -614,36 +617,36 @@ switch ($settingstype) {
 	case 'dropboxSyncFiles':
 		try {
 	
-			// get Dropbox things
-			$dropbox = new Dropbox;
+		// get Dropbox things
+		$dropbox = new Dropbox;
 			
-			//get all the dropbox files
-			$meta = $dropbox->dropbox->metaData();
+		//get all the dropbox files
+		$meta = $dropbox->dropbox->metaData();
 
-			$data['success'] = true;
-			//we only need the file content
-			$data['files'] = $meta['body']->contents;
-			// reverse the order (last added file to 0-key of array)
-			$data['files'] = array_reverse($data['files']);
-	
-			//init
-			$totalBackupSize = 0;
-			$i=0;
-	
-			// walkthrough the dropbox files
-			foreach ($data['files'] as $file) {
+		$data['success'] = true;
+		//we only need the file content
+		$data['files'] = $meta['body']->contents;
+		// reverse the order (last added file to 0-key of array)
+		$data['files'] = array_reverse($data['files']);
+
+		//init
+		$totalBackupSize = 0;
+		$i=0;
+
+		// walkthrough the dropbox files
+		foreach ($data['files'] as $file) {
 				//echo str_replace("/","",$file->path);
 				$fileMedia = $dropbox->dropbox->media($file->path);
-				
-				// set fullPath to the files array
-	
-				//$file->client_mtime = "Tue, 04 Dec 2012 13:00:59 +0000";
-				// explode client_mtime
-				$exDateTime = explode(' ',$file->client_mtime);
-				// re-org timeformat
-				$client_mtime = $exDateTime[2].' '.$exDateTime[1].' '.$exDateTime[3].' '.$exDateTime[4];
-				//make timestamp and generate new timesting
-				$dateTime = strtotime($client_mtime);
+
+			// set fullPath to the files array
+
+			//$file->client_mtime = "Tue, 04 Dec 2012 13:00:59 +0000";
+			// explode client_mtime
+			$exDateTime = explode(' ',$file->client_mtime);
+			// re-org timeformat
+			$client_mtime = $exDateTime[2].' '.$exDateTime[1].' '.$exDateTime[3].' '.$exDateTime[4];
+			//make timestamp and generate new timesting
+			$dateTime = strtotime($client_mtime);
 				
 				$dropbboxFile = array(
 						'client_mtime' => $dateTime,
@@ -653,22 +656,22 @@ switch ($settingstype) {
 						'num' => $i+1,						
 				);
 				//var_dump($dropbboxFile);
-				//lets see if we need to save the file to the database.
+			//lets see if we need to save the file to the database.
 				$adapter->dropboxSaveFile($dropbboxFile);
-				// sum the filesizes for some nice figures
-				$totalBackupSize += $file->bytes;
+			// sum the filesizes for some nice figures
+			$totalBackupSize += $file->bytes;
 				$data['files'][] = $dropbboxFile;
-				$i++;
-			}
-			$data['totalBackups'] = $i+1;
-			$data['totalBackupSize'] = number_format($totalBackupSize/1000000,2,'.',''); // Bytes -> MegaByte
-			$data['avarageBackupSize'] = number_format((totalBackupSize/($i+1))/1000000,2,'.',''); // Bytes -> MegaByte
-				
-			// sync dropbox-files with database records (remove file from DB if the are not in dropbox-file-array)
-			$adapter->dropboxCheckActive($data['files']);
-			$data['files'] = null;
-			$data =$adapter->dropboxGetFilesFromDB();
-			$data['success'] = true;
+			$i++;
+		}
+		$data['totalBackups'] = $i+1;
+		$data['totalBackupSize'] = number_format($totalBackupSize/1000000,2,'.',''); // Bytes -> MegaByte
+		$data['avarageBackupSize'] = number_format((totalBackupSize/($i+1))/1000000,2,'.',''); // Bytes -> MegaByte
+			
+		// sync dropbox-files with database records (remove file from DB if the are not in dropbox-file-array)
+		$adapter->dropboxCheckActive($data['files']);
+		$data['files'] = null;
+		$data =$adapter->dropboxGetFilesFromDB();
+		$data['success'] = true;
 		} catch (Exception $e) {
 			//echo $e->getMessage();
 			$data['message'] = $e->getMessage();
@@ -689,7 +692,6 @@ switch ($settingstype) {
 		try {
 			$delete = $dropbox->dropbox->delete($path);
 			if ($delete){
-				
 				$adapter->dropboxDropFile($path);
 				$data['message'] = "File '$path' deleted from your dropbox and WebSolarLog.";
 				$data['success'] = true;
@@ -772,6 +774,7 @@ switch ($settingstype) {
 	case 'dbm_getTables':
 		$data['tables'] = R::$writer->getTables();
 		break;
+		
 	case 'dbm_getTableData':
 		$tableName = Common::getValue("tableName", null);
 		if ($tableName) {
@@ -791,8 +794,8 @@ switch ($settingstype) {
 				$db_column['editor'] = $editor;
 				$db_column['toolTip'] = $columntype;
 				$db_columns[] = $db_column;
-			}
-			
+}
+
 			$data['dbname'] = $tableName;
 			$data['columns'] = $db_columns;
 			$data['data'] = R::getAll( 'select * from ' . $tableName);
@@ -878,7 +881,6 @@ function diagnostics() {
 	$PidFilename = $basePath.'scripts/server.php.pid';
 	
 	$result['currentTime']=time();
-	
 	if (file_exists($PidFilename)) {
 		$stat = stat($PidFilename);
 		$result['pid']['exists']=true;
@@ -900,7 +902,7 @@ function diagnostics() {
 	$result['commands']['stop'] = $basePath.'scripts/./wsl.sh stop';
 	$result['commands']['restart'] = $basePath.'scripts/./wsl.sh restart';
 	$result['commands']['status'] = $basePath.'scripts/./wsl.sh status';
-	
+		
 	$SDBFilename = Session::getBasePath().'/database/wsl.sdb';
 	$result['dbRights'] = Util::file_perms($SDBFilename);
 	if (file_exists($SDBFilename)) {
@@ -938,14 +940,14 @@ function diagnostics() {
 				$extensions[$extension] = Util::checkIfModuleLoaded($extension,$type='extension');
 		}
 	}
-	
+
 	
 	
 	// check functions
 	$name = "mcrypt_module_open";
 	$extensions[$name] = array('name'=>$name,'status'=>function_exists($name),'type'=>'function');
 	$result['extensions'] = $extensions;
-	
+
 	$result['phpVersion'] = phpversion(); 
 	$result['phpVersionCheck'] = (version_compare($result['phpVersion'], '5.3.10', '>=')) ? true : false ;
 	
