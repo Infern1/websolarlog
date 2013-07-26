@@ -54,7 +54,7 @@ Class Aurora implements DeviceApi {
 
     public function getHistoryData() {
     	// Try to retrieve the data of the last 366 days
-    	$result = $this->execute('-k366 -Y60'); // -K10 is not yet supported by aurora
+    	$result = $this->execute('-k366 -Y100'); // -K10 is not yet supported by aurora
         
         if ($result) {
         	HookHandler::getInstance()->fire("onDebug", "getHistoryData :: start processing the result");
