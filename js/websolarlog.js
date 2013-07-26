@@ -857,8 +857,7 @@ var WSL = {
 				};
 				delete data;
 				
-				html = WSL.template.get('liveInverters', {'data' : data, 'lang' : data.lang});
-				$(divId).html(html);
+				$(divId).html(WSL.template.get('liveInverters', {'data' : data, 'lang' : data.lang}));
 				if (gaugeGP) {
 					gaugeGP.destroy();
 				}
@@ -889,56 +888,8 @@ var WSL = {
 				gaugeEFF.series[0].data = [ [ 'W',data.sumInverters.EFF ] ];
 				gaugeEFF.series[0].label = data.sumInverters.EFF+ ' %';
 				gaugeEFF.replot();
-
-				/*
-				$.ajax({
-					url : 'js/templates/liveInverters.hb',
-					beforeSend : function(xhr) {
-						if (getWindowsState() == false) {
-							ajaxAbort(xhr);
-						}
-					},
-					success : function(source) {
-						var template = Handlebars.compile(source);
-						var html = template({
-							'data' : data,
-							'lang' : data.lang
-						});
-						$(divId).html(html);
-
-						if (gaugeGP) {
-							gaugeGP.destroy();
-						}
-						$('#gaugeGP').empty();
-						gaugeGP = $.jqplot('gaugeGP',[ [ 0.1 ] ], gaugeGPOptions);
-						gaugeGP.series[0].data = [ [ 'W',data.sumInverters.GP ] ];
-						gaugeGP.series[0].label = data.sumInverters.GP;
-						document.title = '('+ data.sumInverters.GP+ ' W) WebSolarLog';
-						gaugeGP.replot();
-
-						if (gaugeIP) {
-							gaugeIP.destroy();
-						}
-						$('#gaugeIP').empty();
-						gaugeIP = $.jqplot('gaugeIP',[ [ 0.1 ] ], gaugeIPOptions);
-						gaugeIP.series[0].data = [ [ 'W',data.sumInverters.IP ] ];
-						gaugeIP.series[0].label = data.sumInverters.IP;
-						gaugeIP.replot();
-
-						if (gaugeEFF) {
-							gaugeEFF.destroy();
-						}
-						$('#gaugeEFF').empty();
-						gaugeEFF = $.jqplot('gaugeEFF',[ [ 0.1 ] ], gaugeEFFOptions);
-						gaugeEFF.series[0].data = [ [ 'W',data.sumInverters.EFF ] ];
-						gaugeEFF.series[0].label = data.sumInverters.EFF+ ' %';
-						gaugeEFF.replot();
-
-						ajaxReady();
-					},
-					dataType : 'text',
-				});
-				 */
+				
+				ajaxReady();
 			});
 		}
 	},
@@ -1109,24 +1060,7 @@ var WSL = {
 
 	init_PageLiveValues : function(divId) {
 		WSL.api.init_PageLiveValues(function(data) {
-			ajaxStart();
-			$.ajax({
-				url : 'js/templates/liveValues.hb',
-				beforeSend : function(xhr) {
-					if (getWindowsState() == false) {
-						ajaxAbort(xhr);
-					}
-				},
-				success : function(source) {
-					var template = Handlebars.compile(source);
-					var html = template({
-						'data' : '',
-						'lang' : data.lang
-					});
-					$(divId).html(html);
-				},
-				dataType : 'text',
-			});
+			$(divId).html(WSL.template.get("liveValues", {'data' : '', 'lang' : data.lang}));
 		});
 	},
 	
@@ -1134,43 +1068,9 @@ var WSL = {
 		
 	init_PageIndexTotalValues : function(sideBar) {
 		WSL.api.getPageIndexTotalValues(function(data) {
-			$.ajax({
-				url : 'js/templates/totalValues.hb',
-				beforeSend : function(xhr) {
-					if (getWindowsState() == false) {
-						ajaxAbort(xhr);
-					}
-				},
-				success : function(source) {
-					var template = Handlebars.compile(source);
-					var html = template({
-						'data' : data.IndexValues,
-						'lang' : data.lang
-					});
-					$(sideBar).html(html);
-					WSL.api.getWeatherValues(function(data) {
-						$.ajax({
-							url : 'js/templates/widgetWeather.hb',
-							beforeSend : function(xhr) {
-								if (getWindowsState() == false) {
-									ajaxAbort(xhr);
-								}
-							},
-							success : function(source) {
-								var template = Handlebars.compile(source);
-								var html = template({
-									'data' : data.data
-								});
-								$(sideBar).append(html);
-
-								ajaxReady();
-							},
-							dataType : 'text',
-						});
-					});
-					ajaxReady();
-				},
-				dataType : 'text',
+			$(sideBar).html(WSL.template.get("totalValues", { 'data' : data.IndexValues, 'lang' : data.lang }));
+			WSL.api.getWeatherValues(function(data) {
+				$(sideBar).append(WSL.template.get("widgetWeather", { 'data' : data.data }));
 			});
 		});
 	},
@@ -1179,26 +1079,9 @@ var WSL = {
 		ajaxStart();
 		// initialize languages selector on the given div
 		WSL.api.getPageTodayValues(function(data) {
-			$.ajax({
-				url : 'js/templates/todayValues.hb',
-				beforeSend : function(xhr) {
-					if (getWindowsState() == false) {
-						ajaxAbort(xhr, '');
-					}
-				},
-				success : function(source) {
-					var template = Handlebars.compile(source);
-					var html = template({
-						'data' : data.dayData.data,
-						'lang' : data.lang
-					});
-					$(todayValues).html(html);
-					success.call();
-					ajaxReady();
-				},
-				dataType : 'text',
-			});
-
+			$(todayValues).html(WSL.template.get('todayValues', {'data' : data.dayData.data, 'lang' : data.lang}));
+			success.call();
+			ajaxReady();
 		});
 	},
 
