@@ -374,19 +374,24 @@ try {
 			$data['yearData'] = $dayData;
 			break;
 		case 'getPageMonthValues':
-			
+			$dayData = array();			
 			foreach ($config->devices as $device){
-				$maxPower[] = $dataAdapter->getMonthMaxPowerPerDay($device->id, $date);
-				$maxEnergy[] = $dataAdapter->getMonthEnergyPerDay($device->id, $date);
-				$minMaxEnergyMonth[] = $dataAdapter->getMaxMinEnergyMonth($device->id,$date);
+				if ($device->type == "production") {
+					$maxPower = $dataAdapter->getMonthMaxPowerPerDay($device->id, $date);
+					$maxEnergy = $dataAdapter->getMonthEnergyPerDay($device->id, $date);
+					$minMaxEnergyMonth = $dataAdapter->getMaxMinEnergyMonth($device->id,$date);					
+				
+					$deviceData = array(
+						"maxPower"=>$maxPower,
+						"maxEnergy"=>$maxEnergy,
+						"minMaxEnergy"=>$minMaxEnergyMonth,
+						"device"=>$device
+					);
+					
+					$dayData[] = $deviceData;
+				}
 			}
 	
-			$dayData = new DayDataResult();
-			$dayData->data = array(
-				"maxPower"=>$maxPower,
-				"maxEnergy"=>$maxEnergy,
-				"minMaxEnergy"=>$minMaxEnergyMonth
-			);
 			$lang = array();
 			$lang['today'] 			= _("Today");
 			$lang['maxGridPower'] 	= _("Max Grid Power");
@@ -402,7 +407,7 @@ try {
 			$lang['month']			= strtolower(_("Month"));
 			$lang['valuesGroupedByDayMonthText'] = _("The values below are grouped by Day of the selected Month");
 			
-			$dayData->success = true;
+			$data['success'] = true;
 			$data['lang'] = $lang;
 			$data['monthData'] = $dayData;
 			break;

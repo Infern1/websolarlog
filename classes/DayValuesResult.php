@@ -1,5 +1,5 @@
 <?php
-class DayDataResult
+class DayValuesResult
 {
     public $label;
     public $file;

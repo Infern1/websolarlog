@@ -10,13 +10,13 @@
 		<h3>Max Grid Power</h3>
 		<div class="post">
 			<div id="monthPowerAcc" class="column span-22 last accordion">
-			{{#each data.monthData.data.maxPower}}	
-			<h3>Inv. {{this.INV}}</h3>
+			{{#each data.monthData}}	
+			<h3>Inv. {{this.device.name}}</h3>
 				<div class="innerAccordionPeriod">
 	    			<div class="column span-5 first">{{../lang.inv}}</div>
 					<div class="column span-4" style="text-align:right;">{{../lang.watt}}</div>
 					<div class="column span-8" style="text-align:center;">{{../lang.date}}</div>
-    				{{#each this}}
+    				{{#each this.maxPower}}
 			    		<div class="column span-5 first">{{this.INV}}</div>
 		    			<div class="column span-4" style="text-align:right;">{{this.maxGP}}</div>
 		    			<div class="column span-8" last" style="text-align:right;">{{timestampDateFormat this.date format="DD MMM YYYY"}}</div>
@@ -33,14 +33,14 @@
 		<h3>kWh</h3>
 		<div class="post">
 			<div id="monthPowerAcc" class="column span-22 last accordion">
-			{{#each data.monthData.data.maxEnergy}}
-	    		<h3 style="margin:0px;">Inv. 1</h3>
+			{{#each data.monthData}}
+	    		<h3 style="margin:0px;">Inv. {{this.device.name}}</h3>
 	    		<div class="innerAccordionPeriod">
     				<div class="column span-5 first">{{../lang.inv}}</div>
 					<div class="column span-4" style="text-align:right;">{{../lang.kwh}}</div>
 					<div class="column span-8" style="text-align:center;">{{../lang.date}}</div>
 		
-    				{{#each this}}
+    				{{#each this.maxEnergy}}
 		    			<div class="column span-5 first">{{this.INV}}</div>
 			    		<div class="column span-4" style="text-align:right;">{{this.KWH}}</div>
 			    		<div class="column span-8" last" style="text-align:right;">{{timestampDateFormat this.date format="DD MMM YYYY"}}</div>
@@ -57,20 +57,20 @@
 		<div class="post">
 		<h3>The best/worst day</h3>
 		<div id="monthPowerAcc" class="column span-22 last accordion">
-		{{#each data.monthData.data.minMaxEnergy}}
-			<h3 style="margin:0px;">Inv. 1</h3>
+		{{#each data.monthData}}
+			<h3 style="margin:0px;">Inv. {{this.device.name}}</h3>
 			<div class="innerAccordionPeriod">
 				<div class="column span-4" style="text-align:right;">&nbsp;</div>
 				<div class="column span-3" style="text-align:right;">{{../lang.kwh}}</div>
 				<div class="column span-9 last">{{../lang.date}}</div>
 				
 				<div class="column span-4">The Best:</div>
-				<div class="column span-3" style="text-align:right;">{{this.maxEnergy.kWh}}</div>
-				<div class="column span-9 last">{{timestampDateFormat this.maxEnergy.date format="DD MMM YYYY"}}</div>
+				<div class="column span-3" style="text-align:right;">{{this.minMaxEnergy.maxEnergy.kWh}}</div>
+				<div class="column span-9 last">{{timestampDateFormat this.minMaxEnergy.maxEnergy.date format="DD MMM YYYY"}}</div>
 				
     			<div class="column span-4">The Worst:</div>
-				<div class="column span-3" style="text-align:right;">{{this.minEnergy.kWh}}</div>
-				<div class="column span-9 last">{{timestampDateFormat this.minEnergy.date format="DD MMM YYYY"}}</div>
+				<div class="column span-3" style="text-align:right;">{{this.minMaxEnergy.minEnergy.kWh}}</div>
+				<div class="column span-9 last">{{timestampDateFormat this.minMaxEnergy.minEnergy.date format="DD MMM YYYY"}}</div>
 			</div>
 	    {{/each}}
 	    </div>
