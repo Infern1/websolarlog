@@ -1769,68 +1769,58 @@ var WSL = {
 
 	init_production : function(divId) {
 		
-		$(divId).html('');
 		$(divId).html('<div id="datePickerContainer"></div><div id="graphContainer"></div><div id="figuresContainer">figurs loading...</div>');
 		
-		$.getJSON('server.php?method=getDevices', function(data) {
-			$.ajax({
-				url : 'js/templates/pageDateFilter.hb',
-				beforeSend : function(xhr) {
-					if (getWindowsState() == false) {
-						ajaxAbort(xhr,'');
+		WSL.connect.getJSON('server.php?method=getDevices', function(data) {
+			$('#datePickerContainer').html(WSL.template.get('pageDateFilter', {'data' : data, 'lang' : data.lang}));
+			
+				$("#datePickerPeriod").val(new Date().getFullYear());
+				var currentYear = $("#datePickerPeriod").val();
+				
+				$("#datePickerPeriod").datepicker({
+					dateFormat : 'yy',
+					changeMonth : false,
+					changeYear : true,
+					onSelect : function(dateText,inst) {
+						//$(this).val($('#datePickerPeriod').val());
+					},
+					onClose : function(dateText,inst) {
+						var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+						// new Date(year,month, day) // W3schools
+						//if(currentYear != year){
+							//console.log(year);
+							$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
+							$("#graphContainer").html('reloading....');
+							$("#figuresContainer").html('reloading....');
+							devicenum = $('#devicenum').val();
+							WSL.createProductionGraph(devicenum,'graphContainer','1-1-'+year); // Initial load fast
+						//}
 					}
-				},
-				success : function(source) {
-					var template = Handlebars.compile(source);
-					var html = template({
-						'data' : data,
-						'lang' : data.lang
-					});
-					$('#datePickerContainer').html(html);
-					
-					$("#datePickerPeriod").val(new Date().getFullYear());
-					var currentYear = $("#datePickerPeriod").val();
-					
-					
-					$("#datePickerPeriod").datepicker({
-						dateFormat : 'yy',
-						changeMonth : false,
-						changeYear : true,
-						onSelect : function(dateText,inst) {
-							//$(this).val($('#datePickerPeriod').val());
-						},
-						onClose : function(dateText,inst) {
-							var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-							// new Date(year,month, day) // W3schools
-							if(currentYear != year){
-								//console.log(year);
-								$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
-								$("#graphContainer").html('reloading....');
-								$("#figuresContainer").html('reloading....');
-								devicenum = $('#devicenum').val();
-								WSL.createProductionGraph(devicenum,'graphContainer','1-1-'+year); // Initial load fast
-							}
-						}
-					});
-					
-					var pickerDate = $('#datePickerPeriod').val();
-					// new Date(year,month, day) // W3schools
-					$(this).val($.datepicker.formatDate('yy',new Date(pickerDate,1,1)));
-					var devicenum = $('#devicenum').val();
-					WSL.createProductionGraph(devicenum,'graphContainer',pickerDate); // Initial load fast
-					
-					$("#datePickerPeriod").focus(function() {
-						$(".ui-datepicker-calendar").hide();
-						$(".ui-datepicker-month").hide();
-						$(".ui-icon-circle-triangle-w").hide();
-						$(".ui-icon-circle-triangle-e").hide();
-						$("#ui-datepicker-div").position({my : "center top",at : "center bottom",of : $(this)});
-					});
-				},
-				dataType : 'text',
-			});
+				});
+				
+				$('#devicenum').bind('change', function(){
+					var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+					$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
+					$("#graphContainer").html('reloading....');
+					$("#figuresContainer").html('reloading....');
+					devicenum = $('#devicenum').val();
+					WSL.createProductionGraph(devicenum,'graphContainer','1-1-'+year); // Initial load fast
+				});
+				
+				var pickerDate = $('#datePickerPeriod').val();
+				// new Date(year,month, day) // W3schools
+				$(this).val($.datepicker.formatDate('yy',new Date(pickerDate,1,1)));
+				var devicenum = $('#devicenum').val();
+				WSL.createProductionGraph(devicenum,'graphContainer',pickerDate); // Initial load fast
+				
+				$("#datePickerPeriod").focus(function() {
+					$(".ui-datepicker-calendar").hide();
+					$(".ui-datepicker-month").hide();
+					$(".ui-icon-circle-triangle-w").hide();
+					$(".ui-icon-circle-triangle-e").hide();
+					$("#ui-datepicker-div").position({my : "center top",at : "center bottom",of : $(this)});
+				});
 		});
-
 	},
 
 	createProductionGraph : function(devicenum, divId, year) {
