@@ -1551,6 +1551,8 @@ class PDODataAdapter {
 		// summary live data
 		$inverters = array();
 		$GP  = 0;
+		$GP2 = 0;
+		$GP3 = 0;
 		$I1P = 0;
 		$I2P = 0;
 		$I3P = 0;

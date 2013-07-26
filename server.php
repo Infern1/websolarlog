@@ -180,6 +180,8 @@ try {
 			$data['serverUptime'] = $serverUptime;
 			break;
 		case 'getGraphDayPoints':
+			$lines = array();
+			$lines['graph'] = null;
 			$dtz = new DateTimeZone($config->timezone);
 			$timezoneOffset = new DateTime('now', $dtz);
 			

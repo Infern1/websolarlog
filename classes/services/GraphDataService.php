@@ -13,7 +13,7 @@ class GraphDataService {
 	public static function loadData($options) {
 		if($options['type']=='Today'){
 			$beans = self::readTablesPeriodValues($options['deviceNum'], self::$tbl, $options['type'], $options['date']);
-			$graphPoints = self::DayBeansToGraphPoints($beans,$startDate);
+			$graphPoints = self::DayBeansToGraphPoints($beans, time());
 		}
 		return $graphPoints;
 	}
@@ -29,6 +29,7 @@ class GraphDataService {
 		$preBean = array();
 	
 		$KWHT = 0;
+		$kWhkWp = 0;
 		$lastDays = new LastDays();
 	
 		foreach ($beans as $bean){

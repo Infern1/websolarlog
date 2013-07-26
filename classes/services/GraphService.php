@@ -223,7 +223,7 @@ class GraphService {
 			}
 			
 			//set timestamp to overrule standard timestamp
-			$timestamp = Util::getSunInfo($config,$startDate);
+			$timestamp = Util::getSunInfo($config, time());
 			$timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
 			
 			if($dataPointsHook->timestamp){
