@@ -12,6 +12,7 @@ require_once("template/" . $template . "/index.php");
 	var compareMonth = '<?php echo date("n");?>';
 	var compareYear = '<?php echo date("Y");?>';
 	$(function(){
+		$("#contentLoading").hide();
 		WSL.init_compare("#content");
 	});
 

@@ -1938,112 +1938,70 @@ var WSL = {
 	},
 	init_details : function(divId, queryDate) {
 		$("#main-middle").prepend('<div id="datePeriodFilter"></div><div id="detailsGraph"></div><div id="detailsSwitches"></div>');
-		$.getJSON('server.php?method=getDetailsSwitches', function(data) {
-			$.ajax({
-				url : 'js/templates/detailsSwitches.hb',
-				beforeSend : function(xhr) {
-					if (getWindowsState() == false) {
-						ajaxAbort(xhr, '');
-					}
-				},
-				success : function(source) {
-					var template = Handlebars.compile(source);
-					var html = template({
-						'data' : '',
-						'lang' : data.lang
-					});
-					$('#detailsSwitches').html(html);
-				},
-				dataType : 'text',
-			});
+		WSL.connect.getJSON('server.php?method=getDetailsSwitches', function(data) {
+			$('#detailsSwitches').html(WSL.template.get('detailsSwitches', { 'data' : data, 'lang' : data.lang }));
 		});
-
-		$.getJSON('server.php?method=getPeriodFilter&type=today',
-			function(data) {
-				$.ajax({
-					url : 'js/templates/datePeriodFilter.hb',
-					beforeSend : function(xhr) {
-						if (getWindowsState() == false) {
-							ajaxAbort(xhr, '');
-						}
-					},
-					success : function(source) {
-						var template = Handlebars.compile(source);
-						var html = template({
-							'data' : data,
-							'lang' : data.lang
-						});
-						$('#datePeriodFilter').html(html);
-						var devicenum = $('#pickerInv').val();
-						(queryDate != "undefined") ? date = queryDate : date = date;
-
-						$("#datepicker").datepicker('setDate',new Date());
+		
+		WSL.connect.getJSON('server.php?method=getPeriodFilter&type=today', function(data) {
+			$('#datePeriodFilter').html(WSL.template.get('datePeriodFilter', { 'data' : data, 'lang' : data.lang }));
+			
+			var date = (queryDate != "undefined") ? queryDate : date;
 						
-						//fix for Graph Tooltip
-						$("#datepicker").css('z-index',0);
-						// fix for Graph Tooltip
+			// Initialize date picker
+			var datePicker = $('#datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
+			datePicker.datepicker('setDate',new Date());
+			datePicker.css('z-index',0); // fix for Graph Tooltip
 						
-						
-						$('datePeriodFilter').on('change', '#pickerPeriod', function(){
-							WSL.createDetailsGraph(devicenum, divId,date);
-						});
-						$('datePeriodFilter').on('change', '#datepicker', function(){
-							WSL.createDetailsGraph(devicenum, divId, date);
-						});
-						$('datePeriodFilter').on('change', '#pickerInv', function(){
-							WSL.createDetailsGraph(devicenum, divId, date);
-						});
-						
-						$('#next').unbind('click');
-						$('#previous').unbind('click');
-						$('#pickerPeriod').unbind('click');
+			var deviceSelect = $('#devicenum');
+			$('#pickerPeriod, #datepicker, #devicenum').bind('change', function(){
+				var date = new Date(datePicker.datepicker('getDate'));
+				WSL.createDetailsGraph(deviceSelect.val(), divId,date);
+			});
+			
+			$('#next').unbind('click');
+			$('#previous').unbind('click');
+			$('#pickerPeriod').unbind('click');
 
-						$('#next').click(
-							function() {
-								var picker = $("#datepicker");
-								var date = new Date(picker.datepicker('getDate'));
-								var splitDate = $('#datepicker').val().split('-');
-								if ($('#pickerPeriod').val() == 'Today') {
-									date.setDate(date.getDate() + 1);
-								} else if ($('#pickerPeriod').val() == 'Week') {
-									date.setDate(date.getDate() + 7);
-								} else if ($('#pickerPeriod').val() == 'Month') {
-									var value = splitDate[1];
-									date.setMonth(value);
-								} else if ($('#pickerPeriod').val() == 'Year') {
-									var value = parseInt(splitDate[2]) + 1;
-									date.setFullYear(value);
-								}
-								picker.datepicker('setDate',date);
-								var splitDate = $('#datepicker').val().split('-');
-								WSL.createDetailsGraph(devicenum,divId,splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2]);
-							});
-
-						$('#previous').click(
-							function() {
-								var picker = $("#datepicker");
-								var date = new Date(picker.datepicker('getDate'));
-								var splitDate = $('#datepicker').val().split('-');
-								if ($('#pickerPeriod').val() == 'Today') {
-									date.setDate(date.getDate() - 1);
-								} else if ($('#pickerPeriod').val() == 'Week') {
-									date.setDate(date.getDate() - 7);
-								} else if ($('#pickerPeriod').val() == 'Month') {
-									var value = splitDate[1] - 2;
-									date.setMonth(value);
-								} else if ($('#pickerPeriod').val() == 'Year') {
-									var value = parseInt(splitDate[2]) - 1;
-									date.setFullYear(value);
-								}
-								picker.datepicker('setDate',date);
-								var splitDate = $('#datepicker').val().split('-');
-								WSL.createDetailsGraph(devicenum,divId,splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2]);
-							});
-						var devicenum = $('#pickerInv').val();
-						WSL.createDetailsGraph(devicenum,divId, date);
-					},
-					dataType : 'text'
+			$('#next').click(
+				function() {
+					var date = new Date(datePicker.datepicker('getDate'));
+					var splitDate = datePicker.val().split('-');
+					if ($('#pickerPeriod').val() == 'Today') {
+						date.setDate(date.getDate() + 1);
+					} else if ($('#pickerPeriod').val() == 'Week') {
+						date.setDate(date.getDate() + 7);
+					} else if ($('#pickerPeriod').val() == 'Month') {
+						var value = splitDate[1];
+						date.setMonth(value);
+					} else if ($('#pickerPeriod').val() == 'Year') {
+						var value = parseInt(splitDate[2]) + 1;
+						date.setFullYear(value);
+					}
+					datePicker.datepicker('setDate',date);
+					var splitDate = $('#datepicker').val().split('-');
+					WSL.createDetailsGraph(deviceSelect.val(),divId,splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2]);
 				});
+
+			$('#previous').click(
+				function() {
+					var date = new Date(datePicker.datepicker('getDate'));
+					var splitDate = datePicker.val().split('-');
+					if ($('#pickerPeriod').val() == 'Today') {
+						date.setDate(date.getDate() - 1);
+					} else if ($('#pickerPeriod').val() == 'Week') {
+						date.setDate(date.getDate() - 7);
+					} else if ($('#pickerPeriod').val() == 'Month') {
+						var value = splitDate[1] - 2;
+						date.setMonth(value);
+					} else if ($('#pickerPeriod').val() == 'Year') {
+						var value = parseInt(splitDate[2]) - 1;
+						date.setFullYear(value);
+					}
+					datePicker.datepicker('setDate',date);
+					var splitDate = datePicker.val().split('-');
+					WSL.createDetailsGraph(deviceSelect.val(),divId,splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2]);
+				});
+			WSL.createDetailsGraph(deviceSelect.val(),divId, date);
 		});
 	},
 
@@ -2301,48 +2259,31 @@ var WSL = {
 				});
 	},
 	init_compare : function(divId) {
-		ajaxStart();
 		var dataTable = [];
 		// initialize languages selector on the given div
-		$.getJSON('server.php?method=getCompareFilters&type=today', function(data) {
-			$.ajax({
-				url : 'js/templates/compareFilters.hb',
-				beforeSend : function(xhr) {
-					if (getWindowsState() == false) {
-						ajaxAbort(xhr, '');
-					}
-				},
-				success : function(source) {
-					var template = Handlebars.compile(source);
-					var html = template({
-						'data' : data,
-						'lang' : data.lang
-					});
-					$(divId).html(html);
-					WSL.createCompareGraph($('#devicenum').val(), whichMonth, whichYear,compareMonth, compareYear, 0);
-					
-					$('#compareFilter').on('change', '#devicenum', function() {
-						WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-					});
-					$('#compareFilter').on('change','#whichMonth', function() {
-						WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-					});
-					$('#compareFilter').on('change', '#whichYear', function() {
-						WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-					});
-					$('#compareFilter').on('change', '#compareMonth', function() {
-						WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-					});
-					$('#compareFilter').on('change', '#compareYear', function() {
-						WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
-					});
-					ajaxReady();
-				},
-				dataType : 'text',
-			});
-		});
-		
 
+		WSL.connect.getJSON('server.php?method=getCompareFilters&type=today', function(data) {
+			$(divId).html(WSL.template.get('compareFilters', {'data' : data, 'lang' : data.lang }));
+			
+			WSL.createCompareGraph($('#devicenum').val(), whichMonth, whichYear,compareMonth, compareYear, 0);
+			
+			$('#compareFilter').on('change', '#devicenum', function() {
+				WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+			});
+			$('#compareFilter').on('change','#whichMonth', function() {
+				WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+			});
+			$('#compareFilter').on('change', '#whichYear', function() {
+				WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+			});
+			$('#compareFilter').on('change', '#compareMonth', function() {
+				WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+			});
+			$('#compareFilter').on('change', '#compareYear', function() {
+				WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(), $('#whichYear').val(), $('#compareMonth').val(), $('#compareYear').val()); // Initial// load// fast
+			});
+			ajaxReady();
+		});
 	},
 
 	createCompareGraph : function(devicenum, whichMonth, whichYear, compareMonth,compareYear, type) {
@@ -2479,26 +2420,7 @@ var WSL = {
 							handle = $.jqplot("compareGraph", [ dataDay2,dataDay1 ], graphOptions);
 							handle.replot();
 
-							$.ajax({
-								url : 'js/templates/compareFigures.hb',
-								beforeSend : function(xhr) {
-									if (getWindowsState() == false) {
-										ajaxAbort(xhr, '');
-									}
-								},
-								success : function(source) {
-									var template = Handlebars.compile(source);
-									var html = template({
-										'compare' : compareTable,
-										'which' : whichTable,
-										'diff' : result.dayData.data.diff,
-										'lang' : result.lang
-									});
-									$('#compareFigures').html(html);
-								},
-								dataType : 'text',
-							});
-
+							$('#compareFigures').html(WSL.template.get('compareFigures',{'compare':compareTable,'which':whichTable,'diff':result.dayData.data.diff,'lang':result.lang}));
 						}
 					}
 				});

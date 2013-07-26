@@ -734,7 +734,6 @@ class PDODataAdapter {
 	 */
 
 	public function getDetailsHistory($invtnum,$startDate){
-
 		$beginEndDate = Util::getBeginEndDate('day', 1,$startDate);
 
 		if ($invtnum>0){
@@ -744,6 +743,7 @@ class PDODataAdapter {
 			$beans = R::getAll("SELECT * FROM History WHERE time > :beginDate AND time < :endDate ORDER BY time ASC",
 					array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}
+		
 		$historyColumns = R::getColumns('history');
 		$labels[]= _('Grid')." "._('Power');
 		$labels[]= _('Grid')." "._('Voltage');
@@ -764,7 +764,7 @@ class PDODataAdapter {
 		$labels[]= "Boos. "._('Temperature');
 		$labels[]= "Inv. "._('Temperature');
 
-
+		// Initialize values
 		$max = array();
 		$max['P'] = 0;
 		$max['V'] = 0;
@@ -775,8 +775,6 @@ class PDODataAdapter {
 		$max['EFF'] = 0;
 		
 		foreach($beans as $bean){
-			// Initialize values
-			
 			$bean['time'] =$bean['time'];
 			$live->GP[] 	= array($bean['time'],(float)$bean['GP']);
 			($bean['GP'] > $max['P'])? $max['P'] = (float)$bean['GP'] : $max['P'] = $max['P'];
@@ -859,7 +857,8 @@ class PDODataAdapter {
 			$max['Ratio'] = 1;
 			$max['T'] = 1;
 		}
-		return array("details"=>$live,"labels"=>$labels,"switches"=>$switches,"max"=>$max);
+		// $switches is not defined set it to null
+		return array("details"=>$live,"labels"=>$labels,"switches"=>null,"max"=>$max);
 	}
 
 	/**
@@ -912,9 +911,10 @@ class PDODataAdapter {
 		// get last KWH value from the Which array
 		$dates = $this->datesMonthInArray($month,$year);
 
+		$dataDays = 0;
 		foreach ($dates as $key=>$date) {
-			
-			if($newBeans[$key]){
+						
+			if(isset($newBeans[$key])){
 				$dataDays++;
 				$line[] = $newBeans[$key];
 			}else{
@@ -935,7 +935,7 @@ class PDODataAdapter {
 			$counter++;
 		}
 		$getCompareBeans['line']=$line;
-		$getCompareBeans['monthDays']=count($whichDates);
+		$getCompareBeans['monthDays']=count($dataDays);
 		
 		return $getCompareBeans;
 	}
@@ -984,8 +984,8 @@ class PDODataAdapter {
 		}
 
 		return array(
-				"whichMonthDays"=>$whichMonthDays,
-				"compareMonthDays"=>$compareMonthDays,
+				//"whichMonthDays"=>$whichMonthDays,
+				//"compareMonthDays"=>$compareMonthDays,
 				"compareBeans"=>$this->beansToGraphPoints($expectedBeans),
 				"whichBeans"=>$this->beansToGraphPoints($whichBeans),
 				"whichCompareDiff"=>$diff,
@@ -996,31 +996,36 @@ class PDODataAdapter {
 
 	function expectedMonthProduction($invtnum,$month,$year=0){
 		$config = Session::getConfig();
-		
+
 		($year < 1970) ? $year = date("Y") : $year = $year;
-		 
+			
 		$expectedMonthDays =  cal_days_in_month(CAL_GREGORIAN, $month, $year);
 		$expectedMonthString = 'expected'.strtoupper(date('M', strtotime($month."/01/".$year)));
 		$expectedPerc = $config->getDeviceConfig($invtnum)->$expectedMonthString;
 		$expectedkwhYear = $config->getDeviceConfig($invtnum)->expectedkwh;
-		
-				// calculate month kWh = (year/100*month perc)
-				$expectedKWhMonth = ($expectedkwhYear / 100)*$expectedPerc;
 
-				// calculate daily expected, based on month day (28,29,30,31 days)
-				$expectedKwhPerDay = ($expectedKWhMonth/$expectedMonthDays);
+		// calculate month kWh = (year/100*month perc)
+		$expectedKWhMonth = ($expectedkwhYear / 100)*$expectedPerc;
 
-				// create expected
-				for ($i = 0; $i < $expectedMonthDays; $i++) {
-					$iCompareDay = $i+1;
-					($i>0) ? $ii = $i-1 : $ii = 0;
+		// calculate daily expected, based on month day (28,29,30,31 days)
+		$expectedKwhPerDay = ($expectedKWhMonth/$expectedMonthDays);
+
+		// create expected
+		for ($i = 0; $i < $expectedMonthDays; $i++) {
+			$iCompareDay = $i+1;
+			//($i>0) ? $ii = $i-1 : $ii = 0;
+			$ii = $i - 1;
+			if ($i == 0) {
+				$ii = $i - 1;
+				$expectedBeans[$ii]['KWH'] = 0;
+			}
 			$expectedBeans[$i]['time'] = strtotime(date("Y")."/".$month."/".$iCompareDay);
-					$expectedBeans[$i]['KWH'] =  (float)number_format($expectedBeans[$ii]['KWH']+$expectedKwhPerDay,2,'.','');
-					$expectedBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$expectedBeans[$ii]['KWH']+(float)$expectedKwhPerDay);
-					$expectedBeans[$i]['harvested'] = (float)number_format((float)$expectedKwhPerDay,2,'.','');
-				}
-		return $expectedBeans;
+			$expectedBeans[$i]['KWH'] =  (float)number_format($expectedBeans[$ii]['KWH']+$expectedKwhPerDay,2,'.','');
+			$expectedBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$expectedBeans[$ii]['KWH']+(float)$expectedKwhPerDay);
+			$expectedBeans[$i]['harvested'] = (float)number_format((float)$expectedKwhPerDay,2,'.','');
 		}
+		return $expectedBeans;
+	}
 
 	/**
 	 * 
@@ -1039,29 +1044,15 @@ class PDODataAdapter {
 
 
 	public function getDiffCompare($whichBeans,$expectedBeans){
+		for ($i = 0; $i < count($whichBeans); $i++) {
+			
+			$diffCumCalc = (isset($whichBeans[$i]['KWH']) ? isset($whichBeans[$i]['KWH']) : 0) - (isset($expectedBeans[$i]['KWH']) ? $expectedBeans[$i]['KWH'] : 0);
+			$diffDailyCalc = (isset($whichBeans[$i]['harvested']) ? $whichBeans[$i]['harvested'] : 0)- (isset($expectedBeans[$i]['harvested']) ? $expectedBeans[$i]['harvested'] : 0);
+			
+			$diffcolor = $this->rangeBetweenColor($diffCumCalc, $expectedBeans[0]['KWH']);
+			$diffHarvestedDayColor = $this->rangeBetweenColor($diffDailyCalc, round($expectedBeans[0]['KWH']*0.2,2));
 
-		$whichCount = count($whichBeans);
-		$expectedCount = count($expectedBeans);
-		if($whichCount>=$expectedCount){
-			for ($i = 0; $i < $whichCount; $i++) {
-				
-				
-				$diffCumCalc = $whichBeans[$i]['KWH']-$expectedBeans[$i]['KWH'];
-				$diffDailyCalc = $whichBeans[$i]['harvested']-$expectedBeans[$i]['harvested'];
-				
-				$diffcolor = $this->rangeBetweenColor($diffCumCalc, $expectedBeans[0]['KWH']);
-				$diffHarvestedDayColor = $this->rangeBetweenColor($diffDailyCalc, round($expectedBeans[0]['KWH']*0.2,2));
-
-				$diff[] = array("diffCumCalc"=>sprintf("%01.2f",(float)$diffCumCalc),"diffDailyCalc"=>$diffDailyCalc,'diffColor'=>$diffcolor,'diffHarvestedColor'=>$diffHarvestedDayColor);
-			}
-		}else{
-			for ($i = 0; $i < $expectedCount; $i++) {
-				$diffCalc = $whichBeans[$i]['KWH']-$expectedBeans[$i]['KWH'];
-				$diffHarvestedCalc = $whichBeans[$i]['harvested']-$expectedBeans[$i]['harvested'];
-
-				$diff[] = array("diff"=>sprintf("%01.2f",(float)$diffCalc),"diffHar"=>$diffHarvestedCalc);
-			}
-
+			$diff[] = array("diffCumCalc"=>sprintf("%01.2f",(float)$diffCumCalc),"diffDailyCalc"=>$diffDailyCalc,'diffColor'=>$diffcolor,'diffHarvestedColor'=>$diffHarvestedDayColor);
 		}
 		return $diff;
 	}
@@ -1277,15 +1268,15 @@ class PDODataAdapter {
 		foreach ($beans as $bean){
 			//$cumPower += $bean['KWH'];
 			//echo mktime(0, 0, 0,date("m",$bean['time']),date("d",$bean['time']),date("Y",$bean['time']))."   ";
-			$points[] = array (
-					mktime(0, 0, 0,date("m",$bean['time']),date("d",$bean['time']),date("Y",$bean['time'])),
-					date("d-m-Y",$bean['time']),
-					$bean['KWH'],
-					$bean['displayKWH'],
-					$bean['harvested']
-			);
-
-
+			if (isset($bean['time'])) {
+				$points[] = array (
+						mktime(0, 0, 0,date("m",$bean['time']),date("d",$bean['time']),date("Y",$bean['time'])),
+						date("d-m-Y",$bean['time']),
+						$bean['KWH'],
+						$bean['displayKWH'],
+						$bean['harvested']
+				);
+			}
 		}
 		//number_format($cumPower,2,'.',''),
 		// if no data was found, create 1 dummy point for the graph to render
