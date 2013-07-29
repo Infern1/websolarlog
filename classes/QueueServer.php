@@ -207,22 +207,22 @@ class QueueServer {
 			}
 			$object->$methodname($parameters);
 			
-			// do we need to requeue this item?
-			if ($item->requeue) {
-				$item->time = $item->getNextTime();
-				// Save the new version to the database
-				if ($item->dbSync) {
-					$item = $this->updateDbQueueItem($item);
-				}
-				if ($item != null) {
-					$this->add($item);
-				}				
-			}
-			
 			R::commit(); // Commit the transaction
 		} catch (Exception $e) {
 			R::rollback();
 			HookHandler::getInstance()->fire("onError", "QueueItem $item->classmethod had an error: " . $e->getMessage());
+		}
+
+		// We still need to requeue the item even after an exception!
+		if ($item->requeue) {
+			$item->time = $item->getNextTime();
+			// Save the new version to the database
+			if ($item->dbSync) {
+				$item = $this->updateDbQueueItem($item);
+			}
+			if ($item != null) {
+				$this->add($item);
+			}				
 		}
 	}
 }
