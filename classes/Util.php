@@ -318,10 +318,10 @@ class Util {
     		// Unknown
     		$info = 'u';
     	}
-    	$owner = [];
-    	$group = [];
-    	$world = [];
-    	$rightsDigits = [];
+    	$owner = array();
+    	$group = array();
+    	$world = array();
+    	$rightsDigits = array();
     	
     	$rightsDigits = str_split(substr(decoct($perms), $cut));
     	
