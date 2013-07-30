@@ -961,10 +961,10 @@ class PDODataAdapter {
 				// get Which beans
 					
 				$beans = $this->getCompareBeans($invtnum,$whichMonth,$whichYear);
-				$whichBeans =$beans['line'];
+				$whichBeans = $beans['line'];
 
 				$beans = $this->getCompareBeans($invtnum,$compareMonth,$compareYear);
-				$compareBeans =$beans['line'];
+				$compareBeans = $beans['line'];
 				
 				// move compareBeans to expectedBeans, so we pass it to JSON.
 				$expectedBeans  = $compareBeans;
@@ -973,7 +973,7 @@ class PDODataAdapter {
 			}else{
 				// get Which beans				
 				$beans = $this->getCompareBeans($invtnum,$whichMonth,$whichYear);
-				$whichBeans =$beans['line'];				
+				$whichBeans = $beans['line'];				
 
 				//get expected beans
 				$expectedBeans = $this->expectedMonthProduction($invtnum,$compareMonth);
@@ -1044,15 +1044,31 @@ class PDODataAdapter {
 
 
 	public function getDiffCompare($whichBeans,$expectedBeans){
-		for ($i = 0; $i < count($whichBeans); $i++) {
-			
-			$diffCumCalc = (isset($whichBeans[$i]['KWH']) ? isset($whichBeans[$i]['KWH']) : 0) - (isset($expectedBeans[$i]['KWH']) ? $expectedBeans[$i]['KWH'] : 0);
-			$diffDailyCalc = (isset($whichBeans[$i]['harvested']) ? $whichBeans[$i]['harvested'] : 0)- (isset($expectedBeans[$i]['harvested']) ? $expectedBeans[$i]['harvested'] : 0);
-			
-			$diffcolor = $this->rangeBetweenColor($diffCumCalc, $expectedBeans[0]['KWH']);
-			$diffHarvestedDayColor = $this->rangeBetweenColor($diffDailyCalc, round($expectedBeans[0]['KWH']*0.2,2));
+		$whichCount = count($whichBeans);
+		$expectedCount = count($expectedBeans);
+		if($whichCount>=$expectedCount){
+			for ($i = 0; $i < $whichCount; $i++) {
+				$diffCumCalc = $whichBeans[$i]['KWH']-$expectedBeans[$i]['KWH'];
+				$diffDailyCalc = $whichBeans[$i]['harvested']-$expectedBeans[$i]['harvested'];
+				
+				$diffcolor = $this->rangeBetweenColor($diffCumCalc, $expectedBeans[0]['KWH']);
+				$diffHarvestedDayColor = $this->rangeBetweenColor($diffDailyCalc, round($expectedBeans[0]['KWH']*0.2,2));
 
-			$diff[] = array("diffCumCalc"=>sprintf("%01.2f",(float)$diffCumCalc),"diffDailyCalc"=>$diffDailyCalc,'diffColor'=>$diffcolor,'diffHarvestedColor'=>$diffHarvestedDayColor);
+				$diff[] = array("diffCumCalc"=>sprintf("%01.2f",(float)$diffCumCalc),"diffDailyCalc"=>$diffDailyCalc,'diffColor'=>$diffcolor,'diffHarvestedColor'=>$diffHarvestedDayColor);
+			}
+		}else{
+			for ($i = 0; $i < $expectedCount; $i++) {
+				if (isset($whichBeans[$i]) && isset($expectedBeans[$i])) {
+					$diffCumCalc = $whichBeans[$i]['KWH']-$expectedBeans[$i]['KWH'];
+					$diffDailyCalc = $whichBeans[$i]['harvested']-$expectedBeans[$i]['harvested'];
+	
+					$diffcolor = $this->rangeBetweenColor($diffCumCalc, $expectedBeans[0]['KWH']);
+					$diffHarvestedDayColor = $this->rangeBetweenColor($diffDailyCalc, round($expectedBeans[0]['KWH']*0.2,2));
+
+					$diff[] = array("diffCumCalc"=>sprintf("%01.2f",(float)$diffCumCalc),"diffDailyCalc"=>$diffDailyCalc,'diffColor'=>$diffcolor,'diffHarvestedColor'=>$diffHarvestedDayColor);
+				}
+			}
+
 		}
 		return $diff;
 	}
