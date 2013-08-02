@@ -37,7 +37,7 @@ class Updater {
     public static function getVersions($showExperimental = false, $showBeta = false) {
     	$json = file_get_contents(self::$urlReleases . "newReleases.php");
     	$jsonVersions = json_decode($json, TRUE);
-    	$versions = [];
+    	$versions = array();
     	
     	foreach($jsonVersions['stable'] as $stable){
     		if ($stable['display']) {
