@@ -2,6 +2,10 @@
 class LiveSmartMeterService {
 	public static $tbl = "liveSmartMeter";
 	
+	function __construct() {
+		HookHandler::getInstance()->add("onJanitorDbCheck", "LiveSmartMeterService.janitorDbCheck");
+	}
+	
 	/**
 	 * Save the object to the database
 	 * @param LiveSmartMeter $object
@@ -35,6 +39,11 @@ class LiveSmartMeterService {
 	public function getLiveByDevice(Device $device) {
 		$bObject = R::findOne( self::$tbl, ' invtnum = :deviceId ORDER BY time DESC LIMIT 1', array("deviceId"=>$device->id));
 		return $this->toObject($bObject);
+	}
+	
+	public function janitorDbCheck() {
+		HookHandler::getInstance()->fire("onDebug", "LiveSmartMeterService janitor DB Check");
+		R::wipe(self::$tbl);
 	}
 	
 	private function toBean($object, $bObject) {

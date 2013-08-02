@@ -66,7 +66,6 @@ class Session
     	self::setLanguage(); 
     	self::registerHooks();
     	
-    	
     	/**
     	 * Below we intialize some device to make sure the dbcheck hooks are registerd
     	 * When hooks are loaded from the database, this should be removed and fixed		
@@ -74,6 +73,8 @@ class Session
     	$deviceService = new DeviceService();
     	$energyService = new EnergyService();
     	$graphService  = new GraphService();
+    	$liveService = new LiveService();
+    	$liveSmartMeterService = new LiveSmartMeterService();
     }
     
     private static $config;

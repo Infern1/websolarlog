@@ -2,6 +2,10 @@
 class LiveService {
 	public static $tbl = "live";
 	
+	function __construct() {
+		HookHandler::getInstance()->add("onJanitorDbCheck", "LiveService.janitorDbCheck");
+	}
+	
 	/**
 	 * Save the object to the database
 	 * @param Live $object
@@ -47,6 +51,11 @@ class LiveService {
 			return null;
 		}
 		return $this->toObject($bObject);
+	}
+	
+	public function janitorDbCheck() {
+		HookHandler::getInstance()->fire("onDebug", "LiveService janitor DB Check");
+		R::wipe(self::$tbl);
 	}
 	
 	private function toBean($object, $bObject) {
