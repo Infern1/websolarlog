@@ -1,7 +1,7 @@
 <?php 
 
 Class WeatherOWM implements DeviceApi {
-	private $weatherUrl = "http://openweathermap.org/data/2.5/find?units=metrics&cnt=1";
+	private $weatherUrl = "http://openweathermap.org/data/2.5/find?units=metrics&cnt=1&mode=json";
 	private $lat;
 	private $lon;
 	
@@ -20,8 +20,8 @@ Class WeatherOWM implements DeviceApi {
 	}
 	
 	public function getData() {
-		$latlng = "lat=" . $this->lat . "&lon=" . $this->lon;
-		$url = $this->weatherUrl . "&" . $latlng;
+		$latlng = "&lat=" . $this->lat . "&lon=" . $this->lon;
+		$url = $this->weatherUrl . $latlng;
 		$result = json_decode($this->call($url));
 		$weather = new Weather();
 		$weather->deviceId = -1;
