@@ -64,7 +64,7 @@ class PvOutputAddon {
 	                'v2' => $GPtot, // Power Generation (Watts)
 	                //'v3' => '10000', // Power Consumption (Watt hours)
 	                //'v4' => '2000', // Energy Consumption (Watts)
-	                'v5' => $temp, // Temperature (Celsius)
+	                'v5' => number_format($temp, 2), // Temperature (Celsius)
 	                'v6' => $GV, // Voltage (volts)
 					'c1' => '1', // Cumulative
 					
