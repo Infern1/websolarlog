@@ -4,19 +4,21 @@ class DeviceHandler {
 		$item = $args[0];
 		$device = $this->getFreshDevice($args[1]);
 
-		switch ($device->type) {
-			case "production":
-				ProductionDeviceHandler::handleLive($item, $device);
-				break;
-			case "metering":
-				MeteringDeviceHandler::handleLive($item, $device);
-				break;
-			case "weather":
-				WeatherDeviceHandler::handleLive($item, $device);
-				break;
-			default:
-				echo("DeviceType " . $device->type . " does not support handle live \n");
-				break;
+		if ($device->active) {
+			switch ($device->type) {
+				case "production":
+					ProductionDeviceHandler::handleLive($item, $device);
+					break;
+				case "metering":
+					MeteringDeviceHandler::handleLive($item, $device);
+					break;
+				case "weather":
+					WeatherDeviceHandler::handleLive($item, $device);
+					break;
+				default:
+					echo("DeviceType " . $device->type . " does not support handle live \n");
+					break;
+			}
 		}
 	}
 	
@@ -24,20 +26,22 @@ class DeviceHandler {
 		$item = $args[0];
 		$device = $this->getFreshDevice($args[1]);
 		
-		switch ($device->type) {
-			case "production":
-				ProductionDeviceHandler::handleHistory($item, $device);
-				break;
-			case "metering":
-				MeteringDeviceHandler::handleHistory($item, $device);
-				break;
-			case "weather":
-				WeatherDeviceHandler::handleHistory($item, $device);
-				break;
-			default:
-				echo("DeviceType " . $device->type . " does not support handle history \n");
-				break;
-		}			
+		if ($device->active) {		
+			switch ($device->type) {
+				case "production":
+					ProductionDeviceHandler::handleHistory($item, $device);
+					break;
+				case "metering":
+					MeteringDeviceHandler::handleHistory($item, $device);
+					break;
+				case "weather":
+					WeatherDeviceHandler::handleHistory($item, $device);
+					break;
+				default:
+					echo("DeviceType " . $device->type . " does not support handle history \n");
+					break;
+		}
+		}
 	}
 	
 	public function handleAllDeviceHistory($args) {
@@ -51,19 +55,21 @@ class DeviceHandler {
 		$item = $args[0];
 		$device = $this->getFreshDevice($args[1]);
 		
-		switch ($device->type) {
-			case "production":
-				ProductionDeviceHandler::handleDeviceHistory($item, $device);
-				break;
-			case "metering":
-				MeteringDeviceHandler::handleDeviceHistory($item, $device);
-				break;
-			case "weather":
-				WeatherDeviceHandler::handleDeviceHistory($item, $device);
-				break;
-			default:
-				echo("DeviceType " . $device->type . " does not support handle device history \n");
-				break;
+		if ($device->active) {
+			switch ($device->type) {
+				case "production":
+					ProductionDeviceHandler::handleDeviceHistory($item, $device);
+					break;
+				case "metering":
+					MeteringDeviceHandler::handleDeviceHistory($item, $device);
+					break;
+				case "weather":
+					WeatherDeviceHandler::handleDeviceHistory($item, $device);
+					break;
+				default:
+					echo("DeviceType " . $device->type . " does not support handle device history \n");
+					break;
+			}
 		}
 	}
 
@@ -71,19 +77,21 @@ class DeviceHandler {
 		$item = $args[0];
 		$device = $this->getFreshDevice($args[1]);
 		
-		switch ($device->type) {
-			case "production":
-				ProductionDeviceHandler::handleEnergy($item, $device);
-				break;
-			case "metering":
-				MeteringDeviceHandler::handleEnergy($item, $device);
-				break;
-			case "weather":
-				WeatherDeviceHandler::handleEnergy($item, $device);
-				break;
-			default:
-				echo("DeviceType " . $device->type . " does not support handle energy \n");
-				break;
+		if ($device->active) {
+			switch ($device->type) {
+				case "production":
+					ProductionDeviceHandler::handleEnergy($item, $device);
+					break;
+				case "metering":
+					MeteringDeviceHandler::handleEnergy($item, $device);
+					break;
+				case "weather":
+					WeatherDeviceHandler::handleEnergy($item, $device);
+					break;
+				default:
+					echo("DeviceType " . $device->type . " does not support handle energy \n");
+					break;
+			}
 		}			
 	}
 
@@ -91,40 +99,44 @@ class DeviceHandler {
 		$item = $args[0];
 		$device = $this->getFreshDevice($args[1]);
 		
-		switch ($device->type) {
-			case "production":
-				ProductionDeviceHandler::handleInfo($item, $device);
-				break;
-			case "metering":
-				MeteringDeviceHandler::handleInfo($item, $device);
-				break;
-			case "weather":
-				WeatherDeviceHandler::handleInfo($item, $device);
-				break;
-			default:
-				echo("DeviceType " . $device->type . " does not support handle info \n");
-				break;
-		}			
+		if ($device->active) {
+			switch ($device->type) {
+				case "production":
+					ProductionDeviceHandler::handleInfo($item, $device);
+					break;
+				case "metering":
+					MeteringDeviceHandler::handleInfo($item, $device);
+					break;
+				case "weather":
+					WeatherDeviceHandler::handleInfo($item, $device);
+					break;
+				default:
+					echo("DeviceType " . $device->type . " does not support handle info \n");
+					break;
+			}
+		}
 	}
 
 	public function handleAlarm($args) {
 		$item = $args[0];
 		$device = $this->getFreshDevice($args[1]);
 		
-		switch ($device->type) {
-			case "production":
-				ProductionDeviceHandler::handleAlarm($item, $device);
-				break;
-			case "metering":
-				MeteringDeviceHandler::handleAlarm($item, $device);
-				break;
-			case "weather":
-				WeatherDeviceHandler::handleAlarm($item, $device);
-				break;
-			default:
-				echo("DeviceType " . $device->type . " does not support handle alarm \n");
-				break;
-		}			
+		if ($device->active) {
+			switch ($device->type) {
+				case "production":
+					ProductionDeviceHandler::handleAlarm($item, $device);
+					break;
+				case "metering":
+					MeteringDeviceHandler::handleAlarm($item, $device);
+					break;
+				case "weather":
+					WeatherDeviceHandler::handleAlarm($item, $device);
+					break;
+				default:
+					echo("DeviceType " . $device->type . " does not support handle alarm \n");
+					break;
+			}
+		}
 	}
 
 	/**
