@@ -40,9 +40,11 @@ class CoreAddon {
 		
 		// Get the current live object
 		$dbLive = $this->liveService->getLiveByDevice($device);
+		if ($dbLive != null) {
+			$live->id = $dbLive->id;
+		}
 	
 		// Save the live information
-		$live->id = $dbLive->id;
 		$this->liveService->save($live);
 		HookHandler::getInstance()->getInstance()->fire("newLiveData", $device, $live);
 	
