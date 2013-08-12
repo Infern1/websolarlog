@@ -1526,10 +1526,10 @@ function init_update(experimental,beta,scrollTo) {
                     
                     if(!scrollTo){
                     	//console.log('aaaa');
-                    	WSL.scrollTo({element : '#navigation',time : 0, offset : 0});
+                    	WSL.scrollTo({element : '#navigation',time : '', offset : 0});
                     }else{
                     	//console.log('vvv'+scrollTo)
-                    	WSL.scrollTo({element : scrollTo,time : 0, offset : 0});
+                    	WSL.scrollTo({element : scrollTo,time : '', offset : 0});
                     }
                     
                     $('#btnUpdateSubmit').attr('disabled', true);
