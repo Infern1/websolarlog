@@ -913,7 +913,7 @@ function diagnostics($adapter) {
 			$stat = stat($SDBFilename);
 			$result['db']['exists']=true;
 			$result['db']['timeDiff'] = time()-$stat['ctime'];
-			($result['db']['timeDiff'] >= 30) ? $result['sdb']['dbChanged']=false : $result['sdb']['dbChanged']=true;
+			($result['db']['timeDiff'] >= 30) ? $result['db']['dbChanged']=false : $result['db']['dbChanged']=true;
 		
 			$result['db']['atime']=$stat['atime'];
 			$result['db']['mtime']=$stat['mtime'];
