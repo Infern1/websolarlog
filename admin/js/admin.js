@@ -1264,10 +1264,47 @@ function load_graph(graphId) {
                         });
                 });
                 
-                $('.saveAxe').on('click',function(){
+                $('.saveSerie').bind('click',function(){
+                	var postdata = $(this).closest('form').serialize();
+
+            		WSL.connect.postJSON(
+            				"../api.php/Graph/saveSerie", 
+            				postdata, 
+            				function(){console.log('success')}
+            				);
+            		
+                	//$(this).closest('form').submit();
+                	$.ajax({
+                        type: "POST",
+                        url: "../api.php/Graph/serie/"+postData[''],
+                        success: function(response){
+            				if (response.type == 'axe'){
+            					if(response.success == true) {
+			    					$.pnotify({
+			    						title: 'Succes',
+			    				        text: 'Axe removed!',
+			    				        type: 'success'                                    
+			    					});     
+			    					init_graphs(graphId);
+			    					window.location.hash = '#graphs';
+			    				} else {
+			    					$.pnotify({
+			    				        title: 'Error',
+			    				        text: 'Axe not removed...',
+			    				        type: 'error'
+			    				    });      
+			    				}
+            				}
+                        }
+                        });
+                });
+                
+                $('.saveAxe').bind('click',function(e){
                 	
-                	var postData = $(this).closest('form').submit().serialize();
-                	//console.log(postData);
+                	e.preventDefault(); 
+                	$(this).closest('form').serialize();
+                	
+                	//$(this).closest('form').submit();
                 	$.ajax({
                         type: "POST",
                         url: "../api.php/Graph/axe/9",

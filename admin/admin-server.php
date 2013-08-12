@@ -755,7 +755,7 @@ switch ($settingstype) {
 		}
 		break;
 	case 'test':
-		$data['test'] = diagnostics();
+		$data['test'] = diagnostics($adapter);
 		break;
 	case 'graphs':
 		$graphService = new GraphService();
@@ -861,11 +861,12 @@ function updaterJsonFile($state, $info, $percentage) {
  * It also returns the available drivers/extensions/classes, version check, DB info, log paths etc... 
  * @return array
  */
-function diagnostics() {
-	$config = Session::getConfig();
+function diagnostics($adapter) {
+	$config = Session::getConfig();	
 	$result = array();
 	$result['sqlite'] = false;
 	$result['available_drivers'] = PDO::getAvailableDrivers();
+	$result['db']['sqlEngine'] = $adapter->sqlEngine;
 	// Check if sql lite is installed
 	foreach ($result['available_drivers'] as $driver) {
 		if ($driver == 'sqlite') {
@@ -902,21 +903,30 @@ function diagnostics() {
 	$result['commands']['stop'] = $basePath.'scripts/./wsl.sh stop';
 	$result['commands']['restart'] = $basePath.'scripts/./wsl.sh restart';
 	$result['commands']['status'] = $basePath.'scripts/./wsl.sh status';
-		
-	$SDBFilename = Session::getBasePath().'/database/wsl.sdb';
-	$result['dbRights'] = Util::file_perms($SDBFilename);
-	if (file_exists($SDBFilename)) {
-		$stat = stat($SDBFilename);
-		$result['sdb']['exists']=true;
-		$result['sdb']['timeDiff'] = time()-$stat['ctime'];
-		($result['sdb']['timeDiff'] >= 30) ? $result['sdb']['dbChanged']=false : $result['sdb']['dbChanged']=true;
 	
-		$result['sdb']['atime']=$stat['atime'];
-		$result['sdb']['mtime']=$stat['mtime'];
-		$result['sdb']['ctime']=$stat['ctime'];
-	} else {
-		$result['sdb']['exists']=false;
+	
+	$result['db']['dsn'] = $config->dbDSN;
+	if ($result['db']['sqlEngine'] == 'sqlite') {
+		$SDBFilename = Session::getBasePath().'/database/wsl.sdb';
+		$result['dbRights'] = Util::file_perms($SDBFilename);
+		if (file_exists($SDBFilename)) {
+			$stat = stat($SDBFilename);
+			$result['db']['exists']=true;
+			$result['db']['timeDiff'] = time()-$stat['ctime'];
+			($result['db']['timeDiff'] >= 30) ? $result['sdb']['dbChanged']=false : $result['sdb']['dbChanged']=true;
+		
+			$result['db']['atime']=$stat['atime'];
+			$result['db']['mtime']=$stat['mtime'];
+			$result['db']['ctime']=$stat['ctime'];
+		} else {
+			$result['db']['exists']=false;
+		}
 	}
+	
+	// TODO
+	// needs some standard DB testing;
+	// last live record, could we connect, etc...
+	
 	
 	// Try to get the sqlite version if installed
 	if ($result['sqlite'] === true) {

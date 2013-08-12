@@ -39,20 +39,27 @@ or atleast check the running state with:<br>
 </form>
 <form>
 <fieldset>
-    <legend>DB state:</legend>
+    <legend>DB {{data.test.db.sqlEngine}}:</legend>
+    	Let take a look at your <font style="color:#4B8902">{{data.test.db.sqlEngine}}</font> Database;<br>
+    	<strong>DSN:</strong><br>
+    	We use the following DSN to talk to the DB, please check if this looks good to you;
+    	{{data.test.db.dsn}}<br>
+    	
+    	{{#if_eq data.test.db.sqlEngine compare="sqlite"}} 
+    	<br>
     	<strong>Exists?</strong><br>
-    	<label>Does the SQLite DB exists?</label>
-    	{{#if data.test.sdb.exists}}
+    	<label>Does the SQLite DB exists?</label><br>
+    	{{#if data.test.db.exists}}
     	It looks like the DB exist<br /><font style="color:#4B8902">This is good.<br></font>
     	{{else}}
-    	It looks like the DB exist<font style="color:#FF0000">This is not good.<br></font>
+    	It looks like the DB doesn't exist<br /><font style="color:#FF0000">This is not good.<br></font>
     	{{/if}}
     	<br>
     	<strong>Is the DB changing?</strong><br>
 		<label>Currenttime:</label>{{timestampDateFormat data.test.currentTime format="DD-MM-YYYY HH:mm:ss "}}<br />
-		<label>last change:</label>{{timestampDateFormat data.test.sdb.ctime format="DD-MM-YYYY HH:mm:ss "}}<br />
-		<label>DB changed(<10 sec):</label>{{#if data.test.sdb.dbChanged}}Within the last 10 sec.{{else}}Longer then 10 sec. ago.{{/if}}<br />
-		{{#if data.test.sdb.dbChanged}}
+		<label>last change:</label>{{timestampDateFormat data.test.db.ctime format="DD-MM-YYYY HH:mm:ss "}}<br />
+		<label>DB changed(<10 sec):</label>{{#if data.test.db.dbChanged}}Within the last 10 sec.{{else}}Longer then 10 sec. ago.{{/if}}<br />
+		{{#if data.test.db.dbChanged}}
     	<font style="color:#4B8902">This is good.<br>
     	It looks like the WebSolarLog process is running.<br>
     	See above for the start/stop/restart/status commands.<br>
@@ -83,6 +90,10 @@ or atleast check the running state with:<br>
 			<font style="color:#FF0000">It looks like the webserver user has <strong>insufficient rights</strong> on the database</font>
 		{{/if_gteq}}
 		<div>
+		{{else}}
+		<br>
+		<font style="color:#FF0000">No tests available for this DB engine... coming soon...</font>
+		{{/if_eq}}
 		<br />
 </fieldset>
 </form>
