@@ -77,9 +77,25 @@ class QueueItem {
 	}
 	
 	public function toString() {
+		$arguments = "";
+		if (is_array($this->arguments)) {
+			foreach ($this->arguments as $argument) {
+				$arguments .= "[";
+				if ($argument instanceof Device) {
+					$arguments .= "{id:" . $argument->id . ",name:" . $argument->name . "}";
+				} else {
+					$argument .= "{". print_r($argument, true) . "}";
+				}
+				$arguments .= "]";
+			}
+			
+		} else {
+			$arguments = print_r($this->arguments, true);
+		}
+		
 		return  $this->classmethod . " time=" . $this->time . " requeueTime=" . 
 				$this->requeueTime . " requeue=" . $this->requeue . " dbsync=" . $this->dbSync .
-		        " arguments=" . print_r($this->arguments, true);
+		        " arguments=" . $arguments;
 	}
 }
 ?>
