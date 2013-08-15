@@ -20,8 +20,12 @@ class QueueServer {
 	
 	public static function printDebugInfo() {
 		$items = self::getInstance()->queue;
+
+		// Get the memory values
+		$memory = memory_get_usage() / 1024 / 1024; // calculate mb
+		$memory_string = number_format($memory, 2);
 		
-		HookHandler::getInstance()->fire("onDebug", " QueueServer: current memory usage = " . $memory_string . "mb queue size: " . count($this->queue));
+		HookHandler::getInstance()->fire("onDebug", " QueueServer: current memory usage = " . $memory_string . "mb queue size: " . count($items));
 		foreach ($items as $queueItem) {
 			HookHandler::getInstance()->fire("onDebug", "QueueServer item: " . $queueItem->toString());
 		}
@@ -67,9 +71,6 @@ class QueueServer {
 				}
 				$itemsAtOnceCounter++;
 			}
-			// Sync as we have reached the offset
-			$memory = memory_get_usage() / 1024 / 1024; // calculate mb
-			$memory_string = number_format($memory, 2); 
 			
 			// sync with the database
 			$this->sync();
