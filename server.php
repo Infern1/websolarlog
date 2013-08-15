@@ -5,22 +5,22 @@ require 'classes/classloader.php';
 Session::initialize();
 
 try {
-	if (PeriodHelper::isPeriodJob("10MinJob", 10)) {
-    	HookHandler::getInstance()->fire("on10MinJob");
-    }
+	if (PeriodHelper::isPeriodJob("inActiveJob", 30)) {
+		HookHandler::getInstance()->fire("onInActiveJob");
+	}
 
 	// Retrieve action params
 	$method = $_GET['method'];
-	
+
 	// Set headers for JSON response
 	header('Cache-Control: no-cache, must-revalidate');
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 	header('Content-type: application/json');
-	
+
 	// Initialize return array
 	$dataAdapter = PDODataAdapter::getInstance();
 	$config = Session::getConfig();
-	
+
 	$data = array();
 	$devicenum = Common::getValue('devicenum', 0);
 	$page = Common::getValue('page', 0);
@@ -36,36 +36,41 @@ try {
 			$tabs[] = array( "graphName" => "Yesterday","translation" => _("Yesterday"),"position" => "1","active" => ($page == "yesterday") ? 'true' : 'false');
 			$tabs[] = array( "graphName" => "Month","translation" => _("Month"),"position" => "2","active" => ($page == "month") ? 'true' : 'false');
 			$tabs[] = array( "graphName" => "Year","translation" => _("Year"),"position" => "3","active" => ($page == "year") ? 'true' : 'false');
-			
+				
 			$options = array();
 			$options[] =array( "value" => "Today","name"=> _("Day"));
 			$options[] =array( "value" => "Week","name"=> _("Week"));
 			$options[] =array( "value" => "Month","name"=> _("Month"));
 			$options[] =array( "value" => "Year","name"=> _("Year"));
-			
+				
 			$data['tabsPosition'] =  Common::searchMultiArray($tabs, 'active', 'true');
 			$lang = array();
 			$lang['date'] = _('date');
 			$lang['periode'] = _('periode');
 			$lang['previous'] = _('previous');
 			$lang['next'] = _('next');
-			
+				
 			$data['lang'] = $lang;
 			$data['tabs'] = $tabs;
 			$data['options'] = $options;
-	
+
 			break;
+		case 'setLanguage':
+			$lang = Common::getValue("language",explode(".", setlocale(LC_CTYPE, 0))[0]);
+			$_SESSION['WSL_LANGUAGE'] = $lang;
+			Session::setLanguage();
 		case 'getLanguages':
 			$languages = array();
-			if ($handle = opendir('languages')) {
+			if ($handle = opendir('locale')) {
 				while (false !== ($entry = readdir($handle))) {
 					if ($entry != "." && $entry != ".." ) {
-						$languages[] = str_replace(".php", "", $entry);
+						$languages[] = $entry;
 					}
 				}
 			}
 			$data['languages'] = $languages;
-			$data['currentlanguage'] = $user_lang;
+			//$data['currentlanguage'] = $user_lang;
+			$data['currentlanguage'] = explode(".", setlocale(LC_CTYPE, 0))[0];
 			break;
 		case 'analyticsSettings':
 			$data['googleSuccess'] = false;
@@ -80,7 +85,7 @@ try {
 				$data['piwikSiteId'] = $config->piwikSiteId;
 			}
 			break;
-			
+				
 		case 'getDevices':
 			$devices = array();
 			foreach ($config->devices as $device){
@@ -91,13 +96,13 @@ try {
 					);
 				}
 			}
-			
+				
 			$slimConfig['devices'] = $devices;
 			$data['slimConfig'] = $slimConfig;
 			break;
 		case 'getMisc':
 			$eventService = new EventService();
-			
+				
 			$serverUptime = Util::serverUptime();
 
 			$slimConfig = array();
@@ -113,39 +118,39 @@ try {
 				if (count($info) == 0) {
 					$info = null;
 				}
-				
+
 				if($device->type=="production"){
 					foreach ($device->panels as $panel){
 						$panels[] = array(
-							'id'=>$panel->id,
-							'description'=>$panel->description,
-							'roofOrientation'=>$panel->roofOrientation,
-							'roofPitch'=>$panel->roofPitch,
-							'amount'=>$panel->amount,
-							'wp'=>$panel->wp,
-							'totalWp'=>$panel->amount*$panel->wp
+								'id'=>$panel->id,
+								'description'=>$panel->description,
+								'roofOrientation'=>$panel->roofOrientation,
+								'roofPitch'=>$panel->roofPitch,
+								'amount'=>$panel->amount,
+								'wp'=>$panel->wp,
+								'totalWp'=>$panel->amount*$panel->wp
 						);
 					}
 				}
 				$devices[] = array(
-					'name'=>$device->name,
-					'type'=>$device->type,
-					'deviceApi'=>$device->deviceApi,
-					'pvoutputWSLTeamMember'=>$device->pvoutputWSLTeamMember,
-					'pvoutputSystemId'=>$device->pvoutputSystemId,
-					'pvoutputEnabled'=>$device->pvoutputEnabled,
-					'expectedKWH'=>$device->expectedkwh,
-					'plantPower'=>$device->plantpower,
-					'panels'=>$panels,
-					'events'=>array(
-							'notice'=>$eventService->getArrayByDeviceAndType($device, 'notice'),
-							'alarm'=>$eventService->getArrayByDeviceAndType($device, 'alarm'),
-							'info'=>$info
-					)
+						'name'=>$device->name,
+						'type'=>$device->type,
+						'deviceApi'=>$device->deviceApi,
+						'pvoutputWSLTeamMember'=>$device->pvoutputWSLTeamMember,
+						'pvoutputSystemId'=>$device->pvoutputSystemId,
+						'pvoutputEnabled'=>$device->pvoutputEnabled,
+						'expectedKWH'=>$device->expectedkwh,
+						'plantPower'=>$device->plantpower,
+						'panels'=>$panels,
+						'events'=>array(
+								'notice'=>$eventService->getArrayByDeviceAndType($device, 'notice'),
+								'alarm'=>$eventService->getArrayByDeviceAndType($device, 'alarm'),
+								'info'=>$info
+						)
 				);
 			}
 			$slimConfig['devices'] = $devices;
-			
+				
 			$lang = array();
 			$lang['Time'] = _('Time');
 			$lang['Inv'] = _('Inv');
@@ -184,35 +189,35 @@ try {
 			$lines['graph'] = null;
 			$dtz = new DateTimeZone($config->timezone);
 			$timezoneOffset = new DateTime('now', $dtz);
-			
+				
 			//$lines = $dataAdapter->getGraphDayPoint($devicenum, $type, $date);
-			
+				
 			$data['timezoneOffset'] = $dtz->getOffset( $timezoneOffset )/3600;
-			
+				
 
 			$slimConfig = array();
 			$slimConfig['lat'] = number_format($config->latitude,2,'.','');
 			$slimConfig['long'] = number_format($config->longitude,2,'.','');
 			$util = new Util();
-			
+				
 			$data['sunInfo'] = $util->getSunInfo($config, $date);
 			foreach ($config->devices as $device){
 				if($device->type=='production'){
 					foreach ($device->panels as $panel){
 						$panels[] = array(
-							'roofOrientation'=>$panel->roofOrientation,
-							'roofPitch'=>$panel->roofPitch,
-							'totalWp'=>$panel->amount*$panel->wp
+								'roofOrientation'=>$panel->roofOrientation,
+								'roofPitch'=>$panel->roofPitch,
+								'totalWp'=>$panel->amount*$panel->wp
 						);
 					}
 					$inverters[] = array(
-						'plantPower'=>$device->plantpower,
-						'panels'=> (isset($panels) ? $panels : 0)
+							'plantPower'=>$device->plantpower,
+							'panels'=> (isset($panels) ? $panels : 0)
 					);
 				}
 			}
 			$slimConfig['inverters'] = $inverters;
-			
+				
 			$graphService = new GraphService();
 			$dayData = new DayDataResult();
 			$options['deviceNum'] = $devicenum;
@@ -220,10 +225,10 @@ try {
 			$options['date'] = $date;
 			$options['mode'] = 'frontend';
 			$data['graph'] = $graphService->loadGraph($options);
-			
+				
 			$dayData = new DayDataResult();
 			$dayData->graph = $lines['graph'];
-			
+				
 			$dayData->success = true;
 			$lang = array();
 			$lang['cumPowerW'] = _('cum. Power (W)');
@@ -248,19 +253,19 @@ try {
 			$lang['cumulative'] = _('cumulative (W)');
 			$lang['generated'] = _('generated');
 			$lang['max'] = _('max');
-			
+				
 			$data['lang'] = $lang;
 			$data['dayData'] = $dayData;
 			break;
 		case 'getDetailsGraph':
 			$lines = $dataAdapter->getDetailsHistory($devicenum,$date);
-			
+				
 			$dayData = new DayDataResult();
 			$dayData->data = $lines['details'];
 			$dayData->labels = $lines['labels'];
 			$dayData->switches = $lines['switches'];
 			$dayData->max = $lines['max'];
-	
+
 			$lang = array();
 			$lang['showHideGroups'] = _('Show or hide graph groups:');
 			$lang['P'] = _('Power');
@@ -270,7 +275,7 @@ try {
 			$lang['R'] = _('Ratio');
 			$lang['T'] = _('Temperature');
 			$lang['E'] = _('Efficiency');
-	
+
 			$data['lang'] = $lang;
 			$data['dayData'] = $dayData;
 			break;
@@ -285,10 +290,10 @@ try {
 			}else{
 				$options[] =array( "value" => "Today","name"=> _("Day"));
 			}
-	
+
 			foreach ($config->devices as $device){
 				//if($device->graphOnFrontend){
-					$data['devices'][] = array('id'=>$device->id,'name'=>$device->name);
+				$data['devices'][] = array('id'=>$device->id,'name'=>$device->name);
 				//}
 			}
 			$lang = array();
@@ -316,13 +321,13 @@ try {
 			$dayData->success = true;
 			$data['lang'] = $lang;
 			$data['dayData'] = $dayData;
-			
+				
 			break;
 		case 'getProductionGraph':
 			(!$year)?$year=date("Y"):$year=$year;
 			(!$devicenum)?$devicenum=1:$devicenum=$devicenum;
 			$lines = $dataAdapter->getYearSumPowerPerMonth($devicenum, $year);
-	
+
 			$dayData = new DayDataResult();
 			$dayData->data = $lines['energy']->points;
 			$dayData->ticks = (isset($lines['energy']->ticks)) ? $lines['energy']->ticks : 10;
@@ -336,7 +341,7 @@ try {
 			$data['dayData'] = $dayData;
 			break;
 		case 'getPageYearValues':
-			
+				
 			$maxEnergy=array();
 			$energy=array();
 			$maxPower=array();
@@ -362,7 +367,7 @@ try {
 			$lang['watt'] 			= _("watt");
 			$lang['Year']			= _("Year");
 			$lang['valuesGroupedByMonthYearText'] = _("The values below are grouped by Month of the selected Year");
-	
+
 			$data['lang'] = $lang;
 			$dayData = new DayDataResult();
 			$dayData->data = array(
@@ -372,28 +377,28 @@ try {
 					"maxEnergy"=>$maxEnergy,
 			);
 			$dayData->success = true;
-	
+
 			$data['yearData'] = $dayData;
 			break;
 		case 'getPageMonthValues':
-			$dayData = array();			
+			$dayData = array();
 			foreach ($config->devices as $device){
 				if ($device->type == "production") {
 					$maxPower = $dataAdapter->getMonthMaxPowerPerDay($device->id, $date);
 					$maxEnergy = $dataAdapter->getMonthEnergyPerDay($device->id, $date);
-					$minMaxEnergyMonth = $dataAdapter->getMaxMinEnergyMonth($device->id,$date);					
-				
+					$minMaxEnergyMonth = $dataAdapter->getMaxMinEnergyMonth($device->id,$date);
+
 					$deviceData = array(
-						"maxPower"=>$maxPower,
-						"maxEnergy"=>$maxEnergy,
-						"minMaxEnergy"=>$minMaxEnergyMonth,
-						"device"=>$device
+							"maxPower"=>$maxPower,
+							"maxEnergy"=>$maxEnergy,
+							"minMaxEnergy"=>$minMaxEnergyMonth,
+							"device"=>$device
 					);
-					
+						
 					$dayData[] = $deviceData;
 				}
 			}
-	
+
 			$lang = array();
 			$lang['today'] 			= _("Today");
 			$lang['maxGridPower'] 	= _("Max Grid Power");
@@ -408,7 +413,7 @@ try {
 			$lang['Month']			= _("Month");
 			$lang['month']			= strtolower(_("Month"));
 			$lang['valuesGroupedByDayMonthText'] = _("The values below are grouped by Day of the selected Month");
-			
+				
 			$data['success'] = true;
 			$data['lang'] = $lang;
 			$data['monthData'] = $dayData;
@@ -416,7 +421,7 @@ try {
 		case 'getPageTodayValues':
 			$maxEnergy = array();
 			$maxPower = array();
-			
+				
 			foreach ($config->devices as $device){
 				if($device->type == 'production'){
 					$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($device->id);
@@ -431,7 +436,7 @@ try {
 			);
 			$dayData->success = true;
 			$data['dayData'] = $dayData;
-			
+				
 			$lang = array();
 			$lang['today'] 			= _("Today");
 			$lang['maxGridPower'] 	= _("Max Grid Power");
@@ -453,34 +458,34 @@ try {
 			$lang['to'] 			= _("to");
 			$lang['expected'] 		= _("expected");
 			$data['lang'] = $lang;
-			
+				
 			foreach ($config->devices as $device){
 				if($device->type == "production"){
 					$inverter[] = array("name"=>$device->name,"id"=>$device->id);
 				}
 			}
-			
+				
 			$dayData = new DayDataResult();
 			$dayData->month = $monthYear['month'];
 			$dayData->year = $monthYear['year'];
 			$dayData->inverters = $inverter;
-	
+
 			$dayData->success = true;
 			$data['dayData'] = $dayData;
-			
+				
 			break;
 		case 'getCompareGraph':
 			$whichMonth = Common::getValue('whichMonth', 0);
 			$whichYear = Common::getValue('whichYear', 0);
 			$compareMonth = Common::getValue('compareMonth', 0);
 			$compareYear = Common::getValue('compareYear', 0);
-			
+				
 			foreach ($config->devices as $device){
 				$inverter[] = array("name"=>$device->name,"id"=>$device->id);
 			}
-	
+
 			$lines = $dataAdapter->getCompareGraph($devicenum, $whichMonth,$whichYear,$compareMonth,$compareYear);
-			
+				
 			$lang = array();
 			$lang['today'] = _("Today");
 			$lang['maxGridPower'] = _("Max Grid Power");
@@ -503,9 +508,9 @@ try {
 			$dayData = new DayDataResult();
 			$dayData->inverters = $inverter;
 			$dayData->data = array(
-				"which"=>$lines['whichBeans']->points,
-				"compare"=>$lines['compareBeans']->points,
-				"diff"=>$lines['whichCompareDiff']
+					"which"=>$lines['whichBeans']->points,
+					"compare"=>$lines['compareBeans']->points,
+					"diff"=>$lines['whichCompareDiff']
 			);
 			$dayData->type = $lines['type'];
 			$dayData->success = true;
@@ -545,13 +550,13 @@ try {
 			$lang['KWHKWP']			= _("kWh/kWp");
 			$lang['allFiguresAreInKWH']= _("* All figures are in kWh");
 			$lang['overallTotalText']= _("** Incl. initial kWh");
-			
+				
 			$lang['offline'] = _("offline");
 			$lang['online'] = _("online");
 			$lang['standby'] = _("standby");
-			
+				
 			$data['lang'] = $lang;
-			
+				
 			break;
 		case 'getPageIndexLiveValues':
 			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
@@ -566,7 +571,7 @@ try {
 			$data['inverters'] = $indexValues['inverters'];
 			$data['maxGauges'] = $gaugeMaxPower;
 			$data['sumInverters'] = $indexValues['sum'];
-			
+				
 			break;
 		case 'getPageIndexBlurLiveValues':
 			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
@@ -591,7 +596,6 @@ try {
 			$lang['allFiguresAreInKWH']= _("* All figures are in kWh");
 			$lang['overallTotalText']= _("** Incl. initial kWh");
 
-				
 			$indexValues = $dataAdapter->readPageIndexData($config);
 			$data['IndexValues'] = $indexValues;
 			$data['lang'] = $lang;
@@ -610,7 +614,7 @@ try {
 		case "kostal":
 			$kostal = new KostalPiko('python /home/marco/piko/Piko_dev.py --host=hansenmieke.dlinkddns.com --port=9996', '-csv -q', $port, $comoption, false);
 			$data['live'] = $kostal->getLiveData();
-			
+				
 			break;
 		case "save-graph":
 			$graph = new Graph();
@@ -626,9 +630,9 @@ try {
 			//var_dump($versions);
 			break;
 		case "graph";
-		
-/*
-		$axe = R::dispense('axe',2);
+
+		/*
+		 $axe = R::dispense('axe',2);
 		//var_dump($axe);
 		$axe[0]->name = 'as1';
 		$axe[0]->options = 'json{label:1}';
@@ -637,47 +641,47 @@ try {
 		R::storeAll($axe);
 		var_dump($axe);
 		//$axe = R::graph($axe);*/
-		
-/*
-		$serie = R::dispense('serie',3);
+
+		/*
+		 $serie = R::dispense('serie',3);
 		$serie[0]->name = 'serie1';
 		$serie[0]->options = 'json{label:1}';
 
 		$graph = R::load('graph',1);
 		if(!$graph){
-			$graph = R::dispense('graph');
+		$graph = R::dispense('graph');
 		}
-*/
-		
+		*/
+
 		//$graph->sharedSerie[] = $serie;
 		//$graph->sharedAxe[] = $axe;
 		//R::store($graph);
-		
+
 		/*
-		$graph = R::load('graph',1);
+		 $graph = R::load('graph',1);
 		//var_dump($graph);
 		$series = $graph->sharedSerie;
 		$axes = $graph->sharedAxe;
-		
+
 		var_dump($series);
 		echo "<br>\r\n";
 		var_dump($axes);
 		echo "<br>\r\n";
 		var_dump($graph->ownGraph = $graph);
 		//var_dump($sharedGraph);
-*/
-		
+		*/
+
 		GraphService::installGraph();
-		
-			break;
+
+		break;
 		case "testen":
 			//$kostal = new KostalPiko('python /home/marco/piko/Piko_dev.py --host=hansenmieke.dlinkddns.com --port=9996 -csv -q', $address, $port, $comoption, $debug);
 			//echo $kostal->getLiveData();
-			break;			
+			break;
 		case "phpinfo":
 			$phpinfo = new SMASpotWSL('/home/pi/smaspot/bin/Release/./SMAspot', '/home/pi/smaspot/bin/Release/test.cfg', '', '', false);
 			//var_dump($phpinfo->phpInfo());
-			
+				
 			break;
 		default:
 			break;
@@ -688,7 +692,7 @@ try {
 	$errorMessage = $e->getMessage();
 	// log ErrorMessage
 	HookHandler::getInstance()->fire("onDebug",$errorMessage);
-	
+
 	// set JSON responses
 	$data = array();
 	$data["success"] = false;

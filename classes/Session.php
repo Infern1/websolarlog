@@ -240,6 +240,7 @@ class Session
     	$hookHandler->add("newLiveData", "BasicChecksAddon.onNewLive");
     	$hookHandler->add("onNoLiveData", "BasicChecksAddon.onNoLiveData");
     	$hookHandler->add("onRegularJob", "BasicChecksAddon.on10MinJob");
+    	$hookHandler->add("onInActiveJob", "BasicChecksAddon.onInActiveJob");
     	
     	// MailAddon
     	$hookHandler->add("onError", "MailAddon.onError");

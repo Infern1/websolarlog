@@ -34,6 +34,7 @@
 			  <b class="spiffy3"></b>
 			  <b class="spiffy2"><b></b></b>
 			  <b class="spiffy1"><b></b></b></b>
+			  <div id="languageSelect" style="display: none"></div>
 			</div>
 		</div>
 		<!-- END Header -->

@@ -18,6 +18,15 @@ class QueueServer {
 		self::getInstance()->removeDbQueueItem($item);
 	}
 	
+	public static function printDebugInfo() {
+		$items = self::getInstance()->queue;
+		
+		HookHandler::getInstance()->fire("onDebug", " QueueServer: current memory usage = " . $memory_string . "mb queue size: " . count($this->queue));
+		foreach ($items as $queueItem) {
+			HookHandler::getInstance()->fire("onDebug", "QueueServer item: " . $queueItem->toString());
+		}
+	}
+	
 	// Class
 	private $started;
 	private $queue;

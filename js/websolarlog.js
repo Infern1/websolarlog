@@ -10,6 +10,8 @@ var ajax = $.ajaxSetup({
 // activate stickyNavigation bar
 $(function(){
 	WSL.stickyNavigation();
+	
+	WSL.init_languages("languageSelect");
 });
 
 
@@ -988,7 +990,7 @@ var WSL = {
 					var html = template({
 						'data' : data
 					});
-					$(divId).html(html);
+					$('#'+divId).html(html);
 					ajaxReady();
 				},
 				dataType : 'text'

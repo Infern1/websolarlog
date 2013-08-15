@@ -1,5 +1,4 @@
-<form method="POST">
-<select name='user_lang' onchange='this.form.submit()'>
+<select id='user_lang' name='user_lang'>
 {{#data.languages}}
     {{#if_eq ../data.currentlanguage compare=this}}
       <option selected="selected">{{this}}</option>
@@ -8,4 +7,13 @@
     {{/if_eq}}
 {{/data.languages}}
 </select>
-</form>
+<script>
+$('#user_lang').bind('change', 
+	function() {
+		WSL.connect.getJSON('server.php?method=setLanguage&language='+$(this).val(), 
+			function() {
+				//refresh
+			}
+		);
+});
+</script>

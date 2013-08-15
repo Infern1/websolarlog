@@ -96,6 +96,15 @@ class BasicChecksAddon {
 	}
 	
 	public function on10MinJob($args) {
+		$this->InactiveCheck();
+
+		// Only in debug mode display all items in queue
+		if (Session::getConfig()->debugmode) {
+			QueueServer::printDebugInfo();
+		}
+	}
+
+	public function onInActiveJob($args) {
 		$this->InactiveCheck();	
 	}
 	
