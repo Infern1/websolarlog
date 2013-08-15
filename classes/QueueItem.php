@@ -77,7 +77,9 @@ class QueueItem {
 	}
 	
 	public function toString() {
-		return $this->classmethod . " time=" . $this->time . " requeueTime=" . $this->requeueTime . " requeue=" . $this->requeue . " dbsync=" . $this->dbSync;
+		return  $this->classmethod . " time=" . $this->time . " requeueTime=" . 
+				$this->requeueTime . " requeue=" . $this->requeue . " dbsync=" . $this->dbSync .
+		        " arguments=" . print_r($this->arguments, true);
 	}
 }
 ?>
