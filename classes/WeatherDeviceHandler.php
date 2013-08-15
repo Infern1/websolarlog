@@ -15,11 +15,13 @@ class WeatherDeviceHandler {
 
 	public static function handleHistory(QueueItem $item, Device $device) {
 		$weather = $device->getApi(Session::getConfig())->getData();
-		$weather->deviceId = $device->id;
-		$weather->time = $item->time;
-
-		$weatherService = new WeatherService();
-		$weatherService->save($weather);
+		if ($weather != null) {
+			$weather->deviceId = $device->id;
+			$weather->time = $item->time;
+	
+			$weatherService = new WeatherService();
+			$weatherService->save($weather);
+		}
 	}
 
 	public static function handleDeviceHistory(QueueItem $item, Device $device) {

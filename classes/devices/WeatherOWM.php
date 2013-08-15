@@ -46,6 +46,11 @@ Class WeatherOWM implements DeviceApi {
 		$weather->wind_speed = $result->list[0]->wind->speed;
 		$weather->wind_direction = $result->list[0]->wind->deg;
 		
+		if ($weather->temp == -273.15) {
+			// probably invalid response, return null
+			return null;
+		}
+		
 		return $weather;
 	}
 	
