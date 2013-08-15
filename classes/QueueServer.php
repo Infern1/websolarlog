@@ -43,6 +43,7 @@ class QueueServer {
 	}
 	
 	public function start() {
+		HookHandler::getInstance()->fire("onDebug", " QueueServer: start");
 		$syncOffset = 30; // seconds
 		$maxQueueItemsAtOnce = 5;
 		$this->sync();
@@ -70,13 +71,13 @@ class QueueServer {
 			$memory = memory_get_usage() / 1024 / 1024; // calculate mb
 			$memory_string = number_format($memory, 2); 
 			
-			// Print memory info when debug is enabled
-			HookHandler::getInstance()->fire("onDebug", " QueueServer: current memory usage = " . $memory_string . "mb queue size: " . count($this->queue));
+			// sync with the database
 			$this->sync();
 		}
 	}
 
 	public function stop() {
+		HookHandler::getInstance()->fire("onDebug", " QueueServer: stop");
 		$this->sync();
 		$this->started = false;
 	}
