@@ -75,6 +75,7 @@ class Session
     	$graphService  = new GraphService();
     	$liveService = new LiveService();
     	$liveSmartMeterService = new LiveSmartMeterService();
+    	$weatherService = new WeatherService();
     }
     
     private static $config;

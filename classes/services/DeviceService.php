@@ -149,6 +149,9 @@ class DeviceService {
 		if ($setAllActive) {
 			R::exec("UPDATE inverter SET active = 1");
 		}
+		
+		R::exec("UPDATE inverter SET deviceId = INV");
+		R::exec("CREATE INDEX history_deviceId ON 'history' ( 'deviceId' ) ;");
 	}
 	
 	private function toBean($object, $bObject) {

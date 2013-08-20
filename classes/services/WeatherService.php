@@ -2,6 +2,10 @@
 class WeatherService {
 	public static $tbl = "weather";
 	
+	function __construct() {
+		HookHandler::getInstance()->add("onJanitorDbCheck", "WeatherService.janitorDbCheck");
+	}
+	
 	/**
 	 * Save the object to the database
 	 * @param Weather $object
@@ -71,6 +75,14 @@ class WeatherService {
 		}
 	
 		return $objects;
+	}
+	
+	public function janitorDbCheck() {
+		HookHandler::getInstance()->fire("onDebug", "DeviceService janitor DB Check");
+
+		// Set indexes
+		R::exec("CREATE INDEX weather_deviceId ON 'weather' ( 'deviceId' ) ;");
+		R::exec("CREATE INDEX weather_time ON 'weather' ( 'time' ) ;");
 	}
 	
 	private function toBean($object, $bObject) {
