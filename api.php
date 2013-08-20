@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
 require 'classes/classloader.php';
-Session::initialize();
+Session::initializeLight();
 
 // Set headers for JSON response
 header('Cache-Control: no-cache, must-revalidate');

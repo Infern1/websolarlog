@@ -78,6 +78,35 @@ class Session
     	$weatherService = new WeatherService();
     }
     
+    public static function initializeLight() {
+    	// Setup the database
+    	$config = Session::getConfig(true, false); // We dont need data from dbase
+    	if ($config->getDatabaseUser() != "" && $config->getDatabasePassword() != "") {
+    		R::setup($config->dbDSN, $config->getDatabaseUser(), $config->getDatabasePassword());
+    	} else {
+    		R::setup($config->dbDSN);
+    	}
+    	 
+    	// Only use on sqlite for speedup
+    	if (strpos($config->dbDSN,'sqlite') !== false) {
+    		R::exec("PRAGMA synchronous = NORMAL"); // A little less secure then FULL, but much less IO
+    		R::exec("PRAGMA PRAGMA temp_store = 2"); // In memory (IO on SD is slow)
+    		PDODataAdapter::getInstance()->sqlEngine = 'sqlite';
+    		//$this->sqlEngine = 'sqlite'; //set db-engine dependent dateFunction
+    	}elseif(strpos($config->dbDSN,'mysql') !== false){
+    		PDODataAdapter::getInstance()->sqlEngine = 'mysql';
+    		//$this->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
+    	}
+    	RedBean_OODBBean::setFlagBeautifulColumnNames(false);
+    	R::debug(false);
+    	R::freeze(true);
+    	R::setStrictTyping(false);
+    	
+    	self::setTimezone();
+    	self::setLanguage();
+    	self::registerHooks();
+    }
+    
     private static $config;
     /**
      * 
