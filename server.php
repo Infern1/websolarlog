@@ -2,7 +2,7 @@
 define('checkaccess', TRUE);
 
 require 'classes/classloader.php';
-Session::initialize();
+Session::initializeLight();
 
 try {
 	if (PeriodHelper::isPeriodJob("inActiveJob", 30)) {
