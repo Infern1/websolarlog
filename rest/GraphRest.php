@@ -13,7 +13,7 @@ class GraphRest {
 	 * Destructor
 	 */
 	function __destruct() {
-		$this->deviceService = null;
+		$this->graphService = null;
 	}
 
 	public function DELETE($request, $options) {
@@ -29,6 +29,14 @@ class GraphRest {
 	 * Rest functions 
 	 */
 	public function GET($request, $options) {
+		if($options[0]=="daily"){
+			$graphOptions['deviceNum'] = $options[3];
+			$graphOptions['mode'] = $options[4];
+			$graphOptions['date'] = $options[2];
+			$graphOptions['type'] = $options[1];
+			$data = $this->graphService->loadGraph($graphOptions);			
+			return $data;
+		}
 		$option = "";
 		if (count($options) > 0) {
 			$option = (trim($options[0]) != "") ? $options[0] : $option;
@@ -51,11 +59,20 @@ class GraphRest {
 	 * Rest functions
 	 */
 	public function POST($request, $options) {
-		
+		if($request[0]=="Graph" && $request[1]=="saveSerie"){
+			$graph = R::findOne('graph',' name = ?',array($_POST['graphName']));			
+			$links = $graph->ownGraph_series;
+			foreach ($links as $link){
+				if($link['id']==$_POST['id']){
+					$link->show = $_POST['serieHidden'];
+					$link->disabled = $_POST['serieVisible'];
+				}
+			}
+			R::store($graph);
+		}
 	}
 	
 	public function getGraphs() {
-		
 		$result = array();
 		foreach ($this->graphService->getAllGraphs() as $graph) {
 			$result[] = array("id"=>$graph->id, "name"=>$graph->name);

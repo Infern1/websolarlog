@@ -290,7 +290,7 @@ class SmartMeterAddon {
 			}
 		}
 		
-			$axe = R::dispense('axe',2);
+			$axe = R::dispense('axes',2);
 			
 		//$axe[0]['json'] = json_encode(json_encode(array('axe'=>'yaxis','label'=>'Avg. Power(Wh)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer'));
 		$axe[0]['json'] = json_encode(array('axe'=>'y3axis','label'=>_("Gas").' '._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer'));
@@ -313,7 +313,7 @@ class SmartMeterAddon {
 			}
 		}
 
-		$serie = R::dispense('serie',11);
+		$serie = R::dispense('series',11);
 		//$serie[0]['json'] = json_encode(json_encode(array('label'=>'Cum. Power(Wh)','yaxis'=>'y2axis'));
 		$serie[0]['json'] = json_encode(array('label'=>'Cum Gas (l)','yaxis'=>'y2axis'));
 		$serie[0]['name'] = 'cumGasL';
@@ -398,11 +398,13 @@ class SmartMeterAddon {
 	 * @return Graph
 	 */
 	public function DayBeansToGraphPoints($beans,$startDate,$disabledSeries){
-$graph = new Graph();
+		$graph = new Graph();
+		$metaData = array();
 		/*
 		 * Generate Graph Point and series
 		*/
 		$i=0;
+
 		foreach ($beans as $bean){
 			if ($i==0){
 				$firstBean = $bean;
@@ -411,21 +413,42 @@ $graph = new Graph();
 			}
 			$UTCdate = $bean['time'];
 			$UTCtimeDiff = $UTCdate - $preBean['time'];
-			$graph->points['cumGasUsage'][] = array ($UTCdate ,$bean['gasUsage']-$firstBean['gasUsage'],date("H:i, d-m-Y",$bean['time']));
-			if($i==0){
-				$graph->points['smoothGasUsage'][] = array ($UTCdate ,$firstBean['gasUsage']-$bean['gasUsage']);
+			
+			if(!in_array('cumGasL',$disabledSeries)){
+				$graph->points['cumGasL'][] = array ($UTCdate ,$bean['gasUsage']-$firstBean['gasUsage'],date("H:i, d-m-Y",$bean['time']));
+			}
+
+			//var_dump(array_keys($disabledSeries));
+			if(!in_array('smoothGasL',$disabledSeries)){
+				if($i==0){
+					$graph->points['smoothGasUsage'][] = array ($UTCdate ,$firstBean['gasUsage']-$bean['gasUsage']);
+				}
+	
+				if( $bean['gasUsage']-$firstBean['gasUsage'] != $preBean['gasUsage']-$firstBean['gasUsage']){
+					$graph->points['smoothGasUsage'][] = array ($UTCdate,$bean['gasUsage']-$firstBean['gasUsage']);
+				}
 			}
 			
-			if( $bean['gasUsage']-$firstBean['gasUsage'] != $preBean['gasUsage']-$firstBean['gasUsage']){
-				$graph->points['smoothGasUsage'][] = array ($UTCdate,$bean['gasUsage']-$firstBean['gasUsage']);
+			
+			
+			
+			
+
+			if(!in_array('cumLowUsageW',$disabledSeries)){
+				$graph->points['cumLowUsage'][] = array ($UTCdate,$bean['lowUsage']-$firstBean['lowUsage']);
 			}
-			$graph->points['cumLowUsage'][] = array ($UTCdate,$bean['lowUsage']-$firstBean['lowUsage']);
-			$graph->points['cumHighUsage'][] = array ($UTCdate ,$bean['highUsage']-$firstBean['highUsage']);
-			$graph->points['cumLowReturn'][] = array ($UTCdate ,$bean['lowReturn']-$firstBean['lowReturn']);
-			$graph->points['cumHighReturn'][] = array ($UTCdate ,$bean['highReturn']-$firstBean['highReturn']);
+			if(!in_array('cumHighUsageW',$disabledSeries)){
+				$graph->points['cumHighUsage'][] = array ($UTCdate ,$bean['highUsage']-$firstBean['highUsage']);
+			}
+			if(!in_array('cumLowReturnW',$disabledSeries)){
+				$graph->points['cumLowReturn'][] = array ($UTCdate ,$bean['lowReturn']-$firstBean['lowReturn']);
+			}
+			
+			if(!in_array('cumHighReturnW',$disabledSeries)){
+				$graph->points['cumHighReturn'][] = array ($UTCdate ,$bean['highReturn']-$firstBean['highReturn']);
+			}
 			
 			$lowUsage = Formulas::calcAveragePower($preBean['lowUsage'], $bean['lowUsage'], $preBean['time']-$bean['time'])/1000;
-			
 			$highUsage = Formulas::calcAveragePower($preBean['highUsage'], $bean['highUsage'], $preBean['time']-$bean['time'])/1000;
 			$lowReturn = Formulas::calcAveragePower($preBean['lowReturn'], $bean['lowReturn'], $preBean['time']-$bean['time'])/1000;
 			$highReturn = Formulas::calcAveragePower($preBean['highReturn'], $bean['highReturn'], $preBean['time']-$bean['time'])/1000;
@@ -434,32 +457,45 @@ $graph = new Graph();
 			$highActual =  $highUsage-$highReturn;
 			$actualUsage = (int)0;
 			($lowActual!=0) ?	$actualUsage = $lowActual :	$actualUsage = $highActual;
-
-			$graph->points['lowUsage'][] = array ($UTCdate ,$lowUsage);
-			$graph->points['highUsage'][] = array ($UTCdate ,$highUsage);
-			$graph->points['lowReturn'][] = array ($UTCdate ,$lowReturn);
-			$graph->points['highReturn'][] = array ($UTCdate ,$highReturn);
+			
+			
+			
+			
+			
+			
+			if(!in_array('lowUsageW',$disabledSeries)){
+				$graph->points['lowUsage'][] = array ($UTCdate ,$lowUsage);
+			}
+			if(!in_array('highUsageW',$disabledSeries)){
+				$graph->points['highUsage'][] = array ($UTCdate ,$highUsage);
+			}
+			if(!in_array('lowReturnW',$disabledSeries)){
+				$graph->points['lowReturn'][] = array ($UTCdate ,$lowReturn);
+			}
+			if(!in_array('highReturnW',$disabledSeries)){
+				$graph->points['highReturn'][] = array ($UTCdate ,$highReturn);
+			}
 			(!isset($minActual)) ? $minActual = 0 : $minActual = $minActual;
 			(!isset($maxActual)) ? $maxActual = 0 : $maxActual = $maxActual;
 			($actualUsage<$minActual) ? $minActual = $actualUsage : $actualUsage = $actualUsage;
 			($actualUsage>$maxActual) ? $maxActual = $actualUsage : $actualUsage = $actualUsage;
 
-			$graph->points['actualUsage'][] = array ($UTCdate ,round(trim($actualUsage),0));				
+			if(!in_array('actualUsageW',$disabledSeries)){
+				$graph->points['actualUsage'][] = array ($UTCdate ,round(trim($actualUsage),0));				
+			}
 			$preBean = $bean;
 			$i++;
 		}
 		
 		// see if we have more then 1 bean (the dummy bean)
 		if($i > 1){
-			
-			$graph->timestamp = Util::getBeginEndDate('day', 1,$startDate);
+			$graph->metaData['timestamp'] = Util::getBeginEndDate('day', 1,$startDate);
 			($maxActual>0) ? $maxActual = ceil( ( ($maxActual*1.1)+100) / 100 ) * 100 : $maxActual= $maxActual;
 			($minActual<0) ? $minActual = ceil( ( ($minActual*1.1)+100) / 100 ) * 100 : $minActual = $minActual;
-			
-			
 		}else{
 			$graph->points=null;
 		}
+		
 		return $graph;
 	}
 

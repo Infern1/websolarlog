@@ -11,6 +11,8 @@ class GraphDataService {
 	 * @return History
 	 */
 	public static function loadData($options) {
+		$graphPoints = array();
+
 		if($options['type']=='Today'){
 			$beans = self::readTablesPeriodValues($options['deviceNum'], self::$tbl, $options['type'], $options['date']);
 			$graphPoints = self::DayBeansToGraphPoints($beans, time());
@@ -43,13 +45,14 @@ class GraphDataService {
 			$cumPower = round(($bean['KWHT']-$firstBean['KWHT'])*1000,0);
 			// 09/30/2010 00:00:00
 			$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,0,0);
-			$graphPoints['cumPower'][] = array (  $UTCdate ,$cumPower);
-			$graphPoints['avgPower'][] = array (  $UTCdate ,$avgPower);
+			$graph->points['cumPower'][] = array (  $UTCdate ,$cumPower);
+			$graph->points['avgPower'][] = array (  $UTCdate ,$avgPower);
 			$preBeanUTCdate = $bean['time'];
 			$preBean = $bean;
 			$i++;
 		}
-	
+
+
 		if($i>0){
 			/*$plantPower = $this->readPlantPower();
 			if($cumPower>0 AND $plantPower>0){
@@ -65,12 +68,12 @@ class GraphDataService {
 				$cumPowerUnit = "W";
 			}
 	
-			$metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
+			$graph->metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
 		}
 				
 
 		
-		return $graphPoints;
+		return $graph;
 	}
 
 	/**

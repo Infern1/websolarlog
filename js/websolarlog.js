@@ -1276,7 +1276,7 @@ var WSL = {
 		ajaxReady();
 	},
 
-	createDayGraph : function(devicenum, getDay, tab, date, currentHandler,fnFinish) {
+	createDayGraph : function(devicenum, getDay, tab, date, currentHandler,fnFinish,graph) {
 		ajaxStart();
 
 		var graphOptions = {
@@ -1330,7 +1330,7 @@ var WSL = {
 			return $.jsDate.strftime(val, format);
 		};
 		$.ajax({
-			url : "server.php?method=getGraphDayPoints&type=" + getDay + "&date=" + date + "&devicenum=" + devicenum,
+			url : "api.php/Graph/daily/"+ getDay + "/" + date + "/" + devicenum +"/frontend",
 			beforeSend : function(xhr) {
 				if (getWindowsState() == false) {
 					ajaxAbort(xhr, '');
@@ -1381,21 +1381,21 @@ var WSL = {
 				var clearSkySeriesObject ={}; 
 				var json = [];
 				var newJsonSeries = [];
+
 				if (result) {
-					
-					if (result.graph) {
-						for (series in result.graph.series) {
-							result.graph.series[series] = $.parseJSON(result.graph.series[series].json);
+					if (result) {
+						for (series in result.series) {
+							result.series[series] = $.parseJSON(result.series[series].json);
 						}
 
 						
-						for (line in result.graph.dataPoints) {
+						for (line in result.dataPoints) {
 							
 							var json = [];
-							for (values in result.graph.dataPoints[line]) {
+							for (values in result.dataPoints[line]) {
 								json.push([
-									result.graph.dataPoints[line][values][0]*1000,
-									result.graph.dataPoints[line][values][1]
+									result.dataPoints[line][values][0]*1000,
+									result.dataPoints[line][values][1]
 								]);
 							
 							}
@@ -1408,23 +1408,23 @@ var WSL = {
 									seriesData.push(clearSky[i]);
 									clearSkySeriesObject['label'] = 'C.S.';
 									clearSkySeriesObject['yaxis'] = 'yaxis';
-									result.graph.series.splice(axesNumber, 0, clearSkySeriesObject);
-									result.graph.series.join();
+									result.series.splice(axesNumber, 0, clearSkySeriesObject);
+									result.series.join();
 									axesNumber++;
 								}
 							}
 						
 						}
-						if(result.graph.json.legend != ''){
-							if (result.graph.json.legend.renderer == 'EnhancedLegendRenderer') {
-								result.graph.json.legend.renderer = $.jqplot.EnhancedLegendRenderer;
+						if(result.json.legend != ''){
+							if (result.json.legend.renderer == 'EnhancedLegendRenderer') {
+								result.json.legend.renderer = $.jqplot.EnhancedLegendRenderer;
 							}
-							graphOptions.legend = result.graph.json.legend;
+							graphOptions.legend = result.json.legend;
 						}
 						var newAxes = [];
 
-						for (axes in result.graph.axes) {
-							var jsonAxe = result.graph.axes[axes].json;
+						for (axes in result.axes) {
+							var jsonAxe = result.axes[axes].json;
 							
 							newAxes[jsonAxe.axe] = jsonAxe;
 							
@@ -1445,9 +1445,9 @@ var WSL = {
 
 						graphOptions.axes = newAxes; 
 						
-						graphOptions.axes.xaxis.min = result.graph.timestamp.beginDate * 1000;
-						graphOptions.axes.xaxis.max = result.graph.timestamp.endDate * 1000;
-						graphOptions.series = result.graph.series;
+						graphOptions.axes.xaxis.min = result.timestamp.beginDate * 1000;
+						graphOptions.axes.xaxis.max = result.timestamp.endDate * 1000;
+						graphOptions.series = result.series;
 						
 					}
 					var seriesHidden = [];
@@ -1467,14 +1467,13 @@ var WSL = {
 
 					handle = null;
 					delete handle;
-					console.log(graphOptions);
-					console.log(seriesData);
+
 					handle = $.jqplot('graph' + tab + 'Content',seriesData, graphOptions);
-					if(result.graph.json.legend.left>0){
-						$('table.jqplot-table-legend').css('left',result.graph.json.legend.left);
+					if(result.json.legend.left>0){
+						$('table.jqplot-table-legend').css('left',result.json.legend.left);
 					}
-					if(result.graph.json.legend.width>0){
-						$('table.jqplot-table-legend').css('width',result.graph.json.legend);
+					if(result.json.legend.width>0){
+						$('table.jqplot-table-legend').css('width',result.json.legend);
 					}
 					
 					// iterator to keep track on the legenda items
@@ -1484,7 +1483,7 @@ var WSL = {
 						function() {
 							$this = $(this);
 							// walkthrough array with hidden lines
-							for (line in result.graph.json.hideSeries) {
+							for (line in result.hideSeries) {
 								
 								// if legenda.text is equal to hideSeries text; 
 								// Click this legenda item to hide is
@@ -1495,7 +1494,7 @@ var WSL = {
 										$("td:contains("+$this.text()+")").click();
 									}
 								} else {
-									if ($this.text() == result.graph.json.hideSeries[line]) {
+									if ($this.text() == result.hideSeries[line]) {
 										// CLICK!!
 										$("td:contains("+$this.text()+")").click();
 									}
@@ -1511,17 +1510,17 @@ var WSL = {
 					/*
 					var graphTitle = '<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+ 
 							result.lang.generated+ ': '+ 
-							result.graph.json.KWH.cumPower + ' '+ 
-							result.graph.json.KWH.KWHTUnit + ' ('+ 
-							result.graph.json.KWH.KWHKWP + ' kWh/kWp)&nbsp&nbsp;'+ 
+							result.json.KWH.cumPower + ' '+ 
+							result.json.KWH.KWHTUnit + ' ('+ 
+							result.json.KWH.KWHKWP + ' kWh/kWp)&nbsp&nbsp;'+ 
 							result.lang.max + ': '+ 
 							plantTotalPower + ' '+ 
-							result.graph.json.KWH.KWHTUnit + ' ('+ 
+							result.json.KWH.KWHTUnit + ' ('+ 
 							 ((typeof totalKWhkWp === 'undefined') ? 0 : totalKWhkWp) +
 							' kWh/kWp)</div>';
 					*/
 					delete seriesData, graphOptions;
-					if (typeof (result.graph.json.KWH) !== "undefined") {
+					if (typeof (result.json.KWH) !== "undefined") {
 						setGraphTitle(graphTitle,'#graph'+ getDay);
 					}
 					fnFinish.call(this, handle);

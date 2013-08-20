@@ -15,21 +15,34 @@ class GraphService {
 	}
 
 	public static function installGraph($reset=false){
+		$series = array();
 		HookHandler::getInstance()->fire("onDebug", "Run GraphService::janitorDbCheck->installGraph");
-		$graph = R::findOne('graph',' name = "daily" ');
+		$graph = R::load('graph',1);
+
+		$axe_exist = R::load('axes',1);
+
 		
-		if ($graph || $reset == true){
-			if($graph->json=='null' || $reset == true){
-				R::exec( 'DROP TABLE IF EXISTS axe;' );
-				R::exec( 'DROP TABLE IF EXISTS axe_graph;' );
-				R::exec( 'DROP TABLE IF EXISTS graph;' );
-				R::exec( 'DROP TABLE IF EXISTS graph_serie;' );
-				R::exec( 'DROP TABLE IF EXISTS serie;' );
+		
+		if ($graph || $reset == true || $axe_exist){
+			if($graph->json=='null' || $reset == true || $axe_exist){
+
+				R::exec( "DROP TABLE IF EXISTS axes;" );
+				R::exec( "DROP TABLE IF EXISTS axe;" );
+				
+				R::exec( "DROP TABLE IF EXISTS axes_graph;" );
+				R::exec( "DROP TABLE IF EXISTS axe_graph;" );
+				R::exec( "DROP TABLE IF EXISTS graph;" );
+				R::exec( "DROP TABLE IF EXISTS graph_series;" );
+				R::exec( "DROP TABLE IF EXISTS graph_serie;" );
+				R::exec( "DROP TABLE IF EXISTS series;" );
+				R::exec( "DROP TABLE IF EXISTS serie;" );
+				
 				$graph = null;
 			}
 		}
 		
 		if (!$graph){
+		
 		$graphBean = R::dispense('graph');
 		
 		$graphHook = HookHandler::getInstance()->fire("installGraph");
@@ -51,12 +64,27 @@ class GraphService {
 		$graphBean->json = json_encode($metaData);
 	
 		$defaultSeries = HookHandler::getInstance()->fire("defaultSeries");
-		$graphBean->sharedSerie = array_merge(self::defaultSeries(),$defaultSeries);
+		$series = array_merge(self::defaultSeries(),$defaultSeries);
+		$graphBean->sharedSeries = $series;
 		
 		$defaultAxes = HookHandler::getInstance()->fire("defaultAxes");
-		$graphBean->sharedAxe = array_merge(self::defaultAxes(),$defaultAxes);
+		$graphBean->sharedAxes = array_merge(self::defaultAxes(),$defaultAxes);
 		
 		R::store($graphBean);
+		
+		$graphBean = R::findOne('graph',' name = "daily" ');
+		
+		$links = $graphBean->ownGraph_series;
+		$i=0;
+		foreach($links as $link){
+			$link->show = true;
+			$link->disabled = false;
+			$link->name = $series[$i]->name;
+			$link->json = $series[$i]->json;
+			$i++;
+		}
+		R::store($graphBean);
+
 		}
 	}
 	
@@ -68,7 +96,7 @@ class GraphService {
 				$show = 'true';
 			}
 		}
-		$serie = R::dispense('serie',2);
+		$serie = R::dispense('series',2);
 		$serie[0]['json'] = json_encode(array('label'=>'Cum Power (Wh)','yaxis'=>'y2axis'));
 		$serie[0]['name'] = 'cumPowerWh';
 		$serie[0]['show'] = $show;
@@ -89,7 +117,7 @@ class GraphService {
 				$show = 'true';
 			}
 		}
-		$axe = R::dispense('axe',3);
+		$axe = R::dispense('axes',3);
 		$axe[0]['json'] = json_encode(array('axe'=>'yaxis','label'=>'Avg Power (Wh)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer'));
 		$axe[0]['show'] = $show;
 		$axe[0]['AxeOrder'] = 1;
@@ -121,54 +149,61 @@ class GraphService {
 	 * @return unknown
 	 */
 	public function loadGraph($options){
-		$dataPoints=array();
 		
 		$config = Session::getConfig();
 		$graph = R::findOne('graph',' name = "daily" ');
-				
+					
 		// translate hideSerie labels
 		$graphJson = json_decode($graph->json);
 		$i=0;
 
-		$timestamp = array("beginDate"=>strtotime("06:00")-3600,"endDate"=>strtotime("21:00")+3600);
-			
+
 		
 		// find series of graph
-		$series = R::exportAll($graph->sharedSerie);
-		//translate serie labels 
+			$series = R::exportAll($graph->ownGraph_series);
+
+		//translate serie labels
 		$seriesNew = array();
 		$disabledSeries = array();
+		$hideSeries = array();
 		$i=0;
 		$ii=0;
 		foreach ($series as $serie){
-
-			$json = json_decode($serie['json']);
-			$json->label = _($json->label);
-
-			// check if we need this 
+ 
+			$seriesNew[$i]['name'] = $serie['name'];
+						
 			if($options['mode']=='frontend'){
-				if($serie['disabled']=='false'){
+				$json = json_decode($serie['json']);
+				$json->label = _($json->label);
+
+				if($serie['show']== true){
 					// we want to show this serie.
+						$seriesNew[$i]['id'] = $serie['id'];
 						$seriesNew[$i]['json'] = json_encode($json);
-						$seriesNew[$i]['show'] = $serie['show'];
+						$seriesNew[$i]['disabled'] = $serie['disabled'];
+						if($serie['disabled']){
+							$hideSeries[]= $json->label;
+						}
 					$i++;
 				}else{
 					// we DON'T want to show this serie
-					$disabledSeries[$ii] = $json->label;
+					$disabledSeries[$ii] =$serie['name'];
 					$ii++;
 				}
 			}else{
-				$seriesNew[$i]['json'] = $json;
+				$seriesNew[$i]['id'] = $serie['id'];
 				$seriesNew[$i]['disabled'] = $serie['disabled'];
 				$seriesNew[$i]['show'] = $serie['show'];
+				$seriesNew[$i]['json'] = json_decode($serie['json']);
 				$i++;
 			}
 			
 		}
+
 		$series = $seriesNew;
 
 		// find axes of graph
-		$axes = R::exportAll($graph->with(' ORDER BY AxeOrder ASC ')->sharedAxe);
+		$axes = R::exportAll($graph->with(' ORDER BY AxeOrder ASC ')->sharedAxes);
 		$axesList = array();
 		$i=0;
 		$x=0;
@@ -206,31 +241,52 @@ class GraphService {
 		$axes = $axeNew;
 		
 		if($options['mode']=='frontend'){
+			$timestamp = array("beginDate"=>strtotime($options['date']." 06:00")-3600,"endDate"=>strtotime("21:00")+3600);
+			
+			foreach ($config->devices as $device){
+				if($device->type=='production'){
+					foreach ($device->panels as $panel){
+						$panels[] = array(
+								'roofOrientation'=>$panel->roofOrientation,
+								'roofPitch'=>$panel->roofPitch,
+								'totalWp'=>$panel->amount*$panel->wp
+						);
+					}
+					$inverters[] = array(
+							'plantPower'=>$device->plantpower,
+							'panels'=> (isset($panels) ? $panels : 0)
+					);
+				}
+			}
+			$slimConfig['inverters'] = $inverters;
+			
+			$util = new Util();
+			
+			$sunInfo = $util->getSunInfo($config, $options['date']);
+							
+			 
 			// get data of graph
 			$graphDataService = new GraphDataService();
-			
-			$dataPoints = $graphDataService->loadData($options);
-			$dataPointsHook = HookHandler::getInstance()->fire("GraphDayPoints",$options['deviceNum'],$options['date'],$options['type'],$disabledSeries);
-	
-			
-			//var_dump($dataPointsHook);
-			if(is_array($dataPointsHook->points)){
-				$dataPoints = array_merge($dataPoints,$dataPointsHook->points);
+			$graphData = $graphDataService->loadData($options);
+			$graphDataHook = HookHandler::getInstance()->fire("GraphDayPoints",$options['deviceNum'],$options['date'],$options['type'],$disabledSeries);
+			//var_dump($dataPoints->points);
+
+			if(is_array($graphDataHook->points)){
+				$dataPoints = array_merge($graphData->points,$graphDataHook->points);
 			}	
-			//var_dump((array)json_decode($graph->json));
-			if(is_array($dataPointsHook->metaData)){
-				$graph->json = json_encode(array_merge((array)json_decode($graph->json),$dataPointsHook->metaData));
-			}
+			//var_dump($dataPoints);
 			
 			//set timestamp to overrule standard timestamp
-			$timestamp = Util::getSunInfo($config, time());
+			$timestamp = Util::getSunInfo($config, $options['date']);
 			$timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
 			
-			if($dataPointsHook->timestamp){
-				$timestamp = array("beginDate"=>$dataPointsHook->timestamp['beginDate']-3600,"endDate"=>$dataPointsHook->timestamp['endDate']+3600);
+			if($graphDataHook->metaData['timestamp']){
+				$timestamp = array("beginDate"=>$graphDataHook->metaData['timestamp']['beginDate']-3600,"endDate"=>$graphDataHook->metaData['timestamp']['endDate']+3600);
 			}
+			return array('dataPoints'=>$dataPoints,'json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','timestamp'=>$timestamp,'name'=>$graph->name,'options'=>$options,'slimConfig' => $slimConfig,'sunInfo'=>$sunInfo,'hideSeries'=>$hideSeries);
+		}else{
+			return array('json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','name'=>$graph->name,'options'=>$options);
 		}
-		return array('dataPoints'=>$dataPoints,'json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','timestamp'=>$timestamp,'name'=>$graph->name);
 	}
 	
 	public function getGraphAxe($id){
