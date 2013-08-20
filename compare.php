@@ -1,6 +1,6 @@
 <?php
 require_once("classes/classloader.php");
-Session::initialize();
+Session::initializeLight();
 
 $template = Session::getConfig()->template;
 require_once("template/" . $template . "/header.php");
