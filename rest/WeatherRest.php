@@ -51,7 +51,7 @@ class WeatherRest {
 				break;
 			case "live":
 				if ($deviceId > 0) {
-					$device = $this->weatherService->load($deviceId);
+					$device = $this->deviceService->load($deviceId);
 					$result['data'] =array(array( "deviceId"=>$deviceId, "data"=>$this->weatherService->getLastWeather($device)));
 				} else {
 					$weathers = array();
