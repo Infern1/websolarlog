@@ -1,5 +1,6 @@
 <?php
 class WeatherRest {
+	private $deviceService;
 	private $weatherService;
 	
 	/**
@@ -7,12 +8,14 @@ class WeatherRest {
 	 */
 	function __construct() {
 		$this->weatherService = new WeatherService();
+		$this->deviceService = new DeviceService();
 	}
 	
 	/**
 	 * Destructor
 	 */
 	function __destruct() {
+		$this->deviceService = null;
 		$this->weatherService = null;
 	}
 
@@ -37,7 +40,7 @@ class WeatherRest {
 		switch ($type) {
 			case "today":
 				if ($deviceId > 0) {
-					$device = $this->weatherService->load($deviceId);
+					$device = $this->deviceService->load($deviceId);
 					$result['data'] =array(array( "deviceId"=>$deviceId, "data"=>$this->weatherService->getWeatherForDate($device)));
 				} else {
 					$weathers = array();
