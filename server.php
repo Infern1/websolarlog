@@ -56,7 +56,8 @@ try {
 
 			break;
 		case 'setLanguage':
-			$lang = Common::getValue("language",explode(".", setlocale(LC_CTYPE, 0))[0]);
+			$localeExplode = explode(".", setlocale(LC_CTYPE, 0));
+			$lang = Common::getValue("language",$localeExplode[0]);
 			$_SESSION['WSL_LANGUAGE'] = $lang;
 			Session::setLanguage();
 		case 'getLanguages':
