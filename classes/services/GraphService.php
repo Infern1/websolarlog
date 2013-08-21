@@ -273,7 +273,9 @@ class GraphService {
 
 			if(is_array($graphDataHook->points)){
 				$dataPoints = array_merge($graphData->points,$graphDataHook->points);
-			}	
+			}else{
+				$dataPoints = $graphData->points;
+			}
 			//var_dump($dataPoints);
 			
 			//set timestamp to overrule standard timestamp
