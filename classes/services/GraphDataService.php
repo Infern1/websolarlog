@@ -92,8 +92,9 @@ class GraphDataService {
 		$count = 0;
 	
 		// get the begin and end date/time
+		$_SESSION['timers']['GraphDataServer_Before_getBeginEndDate'] =(microtime(true)-$_SESSION['timerBegin'] );
 		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
-	
+		$_SESSION['timers']['GraphDataServer_After_getBeginEndDate'] =(microtime(true)-$_SESSION['timerBegin'] );
 	
 		if ($invtnum > 0){
 			$energyBeans = R::getAll("
