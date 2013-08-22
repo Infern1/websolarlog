@@ -2,17 +2,23 @@
 session_start();
 $_SESSION['timers'] = '';
 $_SESSION['timerBegin'] = microtime(true);
-
+$_SESSION['timers']['StartTimers'] =$_SESSION['timerBegin'];
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
+$_SESSION['timers']['After_ErrorInits'] =(microtime(true) - $_SESSION['timerBegin'] );
 
 require 'classes/classloader.php';
+$_SESSION['timers']['After_classloader'] =(microtime(true) - $_SESSION['timerBegin'] );
 Session::initializeLight();
+$_SESSION['timers']['After_initializeLight'] =(microtime(true) - $_SESSION['timerBegin'] );
 
 // Set headers for JSON response
 header('Cache-Control: no-cache, must-revalidate');
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Content-type: application/json');
+
+$_SESSION['timers']['After_HeaderInits'] =(microtime(true) - $_SESSION['timerBegin'] );
+
 
 $result = array();
 try {

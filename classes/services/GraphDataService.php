@@ -119,7 +119,6 @@ class GraphDataService {
 				}
 			}
 			$energyBeans = $energy;
-			//$energyBeans = new RecursiveIteratorIterator(new RecursiveArrayIterator($energyBeans));
 			$_SESSION['timers']['GraphDataServer_LoadData_AfterTheGrandBIGQuery'] =(microtime(true)-$_SESSION['timerBegin'] );
 	
 		}
