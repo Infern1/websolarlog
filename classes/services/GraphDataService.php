@@ -106,13 +106,11 @@ class GraphDataService {
 			$_SESSION['timers']['GraphDataServer_LoadData_BeforeTheGrandBIGQuery'] =(microtime(true)-$_SESSION['timerBegin'] );
 			$config = Session::getConfig();
 			foreach($config->inverters as $inverter){
-				if($inverter->type=='production'){
 					$energyBeans[] = R::getAll("
 						SELECT *
 						FROM ".$table."
 						WHERE time > :beginDate AND  time < :endDate AND inv = :inv 
 						ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'], ':inv'=>$inverter->id));
-				}
 			}
 			foreach($energyBeans as $energyBean){
 				foreach($energyBean as $bean){
