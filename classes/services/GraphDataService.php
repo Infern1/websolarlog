@@ -113,7 +113,13 @@ class GraphDataService {
 						ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'], ':inv'=>$inverter->id));
 				}
 			}
-			$energyBeans = new RecursiveIteratorIterator(new RecursiveArrayIterator($energyBeans));
+			foreach($energyBeans as $energyBean){
+				foreach($energyBean as $bean){
+					$energy[] = $bean; 
+				}
+			}
+			$energyBeans = $energy;
+			//$energyBeans = new RecursiveIteratorIterator(new RecursiveArrayIterator($energyBeans));
 			$_SESSION['timers']['GraphDataServer_LoadData_AfterTheGrandBIGQuery'] =(microtime(true)-$_SESSION['timerBegin'] );
 	
 		}

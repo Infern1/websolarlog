@@ -30,7 +30,7 @@ $_SESSION['timers']['ApiBeforeJSONgeneration']=(microtime(true)-$_SESSION['timer
 echo json_encode($result);
 $_SESSION['timers']['ApiAfterJSONGeneration()'] =(microtime(true)-$_SESSION['timerBegin'] );
 
-if($_GET['showTimers']){
+if(isset($_GET['showTimers'])){
 	echo "\r\n";
 	foreach($_SESSION['timers']  as $key=>$value){
 	        if(isset($backupValue)){
