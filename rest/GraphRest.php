@@ -29,6 +29,7 @@ class GraphRest {
 	 * Rest functions 
 	 */
 	public function GET($request, $options) {
+		//R::debug(true);
 		if($options[0]=="daily"){
 			$graphOptions['deviceNum'] = $options[3];
 			$graphOptions['mode'] = $options[4];
@@ -50,6 +51,11 @@ class GraphRest {
 			$graphOptions['mode'] = 'edit';
 			$graphOptions['type'] = '';
 			$data = $this->graphService->loadGraph($graphOptions);
+			/*$queryLogger = RedBean_Plugin_QueryLogger::getInstanceAndAttach(
+					R::getDatabaseAdapter()
+			);
+			var_dump($queryLogger->getLogs());*/
+			
 			return $data;
 		}
 

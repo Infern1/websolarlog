@@ -10,16 +10,22 @@ class GraphDataService {
 	 * @param int $id
 	 * @return History
 	 */
+	
 	public static function loadData($options) {
 		$graphPoints = array();
-
+	
 		if($options['type']=='Today'){
+			$_SESSION['timers']['GraphDataService_LoadData_BeforeReadTablesPeriodValues'] =(microtime(true)-$_SESSION['timerBegin'] );
 			$beans = self::readTablesPeriodValues($options['deviceNum'], self::$tbl, $options['type'], $options['date']);
+			$_SESSION['timers']['GraphDataService_LoadData_AfterReadTablesPeriodValues'] =(microtime(true)-$_SESSION['timerBegin'] );
+	
+			$_SESSION['timers']['GraphDataService_BeforeBeansToPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
 			$graphPoints = self::DayBeansToGraphPoints($beans, time());
+			$_SESSION['timers']['GraphDataService_AfterBeansToPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
 		}
 		return $graphPoints;
 	}
-	
+
 	/**
 	 *
 	 * @param unknown_type $beans
@@ -70,9 +76,6 @@ class GraphDataService {
 	
 			$graph->metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
 		}
-				
-
-		
 		return $graph;
 	}
 
@@ -84,24 +87,35 @@ class GraphDataService {
 	 * @param unknown $startDate
 	 * @return unknown
 	 */
+	
 	public static function readTablesPeriodValues($invtnum, $table, $type, $startDate){
 		$count = 0;
-
+	
 		// get the begin and end date/time
 		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
-		
+	
+	
 		if ($invtnum > 0){
 			$energyBeans = R::getAll("
-					SELECT *
-					FROM ".$table."
-					WHERE INV = :INV AND time > :beginDate AND  time < :endDate
-					ORDER BY time",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+                                        SELECT *
+                                        FROM ".$table."
+                                        WHERE INV = :INV AND time > :beginDate AND  time < :endDate
+                                        ORDER BY time",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
-			$energyBeans = R::getAll("
-					SELECT *
-					FROM ".$table."
-					WHERE time > :beginDate AND  time < :endDate
-					ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+			$_SESSION['timers']['GraphDataServer_LoadData_BeforeTheGrandBIGQuery'] =(microtime(true)-$_SESSION['timerBegin'] );
+			$config = Session::getConfig();
+			foreach($config->inverters as $inverter){
+				if($inverter->type=='production'){
+					$energyBeans[] = R::getAll("
+						SELECT *
+						FROM ".$table."
+						WHERE time > :beginDate AND  time < :endDate AND inv = :inv 
+						ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'], ':inv'=>$inverter->id));
+				}
+			}
+			$energyBeans = new RecursiveIteratorIterator(new RecursiveArrayIterator($energyBeans));
+			$_SESSION['timers']['GraphDataServer_LoadData_AfterTheGrandBIGQuery'] =(microtime(true)-$_SESSION['timerBegin'] );
+	
 		}
 		//see if we have atleast 1 bean, else we make one :)
 		(!$energyBeans) ? $energyBeans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $energyBeans = $energyBeans;

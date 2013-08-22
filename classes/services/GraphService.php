@@ -150,18 +150,33 @@ class GraphService {
 	 */
 	public function loadGraph($options){
 		
+		$_SESSION['timers']['GraphService_BeginLoadGraph'] =(microtime(true)-$_SESSION['timerBegin'] );
+		
 		$config = Session::getConfig();
 		$graph = R::findOne('graph',' name = "daily" ');
-					
+		$_SESSION['timers']['GraphService_RedBeanFindGraph'] =(microtime(true)-$_SESSION['timerBegin'] );
+		
 		// translate hideSerie labels
+		$_SESSION['timers']['GraphService_BeforeGraphJSONDecde'] =(microtime(true)-$_SESSION['timerBegin'] );
 		$graphJson = json_decode($graph->json);
+		$_SESSION['timers']['GraphService_AfterGraphJSONDecode'] =(microtime(true)-$_SESSION['timerBegin'] );
 		$i=0;
-
-
+		
+		
 		
 		// find series of graph
-			$series = R::exportAll($graph->ownGraph_series);
-
+		$_SESSION['timers']['GraphService_Before_OwnGraph_series'] =(microtime(true)-$_SESSION['timerBegin'] );
+		$series = $graph->ownGraph_series;
+		$_SESSION['timers']['GraphService_After_OwnGraph_series'] =(microtime(true)-$_SESSION['timerBegin'] );
+		
+		$_SESSION['timers']['GraphService_Before_exportAll_series'] =(microtime(true)-$_SESSION['timerBegin'] );
+		//var_dump($ownGraphSeries);
+		//$series = R::exportAll($ownGraphSeries);
+		$_SESSION['timers']['GraphService_After_exportAll'] =(microtime(true)-$_SESSION['timerBegin'] );
+		
+		
+		
+		
 		//translate serie labels
 		$seriesNew = array();
 		$disabledSeries = array();
@@ -203,7 +218,10 @@ class GraphService {
 		$series = $seriesNew;
 
 		// find axes of graph
-		$axes = R::exportAll($graph->with(' ORDER BY AxeOrder ASC ')->sharedAxes);
+		
+		$axes = $graph->with(' ORDER BY AxeOrder ASC ')->sharedAxes;
+		$_SESSION['timers']['GraphService_sharedAxes'] =(microtime(true)-$_SESSION['timerBegin'] );
+		
 		$axesList = array();
 		$i=0;
 		$x=0;
@@ -258,20 +276,28 @@ class GraphService {
 					);
 				}
 			}
+			
 			$slimConfig['inverters'] = $inverters;
 			
 			$util = new Util();
 			
 			$sunInfo = $util->getSunInfo($config, $options['date']);
-							
-			 
+			
+			
 			// get data of graph
 			$graphDataService = new GraphDataService();
+			
+			$_SESSION['timers']['GraphService_BeforeLoadGraphData'] =(microtime(true)-$_SESSION['timerBegin'] );
 			$graphData = $graphDataService->loadData($options);
+			$_SESSION['timers']['GraphService_AfterLoadGraphData'] =(microtime(true)-$_SESSION['timerBegin'] );
+			
+			
+			$_SESSION['timers']['GraphService_beforeHookDayPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
 			$graphDataHook = HookHandler::getInstance()->fire("GraphDayPoints",$options['deviceNum'],$options['date'],$options['type'],$disabledSeries);
+			$_SESSION['timers']['GraphService_afterHookDayPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
 			//var_dump($dataPoints->points);
-
-			if(is_array($graphDataHook->points)){
+			
+			if(isset($graphDataHook->points) AND is_array($graphDataHook->points)){
 				$dataPoints = array_merge($graphData->points,$graphDataHook->points);
 			}else{
 				$dataPoints = $graphData->points;
@@ -282,13 +308,15 @@ class GraphService {
 			$timestamp = Util::getSunInfo($config, $options['date']);
 			$timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
 			
-			if($graphDataHook->metaData['timestamp']){
+			if(isset($graphDataHook->metaData) and $graphDataHook->metaData['timestamp']){
 				$timestamp = array("beginDate"=>$graphDataHook->metaData['timestamp']['beginDate']-3600,"endDate"=>$graphDataHook->metaData['timestamp']['endDate']+3600);
 			}
 			return array('dataPoints'=>$dataPoints,'json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','timestamp'=>$timestamp,'name'=>$graph->name,'options'=>$options,'slimConfig' => $slimConfig,'sunInfo'=>$sunInfo,'hideSeries'=>$hideSeries);
-		}else{
-			return array('json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','name'=>$graph->name,'options'=>$options);
-		}
+						
+					
+			}else{
+				return array('json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','name'=>$graph->name,'options'=>$options);
+			}
 	}
 	
 	public function getGraphAxe($id){
