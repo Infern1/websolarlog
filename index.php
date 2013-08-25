@@ -13,14 +13,11 @@ require_once("template/" . $template . "/index.php");
 			function(){
 				WSL.init_PageLiveValues("#content"); // Initial load fast
 				WSL.init_PageIndexTotalValues("#sidebar");
-				WSL.init_LiveValues();
     		}
 		),			
 		window.setInterval(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");}, 5000); // every 5 seconds
 
 		window.setInterval(function(){WSL.init_PageIndexTotalValues("#sidebar");}, 60000); // every minute		
-
-		window.setInterval(function(){WSL.init_LiveValues();}, 5 * 60000); // every 5 minutes		
 	});
 	analyticsJSCodeBlock();
 	</script>

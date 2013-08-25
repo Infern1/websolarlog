@@ -1044,6 +1044,9 @@ var WSL = {
 	},
 	
 	init_LiveValues : function () {
+		/*
+		 * This seems to be unused
+		 */
 		WSL.api.live(function(data) {
 			$.each(data, function(){
 				if (this.type == "production") {
