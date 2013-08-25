@@ -76,6 +76,7 @@ class Session
     	$liveService = new LiveService();
     	$liveSmartMeterService = new LiveSmartMeterService();
     	$weatherService = new WeatherService();
+    	$historySmartMeterService = new HistorySmartMeterService();
     }
     
     public static function initializeLight() {
