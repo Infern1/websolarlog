@@ -4,6 +4,7 @@ class SmartMeterAddon {
 	private $config;
 	private $deviceService;
 	private $liveSmartMeterService;
+	private $historySmartMeterService;
 	private $addon = "smartMeter";
 	private $install = false;
 	
@@ -11,6 +12,7 @@ class SmartMeterAddon {
 		$this->adapter = PDODataAdapter::getInstance();
 		$this->deviceService = new DeviceHistoryService();
 		$this->liveSmartMeterService = new LiveSmartMeterService();
+		$this->historySmartMeterService = new HistorySmartMeterService();
 		$this->config = Session::getConfig();
 		
 		foreach ($this->config->devices as $device) {
@@ -21,6 +23,7 @@ class SmartMeterAddon {
 	}
 
 	function __destruct() {
+		$this->historySmartMeterService = null;
 		$this->liveSmartMeterService = null;
 		$this->deviceService = null;
 		$this->config = null;
@@ -172,23 +175,20 @@ class SmartMeterAddon {
 	 * @param string date
 	 */
 	public function addSmartMeterHistory($deviceId, LiveSmartMeter $live,$timestamp) {
-		$bean = R::dispense('historySmartMeter');
-
-		// check if we have a "valid" Bean to store.
-		$bean->deviceId = $deviceId;
-		$bean->gasUsage = $live->gasUsage;
-		$bean->highReturn = $live->highReturn;
-		$bean->lowReturn = $live->lowReturn;
-		$bean->highUsage = $live->highUsage;
-		$bean->lowUsage = $live->lowUsage;
-		$bean->liveReturn = $live->liveReturn;
-		$bean->liveUsage = $live->liveUsage;
-		$bean->time = $timestamp;
+		$history = new HistorySmartMeter();
+		$history->deviceId = $deviceId;
+		$history->invtnum = $deviceId;
+		$history->gasUsage = $live->gasUsage;
+		$history->highReturn = $live->highReturn;
+		$history->lowReturn = $live->lowReturn;
+		$history->highUsage = $live->highUsage;
+		$history->lowUsage = $live->lowUsage;
+		$history->liveReturn = $live->liveReturn;
+		$history->liveUsage = $live->liveUsage;
+		$history->time = $timestamp;
 		
 		//Store the bean
-		$id = R::store($bean);
-		
-		return $bean;
+		return $this->historySmartMeterService->save($history);
 	}
 
 	/**
@@ -266,7 +266,6 @@ class SmartMeterAddon {
 		$bean->lowReturnT = $energy->lowReturnT;
 		$bean->highUsageT = $energy->highUsageT;
 		$bean->lowUsageT = $energy->lowUsageT;
-
 		$bean->gasUsage = $energy->gasUsage;
 		$bean->highReturn = $energy->highReturn;
 		$bean->lowReturn = $energy->lowReturn;
