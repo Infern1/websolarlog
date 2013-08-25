@@ -107,9 +107,8 @@ class GraphDataService {
 			$config = Session::getConfig();
 			foreach($config->inverters as $inverter){
 					$energyBeans[] = R::getAll("
-						SELECT *
-						FROM ".$table."
-						WHERE time > :beginDate AND  time < :endDate AND inv = :inv 
+						SELECT * FROM ".$table."
+						WHERE time > :beginDate AND  time < :endDate AND inv = :deviceId 
 						ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'], ':deviceId'=>$inverter->id));
 			}
 			foreach($energyBeans as $energyBean){
