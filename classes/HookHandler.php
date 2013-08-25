@@ -85,7 +85,7 @@ class HookHandler {
         		} catch (Exception $e) {
         			try {
         				$this->fire('onError', "Error in hook " . $callback . " error: " . $e->getMessage());
-        				$this->fire('onDebug', "Error in hook " . $callback . " error: " . $e->getTraceAsString());
+        				$this->fire('onDebug', "Error in hook " . $callback . " error: " . $e->getMessage() . " trace: " .  $e->getTraceAsString());
 	        		} catch (Exception $ignore) {}
         		}
         	} else {
