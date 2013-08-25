@@ -50,7 +50,7 @@ class HistorySmartMeterService {
 	public function janitorDbCheck() {
 		HookHandler::getInstance()->fire("onDebug", "HistorySmartMeterService janitor DB Check");
 		// Get an HistorySmartMeter and save it, to make sure al fields are available in the database
-		$bObject = R::findOne( self::$tbl, ' LIMIT 1');
+		$bObject = R::findOne( self::$tbl, ' 1=1 LIMIT 1');
 		if ($bObject) {
 			$object = $this->toObject($bObject);
 			R::store($this->toBean($object, $bObject));
