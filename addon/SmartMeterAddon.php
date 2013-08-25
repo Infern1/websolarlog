@@ -167,18 +167,15 @@ class SmartMeterAddon {
 
 	/**
 	 * add the live info to the history
-	 * @param int $invtnum
+	 * @param int $deviceId
 	 * @param Live $live
 	 * @param string date
 	 */
-	public function addSmartMeterHistory($invtnum, LiveSmartMeter $live,$timestamp) {
-		$live->deviceId = $invtnum;
-		$live->invtnum = $invtnum;
-		
+	public function addSmartMeterHistory($deviceId, LiveSmartMeter $live,$timestamp) {
 		$bean = R::dispense('historySmartMeter');
 
 		// check if we have a "valid" Bean to store.
-		$bean->invtnum = $invtnum;
+		$bean->deviceId = $deviceId;
 		$bean->gasUsage = $live->gasUsage;
 		$bean->highReturn = $live->highReturn;
 		$bean->lowReturn = $live->lowReturn;
@@ -196,35 +193,35 @@ class SmartMeterAddon {
 
 	/**
 	 * Read the history file
-	 * @param int $invtnum
+	 * @param int $deviceId
 	 * @param string $date
 	 * @return array<Live> $live (No Live but BEAN object!!)
 	 */
 	// TODO :: There's no Live object returned....?!
-	public function readSmartMeterHistory($invtnum, $date) {
+	public function readSmartMeterHistory($deviceId, $date) {
 		(!$date)? $date = date('d-m-Y') : $date = $date;
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 
 		$bean =  R::findAndExport( 'historySmartMeter',
-				' invtnum = :invtnum AND time > :beginDate AND  time < :endDate order by time',
-				array(':invtnum'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
+				' deviceId = :deviceId AND time > :beginDate AND  time < :endDate order by time',
+				array(':deviceId'=>$deviceId,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 		return $bean;
 	}
 
 	/**
 	 * Return the amount off history records
-	 * @param int $invtnum
+	 * @param int $deviceId
 	 * @param string $date
 	 * @return int $count
 	 */
-	public function getSmartMeterHistoryCount($invtnum) {
+	public function getSmartMeterHistoryCount($deviceId) {
 		$date = date('d-m-Y');
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 
 		$bean =  R::find('historySmartMeter',
-				' invtnum = :invtnum AND time > :beginDate AND  time < :endDate order by time',
-				array(':invtnum'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
+				' deviceId = :deviceId AND time > :beginDate AND  time < :endDate order by time',
+				array(':deviceId'=>$deviceId,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 		return count($bean);
 	}
@@ -233,16 +230,16 @@ class SmartMeterAddon {
 
 	/**
 	 * write the max power today to the file
-	 * @param int $invtnum
+	 * @param int $deviceId
 	 * @param MaxPowerToday $mpt
 	 */
-	public function addSmartMeterEnergy($invtnum, EnergySmartMeter $energy) {
+	public function addSmartMeterEnergy($deviceId, EnergySmartMeter $energy) {
 		$date = date('d-m-Y');
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 
 		$bean =  R::findone('energySmartMeter',
-				' invtnum = :invtnum AND time > :beginDate AND  time < :endDate order by time',
-				array(':invtnum'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
+				' deviceId = :deviceId AND time > :beginDate AND  time < :endDate order by time',
+				array(':deviceId'=>$deviceId,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 
 		$oldGasUsageT = 0;
@@ -263,7 +260,7 @@ class SmartMeterAddon {
 			$oldLowUsageT = $energy->lowUsageT;
 		}
 
-		$bean->invtnum = $invtnum;
+		$bean->deviceId = $deviceId;
 		$bean->gasUsageT = $energy->gasUsageT;
 		$bean->highReturnT = $energy->highReturnT;
 		$bean->lowReturnT = $energy->lowReturnT;
@@ -505,7 +502,7 @@ class SmartMeterAddon {
 	 * @param date $labels[] = 'High Power(W)';$startDate ("Y-m-d") ("1900-12-31"), when no date given, the date of today is used.
 	 * @return array($beginDate, $endDate);
 	 */
-	// Hook fired with ("GraphDayPoints",$invtnum,$startDate,$type,$hiddenSeries);
+	// Hook fired with ("GraphDayPoints",$deviceId,$startDate,$type,$hiddenSeries);
 	public function GraphDayPoints($args){
 		(strtolower($args[3]) == 'today')?$type='day':$type=$args[3];
 		$graphDataService = new GraphDataService();
