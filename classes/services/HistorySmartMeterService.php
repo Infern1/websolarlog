@@ -53,7 +53,10 @@ class HistorySmartMeterService {
 		$bObject = R::findOne( self::$tbl, ' LIMIT 1');
 		if ($bObject) {
 			$object = $this->toObject($bObject);
-			R::store($this->toBean($object, $bObject));	
+			R::store($this->toBean($object, $bObject));
+			HookHandler::getInstance()->fire("onDebug", "Updated HistorySmartMeter");
+		} else {
+			HookHandler::getInstance()->fire("onDebug", "HistorySmartMeter object not found");			
 		}
 
 		R::exec("UPDATE historySmartMeter SET deviceId = invtnum");
