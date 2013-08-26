@@ -20,11 +20,17 @@ class GraphService {
 		//$graph = R::load('graph',1);
 
 		// 'axe' is a old table, we now use 'axes'. So if we have this table, we need to reset the graph.
-		$axe_exist = R::load('axe',1);
+		$axe_exist = R::find('axe',1);
 
 		$checkOldSerie = (R::count('graph_series',' name = :name',array(':name'=>'cumGasL'))>0) ? true : false;
 		
-		HookHandler::getInstance()->fire("onDebug", (($graph->json) ? 'true' : 'false')." \r\n ".(($graph) ? 'true' : 'false')." \r\n ".print_r($reset,true)." \r\n ".print_r($axe_exist,true)." \r\n ".print_r($checkOldSerie,true));
+		HookHandler::getInstance()->fire("onDebug", 
+		(($graph->json) ? 'true' : 'false')." \r\n ".
+		(($graph) ? 'true' : 'false')." \r\n ".
+		print_r($reset,true)." \r\n ".
+		print_r($axe_exist,true)." \r\n ".
+		print_r($checkOldSerie,true));
+		
 		if ($graph || $reset == true || $axe_exist || $checkOldSerie){
 			if($graph->json=='null' || $reset == true || $axe_exist || $checkOldSerie){
 
