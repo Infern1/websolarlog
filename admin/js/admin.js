@@ -968,8 +968,17 @@ function init_graphs(selected_graphId) {
                 });
                 $('#sidebar').html(html);
                 $('#resetGraphs').bind("click",function(){
-                	WSL.connect.getJSON('admin-server.php?s=resetGraph', function(graphs) {
-                		console.log('resetGraph');
+					$.pnotify({
+						title: 'Resetting Graph(s)',
+				        text: 'We are resetting the graphs...'',
+				        type: 'info'                                    
+					});
+                	WSL.connect.getJSON('admin-server.php?s=resetGraph', function(result) {
+    					$.pnotify({
+    						title: 'Graphs reset',
+    				        text: 'Graphs are back to normal.',
+    				        type: 'success'                                    
+    					});     
                 	});
                 });
                 
@@ -1558,7 +1567,7 @@ function init_update(experimental,beta,scrollTo) {
                                     type: 'success'
                                 });
                                 $.pnotify({
-                                    title: 'WebSolarLog soft-restart',
+                                    title: 'WebSolarLog performs a soft-restart',
                                     text: 'It could take 5-10 min. before all changes are visible.<br>Please be patient.',
                                     type: 'info'
                                 });
