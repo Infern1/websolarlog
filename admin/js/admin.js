@@ -970,7 +970,7 @@ function init_graphs(selected_graphId) {
                 $('#resetGraphs').bind("click",function(){
 					$.pnotify({
 						title: 'Resetting Graph(s)',
-				        text: 'We are resetting the graphs...'',
+				        text: 'We are resetting the graphs...',
 				        type: 'info'                                    
 					});
                 	WSL.connect.getJSON('admin-server.php?s=resetGraph', function(result) {
