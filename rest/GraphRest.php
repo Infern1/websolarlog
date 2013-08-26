@@ -75,6 +75,7 @@ class GraphRest {
 				}
 			}
 			R::store($graph);
+			return true;
 		}
 	}
 	

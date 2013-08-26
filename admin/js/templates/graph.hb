@@ -3,24 +3,6 @@
    <legend>{{capitalizer title=data.inverter.type}} graph: {{data.name}}</legend>
   		<font style="color:red;font-size:15px;">!This page is under construction!
 Do not (NOT!), change anything!</font> 
-			<div class="column span-28">
-				<div class="column span-8 first">Location</div>
-				<div class="column span-6">Axe</div>
-				<div class="column span-8">description</div>
-				<div class="column span-4">..</div>
-			 </div>
-{{#data.axes}}
-<div class="column span-28">
-<form id="{{this.id}}">
-	<div class="column span-0 first" style="display:none;">{{this.id}}</div>
-	<div class="column span-8 first name">{{this.name}}</div>
-	<div class="column span-6 axe">{{this.axe}}</div>
-	<div class="column span-8"><input type="text" style="width:160px" name="label"  class="label" value="{{this.json.label}}"></div>
-	<div class="column span-1"><img class="deleteAxe" id="{{this.id}}" src="../admin/images/bin_closed.png"/></div>
-	<div class="column span-1"><input type="image" class="saveAxe" src="../admin/images/disk.png"/></div>
-</form>
-</div>
-{{/data.axes}}
 	    <div class="cl"></div>
 		<strong>Graph layout</strong>:<br>
 		<div class="column" style="width:554px;text-align:center;border:1px solid #ddd;">x2axis</div>
@@ -33,7 +15,29 @@ Do not (NOT!), change anything!</font>
 		<div style="margin-left:auto;margin-right:auto;width:60px;">right<br>y(2-8)axis</div></div>
 		<div class="column" style="width:554px;text-align:center;border:1px solid #ddd;">xaxis</div>
 		</div>
-		<div class="column span-28" id="file{{id}}">
+			<div class="column span-28" id="axes">
+				<div class="column span-8 first">Location</div>
+				<div class="column span-6">Axe</div>
+				<div class="column span-8">description</div>
+				<div class="column span-4">..</div>
+			 </div>
+{{#data.axes}}
+<div class="column span-28" >
+<form id="{{this.id}}">
+	<div class="column span-0 first" style="display:none;">{{this.id}}</div>
+	<div class="column span-8 first name">{{this.name}}</div>
+	<div class="column span-6 axe">{{this.axe}}</div>
+	<div class="column span-8"><input type="text" style="width:160px" name="label"  class="label" value="{{this.json.label}}"></div>
+	<div class="column span-1"><img class="deleteAxe" id="{{this.id}}" src="../admin/images/bin_closed.png"/></div>
+	<div class="column span-1"><input type="image" class="saveAxe" src="../admin/images/disk.png"/></div>
+</form>
+</div>
+{{/data.axes}}
+<div class="column span-28" id="series">
+<br>
+<strong>Config Series:</strong>
+</div>
+		<div class="column span-28">
 			<div class="column span-30 first">
 			<div class="column span-8 first">Serie</div>
 			<div class="column span-5 first">@ axe</div>
@@ -48,26 +52,23 @@ Do not (NOT!), change anything!</font>
 	    			<input type="hidden" name="id" value="{{this.id}}">
 						<div class="column span-8 first">{{this.name}}</div>
 						<div class="column span-5 first">
-						<select name="yaxis"> 
+						<select name="yaxis" class="saveSerie"> 
 						    {{#../data.axesList}}
 								 <option value="{{this.axe}}" {{#if_eq this.axe compare=../this.json.yaxis}}selected{{/if_eq}}>{{this.axe}}</option>
 							{{/../data.axesList}}
 							</select>
 						</div>
 						<div class="column span-5 first">
-							{{checkboxWithHidden 'serieHidden' this.show}}
+							{{checkboxWithHidden 'serieHidden' this.show '' 'saveSerie'}}
 						</div>
 						<div class="column span-5 first">
-							{{checkboxWithHidden 'serieVisible' this.disabled}}	
+							{{checkboxWithHidden 'serieVisible' this.disabled '' 'saveSerie'}}	
 						</div>
-						<div class="column span-1"><img class="saveSerie" src="../admin/images/disk.png"/></div>
+						
 						</form>				
 					{{/data.series}}
 				</ul>
 			</div>
 		<div>
-        <div class="span-20 first">
-        	<button type="button" id="btnGraphSubmit">Save</button>
-        </div>
   </fieldset>
 </div> 

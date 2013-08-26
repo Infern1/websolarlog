@@ -1264,39 +1264,27 @@ function load_graph(graphId) {
                         });
                 });
                 
-                $('.saveSerie').bind('click',function(){
+                $(".saveSerie").bind('click',function(){
                 	var postdata = $(this).closest('form').serialize();
-
             		WSL.connect.postJSON(
             				"../api.php/Graph/saveSerie", 
             				postdata, 
-            				function(){console.log('success')}
+            				function(result){
+            					if(result == true) {
+		    					$.pnotify({
+		    						title: 'Succes',
+		    				        text: 'Serie saved!',
+		    				        type: 'success'                                    
+		    					});
+		    					WSL.scrollTo({element : '#series',time : '', offset : 0});
+		    				} else {
+		    					$.pnotify({
+		    				        title: 'Error',
+		    				        text: 'We could not save the serie...',
+		    				        type: 'error'
+		    				    });      
+		    				}}
             				);
-            		
-                	//$(this).closest('form').submit();
-                	$.ajax({
-                        type: "POST",
-                        url: "../api.php/Graph/serie/"+postData[''],
-                        success: function(response){
-            				if (response.type == 'axe'){
-            					if(response.success == true) {
-			    					$.pnotify({
-			    						title: 'Succes',
-			    				        text: 'Axe removed!',
-			    				        type: 'success'                                    
-			    					});     
-			    					init_graphs(graphId);
-			    					window.location.hash = '#graphs';
-			    				} else {
-			    					$.pnotify({
-			    				        title: 'Error',
-			    				        text: 'Axe not removed...',
-			    				        type: 'error'
-			    				    });      
-			    				}
-            				}
-                        }
-                        });
                 });
                 
                 $('.saveAxe').bind('click',function(e){

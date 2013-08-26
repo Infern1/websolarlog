@@ -175,7 +175,11 @@
 	});
 	
 	
-	Handlebars.registerHelper("checkboxWithHidden", function(name, state, value) {
+	Handlebars.registerHelper("checkboxWithHidden", function(name, state, value,classAttr) {
+		console.log("1:"+name);
+		console.log("2:"+state);
+		console.log("3:"+value);
+		console.log("4:"+classAttr);
 		if(state==1 || state==true || state == 'checked'|| state == 'true'){
 			var checked = 'checked';
 		}else{
@@ -184,7 +188,11 @@
 		if (typeof value === 'object' || value == '') {
 			value = 1;
 		}
-		return new Handlebars.SafeString("<input type=\"hidden\" name=\""+name+"\" value=\"0\"/><input type=\"checkbox\" "+checked+" name=\""+name+"\" value=\""+value+"\"/>");
+		if (typeof classAttr === 'object' || classAttr == '') {
+			classAttr = '';
+		}
+		return new Handlebars.SafeString("<input type=\"hidden\" name=\""+name+"\" value=\"0\"/>" +
+				"<input type=\"checkbox\" "+checked+"  name=\""+name+"\" class=\""+classAttr+"\" value=\""+value+"\"/>");
 	});
     
 

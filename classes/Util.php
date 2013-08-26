@@ -377,6 +377,8 @@ class Util {
 				$ret[$ii]=$array[$ii];
 			}
 			$array=$ret;
+			return $array;
 		}
+		
 }
 ?>

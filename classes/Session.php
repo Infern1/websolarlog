@@ -300,7 +300,9 @@ class Session
     	
     	
     	$hookHandler->add("GraphDayPoints", "SmartMeterAddon.GraphDayPoints"); // Will run at 00:00
-    	
+    	   
+    	$hookHandler->add("GraphDayPoints", "GraphDataService.GraphDayPoints"); // Will run at 00:00
+
     	$hookHandler->add("installGraph", "SmartMeterAddon.installGraph"); // Will run at 00:00
     	
     	$hookHandler->add("defaultAxes", "SmartMeterAddon.defaultAxes");
