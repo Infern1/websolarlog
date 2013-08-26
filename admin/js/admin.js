@@ -1285,6 +1285,7 @@ function load_graph(graphId) {
 		    				        text: 'Serie saved!',
 		    				        type: 'success'                                    
 		    					});
+		    					$.pnotify.defaults.delay = 1000;
 		    					WSL.scrollTo({element : '#series',time : '', offset : 0});
 		    				} else {
 		    					$.pnotify({
@@ -1420,6 +1421,7 @@ function init_diagnostics() {
                         text: 'We are checking the DB on some things.',
                         type: 'info'
                     }); 
+                    $.pnotify.defaults.delay = 2000;
                 }); 
             },
             dataType : 'text'
