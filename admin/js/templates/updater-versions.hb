@@ -1,5 +1,9 @@
 <br /><br />
 <h3>Info about your current version:</h3>
+<br />
+After an update WSL will run a soft-restart.<br>
+Therefore it could take 5-10 min. before all changes will take effect.<br>
+<br>
 		<div class="span span-30">
 
 			<ul style="list-style-type: none;"><li>
