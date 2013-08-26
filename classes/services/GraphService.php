@@ -17,7 +17,7 @@ class GraphService {
 	public static function installGraph($reset=false){
 		$series = array();
 		HookHandler::getInstance()->fire("onDebug", "Run GraphService::janitorDbCheck->installGraph");
-		//$graph = R::load('graph',1);
+		$graph = R::load('graph',1);
 
 		// 'axe' is a old table, we now use 'axes'. So if we have this table, we need to reset the graph.
 		$axe_exist = R::find('axe',1);
@@ -31,7 +31,7 @@ class GraphService {
 		"axe_exists:".print_r($axe_exist,true)." \r\n ".
 		"checkOldSerie".print_r($checkOldSerie,true));
 		
-		if ($graph || $reset == true || $axe_exist || $checkOldSerie){
+		if ($graph && ($reset == true || $axe_exist || $checkOldSerie)){
 			HookHandler::getInstance()->fire("onDebug",'first IF');
 			
 			if($graph->json=='null' || $reset == true || $axe_exist || $checkOldSerie){
@@ -50,6 +50,8 @@ class GraphService {
 				$graph = null;
 			}
 		}
+		
+		$graph = R::load('graph',1);
 
 		if (!$graph){
 
