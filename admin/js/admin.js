@@ -1415,6 +1415,11 @@ function init_diagnostics() {
                 $('#content').html(html);
                 $('#btnCheckDb').bind('click', function() {
                 	$.getJSON('../api.php/Janitor/DbCheck');
+                    $.pnotify({
+                        title: 'Running some DB checks',
+                        text: 'We are checking the DB on some things.',
+                        type: 'info'
+                    }); 
                 }); 
             },
             dataType : 'text'
