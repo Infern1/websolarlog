@@ -22,7 +22,7 @@ class GraphService {
 		// 'axe' is a old table, we now use 'axes'. So if we have this table, we need to reset the graph.
 		$axe_exist = R::load('axe',1);
 
-		$checkOldSerie = R::find('graph_series',' name = :name',array(':name'=>'cumGasL'));
+		$checkOldSerie = (count(R::find('graph_series',' name = :name',array(':name'=>'cumGasL'))>0)) ? true : false;
 		
 
 		if ($graph || $reset == true || $axe_exist || $checkOldSerie){
