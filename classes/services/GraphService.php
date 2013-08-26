@@ -25,15 +25,17 @@ class GraphService {
 		$checkOldSerie = (R::count('graph_series',' name = :name',array(':name'=>'cumGasL'))>0) ? true : false;
 		
 		HookHandler::getInstance()->fire("onDebug", 
-		(($graph->json) ? 'true' : 'false')." \r\n ".
-		(($graph) ? 'true' : 'false')." \r\n ".
-		print_r($reset,true)." \r\n ".
-		print_r($axe_exist,true)." \r\n ".
-		print_r($checkOldSerie,true));
+		"graph->json:".(($graph->json) ? 'true' : 'false')." \r\n ".
+		"graph:".(($graph) ? 'true' : 'false')." \r\n ".
+		"reset:".print_r($reset,true)." \r\n ".
+		"axe_exists:".print_r($axe_exist,true)." \r\n ".
+		"checkOldSerie".print_r($checkOldSerie,true));
 		
 		if ($graph || $reset == true || $axe_exist || $checkOldSerie){
+			HookHandler::getInstance()->fire("onDebug",'first IF');
+			
 			if($graph->json=='null' || $reset == true || $axe_exist || $checkOldSerie){
-
+				HookHandler::getInstance()->fire("onDebug",'second IF');
 				R::exec( "DROP TABLE IF EXISTS axes;" );
 				R::exec( "DROP TABLE IF EXISTS axe;" );
 
@@ -44,7 +46,7 @@ class GraphService {
 				R::exec( "DROP TABLE IF EXISTS graph_serie;" );
 				R::exec( "DROP TABLE IF EXISTS series;" );
 				R::exec( "DROP TABLE IF EXISTS serie;" );
-
+				HookHandler::getInstance()->fire("onDebug",'all tabels dropped');
 				$graph = null;
 			}
 		}
