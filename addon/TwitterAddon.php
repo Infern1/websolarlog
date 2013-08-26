@@ -83,7 +83,7 @@ class TwitterAddon {
 				$url = Common::getShortUrl($config->url);
 				$twitter->setUserStatus("Today we generated ". $indexValues['summary']['today']['todayAvgKwh-0']." kWh. Check out: " . $url . " #SunCounter" );
 				$twitter->logout();
-				$data['message']=var_dump($indexValues);
+				$data['message']=print_r($indexValues, true);
 				$data['tweetSend']=1;
 				HookHandler::getInstance()->fire("onDebug", 'It looks like we Tweeted for you :D');
 			}
