@@ -24,7 +24,7 @@ class GraphService {
 
 		$checkOldSerie = (R::count('graph_series',' name = :name',array(':name'=>'cumGasL'))>0) ? true : false;
 		
-		HookHandler::getInstance()->fire("onDebug", print_r($graph->json,true)." ".print_r($graph,true)." ".print_r($reset,true)." ".print_r($axe_exist,true)." ".print_r($checkOldSerie,true));
+		HookHandler::getInstance()->fire("onDebug", (($graph->json) ? 'true' : 'false')." \r\n ".(($graph) ? 'true' : 'false')." \r\n ".print_r($reset,true)." \r\n ".print_r($axe_exist,true)." \r\n ".print_r($checkOldSerie,true));
 		if ($graph || $reset == true || $axe_exist || $checkOldSerie){
 			if($graph->json=='null' || $reset == true || $axe_exist || $checkOldSerie){
 
