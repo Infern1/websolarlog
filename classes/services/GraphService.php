@@ -51,7 +51,7 @@ class GraphService {
 			}
 		}
 		
-		$graph = R::load('graph',1);
+		
 
 		if (!$graph){
 
