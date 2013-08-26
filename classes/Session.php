@@ -258,6 +258,15 @@ class Session
     	// TODO :: Get from dbase
     	$hookHandler = HookHandler::getInstance();
 
+    	// LoggerAddon, Needs to be first so we can use debug as fast as possible
+    	$hookHandler->add("onDebug", "LoggerAddon.onDebug");
+    	$hookHandler->add("onError", "LoggerAddon.onError");
+    	$hookHandler->add("onWarning", "LoggerAddon.onWarning");
+    	$hookHandler->add("onInfo", "LoggerAddon.onInfo");
+    	$hookHandler->add("onInverterStartup", "LoggerAddon.onInverterStartup");
+    	$hookHandler->add("onInverterError", "LoggerAddon.onInverterError");
+    	$hookHandler->add("onInverterShutdown", "LoggerAddon.onInverterShutdown");
+    	
     	// Core hooks
     	$hookHandler->add("onInverterInfo", "CoreAddon.onInverterInfo");
     	$hookHandler->add("onInverterAlarm", "CoreAddon.onInverterAlarm");
@@ -281,14 +290,6 @@ class Session
     	$hookHandler->add("onInverterError", "MailAddon.onInverterError");
     	$hookHandler->add("onInverterWarning", "MailAddon.onInverterWarning");
     	
-    	// LoggerAddon
-    	$hookHandler->add("onError", "LoggerAddon.onError");
-    	$hookHandler->add("onWarning", "LoggerAddon.onWarning");
-    	$hookHandler->add("onInfo", "LoggerAddon.onInfo");
-    	$hookHandler->add("onDebug", "LoggerAddon.onDebug");
-    	$hookHandler->add("onInverterStartup", "LoggerAddon.onInverterStartup");
-    	$hookHandler->add("onInverterError", "LoggerAddon.onInverterError");
-    	$hookHandler->add("onInverterShutdown", "LoggerAddon.onInverterShutdown");
     	
     	// PvOutputAddon
     	$hookHandler->add("onFastJob", "PvOutputAddon.onJob");

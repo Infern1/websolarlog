@@ -27,9 +27,9 @@ class JanitorRest {
 	
 	public function DbCheck() {
 		HookHandler::getInstance()->fire('onInfo', "Janitor checking the database.");
-		HookHandler::getInstance()->fire("onJanitorDbCheck", "before");
+		//HookHandler::getInstance()->fire("onJanitorDbCheck", "before");
 		HookHandler::getInstance()->fire("onJanitorDbCheck", "check");
-		HookHandler::getInstance()->fire("onJanitorDbCheck", "after");
+		//HookHandler::getInstance()->fire("onJanitorDbCheck", "after");
 	}
 	
 	public function getDeviceHistory() {
