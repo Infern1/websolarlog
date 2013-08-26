@@ -1560,7 +1560,7 @@ function init_update(experimental,beta,scrollTo) {
                                 $.pnotify({
                                     title: 'WebSolarLog soft-restart',
                                     text: 'It could take 5-10 min. before all changes are visible.<br>Please be patient.',
-                                    type: 'warning'
+                                    type: 'info'
                                 });
                             	var experimental = $('#chkExperimental').is(':checked');
                             	var beta = $('#chkBeta').is(':checked');
