@@ -55,7 +55,8 @@ $(window).focus(function() {
 	// calculate time sinds page load.
 	secondesInBlur = (currentTime - window.blurTime) / 1000;
 	// The page was for XXX seconds in Blur, we need te reload the whole page...
-	if(WSL.connect.settings.useRunOnBlur && secondesInBlur > 300){
+	console.log("WSL.connect.settings.useRunOnBlur=" + WSL.connect.settings.useRunOnBlur);
+	if(WSL.connect.settings.useRunOnBlur === true && secondesInBlur > 300){
 		location.reload(true);
 	}
 	windowState = true;
@@ -2479,7 +2480,7 @@ WSL.connect.getJSON = function(url, success, error) {
  * @param error
  */
 WSL.connect.getJSONOnBlur = function(url, success, error) {
-	WSL.connect.__ajax(url, 'GET', type, null, true, success, error, true);
+	WSL.connect.__ajax(url, 'GET', 'json', null, true, success, error, true);
 };
 
 /**
