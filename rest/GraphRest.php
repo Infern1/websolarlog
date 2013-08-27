@@ -66,10 +66,15 @@ class GraphRest {
 	 */
 	public function POST($request, $options) {
 		if($request[0]=="Graph" && $request[1]=="saveSerie"){
-			$graph = R::findOne('graph',' name = ?',array($_POST['graphName']));			
+			$graph = R::findOne('graph',' name = ?',array($_POST['graphName']));
 			$links = $graph->ownGraph_series;
 			foreach ($links as $link){
 				if($link['id']==$_POST['id']){
+					
+					$json = json_decode($link->json);
+					$json->yaxis = $_POST['yaxis'];
+					
+					$link->json = json_encode($json);
 					$link->show = $_POST['serieHidden'];
 					$link->disabled = $_POST['serieVisible'];
 				}

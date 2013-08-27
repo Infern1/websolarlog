@@ -1276,12 +1276,12 @@ function load_graph(graphId) {
                 $(".saveSerie").bind('click',function(){
                 	var postdata = $(this).closest('form').serialize();
             		WSL.connect.postJSON(
-            				"../api.php/Graph/saveSerie", 
-            				postdata, 
-            				function(result){
-            					if(result == true) {
-		    					$.pnotify({
-		    						title: 'Succes',
+        				"../api.php/Graph/saveSerie", 
+        				postdata, 
+        				function(result){
+        					if(result == true) {
+        						$.pnotify({
+        							title: 'Succes',
 		    				        text: 'Serie saved!',
 		    				        type: 'success'                                    
 		    					});
@@ -1293,8 +1293,8 @@ function load_graph(graphId) {
 		    				        text: 'We could not save the serie...',
 		    				        type: 'error'
 		    				    });      
-		    				}}
-            				);
+		    				}
+        				});
                 });
                 
                 $('.saveAxe').bind('click',function(e){

@@ -249,10 +249,10 @@ class GraphService {
 		$x=0;
 		$y=0;
 		foreach ($axes as $axe){
-				
 			$json = json_decode($axe['json']);
 			$axesList[$i]['axe'] = $json->axe;
-				
+			$axesList[$i]['label'] = $json->label;
+			
 			$axeNew[$i]['json'] =  $json;
 			$axeNew[$i]['name'] = (strlen($json->axe)<=5) ? 'left-'.($i+1) : 'right';
 			$axeNew[$i]['id'] = $axe['id'];

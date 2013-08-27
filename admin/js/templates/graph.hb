@@ -40,28 +40,27 @@ Do not (NOT!), change anything!</font>
 		<div class="column span-28">
 			<div class="column span-30 first">
 			<div class="column span-8 first">Serie</div>
-			<div class="column span-5 first">@ axe</div>
-			<div class="column span-5 first">load line:</div>
-			<div class="column span-5 first">default show line:</div>
-			<div class="column span-2 first">&nbsp;</div>							
+			<div class="column span-8 first">@ axe</div>
+			<div class="column span-4 first">load line:</div>
+			<div class="column span-4 first">default hide line:</div>						
 							
 				<ul>    
 	    			{{#data.series}}
 	    			<form id="serie-{{this.id}}">
 	    			<input type="hidden" name="graphName" value="{{../data.name}}">
 	    			<input type="hidden" name="id" value="{{this.id}}">
-						<div class="column span-8 first">{{this.name}}</div>
-						<div class="column span-5 first">
+						<div class="column span-8 first" style="overflow:hidden;">{{this.name}}</div>
+						<div class="column span-8 first">
 						<select name="yaxis" class="saveSerie"> 
 						    {{#../data.axesList}}
-								 <option value="{{this.axe}}" {{#if_eq this.axe compare=../this.json.yaxis}}selected{{/if_eq}}>{{this.axe}}</option>
+								 <option value="{{this.axe}}" {{#if_eq this.axe compare=../this.json.yaxis}}selected{{/if_eq}}>{{this.axe}} ({{this.label}})</option>
 							{{/../data.axesList}}
 							</select>
 						</div>
-						<div class="column span-5 first">
+						<div class="column span-4 first">
 							{{checkboxWithHidden 'serieHidden' this.show '' 'saveSerie'}}
 						</div>
-						<div class="column span-5 first">
+						<div class="column span-4 first">
 							{{checkboxWithHidden 'serieVisible' this.disabled '' 'saveSerie'}}	
 						</div>
 						

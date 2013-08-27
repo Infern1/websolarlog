@@ -15,16 +15,15 @@ class GraphDataService {
 		//var_dump($args);
 		$graphPoints = array();
 		if($args[1]->type=="production"){
-		
-		if($args[3]=='Today'){
-			$_SESSION['timers']['GraphDataService_LoadData_BeforeReadTablesPeriodValues'] =(microtime(true)-$_SESSION['timerBegin'] );
-			$beans = self::readTablesPeriodValues($args[1], self::$tbl, $args[3], $args[2]);
-			$_SESSION['timers']['GraphDataService_LoadData_AfterReadTablesPeriodValues'] =(microtime(true)-$_SESSION['timerBegin'] );
-			
-			$_SESSION['timers']['GraphDataService_BeforeBeansToPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
-			$graphPoints = self::DayBeansToGraphPoints($beans, time());
-			$_SESSION['timers']['GraphDataService_AfterBeansToPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
-		}
+			if($args[3]=='Today'){
+				$_SESSION['timers']['GraphDataService_LoadData_BeforeReadTablesPeriodValues'] =(microtime(true)-$_SESSION['timerBegin'] );
+				$beans = self::readTablesPeriodValues($args[1], self::$tbl, $args[3], $args[2]);
+				$_SESSION['timers']['GraphDataService_LoadData_AfterReadTablesPeriodValues'] =(microtime(true)-$_SESSION['timerBegin'] );
+				
+				$_SESSION['timers']['GraphDataService_BeforeBeansToPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
+				$graphPoints = self::DayBeansToGraphPoints($beans, time());
+				$_SESSION['timers']['GraphDataService_AfterBeansToPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
+			}
 		}
 		return $graphPoints;
 	}
