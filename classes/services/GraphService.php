@@ -75,7 +75,8 @@ class GraphService {
 			$graphBean->sharedSeries = $series;
 
 			$defaultAxes = HookHandler::getInstance()->fire("defaultAxes");
-			$graphBean->sharedAxes = array_merge(self::defaultAxes(),$defaultAxes);
+			$axes = array_merge(self::defaultAxes(),$defaultAxes);
+			$graphBean->sharedAxes = $axes;
 
 			R::store($graphBean);
 
@@ -100,6 +101,26 @@ class GraphService {
 				$link->order = $order;
 				$i++;
 			}
+			R::store($graphBean);
+			$links = null;
+			
+			$links = $graphBean->ownAxes_graph;
+			$i=0;
+			foreach($links as $link){
+				$link->json = $axes[$i]->json;
+				if($i>0){
+					if($order>$axes[$i]->order){
+						$order = $order+1;
+					}else{
+						$order = $axes[$i]->order;
+					}
+				}else{
+					$order = 0;
+				}
+				$link->order = $axes[$i]->order;
+				$i++;
+			}
+			
 			R::store($graphBean);
 
 		}
@@ -139,17 +160,17 @@ class GraphService {
 		$axe = R::dispense('axes',3);
 		$axe[0]['json'] = json_encode(array('axe'=>'yaxis','label'=>'Avg Power (Wh)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer'));
 		$axe[0]['show'] = $show;
-		$axe[0]['AxeOrder'] = 1;
+		$axe[0]['order'] = 1;
 		$axe[0]['addon'] = 'wsl';
 		$axe[1]['json'] = json_encode(array('axe'=>'y2axis','label'=>'Cum Power (W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer'));
 		$axe[1]['show'] = $show;
-		$axe[1]['AxeOrder'] = 2;
+		$axe[1]['order'] = 2;
 		$axe[1]['addon'] = 'wsl';
 		$axe[2]['json'] = json_encode(
 				array('axe'=>'xaxis','label'=>'','renderer'=>'DateAxisRenderer','tickRenderer'=>'CanvasAxisTickRenderer','labelRenderer'=>'CanvasAxisLabelRenderer','tickInterval'=>3600,
 						'tickOptions'=>array('formatter'=>'DayDateTickFormatter','angle'=>-45)));
 		$axe[2]['show'] = $show;
-		$axe[2]['AxeOrder'] = 0;
+		$axe[2]['order'] = 0;
 		$axe[2]['addon'] = 'wsl';
 		return $axe;
 	}
@@ -238,12 +259,14 @@ class GraphService {
 			return $a['order'] - $b['order'];
 		});
 		
-		//var_dump($series);
 		// find axes of graph
-
-		$axes = $graph->with(' ORDER BY AxeOrder ASC ')->sharedAxes;
+		$axes = $graph->ownAxes_graph;
 		$_SESSION['timers']['GraphService_sharedAxes'] =(microtime(true)-$_SESSION['timerBegin'] );
-
+		
+		usort($axes, function($a, $b) {
+			return $a['order'] - $b['order'];
+		});
+		
 		$axesList = array();
 		$i=0;
 		$x=0;

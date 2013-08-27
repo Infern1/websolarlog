@@ -1297,35 +1297,29 @@ function load_graph(graphId) {
         				});
                 });
                 
-                $('.saveAxe').bind('click',function(e){
-                	
-                	e.preventDefault(); 
-                	$(this).closest('form').serialize();
-                	
-                	//$(this).closest('form').submit();
-                	$.ajax({
-                        type: "POST",
-                        url: "../api.php/Graph/axe/9",
-                        success: function(response){
-            				if (response.type == 'axe'){
-            					if(response.success == true) {
-			    					$.pnotify({
-			    						title: 'Succes',
-			    				        text: 'Axe removed!',
-			    				        type: 'success'                                    
-			    					});     
-			    					init_graphs(graphId);
-			    					window.location.hash = '#graphs';
-			    				} else {
-			    					$.pnotify({
-			    				        title: 'Error',
-			    				        text: 'Axe not removed...',
-			    				        type: 'error'
-			    				    });      
-			    				}
-            				}
-                        }
-                        });
+                $(".saveAxe").bind('click',function(e){
+                	e.preventDefault();
+                	var postdata = $(this).closest('form').serialize();
+            		WSL.connect.postJSON(
+        				"../api.php/Graph/saveAxe", 
+        				postdata, 
+        				function(result){
+        					if(result == true) {
+        						$.pnotify({
+        							title: 'Succes',
+		    				        text: 'Axe saved!',
+		    				        type: 'success'                                    
+		    					});
+		    					$.pnotify.defaults.delay = 1000;
+		    					WSL.scrollTo({element : '#axes',time : '', offset : 0});
+		    				} else {
+		    					$.pnotify({
+		    				        title: 'Error',
+		    				        text: 'We could not save the axe...',
+		    				        type: 'error'
+		    				    });      
+		    				}
+        				});
                 });
 
             },

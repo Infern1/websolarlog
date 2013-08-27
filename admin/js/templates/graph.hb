@@ -23,7 +23,9 @@ Do not (NOT!), change anything!</font>
 			 </div>
 {{#data.axes}}
 <div class="column span-28" >
-<form id="{{this.id}}">
+	    			<form method="post" id="axe-{{this.id}}">
+	    			<input type="hidden" name="graphName" value="{{../data.name}}">
+	    			<input type="hidden" name="id" value="{{this.id}}">
 	<div class="column span-0 first" style="display:none;">{{this.id}}</div>
 	<div class="column span-8 first name">{{this.name}}</div>
 	<div class="column span-6 axe">{{this.axe}}</div>
@@ -42,7 +44,7 @@ Do not (NOT!), change anything!</font>
 			<div class="column span-8 first">Serie</div>
 			<div class="column span-8 first">@ axe</div>
 			<div class="column span-4 first">load line:</div>
-			<div class="column span-4 first">default hide line:</div>						
+			<div class="column span-5 first">default hide line:</div>						
 							
 				<ul>    
 	    			{{#data.series}}
@@ -60,7 +62,7 @@ Do not (NOT!), change anything!</font>
 						<div class="column span-4 first">
 							{{checkboxWithHidden 'serieHidden' this.show '' 'saveSerie'}}
 						</div>
-						<div class="column span-4 first">
+						<div class="column span-5 first">
 							{{checkboxWithHidden 'serieVisible' this.disabled '' 'saveSerie'}}	
 						</div>
 						

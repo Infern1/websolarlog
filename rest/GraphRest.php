@@ -65,7 +65,7 @@ class GraphRest {
 	 * Rest functions
 	 */
 	public function POST($request, $options) {
-		if($request[0]=="Graph" && $request[1]=="saveSerie"){
+	if($request[0]=="Graph" && $request[1]=="saveSerie"){
 			$graph = R::findOne('graph',' name = ?',array($_POST['graphName']));
 			$links = $graph->ownGraph_series;
 			foreach ($links as $link){
@@ -77,6 +77,26 @@ class GraphRest {
 					$link->json = json_encode($json);
 					$link->show = $_POST['serieHidden'];
 					$link->disabled = $_POST['serieVisible'];
+				}
+			}
+			R::store($graph);
+			return true;
+		}
+		if($request[0]=="Graph" && $request[1]=="saveAxe"){
+			echo 'saveAxe!!  ';
+			$graph = R::findOne('graph',' name = ?',array($_POST['graphName']));
+			$links = $graph->ownAxes_graph;
+			foreach ($links as $link){
+				if($link['id']==$_POST['id']){
+					echo 'aaa  ';
+					$json = json_decode($link->json);
+					echo $json->label." ";
+					$json->label = $_POST['label'];
+					echo $json->label." ";
+					$link->json = json_encode($json);
+					/*
+					$link->show = $_POST['serieHidden'];
+					$link->disabled = $_POST['serieVisible'];*/
 				}
 			}
 			R::store($graph);

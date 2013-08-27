@@ -35,7 +35,7 @@ class SmartMeterAddon {
 			$graph = R::dispense('graph');
 	
 			$graph->series = self::defaultSeries();
-			//var_dump(json_decode($graph->series[0]['json'])->label);
+
 			$graph->metaData = array(
 					'legend'=>array(
 						"show"=>true,
@@ -167,18 +167,17 @@ class SmartMeterAddon {
 
 	/**
 	 * add the live info to the history
-	 * @param int $invtnum
+	 * @param int $deviceId
 	 * @param Live $live
 	 * @param string date
 	 */
-	public function addSmartMeterHistory($invtnum, LiveSmartMeter $live,$timestamp) {
-		$live->deviceId = $invtnum;
-		$live->invtnum = $invtnum;
+	public function addSmartMeterHistory($deviceId, LiveSmartMeter $live,$timestamp) {
+ 	
 		
 		$bean = R::dispense('historySmartMeter');
 
 		// check if we have a "valid" Bean to store.
-		$bean->invtnum = $invtnum;
+		$bean->deviceId = $deviceId;
 		$bean->gasUsage = $live->gasUsage;
 		$bean->highReturn = $live->highReturn;
 		$bean->lowReturn = $live->lowReturn;
@@ -196,35 +195,35 @@ class SmartMeterAddon {
 
 	/**
 	 * Read the history file
-	 * @param int $invtnum
+	 * @param int $deviceId
 	 * @param string $date
 	 * @return array<Live> $live (No Live but BEAN object!!)
 	 */
 	// TODO :: There's no Live object returned....?!
-	public function readSmartMeterHistory($invtnum, $date) {
-		(!$date)? $date = date('d-m-Y') : $date = $date;
+	public function readSmartMeterHistory($deviceId, $date) {
+ 		(!$date)? $date = date('d-m-Y') : $date = $date;
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 
 		$bean =  R::findAndExport( 'historySmartMeter',
-				' invtnum = :invtnum AND time > :beginDate AND  time < :endDate order by time',
-				array(':invtnum'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
+				' deviceId = :deviceId AND time > :beginDate AND  time < :endDate order by time',
+				array(':deviceId'=>$deviceId,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 		return $bean;
 	}
 
 	/**
 	 * Return the amount off history records
-	 * @param int $invtnum
+	 * @param int $deviceId
 	 * @param string $date
 	 * @return int $count
 	 */
-	public function getSmartMeterHistoryCount($invtnum) {
+	public function getSmartMeterHistoryCount($deviceId) {
 		$date = date('d-m-Y');
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 
 		$bean =  R::find('historySmartMeter',
-				' invtnum = :invtnum AND time > :beginDate AND  time < :endDate order by time',
-				array(':invtnum'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
+				' deviceId = :deviceId AND time > :beginDate AND  time < :endDate order by time',
+				array(':deviceId'=>$deviceId,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 		return count($bean);
 	}
@@ -233,16 +232,16 @@ class SmartMeterAddon {
 
 	/**
 	 * write the max power today to the file
-	 * @param int $invtnum
+	 * @param int $deviceId
 	 * @param MaxPowerToday $mpt
 	 */
-	public function addSmartMeterEnergy($invtnum, EnergySmartMeter $energy) {
+	public function addSmartMeterEnergy($deviceId, EnergySmartMeter $energy) {
 		$date = date('d-m-Y');
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 
 		$bean =  R::findone('energySmartMeter',
-				' invtnum = :invtnum AND time > :beginDate AND  time < :endDate order by time',
-				array(':invtnum'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
+				' deviceId = :deviceId AND time > :beginDate AND  time < :endDate order by time',
+				array(':deviceId'=>$deviceId,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 
 		$oldGasUsageT = 0;
@@ -263,7 +262,7 @@ class SmartMeterAddon {
 			$oldLowUsageT = $energy->lowUsageT;
 		}
 
-		$bean->invtnum = $invtnum;
+		$bean->deviceId = $deviceId;
 		$bean->gasUsageT = $energy->gasUsageT;
 		$bean->highReturnT = $energy->highReturnT;
 		$bean->lowReturnT = $energy->lowReturnT;
@@ -290,16 +289,14 @@ class SmartMeterAddon {
 			}
 		}
 		
-			$axe = R::dispense('axes',2);
-			
-		//$axe[0]['json'] = json_encode(json_encode(array('axe'=>'yaxis','label'=>'Avg. Power(Wh)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer'));
+		$axe = R::dispense('axes',2);
 		$axe[0]['json'] = json_encode(array('axe'=>'y3axis','label'=>_("Gas").' '._("(L)"),'min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer'));
 		$axe[0]['show'] = $show;
-		$axe[0]['AxeOrder'] = 3;
+		$axe[0]['order'] = 3;
 		$axe[0]['addon'] = $this->addon;
 		$axe[1]['json'] = json_encode(array('axe'=>'y4axis','label'=>_("Actual").''._("(W)"),'labelRenderer'=>'CanvasAxisLabelRenderer'));
 		$axe[1]['show'] = $show;
-		$axe[1]['AxeOrder'] = 4;
+		$axe[1]['order'] = 4;
 		$axe[1]['addon'] = $this->addon;
 
 		return $axe;
@@ -314,7 +311,7 @@ class SmartMeterAddon {
 		}
 
 		$serie = R::dispense('series',11);
-		//$serie[0]['json'] = json_encode(json_encode(array('label'=>'Cum. Power(Wh)','yaxis'=>'y2axis'));
+
 		$serie[0]['json'] = json_encode(array('label'=>'Cum Gas (l)','yaxis'=>'y3axis'));
 		$serie[0]['name'] = 'gasUsage';
 		$serie[0]['disabled'] = 'false';
@@ -423,14 +420,13 @@ class SmartMeterAddon {
 			}
 			$UTCdate = $bean['time'];
 			$UTCtimeDiff = $UTCdate - $preBean['time'];
-			//var_dump($bean);
+
 			if(!in_array('cumGas',$disabledSeries)){
 				$graph->points['gasUsage'][] = array (
 						$UTCdate ,
 						$bean['gasUsage']-$firstBean['gasUsage']);
 			}
 
-			//var_dump(array_keys($disabledSeries));
 			if(!in_array('smoothGasL',$disabledSeries)){
 				if($i==0){
 					$graph->points['smoothGasL'][] = array ($UTCdate ,$firstBean['gasUsage']-$bean['gasUsage']);
@@ -506,7 +502,7 @@ class SmartMeterAddon {
 	 * @param date $labels[] = 'High Power(W)';$startDate ("Y-m-d") ("1900-12-31"), when no date given, the date of today is used.
 	 * @return array($beginDate, $endDate);
 	 */
-	// Hook fired with ("GraphDayPoints",$device,$startDate,$type,$hiddenSeries);
+	// Hook fired with ("GraphDayPoints",$deviceId,$startDate,$type,$hiddenSeries);
 	public function GraphDayPoints($args){
 		if($args[1]->deviceApi == 'DutchSmartMeter'){
 			(strtolower($args[3]) == 'today')?$type='day':$type=$args[3];
@@ -521,7 +517,7 @@ class SmartMeterAddon {
 	
 	/**
 	 *
-	 * @param unknown $invtnum
+	 * @param unknown $deviceId
 	 * @param unknown $table
 	 * @param unknown $type
 	 * @param unknown $startDate
@@ -539,8 +535,8 @@ class SmartMeterAddon {
 
 		$energyBeans = R::getAll("SELECT *
                                         FROM historySmartMeter
-                                        WHERE invtnum = :INV AND time > :beginDate AND  time < :endDate
-                                        ORDER BY time",array(':INV'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+                                        WHERE deviceId = :deviceId AND time > :beginDate AND  time < :endDate
+                                        ORDER BY time",array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		
 		$_SESSION['timers']['GraphDataServer_LoadData_AfterTheGrandBIGQuery'] =(microtime(true)-$_SESSION['timerBegin'] );
 	

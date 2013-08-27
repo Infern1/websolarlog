@@ -1523,6 +1523,7 @@ var WSL = {
 							' kWh/kWp)</div>';
 					*/
 					delete seriesData, graphOptions;
+					console.log(result);
 					if (typeof (result.json.KWH) !== "undefined") {
 						setGraphTitle(graphTitle,'#graph'+ getDay);
 					}
