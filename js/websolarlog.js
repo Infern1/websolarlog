@@ -55,7 +55,7 @@ $(window).focus(function() {
 	// calculate time sinds page load.
 	secondesInBlur = (currentTime - window.blurTime) / 1000;
 	// The page was for XXX seconds in Blur, we need te reload the whole page...
-	if(secondesInBlur > 300){
+	if(WSL.connect.settings.useRunOnBlur && secondesInBlur > 300){
 		location.reload(true);
 	}
 	windowState = true;
@@ -2518,10 +2518,14 @@ WSL.connect.stats = {};
 WSL.connect.stats.success = 0;
 WSL.connect.stats.error = 0;
 WSL.connect.stats.connections = 0;
+WSL.connect.stats.active = 0;
+WSL.connect.settings = {};
+WSL.connect.settings.useRunOnBlur = true;
 WSL.connect.__ajax = function (url, type, dataType, data, async, success, error, runOnBlur) {
 	$.ajax({ url: url, type: type, dataType : dataType, data: data, async: async, 
 		beforeSend : function(xhr) {
-			if (type == 'GET' && getWindowsState() == runOnBlur) {
+			WSL.connect.stats.active++;
+			if (WSL.connect.settings.useRunOnBlur && type == 'GET' && getWindowsState() == runOnBlur) {
 				ajaxAbort(xhr);
 			}
 		}
@@ -2535,8 +2539,8 @@ WSL.connect.__ajax = function (url, type, dataType, data, async, success, error,
 	}).fail(function() {
 		WSL.connect.stats.error++;			
 	}).always(function() {
+		WSL.connect.stats.active--;
 		WSL.connect.stats.connections++;			
-		//console.info(WSL.connect.stats);
 	});
 };
 
