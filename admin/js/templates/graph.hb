@@ -53,9 +53,9 @@ Do not (NOT!), change anything!</font>
 	    			<input type="hidden" name="id" value="{{this.id}}">
 						<div class="column span-8 first" style="overflow:hidden;">{{this.name}}</div>
 						<div class="column span-8 first">
-						<select name="yaxis" class="saveSerie"> 
+						<select name="yaxis" class="saveSerie" width="60" style="width: 60px"> 
 						    {{#../data.axesList}}
-								 <option value="{{this.axe}}" {{#if_eq this.axe compare=../this.json.yaxis}}selected{{/if_eq}}>{{this.axe}} ({{this.label}})</option>
+								 <option value="{{this.axe}}" {{#if_eq this.axe compare=../this.json.yaxis}}selected{{/if_eq}}>{{this.axe}}&nbsp;&nbsp;&nbsp;({{this.label}})</option>
 							{{/../data.axesList}}
 							</select>
 						</div>
