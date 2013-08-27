@@ -71,7 +71,8 @@ try {
 			}
 			$data['languages'] = $languages;
 			//$data['currentlanguage'] = $user_lang;
-			$data['currentlanguage'] = explode(".", setlocale(LC_CTYPE, 0))[0];
+			$currentLang = explode(".", setlocale(LC_CTYPE, 0));
+			$data['currentlanguage'] = $currentLang[0];
 			break;
 		case 'analyticsSettings':
 			$data['googleSuccess'] = false;
@@ -671,8 +672,7 @@ try {
 		var_dump($graph->ownGraph = $graph);
 		//var_dump($sharedGraph);
 		*/
-
-		GraphService::installGraph();
+		//GraphService::installGraph();
 
 		break;
 		case "testen":
