@@ -31,24 +31,19 @@ class GraphService {
 		"axe_exists:".print_r($axe_exist,true)." \r\n ".
 		"checkOldSerie".print_r($checkOldSerie,true));
 		
-		if ($graph && ($reset == true || $axe_exist || $checkOldSerie)){
-			HookHandler::getInstance()->fire("onDebug",'first IF');
-			
-			if($graph->json=='null' || $reset == true || $axe_exist || $checkOldSerie){
-				HookHandler::getInstance()->fire("onDebug",'second IF');
-				R::exec( "DROP TABLE IF EXISTS axes;" );
-				R::exec( "DROP TABLE IF EXISTS axe;" );
+		if ($graph && $graph->json=='null' && ($reset == true || $axe_exist || $checkOldSerie)){
+			R::exec( "DROP TABLE IF EXISTS axes;" );
+			R::exec( "DROP TABLE IF EXISTS axe;" );
 
-				R::exec( "DROP TABLE IF EXISTS axes_graph;" );
-				R::exec( "DROP TABLE IF EXISTS axe_graph;" );
-				R::exec( "DROP TABLE IF EXISTS graph;" );
-				R::exec( "DROP TABLE IF EXISTS graph_series;" );
-				R::exec( "DROP TABLE IF EXISTS graph_serie;" );
-				R::exec( "DROP TABLE IF EXISTS series;" );
-				R::exec( "DROP TABLE IF EXISTS serie;" );
-				HookHandler::getInstance()->fire("onDebug",'all tabels dropped');
-				$graph = null;
-			}
+			R::exec( "DROP TABLE IF EXISTS axes_graph;" );
+			R::exec( "DROP TABLE IF EXISTS axe_graph;" );
+			R::exec( "DROP TABLE IF EXISTS graph;" );
+			R::exec( "DROP TABLE IF EXISTS graph_series;" );
+			R::exec( "DROP TABLE IF EXISTS graph_serie;" );
+			R::exec( "DROP TABLE IF EXISTS series;" );
+			R::exec( "DROP TABLE IF EXISTS serie;" );
+			HookHandler::getInstance()->fire("onDebug",'all tabels dropped');
+			$graph = null;
 		}
 		
 		
@@ -344,7 +339,9 @@ class GraphService {
 			if(isset($graphHook['timestamp']['endDate']) AND $graphHook['timestamp']['endDate'] >  $timestamp['endDate']){
 				$timestamp['endDate'] = $graphHook['timestamp']['endDate'];
 			}
-
+			$timestamp['endDate'] = $timestamp['endDate'] + 3600;
+			$timestamp['beginDate'] = $timestamp['beginDate'] - 3600;
+			
 			return array('dataPoints'=>$dataPoints,'json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','timestamp'=>$timestamp,'name'=>$graph->name,'options'=>$options,'slimConfig' => $slimConfig,'sunInfo'=>$sunInfo,'hideSeries'=>$hideSeries);
 
 				
