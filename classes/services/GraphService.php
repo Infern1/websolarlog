@@ -31,7 +31,7 @@ class GraphService {
 		"axe_exists:".print_r($axe_exist,true)." \r\n ".
 		"checkOldSerie".print_r($checkOldSerie,true));
 		
-		if ($graph && $graph->json=='null' && ($reset == true || $axe_exist || $checkOldSerie)){
+		if ($graph && ($graph->json=='null' || $reset == true || $axe_exist || $checkOldSerie)){
 			R::exec( "DROP TABLE IF EXISTS axes;" );
 			R::exec( "DROP TABLE IF EXISTS axe;" );
 
