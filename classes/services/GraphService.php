@@ -328,8 +328,9 @@ class GraphService {
 			//var_dump(array_keys($graphHook['points']));
 			$dataPoints = array();
 			foreach ($series as $serie){
-				//echo $serie['name'];
-				$dataPoints[$serie['name']]=$graphHook['points'][$serie['name']];
+				if(array_key_exists($serie['name'], $graphHook['points'])){
+					$dataPoints[$serie['name']]=$graphHook['points'][$serie['name']];
+				}
 			}
 						
 			if(isset($graphHook['timestamp']['beginDate']) AND $graphHook['timestamp']['beginDate']<  $timestamp['beginDate']){
