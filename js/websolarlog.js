@@ -2369,7 +2369,7 @@ WSL.api.getPageIndexValues = function(success) {
 };
 
 WSL.api.getPageIndexBlurLiveValues = function(success) {
-	WSL.connect.getJSON('server.php?method=getPageIndexBlurLiveValues', success);
+	WSL.connect.getJSONOnBlur('server.php?method=getPageIndexBlurLiveValues', success);
 };
 
 WSL.api.getPageIndexLiveValues = function(success) {
@@ -2470,6 +2470,16 @@ WSL.connect.deleteType = function(url, type, data, success, error) {
  */
 WSL.connect.getJSON = function(url, success, error) {
 	WSL.connect.get(url, 'json', success, error, false);	
+};
+
+/**
+ * Retrieves some JSON data from the given url during blur time
+ * @param url
+ * @param success
+ * @param error
+ */
+WSL.connect.getJSONOnBlur = function(url, success, error) {
+	WSL.connect.__ajax(url, 'GET', type, null, true, success, error, true);
 };
 
 /**
