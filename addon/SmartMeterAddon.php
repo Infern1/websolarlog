@@ -315,14 +315,14 @@ class SmartMeterAddon {
 
 		$serie = R::dispense('series',11);
 		//$serie[0]['json'] = json_encode(json_encode(array('label'=>'Cum. Power(Wh)','yaxis'=>'y2axis'));
-		$serie[0]['json'] = json_encode(array('label'=>'Cum Gas (l)','yaxis'=>'y2axis'));
+		$serie[0]['json'] = json_encode(array('label'=>'Cum Gas (l)','yaxis'=>'y3axis'));
 		$serie[0]['name'] = 'gasUsage';
 		$serie[0]['disabled'] = 'false';
 		$serie[0]['show'] = $show;
 		$serie[0]['addon'] = $this->addon;
 		$serie[0]['order'] = 0;
 		
-		$serie[1]['json'] = json_encode(array('label'=>'Smooth Gas (l)','yaxis'=>'y2axis'));
+		$serie[1]['json'] = json_encode(array('label'=>'Smooth Gas (l)','yaxis'=>'y3axis'));
 		$serie[1]['name'] = 'smoothGasL';
 		$serie[1]['disabled'] = 'false';
 		$serie[1]['show'] = $show;
@@ -357,28 +357,28 @@ class SmartMeterAddon {
 		$serie[5]['addon'] = $this->addon;
 		$serie[5]['order'] = 5;
 		
-		$serie[6]['json'] = json_encode(array('label'=>'Low usage (W)' ,'yaxis'=>'y3axis'));
+		$serie[6]['json'] = json_encode(array('label'=>'Low usage (W)' ,'yaxis'=>'yaxis'));
 		$serie[6]['name'] = 'lowUsageW';
 		$serie[6]['disabled'] = 'false';
 		$serie[6]['show'] = $show;
 		$serie[6]['addon'] = $this->addon;
 		$serie[6]['order'] = 6;
 		
-		$serie[7]['json'] = json_encode(array('label'=>'High usage (W)' ,'yaxis'=>'y3axis'));
+		$serie[7]['json'] = json_encode(array('label'=>'High usage (W)' ,'yaxis'=>'yaxis'));
 		$serie[7]['name'] = 'highUsageW';
 		$serie[7]['disabled'] = 'false';
 		$serie[7]['show'] = $show;
 		$serie[7]['addon'] = $this->addon;
 		$serie[7]['order'] = 7;
 		
-		$serie[8]['json'] = json_encode(array('label'=>'Low return (W)','yaxis'=>'y3axis'));
+		$serie[8]['json'] = json_encode(array('label'=>'Low return (W)','yaxis'=>'yaxis'));
 		$serie[8]['name'] = 'lowReturnW';
 		$serie[8]['disabled'] = 'false';
 		$serie[8]['show'] = $show;
 		$serie[8]['addon'] = $this->addon;
 		$serie[8]['order'] = 8;
 		
-		$serie[9]['json'] = json_encode(array('label'=>'High return (W)','yaxis'=>'y3axis'));
+		$serie[9]['json'] = json_encode(array('label'=>'High return (W)','yaxis'=>'yaxis'));
 		$serie[9]['name'] = 'highReturnW';
 		$serie[9]['disabled'] = 'false';
 		$serie[9]['show'] = $show;
