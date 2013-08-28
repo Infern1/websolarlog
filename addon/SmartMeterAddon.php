@@ -178,6 +178,7 @@ class SmartMeterAddon {
 
 		// check if we have a "valid" Bean to store.
 		$bean->deviceId = $deviceId;
+		$bean->invtnum = $deviceId;
 		$bean->gasUsage = $live->gasUsage;
 		$bean->highReturn = $live->highReturn;
 		$bean->lowReturn = $live->lowReturn;
@@ -263,6 +264,7 @@ class SmartMeterAddon {
 		}
 
 		$bean->deviceId = $deviceId;
+		$bean->invtnum = $deviceId;
 		$bean->gasUsageT = $energy->gasUsageT;
 		$bean->highReturnT = $energy->highReturnT;
 		$bean->lowReturnT = $energy->lowReturnT;
