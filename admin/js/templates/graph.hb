@@ -30,7 +30,6 @@ Do not (NOT!), change anything!</font>
 	<div class="column span-8 first name">{{this.name}}</div>
 	<div class="column span-6 axe">{{this.axe}}</div>
 	<div class="column span-8"><input type="text" style="width:160px" name="label"  class="label" value="{{this.json.label}}"></div>
-	<div class="column span-1"><img class="deleteAxe" id="{{this.id}}" src="../admin/images/bin_closed.png"/></div>
 	<div class="column span-1"><input type="image" class="saveAxe" src="../admin/images/disk.png"/></div>
 </form>
 </div>
