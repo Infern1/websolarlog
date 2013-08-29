@@ -321,6 +321,8 @@ class GraphService {
 					);
 				}
 			}
+			$slimConfig['lat'] = $config->latitude;
+			$slimConfig['long']= $config->longitude;
 			$slimConfig['inverters'] = $inverters;
 			$util = new Util();
 			$sunInfo = $util->getSunInfo($config, $options['date']);
@@ -340,7 +342,7 @@ class GraphService {
 					$graphHook = array_merge_recursive((array)$graphHook,(array)$hookReturn);
 				}
 			}
-			//var_dump($graphHook);
+			//var_dump($graphHook['metaData']);
 			$_SESSION['timers']['GraphService_afterHookDayPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
 				
 			
@@ -366,9 +368,14 @@ class GraphService {
 			$timestamp['endDate'] = $timestamp['endDate'] + 3600;
 			$timestamp['beginDate'] = $timestamp['beginDate'] - 3600;
 			
-			return array('dataPoints'=>$dataPoints,'json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','timestamp'=>$timestamp,'name'=>$graph->name,'options'=>$options,'slimConfig' => $slimConfig,'sunInfo'=>$sunInfo,'hideSeries'=>$hideSeries);
-
-				
+			$lang['generated'] = _('generated');
+			$lang['max'] = _('max');
+			
+			$dtz = new DateTimeZone($config->timezone);
+			$timezone = new DateTime('now', $dtz);
+			$timezoneOffset = $dtz->getOffset( $timezone )/3600;
+			
+			return array('dataPoints'=>$dataPoints,'json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','timestamp'=>$timestamp,'name'=>$graph->name,'options'=>$options,'slimConfig' => $slimConfig,'sunInfo'=>$sunInfo,'hideSeries'=>$hideSeries,'meta'=>$graphHook['metaData'],'lang'=>$lang,'timezoneOffset'=>$timezoneOffset);	
 		}else{
 			return array('json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','name'=>$graph->name,'options'=>$options);
 		}

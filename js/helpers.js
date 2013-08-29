@@ -176,10 +176,6 @@
 	
 	
 	Handlebars.registerHelper("checkboxWithHidden", function(name, state, value,classAttr) {
-		console.log("1:"+name);
-		console.log("2:"+state);
-		console.log("3:"+value);
-		console.log("4:"+classAttr);
 		if(state==1 || state==true || state == 'checked'|| state == 'true'){
 			var checked = 'checked';
 		}else{

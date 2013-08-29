@@ -55,7 +55,7 @@ $(window).focus(function() {
 	// calculate time sinds page load.
 	secondesInBlur = (currentTime - window.blurTime) / 1000;
 	// The page was for XXX seconds in Blur, we need te reload the whole page...
-	console.log("WSL.connect.settings.useRunOnBlur=" + WSL.connect.settings.useRunOnBlur);
+
 	if(WSL.connect.settings.useRunOnBlur === true && secondesInBlur > 300){
 		location.reload(true);
 	}
@@ -1363,6 +1363,7 @@ var WSL = {
 						clearSky.push(clearSkyGenerated[1]);
 					}
 				}
+				
 
 				var sums = {}; // will keep a map of number => sum
 				// for each input array (insert as many as you like)
@@ -1380,7 +1381,7 @@ var WSL = {
 				    results.push([parseInt(key), sums[key]]);
 				}
 				clearSky.push(results);
-
+				
 				seriesData = [];
 				var clearSkySeriesObject ={}; 
 				var json = [];
@@ -1511,23 +1512,22 @@ var WSL = {
 					//
 					// make graph title 
 					//
-					/*
+					/**/
 					var graphTitle = '<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+ 
 							result.lang.generated+ ': '+ 
-							result.json.KWH.cumPower + ' '+ 
-							result.json.KWH.KWHTUnit + ' ('+ 
-							result.json.KWH.KWHKWP + ' kWh/kWp)&nbsp&nbsp;'+ 
+							result.meta.KWH.cumPower + ' '+ 
+							result.meta.KWH.KWHTUnit + ' ('+ 
+							result.meta.KWH.KWHKWP + ' kWh/kWp)&nbsp&nbsp;'+ 
 							result.lang.max + ': '+ 
 							plantTotalPower + ' '+ 
-							result.json.KWH.KWHTUnit + ' ('+ 
+							result.meta.KWH.KWHTUnit + ' ('+ 
 							 ((typeof totalKWhkWp === 'undefined') ? 0 : totalKWhkWp) +
 							' kWh/kWp)</div>';
-					*/
+					
 					delete seriesData, graphOptions;
-					console.log(result);
-					if (typeof (result.json.KWH) !== "undefined") {
+					//if (typeof (result.json.KWH) !== "undefined") {
 						setGraphTitle(graphTitle,'#graph'+ getDay);
-					}
+					//}
 					fnFinish.call(this, handle);
 					ajaxReady();
 				}

@@ -255,7 +255,7 @@ try {
 			$lang['cumulative'] = _('cumulative (W)');
 			$lang['generated'] = _('generated');
 			$lang['max'] = _('max');
-				
+
 			$data['lang'] = $lang;
 			$data['dayData'] = $dayData;
 			break;

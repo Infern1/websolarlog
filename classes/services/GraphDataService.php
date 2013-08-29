@@ -13,15 +13,16 @@ class GraphDataService {
 	
 	public static function GraphDayPoints($args) {
 		//var_dump($args);
+		$device = $args[1];
 		$graphPoints = array();
 		if($args[1]->type=="production"){
 			if($args[3]=='Today'){
 				$_SESSION['timers']['GraphDataService_LoadData_BeforeReadTablesPeriodValues'] =(microtime(true)-$_SESSION['timerBegin'] );
-				$beans = self::readTablesPeriodValues($args[1], self::$tbl, $args[3], $args[2]);
+				$data = self::readTablesPeriodValues($device, self::$tbl, $args[3], $args[2]);
 				$_SESSION['timers']['GraphDataService_LoadData_AfterReadTablesPeriodValues'] =(microtime(true)-$_SESSION['timerBegin'] );
 				
 				$_SESSION['timers']['GraphDataService_BeforeBeansToPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
-				$graphPoints = self::DayBeansToGraphPoints($beans, time());
+				$graphPoints = self::DayBeansToGraphPoints($data['device'],$data['beans'], time());
 				$_SESSION['timers']['GraphDataService_AfterBeansToPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
 			}
 		}
@@ -32,7 +33,7 @@ class GraphDataService {
 	 *
 	 * @param unknown_type $beans
 	 */
-	public static function  DayBeansToGraphPoints($beans,$startDate){
+	public static function  DayBeansToGraphPoints($device,$beans,$startDate){
 		$graph = new Graph();
 		$config = Session::getConfig();
 		$i=0;
@@ -63,12 +64,12 @@ class GraphDataService {
 
 
 		if($i>0){
-			/*$plantPower = $this->readPlantPower();
-			if($cumPower>0 AND $plantPower>0){
-				$kWhkWp = number_format(($cumPower/1000) / ($plantPower/1000),2,',','');
+			
+			if($cumPower>0 AND $device->plantpower > 0){
+				$kWhkWp = number_format(($cumPower/1000) / ($device->plantpower/1000),2,',','');
 			}else{
 				$kWhkWp = number_format(0,2,',','');
-			}*/
+			}
 	
 			if($cumPower >= 1000){
 				$cumPower = number_format($cumPower /=1000,2,',','');
@@ -114,7 +115,7 @@ class GraphDataService {
 
 		//see if we have atleast 1 bean, else we make one :)
 		(!$energyBeans) ? $energyBeans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $energyBeans = $energyBeans;
-		return $energyBeans;
+		return array('device'=>$device,'beans'=>$energyBeans);
 	}
 	
 	
