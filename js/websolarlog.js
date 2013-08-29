@@ -1515,13 +1515,13 @@ var WSL = {
 					/**/
 					var graphTitle = '<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'+ 
 							result.lang.generated+ ': '+ 
-							Math.round(result.meta.KWH.cumPower / 10) * 10 + ' '+ 
+							result.meta.KWH.cumPower + ' '+ 
 							result.meta.KWH.KWHTUnit + ' ('+ 
-							Math.round(result.meta.KWH.KWHKWP / 10) * 10 + ' kWh/kWp)&nbsp&nbsp;'+ 
+							result.meta.KWH.KWHKWP + ' kWh/kWp)&nbsp&nbsp;'+ 
 							result.lang.max + ': '+ 
-							Math.round(plantTotalPower / 10) * 10 + ' '+ 
+							parseInt(plantTotalPower)+ ' '+ 
 							result.meta.KWH.KWHTUnit + ' ('+ 
-							 ((typeof totalKWhkWp === 'undefined') ? 0 : Math.round(totalKWhkWp / 10) * 10) +
+							 ((typeof totalKWhkWp === 'undefined') ? 0 : totalKWhkWp) +
 							' kWh/kWp)</div>';
 					
 					delete seriesData, graphOptions;
