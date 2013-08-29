@@ -787,8 +787,7 @@ var WSL = {
 
 		if (getWindowsState() == false) {
 			WSL.api.getPageIndexBlurLiveValues(function(data) {
-				document.title = '(' + data.sumInverters.GP
-						+ ' W) WebSolarLog';
+				document.title = '(' + data.sumInverters.totalSystemACP	+ ' W) WebSolarLog';
 			});
 		} else {
 			WSL.api.getPageIndexLiveValues(function(data) {				
