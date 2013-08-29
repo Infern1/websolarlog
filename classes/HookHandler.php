@@ -1,3 +1,4 @@
+
 <?php
 class HookHandler {
 	private static $instance;
@@ -35,7 +36,7 @@ class HookHandler {
     	}
 
     	// Add the hook
-    	HookHandler::fire("onDebug", "Adding hook: " . $callback);
+    	//HookHandler::fire("onDebug", "Adding hook: " . $callback);
     	$this->hooks[$name][] = $callback;
     }
     
