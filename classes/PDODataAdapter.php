@@ -1582,9 +1582,7 @@ class PDODataAdapter {
 		foreach ($config->devices as $device){
 			if($device->type=="production"){
 				$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
-
 				$oInverter = 	array();
-
 
 				if(Util::isSunDown()){
 					$live = new Live();
@@ -1615,7 +1613,10 @@ class PDODataAdapter {
 				}else{
 					$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
 
-
+					$GP += $liveBean['GP'];
+					$GP2 += $liveBean['GP2'];
+					$GP3 += $liveBean['GP3'];
+					
 					$I1P += $liveBean['I1P'];
 					$I2P += $liveBean['I2P'];
 					$I3P += $liveBean['I3P'];
@@ -1690,7 +1691,6 @@ class PDODataAdapter {
 		if($totalSystemIP>0 AND $totalSystemIP>0){
 			$totalSystemEff = ($totalSystemACP / $totalSystemIP) * 100;
 		}
-		
 		
 		$sum['EFF'] = ($totalSystemEff>0) ? number_format($totalSystemEff,1,'.','') : '0,0';
 		return array('inverters'=>$inverters,'sum'=>$sum);
