@@ -1,0 +1,93 @@
+<?php
+require_once("classes/classloader.php");
+Session::initializeLight();
+
+$template = Session::getConfig()->template;												
+require_once("template/" . $template . "/header.php");
+require_once("template/" . $template . "/index.php");
+?>
+	<script type="text/javascript">
+	var productionGraph, productionData;
+	var meteringGraph, meteringData;
+	var weatherGraph, weatherData;
+	
+	$(function(){
+		WSL.connect.settings.useRunOnBlur = false; // We dont want to use the blur here
+		
+		$('#main-middle').append('<h2>production</h2><div id="production"><div id="productionGraph" style="height:200px;"></div><div id="productionLatest"></div></div>');
+		$('#main-middle').append('<h2>metering</h2><div id="metering"><div id="meteringGraph" style="height:200px;"></div><div id="meteringLatest"></div></div>');
+		$('#main-middle').append('<h2>weather</h2><div id="weather"><div id="weatherGraph" style="height:200px;"></div><div id="weatherLatest"></div></div>');
+
+		// Initialize Graphs
+		productionData=[];
+	    productionGraph = $.jqplot('productionGraph', [new Array(1)], {
+	        series: [ { yaxis: 'y2axis', label: '', showMarker: false, fill: false, lineWidth: 2, color: '#00ff00', fillAndStroke: true} ],
+	        axes: {
+	            xaxis: { renderer: $.jqplot.DateAxisRenderer, tickOptions: { formatString: '%H:%M:%S' }}
+	        },
+	        cursor: { zoom: false, showTooltip: false, show: false },
+	        highlighter: { useAxesFormatters: false, showMarker: false, show: false },
+	        grid: { gridLineColor: '#333333', background: 'transparent', borderWidth: 2 }
+	    });
+
+	    meteringData=[];
+	    meteringGraph = $.jqplot('meteringGraph', [new Array(1)], {
+	        series: [ { yaxis: 'y2axis', label: '', showMarker: false, fill: false, lineWidth: 2, color: '#0571B6', fillAndStroke: true} ],
+	        axes: {
+	            xaxis: { renderer: $.jqplot.DateAxisRenderer, tickOptions: { formatString: '%H:%M:%S' } }
+	        },
+	        cursor: { zoom: false, showTooltip: false, show: false },
+	        highlighter: { useAxesFormatters: false, showMarker: false, show: false },
+	        grid: { gridLineColor: '#333333', background: 'transparent', borderWidth: 2 }
+	    });
+
+	    weatherData=[];
+	    weatherGraph = $.jqplot('weatherGraph', [new Array(1)], {
+	        series: [ { yaxis: 'y2axis', label: '', showMarker: false, fill: false, lineWidth: 2, color: '#ff0000', fillAndStroke: true} ],
+	        axes: {
+	            xaxis: { renderer: $.jqplot.DateAxisRenderer, tickOptions: { formatString: '%H:%M:%S' } }
+	        },
+	        cursor: { zoom: false, showTooltip: false, show: false },
+	        highlighter: { useAxesFormatters: false, showMarker: false, show: false },
+	        grid: { gridLineColor: '#333333', background: 'transparent', borderWidth: 2 }
+	    });
+		
+		handleLiveData(); // Fast update
+	    window.setInterval(function(){handleLiveData()}, 5000);
+	});
+
+	function handleLiveData() {
+		WSL.api.live(function(data) {
+			$.each(data, function(){
+				currentTime = (new Date()).getTime();
+				if (this.type == "production") {
+					$('#productionLatest').html('Latest value: ' + this.data.GP);
+			        productionData.push([currentTime, parseInt(this.data.GP)]);
+			        productionGraph.series[0].data = productionData;
+			        productionGraph.resetAxesScale();
+			        productionGraph.replot();
+					
+				}
+				if (this.type == "metering") {
+					usage = this.data.liveUsage - this.data.liveReturn;
+					$('#meteringLatest').html('Latest value: ' + usage);
+					meteringData.push([currentTime, usage]);
+			        meteringGraph.series[0].data = meteringData;
+			        meteringGraph.resetAxesScale();
+			        meteringGraph.replot();
+					
+				}
+				if (this.type == "weather") {
+					$('#weatherLatest').html('Latest value: ' + this.data.temp);
+					weatherData.push([currentTime, parseInt(this.data.temp)]);
+					weatherGraph.series[0].data = weatherData;
+					weatherGraph.resetAxesScale();
+					weatherGraph.replot();
+				}
+			});
+		});
+	}
+	</script>
+	<!-- END Wrapper -->
+</body>
+</html>
