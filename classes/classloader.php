@@ -69,6 +69,37 @@ function wsl_autoloader($classname)
 
     exit("ClassLoader::Basic::Could not autoload: " . $classname. ", " .$docRoot. " is used as documentRoot");
 }
-
 spl_autoload_register('wsl_autoloader');
+
+// error handler function
+function errorHandlerWSL($errno, $errstr, $errfile, $errline) {
+	// Do we need to handle this error as defined by the settings
+	if (!(error_reporting() & $errno)) {
+		return;
+	}
+	
+	switch ($errno) {
+		case E_USER_ERROR:
+			$msg = "FATAL error ($errno) in $errfile [$errline] :: $errstr";
+			HookHandler::getInstance()->fire("onError", $msg);
+			exit(1);
+        	break;
+		case E_USER_WARNING:
+			$msg = "WARNING error ($errno) in $errfile [$errline] :: $errstr";
+			HookHandler::getInstance()->fire("onWarning", $msg);
+			break;
+		case E_USER_NOTICE:
+			$msg = "NOTICE error ($errno) in $errfile [$errline] :: $errstr";
+			HookHandler::getInstance()->fire("onDebug", $msg);
+			break;
+		default:
+			$msg = "OTHER error ($errno) in $errfile [$errline] :: $errstr";
+			HookHandler::getInstance()->fire("onDebug", $msg);
+			break;
+	}
+	
+	/* Don't execute PHP internal error handler */
+	return true;
+}
+$old_error_handler = set_error_handler("errorHandlerWSL");
 ?>
