@@ -6,6 +6,8 @@ var ajax = $.ajaxSetup({
 	cache : true
 });
 
+// For browser that do not have an console like IE8
+if (!window.console) console = {log: function() {}};
 
 // activate stickyNavigation bar
 $(function(){

@@ -1,3 +1,6 @@
+//For browser that do not have an console like IE8
+if (!window.console) console = {log: function() {}};
+
 // Don't know why but slickgrid seems to think we dont have drag support
 if (!jQuery.fn.drag) {
 	jQuery.fn.drag = function(){};
