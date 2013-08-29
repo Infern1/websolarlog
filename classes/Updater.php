@@ -96,7 +96,7 @@ class Updater {
      */
     public static function copyToLive() {
         // We dont want to copy everything, so specify which dirs we dont want
-        $skipDirs = Array( "data", "database", "scripts", "tmp" );
+        $skipDirs = Array( "data", "database", "scripts", "tmp", "log" );
         $source = self::$basepath . "/export/";
         $target = "../";
 
