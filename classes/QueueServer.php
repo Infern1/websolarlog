@@ -49,31 +49,23 @@ class QueueServer {
 	public function start() {
 		HookHandler::getInstance()->fire("onDebug", " QueueServer: start");
 		$syncOffset = 30; // seconds
-		$maxQueueItemsAtOnce = 5;
 		$this->sync();
 		$this->started = true;
 		
 		while ($this->started) {
 			$syncOffsetTime = time();
-			$itemsAtOnceCounter = 0;
 			while (time() - $syncOffsetTime < $syncOffset) {
 				$nextItem = $this->next();
 				// Do we have an item to process
 				if ($nextItem != null) {
 					$this->process($nextItem);
-					if ($itemsAtOnceCounter > $maxQueueItemsAtOnce - 1) {
-						sleep(2); // Sleep for two second
-						$itemsAtOnceCounter = 0;
-					}
-				} else {
-					sleep(2); // Sleep for two second
-					$itemsAtOnceCounter = 0;
 				}
-				$itemsAtOnceCounter++;
+				sleep(1);
 			}
 			
 			// sync with the database
 			$this->sync();
+			sleep(1);
 		}
 	}
 
