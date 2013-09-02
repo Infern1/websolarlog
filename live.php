@@ -54,6 +54,7 @@ require_once("template/" . $template . "/index.php");
 		
 		handleLiveData(); // Fast update
 	    window.setInterval(function(){handleLiveData()}, 5000);
+	    window.setInterval(function(){cleanup()}, 15000);
 	});
 
 	function handleLiveData() {
@@ -86,6 +87,19 @@ require_once("template/" . $template . "/index.php");
 				}
 			});
 		});
+	}
+
+	function cleanUp() {
+		var maxArray = 50;
+		if (productionData.length > maxArray) {
+			productionData.splice(0, (productionData.length + 5 - maxArray));
+		}
+		if (meteringData.length > maxArray) {
+			meteringData.splice(0, (meteringData.length + 5 - maxArray));
+		}
+		if (weatherData.length > maxArray) {
+			weatherData.splice(0, (weatherData.length + 5 - maxArray));
+		}
 	}
 	</script>
 	<!-- END Wrapper -->
