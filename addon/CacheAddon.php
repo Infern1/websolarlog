@@ -17,9 +17,9 @@ class CacheAddon {
 	}
 	
 	public function EnergyValues(){
-		$deviceId = 0;
+		$invnum = 0;
 		
-		$energyArray = $this->adapter->getMaxTotalEnergyValues($deviceId,'all');
+		$energyArray = $this->adapter->getMaxTotalEnergyValues($invnum,'all');
 		ksort($energyArray);
 		
 		$timestamp = time();
