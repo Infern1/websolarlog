@@ -14,34 +14,40 @@
 <div class="column span">
 <div class="span" style="text-align:center;">Power:</div>
 <div class="cl"></div>
+
 {{#if_gt data.totals.metering.returnKWH compare=0}}
 <div class="column span-4 horizontalLine">Usage:<br>
-<span class="tooltip" title="We generated {{data.totals.production.KWH}} kWh of that we used {{data.totals.usedBeforeMeterKWH}} kWh in the house, so we returned {{data.totals.metering.returnKWH}} kWh to the grid">{{data.totals.totalUsagekWh}} kWh</span><br>
-{{data.totals.totalUsageKWHCO2}} kg<br>
-<span title="{{data.totals.moneySign}} {{data.totals.costkwh}} * {{data.totals.totalUsagekWh}} = {{data.totals.moneySign}} {{data.totals.totalUsageKWHCosts}}">{{data.totals.moneySign}} {{data.totals.totalUsageKWHCosts}}</span></div>
+	<span class="tooltip" title="We generated {{data.totals.production.KWH}} kWh of that we used {{data.totals.usedBeforeMeterKWH}} kWh in the house, so we returned {{data.totals.metering.returnKWH}} kWh to the grid">{{data.totals.totalUsagekWh}} kWh</span><br>
+	{{data.totals.totalUsageKWHCO2}} kg<br>
+	<span title="{{data.totals.moneySign}} {{data.totals.costkwh}} * {{data.totals.totalUsagekWh}} = {{data.totals.moneySign}} {{data.totals.totalUsageKWHCosts}}">{{data.totals.moneySign}} {{data.totals.totalUsageKWHCosts}}</span>
+</div>
 {{/if_gt}}
 
 <div class="column span-4 horizontalLine">Generated:<br>
-{{data.totals.production.KWH}} kWh<br>
-{{data.totals.production.CO2avoid}} kg<br>
-<span title="{{data.totals.moneySign}} {{data.totals.costkwh}} * {{data.totals.production.KWH}} = {{data.totals.moneySign}} {{data.totals.production.costs}}">{{data.totals.moneySign}} {{data.totals.production.costs}}</span></div>
+	{{data.totals.production.KWH}} kWh<br>
+	{{data.totals.production.CO2avoid}} kg<br>
+	<span title="{{data.totals.moneySign}} {{data.totals.costkwh}} * {{data.totals.production.KWH}} = {{data.totals.moneySign}} {{data.totals.production.costs}}">{{data.totals.moneySign}} {{data.totals.production.costs}}</span>
+</div>
 
 {{#if_gt data.totals.metering.returnKWH compare=0}}
 <div class="column span-4 verticalLine">To grid:<br>
-<span title="We returned this to the grid, so somebody else can use it.">{{data.totals.metering.returnKWH}} kWh</span><br>
-<span title="Somebody else is getting your carbon free power :D">{{data.totals.metering.returnCO2}} kg<br>
-<span title="{{data.totals.moneySign}} {{data.totals.costkwh}} * {{data.totals.metering.returnKWH}} = {{data.totals.moneySign}} {{data.totals.metering.returnCosts}}">{{data.totals.moneySign}} {{data.totals.metering.returnCosts}}</span></div>
+	<span title="We returned this to the grid, so somebody else can use it.">{{data.totals.metering.returnKWH}} kWh</span><br>
+	<span title="Somebody else is getting your carbon free power :D">{{data.totals.metering.returnCO2}} kg<br>
+	<span title="{{data.totals.moneySign}} {{data.totals.costkwh}} * {{data.totals.metering.returnKWH}} = {{data.totals.moneySign}} {{data.totals.metering.returnCosts}}">{{data.totals.moneySign}} {{data.totals.metering.returnCosts}}</span>
 </div>
+{{/if_gt}}
+</div>
+
+{{#if_gt data.totals.metering.returnKWH compare=0}}
 <div class="column span">
-<div class="span" style="text-align:center;">Gas:</div>
-<div class="cl"></div>
-<div class="column span-4 verticalLine">
-used:<br>
-<spam 2724cv
-{{data.totals.metering.gasUsage}} m3<br>
-{{data.totals.metering.gasUsageCO2}} kg<br>
-<span title="m3 gas per degree day">m3/dd: {{data.totals.m3PerdegreeDays}}</span>
-</div>
+	<div class="span" style="text-align:center;">Gas:</div>
+	<div class="cl"></div>
+	<div class="column span-4 verticalLine">
+		used:<br>
+		{{data.totals.metering.gasUsage}} m3<br>
+		{{data.totals.metering.gasUsageCO2}} kg<br>
+		<span title="m3 gas per degree day">m3/dd: {{data.totals.m3PerdegreeDays}}</span>
+	</div>
 </div>
 {{/if_gt}}
 
