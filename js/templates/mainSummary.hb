@@ -27,7 +27,7 @@
 {{data.totals.metering.gasUsage}} m3<br>
 {{data.totals.metering.gasUsageCO2}} kg<br>
 <span title="m3 gas per degree day">m3/dd: {{data.totals.m3PerdegreeDays}}</span>
-<span title="{{data.totals.moneySign}} {{data.totals.costGas}} * {{data.totals.metering.gasUsage}} = {{data.totals.moneySign}} {{data.totals.metering.gasUsageCosts}}">{{data.totals.moneySign}} {{data.totals.metering.gasUsageCosts}}</span><br></div>
+</div>
 </div>
 {{/if_gt}}
 
