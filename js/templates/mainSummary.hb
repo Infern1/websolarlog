@@ -57,7 +57,7 @@
 	<div class="column span-4 verticalLine">
 	House:<br>
 		Trees:<span title="The household produces {{data.totals.householdCO2}} CO2 and a tree consumses {{data.totals.co2CompensationTree}} grams of CO2 a day so we need {{data.totals.totalUsageCO2Trees}} trees to compensate this">{{data.totals.householdTrees}}</span><br>
-		<span title="Used Power is {{data.totals.totalUsageKWHCO2}} CO2 combined with {{data.totals.metering.gasUsageCO2}} CO2 for gas gives a total of {{data.totals.householdCO2}} for the household">{{data.totals.householdCO2}}</span><br>
+		<span title="Used Power is {{data.totals.totalUsageKWHCO2}} CO2 {{#if_gt data.totals.metering.gasUsageCO2 compare=0}}combined with {{data.totals.metering.gasUsageCO2}} CO2 for gas {{/if_gt}}gives a total of {{data.totals.householdCO2}} for the household">{{data.totals.householdCO2}}</span><br>
 	</div>
 </div>
 {{#if_gt data.totals.weather.pressure compare=0}}
@@ -66,7 +66,7 @@
 <div class="cl"></div>
 	<div class="column span-7 horizontalLine">
 		<span title="Actual temp ">Temp: {{data.totals.weather.currentTemp}}&deg;</span> <span title="Avarage temperatue based on {{data.totals.weather.weatherSamples}} weather samples">({{data.totals.weather.avgTemp}}&deg;)</span><br>
-		<span title="A degree day is a measure of heating or cooling. It could be used with energy calculations on heating and cooling. (18 - {{data.totals.weather.avgTemp}} = {{data.totals.weather.degreeDays}} degree day)">Degree Days: {{data.totals.weather.degreeDays}}</span> 
+		<span title="A degree day is a measure of heating or cooling. It could be used with energy calculations on heating and cooling. (18 - {{data.totals.weather.avgTemp}} = {{data.totals.weather.degreeDays}} degree day)">Degree Days: {{data.totals.weather.degreeDays}}</span><br> 
 		<span title="direction:{{data.totals.weather.windDirection}}, speed:{{data.totals.weather.wind_speed}}">Wind: {{data.totals.weather.windDirection}}, {{data.totals.weather.wind_speed}}m/s</span><br>
 		<span title="level of clouding in percentage">clouds: {{data.totals.weather.clouds}}%</span>
 	</div>
