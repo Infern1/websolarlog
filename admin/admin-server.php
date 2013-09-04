@@ -18,6 +18,12 @@ $data = array();
 switch ($settingstype) {
 	case 'advanced':
 		$data['co2kwh'] = $config->co2kwh;
+		$data['co2gas'] = $config->co2gas;
+		$data['co2CompensationTree'] = $config->co2CompensationTree;
+		$data['costkwh'] = $config->costkwh;
+		$data['costGas'] = $config->costGas;
+		$data['costWater'] = $config->costWater;
+		
 		$data['aurorapath'] = $config->aurorapath;
 		$data['mastervoltpath'] = $config->mastervoltpath;
 		$data['smagetpath'] = $config->smagetpath;
@@ -390,6 +396,12 @@ switch ($settingstype) {
 		break;
 	case 'save-advanced':
 		$config->co2kwh = Common::getValue("co2kwh");
+		$config->co2gas = Common::getValue("co2gas");
+		$config->co2CompensationTree = Common::getValue("co2CompensationTree");
+		$config->costkwh = Common::getValue("costkwh");
+		$config->costGas = Common::getValue("costGas");
+		$config->costWater = Common::getValue("costWater");
+		
 		$config->aurorapath =Common::getValue("aurorapath");
 		$config->mastervoltpath =Common::getValue("mastervoltpath");
 		$config->smagetpath =Common::getValue("smagetpath");

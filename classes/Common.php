@@ -341,5 +341,12 @@ class Common
     		return $error['type'] . ". " . $error['message'] . " " . $error['file'] . "[" . $error['line'] . "]";
     	}
     }
+    
+    function avrgArrayValue()
+    {
+    	$count = func_num_args();
+    	$args = func_get_args();
+    	return (array_sum($args) / $count);
+    }
 }
 ?>

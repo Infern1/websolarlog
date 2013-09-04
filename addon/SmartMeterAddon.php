@@ -194,6 +194,64 @@ class SmartMeterAddon {
 		return $bean;
 	}
 
+	public function onSummary($args){
+		
+		$device = $args[1];
+		if($device->deviceApi == "DutchSmartMeter"){
+			$locale  = localeconv();
+			$deviceId = $device->id;
+			//echo $deviceId;
+			$date = $args[2];
+			
+			$beginEndDate = Util::getBeginEndDate('day', 1,$date);
+			//var_dump($beginEndDate);
+			$parameters = array(':deviceId'=>$deviceId,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']);
+			//var_dump($parameters);
+			//R::debug(true);
+			$finds =  R::findAndExport( 'energySmartMeter',
+					' deviceId = :deviceId AND time >= :beginDate AND  time <= :endDate ',
+					$parameters
+			);
+			$find = reset ( $finds );
+			
+			$bean['lowReturn'] = $find['lowReturn']/1000;
+			$bean['lowReturnCO2'] = $bean['lowReturn'] * $this->config->co2kwh;
+			$bean['lowReturnTrees'] = $bean['lowReturnCO2'] / $this->config->co2CompensationTree;
+			
+			$bean['lowUsage'] = $find['lowUsage']/1000;
+			$bean['lowUsageCO2'] = $bean['lowUsage'] * $this->config->co2kwh;
+			$bean['lowUsageTrees'] = $bean['lowUsageCO2'] / $this->config->co2CompensationTree;
+			
+			$bean['highReturn'] = $find['highReturn']/1000;
+			$bean['highReturnCO2'] = $bean['highReturn'] * $this->config->co2kwh;
+			$bean['highReturnTrees'] = $bean['highReturnCO2'] / $this->config->co2CompensationTree;
+			
+			
+			$bean['highUsage'] = $find['highUsage']/1000;
+			$bean['highUsageCO2'] = $bean['highUsage'] * $this->config->co2kwh;
+			$bean['highUsageTrees'] = $bean['highUsageCO2'] / $this->config->co2CompensationTree;
+			
+			$bean['gasUsage'] = $find['gasUsage']/1000;
+			$bean['gasUsageCO2'] = ($bean['gasUsage'] * $this->config->co2gas)/1000;
+			$bean['gasUsageTrees'] = $bean['gasUsageCO2'] / $this->config->co2CompensationTree;
+			$bean['gasUsageCosts'] = $bean['gasUsage'] * ($this->config->costGas/100);
+			
+			$bean['returnKWH'] = $bean['lowReturn'] + $bean['highReturn'];
+			$bean['returnCO2'] =  ($bean['returnKWH'] * $this->config->co2kwh)/1000;
+			$bean['returnCosts'] = ($bean['returnKWH'] * $this->config->costkwh)/100;
+			
+			$bean['usageKWH'] = $bean['lowUsage'] + $bean['highUsage'];
+			$bean['usageCosts'] = ($bean['usage'] / $this->config->costkwh);
+			$bean['usageCO2'] = $bean['usage'] * $this->config->co2kwh;
+			$bean['effUsageKWH'] = $bean['usage']-$bean['return'];
+			$bean['effUsageCosts'] = $find['effUsage'] * $this->config->costkwh;
+
+		return $bean;
+		}else{
+			return;
+		}
+	}
+	
 	/**
 	 * Read the history file
 	 * @param int $deviceId

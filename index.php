@@ -9,8 +9,10 @@ require_once("template/" . $template . "/index.php");
 	<script type="text/javascript">
     // Make sure the page is loaded
 	$(function(){
+		WSL.init_mainSummary("#main-middle");
 		WSL.init_tabs("index",0, "#main-middle",
 			function(){
+			
 				WSL.init_PageLiveValues("#content"); // Initial load fast
 				WSL.init_PageIndexTotalValues("#sidebar");
     		}

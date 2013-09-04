@@ -12,8 +12,7 @@ if (!window.console) console = {log: function() {}};
 // activate stickyNavigation bar
 $(function(){
 	WSL.stickyNavigation();
-	
-	WSL.init_languages("languageSelect");
+	//WSL.init_languages("languageSelect");
 });
 
 
@@ -174,7 +173,7 @@ function analyticsJSCodeBlock() {
 function ajaxReady() {
 	$('#contentLoading').remove();
 	$('#reqLoading').hide();
-	$('.tooltip').tooltip({});
+	$('.liveTooltip').tooltip({});
 }
 
 function ajaxStart() {
@@ -1000,6 +999,31 @@ var WSL = {
 		});
 	},
 
+	init_mainSummary : function(divId){
+		var html = '<div id="mainSummary" style="margin-bottom:5px;">';
+		$(html).prependTo(divId);
+		var currentTime = new Date();
+		date = (currentTime.getDay() + 1) +"-" + (currentTime.getMonth() + 1) + "-" + currentTime.getFullYear();
+		WSL.api.mainSummary(date,function(data) {
+			$.ajax({
+				url : 'js/templates/mainSummary.hb',
+				beforeSend : function(xhr) {
+					if (getWindowsState() == false) {
+						ajaxAbort(xhr);
+					}
+				},
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					$(html).prependTo(divId);
+					ajaxReady();
+				},
+				dataType : 'text'
+			});
+		});
+	},
 	init_tabs : function(page, tabIndex, divId, success) {
 		// initialize languages selector on the given div
 		WSL.api.getTabs(page, function(data) {
@@ -1016,7 +1040,7 @@ var WSL = {
 						'data' : data,
 						'lang' : data.lang
 					});
-					$(html).prependTo(divId);
+					$("#mainSummary").after(html);
 
 					$('#tabs').tabs({
 						active: tabIndex,
@@ -1076,9 +1100,9 @@ var WSL = {
 	init_PageIndexTotalValues : function(sideBar) {
 		WSL.api.getPageIndexTotalValues(function(data) {
 			$(sideBar).html(WSL.template.get("totalValues", { 'data' : data.IndexValues, 'lang' : data.lang }));
-			WSL.api.getWeatherValues(function(data) {
-				$(sideBar).append(WSL.template.get("widgetWeather", { 'data' : data.data }));
-			});
+			//WSL.api.getWeatherValues(function(data) {
+			//	$(sideBar).append(WSL.template.get("widgetWeather", { 'data' : data.data }));
+			//});
 		});
 	},
 
@@ -2412,6 +2436,10 @@ WSL.api.getPlantInfo = function(devicenum, success) {
 
 WSL.api.getLanguages = function(success) {
 	WSL.connect.getJSON('server.php?method=getLanguages', success);
+};
+
+WSL.api.mainSummary = function(date,success) {
+	WSL.connect.getJSON('api.php/Summary/'+date, success);
 };
 
 WSL.api.getMenu = function(success) {

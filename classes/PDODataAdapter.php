@@ -284,6 +284,11 @@ class PDODataAdapter {
 		$bean->smartmeterpath = $config->smartmeterpath;
 
 		$bean->co2kwh = $config->co2kwh;
+		$bean->co2gas = $config->co2gas;
+		$bean->co2CompensationTree = $config->co2CompensationTree;
+		$bean->costkwh = $config->costkwh;
+		$bean->costGas = $config->costGas;
+		$bean->costWater = $config->costWater;
 
 		$bean->googleAnalytics = $config->googleAnalytics;
 		$bean->piwikServerUrl = $config->piwikServerUrl;
@@ -356,6 +361,11 @@ class PDODataAdapter {
 			$config->smartmeterpath = ($bean->smartmeterpath != "") ? $bean->smartmeterpath : $config->smartmeterpath;
 
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
+			$config->co2gas = ($bean->co2gas > 0) ? $bean->co2gas : $config->co2gas;
+			$config->co2CompensationTree = ($bean->co2CompensationTree > 0) ? $bean->co2CompensationTree : $config->co2CompensationTree;
+			$config->costkwh = ($bean->costkwh > 0) ? $bean->costkwh : $config->costkwh;
+			$config->costGas = ($bean->costGas > 0) ? $bean->costGas : $config->costGas;
+			$config->costWater = ($bean->costWater > 0) ? $bean->costWater : $config->costWater;
 			
 			$config->devices = $this->deviceService->getActiveDevices();
 			$config->allDevices = $this->deviceService->getAllDevices();
@@ -1875,6 +1885,7 @@ class PDODataAdapter {
 				"todayDays"=>1,
 				"todayAvgKwh"=>$avgEnergyBeansToday,
 				"todayKwhKwp"=>$totalEnergyBeansTodayKWHKWP,
+				"todayGenkWhCO2"=>($avgEnergyBeansToday*$config->co2kwh)/1000,
 
 				"weekMaxPower"=>$totalEnergyBeansWeek[0]['kWh'],
 				"weekMaxPowerTime"=>$totalEnergyBeansWeek[0]['date'],

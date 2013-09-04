@@ -201,6 +201,7 @@ class Session
     	$domain = "default";
     	
     	setlocale(LC_ALL, $locale);
+    	setlocale(LC_MONETARY, $locale);
     	putenv("LC_ALL=".$locale);
     	bindtextdomain($domain, "./locale");
     	bind_textdomain_codeset($domain, 'UTF-8');
@@ -301,9 +302,14 @@ class Session
     	
     	
     	$hookHandler->add("GraphDayPoints", "SmartMeterAddon.GraphDayPoints"); // Will run at 00:00
-    	   
-    	$hookHandler->add("GraphDayPoints", "GraphDataService.GraphDayPoints"); // Will run at 00:00
+       	$hookHandler->add("GraphDayPoints", "GraphDataService.GraphDayPoints"); // Will run at 00:00
 
+       	$hookHandler->add("mainSummary", "SmartMeterAddon.onSummary"); // Will run at 00:00
+       	$hookHandler->add("mainSummary", "EnergyService.onSummary"); // Will run at 00:00
+       	$hookHandler->add("mainSummary", "WeatherService.onSummary"); // Will run at 00:00
+       	
+       	
+       	
     	$hookHandler->add("installGraph", "SmartMeterAddon.installGraph"); // Will run at 00:00
     	
     	$hookHandler->add("defaultAxes", "SmartMeterAddon.defaultAxes");

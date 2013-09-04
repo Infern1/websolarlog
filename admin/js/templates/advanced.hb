@@ -2,7 +2,18 @@
   <input type="hidden" name="s" value="save-advanced" />
   <fieldset>
     <legend>Advanced settings</legend>
+    CO2 settings:<br>
     <label for="co2kwh">CO2 avoided per kWh:</label><input type="text" name="co2kwh" value="{{data.co2kwh}}"/>in grams<br />
+    <label for="co2gas">CO2 value Gas:</label><input type="text" name="co2gas" value="{{data.co2gas}}"/>in grams<br />
+    <label for="co2CompensationTree">CO2 consumption tree:</label><input type="text" name="co2CompensationTree" value="{{data.co2CompensationTree}}"/>in grams<br />
+	<br>
+	Energy prices:<br>
+    <label for="costkwh">Costs kWh:</label><input type="text" name="costkwh" value="{{data.costkwh}}"/>in cents<br />
+
+    <label for="costGas">Costs Gas:</label><input type="text" name="costGas" value="{{data.costGas}}"/>in cents<br />
+
+    <label for="costWater">Costs Water:</label><input type="text" name="costWater" value="{{data.costWater}}"/>in cents<br />
+    
     <hr>
     Below you need to set the path of the software you use to communicate with the device.<br>See the examples for help.<br />
     <div class="examples">
