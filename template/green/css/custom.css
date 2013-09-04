@@ -118,6 +118,9 @@ table.jqplot-table-legend-custom{
     border-right: 1px solid #ccc;padding:2px; margin:0px;
     border-top: 1px solid #ccc;
 }
+.horizontalLine {
+    border-top: 1px solid #ccc;
+}
 #mainSummary .column{
-	margin-right:3px;
+	margin-right:3px;	
 }
