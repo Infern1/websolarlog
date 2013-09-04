@@ -1,9 +1,12 @@
 <?php
 class EnergyService {
 	public static $tbl = "energy";
+	private $config;
 	
 	function __construct() {
 		HookHandler::getInstance()->add("onJanitorDbCheck", "EnergyService.janitorDbCheck");
+		$this->config = Session::getConfig();
+		
 	}
 	
 	/**
@@ -56,6 +59,23 @@ class EnergyService {
 		return $energy;
 	}
 	
+	public function onSummary($args){
+		$device = $args[1];
+		$date = $args[2];
+		
+		if($device->type == "production"){
+			$energy = self::getEnergyByDeviceAndTime($device,$date);
+			$data = array();
+			$data['KWH'] 	  =  $energy->KWH;
+			$data['costs'] 	  =  ($energy->KWH*$this->config->costkwh)/100;
+			$data['CO2avoid'] =  ($energy->KWH*$this->config->co2kwh)/1000;
+			$data['trees'] =  $energy->KWH*$this->config->co2CompensationTree;
+			return $data;
+		}else{
+			return;
+		}
+	}
+	
 	/**
 	 * get the Energy for an device
 	 * @param Device $energy
@@ -63,7 +83,7 @@ class EnergyService {
 	 * @return $energy
 	 */
 	public function getEnergyByDeviceAndTime(Device $device, $time) {
-		$beginEndDate = Util::getBeginEndDate('day', 1, date("Y-m-d", $time));
+		$beginEndDate = Util::getBeginEndDate('day', 1,$time);
 		$bean =  R::findOne( self::$tbl, ' INV = :deviceId AND time > :beginDate AND time < :endDate ',
 				array(':deviceId'=>$device->id, ':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
