@@ -43,13 +43,13 @@
 <div class="column span">
 <div class="span" style="text-align:center;">Weather:</div>
 <div class="cl"></div>
-	<div class="column span-6 verticalLine">
+	<div class="column span-7 verticalLine">
 		<span title="actual temp (avarage temp)">Temp:</span> {{data.totals.weather.currentTemp}}&deg;<span title="Avarage temperatue based on {{data.totals.weather.weatherSamples}} weather samples">({{data.totals.weather.avgTemp}}&deg;)</span><br>
 		Degree Days: {{data.totals.weather.degreeDays}} 
 		<span title="direction:{{data.totals.weather.windDirection}}, speed:{{data.totals.weather.wind_speed}}">Wind: {{data.totals.weather.windDirection}}, {{data.totals.weather.wind_speed}}m/s</span><br>
 		<span title="level of clouding in percentage">clouds: {{data.totals.weather.clouds}}%</span>
 	</div>
-	<div class="column span-6 verticalLine">
+	<div class="column span-7 verticalLine">
 		humidity: {{data.totals.weather.humidity}}%<br>
 		pressure: {{data.totals.weather.pressure}}hPa<br>
 		<span title="past 1 hour in mm, past 3 hours in mm">rain: {{data.totals.weather.rain1h}}mm, {{data.totals.weather.rain3h}} mm</span>
