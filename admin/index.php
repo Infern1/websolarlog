@@ -6,7 +6,7 @@ session_start();
 <head>
 <title>Configuration</title>
 <meta charset="utf-8">
-<link rel="shortcut icon" href="../css/images/favicon.ico" />
+<link rel="shortcut icon" href="css/images/favicon.ico" />
 <link rel="stylesheet" href="../css/blueprint/screen.css" type="text/css" media="screen, projection"/>
 <link rel="stylesheet" href="../css/blueprint/print.css" type="text/css" media="print"/>
 <link rel="stylesheet" href="../css/slick.grid.css" type="text/css" media="screen"/>
