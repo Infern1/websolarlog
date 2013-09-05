@@ -46,7 +46,7 @@ $slowJobStartTime = Util::createTimeForWholeInterval($slowJobUpdateRate);
 QueueServer::getInstance()->add(new QueueItem($slowJobStartTime, "HookHandler.fireFromQueue", array("onSlowJob"), true, $slowJobUpdateRate));
 
 // This one is needed for the cron script only !!!
-QueueServer::getInstance()->add(new QueueItem(time() + 65, "Common.exitProcess", "", false, 0, false));
+QueueServer::getInstance()->add(new QueueItem(time() + 50, "Common.exitProcess", "", false, 0, false));
 
 // Start the queue server
 QueueServer::getInstance()->start();

@@ -60,12 +60,13 @@ class QueueServer {
 				if ($nextItem != null) {
 					$this->process($nextItem);
 				}
-				sleep(1);
+				usleep(1500000); // 1.5 second
+				
 			}
 			
 			// sync with the database
 			$this->sync();
-			sleep(1);
+			usleep(2000000); // 2 second Breath
 		}
 	}
 
