@@ -321,6 +321,15 @@ class Common
     }
     
     /**
+     * Exit the current php process, use with care and probably only for QueueItems
+     */
+    public static function exitCronProcess() {
+    	QueueServer::getInstance()->stop();
+    	 
+    	exit();
+    }
+    
+    /**
      * Do we need to pause?
      * @deprecated
      */
