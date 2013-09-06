@@ -120,7 +120,12 @@ SMAspot [-scan] [-d#] [-v#] [-ad#] [-am#] [-cfgX.Y] [-u] [-finq] [-q] [-nocsv]
     	
     	($this->ADR) ? $options .= ' -cfg'.$this->ADR : $options = $options;
     	
-        return shell_exec($this->PATH . ' ' . $options);
+    	try{
+    		$result = shell_exec($this->PATH . ' ' . $options);
+    	} catch (Exception $e) {
+			HookHandler::getInstance()->fire("onDebug", "Device::SMAspotWSL generated:".$e->getMessage());
+    	}
+        return $result;
     }
 
 }
