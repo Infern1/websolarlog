@@ -234,4 +234,5 @@
 		list += '</div>';
     	return new Handlebars.SafeString(list);
     });
+	
 }));

@@ -1018,6 +1018,134 @@ var WSL = {
 						'data' : data
 					});
 					$(html).prependTo(divId);
+					
+					
+					var cId = data.totals.weather.conditionId;
+					var sunDown = data.totals.sunDown;
+
+					if(cId >= 200 && cId <= 250){
+						var conditionImage = 'http://openweathermap.org/img/w/11d.png';
+					}else if(cId >= 300 && cId <= 350){
+						var conditionImage = 'http://openweathermap.org/img/w/09d.png';
+					}else if(cId >= 500 && cId <= 550){
+						var conditionImage = 'http://openweathermap.org/img/w/10d.png';
+					}else if(cId >= 600 && cId <= 650){
+						var conditionImage = 'http://openweathermap.org/img/w/13d.png';
+					}else if(cId >= 700 && cId <= 750){
+						var conditionImage = 'http://openweathermap.org/img/w/50d.png';
+					}else if(cId >= 800 && cId <= 850){
+						if(sunDown==true){
+							var string = 'n';
+						}else{
+							var string = 'd';
+						}
+						if(cId == 800){
+							var conditionImage = 'http://openweathermap.org/img/w/01'+string+'.png';
+						}else if(cId == 801){
+							var conditionImage = 'http://openweathermap.org/img/w/02'+string+'.png';
+						}else if(cId == 802){
+							var conditionImage = 'http://openweathermap.org/img/w/03'+string+'.png';
+						}else if(cId == 803){
+							var conditionImage = 'http://openweathermap.org/img/w/04'+string+'.png';
+						}else if(cId == 804){
+							var conditionImage = 'http://openweathermap.org/img/w/05'+string+'.png';
+						}
+						
+					}else if(cId >= 900 && cId <= 950){
+						
+						if(cId == 900){
+							var conditionText = 'tornado';
+						}else if(cId == 901){
+							var conditionText = 'tropical storm';
+						}else if(cId == 902){
+							var conditionText = 'hurricane';
+						}else if(cId == 903){
+							var conditionText = 'cold';
+						}else if(cId == 904){
+							var conditionText = 'hot';
+						}else if(cId == 904){
+							var conditionText = 'windy';
+						}else if(cId == 904){
+							var conditionText = 'hail';
+						}
+						
+					}
+					
+					var angle = data.totals.weather.windDirection;
+					var windSpeed = data.totals.weather.wind_speed;
+				    
+				    var TO_RADIANS = Math.PI/180; 
+				    var canvas = document.getElementById('layer1');
+				    var context = canvas.getContext('2d');
+				    canvas.width = 220;
+				    canvas.height = 90;
+
+				    var x = 20;
+				    var y = 20;
+				    var width = 40;
+				    var height = 40;
+				    var imageObj = new Image();
+				    var imageObj2 = new Image();
+				    
+				    imageObj.onload = function() {					
+					imageObj2.onload = function() {
+				    	context.save(); 
+				    	// move the origin to 50, 35
+				    	context.arc(39, 39, 22, 0, 2 * Math.PI, false);
+				        context.fillStyle = '#eee';
+				        context.fill();
+				        context.lineWidth = 1;
+				        context.strokeStyle = '#003300';
+				        context.stroke();
+				          
+				    	context.translate(19, 19); 
+				    	// now move across and down half the 
+				    	// width and height of the image (which is 128 x 128)
+				    	context.translate(20, 20); 
+				    	   
+				    	// rotate around this point
+				    	context.rotate(angle * TO_RADIANS); 
+				    	   
+				    	// then draw the image back and up
+				    	context.drawImage(imageObj, -20, -20, width, height);
+				    	  
+				    	// save the context's co-ordinate system before 
+				    	// we screw with it
+				    	context.restore(); 
+
+				    	context.save();
+						if(conditionImage){
+							context.drawImage(imageObj2, 130, -12);
+						}else{
+					    	context.fillText(windSpeed+'m/s',77,27,30);							
+						}
+				    	context.fillText('Speed:',77,10,30);
+				    	context.fillText(windSpeed+'m/s',77,25,30);
+				    	
+				    	context.fillText('Clouds:',77,42,30);
+				    	context.fillText(data.totals.weather.clouds+'%',77,57,30);
+				    	
+				    	context.fillText('Rain 1/3 hour:',77,74,60);
+				    	context.fillText(data.totals.weather.rain1h+'/'+data.totals.weather.rain3h+'mm',77,89,30);
+				    	
+				    	
+				    	
+				    	context.fillText('Temp cur/avg:',140,40,75);
+				    	context.fillText(data.totals.weather.currentTemp+'°/'+data.totals.weather.minTemp+'°',140,55,60);
+				    	context.fillText('Temp min/max:',140,72,75);
+				    	context.fillText(data.totals.weather.maxTemp+'°/'+data.totals.weather.avgTemp+'°',140,87,60);
+				    	{{data.totals.weather.currentTemp}}
+				    	
+				    	context.font = 'italic 11pt Calibri';
+				    	context.fillText('N',35,13,10);
+				    	context.fillText('Z',36,73,10);
+				    	context.fillText('E',65,42,10);
+				    	context.fillText('W',3,42,10);
+				    	context.restore();
+					};
+					};
+					imageObj2.src = conditionImage;
+					imageObj.src = 'arrow.png';
 					ajaxReady();
 				},
 				dataType : 'text'

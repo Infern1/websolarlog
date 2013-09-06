@@ -46,7 +46,8 @@
 		used:<br>
 		{{data.totals.metering.gasUsage}} m3<br>
 		{{data.totals.metering.gasUsageCO2}}<br>
-		<span title="m3 gas per degree day">m3/dd: {{data.totals.m3PerdegreeDays}}</span>
+		<span title="m3 gas per degree day;
+		(18 - {{data.totals.weather.avgTemp}} = {{data.totals.weather.degreeDays}} degree days)">m3/dd: {{data.totals.m3PerdegreeDays}}</span>
 	</div>
 </div>
 {{/if_gt}}
@@ -64,18 +65,9 @@
 <div class="column span">
 <div class="span" style="text-align:center;">Weather:</div>
 <div class="cl"></div>
-	<div class="column span-7 horizontalLine">
-		<span title="Actual temp ">Temp: {{data.totals.weather.currentTemp}}&deg;</span> <span title="Avarage temperatue based on {{data.totals.weather.weatherSamples}} weather samples">({{data.totals.weather.avgTemp}}&deg;)</span><br>
-		<span title="A degree day is a measure of heating or cooling. It could be used with energy calculations on heating and cooling. (18 - {{data.totals.weather.avgTemp}} = {{data.totals.weather.degreeDays}} degree day)">Degree Days: {{data.totals.weather.degreeDays}}</span><br> 
-		<span title="direction:{{data.totals.weather.windDirection}}, speed:{{data.totals.weather.wind_speed}}">Wind: {{data.totals.weather.windDirection}}, {{data.totals.weather.wind_speed}}m/s</span><br>
-		<span title="level of clouding in percentage">clouds: {{data.totals.weather.clouds}}%</span>
-	</div>
-	<div class="column span-7 verticalLine">
-		humidity: {{data.totals.weather.humidity}}%<br>
-		pressure: {{data.totals.weather.pressure}}hPa<br>
-		<span title="past 1 hour in mm, past 3 hours in mm">rain: {{data.totals.weather.rain1h}}mm, {{data.totals.weather.rain3h}} mm</span>
-		<br><Br>
-	</div>
+	<div class="column span-11 verticalLine">
+		<canvas id="layer1" style="z-index: 0;"></canvas>
+		</div>
 </div>
 {{/if_gt}}
 <div class="cl"></div>

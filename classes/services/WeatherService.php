@@ -103,18 +103,15 @@ class WeatherService {
 			$degreeDays = 0;
 		}
 		$lastBean = end($beans);
-		
-		$windlabel = array ("N","NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S",
-				"SSW","SW", "WSW", "W", "WNW", "NW", "NNW");
-		$dir = $windlabel[ fmod((($lastBean['wind_direction'] ) / 22.5),16) ];
-		
 
 		$return = array(
 				"weatherSamples"=>$i,
 				"avgTemp"=>round($avgTemp,1),
 				"currentTemp"=>round($lastBean['temp'],1),
+				"minTemp"=>round($lastBean['temp_min'],1),
+				"maxTemp"=>round($lastBean['temp_max'],1),
 				"degreeDays"=>$degreeDays,
-				"windDirection" =>$dir,
+				"windDirection" =>(int)$lastBean['wind_direction'],
 				"humidity" =>$lastBean['humidity'],
 				"pressure" =>$lastBean['pressure'],
 				"conditionId" =>$lastBean['conditionId'],

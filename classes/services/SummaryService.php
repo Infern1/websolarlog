@@ -84,7 +84,7 @@ class SummaryService {
 		}
 		$total['costkwh'] = $this->config->costkwh/100;
 		$total['costGas'] = $this->config->costGas/100;
-		
+		$total['sunDown'] = Util::isSunDown();
 		
 		
 		$deviceApis = array_keys($total);
