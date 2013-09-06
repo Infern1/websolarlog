@@ -6,6 +6,28 @@ Class Diehl implements DeviceApi {
     private $DEBUG;
     private $PATH;
 
+    private static $curlCh;
+    
+    public static function getCurlCh() { 	
+    	if (gettype(self::$curlCh) != 'resource') {
+    		HookHandler::getInstance()->fire("onDebug", "Diehl :: Creating curl resource");
+    		
+    		$cookieFile = Common::getRootPath() . "/log/diehl_cookies.txt";
+    		
+    		self::$curlCh = curl_init();
+    		curl_setopt(self::$curlCh, CURLOPT_HEADER, 0);
+    		curl_setopt(self::$curlCh, CURLOPT_CONNECTTIMEOUT, 30);
+    		curl_setopt(self::$curlCh, CURLOPT_TIMEOUT, 60);
+    		curl_setopt(self::$curlCh, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
+    		curl_setopt(self::$curlCh, CURLOPT_RETURNTRANSFER, 1);
+    		curl_setopt(self::$curlCh, CURLOPT_SSL_VERIFYPEER, 0);
+    		curl_setopt(self::$curlCh, CURLOPT_FOLLOWLOCATION, 1);
+    		curl_setopt(self::$curlCh, CURLOPT_COOKIEJAR, $cookieFile);
+    		curl_setopt(self::$curlCh, CURLOPT_COOKIEFILE, $cookieFile);
+    	}
+    	
+    	return self::$curlCh;
+    }
     
     
     /**
@@ -426,19 +448,17 @@ Class Diehl implements DeviceApi {
     }
 
     private function execute($options) {
-        $ch = curl_init();
+    	$ch = Diehl::getCurlCh();
 		curl_setopt($ch, CURLOPT_URL, "http://".$this->ADR."/rpc/GetPowerLog");
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $options);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 		    'Content-Type: application/json',
 		    'Content-Length: ' . strlen($options))
 		);
 		$output = curl_exec($ch);
 		$info = curl_getinfo($ch);
-		curl_close($ch);
+		//curl_close($ch);
 		//echo $output;
         return trim($output);
     }
