@@ -1145,7 +1145,7 @@ var WSL = {
 					};
 					};
 					imageObj2.src = conditionImage;
-					imageObj.src = 'arrow.png';
+					imageObj.src = 'images/arrow.png';
 					ajaxReady();
 				},
 				dataType : 'text'
