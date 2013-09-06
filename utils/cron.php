@@ -1,6 +1,8 @@
 <?php
 error_reporting(E_ALL);
 
+sleep(10); // Sleep 10 seconds as the other one	is still running (minimize overlap)
+
 $startTime = time(); // start time in seconds
 
 $docRoot = dirname(dirname(__FILE__));
