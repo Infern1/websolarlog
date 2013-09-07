@@ -61,7 +61,10 @@ SMAspot [-scan] [-d#] [-v#] [-ad#] [-am#] [-cfgX.Y] [-u] [-finq] [-q] [-nocsv]
  -nocsv  Disables CSV export (Overrules CSV_Export in config)
 			 
 			  */
-			  return trim($this->execute('-finq -q -wsl -nocsv'));
+        	
+			 $result =  trim($this->execute('-finq -q -wsl -nocsv'));
+        	HookHandler::getInstance()->fire("onDebug", "Device::SMAspotWSL execute:".print_r($result,true));
+        	return $result;
         }
     }
     
