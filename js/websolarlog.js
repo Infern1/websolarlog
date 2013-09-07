@@ -1048,7 +1048,7 @@ var WSL = {
 						}else if(cId == 803){
 							var conditionImage = 'http://openweathermap.org/img/w/04'+string+'.png';
 						}else if(cId == 804){
-							var conditionImage = 'http://openweathermap.org/img/w/05'+string+'.png';
+							var conditionImage = 'http://openweathermap.org/img/w/04'+string+'.png';
 						}
 						
 					}else if(cId >= 900 && cId <= 950){
