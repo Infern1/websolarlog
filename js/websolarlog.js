@@ -1131,9 +1131,9 @@ var WSL = {
 				    	
 				    	
 				    	context.fillText('Temp cur/avg:',140,40,75);
-				    	context.fillText(data.totals.weather.currentTemp+'°/'+data.totals.weather.minTemp+'°',140,55,60);
+				    	context.fillText(data.totals.weather.currentTemp+'°/'+data.totals.weather.avgTemp+'°',140,55,60);
 				    	context.fillText('Temp min/max:',140,72,75);
-				    	context.fillText(data.totals.weather.maxTemp+'°/'+data.totals.weather.avgTemp+'°',140,87,60);
+				    	context.fillText(data.totals.weather.minTemp+'°/'+data.totals.weather.maxTemp+'°',140,87,60);
 				    	{{data.totals.weather.currentTemp}}
 				    	
 				    	context.font = 'italic 11pt Calibri';
