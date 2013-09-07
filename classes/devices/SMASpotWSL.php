@@ -63,7 +63,7 @@ SMAspot [-scan] [-d#] [-v#] [-ad#] [-am#] [-cfgX.Y] [-u] [-finq] [-q] [-nocsv]
 			  */
         	
 			 $result =  trim($this->execute('-finq -q -wsl -nocsv'));
-        	HookHandler::getInstance()->fire("onDebug", "Device::SMAspotWSL execute:".print_r($result,true));
+        	//HookHandler::getInstance()->fire("onDebuggingExtreem", "Device::SMAspotWSL execute:".print_r($result,true));
         	return $result;
         }
     }

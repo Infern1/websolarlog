@@ -43,7 +43,7 @@ class SMASpotWSLConverter
     {    	
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
-        	HookHandler::getInstance()->fire("onDebug", "Input of SMASPotWSLConverter is empty");
+        	//HookHandler::getInstance()->fire("onDebug", "Input of SMASPotWSLConverter is empty");
             return null;
         }
 
@@ -52,7 +52,7 @@ class SMASpotWSLConverter
         
         // Check if the record is okay
     	if(($data[0]!="WSL_START") || ($data[count($data)-1]!="WSL_END")){
-    		HookHandler::getInstance()->fire("onDebug", "No valid SMAspot START or END found:".print_r($data,true));
+    		//HookHandler::getInstance()->fire("onDebug", "No valid SMAspot START or END found:".print_r($data,true));
 			throw new ConverterException("not a OK response from  SMASpotWSL:\r\n".print_r($inputLine,true));
         }
         
