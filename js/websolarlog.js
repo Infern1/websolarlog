@@ -1087,9 +1087,6 @@ var WSL = {
 				    var imageObj = new Image();
 				    var imageObj2 = new Image();
 				    
-					imageObj2.src = conditionImage;
-					imageObj.src = 'images/arrow.png';
-					
 				    imageObj.onload = function() {					
 					imageObj2.onload = function() {
 				    	context.save(); 
@@ -1147,7 +1144,9 @@ var WSL = {
 				    	context.restore();
 					};
 					};
-
+					imageObj.src = 'images/arrow.png';
+					imageObj2.src = conditionImage;
+					
 					ajaxReady();
 				},
 				dataType : 'text'
