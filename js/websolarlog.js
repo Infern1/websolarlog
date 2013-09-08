@@ -1087,6 +1087,9 @@ var WSL = {
 				    var imageObj = new Image();
 				    var imageObj2 = new Image();
 				    
+					imageObj2.src = conditionImage;
+					imageObj.src = 'images/arrow.png';
+					
 				    imageObj.onload = function() {					
 					imageObj2.onload = function() {
 				    	context.save(); 
@@ -1123,29 +1126,28 @@ var WSL = {
 				    	context.fillText(windSpeed+'m/s',77,25,30);
 				    	
 				    	context.fillText('Clouds:',77,42,30);
-				    	context.fillText(data.totals.weather.clouds+'%',77,57,30);
+				    	context.fillText(data.totals.weather.clouds+'%',77,55,30);
 				    	
-				    	context.fillText('Rain 1/3 hour:',77,74,60);
-				    	context.fillText(data.totals.weather.rain1h+'/'+data.totals.weather.rain3h+'mm',77,89,30);
+				    	context.fillText('Last hour:',77,72,60);
+				    	context.fillText(data.totals.weather.rain1h+'mm',77,85,30);
 				    	
 				    	
 				    	
-				    	context.fillText('Temp cur/avg:',140,40,75);
+				    	context.fillText('Temp cur/avg:',140,42,75);
 				    	context.fillText(data.totals.weather.currentTemp+'°/'+data.totals.weather.avgTemp+'°',140,55,60);
 				    	context.fillText('Temp min/max:',140,72,75);
-				    	context.fillText(data.totals.weather.minTemp+'°/'+data.totals.weather.maxTemp+'°',140,87,60);
+				    	context.fillText(data.totals.weather.minTemp+'°/'+data.totals.weather.maxTemp+'°',140,85,60);
 				    	{{data.totals.weather.currentTemp}}
 				    	
-				    	context.font = 'italic 11pt Calibri';
+				    	context.font = '11pt Calibri';
 				    	context.fillText('N',35,13,10);
-				    	context.fillText('Z',36,73,10);
+				    	context.fillText('S',36,73,10);
 				    	context.fillText('E',65,42,10);
 				    	context.fillText('W',3,42,10);
 				    	context.restore();
 					};
 					};
-					imageObj2.src = conditionImage;
-					imageObj.src = 'images/arrow.png';
+
 					ajaxReady();
 				},
 				dataType : 'text'
