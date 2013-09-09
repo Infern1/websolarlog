@@ -81,47 +81,47 @@ class WeatherService {
 		$device = $args[1];
 		$date = $args[2];
 		if($device->deviceApi == "Open-Weather-Map"){
-
-		(!$date)? $date = date('d-m-Y') : $date = $date;
-		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 	
-		$beans =  R::findAll( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
-				array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
-		);
-		$i=0;
-		$temp = 0;
-		foreach ($beans as $bean){
-			$temp += $bean['temp'];
-			$i++;
-		}
-		$avgTemp = round($temp/$i,2);
+			(!$date)? $date = date('d-m-Y') : $date = $date;
+			$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 		
-		if($avgTemp<18){
-			$degreeDays = (18 - $avgTemp);
+			$beans =  R::findAll( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
+					array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
+			);
+			$i=0;
+			$temp = 0;
+			foreach ($beans as $bean){
+				$temp += $bean['temp'];
+				$i++;
+			}
+			$avgTemp = round($temp/$i,2);
 			
-		}else{
-			$degreeDays = 0;
-		}
-		$lastBean = end($beans);
-
-		$return = array(
-				"weatherSamples"=>$i,
-				"avgTemp"=>round($avgTemp,1),
-				"currentTemp"=>round($lastBean['temp'],1),
-				"minTemp"=>round($lastBean['temp_min'],1),
-				"maxTemp"=>round($lastBean['temp_max'],1),
-				"degreeDays"=>$degreeDays,
-				"windDirection" =>(int)$lastBean['wind_direction'],
-				"humidity" =>$lastBean['humidity'],
-				"pressure" =>$lastBean['pressure'],
-				"conditionId" =>$lastBean['conditionId'],
-				"wind_speed" =>$lastBean['wind_speed'],
-				"rain1h" =>($lastBean['rain1h']==0)? 0 : $lastBean['rain1h'],
-				"rain3h" =>($lastBean['rain3h']==0)? 0 : $lastBean['rain3h'],
-				"clouds" =>$lastBean['clouds']
-		);
-		
-		return $return; 
+			if($avgTemp<18){
+				$degreeDays = (18 - $avgTemp);
+				
+			}else{
+				$degreeDays = 0;
+			}
+			$lastBean = end($beans);
+	
+			$return = array(
+					"weatherSamples"=>$i,
+					"avgTemp"=>round($avgTemp,1),
+					"currentTemp"=>round($lastBean['temp'],1),
+					"minTemp"=>round($lastBean['temp_min'],1),
+					"maxTemp"=>round($lastBean['temp_max'],1),
+					"degreeDays"=>$degreeDays,
+					"windDirection" =>(int)$lastBean['wind_direction'],
+					"humidity" =>$lastBean['humidity'],
+					"pressure" =>$lastBean['pressure'],
+					"conditionId" =>$lastBean['conditionId'],
+					"wind_speed" =>$lastBean['wind_speed'],
+					"rain1h" =>($lastBean['rain1h']==0)? 0 : $lastBean['rain1h'],
+					"rain3h" =>($lastBean['rain3h']==0)? 0 : $lastBean['rain3h'],
+					"clouds" =>$lastBean['clouds']
+			);
+			
+			return $return; 
 		}else{
 			return;
 		}

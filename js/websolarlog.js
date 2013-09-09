@@ -1096,7 +1096,6 @@ var WSL = {
 				        var sources = {
 				          arrow: 'images/arrow.png',
 				          condition: conditionImage,
-				          wslIcons: 'images/wslIcons.jpg'
 				        };
 						
 				        loadImages(sources, function(images) {
@@ -1145,7 +1144,7 @@ var WSL = {
 						    	context.fillText(windSpeed+'m/s',77,27,30);							
 							}
 
-					    	context.fillText('Speed:',77,10,30);
+					    	context.fillText('Wind Speed:',77,10,50);
 					    	context.fillText(windSpeed+'m/s',77,25,30);
 					    	
 					    	context.fillText('Clouds:',77,42,30);

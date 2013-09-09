@@ -115,7 +115,7 @@ table.jqplot-table-legend-custom{
 }
 
 .verticalLine {
-    border-right: 1px solid #ccc;padding:2px; margin:0px;
+    border-right: 1px solid #ccc; margin:0px;
     border-top: 1px solid #ccc;
 }
 .horizontalLine {
