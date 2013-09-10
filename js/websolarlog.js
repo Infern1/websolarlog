@@ -1003,7 +1003,7 @@ var WSL = {
 		var html = '<div id="mainSummary" style="margin-bottom:5px;">';
 		$(html).prependTo(divId);
 		var currentTime = new Date();
-		date = (currentTime.getDay() + 1) +"-" + (currentTime.getMonth() + 1) + "-" + currentTime.getFullYear();
+		date = (currentTime.getDate()) +"-" + (currentTime.getMonth() + 1) + "-" + currentTime.getFullYear();
 		WSL.api.mainSummary(date,function(data) {
 			$.ajax({
 				url : 'js/templates/mainSummary.hb',
