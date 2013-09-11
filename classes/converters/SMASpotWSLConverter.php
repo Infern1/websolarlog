@@ -124,7 +124,7 @@ class SMASpotWSLConverter
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->GP)) {
         	if(Util::isSunDown()==false){
-        		HookHandler::getInstance()->fire("onDebug", "No valid Live :: missing KWHT of GP".$print_r($live,true));
+        		HookHandler::getInstance()->fire("onDebug", "No valid Live :: missing KWHT of GP".print_r($live,true));
         	}
         	return null;
         }
