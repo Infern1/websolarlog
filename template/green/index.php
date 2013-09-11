@@ -10,7 +10,7 @@
 				<h1 id="logo"><a href="./" title="Dashboard"><?php echo $config->title; ?></a></h1>
 				<h2 id="subLogo"><a href="./" title="Dashboard"><?php echo $config->subtitle; ?></a></h2>
 			</div>
-			<div class="socials">
+			<div class="socials" style="width:170px;">
 			  <b class="spiffy">
 			  <b class="spiffy1"><b></b></b>
 			  <b class="spiffy2"><b></b></b>
@@ -22,6 +22,7 @@
 				<a title="twitter" class="twitter" href="#">twitter</a>
 				<a title="flickr" class="flickr" href="#">flickr</a>
 				<a title="Facebook" class="facebook" href="#">Facebook</a>
+				<input type="checkbox" value="1" id="stayLiveOnBlur"/>
 				<div class="cl"></div>
 				<div id="reqLoading">
 					Request Loading...

@@ -48,7 +48,13 @@ function setGraphTitle(graphTitle, element){
 $(window).blur(function() {
 	// set time on blur
 	window.blurTime = (new Date()).getTime();
-	windowState = false;
+	if($('#stayLiveOnBlur').is(':checked')){
+		windowState = true;	
+	}else{
+		windowState = false;	
+	}
+	
+	
 });
 $(window).focus(function() {
 	//set current time
