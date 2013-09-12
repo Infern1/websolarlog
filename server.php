@@ -244,7 +244,7 @@ try {
 			$data['dayData'] = $dayData;
 			break;
 		case 'getGraphPoints':
-			$lines = $dataAdapter->getGraphPoint(1, $type, $date);
+			$lines = $dataAdapter->getGraphPoint(0, $type, $date);
 			$dayData = new DayDataResult();
 			$dayData->data = $lines->points;
 			$dayData->success = true;
@@ -519,9 +519,14 @@ try {
 			$data['dayData'] = $dayData;
 			break;
 		case 'getHistoryValues':
-			$history = $dataAdapter->getDayHistoryPerRecord();
-			for ($i = 0; $i < count($history); $i++) {
-				$history[$i]['GP'] = number_format($history[$i]['GP'],2,',','');
+			($devicenum!=0) ? $devicenum = $devicenum : $devicenum = 0;
+			$history = $dataAdapter->getDayHistoryPerRecord($devicenum,$config);
+			$c = 0;
+			foreach($historyDevices as $historyDevice){
+				for ($i = 0; $i < count($historyDevice); $i++) {
+					$history[$c][$i]['GP'] = number_format($historyDevice[$i]['GP'],2,',','');
+				}
+				$c++;
 			}
 			$dayData = new DayDataResult();
 			$dayData->data = array("history"=>$history);
