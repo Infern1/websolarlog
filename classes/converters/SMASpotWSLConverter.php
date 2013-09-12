@@ -76,41 +76,59 @@ class SMASpotWSLConverter
         	$live->KWHT = self::liveLineToValues($data[21]);
         }
 
-
-        if (!empty ($data[2])) {
-        	$live->I1P = self::liveLineToValues($data[2]);
-        }
+        
         if (!empty ($data[4])) {
         	$live->I1A = self::liveLineToValues($data[4]);
         }
         if (!empty ($data[6])) {
         	$live->I1V = self::liveLineToValues($data[6]);
         }
-
         
-        if (!empty ($data[3])) {
-        	$live->I2P = self::liveLineToValues($data[3]);
-        }        
+        if ($data[3]>0) {
+        	$live->I1P = self::liveLineToValues($data[3]);
+        }else{
+        	if($live->I1A > 0 && $live->I1V > 0){
+        		$live->I1P = ($live->I1A * $live->I1V);
+        	}
+        }
+        
+        
+        
+
         if (!empty ($data[5])) {
         	$live->I2A = self::liveLineToValues($data[5]);
         }
         if (!empty ($data[7])) {
-            $live->I2V = self::liveLineToValues($data[7]);
-        }        
-
-              
-        if (!empty ($data[8])) {
-        	$live->GP = self::liveLineToValues($data[8]);
+        	$live->I2V = self::liveLineToValues($data[7]);
         }
+        
+        if ($data[3] > 0) {
+        	$live->I2P = self::liveLineToValues($data[3]);
+        }else{
+        	if($live->I2A > 0 && $live->I2V > 0){
+        		$live->I2P = ($live->I2A * $live->I2V);
+        	}
+        }
+        
+        
+        
+        
         
         if (!empty ($data[11])) {
         	$live->GA = self::liveLineToValues($data[11]);
         }
         if (!empty ($data[14])) {
         	$live->GV = self::liveLineToValues($data[14]);
-
         }
         
+        if ($data[8] > 0) {
+        	$live->GP = self::liveLineToValues($data[8]);
+        }else{
+        	if($live->GA > 0 && $live->GV >0){
+        		$live->GP = ($live->GA * $live->GV);
+        	}
+        }        
+
         ($live->I1P && $live->I2P) ? $live->IP = $live->I1P+$live->I2P : $live->IP = $live->I1P;
 
         if (!empty ($data[19])) {
