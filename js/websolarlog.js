@@ -1006,7 +1006,7 @@ var WSL = {
 	},
 
 	init_mainSummary : function(divId){
-		var html = '<div id="mainSummary" style="margin-bottom:5px;">';
+		var html = '<div id="mainSummary" style="margin-bottom:5px;"></div>';
 		$(html).prependTo(divId);
 		var currentTime = new Date();
 		date = (currentTime.getDate()) +"-" + (currentTime.getMonth() + 1) + "-" + currentTime.getFullYear();
@@ -1195,8 +1195,12 @@ var WSL = {
 						'data' : data,
 						'lang' : data.lang
 					});
-					$("#mainSummary").after(html);
-
+					if($("#mainSummary").length > 0){
+						$("#mainSummary").after(html);
+					}else{
+						$(html).prependTo(divId);
+					}
+					
 					$('#tabs').tabs({
 						active: tabIndex,
 						create: function(event, ui) {
