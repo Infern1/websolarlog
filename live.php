@@ -54,39 +54,44 @@ require_once("template/" . $template . "/index.php");
 		
 		handleLiveData(); // Fast update
 	    window.setInterval(function(){handleLiveData()}, 5000);
-	    window.setInterval(function(){cleanup()}, 15000);
+	    window.setInterval(function(){cleanUp()}, 15000);
+
+	    $('#contentLoading').fadeOut();
 	});
 
 	function handleLiveData() {
-		WSL.api.live(function(data) {
-			$.each(data, function(){
-				currentTime = (new Date()).getTime();
-				if (this.type == "production") {
-					$('#productionLatest').html('Latest value: ' + this.data.GP);
-			        productionData.push([currentTime, parseInt(this.data.GP)]);
-			        productionGraph.series[0].data = productionData;
-			        productionGraph.resetAxesScale();
-			        productionGraph.replot();
-					
-				}
-				if (this.type == "metering") {
-					usage = this.data.liveUsage - this.data.liveReturn;
-					$('#meteringLatest').html('Latest value: ' + usage);
-					meteringData.push([currentTime, usage]);
-			        meteringGraph.series[0].data = meteringData;
-			        meteringGraph.resetAxesScale();
-			        meteringGraph.replot();
-					
-				}
-				if (this.type == "weather") {
-					$('#weatherLatest').html('Latest value: ' + this.data.temp);
-					weatherData.push([currentTime, parseInt(this.data.temp)]);
-					weatherGraph.series[0].data = weatherData;
-					weatherGraph.resetAxesScale();
-					weatherGraph.replot();
-				}
+		console.log("WSL.connect.stats.active="+WSL.connect.stats.active);
+		if (WSL.connect.stats.active < 1) {
+			WSL.api.live(function(data) {
+				$.each(data, function(){
+					currentTime = (new Date()).getTime();
+					if (this.type == "production") {
+						$('#productionLatest').html('Latest value: ' + this.data.GP);
+				        productionData.push([currentTime, parseInt(this.data.GP)]);
+				        productionGraph.series[0].data = productionData;
+				        productionGraph.resetAxesScale();
+				        productionGraph.replot();
+						
+					}
+					if (this.type == "metering") {
+						usage = this.data.liveUsage - this.data.liveReturn;
+						$('#meteringLatest').html('Latest value: ' + usage);
+						meteringData.push([currentTime, usage]);
+				        meteringGraph.series[0].data = meteringData;
+				        meteringGraph.resetAxesScale();
+				        meteringGraph.replot();
+						
+					}
+					if (this.type == "weather") {
+						$('#weatherLatest').html('Latest value: ' + this.data.temp);
+						weatherData.push([currentTime, parseInt(this.data.temp)]);
+						weatherGraph.series[0].data = weatherData;
+						weatherGraph.resetAxesScale();
+						weatherGraph.replot();
+					}
+				});
 			});
-		});
+		}
 	}
 
 	function cleanUp() {
