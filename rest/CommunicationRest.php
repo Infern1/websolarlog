@@ -72,7 +72,18 @@ class CommunicationRest {
 	public function getStartTest($request) {
 		$communicationId = Common::getValue("communicationId", -1);
 		$deviceId = Common::getValue("deviceId", -1);
-		return array("results"=>"in development", "communicationId"=>$communicationId, "deviceId"=>$deviceId);
+		
+		if ($communicationId == -1 && $deviceId == -1) {
+			if (count($request) == 3) {
+				$deviceId = $request[1];
+				$communicationId = $request[2];
+			}
+		}		
+		
+		$item = new QueueItem(time(), "DeviceHandler.handleTest", "deviceId=".$deviceId."|"."communicationId=".$communicationId, false, 0, true);
+		QueueServer::addItemToDatabase($item);
+		
+		return array("results"=>"added", "communicationId"=>$communicationId, "deviceId"=>$deviceId);
 	}
 }
 ?>

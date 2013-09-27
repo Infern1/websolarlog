@@ -10,6 +10,7 @@ class Communication {
 	public $lastTestTime;
 	public $lastTestSettings;
 	public $lastTestResult;
+	public $lastTestData;
 	
 	public function toJson() {
 		return json_encode($this);

@@ -5,6 +5,9 @@ Class SmartMeter implements DeviceApi {
     private $COMOPTION;
     private $DEBUG;
     private $PATH;
+    
+    private $communication;
+    private $useCommunication = false;
 
     function __construct($path, $address, $port, $comoption, $debug) {
         $this->ADR = $address;
@@ -12,6 +15,11 @@ Class SmartMeter implements DeviceApi {
         $this->COMOPTION = $comoption;
         $this->DEBUG = $debug;
         $this->PATH = $path;
+    }
+    
+    function setCommunication(Communication $communication) {
+    	$this->communication = $communication;
+    	$this->useCommunication = true;
     }
     
     /**
@@ -73,21 +81,34 @@ Class SmartMeter implements DeviceApi {
     }
     
     public function doCommunicationTest() {
-    	return "Not yet implemented";
+    	$result = false;
+    	$data = $this->getData();
+    	if ($data) {
+    		$result = true;
+    	}
+    	
+    	return array("result"=>$result, "testData"=>$data);
     }
 
-    private function execute() {	
+    private function execute() {
+		$uri = "";
+		if ($this->useCommunication) {
+			$uri = $this->communication->uri . " " . $this->communication->port;
+		} else {
+			$uri = $this->path;
+		}
+    	
         // Check for dangerous programs
   		$badAppString = "rm,cat,tail,reboot,halt,shutdown,fdisk,mkfs,sh,cp,mv,dd";      
     	$badApp = explode(",",$badAppString);
     	foreach ($badApp as $app) {
-    		if (strpos($this->PATH, $app . " ") !== false) {
+    		if (strpos($uri, $app . " ") !== false) {
     			HookHandler::getInstance()->fire("onError", "SmartMeter path contains blacklisted program: " . $app);
     			return null;
     		}
     	}
     	
-    	return shell_exec($this->PATH);
+    	return shell_exec($uri);
     }
 }
 ?>

@@ -138,6 +138,31 @@ class DeviceHandler {
 			}
 		}
 	}
+	
+	public function handleTest($args) {
+		$keyValues = explode("|", $args[1]);
+		$params = array();
+		foreach ($keyValues as $keyValue) {
+			$pair = explode("=", $keyValue);
+			$params[$pair[0]] = $pair[1];
+		}
+		
+		$communicationService = new CommunicationService();
+		$communication = $communicationService->load($params["communicationId"]);
+		$device = Session::getConfig()->getDeviceConfig($params["deviceId"]);
+		
+		$api = $device->getApi(Session::getConfig());
+		$api->setCommunication($communication);
+		$result = $api->doCommunicationTest();
+		
+		$communication->lastTestTime = time();
+		$communication->lastTestResult = $result["result"];
+		$communication->lastTestData = $result["testData"];
+		$communication->lastTestSettings = $communication->getSettings();
+		$communicationService->save($communication);
+		
+		var_dump($communication);
+	}
 
 	/**
 	 * We need to get the device from the config else we keep talking to

@@ -64,6 +64,7 @@ class CommunicationService {
 		$bObject->lastTestTime  = $object->lastTestTime;
 		$bObject->lastTestSettings = $object->lastTestSettings;
 		$bObject->lastTestResult = $object->lastTestResult;
+		$bObject->lastTestData = $object->lastTestData;
 		return $bObject;
 	}
 	
@@ -80,6 +81,7 @@ class CommunicationService {
 			$object->lastTestTime  = $bObject->lastTestTime;
 			$object->lastTestSettings = $bObject->lastTestSettings;
 			$object->lastTestResult = $bObject->lastTestResult;
+			$object->lastTestData = $bObject->lastTestData;
 		}
 		return $object;
 	}
