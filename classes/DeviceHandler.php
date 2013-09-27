@@ -158,10 +158,8 @@ class DeviceHandler {
 		$communication->lastTestTime = time();
 		$communication->lastTestResult = $result["result"];
 		$communication->lastTestData = $result["testData"];
-		$communication->lastTestSettings = $communication->getSettings();
+		$communication->lastTestSettings = $communication->toJson();
 		$communicationService->save($communication);
-		
-		var_dump($communication);
 	}
 
 	/**
