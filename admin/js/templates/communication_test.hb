@@ -22,4 +22,9 @@
 	</form>
 </div>
 
-<div id="test_results" />
+<div id="test_results">
+	<span style="width: 6em; display:inline-block;">time</span><span id="lastTestTime"/><br />
+	<span style="width: 6em; display:inline-block;">result</span><span id="lastTestResult"/><br />
+	<span style="width: 6em; display:inline-block;">data</span><span id="lastTestData" /><br />
+</div>
+

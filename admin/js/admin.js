@@ -412,8 +412,7 @@ function init_communication() {
     						$('#test_results').text("Sending item to queue ...");
     						var postdata = $(this).closest('form').serialize();
     						WSL.connect.postJSON('../api.php/Communication/startTest', postdata, function(result) {
-    							$('#test_results').text(result);
-    							
+    							//$('#test_results').text(result);
     						} );
     					});
     				});
@@ -424,6 +423,7 @@ function init_communication() {
     };
     
     // Load the screen
+    var currentCommunicationId = 0;
     WSL.connect.getJSON('../api.php/Communication', 
     	function(data) {
 	    	sidebar.html(WSL.template.get('communication_sb', {data: data}));
@@ -434,13 +434,25 @@ function init_communication() {
 	    	
 	    	$('.communication_select').bind('click', function(){
                 var id = $(this).attr('id').split("_")[1];
+                currentCommunicationId = id;
                 window.location.hash = shortcutFunction+"-"+id;
                 WSL.connect.getJSON('../api.php/Communication/'+id, function(data){
                 	load_edit(data);
                 });
 	    	});
     	}
-    ); 
+    );
+    
+    // Auto refresh the test results
+    window.setInterval(function(){
+    	if (currentCommunicationId > 0) {
+    		WSL.connect.getJSON('../api.php/Communication/'+currentCommunicationId, function(data){
+    			$('#lastTestTime').text(data.lastTestTime);
+    			$('#lastTestResult').text(data.lastTestResult);
+    			$('#lastTestData').text(data.lastTestData);
+    		});
+    	}
+    }, 5000);
 }
 
 function detachDropbox(){
