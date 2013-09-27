@@ -92,7 +92,7 @@ Class SmartMeter implements DeviceApi {
 
     private function execute() {
 		$uri = "";
-		if ($this->useCommunication) {
+		if ($this->useCommunication === true) {
 			$uri = $this->communication->uri . " " . $this->communication->port;
 		} else {
 			$uri = $this->path;
