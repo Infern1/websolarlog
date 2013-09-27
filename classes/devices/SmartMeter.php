@@ -95,10 +95,8 @@ Class SmartMeter implements DeviceApi {
 		$uri = "";
 		if ($this->useCommunication === true) {
 			$uri = $this->communication->uri . " " . $this->communication->port;
-			echo("Use communication\n");
 		} else {
-			$uri = $this->path;
-			echo("Use old path\n");
+			$uri = $this->PATH;
 		}
     	
         // Check for dangerous programs
