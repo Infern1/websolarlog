@@ -15,6 +15,7 @@ Class SmartMeter implements DeviceApi {
         $this->COMOPTION = $comoption;
         $this->DEBUG = $debug;
         $this->PATH = $path;
+        $this->useCommunication = false;
     }
     
     function setCommunication(Communication $communication) {
@@ -94,8 +95,10 @@ Class SmartMeter implements DeviceApi {
 		$uri = "";
 		if ($this->useCommunication === true) {
 			$uri = $this->communication->uri . " " . $this->communication->port;
+			echo("Use communication\n");
 		} else {
 			$uri = $this->path;
+			echo("Use old path\n");
 		}
     	
         // Check for dangerous programs
