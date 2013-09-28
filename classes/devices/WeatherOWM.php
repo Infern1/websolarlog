@@ -5,24 +5,35 @@ Class WeatherOWM implements DeviceApi {
 	private $lat;
 	private $lon;
 	
+	private $device;
+	private $communication;
+	private $useCommunication = false;
+	
 	function __construct($lat, $lon) {
 		$this->lat = $lat;
 		$this->lon = $lon;
 	}
 	
-	
-	public function getState() {
-		return 0; // Only offline if no internet connection or site down
-	}
+    function setCommunication(Communication $communication, Device $device) {
+    	$this->communication = $communication;
+    	$this->device = $device;
+    	$this->useCommunication = true;
+    }
 	
 	public function getAlarms() {
 		// not supported
 	}
 	
 	public function getData() {
+		$url = "";
+		if ($this->useCommunication === true) {
+			$url = $this->communication->uri;
+		} else {
+			$url = $this->weatherUrl;
+		}
+		
 		$latlng = "&lat=" . $this->lat . "&lon=" . $this->lon;
-		$url = $this->weatherUrl . $latlng;
-		$result = json_decode($this->call($url));
+		$result = json_decode($this->call($url . $latlng));
 		$weather = new Weather();
 		$weather->deviceId = -1;
 		$weather->time = time();
@@ -67,8 +78,14 @@ Class WeatherOWM implements DeviceApi {
 	}
 	
 	public function doCommunicationTest() {
-		return "Not yet implemented";
-	}
+    	$result = false;
+    	$data = $this->getData();
+    	if ($data) {
+    		$result = true;
+    	}
+    	
+    	return array("result"=>$result, "testData"=>$data);
+    }
 	
 	public function getHistoryData() {
 		// not supported
