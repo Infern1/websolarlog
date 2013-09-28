@@ -21,10 +21,13 @@
 		<input type="button" id="btnTestCommunication" value="Start test" />
 	</form>
 </div>
+<div id="test_results" style="margin-top: 10px;">
+</div>
 
-<div id="test_results">
+<div style="margin-top: 10px;">
 	<span style="width: 6em; display:inline-block;">time</span><span id="lastTestTime"/><br />
 	<span style="width: 6em; display:inline-block;">result</span><span id="lastTestResult"/><br />
-	<span style="width: 6em; display:inline-block;">data</span><span id="lastTestData" /><br />
+	<span style="width: 6em; display:inline-block;">data</span><br />
+	<pre id="lastTestData"> <pre><br />
 </div>
 

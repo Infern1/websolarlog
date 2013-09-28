@@ -412,7 +412,7 @@ function init_communication() {
     						$('#test_results').text("Sending item to queue ...");
     						var postdata = $(this).closest('form').serialize();
     						WSL.connect.postJSON('../api.php/Communication/startTest', postdata, function(result) {
-    							//$('#test_results').text(result);
+    							$('#test_results').text(result->results);
     						} );
     					});
     				});
