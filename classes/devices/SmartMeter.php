@@ -6,6 +6,7 @@ Class SmartMeter implements DeviceApi {
     private $DEBUG;
     private $PATH;
     
+    private $device;
     private $communication;
     private $useCommunication = false;
 
@@ -18,8 +19,9 @@ Class SmartMeter implements DeviceApi {
         $this->useCommunication = false;
     }
     
-    function setCommunication(Communication $communication) {
+    function setCommunication(Communication $communication, Device $device) {
     	$this->communication = $communication;
+    	$this->device = $device;
     	$this->useCommunication = true;
     }
     

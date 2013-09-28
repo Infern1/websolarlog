@@ -152,7 +152,7 @@ class DeviceHandler {
 		$device = Session::getConfig()->getDeviceConfig($params["deviceId"]);
 		
 		$api = $device->getApi(Session::getConfig());
-		$api->setCommunication($communication);
+		$api->setCommunication($communication, $device);
 		$result = $api->doCommunicationTest();
 		
 		$communication->lastTestTime = time();

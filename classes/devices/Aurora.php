@@ -5,6 +5,10 @@ Class Aurora implements DeviceApi {
     private $COMOPTION;
     private $DEBUG;
     private $PATH;
+    
+    private $device;
+    private $communication;
+    private $useCommunication = false;
 
     function __construct($path, $address, $port, $comoption, $debug) {
         $this->ADR = $address;
@@ -12,6 +16,13 @@ Class Aurora implements DeviceApi {
         $this->COMOPTION = $comoption;
         $this->DEBUG = $debug;
         $this->PATH = $path;
+        $this->useCommunication = false;
+    }
+    
+    function setCommunication(Communication $communication, Device $device) {
+    	$this->communication = $communication;
+    	$this->device = $device;
+    	$this->useCommunication = true;
     }
     
     /**
@@ -82,11 +93,22 @@ Class Aurora implements DeviceApi {
     }
     
     public function doCommunicationTest() {
-    	return "Not yet implemented";
+    	$result = false;
+    	$data = $result = $this->execute('-se -Y10');
+    	if ($data) {
+    		$result = true;
+    	}
+    	 
+    	return array("result"=>$result, "testData"=>$data);
     }
 
     private function execute($options) {
-        $cmd = $this->PATH . ' -a' . $this->ADR . ' ' . $options . ' ' . $this->PORT;
+        $cmd = "";
+        if ($this->useCommunication === true) {
+        	$cmd = $this->communication->uri . ' -a' . $this->device->comAddress . ' ' . $this->communication->optional . ' ' . $options . ' ' . $this->communication->port;	
+        } else {
+	    	$cmd = $this->PATH . ' -a' . $this->ADR . ' ' . $options . ' ' . $this->PORT;
+        }
         
         $proc=proc_open($cmd,
         		array(
