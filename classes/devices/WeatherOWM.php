@@ -91,7 +91,7 @@ Class WeatherOWM implements DeviceApi {
     		$result = true;
     	}
     	
-    	return array("result"=>$result, "testData"=>$data);
+    	return array("result"=>$result, "testData"=>print_r($data, true));
     }
 	
 	public function getHistoryData() {
