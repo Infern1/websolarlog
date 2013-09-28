@@ -58,6 +58,7 @@ session_start();
 					<li><a href="#communication" class="btnCommunication">Communication</a></li>
 					<li><a href="#graphs" class="btnGraphs">Graphs</a></li>
 					<li><a href="#email" class="btnEmail">eMail</a></li>
+					<li><a href="#yields" class="btnYields">Yields</a></li>
 					<li><a href="#advanced" class="btnAdvanced">Advanced</a></li>
 					<li><a href="#social" class="btnSocial">Social</a></li>
 					<!-- <li><a href="#tariff" id="btnTariff">Tariff</a></li>-->

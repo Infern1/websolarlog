@@ -77,6 +77,32 @@ class EnergyService {
 	}
 	
 	/**
+	 * Retrieves all energy lines
+	 * @return Array of Energy
+	 */
+	public function getEnergyList() {
+		$bObjects = R::findAll( self::$tbl, ' ORDER BY time');
+		$objects = array();
+		foreach ($bObjects as $bObject) {
+			$objects[] = $this->toObject($bObject);
+		}
+		return $objects;
+	}
+
+	/**
+	 * Retrieves all energy lines by device
+	 * @return Array of Energy
+	 */
+	public function getEnergyListByDevice(Device $device) {
+		$bObjects = R::find( self::$tbl, ' INV = :deviceId ORDER BY time', array("deviceId"=>$device->id));
+		$objects = array();
+		foreach ($bObjects as $bObject) {
+			$objects[] = $this->toObject($bObject);
+		}
+		return $objects;
+	}
+	
+	/**
 	 * get the Energy for an device
 	 * @param Device $energy
 	 * @param $time

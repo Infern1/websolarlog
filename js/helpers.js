@@ -174,6 +174,12 @@
 		}
 	});
 	
+	var monthNames = ['januari', 'februari', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+	Handlebars.registerHelper('monthName', function(context, block) {
+		return monthNames[context-1];
+	});
+	
+	
 	
 	Handlebars.registerHelper("checkboxWithHidden", function(name, state, value,classAttr) {
 		if(state==1 || state==true || state == 'checked'|| state == 'true'){

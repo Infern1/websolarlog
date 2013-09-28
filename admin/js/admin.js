@@ -221,6 +221,7 @@ function init_menu() {
     $(".btnCommunication").bind('click', function() { init_communication(); });
     $(".btnGrid").bind('click', function() { init_grid();});
     $(".btnEmail").bind('click', function() { init_email(); });
+    $(".btnYields").bind('click', function(){ init_yields(); });
     $(".btnDiagnostics").bind('click', function() { init_diagnostics(); });
     $(".btnTariff").bind('click', function() { init_tariff(); });
     $(".btnSocial").bind('click', function() { init_social(); });
@@ -232,6 +233,7 @@ function init_menu() {
 
 function init_plugwise(){
 	WSL.checkURL();
+	setTitle("Plugwise");
 	$('#sidebar').html("");
 	$.getJSON('admin-server.php?s=getAllPlugs', function(data) {
         $.ajax({
@@ -308,6 +310,7 @@ function init_plugwise(){
 function init_tariff(){
 	WSL.checkURL();
     $('#sidebar').html("");
+    setTitle("Tariff");
     var content = $('#content');
     content.html('<div id="c_general"></div><div id="c_communication"></div><div id="c_security"></div>'); // Clear old data
     $.getJSON('admin-server.php?s=get-tariffs', function(data) {
@@ -330,7 +333,7 @@ function init_tariff(){
 function init_backup() {
 	WSL.checkURL();
     $('#sidebar').html("");
-    
+    setTitle("Backup");
     $.getJSON('admin-server.php?s=dropbox', function(data) {
     	if (data.available){
     	    $.getJSON('admin-server.php?s=dropboxGetFiles', function(data) {
@@ -378,6 +381,7 @@ function init_communication() {
     // Initialize the html holders
     content.html('<div id="pnl_communication"></div><div id="pnl_communication_test"></div>');
     sidebar.html('');
+    setTitle("Communication");
     
     var load_edit = function (data) {
     	$('#pnl_communication').html(WSL.template.get('communication', {data: data}));
@@ -621,6 +625,7 @@ function deleteFiles(vars){
 function init_advanced() {
 	WSL.checkURL();
     $('#sidebar').html("");
+    setTitle("Advanced");
     
     $.getJSON('admin-server.php?s=advanced', function(data) {
         $.ajax({
@@ -654,6 +659,8 @@ function init_advanced() {
 function init_social(){
 	WSL.checkURL();
     $('#sidebar').html("");
+    setTitle("Social");
+    
     var content = $('#content');
     content.html('<div id="c_social"></div>'); // Clear old data
 
@@ -832,6 +839,8 @@ function deviceStatuses(){
 function init_general() {
 	WSL.checkURL();
     $('#sidebar').html("");
+    setTitle("General");
+    
     var content = $('#content');
     content.html('<div id="c_general"></div><div id="c_communication"></div><div id="c_security"></div>'); // Clear old data
     $.getJSON('admin-server.php?s=general', function(data) {
@@ -930,7 +939,8 @@ function checkCheckboxesHiddenFields(){
 
 
 function init_devices(selected_inverterId) {
-    $.getJSON('admin-server.php?s=inverters', function(data) {
+	setTitle("Devices");
+	$.getJSON('admin-server.php?s=inverters', function(data) {
         $.ajax({
             url : 'js/templates/device_sb.hb',
             success : function(source) {
@@ -975,6 +985,7 @@ function init_devices(selected_inverterId) {
 
 
 function init_graphs(selected_graphId) {
+	setTitle("Graphs");
 	WSL.connect.getJSON('../api.php/Graph/Graphs', function(graphs) {
         $.ajax({
             url : 'js/templates/graph_sb.hb',
@@ -1354,6 +1365,8 @@ function init_grid() {
 function init_email() {
     $('#sidebar').html("");
     var content = $('#content');
+    setTitle("eMail");
+    
     WSL.checkURL();
     content.html('<div id="c_mail"></div><div id="c_smtp"></div>');
     $.getJSON('admin-server.php?s=email', function(data) {
@@ -1413,9 +1426,100 @@ function init_email() {
     });
 }
 
+function init_yields() {
+    $('#sidebar').html("");
+    $('#content').html('<div id="yields_content"></div><div id="yields_popup"></div>');
+    
+    
+    var content = $('#yields_content');
+    setTitle("Yields");
+    WSL.checkURL();
+
+    $('#yields_popup').html(WSL.template.get('yields_popup', {}));
+    
+    var yieldsData;
+    var deviceId = 1;
+    WSL.connect.getJSON('admin-server.php?s=yield_getEnergyList&deviceId='+deviceId, function(result) {
+    	yieldsData = result.data; // Save the data for later use
+    	
+    	$('#sidebar').html(WSL.template.get('yields_sb', {data: yieldsData}));
+    	
+    	$('.btnYieldDayAdd').bind('click', function(){
+    		$('#yieldsAddDialog').dialog( "open" );
+    		
+    		$('#btn_yield_add').unbind('click');
+    		$('#btn_yield_add').bind('click', function(){
+    			saveData =	{ "time" : $('#yield_add_time').val(),
+						"deviceId" : deviceId,
+						"newKWH" : $('#yield_add_kwh').val()
+					};
+				WSL.connect.postJSON('admin-server.php?s=yield_addEnergy', saveData, function(result){});
+				$('#yieldsAddDialog').dialog( "close" );
+    		});
+    	});
+    	
+    	$('.btnYieldMonth').bind('click', function(){
+    		var btnYieldMonth = $(this);
+    		var year = btnYieldMonth.closest("ul").attr('data-year-id');
+    		var month = btnYieldMonth.attr('data-month-id');
+    		
+    		var monthData = yieldsData[year][month];
+    		
+    		content.html(WSL.template.get('yields', {year: year, month: month, data: monthData}));
+    		
+    		$('.btnYieldDayEdit').bind('click', function(){
+    			var day = $(this).attr('data-day');
+    			var energyId = $(this).attr('data-energy-id');
+    			
+    			currentKWH = (yieldsData[year][month][day]['energy'] === undefined) ? 0 : yieldsData[year][month][day]['energy']['KWH'] ; 
+    			deviceKWH = (yieldsData[year][month][day]['deviceHistory'] === undefined) ? 0 :  yieldsData[year][month][day]['deviceHistory']['amount'] ;
+    			
+    			newKWH = (currentKWH > deviceKWH) ? currentKWH : deviceKWH;
+    			
+    			
+    			$('#yield_energyID').val(energyId);
+    			$('#yield_current_kwh').val(currentKWH);
+    			$('#yield_device_kwh').val(deviceKWH);
+    			$('#yield_new_kwh').val(newKWH);
+    			
+    			$('#yieldsEditDialog').dialog( "open" );
+
+    			$('#btn_yield_save').unbind('click');
+    			$('#btn_yield_save').bind('click', function(){
+    				saveData =	{ 	"energyId" : energyId,
+    								"deviceHistoryId" : ( yieldsData[year][month][day]['deviceHistory'] === undefined) ? 0 : yieldsData[year][month][day]['deviceHistory']['id'],
+    								"newKWH" : $('#yield_new_kwh').val()
+    							};
+    				//console.log(saveData);
+    				WSL.connect.postJSON('admin-server.php?s=yield_saveEnergy', saveData, function(result){
+    					if (result.success) {
+    						if (yieldsData[year][month][day]['energy'] === undefined) {
+    							yieldsData[year][month][day]['energy'] = [];
+    						}
+    						yieldsData[year][month][day]['energy']['KWH'] = $('#yield_new_kwh').val();
+    						btnYieldMonth.trigger('click');
+    						$.pnotify({
+                                title: 'Success',
+                                text: 'You\'re changes have been saved.',
+                            	type: 'success'
+                            }); 
+    					}
+    				});
+    				
+    				
+    				$('#yieldsEditDialog').dialog( "close" );
+    			});
+    		});
+    	});
+    });
+}
+
+
 function init_diagnostics() {
 	WSL.checkURL();
 	$('#sidebar').html("");
+	setTitle("Diagnostics");
+	
     $.getJSON('admin-server.php?s=test', function(data) {
         $.ajax({
             url : 'js/templates/testpage.hb',
@@ -1445,6 +1549,8 @@ function init_update(experimental,beta,scrollTo) {
     if (typeof experimental === 'undefined' ) {
         experimental = false;
     }
+    
+    setTitle("Update");
     
     WSL.connect.getJSON('admin-server.php?s=updater-getversions&experimental=' + experimental+ '&beta=' + beta, function(data) {
         if (data.result === false) {
@@ -1771,4 +1877,9 @@ function runFunction(name, arguments){
         return;
     }
     fn.apply(window, arguments);
+}
+
+function setTitle(title) {
+	var baseTitle = "WSL :: Configuration :: ";
+	$('#site-title').text(baseTitle + title);
 }

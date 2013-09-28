@@ -130,3 +130,17 @@ fieldset fieldset {
 #btnSetLatLong{
 	top:-14px;position:relative;
 }
+
+#site-title {
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 5px;
+	line-height: 40px;
+}
+
+#content {
+	padding: 20px;
+}
+
+#content h2{
+	margin-bottom: 10px;
+}

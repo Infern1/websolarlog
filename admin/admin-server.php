@@ -831,10 +831,103 @@ switch ($settingstype) {
 		R::store($oBean);
 		$data['status'] = 'saved';
 		break;
-		case 'resetGraph':
-			$graphService = new GraphService();
-			$graphService->installGraph(true);
-			break;
+	case 'resetGraph':
+		$graphService = new GraphService();
+		$graphService->installGraph(true);
+		break;
+	case 'yield_getEnergyList':
+		$deviceService = new DeviceService();
+		$deviceHistoryService = new DeviceHistoryService();
+		$energyService = new EnergyService();
+		
+		$device = $deviceService->load(Common::getValue('deviceId'));
+		
+		$result = array();
+		
+		// Set the data from the energyList
+		$energyList = $energyService->getEnergyListByDevice($device);
+		foreach ($energyList as $energy) {
+			$year = (int) date("Y", $energy->time);
+			$month = (int) date("m", $energy->time);
+			$day = (int) date("d", $energy->time);
+			
+			if (!isset($result[$year])) {
+				$result[$year] = array();
+			}
+			if (!isset($result[$year][$month])) {
+				$result[$year][$month] = array();
+			}
+			if (!isset($result[$year][$month][$day])) {
+				$result[$year][$month][$day] = array();
+			}			
+			
+			$result[$year][$month][$day]["energy"] = $energy; 
+		}
+		
+		$deviceHistoryList = $deviceHistoryService->getArrayByDevice($device);
+		foreach ($deviceHistoryList as $deviceHistory) {
+			$year = (int) date("Y", $deviceHistory->time);
+			$month = (int) date("m", $deviceHistory->time);
+			$day = (int) date("d", $deviceHistory->time);
+			
+			if (!array_key_exists($year, $result)) {
+				$result[$year] = array();
+			}
+			if (!array_key_exists($month, $result[$year])) {
+				$result[$year][$month] = array();
+			}
+			if (!array_key_exists($day, $result[$year][$month])) {
+				$result[$year][$month][$day] = array();
+			}
+			$result[$year][$month][$day]["deviceHistory"] = $deviceHistory; 
+		}
+		
+		$data['data'] = $result;
+		break;
+	case 'yield_addEnergy':
+		$sdte = Common::getValue('time');
+		$time = strtotime($sdte . " 01:00:00");
+		$deviceId = Common::getValue('deviceId');
+		$newKWH = Common::getValue('newKWH');
+		
+		// Update the energy if it is available
+		$energyService = new EnergyService();
+		$energy = new Energy();
+		$energy->INV = $deviceId;
+		$energy->deviceId = $deviceId;
+		$energy->SDTE = $sdte;
+		$energy->time = $time;
+		$energy->KWH = $newKWH;
+		$energyService->save($energy);
+		
+		$data['success'] = true;
+		break;
+	case 'yield_saveEnergy':
+		$energyId = Common::getValue('energyId');
+		$deviceHistoryId = Common::getValue('deviceHistoryId');
+		$newKWH = Common::getValue('newKWH');
+		
+		// Update the deviceHistory if it is available
+		$deviceHistoryService = new DeviceHistoryService();
+		$deviceHistory = $deviceHistoryService->load($deviceHistoryId);
+		if ($deviceHistory->id == $deviceHistoryId && $deviceHistory->id > 0) {
+			$deviceHistory->processed = true;
+			$deviceHistoryService->save($deviceHistory);
+		}
+		
+		// Update the energy if it is available
+		$energyService = new EnergyService();
+		$energy = $energyService->load($energyId);
+		if ($energy->id != $energyId || $energy->id < 1) {
+			$energy->time = $deviceHistory->time;
+			$energy->INV = $deviceHistory->deviceId;
+			$energy->deviceId = $deviceHistory->deviceId;
+		}
+		$energy->KWH = $newKWH;
+		$energyService->save($energy);
+		
+		$data['success'] = true;
+		break;
 }
 
 if(Session::isLogin()){

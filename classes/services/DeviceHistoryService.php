@@ -30,7 +30,7 @@ class DeviceHistoryService {
 	/**
 	 * Retrieve all values for an device
 	 * @param Device $device
-	 * @return array of Panel
+	 * @return array of DeviceHistory
 	 */
 	public function getArrayByDevice(Device $device) {
 		$bObjects = R::find( self::$tbl, ' deviceId = :deviceId ', array("deviceId"=>$device->id));
