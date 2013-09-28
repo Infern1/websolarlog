@@ -5,6 +5,11 @@ Class Sma implements DeviceApi {
     private $COMOPTION;
     private $DEBUG;
     private $PATH;
+    
+    private $device;
+    private $communication;
+    private $useCommunication = false;
+    
 
     function __construct($path, $address, $port, $comoption, $debug) {
         $this->ADR = $address;
@@ -12,6 +17,12 @@ Class Sma implements DeviceApi {
         $this->COMOPTION = $comoption;
         $this->DEBUG = $debug;
         $this->PATH = $path;
+    }
+    
+    function setCommunication(Communication $communication, Device $device) {
+    	$this->communication = $communication;
+    	$this->device = $device;
+    	$this->useCommunication = true;
     }
     
     /**
@@ -63,7 +74,7 @@ Class Sma implements DeviceApi {
     }
     
     public function doCommunicationTest() {
-    	return "Not yet implemented";
+    	return array("result"=>false, "testData"=>"Not yet implemented");
     }
 
     private function execute($options) {

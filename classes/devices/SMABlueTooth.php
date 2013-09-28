@@ -6,12 +6,22 @@ Class SMABlueTooth implements DeviceApi {
     private $DEBUG;
     private $PATH;
 
+    private $device;
+    private $communication;
+    private $useCommunication = false;
+    
     function __construct($path, $address, $port, $comoption, $debug) {
         $this->ADR = $address;
         $this->PORT = $port;
         $this->COMOPTION = $comoption;
         $this->DEBUG = $debug;
         $this->PATH = $path;
+    }
+    
+    function setCommunication(Communication $communication, Device $device) {
+    	$this->communication = $communication;
+    	$this->device = $device;
+    	$this->useCommunication = true;
     }
     
     /**
@@ -128,7 +138,7 @@ Done.";
     }
     
     public function doCommunicationTest() {
-    	return "Not yet implemented";
+    	return array("result"=>false, "testData"=>"Not yet implemented");
     }
 
     private function execute($options) {

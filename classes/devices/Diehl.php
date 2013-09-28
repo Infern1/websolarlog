@@ -8,6 +8,16 @@ Class Diehl implements DeviceApi {
 
     private static $curlCh;
     
+    private $device;
+    private $communication;
+    private $useCommunication = false;
+    
+    function setCommunication(Communication $communication, Device $device) {
+    	$this->communication = $communication;
+    	$this->device = $device;
+    	$this->useCommunication = true;
+    }
+    
     public static function getCurlCh() { 	
     	if (gettype(self::$curlCh) != 'resource') {
     		HookHandler::getInstance()->fire("onDebug", "Diehl :: Creating curl resource");
@@ -28,7 +38,6 @@ Class Diehl implements DeviceApi {
     	
     	return self::$curlCh;
     }
-    
     
     /**
      * 
@@ -444,7 +453,7 @@ Class Diehl implements DeviceApi {
     }
     
     public function doCommunicationTest() {
-    	return "Not yet implemented";
+    	return array("result"=>false, "testData"=>"Not yet implemented");
     }
 
     private function execute($options) {
