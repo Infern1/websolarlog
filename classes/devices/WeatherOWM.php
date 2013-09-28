@@ -19,6 +19,13 @@ Class WeatherOWM implements DeviceApi {
     	$this->device = $device;
     	$this->useCommunication = true;
     }
+    
+    /**
+     * @see DeviceApi::getState()
+     */
+    public function getState() {
+    	return 0; // TODO :: maybe check if we can connect to the uri
+    }
 	
 	public function getAlarms() {
 		// not supported
