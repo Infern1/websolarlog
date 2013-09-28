@@ -79,6 +79,7 @@ class CommunicationService {
 			$object->timeout = $bObject->timeout;
 			$object->optional = $bObject->optional;
 			$object->lastTestTime  = $bObject->lastTestTime;
+			$object->lastTestTimeFormatted  = ($object->lastTestTime) ? date("Y-m-d H:i:s", $bObject->lastTestTime) : null;
 			$object->lastTestSettings = $bObject->lastTestSettings;
 			$object->lastTestResult = $bObject->lastTestResult;
 			$object->lastTestData = $bObject->lastTestData;

@@ -14,20 +14,22 @@
 	<form>
 		<input type="hidden" name="deviceId" id="device_id" />
 		<input type="hidden" name="communicationId" value="{{communicationId}}" />
-		<span style="width: 6em; display:inline-block;">name</span><input type="text" id="device_name" name="name" disabled="disabled"/><br />
-		<span style="width: 6em; display:inline-block;">address</span><input type="text" id="device_address" name="address" disabled="disabled"/><br />
-		<span style="width: 6em; display:inline-block;">device API</span><span id="device_api" /><br />
+		<span style="width: 6em; display:inline-block; font-weight: bold;">name</span><input type="text" id="device_name" name="name" disabled="disabled"/><br />
+		<span style="width: 6em; display:inline-block; font-weight: bold;">address</span><input type="text" id="device_address" name="address" disabled="disabled"/><br />
+		<span style="width: 6em; display:inline-block; font-weight: bold;">device API</span><span id="device_api" /><br />
 		
 		<input type="button" id="btnTestCommunication" value="Start test" />
 	</form>
 </div>
 <div id="test_results" style="margin-top: 10px;">
 </div>
-
-<div style="margin-top: 10px;">
-	<span style="width: 6em; display:inline-block;">time</span><span id="lastTestTime"/><br />
-	<span style="width: 6em; display:inline-block;">result</span><span id="lastTestResult"/><br />
-	<span style="width: 6em; display:inline-block;">data</span><br />
-	<pre id="lastTestData"> <pre><br />
+<div style="margin-top: 10px; margin-bottom: 10px">
+Be aware that it can take a few minutes before testresults are shown.
+</div>
+<div style="margin-top: 10px;" id="lastTestInfo" >
+	<span style="width: 6em; display:inline-block; font-weight: bold;">test time:</span><span id="lastTestTime"/><br />
+	<span style="width: 6em; display:inline-block; font-weight: bold;">test result:</span><span id="lastTestResult"/><br />
+	<span style="width: 6em; display:inline-block; font-weight: bold;">result data:</span><br />
+	<pre id="lastTestData" style="border: 1px solid #4B8902; padding: 10px;"> <pre><br />
 </div>
 

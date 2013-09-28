@@ -371,6 +371,7 @@ function init_backup() {
 function init_communication() {
 	var sidebar = $('#sidebar');
     var content = $('#content');
+    shortcutfunction = "communication";
     
     WSL.checkURL();
     
@@ -419,7 +420,6 @@ function init_communication() {
     			}
     		});
     	});
-    	
     };
     
     // Load the screen
@@ -447,9 +447,11 @@ function init_communication() {
     window.setInterval(function(){
     	if (currentCommunicationId > 0) {
     		WSL.connect.getJSON('../api.php/Communication/'+currentCommunicationId, function(data){
-    			$('#lastTestTime').text(data.lastTestTime);
-    			$('#lastTestResult').text(data.lastTestResult);
-    			$('#lastTestData').text(data.lastTestData);
+    			if (data.lastTestTime != null) {
+    				$('#lastTestTime').text(data.lastTestTimeFormatted);
+    				$('#lastTestResult').text((data.lastTestResult == 1) ? "success" : "failure");
+    				$('#lastTestData').text(data.lastTestData);    				
+    			}
     		});
     	}
     }, 5000);
