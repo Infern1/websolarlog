@@ -7,20 +7,19 @@
        		<option value="{{this.id}}">{{this.name}}</option>
     	{{/devices}}
     </select>
+	<div id="device_info" style="display:none; margin-top: 10px;">
+		<form>
+			<input type="hidden" name="deviceId" id="device_id" />
+			<input type="hidden" name="communicationId" value="{{communicationId}}" />
+			<span style="width: 6em; display:inline-block; font-weight: bold;">name</span><input type="text" id="device_name" name="name" disabled="disabled"/><br />
+			<span style="width: 6em; display:inline-block; font-weight: bold;">address</span><input type="text" id="device_address" name="address" disabled="disabled"/><br />
+			<span style="width: 6em; display:inline-block; font-weight: bold;">device API</span><span id="device_api" /><br />
+			<button type="button" id="btnTestCommunication">Start test</button>
+		</form>
+	</div>
   </fieldset>
 </form>
 
-<div id="device_info" style="display:none">
-	<form>
-		<input type="hidden" name="deviceId" id="device_id" />
-		<input type="hidden" name="communicationId" value="{{communicationId}}" />
-		<span style="width: 6em; display:inline-block; font-weight: bold;">name</span><input type="text" id="device_name" name="name" disabled="disabled"/><br />
-		<span style="width: 6em; display:inline-block; font-weight: bold;">address</span><input type="text" id="device_address" name="address" disabled="disabled"/><br />
-		<span style="width: 6em; display:inline-block; font-weight: bold;">device API</span><span id="device_api" /><br />
-		
-		<input type="button" id="btnTestCommunication" value="Start test" />
-	</form>
-</div>
 <div id="test_results" style="margin-top: 10px;">
 </div>
 <div style="margin-top: 10px; margin-bottom: 10px">
