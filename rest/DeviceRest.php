@@ -42,7 +42,13 @@ class DeviceRest {
 	 */
 	public function getShortList($options) {
 		$result = array();
-		foreach (Session::getConfig()->devices as $device) {
+		
+		$devices = Session::getConfig()->devices; // Active devices
+		if ( $options[1] == 'true' || $options[1] == 1) {
+			$devices = Session::getConfig()->allDevices;
+		}
+		
+		foreach ($devices as $device) {
 			$result[] = array("id"=>$device->id, "name"=>$device->name,"type"=>$device->type);
 		}
 		return $result;

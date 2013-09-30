@@ -397,7 +397,7 @@ function init_communication() {
     };
     
     var load_test= function(communicationId) {
-    	WSL.connect.getJSON('../api.php/Device/ShortList', function(devices) {
+    	WSL.connect.getJSON('../api.php/Device/ShortList/true', function(devices) {
     		var data = {communicationId: communicationId, devices: devices};
     		$('#pnl_communication_test').html(WSL.template.get('communication_test', data));
     		
@@ -1429,8 +1429,8 @@ function init_yields() {
     	$('#sidebar').html(WSL.template.get('yields_sb', {data: yieldsData}));
     	
     	// Populate devices
-    	WSL.connect.getJSON('admin-server.php?s=devices', function(data){
-    		$(data.devices).each(function(){
+    	WSL.connect.getJSON('../api.php/Device/ShortList/true', function(data){
+    		$(data).each(function(){
     			if (this.type == "production") {
     				$('#yield_inverter_select').append($('<option>', { value : this.id }).text(this.name));
     			}
