@@ -449,7 +449,7 @@ function init_communication() {
     );
     
     // Auto refresh the test results
-    if (communicationTestTimerId) clearInteral(communicationTestTimerId); // Make sure we don't load more then one timer
+    if (communicationTestTimerId) clearInterval(communicationTestTimerId); // Make sure we don't load more then one timer
     communicationTestTimerId = window.setInterval(function(){
     	if (currentCommunicationId > 0) {
     		WSL.connect.getJSON('../api.php/Communication/'+currentCommunicationId, function(data){
