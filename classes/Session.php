@@ -100,7 +100,7 @@ class Session
     	}
     	RedBean_OODBBean::setFlagBeautifulColumnNames(false);
     	R::debug(false);
-    	R::freeze(true);
+    	//R::freeze(true);
     	R::setStrictTyping(false);
     	
     	self::setTimezone();
