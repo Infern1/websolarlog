@@ -1426,6 +1426,7 @@ function init_email() {
     });
 }
 
+var deviceId = 1;
 function init_yields() {
     $('#sidebar').html("");
     $('#content').html('<div id="yields_content"></div><div id="yields_popup"></div>');
@@ -1438,11 +1439,25 @@ function init_yields() {
     $('#yields_popup').html(WSL.template.get('yields_popup', {}));
     
     var yieldsData;
-    var deviceId = 1;
     WSL.connect.getJSON('admin-server.php?s=yield_getEnergyList&deviceId='+deviceId, function(result) {
     	yieldsData = result.data; // Save the data for later use
     	
     	$('#sidebar').html(WSL.template.get('yields_sb', {data: yieldsData}));
+    	
+    	// Populate devices
+    	WSL.connect.getJSON('admin-server.php?s=devices', function(data){
+    		$(data.devices).each(function(){
+    			if (this.type == "production") {
+    				$('#yield_inverter_select').append($('<option>', { value : this.id }).text(this.name));
+    			}
+    		});
+    		$('#yield_inverter_select').val(deviceId);
+    	});
+    	
+    	$('#yield_inverter_select').bind('change', function(){
+    		deviceId = $(this).val();
+    		init_yields();
+    	});
     	
     	$('.btnYieldDayAdd').bind('click', function(){
     		$('#yieldsAddDialog').dialog( "open" );

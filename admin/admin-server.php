@@ -210,12 +210,18 @@ switch ($settingstype) {
 		$data['timezone'] = $config->timezone;
 		$data['timezones'] = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
 		break;
-	case 'inverters':
+	case 'inverters': // backwords compatibility
 		$deviceService = new DeviceService();
 		$data['supportedDevices'] = $deviceService->getSupportedDevices();
 		$data['inverters'] = $config->allDevices;
 		break;
-	case 'inverter':
+	case 'devices':
+		$deviceService = new DeviceService();
+		$data['supportedDevices'] = $deviceService->getSupportedDevices();
+		$data['devices'] = $config->allDevices;
+		break;
+	case 'inverter': // backwords compatibility
+	case 'device':
 		$deviceId = $_GET['id'];
 		//var_dump($deviceId);
 		$data['SMAspotDevices'] = 0;
@@ -436,7 +442,8 @@ switch ($settingstype) {
 		$config->template = Common::getValue("template");
 		$adapter->writeConfig($config);
 		break;
-	case 'save-inverter':
+	case 'save-inverter': // backwords compatibility
+	case 'save-device':
 		$deviceService = new DeviceService();
 		$device = new Device();
 		

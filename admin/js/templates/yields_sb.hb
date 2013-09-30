@@ -1,4 +1,8 @@
 <h4 style="color: red">This is still being tested, make a backup before editing!</h4><br /><br />
+<select id="yield_inverter_select">
+</select>
+<br />
+<br />
 <a href="#" class="btn btnYieldDayAdd">add new</a><br />
 <br />
 <ul>
