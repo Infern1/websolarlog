@@ -371,6 +371,7 @@ function init_backup() {
     });
 }
 
+var communicationTestTimerId = 0;
 function init_communication() {
 	var sidebar = $('#sidebar');
     var content = $('#content');
@@ -448,7 +449,8 @@ function init_communication() {
     );
     
     // Auto refresh the test results
-    window.setInterval(function(){
+    if (communicationTestTimerId) clearInteral(communicationTestTimerId); // Make sure we don't load more then one timer
+    communicationTestTimerId = window.setInterval(function(){
     	if (currentCommunicationId > 0) {
     		WSL.connect.getJSON('../api.php/Communication/'+currentCommunicationId, function(data){
     			if (data.lastTestTime != null) {

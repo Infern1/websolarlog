@@ -24,7 +24,8 @@
 </div>
 <div style="margin-top: 10px; margin-bottom: 10px">
 Be aware that it can take a few minutes before testresults are shown.<br />
-You do not need to keep waiting on this page. Just come back after a few minutes to see the results.
+You do not need to keep waiting on this page. Just come back after a few minutes to see the results.<br />
+If an device goes offline when the sun is down, then you will receive an failure also!.
 </div>
 <div style="margin-top: 10px;" id="lastTestInfo" >
 	<span style="width: 6em; display:inline-block; font-weight: bold;">test time:</span><span id="lastTestTime"/><br />
