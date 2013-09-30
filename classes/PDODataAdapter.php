@@ -1188,12 +1188,32 @@ class PDODataAdapter {
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
 	 */
-	public function getDayHistoryPerRecord($invtnum=1){
+	public function getDayHistoryPerRecord($deviceId,$config){
 		$beginEndDate = Util::getBeginEndDate('today', 1);
-		$beans = R::getAll("SELECT INV, GP,KWHT, time AS date 
-				FROM history 
-				WHERE INV = :INV  AND time > :beginDate AND time < :endDate 
-				ORDER BY time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+		//var_dump($parameters);
+		
+		if($deviceId>0){
+			$parameters = array(':deviceId'=>$deviceId,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']);			
+			$beans[] = R::getAll("SELECT deviceId, GP,KWHT, time AS date
+				FROM history
+				WHERE deviceId = :deviceId  AND time > :beginDate AND time < :endDate
+				ORDER BY time DESC",$parameters);
+		}else{
+			foreach($config->devices as $device){
+				
+				if($device->type=="production"){
+					$parameters = array(':deviceId'=>$device->id,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']);
+					$beans[] = R::getAll("SELECT deviceId, GP,KWHT, time AS date
+						FROM history
+						WHERE deviceId = :deviceId  AND time > :beginDate AND time < :endDate
+						ORDER BY time DESC",$parameters);
+				}
+			}
+		}
+		
+
+
+		
 		return $beans;
 	}
 

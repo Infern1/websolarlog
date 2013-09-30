@@ -2357,17 +2357,20 @@ var WSL = {
 		(type == 0) ? compareYear = 0 : compareYear = compareYear;
 		$('#compareYear').val(compareYear);
 		var graphOptions = {
-			series : [ {
-				xaxis : 'x2axis',
-				renderer : $.jqplot.LineRenderer
-			}, {
+			series : [
+			    {
+				label : 'aaa',
+				yaxis : 'y2axis',
+				renderer : $.jqplot.BarRenderer
+			},{
+			    	label : 'aaa',
 				xaxis : 'xaxis',
 				renderer : $.jqplot.LineRenderer
 			}, {
-				label : '',
-				xaxis : 'yaxis',
+				label : 'aaa',
+				xaxis : 'x2axis',
 				renderer : $.jqplot.LineRenderer
-			} ],
+			}],
 			axesDefaults : {
 				useSeriesColor : true,
 				tickRenderer : $.jqplot.CanvasAxisTickRenderer,
@@ -2412,8 +2415,29 @@ var WSL = {
 						formatString : '%d-%m'
 					}
 				},
-				yaxis : {}
+				yaxis : {
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+					
+					angle : -30,
+				},
+				y2axis : {
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+					
+					angle : -30,
+				},
 			},
+			canvasOverlay: {
+	            show: true,
+	            objects: [{
+	                	horizontalLine: {
+	                          name: 'test',
+	                          yaxis: 'y2axis',
+	                          lineWidth: 3,
+	                          color: 'rgb(0, 125,0)',
+	                          shadow: false
+	                      }
+	           },]
+	        },
 			cursor : {
 				zoom : true,
 				show : true,
@@ -2436,6 +2460,7 @@ var WSL = {
 						if (result.dayData.data) {
 							var dataDay1 = [];
 							var dataDay2 = [];
+							var dataDay3 = [];
 							var compareTable = [];
 							var whichTable = [];
 							for (line in result.dayData.data.compare) {
@@ -2453,6 +2478,7 @@ var WSL = {
 							for (line in result.dayData.data.which) {
 								var object = result.dayData.data.which[line];
 								dataDay2.push([ parseFloat(object[0]*1000), object[2], object[3] ]);
+								dataDay3.push([ parseFloat(object[0]*1000), parseFloat(object[4]) ]);
 								var item = {
 									"timestamp" : parseFloat(object[0]*1000),
 									"har" : object[2],
@@ -2460,10 +2486,10 @@ var WSL = {
 									"displayKWH" : object[3],
 									"harvested" : object[4],
 								};
-								//console.log(item);
+								
 								whichTable.push([ item ]);
 							}
-							//console.log(compareTable);
+
 							$("#content").append('<div id="compareGraph"></div>');
 							$('#content').append('<div id="compareFigures"></div>');
 							$("#compareGraph").height(500);
@@ -2471,18 +2497,21 @@ var WSL = {
 
 							graphOptions.axes.x2axis.label = $("#whichMonth option:selected").text()+ ' '+ $("#whichYear option:selected").text();
 							graphOptions.axes.xaxis.label = $("#compareMonth option:selected").text()+ ' '+ $("#compareYear option:selected").text();
-
-							graphOptions.series[0].label = $("#whichMonth option:selected").text()+ ' '+ $("#whichYear option:selected").text();
-							graphOptions.series[1].label = $("#compareMonth option:selected").text()+ ' '+ $("#compareYear option:selected").text();
-
+							
+							graphOptions.series[0].label = 'day';
+							graphOptions.series[1].label = $("#whichMonth option:selected").text()+ ' '+ $("#whichYear option:selected").text();
+							graphOptions.series[2].label = $("#compareMonth option:selected").text()+ ' '+ $("#compareYear option:selected").text();
+							
 							graphOptions.axes.x2axis.min = result.dayData.data.which[0][0]*1000;
 							graphOptions.axes.xaxis.min = result.dayData.data.compare[0][0]*1000;
 
 							graphOptions.axes.yaxis.min = 0;
-
-							handle = $.jqplot("compareGraph", [ dataDay2,dataDay1 ], graphOptions);
-							handle.replot();
-
+							graphOptions.axes.y2axis.min = 0;
+							
+							handle = $.jqplot("compareGraph", [ dataDay3,dataDay2,dataDay1, ], graphOptions);
+							graphOptions.canvasOverlay.objects[0].horizontalLine.y = dataDay3[0][1];
+							handle.replot(graphOptions);
+							console.log(dataDay3[0][1]);
 							$('#compareFigures').html(WSL.template.get('compareFigures',{'compare':compareTable,'which':whichTable,'diff':result.dayData.data.diff,'lang':result.lang}));
 						}
 					}

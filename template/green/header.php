@@ -36,6 +36,7 @@ $config = Session::getConfig();
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.canvasTextRenderer.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+    <script type="text/javascript" src="js/jqplot_plugins/jqplot.canvasOverlay.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.dateAxisRenderer.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.meterGaugeRenderer.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.cursor.min.js"></script>
