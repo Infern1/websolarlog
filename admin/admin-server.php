@@ -462,7 +462,8 @@ switch ($settingstype) {
 		$device->expectedkwh = Common::getValue("expectedkwh");
 		$device->plantpower = Common::getValue("plantpower");
 		$device->deviceApi = Common::getValue("deviceApi");
-		$device->type = Common::getValue("deviceType"); 
+		$device->type = Common::getValue("deviceType");
+		$device->communicationId = Common::getValue("communicationId"); 
 		$device->comAddress = Common::getValue("comAddress");
 		$device->comLog = Common::getValue("comLog");
 		$device->syncTime = Common::getValue("syncTime");

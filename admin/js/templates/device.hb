@@ -52,6 +52,9 @@
         </select>{{infoTooltip title="Select the device type;<br>- production: (wind/solar)inverter<br>- metering: SmartMeter<Br>- weather: Collect Weather data"}}
         <br />   
     </div>
+    <div class="all create_new metering production deviceApi weather">
+    <label for="communicationId">communication:</label><select id="communicationId" name="communicationId" value="{{data.inverter.communicationId}}"></select>{{infoTooltip title="Communication settings<br>Configure the options in the communication manager."}}<br />
+    </div>
     <div class="all create_new metering production deviceApi">
     <label for="comAddress">(RS485/IP) address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" />{{infoTooltip title="RS485: 1-255<br>IP: v4 of v6 address"}}<br />
     </div>

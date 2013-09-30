@@ -1120,146 +1120,130 @@ function showAlertOverlay($this,inverterId,typeName) {
     });
 }
 
-function load_device(inverterId,deviceApi,deviceType) {
-    $.getJSON('admin-server.php?s=inverter&id='+inverterId, function(inv_data) {
-        $.ajax({
-            url : 'js/templates/device.hb',
-            success : function(source) {
-            	if(deviceApi){
-            		inv_data.inverter.deviceApi = deviceApi; 
-            	}
-            	if(deviceType){
-            		inv_data.inverter.type = deviceType; 
-            	}
-                var template = Handlebars.compile(source);
-                var html = template({
-                	'inverterId' : inverterId,
-                    'data' : inv_data
+function load_device(deviceId,deviceApi,deviceType) {
+	WSL.connect.getJSON('admin-server.php?s=inverter&id='+deviceId, function(inv_data) {
+		if(deviceApi){
+			inv_data.inverter.deviceApi = deviceApi; 
+		}
+		if(deviceType){
+			inv_data.inverter.type = deviceType; 
+		}
+		
+		$('#content').html(WSL.template.get('device', { 'inverterId' : deviceId, 'data' : inv_data }));
+
+		// hide ALL elements with (sub)class 'all'
+        $("#content").find("[class*='all']").hide();
+
+        // display only the field for this device type
+        if(deviceId<0){
+        	$('.create_new').show();
+        }else{
+        	//console.log(inv_data.inverter.type);
+        	if(inv_data.inverter.type){
+        		$('.'+inv_data.inverter.type).show();
+        	}else{
+        		$('.all').show();
+        	}
+        }              
+    	
+        if(inv_data.inverter.id > 0 && inv_data.inverter.panels.length==0 && inv_data.inverter.type == 'production'){
+        	$.pnotify({ title: 'No System Panels', text: 'Please add one or more panels. We need panels for some calculations.'});
+        	WSL.scrollTo({element : $("#new_panels").closest('form'),time : '', offset : -70});
+        }
+        
+        WSL.connect.getJSON('../api.php/Communication', function(data){
+        	$('#communicationId').html("");
+        	$.each(data, function(){
+				$('#communicationId').append($('<option>', { value : this.id }).text(this.name));
+    		});
+    		$('#communicationId').val(inv_data.inverter.communicationId);
+        });
+        
+        $('#btnDeviceSubmit').bind('click', function(){
+        	$('#btnDeviceSubmit').attr("disabled", "disabled");
+        	
+        	// remove disabled attr so POST will process it.
+        	$('[disabled="disabled"]').each(function(){$(this).removeAttr('disabled');});
+        	checkCheckboxesHiddenFields();
+        	var data = $(this).closest('form').serialize();
+        	WSL.connect.postJSON('admin-server.php', data, function(result) {
+                init_devices(result.id);
+                $.pnotify({ title: 'Saved', text: 'You\'re changes have been saved.'});
+                $('#btnDeviceSubmit').removeAttr("disabled");
+                window.location.hash = '#devices-'+result.id;
+            }, function($resultError){$('#btnDeviceSubmit').removeAttr("disabled");});
+        });
+        
+        $( "#sliderLiveRate" ).slider({
+            min: 2,
+            max: 60,
+            step: 1,
+            slide: function( event, ui ) {
+              $( "#refreshTime" ).val( ui.value );
+            }
+          });
+          // setter
+
+      	$( "#sliderLiveRate" ).slider( "option", "value", $( "#refreshTime" ).val() );
+
+      	$( "#refreshTime" ).on('keyup',function(){
+      		$( "#sliderLiveRate" ).slider( "option", "value", $(this).val() );
+      	});
+
+        $( "#sliderHistoryRate" ).slider({
+            min: 60,
+            max: 3600,
+            step: 1,
+            slide: function( event, ui ) {
+              $( "#historyRate" ).val( ui.value );
+            }
+          });
+        // setter
+      	$( "#sliderHistoryRate" ).slider( "option", "value", $( "#historyRate" ).val() );
+      	
+      	$( "#historyRate" ).on('keyup',function(){
+      		$( "#sliderHistoryRate" ).slider( "option", "value", $(this).val() );
+      	});
+        
+        var handle_panel_submit = function() {
+        	checkCheckboxesHiddenFields();
+            var data = $(this).closest('form').serialize();
+            WSL.connect.postJSON('admin-server.php', data, function(result) {
+                load_device(deviceId);
+                $.pnotify({
+                    title: 'Saved',
+                    text: 'You\'re changes have been saved.'
                 });
-                $('#content').html(html);
-                
-                // hide ALL elements with (sub)class 'all'
-                $("#content").find("[class*='all']").each(function(index, domElem){
-                	$(domElem).hide();
-               	});
+            });                                         
+        };
+        
+        $('.panel_submit').bind('click', handle_panel_submit);
 
+        $('#btnNewPanel').bind('click', function(){
+        	WSL.connect.getJSON('admin-server.php?s=panel&id=-1&inverterId='+deviceId, function(data) {
+            	$('#new_panels').html(WSL.template.get('panel', { 'data' : data }));
+            	$('#new_panels').html(html);
+            	$('.panel_submit').unbind('click');
+            	$('.panel_submit').bind('click', handle_panel_submit); 
+            });
+        });
+        
+        init_KWHcalc(inv_data);
+        $("input[name = 'removePanel']").bind('click', function(){                        
+            if ($(this).is(":checked")){
+            	$this = $(this);
+            	showAlertOverlay($this,deviceId,'Panel');
+            }
+    	});
+        $("input[name = 'removeDevice']").bind('click', function(){                        
+            if ($(this).is(":checked")){
+            	$this = $(this);
+            	showAlertOverlay($this,deviceId,'Device');
+            }
+    	});
 
-                // display only the field for this device type
-                if(inverterId<0){
-                	$('.create_new').show();
-                }else{
-                	//console.log(inv_data.inverter.type);
-                	if(inv_data.inverter.type){
-                		$('.'+inv_data.inverter.type).show();
-                	}else{
-                		$('.all').show();
-                	}
-                }              
-            	
-                if(inv_data.inverter.id > 0 && inv_data.inverter.panels.length==0 && inv_data.inverter.type == 'production'){
-                	$.pnotify({ title: 'No System Panels', text: 'Please add one or more panels. We need panels for some calculations.'});
-                	WSL.scrollTo({element : $("#new_panels").closest('form'),time : '', offset : -70});
-                }
-                
-                
-                $('#btnDeviceSubmit').bind('click', function(){
-                	$('#btnDeviceSubmit').attr("disabled", "disabled");
-                	
-                	// remove disabled attr so POST will process it.
-                	$('[disabled="disabled"]').each(function(){$(this).removeAttr('disabled');});
-                	checkCheckboxesHiddenFields();
-                	var data = $(this).closest('form').serialize();
-                	WSL.connect.postJSON('admin-server.php', data, function(result) {
-                        init_devices(result.id);
-                        $.pnotify({ title: 'Saved', text: 'You\'re changes have been saved.'});
-                        $('#btnDeviceSubmit').removeAttr("disabled");
-                        window.location.hash = '#devices-'+result.id;
-                    }, function($resultError){$('#btnDeviceSubmit').removeAttr("disabled");});
-                });
-                
-                $( "#sliderLiveRate" ).slider({
-                    min: 2,
-                    max: 60,
-                    step: 1,
-                    slide: function( event, ui ) {
-                      $( "#refreshTime" ).val( ui.value );
-                    }
-                  });
-                  // setter
-
-              	$( "#sliderLiveRate" ).slider( "option", "value", $( "#refreshTime" ).val() );
-
-              	$( "#refreshTime" ).on('keyup',function(){
-              		$( "#sliderLiveRate" ).slider( "option", "value", $(this).val() );
-              	});
-
-                $( "#sliderHistoryRate" ).slider({
-                    min: 60,
-                    max: 3600,
-                    step: 1,
-                    slide: function( event, ui ) {
-                      $( "#historyRate" ).val( ui.value );
-                    }
-                  });
-                // setter
-              	$( "#sliderHistoryRate" ).slider( "option", "value", $( "#historyRate" ).val() );
-              	
-              	$( "#historyRate" ).on('keyup',function(){
-              		$( "#sliderHistoryRate" ).slider( "option", "value", $(this).val() );
-              	});
-                
-                var handle_panel_submit = function() {
-                	checkCheckboxesHiddenFields();
-                    var data = $(this).closest('form').serialize();
-                    $.post('admin-server.php', data, function(){
-                        load_device(inverterId);
-                        $.pnotify({
-                            title: 'Saved',
-                            text: 'You\'re changes have been saved.'
-                        });
-                    });                                         
-                };
-                
-                $('.panel_submit').bind('click', handle_panel_submit);
-
-                $('#btnNewPanel').bind('click', function(){
-                    $.getJSON('admin-server.php?s=panel&id=-1&inverterId='+inverterId, function(data) {
-                        $.ajax({
-                            url : 'js/templates/panel.hb',
-                            success : function(source) {
-                                var template = Handlebars.compile(source);
-                                var html = template({
-                                    'data' : data
-                                });
-                                $('#new_panels').html(html);
-                                $('.panel_submit').unbind('click');
-                                $('.panel_submit').bind('click', handle_panel_submit);
-                            },
-                            dataType : 'text'
-                        }); 
-                    });
-                });
-                
-                init_KWHcalc(inv_data);
-                $("input[name = 'removePanel']").bind('click', function(){                        
-                    if ($(this).is(":checked")){
-                    	$this = $(this);
-                    	showAlertOverlay($this,inverterId,'Panel');
-                    }
-            	});
-                $("input[name = 'removeDevice']").bind('click', function(){                        
-                    if ($(this).is(":checked")){
-                    	$this = $(this);
-                    	showAlertOverlay($this,inverterId,'Device');
-                    }
-            	});
-
-            },
-            dataType : 'text'
-        });        
     });
 }
-
 
 
 function load_graph(graphId) {
