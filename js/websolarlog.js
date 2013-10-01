@@ -2511,7 +2511,7 @@ var WSL = {
 
 							graphOptions.axes.yaxis.min = 0;
 							graphOptions.axes.y2axis.min = 0;
-							graphOptions.axes.y2axis.max = Math.round(parseFloat(dataDay1[0][1]*parseFloat(1.2))*0.1)/0.1;
+							graphOptions.axes.y2axis.max = Math.round(parseFloat(dataDay1[0][1]*parseFloat(1.25))*0.1)/0.1;
 							
 							
 							handle = $.jqplot("compareGraph", [ dataDay3,dataDay2,dataDay1, ], graphOptions);
