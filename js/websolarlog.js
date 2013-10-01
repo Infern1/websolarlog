@@ -2417,12 +2417,16 @@ var WSL = {
 				},
 				yaxis : {
 					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-					
+					tickOptions : {
+						formatString : '%d kWh'
+					},
 					angle : -30,
 				},
 				y2axis : {
 					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-					
+					tickOptions : {
+						formatString : '%d kWh'
+					},
 					angle : -30,
 				},
 			},
@@ -2507,11 +2511,13 @@ var WSL = {
 
 							graphOptions.axes.yaxis.min = 0;
 							graphOptions.axes.y2axis.min = 0;
+							graphOptions.axes.y2axis.max = Math.round(parseFloat(dataDay1[0][1]*parseFloat(1.2))*0.1)/0.1;
+							
 							
 							handle = $.jqplot("compareGraph", [ dataDay3,dataDay2,dataDay1, ], graphOptions);
-							graphOptions.canvasOverlay.objects[0].horizontalLine.y = dataDay3[0][1];
+							graphOptions.canvasOverlay.objects[0].horizontalLine.y = dataDay1[0][1];
 							handle.replot(graphOptions);
-							console.log(dataDay3[0][1]);
+							//console.log(dataDay3[0][1]);
 							$('#compareFigures').html(WSL.template.get('compareFigures',{'compare':compareTable,'which':whichTable,'diff':result.dayData.data.diff,'lang':result.lang}));
 						}
 					}
@@ -2627,6 +2633,10 @@ WSL.api.getLanguages = function(success) {
 };
 
 WSL.api.mainSummary = function(date,success) {
+	WSL.connect.getJSON('api.php/Summary/'+date, success);
+};
+
+WSL.api.summaryPage = function(date,success) {
 	WSL.connect.getJSON('api.php/Summary/'+date, success);
 };
 
