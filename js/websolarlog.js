@@ -1179,6 +1179,7 @@ var WSL = {
 			});
 		});
 	},
+	
 	init_tabs : function(page, tabIndex, divId, success) {
 		// initialize languages selector on the given div
 		WSL.api.getTabs(page, function(data) {
@@ -2465,6 +2466,7 @@ var WSL = {
 							var dataDay1 = [];
 							var dataDay2 = [];
 							var dataDay3 = [];
+							var dailykWh = [];
 							var compareTable = [];
 							var whichTable = [];
 							for (line in result.dayData.data.compare) {
@@ -2483,6 +2485,7 @@ var WSL = {
 								var object = result.dayData.data.which[line];
 								dataDay2.push([ parseFloat(object[0]*1000), object[2], object[3] ]);
 								dataDay3.push([ parseFloat(object[0]*1000), parseFloat(object[4]) ]);
+								dailykWh.push(parseFloat(object[4]));
 								var item = {
 									"timestamp" : parseFloat(object[0]*1000),
 									"har" : object[2],
@@ -2511,13 +2514,14 @@ var WSL = {
 
 							graphOptions.axes.yaxis.min = 0;
 							graphOptions.axes.y2axis.min = 0;
-							graphOptions.axes.y2axis.max = Math.round(parseFloat(dataDay1[0][1]*parseFloat(1.25))*0.1)/0.1;
+							var maxDailykWh = Math.max.apply(null, dailykWh);
+							graphOptions.axes.y2axis.max = Math.round(parseFloat(maxDailykWh*parseFloat(1.10))*0.1)/0.1;
 							
 							
 							handle = $.jqplot("compareGraph", [ dataDay3,dataDay2,dataDay1, ], graphOptions);
 							graphOptions.canvasOverlay.objects[0].horizontalLine.y = dataDay1[0][1];
 							handle.replot(graphOptions);
-							//console.log(dataDay3[0][1]);
+							
 							$('#compareFigures').html(WSL.template.get('compareFigures',{'compare':compareTable,'which':whichTable,'diff':result.dayData.data.diff,'lang':result.lang}));
 						}
 					}
