@@ -1211,11 +1211,11 @@ function load_device(deviceId,deviceApi,deviceType) {
         	checkCheckboxesHiddenFields();
             var data = $(this).closest('form').serialize();
             WSL.connect.postJSON('admin-server.php', data, function(result) {
-                load_device(deviceId);
                 $.pnotify({
                     title: 'Saved',
                     text: 'You\'re changes have been saved.'
                 });
+                load_device(deviceId);
             });                                         
         };
         
@@ -1223,10 +1223,10 @@ function load_device(deviceId,deviceApi,deviceType) {
 
         $('#btnNewPanel').bind('click', function(){
         	WSL.connect.getJSON('admin-server.php?s=panel&id=-1&inverterId='+deviceId, function(data) {
-            	$('#new_panels').html(WSL.template.get('panel', { 'data' : data }));
-            	$('#new_panels').html(html);
+        		$('#new_panels').html(WSL.template.get('panel', { 'data' : data }));
             	$('.panel_submit').unbind('click');
-            	$('.panel_submit').bind('click', handle_panel_submit); 
+            	$('.panel_submit').bind('click', handle_panel_submit);
+            	
             });
         });
         
