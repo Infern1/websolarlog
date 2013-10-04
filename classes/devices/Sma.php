@@ -1,8 +1,6 @@
 <?php
 Class Sma implements DeviceApi {
     private $ADR;
-    private $PORT;
-    private $COMOPTION;
     private $DEBUG;
     private $PATH;
     
@@ -11,10 +9,8 @@ Class Sma implements DeviceApi {
     private $useCommunication = false;
     
 
-    function __construct($path, $address, $port, $comoption, $debug) {
+    function __construct($path, $address, $debug) {
         $this->ADR = $address;
-        $this->PORT = $port;
-        $this->COMOPTION = $comoption;
         $this->DEBUG = $debug;
         $this->PATH = $path;
     }

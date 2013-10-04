@@ -1,8 +1,6 @@
 <?php
 Class MasterVolt implements DeviceApi {
     private $ADR;
-    private $PORT;
-    private $COMOPTION;
     private $DEBUG;
     private $PATH;
 
@@ -10,10 +8,8 @@ Class MasterVolt implements DeviceApi {
     private $communication;
     private $useCommunication = false;
     
-    function __construct($path, $address, $port, $comoption, $debug) {
+    function __construct($path, $address, $debug) {
         $this->ADR = $address;
-        $this->PORT = $port;
-        $this->COMOPTION = $comoption;
         $this->DEBUG = $debug;
         $this->PATH = $path;
     }
@@ -70,28 +66,7 @@ Class MasterVolt implements DeviceApi {
     public function getHistoryData() {
     	// Try to retrieve the data of the last 366 days
         echo("GetHistoryData Mastervolt\n");
-        return "No History Data";    	
-        //$result = $this->execute('-k366 -Y60'); // -K10 is not yet supported by aurora
-        
-        //if ($result) {
-        //	HookHandler::getInstance()->fire("onDebug", "getHistoryData :: start processing the result");
-        //	$deviceHistoryList = array();
-        //	$lines = explode("\n", $result);
-        //	foreach ($lines as $line) {
-        //		$deviceHistory = AuroraConverter::toDeviceHistory($line);
-        //		if ($deviceHistory != null) {
-        //			$deviceHistory->amount = $deviceHistory->amount * 10; // Remove this line when -K10 is supported
-        //			$deviceHistoryList[] = $deviceHistory;
-        //		}
-        //	}
-        //	return $deviceHistoryList;
-        //} else {
-        //	if (Session::getConfig()->debugmode) {
-        //		HookHandler::getInstance()->fire("onDebug", "getHistoryData :: nothing returned by inverter result=" + $result);
-        //	}
-        //}
-        //
-        //return null;
+        return "No History Data"; 
     }
 
     public function syncTime() {

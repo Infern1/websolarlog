@@ -65,34 +65,34 @@ class Device {
 
     function getApi(Config $config) {
         if ($this->deviceApi == "AURORA") {
-            return new Aurora($config->aurorapath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+            return new Aurora($config->aurorapath, $this->comAddress, $config->comDebug);
         }
     	if ($this->deviceApi == "SMA-RS485") {
-	    	return new Sma($config->smagetpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    	return new Sma($config->smagetpath, $this->comAddress, $config->comDebug);
 	    }
     	if ($this->deviceApi == "SMA-BT") {
-	    	return new SMABlueTooth($config->smaspotpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    	return new SMABlueTooth($config->smaspotpath, $this->comAddress, $config->comDebug);
 	    }
     	if ($this->deviceApi == "SMA-BT-WSL") {
-	    	return new SMASpotWSL($config->smaspotWSLpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    	return new SMASpotWSL($config->smaspotWSLpath, $this->comAddress, $config->comDebug);
 	    }
 	    if ($this->deviceApi == "Diehl-ethernet") {
-	    	return new Diehl($config->smagetpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    	return new Diehl($config->smagetpath, $this->comAddress, $config->comDebug);
 	    }
 	    if ($this->deviceApi == "DutchSmartMeter") {
-	    	return new SmartMeter($config->smartmeterpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    	return new SmartMeter($config->smartmeterpath, $this->comAddress, $config->comDebug);
 	    }
     	if ($this->deviceApi == "DutchSmartMeterRemote") {
-	    	return new SmartMeterRemote($config->smartmeterpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    	return new SmartMeterRemote($config->smartmeterpath, $this->comAddress, $config->comDebug);
 	    }
     	if ($this->deviceApi == "MasterVolt") {
-	    	return new MasterVolt($config->mastervoltpath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    	return new MasterVolt($config->mastervoltpath, $this->comAddress, $config->comDebug);
 	    }
     	if ($this->deviceApi == "Open-Weather-Map") {
 	    	return new WeatherOWM($config->latitude, $config->longitude);
 	    }
 	    if ($this->deviceApi == "KostalPiko") {
-	    	return new KostalPiko($config->kostalpikopath, $this->comAddress, $config->comPort, $config->comOptions, $config->comDebug);
+	    	return new KostalPiko($config->kostalpikopath, $this->comAddress, $config->comDebug);
 	    }
     }
 }

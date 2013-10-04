@@ -1,8 +1,6 @@
 <?php
 Class Diehl implements DeviceApi {
     private $ADR;
-    private $PORT;
-    private $COMOPTION;
     private $DEBUG;
     private $PATH;
 
@@ -366,14 +364,10 @@ Class Diehl implements DeviceApi {
      * 
      * @param unknown $path
      * @param unknown $address
-     * @param unknown $port
-     * @param unknown $comoption
      * @param unknown $debug
      */
-    function __construct($path, $address, $port, $comoption, $debug) {
+    function __construct($path, $address, $debug) {
         $this->ADR = $address;
-        $this->PORT = $port;
-        $this->COMOPTION = $comoption;
         $this->DEBUG = $debug;
         $this->PATH = $path;
     }
