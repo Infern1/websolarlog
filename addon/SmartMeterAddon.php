@@ -234,7 +234,7 @@ class SmartMeterAddon {
 			$bean['gasUsage'] = $find['gasUsage']/1000;
 			$bean['gasUsageCO2'] = ($bean['gasUsage'] * $this->config->co2gas)/1000;
 			$bean['gasUsageTrees'] = $bean['gasUsageCO2'] / $this->config->co2CompensationTree;
-			$bean['gasUsageCosts'] = $bean['gasUsage'] * ($this->config->costGas/100);
+			$bean['gasUsageCosts'] = round((($find['gasUsage']/1000) * $this->config->costGas)/100,2);
 			
 			$bean['returnKWH'] = $bean['lowReturn'] + $bean['highReturn'];
 			$bean['returnCO2'] =  ($bean['returnKWH'] * $this->config->co2kwh)/1000;
@@ -246,7 +246,7 @@ class SmartMeterAddon {
 			$bean['effUsageKWH'] = $bean['usage']-$bean['return'];
 			$bean['effUsageCosts'] = $find['effUsage'] * $this->config->costkwh;
 
-		return $bean;
+			return $bean;
 		}else{
 			return;
 		}

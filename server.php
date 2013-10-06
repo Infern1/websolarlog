@@ -485,8 +485,14 @@ try {
 			foreach ($config->devices as $device){
 				$inverter[] = array("name"=>$device->name,"id"=>$device->id);
 			}
-
-			$lines = $dataAdapter->getCompareGraph($devicenum, $whichMonth,$whichYear,$compareMonth,$compareYear);
+			$compareService = new CompareService();
+			$dayData = new DayDataResult();
+			$options['deviceNum'] = $devicenum;
+			$options['type'] = $type;
+			$options['date'] = $date;
+			$options['mode'] = 'frontend';
+			//$data['graph'] = $graphService->loadGraph($options);
+			$lines = $compareService->getCompareGraph($devicenum, $whichMonth,$whichYear,$compareMonth,$compareYear);
 				
 			$lang = array();
 			$lang['today'] = _("Today");

@@ -88,6 +88,7 @@ class WeatherService {
 			$beans =  R::findAll( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
 					array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 			);
+			
 			$i=0;
 			$temp = 0;
 			foreach ($beans as $bean){
@@ -103,7 +104,7 @@ class WeatherService {
 				$degreeDays = 0;
 			}
 			$lastBean = end($beans);
-	
+
 			$return = array(
 					"weatherSamples"=>$i,
 					"avgTemp"=>round($avgTemp,1),

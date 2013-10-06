@@ -27,7 +27,6 @@ class SummaryService {
 	 */
 	public function load($date) { 
 		$dataEnergyTables = array();
-		//var_dump($this->config->devices);
 		foreach($this->config->devices as $device){
 			$hookReturn = HookHandler::getInstance()->fire("mainSummary",$device,$date);
 			if(count($hookReturn)>0){
@@ -54,25 +53,40 @@ class SummaryService {
 			$i++;
 		}
 		
-		//houseHoldUsage: 1.322
-		//return: 2.787
-		//usage: 2.702
-		//generated: 4.109
 
 
 		$total['usedBeforeMeterKWH'] = $total['production']['KWH'] - $total['metering']['returnKWH'];
 		$total['usedBeforeMeterCosts'] = $locale['currency_symbol']." ".round($total['totalUsagekWh'] / $this->config->co2kwh,2);
 		$total['usedBeforeMeterCO2'] = round(($total['usedBeforeMeterKWH']*$this->config->co2kwh)/1000,3);
 		$total['usedBeforeMeterTrees'] = round(($total['usedBeforeMeterCO2']*1000)/ $this->config->co2CompensationTree,3);
+		/*
+		echo (float)$total['production']['KWH']."*";
+		echo (float)$total['metering']['returnKWH']."*";
 		
-
-		$total['totalUsagekWh'] =  ($total['production']['KWH'] - $total['metering']['returnKWH']) + $total['metering']['usageKWH'];
+		echo floatval($total['production']['KWH']) - (floatval($total['metering']['returnKWH']) + floatval($total['metering']['usageKWH']))."*";
+		*/
+		
+		
+		//houseHoldUsage:
+		
+		//return: 3
+		//usage: 4
+		//generated: 5
+		
+		// householdUsage = (generated - return) + usage;
+		// we generated 5 kWh, of that we return 3 kWh to the grid, so we used 2 kWh in the house. Also the smartMeter registered a usage of 4 kWh.
+		// So the house used 2 kWh + 4 kWh = 6kWh
+		// 30 - 28 = 2
+		// 
+		$total['totalUsagekWh'] =  (floatval($total['production']['KWH']) - floatval($total['metering']['returnKWH'])) + floatval($total['metering']['usageKWH']);
 		$total['totalUsageKWHCosts'] = round(($total['totalUsagekWh'] * $this->config->costkwh)/100,2);
 		$total['totalUsageKWHCO2'] = round(($total['totalUsagekWh']*$this->config->co2kwh)/1000,2);
 		$total['totalUsageKWHTrees'] = round(($total['totalUsageKWHCO2']*1000)/ $this->config->co2CompensationTree,2);
 
 		$total['householdCO2'] = $total['totalUsageKWHCO2']+$total['metering']['gasUsageCO2'];
+		$total['householdUsage'] = $total['metering']['usageKWH'];
 		$total['householdTrees'] = round(($total['totalUsageKWHCO2']+$total['metering']['gasUsageCO2'])/($this->config->co2CompensationTree/1000),0);
+		
 		$total['co2CompensationTree'] = $this->config->co2CompensationTree;
 		$total['moneySign'] = $locale['currency_symbol'];
 		if($total['weather']['degreeDays']>0){
@@ -87,41 +101,69 @@ class SummaryService {
 		$total['sunDown'] = Util::isSunDown();
 		
 		
+		
+		$dataEnergyTables = self::handleFigures($dataEnergyTables);
+		$total = self::handleFigures($total);
+		
+		return array("data"=>$dataEnergyTables,"totals"=>$total);
+	}
+	
+	public function handleFigures($total){
+		$i = 0;
 		$deviceApis = array_keys($total);
-		$i=0;
 		foreach ($total as $deviceResult){
-			
 			$countValues = count($deviceResult);
 			$counter = 0;
 			if(is_array($deviceResult)){
-				//echo 'is_array()';
 				foreach ($deviceResult as $key => $value){
-					if(stristr(strtolower($key), 'co2')){
-						$total[$deviceApis[$i]][$key] = round($value,2);
-					}
-					if(stristr(strtolower($key), 'costs')){
-						$total[$deviceApis[$i]][$key] = round($value,2);
-					}
-					if(stristr(strtolower($key), 'kwh')){
-						$total[$deviceApis[$i]][$key] = round($value,2);
+					if(is_array($value)){ 
+						$backupKey = $key;
+						foreach ($value as $key => $value){
+							if(stristr(strtolower($key), 'co2')){
+								$total[$deviceApis[$i]][$backupKey][$key] = round($value,2);
+							}
+							if(stristr(strtolower($key), 'costs')){
+								$total[$deviceApis[$i]][$backupKey][$key] = round($value,2);
+							}
+							if(stristr(strtolower($key), 'kwh')){
+								$total[$deviceApis[$i]][$backupKey][$key] = round($value,2);
+							}
+							if(stristr(strtolower($key), 'tree')){
+								$total[$deviceApis[$i]][$backupKey][$key] = round($value,2);
+							}
+						}
+					}else{
+						if(stristr(strtolower($key), 'co2')){
+							$total[$deviceApis[$i]][$key] = round($value,2);
+						}
+						if(stristr(strtolower($key), 'costs')){
+							$total[$deviceApis[$i]][$key] = round($value,2);
+						}
+						if(stristr(strtolower($key), 'kwh')){
+							$total[$deviceApis[$i]][$key] = round($value,2);
+						}
+						if(stristr(strtolower($key), 'tree')){
+							$total[$deviceApis[$i]][$key] = round($value,2);
+						}
 					}
 				}
 			}else{
 				if(stristr(strtolower($key), 'co2')){
-					$total[$deviceApis[$i]][$key] = round($value,2);
+					$total[$key] = round($value,2);
 				}
 				if(stristr(strtolower($key), 'costs')){
-					$total[$deviceApis[$i]][$key] = round($value,2);
+					$total[$key] = round($value,2);
 				}
 				if(stristr(strtolower($key), 'kwh')){
+					$total[$deviceApis[$i]][$key] = round($value,2);
+				}
+				if(stristr(strtolower($key), 'tree')){
 					$total[$deviceApis[$i]][$key] = round($value,2);
 				}
 			}
 			$i++;
 		}
-		//var_dump($total);
-		return array("data"=>$dataEnergyTables,"totals"=>$total);
+		return $total;
 	}
-	
 }
 ?>

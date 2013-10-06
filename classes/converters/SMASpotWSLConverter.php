@@ -92,8 +92,6 @@ class SMASpotWSLConverter
         	}
         }
         
-        
-        
 
         if (!empty ($data[5])) {
         	$live->I2A = self::liveLineToValues($data[5]);
@@ -110,10 +108,7 @@ class SMASpotWSLConverter
         	}
         }
         
-        
-        
-        
-        
+
         if (!empty ($data[11])) {
         	$live->GA = self::liveLineToValues($data[11]);
         }

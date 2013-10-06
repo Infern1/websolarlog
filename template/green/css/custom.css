@@ -124,3 +124,12 @@ table.jqplot-table-legend-custom{
 #mainSummary .column{
 	margin-right:3px;	
 }
+
+.summaryLink:hover
+{ 
+	color: blue;
+}
+.summaryLink
+{ 
+	color: black;
+}
