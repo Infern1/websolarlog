@@ -186,6 +186,7 @@ class SmartMeterAddon {
 		$bean->lowUsage = $live->lowUsage;
 		$bean->liveReturn = $live->liveReturn;
 		$bean->liveUsage = $live->liveUsage;
+		$bean->pvoutput = 0;
 		$bean->time = $timestamp;
 		
 		//Store the bean

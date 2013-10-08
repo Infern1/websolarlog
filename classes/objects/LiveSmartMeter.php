@@ -16,5 +16,6 @@ class LiveSmartMeter {
 	public $liveEnergy;
 	public $gasUsage;
 	public $liveGas;
+	public $pvoutput;
 }
 ?>
