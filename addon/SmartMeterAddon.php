@@ -11,6 +11,7 @@ class SmartMeterAddon {
 		$this->adapter = PDODataAdapter::getInstance();
 		$this->deviceService = new DeviceHistoryService();
 		$this->liveSmartMeterService = new LiveSmartMeterService();
+		$this->historySmartMeterService = new HistorySmartMeterService();
 		$this->config = Session::getConfig();
 		
 		foreach ($this->config->devices as $device) {
@@ -187,6 +188,7 @@ class SmartMeterAddon {
 		$bean->liveReturn = $live->liveReturn;
 		$bean->liveUsage = $live->liveUsage;
 		$bean->pvoutput = 0;
+		$bean->pvoutputSend = $this->CheckPVoutputSend();
 		$bean->time = $timestamp;
 		
 		//Store the bean
@@ -194,6 +196,28 @@ class SmartMeterAddon {
 		
 		return $bean;
 	}
+	
+
+	/**
+	 * Check to see if this is a PVoutput record
+	 * @return 0/1
+	 */
+	public function CheckPVoutputSend() {
+		$bObject = R::getall('select * from historySmartMeter where pvoutputSend = 1 ORDER BY id DESC LIMIT 1');
+	
+		// Check if we got a record thats been marked as a PVoutput record
+		if($bObject->id > 0){
+			if((time() - $bObject->time) >= 300){
+				return '1';
+			}else{
+				return '0';
+			}
+		}else{
+			// We do not have a record, so this record needs to be a PVoutput record
+			return '1';
+		}
+	}
+	
 
 	public function onSummary($args){
 		

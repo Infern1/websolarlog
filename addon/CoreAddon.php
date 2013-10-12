@@ -67,6 +67,7 @@ class CoreAddon {
 			$history->INV = $device->id;
 			$history->deviceId = $device->id;
 			$history->time = $timestamp;
+			$history->pvoutputSend = $this->historyService->CheckPVoutputSend();
 			$this->historyService->save($history);
 			hookHandler::getInstance()->fire("newHistory", $device, $timestamp);
 		}
