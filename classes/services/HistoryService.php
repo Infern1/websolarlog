@@ -28,6 +28,26 @@ class HistoryService {
 	}
 	
 	/**
+	 * Check to see if this is a PVoutput record 
+	 * @return 0/1
+	 */
+	public function CheckPVoutputSend() {
+		$bObject = R::getall('select * from '.self::$tbl.' where pvoutputSend = 1 ORDER BY id DESC LIMIT 1');
+		
+		// Check if we got a record thats been marked as a PVoutput record
+		if($bObject->id > 0){
+			if((time() - $bObject->time) >= 300){
+				return '1';
+			}else{
+				return '0';
+			}
+		}else{
+			// We do not have a record, so this record needs to be a PVoutput record
+			return '1';
+		}
+	}
+	
+	/**
 	 * Read the history file
 	 * @param Device $device
 	 * @param string $date
@@ -93,6 +113,7 @@ class HistoryService {
 		$bObject->KWHT = round($object->KWHT,3);
 		$bObject->pvoutput = $object->pvoutput;
 		$bObject->pvoutputErrorMessage = $object->pvoutputErrorMessage;
+		$bObject->pvoutputSend = $object->pvoutputSend;
 		return $bObject;
 	}
 	
@@ -145,6 +166,7 @@ class HistoryService {
 		$object->KWHT = $bObject->KWHT;
 		$object->pvoutput = $bObject->pvoutput;
 		$object->pvoutputErrorMessage = $bObject->pvoutputErrorMessage;
+		$Object->pvoutputSend = $bObject->pvoutputSend;
 		return $object;
 	}
 }
