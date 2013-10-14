@@ -13,7 +13,7 @@ class PvOutputAddon {
 	public function onJob($args) {
 		$beans = $this->getUnsendHistory();
 		foreach ($beans as $live) {
-			//$device= Session::getConfig()->getDeviceConfig($live->INV);
+			$device= Session::getConfig()->getDeviceConfig($live->INV);
 			if ($device->pvoutputEnabled AND $device->active) {
 				$beans = $this->getUnsendHistory();
 				$date = date("Ymd", $live->time);
