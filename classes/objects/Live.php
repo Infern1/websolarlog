@@ -97,6 +97,7 @@ class Live {
 		$history->KWHT = $this->KWHT;
 		$history->pvoutput = false;
 		$history->pvoutputErrorMessage = 0;
+		$history->pvoutputSend = 0;
 		
 		// Calculate the day number
 		$history->dayNum = date("z", $history->time) + 1;

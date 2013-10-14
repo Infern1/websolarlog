@@ -31,6 +31,19 @@ class WeatherService {
 		return isset($object) ? $object : new Weather();
 	}
 	
+	public function PVoutputWeatherData($time){
+		$utils = new Util();
+		// get the bean 10 min. before and after the given time.
+		$bean =  R::findAll( 'weather', ' time >= :timeBefore AND time <= :timeAfter', array( 'timeBefore' => ($time-600),'timeAfter'=>($time+600)));
+		
+		if(count($bean)>0){
+			$closest = $utils->findClosestBeanBasedOnDate($beans,$time);
+			return $bean[$closest['closestBean']]['temp'];
+		}else{
+			return "0";
+		}
+	}
+	
 	/**
 	 * Retrieve all values for an device
 	 * @param Device $device

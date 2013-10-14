@@ -21,12 +21,12 @@ class DeviceHandler {
 			}
 		}
 	}
-	
+
 	public function handleHistory($args) {
 		$item = $args[0];
 		$device = $this->getFreshDevice($args[1]);
-		
-		if ($device->active) {		
+	
+		if ($device->active) {
 			switch ($device->type) {
 				case "production":
 					ProductionDeviceHandler::handleHistory($item, $device);
@@ -40,9 +40,10 @@ class DeviceHandler {
 				default:
 					echo("DeviceType " . $device->type . " does not support handle history \n");
 					break;
-		}
+			}
 		}
 	}
+	
 	
 	public function handleAllDeviceHistory($args) {
 		foreach (Session::getConfig()->devices as $device) {

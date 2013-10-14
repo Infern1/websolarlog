@@ -43,5 +43,6 @@ class History {
 	public $KWHT;
 	public $pvoutput;
 	public $pvoutputErrorMessage;
+	public $pvoutputSend;
 }
 ?>

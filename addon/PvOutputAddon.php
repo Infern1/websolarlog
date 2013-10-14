@@ -1,5 +1,11 @@
 <?php
 class PvOutputAddon {
+	
+	function __construct(){
+		$this->config = Session::getConfig(); 
+		$this->weather = new WeatherService();
+		$this->metering = new HistorySmartMeterService();
+	}
 	/**
 	 * Start the job
 	 * @param mixed $args
@@ -7,13 +13,23 @@ class PvOutputAddon {
 	public function onJob($args) {
 		$beans = $this->getUnsendHistory();
 		foreach ($beans as $live) {
-			$device= Session::getConfig()->getDeviceConfig($live->INV);
-			if ($device->pvoutputEnabled) {
+			//$device= Session::getConfig()->getDeviceConfig($live->INV);
+			if ($device->pvoutputEnabled AND $device->active) {
+				$beans = $this->getUnsendHistory();
 				$date = date("Ymd", $live->time);
 				$time = date("H:i", $live->time);
-				$temp = $this->getWeatherData($live->time);
+				$smartMeter = $this->metering->PVoutputSmartMeterData($live->time);
 				
-				$result = $this->sendStatus($device, $date, $time, $live->KWHT, $live->GP, $live->GV, $temp);
+				$v1 = $live->KWHT;//v1	Energy Generation	No1	number	watt hours	10000	r1
+				$v2 = $live->GP;//v2	Power Generation	No	number	watts	2000	r1
+				$v3 = $smartMeter['energy'];//v3	Energy Consumption	No	number	watt hours	10000	r1
+				$v4 = $smartMeter['power'];//v4	Power Consumption	No	number	watts	2000	r1
+				$v5 = $this->weather->PVoutputWeatherData($live->time);//v5	Temperature	No	decimal	celsius	23.4	r2
+				$v6 = $live->GV;//v6	Voltage	No	decimal	volts	210.7	r2
+				
+				
+				
+				$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
 				if ($result['info']['http_code'] == "200") {
 					$live->pvoutput = 1;
 					R::store($live);
@@ -34,27 +50,16 @@ class PvOutputAddon {
 
 	private function getUnsendHistory() {
 		$date = mktime(0, 0, 0, date('m'), date('d')-13, date('Y'));
-		$beans =  R::find( 'history', 'time > :time and (pvoutput is null or pvoutput = "" or pvoutput = 0) AND pvoutputSend = 1 order by time ASC', array( 'time' => $date));
+		$beans =  R::find(
+				'history', 
+				'time > :time and (pvoutput is null or pvoutput = "" or pvoutput = 0) AND pvoutputSend = 1 order by time ASC', 
+				array( 'time' => $date)
+				);
 		return $beans;
 	}
+
 	
-	
-	/**
-	 * 
-	 * @param str $time timestamp
-	 * @return Ambigous <>|string
-	 */
-	private function getWeatherData($time) {
-		$bean =  R::findOne( 'weather', ' time = :time ', array( 'time' => $time));
-		if($bean){
-			return $bean['temp'];
-		}else{
-			return "0";
-		}
-	}
-	
-	
-	private function sendStatus(Device $device, $date, $time, $KWHDtot, $GPtot, $GV, $temp) {
+	private function sendStatus(Device $device, $date, $time, $KWHDtot, $GPtot, $GV, $temp, $smartMeterEnergy, $smartMeterPower) {
 		$headerInfo = array();
 		try {
 			$vars = array(
@@ -62,8 +67,8 @@ class PvOutputAddon {
 	                't' => $time, // Time
 	                'v1' => ($KWHDtot * 1000), // Energy Generation (Watt hours)
 	                'v2' => $GPtot, // Power Generation (Watts)
-	                //'v3' => '10000', // Power Consumption (Watt hours)
-	                //'v4' => '2000', // Energy Consumption (Watts)
+	                'v3' => $smartMeterEnergy, // Energy Consumption (Watt hours)
+	                'v4' => $smartMeterPower, // Power Consumption (Watts)
 	                'v5' => number_format($temp, 2), // Temperature (Celsius)
 	                'v6' => $GV, // Voltage (volts)
 					'c1' => '1', // Cumulative

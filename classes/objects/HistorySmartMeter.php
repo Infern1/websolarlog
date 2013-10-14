@@ -12,5 +12,6 @@ class HistorySmartMeter {
 	public $liveUsage;
 	public $liveReturn;
 	public $gasUsage;
+	public $pvoutputSend;
 }
 ?>

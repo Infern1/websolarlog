@@ -380,5 +380,25 @@ class Util {
 			return $array;
 		}
 		
+	/**
+	 *
+	 * @param unknown $array
+	 * @param unknown $date
+	 */
+	public function findClosestBeanBasedOnDate($beans, $time){
+		//$count = 0;
+		foreach($beans as $bean)
+		{
+			//$interval[$count] = abs(strtotime($date) - strtotime($day));
+			$interval[] = array('diff'=>abs($time - $bean->time),'key'=>$bean->id);
+			//$count++;
+		}
+	
+		$interval = $this->aasort($interval,'diff');
+		$key = key($interval);
+		$beanKey = $interval[$key]['key'];
+		
+		return array('closestBean'=>$beans[$beanKey],'closestKey'=>$beanKey);
+	}
 }
 ?>
