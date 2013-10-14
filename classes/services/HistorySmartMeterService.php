@@ -34,9 +34,10 @@ class HistorySmartMeterService {
 	public function PVoutputSmartMeterData($time){
 		$utils = new Util();
 		// get the bean 10 min. before and after the given time.
-		$bean =  R::findAll( 'HistorySmartMeter', ' time >= :timeBefore AND time <= :timeAfter', array( 'timeBefore' => ($time-600),'timeAfter'=>($time+600)));
 		
-		if(count($bean)>0){
+		$beans =  R::findAll( 'historySmartMeter', ' time >= :timeBefore AND time <= :timeAfter', array( 'timeBefore' => ($time-600),'timeAfter'=>($time+600)));
+		
+		if(count($beans)>0){
 			// find closest SmartMeter History Bean.
 			$closest = $utils->findClosestBeanBasedOnDate($beans,$time);
 			$energy = $bean[$closest['closestBean']]['lowUsage']+$bean[$closest['closestBean']]['highUsage'];
