@@ -36,9 +36,9 @@ class WeatherService {
 		// get the bean 10 min. before and after the given time.
 		$parameters = array( ':timeBefore' => ($time-600),':timeAfter'=>($time+600));
 		
-		$bean =  R::findAll( 'weather', ' time >= :timeBefore AND time <= :timeAfter ', $parameters);
+		$beans =  R::findAll( 'weather', ' time >= :timeBefore AND time <= :timeAfter ', $parameters);
 		
-		if(count($bean)>0){
+		if(count($beans)>0){
 			$closest = $utils->findClosestBeanBasedOnDate($beans,$time);
 			return $bean[$closest['closestBean']]['temp'];
 		}else{
