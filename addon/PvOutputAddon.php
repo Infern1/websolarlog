@@ -14,8 +14,13 @@ class PvOutputAddon {
 		foreach ($this->config->devices as $device){
 			if ($device->pvoutputEnabled AND $device->active) {
 				$live = $this->getUnsendHistory($device->id);
-				$date = date("Ymd", $live->time);
-				$time = date("H:i", $live->time);
+				if(count($live)>=1){
+					$date = date("Ymd", $live->time);
+					$time = date("H:i", $live->time);
+				}else{
+					$date = date("Ymd", time());
+					$time = date("H:i", time());					
+				}
 				$smartMeter = $this->metering->PVoutputSmartMeterData($live->time);
 
 				$v1 = $live->KWHT;//v1	Energy Generation	No1	number	watt hours	10000	r1
