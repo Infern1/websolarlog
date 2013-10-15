@@ -13,13 +13,11 @@ class PvOutputAddon {
 	public function onJob($args) {
 		foreach ($this->config->devices as $device){
 			if ($device->pvoutputEnabled AND $device->active) {
-				HookHandler::getInstance()->fire("onInfo", print_r($device['id'],true));
-				
-				$live = $this->getUnsendHistory($device['id']);
+				$live = $this->getUnsendHistory($device->id);
 				$date = date("Ymd", $live->time);
 				$time = date("H:i", $live->time);
 				$smartMeter = $this->metering->PVoutputSmartMeterData($live->time);
-				
+
 				$v1 = $live->KWHT;//v1	Energy Generation	No1	number	watt hours	10000	r1
 				$v2 = $live->GP;//v2	Power Generation	No	number	watts	2000	r1
 				$v3 = $smartMeter['energy'];//v3	Energy Consumption	No	number	watt hours	10000	r1
@@ -46,15 +44,14 @@ class PvOutputAddon {
 		}
 	}
 	
-	
-
 	private function getUnsendHistory($deviceId) {
 		$date = mktime(0, 0, 0, date('m'), date('d')-13, date('Y'));
-		$beans =  R::find(
-				'history', 
-				' deviceId = :deviceId AND time > :time AND (pvoutput is null or pvoutput = "" or pvoutput = 0) AND pvoutputSend = 1 order by time ASC LIMIT 1', 
-				array( ':time' => $date,':deviceId'=>$deviceId)
-				);
+		$parameters = array( ':time' => $date,':deviceId'=>$deviceId);
+		$beans =  R::findOne(
+				'history',
+				' deviceId = :deviceId AND time > :time AND (pvoutput is null or pvoutput = "" or pvoutput = 0) AND pvoutputSend = 1 order by time ASC limit 1',
+				$parameters
+		);	
 		return $beans;
 	}
 
