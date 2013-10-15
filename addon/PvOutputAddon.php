@@ -17,17 +17,19 @@ class PvOutputAddon {
 				if(count($live)>=1){
 					$date = date("Ymd", $live->time);
 					$time = date("H:i", $live->time);
+					$timestamp = $live->time;
 				}else{
 					$date = date("Ymd", time());
-					$time = date("H:i", time());					
+					$time = date("H:i", time());
+					$timestamp = time();
 				}
-				$smartMeter = $this->metering->PVoutputSmartMeterData($live->time);
+				$smartMeter = $this->metering->PVoutputSmartMeterData($timestamp);
 
 				$v1 = $live->KWHT;//v1	Energy Generation	No1	number	watt hours	10000	r1
 				$v2 = $live->GP;//v2	Power Generation	No	number	watts	2000	r1
 				$v3 = $smartMeter['energy'];//v3	Energy Consumption	No	number	watt hours	10000	r1
 				$v4 = $smartMeter['power'];//v4	Power Consumption	No	number	watts	2000	r1
-				$v5 = $this->weather->PVoutputWeatherData($live->time);//v5	Temperature	No	decimal	celsius	23.4	r2
+				$v5 = $this->weather->PVoutputWeatherData($timestamp);//v5	Temperature	No	decimal	celsius	23.4	r2
 				$v6 = $live->GV;//v6	Voltage	No	decimal	volts	210.7	r2
 				
 				
