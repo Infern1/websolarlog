@@ -76,7 +76,8 @@ class PvOutputAddon {
 					'c1' => '1', // Cumulative
 					
 			);
-		
+			HookHandler::getInstance()->fire("onInfo", "vars::".print_r($vars,true));
+			
 			// header info
 			$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
 			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: " . $device->pvoutputSystemId;
