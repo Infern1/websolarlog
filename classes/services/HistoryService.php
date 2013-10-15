@@ -27,16 +27,15 @@ class HistoryService {
 		return isset($object) ? $object : new History();
 	}
 	
+
 	/**
-	 * Check to see if this is a PVoutput record 
+	 * Check to see if this is a PVoutput record
 	 * @return 0/1
 	 */
 	public function CheckPVoutputSend() {
 		$bObject = R::getall('select * from '.self::$tbl.' where pvoutputSend = 1 ORDER BY id DESC LIMIT 1');
-		
-		// Check if we got a record thats been marked as a PVoutput record
-		if($bObject->id > 0){
-			if((time() - $bObject->time) >= 300){
+		if($bObject[0]['id'] > 0){
+			if((time() - $bObject[0]['time']) >= 300){
 				return '1';
 			}else{
 				return '0';

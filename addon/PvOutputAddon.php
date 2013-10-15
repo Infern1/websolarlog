@@ -11,11 +11,9 @@ class PvOutputAddon {
 	 * @param mixed $args
 	 */
 	public function onJob($args) {
-		$beans = $this->getUnsendHistory();
-		foreach ($beans as $live) {
-			$device= Session::getConfig()->getDeviceConfig($live->INV);
+		foreach ($this->config->devices as $device){
 			if ($device->pvoutputEnabled AND $device->active) {
-				$beans = $this->getUnsendHistory();
+				$live = $this->getUnsendHistory($device);
 				$date = date("Ymd", $live->time);
 				$time = date("H:i", $live->time);
 				$smartMeter = $this->metering->PVoutputSmartMeterData($live->time);
@@ -48,12 +46,12 @@ class PvOutputAddon {
 	
 	
 
-	private function getUnsendHistory() {
+	private function getUnsendHistory(Device $device) {
 		$date = mktime(0, 0, 0, date('m'), date('d')-13, date('Y'));
 		$beans =  R::find(
 				'history', 
-				'time > :time and (pvoutput is null or pvoutput = "" or pvoutput = 0) AND pvoutputSend = 1 order by time ASC', 
-				array( 'time' => $date)
+				'deviceId = :deviceId AND time > :time AND (pvoutput is null or pvoutput = "" or pvoutput = 0) AND pvoutputSend = 1 order by time ASC LIMIT 1', 
+				array( 'time' => $date,'deviceId'=>$device->id)
 				);
 		return $beans;
 	}
