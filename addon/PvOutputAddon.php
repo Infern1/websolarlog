@@ -13,7 +13,9 @@ class PvOutputAddon {
 	public function onJob($args) {
 		foreach ($this->config->devices as $device){
 			if ($device->pvoutputEnabled AND $device->active) {
-				$live = $this->getUnsendHistory($device);
+				HookHandler::getInstance()->fire("onInfo", print_r($device['id'],true));
+				
+				$live = $this->getUnsendHistory($device['id']);
 				$date = date("Ymd", $live->time);
 				$time = date("H:i", $live->time);
 				$smartMeter = $this->metering->PVoutputSmartMeterData($live->time);
@@ -46,12 +48,12 @@ class PvOutputAddon {
 	
 	
 
-	private function getUnsendHistory($device) {
+	private function getUnsendHistory($deviceId) {
 		$date = mktime(0, 0, 0, date('m'), date('d')-13, date('Y'));
 		$beans =  R::find(
 				'history', 
-				'deviceId = :deviceId AND time > :time AND (pvoutput is null or pvoutput = "" or pvoutput = 0) AND pvoutputSend = 1 order by time ASC LIMIT 1', 
-				array( ':time' => $date,':deviceId'=>$device['id'])
+				' deviceId = :deviceId AND time > :time AND (pvoutput is null or pvoutput = "" or pvoutput = 0) AND pvoutputSend = 1 order by time ASC LIMIT 1', 
+				array( ':time' => $date,':deviceId'=>$deviceId)
 				);
 		return $beans;
 	}
