@@ -46,12 +46,12 @@ class PvOutputAddon {
 	
 	
 
-	private function getUnsendHistory(Device $device) {
+	private function getUnsendHistory($device) {
 		$date = mktime(0, 0, 0, date('m'), date('d')-13, date('Y'));
 		$beans =  R::find(
 				'history', 
 				'deviceId = :deviceId AND time > :time AND (pvoutput is null or pvoutput = "" or pvoutput = 0) AND pvoutputSend = 1 order by time ASC LIMIT 1', 
-				array( 'time' => $date,'deviceId'=>$device->id)
+				array( ':time' => $date,':deviceId'=>$device['id'])
 				);
 		return $beans;
 	}
