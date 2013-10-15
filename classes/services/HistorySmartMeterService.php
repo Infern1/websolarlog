@@ -36,11 +36,14 @@ class HistorySmartMeterService {
 		// get the bean 10 min. before and after the given time.
 		$parameters = array( ':timeBefore' => ($time-600),':timeAfter'=>($time+600));
 		
-		$beans =  R::findAll( 'historySmartMeter', ' time >= :timeBefore AND time <= :timeAfter',$parameters);
-
+		$beans =  R::findAll( 'historySmartMeter', ' time >= :timeBefore AND time <= :timeAfter ',$parameters);
+		
+		HookHandler::getInstance()->fire("onInfo", "beans::".print_r($beans,true));
+		
 		if(count($beans)>0){
 			// find closest SmartMeter History Bean.
 			$closest = $utils->findClosestBeanBasedOnDate($beans,$time);
+			HookHandler::getInstance()->fire("onInfo", "closest::".print_r($closest,true));
 			$energy = $beans[$closest['closestBean']]['lowUsage']+$beans[$closest['closestBean']]['highUsage'];
 			$power = $beans[$closest['closestBean']]['liveUsage'];
 			return array("energy"=>$energy,"power"=>$power);
