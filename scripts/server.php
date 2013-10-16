@@ -62,7 +62,7 @@ QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(3
 QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(3600), "JanitorRest.clean", "", true, 3600));
 
 // PVoutput every 5 minutes
-QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(30), "HookHandler.fireFromQueue", array("onPVoutputAddStatus"), true, 30));
+QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(30), "HookHandler.fireFromQueue", array("onPVoutputAddStatus"), true, 300));
 
 $checkDataBaseStartTime = Util::createOnceADayJob("01", "00"); // Only run at night
 QueueServer::getInstance()->add(new QueueItem($checkDataBaseStartTime, "JanitorRest.DbCheck", "", true, 24 * 60 * 60));
