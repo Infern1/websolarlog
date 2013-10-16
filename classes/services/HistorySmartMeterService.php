@@ -44,8 +44,8 @@ class HistorySmartMeterService {
 			// find closest SmartMeter History Bean.
 			$closest = $utils->findClosestBeanBasedOnDate($beans,$time);
 			HookHandler::getInstance()->fire("onInfo", "closest::".print_r($closest,true));
-			$energy = $beans[$closest['closestBean']]['lowUsage']+$beans[$closest['closestBean']]['highUsage'];
-			$power = $beans[$closest['closestBean']]['liveUsage'];
+			$energy = $closest['closestBean']['lowUsage']+$closest['closestBean']['highUsage'];
+			$power = $closest['closestBean']['liveUsage'];
 			return array("energy"=>$energy,"power"=>$power);
 		}else{
 			return array("energy"=>"0","power"=>"0");
