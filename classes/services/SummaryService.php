@@ -25,7 +25,8 @@ class SummaryService {
 	 * @param int $id
 	 * @return Summary
 	 */
-	public function load($date) { 
+	public function load($date) {
+		
 		$dataEnergyTables = array();
 		foreach($this->config->devices as $device){
 			$hookReturn = HookHandler::getInstance()->fire("mainSummary",$device,$date);
@@ -100,12 +101,23 @@ class SummaryService {
 		$total['costGas'] = $this->config->costGas/100;
 		$total['sunDown'] = Util::isSunDown();
 		
+
+		$total['costsTest'] = numfmt_format($fmt, "5,5");
+		
+		
+		$lang['usage'] = _('usage');
+		$lang['gas'] = _('gas');
+		$lang['harvested'] = _('harvested');
+		$lang['generated'] = _('generated');
+		$lang['trees'] = _('trees');
+		$lang['power'] = _('power');
+		$lang['weather'] = _('weather');
 		
 		
 		$dataEnergyTables = self::handleFigures($dataEnergyTables);
 		$total = self::handleFigures($total);
 		
-		return array("data"=>$dataEnergyTables,"totals"=>$total);
+		return array("data"=>$dataEnergyTables,"totals"=>$total,"lang"=>$lang);
 	}
 	
 	public function handleFigures($total){
