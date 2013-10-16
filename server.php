@@ -685,15 +685,6 @@ try {
 		*/
 		//GraphService::installGraph();
 
-		break;
-		case "testen":
-			$time = time();
-			$parameters = array( ':timeBefore' => ($time-600),':timeAfter'=>($time+600));
-			HookHandler::getInstance()->fire("onInfo", "parameters::".print_r($parameters,true));
-
-			$beans =  R::findAll( 'historySmartMeter', ' time >= :timeBefore AND time <= :timeAfter ',$parameters);
-			print_r($beans,true);
-
 			break;
 		case "phpinfo":
 			$phpinfo = new SMASpotWSL('/home/pi/smaspot/bin/Release/./SMAspot', '/home/pi/smaspot/bin/Release/test.cfg', '', '', false);
