@@ -4,7 +4,7 @@
 	<div class="span" style="text-align:center;">Power:</div>
 	<div class="cl"></div>
 	<div class="column span-5 verticalLine" style="font-size: 25px;text-align:center;">
-		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">Generated</span><br>
+		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">{{data.lang.generated}}</span><br>
 		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink"
 		{{#if_gt data.totals.totalUsagekWh compare=0}}
 		title="Today you used " 
@@ -16,7 +16,7 @@
 		<br>
 	</div>
 	<div class="column span-5 verticalLine" style="font-size: 25px;text-align:center;">
-		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">Used</span><br>
+		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">{{data.lang.used}}</span><br>
 		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink"
 		{{#if_gt data.totals.totalUsagekWh compare=0}}
 		title="Today you used " 
@@ -32,14 +32,14 @@
 	<div class="span" style="text-align:center;">Gas:</div>
 	<div class="cl"></div>
 	<div class="column span-4 verticalLine" style="font-size: 25px;text-align:center;">
-		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">Used</span>
+		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">{{data.lang.used}}</span>
 		<br>
 		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink">{{data.totals.metering.gasUsage}}</a><br>
 		<span style="font-size:10px;text-align:center;position:relative;top:-7px;">(m3)</span>
 	</div>
 </div>
 <div class="column span">
-	<div class="span" style="text-align:center;">trees:</div>
+	<div class="span" style="text-align:center;">{{data.lang.trees}}:</div>
 	<div class="cl"></div>
 	<div class="column span-4 verticalLine" style="font-size: 25px;text-align:center;">
 		<br>
@@ -47,7 +47,7 @@
 	</div>
 </div>
 <div class="column span">
-	<div class="span" style="text-align:center;">Weather:</div>
+	<div class="span" style="text-align:center;">{{data.lang.weather}}:</div>
 	<div class="cl"></div>
 	<div class="column span-11 verticalLine">
 		<canvas id="layer1" style="z-index: 0;"></canvas>
