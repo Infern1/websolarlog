@@ -1988,29 +1988,22 @@ class PDODataAdapter {
 		//echo $file['path'];
 		$bean = R::findOne('dropboxFilenameCaching',' path = :path ',array(':path'=>$file['path']));
 
+		// Does not exists create the file
 		if(!$bean){
 			$bean = R::dispense('dropboxFilenameCaching');
-			$bean->path = $file['path'];
-			$bean->fullPath = $file['fullPath'];
-			$bean->client_mtime = $file['client_mtime'];
-			$bean->bytes = $file['bytes'];
-			$bean->active = 1;
-			//Store the bean
-
-			$id = R::store($bean);
 		}
-
+		
+		// Update the file info
+		$bean->path = $file['path'];
+		$bean->fullPath = $file['fullPath'];
+		$bean->client_mtime = $file['client_mtime'];
+		$bean->bytes = $file['bytes'];
+		$bean->active = 1;
+		$id = R::store($bean);
 	}
 	public function dropboxDropFile($path){
-		//echo $path;
-		//echo "xx".$path."x";
-		//echo  R::exec( 'delete from  where  like %'.$path.'%');
-
-
 		$bean = R::findOne('dropboxFilenameCaching', ' path = ? ', array($path));
 		R::trash($bean); // Use trash to delete the student
-		
-		
 	}
 
 
