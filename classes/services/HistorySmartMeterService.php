@@ -45,11 +45,9 @@ class HistorySmartMeterService {
 			$closest = $utils->findClosestBeanBasedOnDate($beans,$time);
 			HookHandler::getInstance()->fire("onInfo", "closest::".print_r($closest,true));
 			$energy = $closest['closestBean']['lowUsage']+$closest['closestBean']['highUsage'];
-			if($closest['closestBean']['liveUsage']>0){
-				$power = $closest['closestBean']['liveUsage'];
-			}else{
-				$power = (int)"-".$closest['closestBean']['liveReturn'];
-			}
+			
+			$power = $closest['closestBean']['liveUsage']-$closest['closestBean']['liveReturn'];
+			
 			
 			return array("energy"=>$energy,"power"=>$power);
 		}else{
