@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: WSL-Dutch\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-16 17:36+0100\n"
-"PO-Revision-Date: 2013-10-16 17:36+0100\n"
+"PO-Revision-Date: 2013-10-16 17:49+0100\n"
 "Last-Translator: a <a@a.nl>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -494,9 +494,8 @@ msgid "trees"
 msgstr "bomen"
 
 #: classes/services/SummaryService.php:115
-#, fuzzy
 msgid "weather"
-msgstr "Overige"
+msgstr "weer"
 
 #: template/green/index.php:45
 msgid "Dashboard"

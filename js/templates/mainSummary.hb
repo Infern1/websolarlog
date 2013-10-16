@@ -1,7 +1,7 @@
 <div id="mainSummary" class="ui-widget ui-widget-content ui-corner-all" >
 
 <div class="column span">
-	<div class="span" style="text-align:center;">Power:</div>
+	<div class="span" style="text-align:center;">{{data.lang.power}}:</div>
 	<div class="cl"></div>
 	<div class="column span-5 verticalLine" style="font-size: 25px;text-align:center;">
 		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">{{data.lang.generated}}</span><br>
