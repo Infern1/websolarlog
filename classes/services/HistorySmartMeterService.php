@@ -35,9 +35,9 @@ class HistorySmartMeterService {
 		$utils = new Util();
 		// get the bean 10 min. before and after the given time.
 		$parameters = array( ':timeBefore' => ($time-600),':timeAfter'=>($time+600));
+		HookHandler::getInstance()->fire("onInfo", "parameters::".print_r($parameters,true));
 		
-		$beans =  R::findAll( 'historySmartMeter', ' time >= :timeBefore AND time <= :timeAfter ',$parameters);
-		
+		$beans = R::find( "historySmartMeter"," time >= :timeBefore AND time <=:timeAfter ",$parameters);
 		HookHandler::getInstance()->fire("onInfo", "beans::".print_r($beans,true));
 		
 		if(count($beans)>0){
