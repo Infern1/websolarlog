@@ -102,7 +102,7 @@ class SummaryService {
 		$total['sunDown'] = Util::isSunDown();
 		
 
-		$total['costsTest'] = numfmt_format($fmt, "5,5");
+		//$total['costsTest'] = numfmt_format($fmt, "5,5");
 		
 		
 		$lang['usage'] = _('usage');
