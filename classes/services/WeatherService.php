@@ -40,7 +40,7 @@ class WeatherService {
 		
 		if(count($beans)>0){
 			$closest = $utils->findClosestBeanBasedOnDate($beans,$time);
-			return $bean[$closest['closestBean']]['temp'];
+			return $closest['closestBean']['temp'];
 		}else{
 			return "0";
 		}
