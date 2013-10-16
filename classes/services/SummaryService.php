@@ -106,6 +106,7 @@ class SummaryService {
 		
 		
 		$lang['usage'] = _('usage');
+		$lang['used'] = _('used');
 		$lang['gas'] = _('gas');
 		$lang['harvested'] = _('harvested');
 		$lang['generated'] = _('generated');
