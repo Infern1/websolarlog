@@ -673,7 +673,8 @@ switch ($settingstype) {
 						'path' => $file->path,
 						'fullPath' => $fileMedia['body']->url,
 						'id' => $i,
-						'num' => $i+1,						
+						'num' => $i+1,
+						'bytes' => $file->bytes				
 				);
 				//var_dump($dropbboxFile);
 			//lets see if we need to save the file to the database.
