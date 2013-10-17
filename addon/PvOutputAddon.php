@@ -5,7 +5,7 @@ class PvOutputAddon {
 		$this->config = Session::getConfig(); 
 		$this->weather = new WeatherService();
 		$this->metering = new HistorySmartMeterService();
-		$this->live = new LiveService();
+		$this->history = new HistoryService();
 	}
 	/**
 	 * Start the job
@@ -38,15 +38,16 @@ class PvOutputAddon {
 				$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
 				if ($result['info']['http_code'] == "200") {
 					$live->pvoutput = 1;
-					$live = $this->live->save($live);
+					$this->history->save($live);
+					
 				}elseif ($result['info']['http_code'] == "400") {
 					$live->pvoutput = 2;
 					$live->pvoutputErrorMessage = $result['response'];
-					$live = $this->live->save($live);
+					$this->history->save($live);
 				}else{
 					$live->pvoutput = 3;
 					$live->pvoutputErrorMessage = $result['response'];
-					$live = $this->live->save($live);
+					$this->history->save($live);
 				}
 			}
 		}
