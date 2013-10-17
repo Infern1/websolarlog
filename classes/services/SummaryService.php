@@ -86,7 +86,14 @@ class SummaryService {
 
 		$total['householdCO2'] = $total['totalUsageKWHCO2']+$total['metering']['gasUsageCO2'];
 		$total['householdUsage'] = $total['metering']['usageKWH'];
-		$total['householdTrees'] = round(($total['totalUsageKWHCO2']+$total['metering']['gasUsageCO2'])/($this->config->co2CompensationTree/1000),0);
+		$total['householdTrees'] = round((($total['totalUsageKWHCO2']+$total['metering']['gasUsageCO2'])-200)/($this->config->co2CompensationTree/1000),0);
+		if($total['householdTrees']>=0){
+			$total['householdTrees'] = abs($total['householdTrees']);
+		}else{
+			$lang['subscriptTrees'] = _('compensated');
+			$total['subscriptTrees'] = _('needed');
+		}
+		
 		
 		$total['co2CompensationTree'] = $this->config->co2CompensationTree;
 		$total['moneySign'] = $locale['currency_symbol'];
