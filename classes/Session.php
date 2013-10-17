@@ -292,8 +292,8 @@ class Session
     	$hookHandler->add("onInverterWarning", "MailAddon.onInverterWarning");
     	
     	
-    	// PvOutputAddon
-    	$hookHandler->add("onFastJob", "PvOutputAddon.onJob");
+    	// PvOutputAddon >>> Testing >>> moved to server.php as a QueueItem
+    	//$hookHandler->add("onFastJob", "PvOutputAddon.onJob");
     	
     	// Smart meter addon
     	$hookHandler->add("onLiveSmartMeterData", "SmartMeterAddon.onLiveSmartMeterData");
