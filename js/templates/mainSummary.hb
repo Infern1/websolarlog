@@ -28,6 +28,7 @@
 		<br>
 	</div>
 </div>
+{{#if_gt data.totals.metering.gasUsage compare=0}}
 <div class="column span">
 	<div class="span" style="text-align:center;">Gas:</div>
 	<div class="cl"></div>
@@ -38,12 +39,15 @@
 		<span style="font-size:10px;text-align:center;position:relative;top:-7px;">(m3)</span>
 	</div>
 </div>
+{{/if_gt}}
 <div class="column span">
 	<div class="span" style="text-align:center;">{{data.lang.trees}}:</div>
 	<div class="cl"></div>
 	<div class="column span-4 verticalLine" style="font-size: 25px;text-align:center;">
+		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">{{data.lang.subscriptTrees}}</span>
 		<br>
-		<span>{{data.totals.householdTrees}}</span><br>
+		
+		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink">{{data.totals.householdTrees}}</a><br>
 	</div>
 </div>
 <div class="column span">

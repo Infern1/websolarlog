@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WSL-Dutch\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-16 17:36+0100\n"
-"PO-Revision-Date: 2013-10-16 17:49+0100\n"
+"POT-Creation-Date: 2013-10-17 08:56+0100\n"
+"PO-Revision-Date: 2013-10-17 08:58+0100\n"
 "Last-Translator: a <a@a.nl>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -95,7 +95,7 @@ msgstr "Informatief"
 msgid "Information"
 msgstr "Informatie"
 
-#: server.php:166 server.php:175 classes/services/SummaryService.php:114
+#: server.php:166 server.php:175 classes/services/SummaryService.php:121
 msgid "power"
 msgstr "Vermogen"
 
@@ -180,7 +180,7 @@ msgid "cumulative (W)"
 msgstr "cumulatief (W)"
 
 #: server.php:240 server.php:256 admin/admin-server.php:80
-#: classes/services/SummaryService.php:112
+#: classes/services/SummaryService.php:119
 #: classes/services/GraphService.php:371
 msgid "generated"
 msgstr "gegenereerd"
@@ -235,7 +235,7 @@ msgid "month"
 msgstr "Maand"
 
 #: server.php:338 server.php:509 server.php:511
-#: classes/services/SummaryService.php:111
+#: classes/services/SummaryService.php:118
 msgid "harvested"
 msgstr "Opgewekt"
 
@@ -476,24 +476,31 @@ msgstr "omhoog"
 msgid "down"
 msgstr "omlaag"
 
-#: classes/services/SummaryService.php:108
+#: classes/services/SummaryService.php:91
+msgid "needed"
+msgstr "nodig"
+
+#: classes/services/SummaryService.php:93
+msgid "compensated"
+msgstr "gecompenseerd"
+
+#: classes/services/SummaryService.php:115
 msgid "usage"
 msgstr "verbruik"
 
-#: classes/services/SummaryService.php:109
+#: classes/services/SummaryService.php:116
 msgid "used"
 msgstr "gebruikt"
 
-#: classes/services/SummaryService.php:110
-#, fuzzy
+#: classes/services/SummaryService.php:117
 msgid "gas"
-msgstr "Gas"
+msgstr "gas"
 
-#: classes/services/SummaryService.php:113
+#: classes/services/SummaryService.php:120
 msgid "trees"
 msgstr "bomen"
 
-#: classes/services/SummaryService.php:115
+#: classes/services/SummaryService.php:122
 msgid "weather"
 msgstr "weer"
 
