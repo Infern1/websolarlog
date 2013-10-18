@@ -14,7 +14,9 @@ class PvOutputAddon {
 	public function onJob($args) {
 		foreach ($this->config->devices as $device){
 			if ($device->pvoutputEnabled AND $device->active) {
+				
 				$live = $this->getUnsendHistory($device->id);
+				
 				if(count($live)>=1){
 					$date = date("Ymd", $live->time);
 					$time = date("H:i", $live->time);
@@ -36,11 +38,10 @@ class PvOutputAddon {
 				
 				
 				$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
-				if ($result['info']['http_code'] == "200") {
+				if ($result['info']['http_code'] == "200" and $v1 > 0 AND $v2 > 0) {
 					$live->pvoutput = 1;
 					$this->history->save($live);
-					
-				}elseif ($result['info']['http_code'] == "400") {
+				}elseif ($result['info']['http_code'] == "400" and $v1 > 0 AND $v2 > 0) {
 					$live->pvoutput = 2;
 					$live->pvoutputErrorMessage = $result['response'];
 					$this->history->save($live);
@@ -65,21 +66,34 @@ class PvOutputAddon {
 	}
 
 	
-	private function sendStatus(Device $device, $date, $time, $KWHDtot, $GPtot, $GV, $temp, $smartMeterEnergy, $smartMeterPower) {
+	private function sendStatus(Device $device, $date, $time, $KWHDtot, $GPtot, $GV, $temp, $smartMeterEnergy=0, $smartMeterPower=0) {
 		$headerInfo = array();
+		$vars = array();
 		try {
-			$vars = array(
-					'd' => $date, // Date
-	                't' => $time, // Time
-	                'v1' => ($KWHDtot * 1000), // Energy Generation (Watt hours)
-	                'v2' => $GPtot, // Power Generation (Watts)
-	                'v3' => $smartMeterEnergy, // Energy Consumption (Watt hours)
-	                'v4' => $smartMeterPower, // Power Consumption (Watts)
-	                'v5' => number_format($temp, 2), // Temperature (Celsius)
-	                'v6' => $GV, // Voltage (volts)
-					'c1' => '1', // Cumulative
-					
-			);
+
+			$vars['d'] = $date;
+			$vars['t'] = $time;
+			
+			if($KWDtot > 0){
+				$vars['v1'] = ($KWHDtot * 1000);
+			}
+			if($GPtot>0){
+				$vars['v2'] = $GPtot;
+			}
+			if($smartMeterEnergy>0){
+				$vars['v3'] = $smartMeterEnergy;
+			}
+			if($smartMeterPower>0){
+				$vars['v4'] = $smartMeterPower;
+			}
+			if($temp!=""){
+				$vars['v5'] = number_format($temp, 2);
+			}
+			if($smartMeterEnergy>0){
+				$vars['v6'] = $GV;
+			}
+			$vars['c1'] = '1';
+				
 			HookHandler::getInstance()->fire("onInfo", "vars::".print_r($vars,true));
 			
 			// header info
