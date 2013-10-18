@@ -89,7 +89,7 @@ class PvOutputAddon {
 			if($temp!=""){
 				$vars['v5'] = number_format($temp, 2);
 			}
-			if($smartMeterEnergy>0){
+			if($GV>0){
 				$vars['v6'] = $GV;
 			}
 			$vars['c1'] = '1';
