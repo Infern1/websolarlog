@@ -74,10 +74,10 @@ class PvOutputAddon {
 			$vars['d'] = $date;
 			$vars['t'] = $time;
 			
-			if($KWDtot > 0){
+			if($KWHDtot > 0){
 				$vars['v1'] = ($KWHDtot * 1000);
 			}
-			if($GPtot>0){
+			if($GPtot > 0){
 				$vars['v2'] = $GPtot;
 			}
 			if($smartMeterEnergy>0){
@@ -86,7 +86,7 @@ class PvOutputAddon {
 			if($smartMeterPower>0){
 				$vars['v4'] = $smartMeterPower;
 			}
-			if($temp!=""){
+			if($temp){
 				$vars['v5'] = number_format($temp, 2);
 			}
 			if($GV>0){
