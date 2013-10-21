@@ -74,24 +74,33 @@ class PvOutputAddon {
 			$vars['d'] = $date;
 			$vars['t'] = $time;
 			
+			// Production
 			if($KWHDtot > 0){
 				$vars['v1'] = ($KWHDtot * 1000);
 			}
+			// Production
 			if($GPtot > 0){
 				$vars['v2'] = $GPtot;
 			}
-			if($smartMeterEnergy>0){
-				$vars['v3'] = $smartMeterEnergy;
-			}
-			if($smartMeterPower>0){
-				$vars['v4'] = $smartMeterPower;
-			}
-			if($temp){
-				$vars['v5'] = number_format($temp, 2);
-			}
+			// Production
 			if($GV>0){
 				$vars['v6'] = $GV;
 			}
+			
+			// SmartMeter
+			if($smartMeterEnergy>0){
+				$vars['v3'] = $smartMeterEnergy;
+			}
+			// SmartMeter
+			if($smartMeterPower>0){
+				$vars['v4'] = $smartMeterPower;
+			}
+			// Weather
+			if($temp){
+				$vars['v5'] = number_format($temp, 2);
+			}
+			
+
 			$vars['c1'] = '1';
 				
 			HookHandler::getInstance()->fire("onInfo", "vars::".print_r($vars,true));
