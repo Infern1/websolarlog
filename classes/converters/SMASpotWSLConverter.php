@@ -84,8 +84,8 @@ class SMASpotWSLConverter
         	$live->I1V = self::liveLineToValues($data[6]);
         }
         
-        if ($data[3]>0) {
-        	$live->I1P = self::liveLineToValues($data[3]);
+        if ($data[2]>0) {
+        	$live->I1P = self::liveLineToValues($data[2]);
         }else{
         	if($live->I1A > 0 && $live->I1V > 0){
         		$live->I1P = ($live->I1A * $live->I1V);
