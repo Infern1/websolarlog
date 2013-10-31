@@ -96,9 +96,17 @@ AC3,228.0,1.45,313,89.93,5120";
         return $this->execute('-L');
     }
     
+    
     public function doCommunicationTest() {
-    	return array("result"=>false, "testData"=>"Not yet implemented");
+    	$result = false;
+    	$data = $result = $this->execute(' -csv -q');
+    	if ($data) {
+    		$result = true;
+    	}
+    	 
+    	return array("result"=>$result, "testData"=>$data);
     }
+    
 
     private function execute($options) {
     	$exec = shell_exec($this->PATH . ' ' . $options);
