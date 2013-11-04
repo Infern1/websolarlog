@@ -209,6 +209,7 @@ switch ($settingstype) {
 		$data['template'] = $config->template;
 		$data['timezone'] = $config->timezone;
 		$data['timezones'] = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+		$data['moneySign'] = $config->moneySign;
 		break;
 	case 'inverters': // backwords compatibility
 		$deviceService = new DeviceService();
@@ -440,6 +441,7 @@ switch ($settingstype) {
 		$config->longitude = Common::getValue("longitude");
 		$config->timezone = Common::getValue("timezone");
 		$config->template = Common::getValue("template");
+		$config->moneySign = Common::getValue("moneySign");
 		$adapter->writeConfig($config);
 		break;
 	case 'save-inverter': // backwords compatibility
