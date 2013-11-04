@@ -10,9 +10,33 @@
     <label for="longitude">longitude:</label><input type="text" name="longitude" value="{{data.longitude}}" /><a href="#" id="btnSetLatLong">}Set coordinates</a><br />
     <label for="currencySign">Currency Sign:</label>
     <select >
-    	<option value="">&#164;</option>
-    	<option value="&#36;">&#36;</option>
-    	<option value=""></option>
+    	
+    	<option value="$">$</option>
+    	<option value="£">£</option>
+    	<option value="元">元</option>
+    	<option value="Kč">Kč</option>
+    	<option value="kr">kr</option>
+    	<option value="Ft">Ft</option>
+    	<option value="₨">₨</option>
+    	<option value="Rp">Rp</option>
+    	<option value="₪">₪</option>
+    	<option value="¥">¥</option>
+    	<option value="J$">J$</option>
+    	<option value="R$">R$</option>
+    	<option value="Ls">Ls</option>
+    	<option value="Lt">Lt</option>
+    	<option value="RM">RM</option>
+    	<option value="﷼">﷼</option>
+    	<option value="B/.">B/.</option>
+    	<option value="Ph"Ph></option>
+    	<option value="le">le</option>
+    	<option value="ру,;">ру,;</option>
+    	<option value="₩">₩</option>
+    	<option value="CHF">CHF</option>
+    	<option value="฿">฿</option>
+    	<option value="YTL">YTL</option>
+    	<option value="Bs">Bs</option>
+    	<option value="R">R</option>
     </select><br>
     <label for="gaugeMax">Gauge Max Type:</label>
     <select name="gaugeMaxType">
