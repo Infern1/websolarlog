@@ -10,7 +10,7 @@
     <label for="longitude">longitude:</label><input type="text" name="longitude" value="{{data.longitude}}" /><a href="#" id="btnSetLatLong">}Set coordinates</a><br />
     <label for="currencySign">Currency Sign:</label>
     <select >
-    	
+    	<option value="€">€</option>
     	<option value="$">$</option>
     	<option value="£">£</option>
     	<option value="元">元</option>
