@@ -684,7 +684,23 @@ try {
 		//var_dump($sharedGraph);
 		*/
 		//GraphService::installGraph();
-
+			break;
+		case "array":
+			$vars = array(
+					'd' => $date, // Date
+					't' => $time, // Time
+					'v1' => ($KWHDtot * 1000), // Energy Generation (Watt hours)
+					'v2' => $GPtot, // Power Generation (Watts)
+					'v3' => $smartMeterEnergy, // Energy Consumption (Watt hours)
+					'v4' => $smartMeterPower, // Power Consumption (Watts)
+					'v5' => number_format($temp, 2), // Temperature (Celsius)
+					'v6' => $GV, // Voltage (volts)
+					'c1' => '1', // Cumulative
+						
+			);
+			$vars['aaa'] ="aaa";
+			
+			var_dump($vars);
 			break;
 		case "phpinfo":
 			$phpinfo = new SMASpotWSL('/home/pi/smaspot/bin/Release/./SMAspot', '/home/pi/smaspot/bin/Release/test.cfg', '', '', false);

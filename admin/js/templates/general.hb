@@ -8,7 +8,12 @@
     <label for="location">location:</label><input type="text" name="location" value="{{data.location}}" /><br />
     <label for="latitude">latitude:</label><input type="text" name="latitude" value="{{data.latitude}}" /><br />
     <label for="longitude">longitude:</label><input type="text" name="longitude" value="{{data.longitude}}" /><a href="#" id="btnSetLatLong">}Set coordinates</a><br />
-    
+    <label for="currencySign">Currency Sign:</label>
+    <select >
+    	<option value="">&#164;</option>
+    	<option value="&#36;">&#36;</option>
+    	<option value=""></option>
+    </select><br>
     <label for="gaugeMax">Gauge Max Type:</label>
     <select name="gaugeMaxType">
       <option value="panels" {{#if_eq data.gaugeMaxType compare="panels"}}selected=selected{{/if_eq}}>Static(panels)</option>

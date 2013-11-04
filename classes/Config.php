@@ -44,6 +44,8 @@ class Config
     public $template;
     public $basePath;
     
+    public $moneySign;
+    
     /**
      * @deprecated
      */
@@ -160,6 +162,7 @@ class Config
 		$this->costkwh = 23.5; 
 		$this->costGas = 65;
 		$this->costWater = 1200;
+		$this->moneySign = "$";
 		$this->adminpasswd = sha1('admin');
 		
 		$this->pauseWorker = false;

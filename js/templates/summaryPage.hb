@@ -46,10 +46,12 @@
 				{{/if_gt}}
 			</div>
 			<div class="span-14 last" style="border:1px solid #ccc;">
+				{{#if_gt data.totals.metering.returnKWH compare=0}}
 				<strong>Grid data:</strong><br>
 				
 				<span title="{{data.totals.moneySign}} {{data.totals.costkwh}} * {{data.totals.metering.returnKWH}} = {{data.totals.moneySign}} {{data.totals.metering.returnCosts}}"><strong>{{data.totals.metering.returnKWH}}</strong> kWh returned to your neighbors</span><br>
 				The returned kWh's equals <span title="Somebody else is getting your carbon free power :D"><strong>{{data.totals.metering.returnCO2}}</strong> kg CO2 and <span title="We returned this to the grid, so somebody else can use it."> and {{data.totals.moneySign}} {{data.totals.metering.returnCosts}}</span>
+				{{/if_gt}}
 			</div>
 			<div class="cl"></div>
 		</div>
