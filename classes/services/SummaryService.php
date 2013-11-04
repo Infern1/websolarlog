@@ -97,7 +97,7 @@ class SummaryService {
 		
 		
 		$total['co2CompensationTree'] = $this->config->co2CompensationTree;
-		$total['moneySign'] = $locale['currency_symbol'];
+		$total['moneySign'] = $this->config->moneySign;
 		if($total['weather']['degreeDays']>0){
 			$total['degreeDays'] = round((18-$total['weather']['degreeTemp']),2);
 			$total['m3PerdegreeDays'] = round($total['metering']['gasUsage']/$total['degreeDays'],3);
