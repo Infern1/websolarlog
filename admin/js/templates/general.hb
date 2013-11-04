@@ -9,7 +9,7 @@
     <label for="latitude">latitude:</label><input type="text" name="latitude" value="{{data.latitude}}" /><br />
     <label for="longitude">longitude:</label><input type="text" name="longitude" value="{{data.longitude}}" /><a href="#" id="btnSetLatLong">}Set coordinates</a><br />
     <label for="currencySign">Currency Sign:</label>
-    <select >
+    <select name="moneySign">
     	<option value="€">€</option>
     	<option value="$">$</option>
     	<option value="£">£</option>
