@@ -12,14 +12,12 @@ header('Content-type: application/json; charset=utf-8');
 
 $result = array();
 try {
-        $result = ApiController::getInstance()->route();
+	$result = ApiController::getInstance()->route();
 } catch (SetupException $e) {
-        $result = $e->getJSONMessage();
+	$result = $e->getJSONMessage();
 } catch (Exception $e) {        // Skipped
     $msg = $e->getMessage() . " in file " . $e->getFile() . '[' . $e->getLine() . ']';
     $result = array('result'=>'error', 'success'=>false, 'exception'=>get_class($e), 'message'=>$msg);
 }
-
-//echo $timers[count($timers)]['elapsed'];
 echo json_encode($result);
 ?>
