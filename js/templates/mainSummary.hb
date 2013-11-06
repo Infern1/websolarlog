@@ -6,36 +6,36 @@
 	<div class="column span-5 verticalLine" style="font-size: 25px;text-align:center;">
 		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">{{data.lang.generated}}</span><br>
 		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink"
-		{{#if_gt data.totals.totalUsagekWh compare=0}}
+		{{#if_gt data.total.totalUsagekWh compare=0}}
 		title="Today you used " 
 		{{else}}
 		title=""
 		{{/if_gt}}
-		>{{data.totals.production.KWH}}</a><br>
+		>{{data.total.production.KWH}}</a><br>
 		<span style="font-size:10px;text-align:center;position:relative;top:-7px;">(kWh)</span>
 		<br>
 	</div>
 	<div class="column span-5 verticalLine" style="font-size: 25px;text-align:center;">
 		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">{{data.lang.used}}</span><br>
 		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink"
-		{{#if_gt data.totals.totalUsagekWh compare=0}}
+		{{#if_gt data.total.totalUsagekWh compare=0}}
 		title="Today you used " 
 		{{else}}
 		title=""
 		{{/if_gt}}
-		>{{data.totals.totalUsagekWh}}</a><br>
+		>{{data.total.totalUsagekWh}}</a><br>
 		<span style="font-size:10px;text-align:center;position:relative;top:-7px;">(kWh)</span>
 		<br>
 	</div>
 </div>
-{{#if_gt data.totals.metering.gasUsage compare=0}}
+{{#if_gt data.total.metering.gasUsage compare=0}}
 <div class="column span">
 	<div class="span" style="text-align:center;">Gas:</div>
 	<div class="cl"></div>
 	<div class="column span-4 verticalLine" style="font-size: 25px;text-align:center;">
 		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">{{data.lang.used}}</span>
 		<br>
-		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink">{{data.totals.metering.gasUsage}}</a><br>
+		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink">{{data.total.metering.gasUsage}}</a><br>
 		<span style="font-size:10px;text-align:center;position:relative;top:-7px;">(m3)</span>
 	</div>
 </div>
@@ -47,7 +47,7 @@
 		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">{{data.lang.subscriptTrees}}</span>
 		<br>
 		
-		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink">{{data.totals.householdTrees}}</a><br>
+		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink">{{data.total.householdTrees}}</a><br>
 	</div>
 </div>
 <div class="column span">
