@@ -1024,8 +1024,8 @@ var WSL = {
 					$(html).prependTo(divId);
 					
 					
-					var cId = data.totalweather.conditionId;
-					var sunDown = data.totalsunDown;
+					var cId = data.total.weather.conditionId;
+					var sunDown = data.total.sunDown;
 
 					if(cId >= 200 && cId <= 250){
 						var conditionImage = 'images/weather/11d.png';
@@ -1103,8 +1103,8 @@ var WSL = {
 				        };
 						
 				        loadImages(sources, function(images) {
-				        	var angle = data.totalweather.windDirection;
-							var windSpeed = data.totalweather.wind_speed;
+				        	var angle = data.total.weather.windDirection;
+							var windSpeed = data.total.weather.wind_speed;
 						    
 						    var TO_RADIANS = Math.PI/180; 
 						    var canvas = document.getElementById('layer1');
@@ -1152,14 +1152,14 @@ var WSL = {
 					    	context.fillText(windSpeed+'m/s',77,25,34);
 					    	
 					    	context.fillText('Clouds:',77,42,30);
-					    	context.fillText(data.totalweather.clouds+'%',77,55,30);
+					    	context.fillText(data.total.weather.clouds+'%',77,55,30);
 					    	
 					    	context.fillText('Last hour:',160,42,60);
-					    	context.fillText(data.totalweather.rain1h+'mm',160,55,30);
+					    	context.fillText(data.total.weather.rain1h+'mm',160,55,30);
 					    	
 					    	context.fillText('Temp',120,42,75);
-					    	context.fillText(data.totalweather.currentTemp+'°',120,55,60);
-					    	{{data.totalweather.currentTemp}}
+					    	context.fillText(data.total.weather.currentTemp+'°',120,55,60);
+					    	{{data.total.weather.currentTemp}}
 					    	
 					    	context.font = '11pt Calibri';
 					    	context.fillText('N',35,13,10);
@@ -1381,8 +1381,8 @@ var WSL = {
 					$(html).prependTo(divId);
 					
 					
-					var cId = data.totalweather.conditionId;
-					var sunDown = data.totalsunDown;
+					var cId = data.total.weather.conditionId;
+					var sunDown = data.total.sunDown;
 
 					if(cId >= 200 && cId <= 250){
 						var conditionImage = 'images/weather/11d.png';
@@ -1460,8 +1460,8 @@ var WSL = {
 				        };
 						
 				        loadImages(sources, function(images) {
-				        	var angle = data.totalweather.windDirection;
-							var windSpeed = data.totalweather.wind_speed;
+				        	var angle = data.total.weather.windDirection;
+							var windSpeed = data.total.weather.wind_speed;
 						    
 						    var TO_RADIANS = Math.PI/180; 
 						    var canvas = document.getElementById('layer1');
@@ -1509,16 +1509,16 @@ var WSL = {
 					    	context.fillText(windSpeed+'m/s',77,25,30);
 					    	
 					    	context.fillText('Clouds:',77,42,30);
-					    	context.fillText(data.totalweather.clouds+'%',77,55,30);
+					    	context.fillText(data.total.weather.clouds+'%',77,55,30);
 					    	
 					    	context.fillText('Last hour:',77,72,60);
-					    	context.fillText(data.totalweather.rain1h+'mm',77,85,30);
+					    	context.fillText(data.total.weather.rain1h+'mm',77,85,30);
 					    	
 					    	context.fillText('Temp cur/avg:',140,42,75);
-					    	context.fillText(data.totalweather.currentTemp+'°/'+data.totalweather.avgTemp+'°',140,55,60);
+					    	context.fillText(data.total.weather.currentTemp+'°/'+data.total.weather.avgTemp+'°',140,55,60);
 					    	context.fillText('Temp min/max:',140,72,75);
-					    	context.fillText(data.totalweather.minTemp+'°/'+data.totalweather.maxTemp+'°',140,85,60);
-					    	{{data.totalweather.currentTemp}}
+					    	context.fillText(data.total.weather.minTemp+'°/'+data.total.weather.maxTemp+'°',140,85,60);
+					    	{{data.total.weather.currentTemp}}
 					    	
 					    	context.font = '11pt Calibri';
 					    	context.fillText('N',35,13,10);
