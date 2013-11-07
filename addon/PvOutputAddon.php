@@ -46,9 +46,11 @@ class PvOutputAddon {
 					$live->pvoutputErrorMessage = $result['response'];
 					$this->history->save($live);
 				}else{
-					$live->pvoutput = 3;
-					$live->pvoutputErrorMessage = $result['response'];
-					$this->history->save($live);
+					HookHandler::getInstance()->fire("onDebug", print_r($result,true));
+					//$live->pvoutput = 3;
+					//$live->pvoutputErrorMessage = $result['response'];
+					//$this->history->save($live);
+					
 				}
 			}
 		}
