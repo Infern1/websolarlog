@@ -56,7 +56,9 @@ AC3,228.0,1.45,313,89.93,5120";
     
     public function getLiveData() {
     	$data = $this->getData();
-    	return KostalPikoConverter::toLive($data);
+    	$live = KostalPikoConverter::toLive($data);
+    	HookHandler::getInstance()->fire("onDebug", print_r($live,true));
+    	return $live;
     }
 
     public function getInfo() {
