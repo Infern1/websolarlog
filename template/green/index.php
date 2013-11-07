@@ -108,7 +108,7 @@
 			<a href="http://www.diehl.com/en/diehl-controls/photovoltaics/wechselrichter.html" target="_blank" class="leftFooter">Diehl</a>(not needed)<br/>			
 			<a href="http://www.kostal-solar-electric.com/" target="_blank" class="leftFooter">Kostal Piko</a> <a href="http://sourceforge.net/projects/piko/" target="_blank">(Piko script)</a><br/>
 			<a href="http://www.websolarlog.com/" target="_blank" class="leftFooter">Dutch SmartMeter</a> (software)<br/>
-			<a href="http://www.openweathermap.com" target="_blank" class="leftFooter">OpenWeatherMap</a> (Webservice)<br/>
+			<a href="http://www.openweathermap.org" target="_blank" class="leftFooter">OpenWeatherMap</a> (Webservice)<br/>
 			</div>
 
 			<div style="float:left; width:200px;">
