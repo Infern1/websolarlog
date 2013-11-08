@@ -20,6 +20,7 @@ class KostalPikoConverter
         foreach ($dataLines as $line){
         	$data[] = preg_split("/[,]+/",$line);
         }
+        HookHandler::getInstance()->fire("onDebug", print_r($data,true));
         // Check if the record is okay
         if (!empty($data[22]) && trim($data[22]) != "OK") {
         	throw new ConverterException("not a OK response from KostalPiko:\r\n".print_r($inputLine,true));
