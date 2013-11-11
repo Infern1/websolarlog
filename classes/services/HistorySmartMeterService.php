@@ -35,10 +35,10 @@ class HistorySmartMeterService {
 		$utils = new Util();
 		// get the bean 10 min. before and after the given time.
 		$parameters = array( ':timeBefore' => ($time-900),':timeAfter'=>($time+900));
-		HookHandler::getInstance()->fire("onInfo", "parameters::".print_r($parameters,true));
+		//HookHandler::getInstance()->fire("onInfo", "parameters::".print_r($parameters,true));
 		
 		$beans = R::find( "historySmartMeter"," time >= :timeBefore AND time <=:timeAfter ",$parameters);
-		HookHandler::getInstance()->fire("onInfo", "beans::".print_r($beans,true));
+		//HookHandler::getInstance()->fire("onInfo", "beans::".print_r($beans,true));
 		
 		if(count($beans)>0){
 			// find closest SmartMeter History Bean.
