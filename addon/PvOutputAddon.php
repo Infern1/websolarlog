@@ -37,11 +37,11 @@ class PvOutputAddon {
 
 				$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
 				HookHandler::getInstance()->fire("onInfo", "before http_code:\r\n".print_r($result,true));
-				if ($result['info']['http_code'] == "200" and $v1 > 0 AND $v2 > 0) {
+				if ($result['info']['http_code'] == "200" and ($v1 > 0 OR $v2 > 0)) {
 					HookHandler::getInstance()->fire("onInfo", "http_code:200:\r\n".print_r($result,true));
 					$live->pvoutput = 1;
 					$this->history->save($live);
-				}elseif ($result['info']['http_code'] == "400" and $v1 > 0 AND $v2 > 0) {
+				}elseif ($result['info']['http_code'] == "400" and ($v1 > 0 OR $v2 > 0)) {
 					HookHandler::getInstance()->fire("onInfo", "http_code:400:\r\n".print_r($result,true));
 					$live->pvoutput = 2;
 					$live->pvoutputErrorMessage = $result['response'];
