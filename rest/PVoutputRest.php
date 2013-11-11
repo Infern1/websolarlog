@@ -11,6 +11,5 @@ class PVoutputRest {
 			HookHandler::getInstance()->fire('onInfo', print_r($vars,true));
 		}
 	}
-	
 }
 ?>

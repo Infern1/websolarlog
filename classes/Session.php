@@ -314,7 +314,9 @@ class Session
     	
     	$hookHandler->add("defaultAxes", "SmartMeterAddon.defaultAxes");
     	$hookHandler->add("defaultSeries", "SmartMeterAddon.defaultSeries");
-    	 
+    	
+    	$hookHandler->add("onPVoutputAddStatus", "PvOutputAddon.onJob");
+    	
     	
     	// fire from frontend
     	$hookHandler->add("checkEnergy", "EnergyCheckAddon.checkEnergy");

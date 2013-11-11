@@ -287,7 +287,6 @@ class PvOutputAddon {
 			}else{
 				return false;
 			}
-			
 		}
 	}
 
