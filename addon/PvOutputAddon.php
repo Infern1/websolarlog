@@ -14,9 +14,9 @@ class PvOutputAddon {
 	public function onJob($args) {
 		foreach ($this->config->devices as $device){
 			if ($device->pvoutputEnabled AND $device->active) {
-				
+
 				$live = $this->getUnsendHistory($device->id);
-				
+
 				if(count($live)>=1){
 					$date = date("Ymd", $live->time);
 					$time = date("H:i", $live->time);
@@ -34,23 +34,22 @@ class PvOutputAddon {
 				$v4 = $smartMeter['power'];//v4	Power Consumption	No	number	watts	2000	r1
 				$v5 = $this->weather->PVoutputWeatherData($timestamp);//v5	Temperature	No	decimal	celsius	23.4	r2
 				$v6 = $live->GV;//v6	Voltage	No	decimal	volts	210.7	r2
-				
-				
-				
+
 				$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
 				if ($result['info']['http_code'] == "200" and $v1 > 0 AND $v2 > 0) {
+					HookHandler::getInstance()->fire("onInfo", "http_code:200:\r\n".print_r($result,true));
 					$live->pvoutput = 1;
 					$this->history->save($live);
 				}elseif ($result['info']['http_code'] == "400" and $v1 > 0 AND $v2 > 0) {
+					HookHandler::getInstance()->fire("onInfo", "http_code:400:\r\n".print_r($result,true));
 					$live->pvoutput = 2;
 					$live->pvoutputErrorMessage = $result['response'];
 					$this->history->save($live);
 				}else{
-					HookHandler::getInstance()->fire("onDebug", print_r($result,true));
+					HookHandler::getInstance()->fire("onDebug", "http_code:unknown:\r\n".print_r($result,true));
 					//$live->pvoutput = 3;
 					//$live->pvoutputErrorMessage = $result['response'];
 					//$this->history->save($live);
-					
 				}
 			}
 		}
