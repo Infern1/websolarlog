@@ -36,6 +36,7 @@ class PvOutputAddon {
 				$v6 = $live->GV;//v6	Voltage	No	decimal	volts	210.7	r2
 
 				$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
+				HookHandler::getInstance()->fire("onInfo", "before http_code:\r\n".print_r($result,true));
 				if ($result['info']['http_code'] == "200" and $v1 > 0 AND $v2 > 0) {
 					HookHandler::getInstance()->fire("onInfo", "http_code:200:\r\n".print_r($result,true));
 					$live->pvoutput = 1;
