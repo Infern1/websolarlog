@@ -8,8 +8,8 @@
 			</div>
 			<div class="span-14" style="border:1px solid #ccc;">
 				<strong>Solar data:</strong><br>
-				{{data.total.production.KWH}} kWh generated<br>
-				The generated kWh's equals {{data.total.production.CO2avoid}} kg avoided CO2 and <span title="{{data.total.moneySign}} {{data.total.costkwh}} * {{data.total.production.KWH}} = {{data.total.moneySign}} {{data.total.production.costs}}"> {{data.total.production.costs}}</span>			
+				{{data.total.production.KWH}} kWh generated, which equals <span title="{{data.total.costkwh}} * {{data.total.production.KWH}} = {{data.total.production.costs}}"> {{data.total.production.costs}}</span><br>
+				The generated kWh's equals {{data.total.production.CO2avoid}} kg avoided CO2.			
 			</div>
 			<div class="span-14 last" style="border:1px solid #ccc;">
 				{{#if_gt data.total.weather.pressure compare=0}}
@@ -47,11 +47,13 @@
 				{{/if_gt}}
 			</div>
 			<div class="span-14 last" style="border:1px solid #ccc;">
-				{{#if_gt data.total.metering.returnKWH compare=0}}
 				<strong>Grid data:</strong><br>
+				{{#if_gt data.total.metering.returnKWH compare=0}}
 				
 				<span title="{{data.total.moneySign}} {{data.total.costkwh}} * {{data.total.metering.returnKWH}} = {{data.total.moneySign}} {{data.total.metering.returnCosts}}"><strong>{{data.total.metering.returnKWH}}</strong> kWh returned to your neighbors</span><br>
 				The returned kWh's equals <span title="Somebody else is getting your carbon free power :D"><strong>{{data.total.metering.returnCO2}}</strong> kg CO2 and <span title="We returned this to the grid, so somebody else can use it."> and {{data.total.moneySign}} {{data.total.metering.returnCosts}}</span>
+				{{else}}
+				You used all the generated power in your own house, so there are no kWh's returned to the grid.				
 				{{/if_gt}}
 			</div>
 			<div class="cl"></div>
