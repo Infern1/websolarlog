@@ -36,21 +36,15 @@ class PvOutputAddon {
 				$v6 = $live->GV;//v6	Voltage	No	decimal	volts	210.7	r2
 
 				$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
-				HookHandler::getInstance()->fire("onInfo", "before http_code:\r\n".print_r($result,true));
 				if ($result['info']['http_code'] == "200" and ($v1 > 0 OR $v2 > 0)) {
-					HookHandler::getInstance()->fire("onInfo", "http_code:200:\r\n".print_r($result,true));
 					$live->pvoutput = 1;
 					$this->history->save($live);
 				}elseif ($result['info']['http_code'] == "400" and ($v1 > 0 OR $v2 > 0)) {
-					HookHandler::getInstance()->fire("onInfo", "http_code:400:\r\n".print_r($result,true));
 					$live->pvoutput = 2;
 					$live->pvoutputErrorMessage = $result['response'];
 					$this->history->save($live);
 				}else{
 					HookHandler::getInstance()->fire("onDebug", "http_code:unknown:\r\n".print_r($result,true));
-					//$live->pvoutput = 3;
-					//$live->pvoutputErrorMessage = $result['response'];
-					//$this->history->save($live);
 				}
 			}
 		}
@@ -101,12 +95,8 @@ class PvOutputAddon {
 			if($temp){
 				$vars['v5'] = number_format($temp, 2);
 			}
-			
-
 			$vars['c1'] = '1';
-				
-			HookHandler::getInstance()->fire("onInfo", "vars::".print_r($vars,true));
-			
+
 			// header info
 			$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
 			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: " . $device->pvoutputSystemId;
@@ -114,7 +104,6 @@ class PvOutputAddon {
 			//$pvoutput = shell_exec('curl -d "d='.$now.'" -d "t='.$time.'" -d "c1=0" -d "v1='.$KWHDtot.'" -d "v2='.$GPtot.'" -d "v5='.$INVT.'" -d "v6='.$GV.'" -H "X-Pvoutput-Apikey: '.$APIKEY.'" -H "X-Pvoutput-SystemId: '.$SYSID.'" http://pvoutput.org/service/r2/addstatus.jsp &');
 			$url = "http://pvoutput.org/service/r2/addstatus.jsp";
 			$result = $this->PVoutputCurl($url,$vars,$headerInfo,true);
-			HookHandler::getInstance()->fire("onInfo", print_r($result,true));
 			return $result;
 		} catch (Exception $e) {
 			HookHandler::getInstance()->fire("onError", $e->getMessage());
@@ -142,7 +131,7 @@ class PvOutputAddon {
 			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: ".$device->pvoutputSystemId;
 			$url = "http://pvoutput.org/service/r2/getsystem.jsp";
 			$result = $this->PVoutputCurl($url,$vars,$headerInfo,true);
-			//var_dump($result);
+
 			if($result['info']['http_code']==200){
 				$team = explode(';',$result['response']);
 				$pos = strpos($team[count($team)-2], '602');
@@ -178,6 +167,7 @@ class PvOutputAddon {
 		($device->pvoutputApikey) ? $device->pvoutputApikey = true : $device->pvoutputApikey = false;
 		($device->pvoutputSystemId) ? $device->pvoutputSystemId = true : $device->pvoutputSystemId = false;
 		$device->pvoutputWSLTeamMember = $bean->pvoutputWSLTeamMember;
+		
 		return $device;
 	}
 	
@@ -274,7 +264,7 @@ class PvOutputAddon {
 		$info = curl_getinfo($ch);
 		$httpResponse = curl_getinfo($ch,CURLINFO_HEADER_OUT);
 		curl_close($ch);
-		HookHandler::getInstance()->fire("onDebug", "send to pvoutput: " . print_r($vars, true) . " result: " .  $response);
+		//HookHandler::getInstance()->fire("onDebug", "send to pvoutput: " . print_r($vars, true) . " result: " .  $response);
 		if ($info['http_code'] == "200") {
 			if($returnOutput){
 				return array('result'=>true,'response'=> $response,'info'=>$info);
