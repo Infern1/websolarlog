@@ -8,7 +8,9 @@
 			</div>
 			<div class="span-14" style="border:1px solid #ccc;">
 				<strong>Solar data:</strong><br>
-				{{data.total.production.KWH}} kWh generated, which equals <span title="{{data.total.costkwh}} * {{data.total.production.KWH}} = {{data.total.production.costs}}"> {{data.total.production.costs}}</span><br>
+				{{data.total.production.KWH}} kWh generated, which equals 
+				<span title="{{data.total.costkwh}} * {{data.total.production.KWH}} = {{data.total.production.costs}}"> {{data.total.production.costs}}</span><br>
+				
 				The generated kWh's equals {{data.total.production.CO2avoid}} kg avoided CO2.			
 			</div>
 			<div class="span-14 last" style="border:1px solid #ccc;">
