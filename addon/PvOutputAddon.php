@@ -7,6 +7,7 @@ class PvOutputAddon {
 		$this->metering = new HistorySmartMeterService();
 		$this->history = new HistoryService();
 	}
+	
 	/**
 	 * Start the job
 	 * @param mixed $args
@@ -264,7 +265,7 @@ class PvOutputAddon {
 		$info = curl_getinfo($ch);
 		$httpResponse = curl_getinfo($ch,CURLINFO_HEADER_OUT);
 		curl_close($ch);
-		//HookHandler::getInstance()->fire("onDebug", "send to pvoutput: " . print_r($vars, true) . " result: " .  $response);
+
 		if ($info['http_code'] == "200") {
 			if($returnOutput){
 				return array('result'=>true,'response'=> $response,'info'=>$info);
