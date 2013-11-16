@@ -29,57 +29,59 @@ class KostalPikoConverter
         
         $live = new Live();
         $live->type = 'production';
-        if (!empty ($data[1][1])) {
-        	$line = explode('.',$data[1][1]);
-        	preg_match('/(\d{4})\-(\d{2})\-(\d{2})T(\d{2})\:(\d{2})\:(\d{2})/i', $line[0], $matches,0);
-        	$result =  Util::getTimestampOfDate($matches[4],$matches[5],$matches[6],$matches[3],$matches[2],$matches[1]);
-            $live->time = $result;
-        }
-        if (count($data[7] == 6)) {
-            $live->I1V = $data[7][1];
-            $live->I1A = $data[7][2];
-            $live->I1P = $data[7][3];
-        }
-        if (count($data[8] == 6)) {
-            $live->I2V = $data[8][1];
-            $live->I2A = $data[8][2];
-            $live->I2P = $data[8][3];
-        }
-        /**
-         *** Third string fix
-         */
-        if (count($data[9] == 6)) {
-        	$live->I3V = $data[9][1];
-        	$live->I3A = $data[9][2];
-        	$live->I3P = $data[9][3];
-        }
-        
-        
-        if (count($data[10] == 6)) {
-            $live->GV = $data[10][1];
-            $live->GA = $data[10][2];
-            $live->GP = $data[10][3];
-        }
-        /**
-         *** 3phase fix
-         */
-        if (count($data[11] == 6)) {
-        	$live->GV2 = $data[11][1];
-        	$live->GA2 = $data[11][2];
-        	$live->GP2 = $data[11][3];
-        }
-        if (count($data[12] == 6)) {
-        	$live->GV3 = $data[12][1];
-        	$live->GA3 = $data[12][2];
-        	$live->GP3 = $data[12][3];
+		
+        foreach ($data as $line){
+        	if (strtolower($line[0])=="tim") {
+        		$lineArr = explode('.',$line[1]);
+        		preg_match('/(\d{4})\-(\d{2})\-(\d{2})T(\d{2})\:(\d{2})\:(\d{2})/i', $lineArr[0], $matches,0);
+        		$result =  Util::getTimestampOfDate($matches[4],$matches[5],$matches[6],$matches[3],$matches[2],$matches[1]);
+        		$live->time = $result;
+        	}
+        	if (strtolower($line[0])=="dc1") {
+        		$live->I1V = $line[1];
+        		$live->I1A = $line[2];
+        		$live->I1P = $line[3];
+        	}
+        	if (strtolower($line[0])=="dc2") {
+        		$live->I2V = $line[1];
+        		$live->I2A = $line[2];
+        		$live->I2P = $line[3];
+        	}
+        	/**
+        	 *** Third string fix
+        	 */
+        	if (strtolower($line[0])=="dc3") {
+        		$live->I3V = $line[1];
+        		$live->I3A = $line[2];
+        		$live->I3P = $line[3];
+        	}
+
+        	if (strtolower($line[0])=="ac1") {
+        		$live->GV = $line[1];
+        		$live->GA = $line[2];
+        		$live->GP = $line[3];
+        	}
+        	if (strtolower($line[0])=="ac2") {
+        		$live->GV2 = $line[1];
+        		$live->GA2 = $line[2];
+        		$live->GP2 = $line[3];
+        	}
+        	/**
+        	 *** 3phase fix
+        	 */
+        	if (strtolower($line[0])=="ac3") {
+        		$live->GV3 = $line[1];
+        		$live->GA3 = $line[2];
+        		$live->GP3 = $line[3];
+        	}
+
+        	if (strtolower($line[0])=="ene") {
+        		$live->KWHT = $line[1]/1000;
+        	}
         }
         
         $live->BOOT = 0;
         $live->INVT = 0;
-        /**
-         *** /3phase fix
-         */
-         
         // not available
         $live->FRQ = 0;
         
@@ -90,13 +92,10 @@ class KostalPikoConverter
         	$live->EFF = (float)round(($live->ACP/$live->IP)*100,4);
         }
 
-        if (!empty ($data[5][1])) {
-            $live->KWHT = $data[5][1]/1000;
-        }
         
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->ACP)) {
-        	//HookHandler::getInstance()->fire("onDebug", "Piko.py didn't return KWHT or GP is empty! We need these values for calculations");
+        	HookHandler::getInstance()->fire("onDebug", "Piko.py didn't return KWHT or GP is empty! We need these values for calculations");
         	return null;
         }
         HookHandler::getInstance()->fire("onDebug", "Live data by PikoKostalConverter\r\n".print_r($live,true));        
