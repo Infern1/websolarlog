@@ -15,6 +15,7 @@
 		<span style="font-size:10px;text-align:center;position:relative;top:-7px;">(kWh)</span>
 		<br>
 	</div>
+	{{#if_gt data.total.metering.returnKWH compare=0}}
 	<div class="column span-5 verticalLine" style="font-size: 25px;text-align:center;">
 		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">{{data.lang.used}}</span><br>
 		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink"
@@ -27,6 +28,7 @@
 		<span style="font-size:10px;text-align:center;position:relative;top:-7px;">(kWh)</span>
 		<br>
 	</div>
+	{{/if_gt}}
 </div>
 {{#if_gt data.total.metering.gasUsage compare=0}}
 <div class="column span">
