@@ -18,29 +18,34 @@ class PvOutputAddon {
 
 				$live = $this->getUnsendHistory($device->id);
 
+				// Set the defaults
+				$date = date("Ymd", time());
+				$time = date("H:i", time());
+				$timestamp = time();
+				$v1 = 0;
+				$v2 = 0;
+				$v6 = 0;
+				
+				// Fill in the values for the found live values
 				if(count($live)>=1){
 					$date = date("Ymd", $live->time);
 					$time = date("H:i", $live->time);
 					$timestamp = $live->time;
-				}else{
-					$date = date("Ymd", time());
-					$time = date("H:i", time());
-					$timestamp = time();
+					$v1 = $live->KWHT;//v1	Energy Generation	No1	number	watt hours	10000	r1
+					$v2 = $live->GP;//v2	Power Generation	No	number	watts	2000	r1
+					$v6 = $live->GV;//v6	Voltage	No	decimal	volts	210.7	r2
 				}
+				
 				$smartMeter = $this->metering->PVoutputSmartMeterData($timestamp);
-
-				$v1 = $live->KWHT;//v1	Energy Generation	No1	number	watt hours	10000	r1
-				$v2 = $live->GP;//v2	Power Generation	No	number	watts	2000	r1
 				$v3 = $smartMeter['energy'];//v3	Energy Consumption	No	number	watt hours	10000	r1
 				$v4 = $smartMeter['power'];//v4	Power Consumption	No	number	watts	2000	r1
 				$v5 = $this->weather->PVoutputWeatherData($timestamp);//v5	Temperature	No	decimal	celsius	23.4	r2
-				$v6 = $live->GV;//v6	Voltage	No	decimal	volts	210.7	r2
 
 				$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
-				if ($result['info']['http_code'] == "200" and ($v1 > 0 OR $v2 > 0)) {
+				if ($result['info']['http_code'] == "200") {
 					$live->pvoutput = 1;
 					$this->history->save($live);
-				}elseif ($result['info']['http_code'] == "400" and ($v1 > 0 OR $v2 > 0)) {
+				}elseif ($result['info']['http_code'] == "400") {
 					$live->pvoutput = 2;
 					$live->pvoutputErrorMessage = $result['response'];
 					$this->history->save($live);
