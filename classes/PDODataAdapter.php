@@ -1718,6 +1718,7 @@ class PDODataAdapter {
 		$sum['I3P'] = ($I3P<1000) ? number_format($I3P,1,'.','') : number_format($I3P,0,'','');
 		$sum['totalSystemACP'] = ($totalSystemACP<1000) ? number_format($totalSystemACP,1,'.','') : number_format($totalSystemACP,0,'','');
 		$sum['totalSystemIP'] = ($totalSystemIP<1000) ? number_format($totalSystemIP,1,'.','') : number_format($totalSystemIP,0,'','');
+		$totalSystemEff = 0;
 		if($totalSystemIP>0 AND $totalSystemIP>0){
 			$totalSystemEff = ($totalSystemACP / $totalSystemIP) * 100;
 		}
