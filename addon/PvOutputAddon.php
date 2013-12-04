@@ -43,12 +43,16 @@ class PvOutputAddon {
 
 				$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
 				if ($result['info']['http_code'] == "200") {
-					$live->pvoutput = 1;
-					$this->history->save($live);
+					if(count($live)>=1){
+						$live->pvoutput = 1;
+						$this->history->save($live);
+					}
 				}elseif ($result['info']['http_code'] == "400") {
-					$live->pvoutput = 2;
-					$live->pvoutputErrorMessage = $result['response'];
-					$this->history->save($live);
+					if(count($live)>=1){
+						$live->pvoutput = 2;
+						$live->pvoutputErrorMessage = $result['response'];
+						$this->history->save($live);
+					}
 				}else{
 					HookHandler::getInstance()->fire("onDebug", "http_code:unknown:\r\n".print_r($result,true));
 				}
