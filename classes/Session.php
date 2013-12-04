@@ -1,4 +1,6 @@
 <?php
+$_SESSION['timerBegin'] = microtime(true); 
+
 class Session
 {
     /**
