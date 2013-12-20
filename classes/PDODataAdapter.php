@@ -282,13 +282,16 @@ class PDODataAdapter {
 		$bean->plugwiseStrech20IP = $config->plugwiseStrech20IP;
 		$bean->plugwiseStrech20ID = $config->plugwiseStrech20ID;
 		$bean->smartmeterpath = $config->smartmeterpath;
-
+		
+		$bean->invoiceDate = $config->invoiceDate;
+		
 		$bean->co2kwh = $config->co2kwh;
 		$bean->co2gas = $config->co2gas;
 		$bean->co2CompensationTree = $config->co2CompensationTree;
 		$bean->costkwh = $config->costkwh;
 		$bean->costGas = $config->costGas;
 		$bean->costWater = $config->costWater;
+		$bean->moneySign = $config->moneySign;
 
 		$bean->googleAnalytics = $config->googleAnalytics;
 		$bean->piwikServerUrl = $config->piwikServerUrl;
@@ -335,7 +338,9 @@ class PDODataAdapter {
 			$config->comPort = $bean->comPort;
 			$config->comOptions = $bean->comOptions;
 			$config->comDebug = $bean->comDebug;
-
+			
+			$config->invoiceDate = $bean->invoiceDate;
+			
 			$config->emailFromName = $bean->emailFromName;
 			$config->emailFrom = $bean->emailFrom;
 			$config->emailTo = $bean->emailTo;
@@ -366,6 +371,7 @@ class PDODataAdapter {
 			$config->costkwh = ($bean->costkwh > 0) ? $bean->costkwh : $config->costkwh;
 			$config->costGas = ($bean->costGas > 0) ? $bean->costGas : $config->costGas;
 			$config->costWater = ($bean->costWater > 0) ? $bean->costWater : $config->costWater;
+			$config->moneySign = $bean->moneySign;
 			
 			$config->devices = $this->deviceService->getActiveDevices();
 			$config->allDevices = $this->deviceService->getAllDevices();
@@ -1953,8 +1959,10 @@ class PDODataAdapter {
 	 * @return string
 	 */
 	public function crossSQLDateTime($format, $column, $dateTimeFunction=''){
-		//echo "xxx".$this->sqlEngine."xxxx";
-		switch ($this->sqlEngine) {
+		$config = Session::getConfig();
+		
+
+		switch ($config->sqlEngine) {
 		case 'sqlite':
 			//strftime ( '%d-%m-%Y' , date ( time , 'unixepoch' ) );
 			($dateTimeFunction=='') ? $dateTimeFunction = 'date' : $dateTimeFunction = $dateTimeFunction;

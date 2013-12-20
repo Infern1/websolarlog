@@ -76,7 +76,8 @@ class Config
     public $smartmeterpath;
     
     public $adminpasswd;
-
+    public $invoiceDate;
+    
     public $urlDir;
     public $urlComplete;
     
@@ -138,6 +139,7 @@ class Config
 		$this->YINTERVAL='1000';
 		$this->PRODXDAYS='20';
 
+		
 		// ### EMAIL
 		$this->emailFrom = "test-from@test.localhost";
 		$this->emailTo = "test-to@test.localhost";

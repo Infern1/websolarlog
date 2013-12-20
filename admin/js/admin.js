@@ -254,7 +254,30 @@ function init_plugwise(){
                 			}
                 	});
                 }, 3000);*/
-                
+            	
+                /*
+                 * Catch click to sync all plug-data(actual power usage, switch state) from Stretch with WSL-database
+                 */
+                $("#btnSyncPlugs").bind('click', function() {
+                	var data = "s=syncPlugs";
+                	$.post('admin-server.php', data, function(data){
+                        if (data.result == true) {
+                        	console.log('ready, true');
+                            $.pnotify({
+                                title: 'Login',
+                                text: 'Succesfully logged in.',
+                                type: 'success'
+                            });
+                        } else {
+                            $.pnotify({
+                                title: 'Login',
+                                text: 'Failed to log in. Please retry!',
+                                type: 'error'
+                            });
+                        }
+                    });
+            	});
+            	
                 $("div.editme").click(function() {
             		var id = $(this).attr('id');
             		if ($("#"+id).children('input').length == 0) {
@@ -837,6 +860,30 @@ function deviceStatuses(){
     
 }
 
+function init_invoice(data){
+	WSL.checkURL();
+	setTitle("Invoice");
+	window.location.hash = '#invoice';
+	
+	$('#sidebar').html("");
+    var content = $('#content');
+    content.html('<div id="c_general"></div><div id="c_communication"></div><div id="c_security"></div>'); // Clear old data
+
+    
+    $.getJSON('admin-server.php?s=invoiceInfo&'+data, function(data) {
+        $.ajax({
+            url : 'js/templates/invoice.hb',
+            success : function(source) {
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : data
+                });
+                $('#c_general', content).html(html);
+            }
+        })
+    });
+    
+}
 
 function init_general() {
 	WSL.checkURL();
@@ -855,7 +902,11 @@ function init_general() {
                 });
                 $('#c_general', content).html(html);
 	 			
-                
+                $('#btnInvoiceData').bind('click', function(){
+    				checkCheckboxesHiddenFields();
+    				var data = $(this).parent().parent().serialize();
+    				init_invoice(data);
+                });
                 // prevent comma in latitude value
                 $("input[name=latitude]").bind('keyup',function(){
                 	$("input[name=latitude]").val($("input[name=latitude]").val().replace(/,/g,"."));

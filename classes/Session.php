@@ -49,16 +49,14 @@ class Session
     	} else {
     		R::setup($config->dbDSN);
     	}
-    	
+
     	// Only use on sqlite for speedup
     	if (strpos($config->dbDSN,'sqlite') !== false) {
     		R::exec("PRAGMA synchronous = NORMAL"); // A little less secure then FULL, but much less IO
     		R::exec("PRAGMA PRAGMA temp_store = 2"); // In memory (IO on SD is slow)
     		PDODataAdapter::getInstance()->sqlEngine = 'sqlite';
-    		//$this->sqlEngine = 'sqlite'; //set db-engine dependent dateFunction
     	}elseif(strpos($config->dbDSN,'mysql') !== false){
     		PDODataAdapter::getInstance()->sqlEngine = 'mysql';
-    		//$this->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
     	}
     	RedBean_OODBBean::setFlagBeautifulColumnNames(false);
     	R::debug(false);
@@ -95,10 +93,8 @@ class Session
     		R::exec("PRAGMA synchronous = NORMAL"); // A little less secure then FULL, but much less IO
     		R::exec("PRAGMA PRAGMA temp_store = 2"); // In memory (IO on SD is slow)
     		PDODataAdapter::getInstance()->sqlEngine = 'sqlite';
-    		//$this->sqlEngine = 'sqlite'; //set db-engine dependent dateFunction
     	}elseif(strpos($config->dbDSN,'mysql') !== false){
     		PDODataAdapter::getInstance()->sqlEngine = 'mysql';
-    		//$this->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
     	}
     	RedBean_OODBBean::setFlagBeautifulColumnNames(false);
     	R::debug(false);
@@ -129,13 +125,20 @@ class Session
     				$config->setDatabaseUser($section['username']);
     				$config->setDatabasePassword($section['password']);
     			}
-    		}
+    		}    		
     		return $config;
     	}
     	
     	if (!isset(self::$config) || self::$config == null || $reload == true) {
     		self::$config = PDODataAdapter::getInstance()->readConfig();
     	}
+    	
+    	if (strpos(self::$config->dbDSN,'sqlite') !== false) {
+    		self::$config->sqlEngine = 'sqlite'; //set db-engine dependent dateFunction
+    	}elseif(strpos(self::$config->dbDSN,'mysql') !== false){
+    		self::$config->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
+    	}
+    	
     	return self::$config;
     }
     

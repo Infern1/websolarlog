@@ -53,3 +53,13 @@
     <button type="button" id="btnGeneralSubmit">Save</button>
   </fieldset>
 </form> 
+{{#if_gt data.meteringDevicePresent compare=0}}
+  <fieldset>
+  <!--<input type="hidden" name="s" value="save-invoiceDate" />-->
+  <legend>Invoice</legend>
+  <form name="invoice">
+  <input type="text" id="date" name="date" value="{{data.invoiceDate}}"/> (dd-mm-yyyy)<br>
+  <button type="button" id="btnInvoiceData">Show invoice</button>
+  </form>
+  </fieldset>
+  {{/if_gt}}
