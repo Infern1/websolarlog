@@ -958,6 +958,7 @@ switch ($settingstype) {
 			$config = Session::getConfig(true);
 		}else{
 			$invoiceStartDate = $config->invoiceDate;
+			$splitDate = explode("-",$invoiceStartDate);
 		}
 	
 		$data['invoiceStartDate'] = $invoiceStartDate;
@@ -998,7 +999,10 @@ switch ($settingstype) {
 				$days[$i]['date'] = date("d-m-y",$invoiceData[$i]['time'] );
 				$days[$i]['month'] = date("m",$invoiceData[$i]['time'] );
 				$days[$i]['year'] = date("y",$invoiceData[$i]['time'] );
+				
+				// if we have a gap of +/- 1,5 day in the data, we mark it red... 
 				(($invoiceData[$i]['time'] - $invoiceData[$i-1]['time']) > 130000) ?	$days[$i]['backgroundColor'] = '#ff0000' : $days[$i]['backgroundColor'] = '#ffffff';
+				
 				if($i == 1){
 					$days[$i]['lowUsageT'] = ($invoiceData[$i]['lowUsageT'] - $invoiceData[$i-1]['lowUsageT'])/1000;
 					$days['lowUsageTTotal'] += $days[$i]['lowUsageT'];
@@ -1013,8 +1017,6 @@ switch ($settingstype) {
 					$days[$i]['gasUsageTDay'] = $days[$i]['gasUsageT'];
 					$days[$i]['gasUsageTCosts'] = $config->moneySign." ".($days[$i]['gasUsageT'] * $config->costGas)/100;
 				}else{
-					
-
 					if( (int)$invoiceData[$i-1]['lowUsageT'] >= (int)$invoiceData[$i]['lowUsageT'] ){
 						$days[$i]['lowUsageT'] = 0;
 						$days['lowUsageTTotal'] += $days[$i]['lowUsageT'];
