@@ -19,11 +19,11 @@ session_start();
 <link rel="stylesheet" href="../js/jqueryuicss/jquery.ui.overrule.css" type="text/css" />
 
 <script type="text/javascript" src="../js/jquery-1.10.1.min.js"></script>
-<script type="text/javascript" src="../js/moment-2.0.0.min.js"></script>
+<script type="text/javascript" src="../js/moment-2.4.0.min.js"></script>
 <script type="text/javascript" src="../js/jquery-ui-1.10.3.min.js"></script>
 <script type="text/javascript" src="../js/jquery.calculation.min.js"></script>
 <script type="text/javascript" src="../js/jquery.pnotify-1.2.0.min.js"></script>
-<script type="text/javascript" src="../js/handlebars-1.0.0.js"></script>
+<script type="text/javascript" src="../js/handlebars-1.1.2.js"></script>
 <script type="text/javascript" src="../js/helpers.js"></script>
 <script type="text/javascript" src="../js/websolarlog.js"></script>
 <script type="text/javascript" src="js/admin.js"></script>
