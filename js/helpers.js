@@ -249,4 +249,10 @@
     	return new Handlebars.SafeString(list);
     });
 	
+	Handlebars.registerHelper("toFixed", function (context,block,fixed){
+		//console.log(context);
+		var value = parseFloat(context.hash.value).toFixed(context.hash.fixed).replace(".",",");
+		return new Handlebars.SafeString(value);
+	})
+	
 }));
