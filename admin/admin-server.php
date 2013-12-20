@@ -1084,7 +1084,7 @@ switch ($settingstype) {
 		}
 
 		$totals['gasUsageTTotal'] = round($temp['gasUsageTTotal'],2);
-		$totals['gasUsageTTotalCosts'] = $config->moneySign." ".round(($temp['gasUsageTTotal'] * $config->costkwh)/100,2);
+		$totals['gasUsageTTotalCosts'] = $config->moneySign." ".round(($temp['gasUsageTTotal'] * $config->costGas)/100,2);
 		
 		
 		/*
@@ -1139,12 +1139,14 @@ switch ($settingstype) {
 		$totals['lowReturnTTotalCosts'] = $config->moneySign." ".round(($temp['lowReturnTTotal'] * $config->costkwh)/100,0);
 
 		$data['costkwh']= round($config->costkwh/100,4);
-
+		$data['costGas']= round($config->costGas/100,4);
+		
 		$firstDataRow = reset($invoiceData);
 		$lastDataRow = end($invoiceData);
 
 		$data['days'] = $days;
 		$data['totals'] = $totals;
+		$data['moneySign'] = $config->moneySign;
 		$data['currentInvoiceSummary'] = $currentInvoiceSummary;
 		$data['dateCurrentInvoiceSummary']['beginData'] = date("d-m-y",$firstDataRow['time']);
 		$data['dateCurrentInvoiceSummary']['endData'] = date("d-m-y",$lastDataRow['time']);
