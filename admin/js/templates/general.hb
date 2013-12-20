@@ -55,7 +55,7 @@
 </form> 
 {{#if_gt data.meteringDevicePresent compare=0}}
   <fieldset>
-  <!--<input type="hidden" name="s" value="save-invoiceDate" />-->
+  <input type="hidden" name="s" value="save-invoiceDate" />
   <legend>Invoice</legend>
   <form name="invoice">
   <input type="text" id="date" name="date" value="{{data.invoiceDate}}"/> (dd-mm-yyyy)<br>

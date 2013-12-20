@@ -868,9 +868,9 @@ function init_invoice(data){
 	$('#sidebar').html("");
     var content = $('#content');
     content.html('<div id="c_general"><h1> Invoice</h1><form><fieldset><div id="json" name="summary">Loading Data...</div></fieldset></div>'); // Clear old data
-
-    
-    $.getJSON('admin-server.php?s=invoiceInfo&'+data, function(data) {
+    console.log(data);
+    WSL.connect.postJSON('admin-server.php', data, function(result) {
+    $.getJSON('admin-server.php?s=invoiceInfo', function(data) {
         $.ajax({
             url : 'js/templates/invoice.hb',
             success : function(source) {
@@ -881,7 +881,7 @@ function init_invoice(data){
                 $('#json', content).html(html);
             }
         })
-    });
+    }); }); 
     
 }
 

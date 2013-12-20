@@ -67,10 +67,10 @@ The data below is calculated over the period;<br>
 {{#each data.days}}
 <div class="column span-28" style="background-color:{{this.backgroundColor}}">
   <div class="column span-5" title="({{this.time}})">{{timestampDateFormat this.time format="DD-MM-YYYY "}}&nbsp;</div>
-  <div class="column span-4" style="background-color:#9CB3FF">{{this.gasUsageTDay}}&nbsp;</div>
-  <div class="column span-3" style="background-color:#70FF69">{{this.lowReturnT}}&nbsp;</div>
-  <div class="column span-4" style="background-color:#70FF69">{{this.highReturnT}}&nbsp;</div>
-  <div class="column span-3" style="background-color:#FF7D7D">{{this.lowUsageT}}&nbsp;</div>
-  <div class="column span-4" style="background-color:#FF7D7D">{{this.highUsageT}}&nbsp;</div>
+  <div class="column span-4" style="background-color:#9CB3FF;text-align:right;">{{toFixed value=this.gasUsageTDay fixed=3}}&nbsp;</div>
+  <div class="column span-3" style="background-color:#70FF69;text-align:right;">{{toFixed value=this.lowReturnT fixed=3}}&nbsp;</div>
+  <div class="column span-4" style="background-color:#70FF69;text-align:right;">{{toFixed value=this.highReturnT fixed=3}}&nbsp;</div>
+  <div class="column span-3" style="background-color:#FF7D7D;text-align:right;">{{toFixed value=this.lowUsageT fixed=3}}&nbsp;</div>
+  <div class="column span-4" style="background-color:#FF7D7D;text-align:right;">{{toFixed value=this.highUsageT fixed=3}}&nbsp;</div>
 </div><br>
 {{/each}}
