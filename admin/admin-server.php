@@ -1075,27 +1075,27 @@ switch ($settingstype) {
 			}
 		}
 
-		$totals['gasUsageTTotal'] = round($days['gasUsageTTotal'],2);
-		$totals['gasUsageTTotalCosts'] = $config->moneySign." ".round(($days['gasUsageTTotal'] * $config->costkwh)/100,2);
+		$totals['gasUsageTTotal'] = round($temp['gasUsageTTotal'],2);
+		$totals['gasUsageTTotalCosts'] = $config->moneySign." ".round(($temp['gasUsageTTotal'] * $config->costkwh)/100,2);
 		
 		
 		/*
 		 * 
 		 */
-		$totals['lowUsageTTotal'] = round($days['lowUsageTTotal'],0);
-		$totals['lowUsageTTotalCosts'] = $config->moneySign." ".round(($days['lowUsageTTotal'] * $config->costkwh)/100,0);
+		$totals['lowUsageTTotal'] = round($temp['lowUsageTTotal'],0);
+		$totals['lowUsageTTotalCosts'] = $config->moneySign." ".round(($temp['lowUsageTTotal'] * $config->costkwh)/100,0);
 
-		$totals['highUsageTTotal'] = round($days['highUsageTTotal'],0);
-		$totals['highUsageTTotalCosts'] = $config->moneySign." ".round(($days['highUsageTTotal'] * $config->costkwh)/100,0);
+		$totals['highUsageTTotal'] = round($temp['highUsageTTotal'],0);
+		$totals['highUsageTTotalCosts'] = $config->moneySign." ".round(($temp['highUsageTTotal'] * $config->costkwh)/100,0);
 		
 		
 		/*
 		 * Usage/Return
 		 */
-		$totals['usageTTotal'] = round($days['lowUsageTTotal'] + $days['highUsageTTotal'],0);
+		$totals['usageTTotal'] = round($temp['lowUsageTTotal'] + $temp['highUsageTTotal'],0);
 		$totals['usageTTotalCosts'] = $config->moneySign." ".round(($totals['usageTTotal'] * $config->costkwh)/100,0);
 		
-		$totals['returnTTotal'] = round($days['lowReturnTTotal'] + $days['highReturnTTotal'],0);
+		$totals['returnTTotal'] = round($temp['lowReturnTTotal'] + $temp['highReturnTTotal'],0);
 		$totals['returnTTotalCosts'] = $config->moneySign." ".round(($totals['returnTTotal'] * $config->costkwh)/100,0);
 		 
 		$totals['diffReturnUsageTTotal'] = round($totals['usageTTotal']  - $totals['returnTTotal'],0);
@@ -1104,10 +1104,10 @@ switch ($settingstype) {
 		/*
 		 * ===========================================
 		 */
-		$totals['highReturnTTotal'] = round($days['highReturnTTotal'],0);
+		$totals['highReturnTTotal'] = round($temp['highReturnTTotal'],0);
 		$totals['highReturnTTotalCosts'] = $config->moneySign." ".round(($totals['highReturnTTotal'] * $config->costkwh)/100,0);
 		
-		$totals['lowReturnTTotal'] = round($days['lowReturnTTotal'],0);
+		$totals['lowReturnTTotal'] = round($temp['lowReturnTTotal'],0);
 		$totals['lowReturnTTotalCosts'] = $config->moneySign." ".round(($totals['lowReturnTTotal'] * $config->costkwh)/100,0);
 		
 		$totals['diffReturnUsage'] = $totals['lowReturnTTotal'] - $totals['highReturnTTotal'];
@@ -1127,8 +1127,8 @@ switch ($settingstype) {
 		$totals['diffHighLowTotalCosts'] = $config->moneySign." ".round(($totals['diffHighLowTotal'] * $config->costkwh)/100,0);
 		
 		
-		$totals['highReturnTTotalCosts'] = $config->moneySign." ".round(($days['highReturnTTotal'] * $config->costkwh)/100,0);
-		$totals['lowReturnTTotalCosts'] = $config->moneySign." ".round(($days['lowReturnTTotal'] * $config->costkwh)/100,0);
+		$totals['highReturnTTotalCosts'] = $config->moneySign." ".round(($temp['highReturnTTotal'] * $config->costkwh)/100,0);
+		$totals['lowReturnTTotalCosts'] = $config->moneySign." ".round(($temp['lowReturnTTotal'] * $config->costkwh)/100,0);
 
 		$data['costkwh']= round($config->costkwh/100,4);
 
