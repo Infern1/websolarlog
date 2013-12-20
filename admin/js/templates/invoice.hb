@@ -1,7 +1,3 @@
-<h1> Invoice</h1>
-<form>
-<fieldset>
-<div id="json" name="summary">
 <div>We give NO guarantees for the figures, calculations, data etc. below. :) <br></div>
 The data below is calculated over the period;<br>
 <div class="column span-3">From:</div><div class="column span-5">{{data.invoiceStartDate}}</div><br>

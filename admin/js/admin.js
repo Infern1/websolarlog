@@ -867,7 +867,7 @@ function init_invoice(data){
 	
 	$('#sidebar').html("");
     var content = $('#content');
-    content.html('<div id="c_general"></div><div id="c_communication"></div><div id="c_security"></div>'); // Clear old data
+    content.html('<div id="c_general"><h1> Invoice</h1><form><fieldset><div id="json" name="summary">Loading Data...</div></fieldset></div>'); // Clear old data
 
     
     $.getJSON('admin-server.php?s=invoiceInfo&'+data, function(data) {
@@ -878,7 +878,7 @@ function init_invoice(data){
                 var html = template({
                     'data' : data
                 });
-                $('#c_general', content).html(html);
+                $('#json', content).html(html);
             }
         })
     });
