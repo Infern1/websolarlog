@@ -1008,11 +1008,19 @@ switch ($settingstype) {
 					$days[$i]['lowUsageT'] = ($invoiceData[$i]['lowUsageT'] - $invoiceData[$i-1]['lowUsageT'])/1000;
 					$temp['lowUsageTTotal'] += $days[$i]['lowUsageT'];
 					$days[$i]['lowUsageTCosts'] = $config->moneySign." ".($days[$i]['lowUsageT'] * $config->costkwh)/100;
-					
-					$days[$i]['highUsageT'] = ($invoiceData[$i][highUsageT] - $invoiceData[$i-1]['highUsageT'])/1000;
+
+					$days[$i]['highUsageT'] = ($invoiceData[$i]['highUsageT'] - $invoiceData[$i-1]['highUsageT'])/1000;
 					$temp['highUsageTTotal'] += $days[$i]['highUsageT'];
 					$days[$i]['highUsageTCosts'] = $config->moneySign." ".($days[$i]['highUsageT'] * $config->costkwh)/100;
-					
+
+					$days[$i]['lowReturnT'] = ($invoiceData[$i]['lowReturnT'] - $invoiceData[$i-1]['lowReturnT'])/1000;
+					$temp['lowReturnTTotal'] += $days[$i]['lowReturnT'];
+					$days[$i]['lowReturnTCosts'] = $config->moneySign." ".($days[$i]['lowReturnT'] * $config->costkwh)/100;
+
+					$days[$i]['highReturnT'] = ($invoiceData[$i]['highReturnT'] - $invoiceData[$i-1]['highReturnT'])/1000;
+					$temp['highReturnTTotal'] += $days[$i]['highReturnT'];
+					$days[$i]['highReturnTCosts'] = $config->moneySign." ".($days[$i]['highReturnT'] * $config->costkwh)/100;
+
 					$days[$i]['gasUsageT'] = ((int)$invoiceData[1]['gasUsageT']-(int)$invoiceData[0]['gasUsageT'])/1000;
 					$temp['gasUsageTTotal'] += $days[$i]['gasUsageT'];
 					$days[$i]['gasUsageTDay'] = $days[$i]['gasUsageT'];
