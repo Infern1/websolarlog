@@ -146,10 +146,6 @@
                 return options.inverse(this);
         return options.fn(this);
     });
-
-    //var s = "foo";
-    //alert(s.indexOf("oo") !== -1);
-    
     
     /**
      * Convert new line (\n\r) to <br>
@@ -174,13 +170,18 @@
 		}
 	});
 	
+	/**
+	 * Convert Month number into month name 1 = januari .. 12 = december.  
+	 */
 	var monthNames = ['januari', 'februari', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
 	Handlebars.registerHelper('monthName', function(context, block) {
 		return monthNames[context-1];
 	});
 	
 	
-	
+	/**
+	 * returns a checkbox with an companion hidden text field. 
+	 */
 	Handlebars.registerHelper("checkboxWithHidden", function(name, state, value,classAttr) {
 		if(state==1 || state==true || state == 'checked'|| state == 'true'){
 			var checked = 'checked';
@@ -204,6 +205,9 @@
     
 	
 
+	/**
+	 * Capitalizes the first letter of a string.
+	 */
 	Handlebars.registerHelper("capitalizer", function(context,block) {
 		//console.log(context.hash.title);
 		if(context.hash.title != ''){
@@ -218,12 +222,16 @@
 		
 	});
 
-
+	/**
+	 * 
+	 */
 	Handlebars.registerHelper("humanIndexKey", function(context,block) {
 		return new Handlebars.SafeString(parseInt(context.hash.int+1));
 	});
 
-	
+	/**
+	 * Returns a div with release info for the updater
+	 */
 	Handlebars.registerHelper("updaterVersionsList", function(context,block) {
 		var list = '<div class="span span-30">';
 		$.each( context, function( key, type ) {
