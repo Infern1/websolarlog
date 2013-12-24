@@ -65,7 +65,7 @@ require_once("template/" . $template . "/index.php");
 			WSL.api.live(function(data) {
 				$.each(data, function(){
 					currentTime = (new Date()).getTime();
-					if (this.type == "production") {
+					if (this.type == "production" && this.data !== null) {
 						$('#productionLatest').html('Latest value: ' + this.data.GP);
 				        productionData.push([currentTime, parseInt(this.data.GP)]);
 				        productionGraph.series[0].data = productionData;
@@ -73,7 +73,7 @@ require_once("template/" . $template . "/index.php");
 				        productionGraph.replot();
 						
 					}
-					if (this.type == "metering") {
+					if (this.type == "metering" && this.data !== null) {
 						usage = this.data.liveUsage - this.data.liveReturn;
 						$('#meteringLatest').html('Latest value: ' + usage);
 						meteringData.push([currentTime, usage]);
@@ -82,7 +82,7 @@ require_once("template/" . $template . "/index.php");
 				        meteringGraph.replot();
 						
 					}
-					if (this.type == "weather") {
+					if (this.type == "weather" && this.data !== null) {
 						$('#weatherLatest').html('Latest value: ' + this.data.temp);
 						weatherData.push([currentTime, parseInt(this.data.temp)]);
 						weatherGraph.series[0].data = weatherData;
