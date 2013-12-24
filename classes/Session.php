@@ -78,7 +78,7 @@ class Session
     		}
 
     		// Switch on/off debug
-    		R::debug(true);
+    		R::debug(false);
     	
     		// Only use on sqlite for speedup
     		if (strpos($config->dbDSN,'sqlite') !== false) {
