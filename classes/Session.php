@@ -40,28 +40,9 @@ class Session
         }
         return $result;
     }
-    
+      
     public static function initialize() {
-    	// Setup the database
-    	$config = Session::getConfig(true, false); // We dont need data from dbase
-    	if ($config->getDatabaseUser() != "" && $config->getDatabasePassword() != "") {
-    		R::setup($config->dbDSN, $config->getDatabaseUser(), $config->getDatabasePassword());
-    	} else {
-    		R::setup($config->dbDSN);
-    	}
-
-    	// Only use on sqlite for speedup
-    	if (strpos($config->dbDSN,'sqlite') !== false) {
-    		R::exec("PRAGMA synchronous = NORMAL"); // A little less secure then FULL, but much less IO
-    		R::exec("PRAGMA PRAGMA temp_store = 2"); // In memory (IO on SD is slow)
-    		PDODataAdapter::getInstance()->sqlEngine = 'sqlite';
-    	}elseif(strpos($config->dbDSN,'mysql') !== false){
-    		PDODataAdapter::getInstance()->sqlEngine = 'mysql';
-    	}
-    	RedBean_OODBBean::setFlagBeautifulColumnNames(false);
-    	R::debug(false);
-    	R::setStrictTyping(false);
-    	
+    	self::initialize_db();
     	self::setTimezone();
     	self::setLanguage(); 
     	self::registerHooks();
@@ -80,30 +61,39 @@ class Session
     }
     
     public static function initializeLight() {
-    	// Setup the database
-    	$config = Session::getConfig(true, false); // We dont need data from dbase
-    	if ($config->getDatabaseUser() != "" && $config->getDatabasePassword() != "") {
-    		R::setup($config->dbDSN, $config->getDatabaseUser(), $config->getDatabasePassword());
-    	} else {
-    		R::setup($config->dbDSN);
-    	}
-    	 
-    	// Only use on sqlite for speedup
-    	if (strpos($config->dbDSN,'sqlite') !== false) {
-    		R::exec("PRAGMA synchronous = NORMAL"); // A little less secure then FULL, but much less IO
-    		R::exec("PRAGMA PRAGMA temp_store = 2"); // In memory (IO on SD is slow)
-    		PDODataAdapter::getInstance()->sqlEngine = 'sqlite';
-    	}elseif(strpos($config->dbDSN,'mysql') !== false){
-    		PDODataAdapter::getInstance()->sqlEngine = 'mysql';
-    	}
-    	RedBean_OODBBean::setFlagBeautifulColumnNames(false);
-    	R::debug(false);
-    	//R::freeze(true);
-    	R::setStrictTyping(false);
-    	
+    	self::initialize_db();
     	self::setTimezone();
     	self::setLanguage();
     	self::registerHooks();
+    }
+    
+    private static function initialize_db() {
+    	try {
+    		// Setup the database
+    		$config = Session::getConfig(true, false); // We dont need data from dbase
+    		if ($config->getDatabaseUser() != "" && $config->getDatabasePassword() != "") {
+    			R::setup($config->dbDSN, $config->getDatabaseUser(), $config->getDatabasePassword());
+    		} else {
+    			R::setup($config->dbDSN);
+    		}
+
+    		// Switch on/off debug
+    		R::debug(true);
+    	
+    		// Only use on sqlite for speedup
+    		if (strpos($config->dbDSN,'sqlite') !== false) {
+    			R::exec("PRAGMA synchronous = NORMAL"); // A little less secure then FULL, but much less IO
+    			R::exec("PRAGMA PRAGMA temp_store = 2"); // In memory (IO on SD is slow)
+    			PDODataAdapter::getInstance()->sqlEngine = 'sqlite';
+    		}elseif(strpos($config->dbDSN,'mysql') !== false){
+    			PDODataAdapter::getInstance()->sqlEngine = 'mysql';
+    		}
+    		RedBean_OODBBean::setFlagBeautifulColumnNames(false);
+    	
+    		R::setStrictTyping(false);
+    	} catch (PDOException $e) {
+    		exit("Could not connect with the database, this can be a wrong dsn in the configuration or php modules not installed like php5-sqlite");
+    	}
     }
     
     private static $config;
