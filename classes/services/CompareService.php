@@ -34,7 +34,7 @@ class CompareService {
 				
 				// move compareBeans to expectedBeans, so we pass it to JSON.
 				$expectedBeans  = $compareBeans;
-				$diff = getDiffCompare($whichBeans,$expectedBeans);
+				$diff = self::getDiffCompare($whichBeans,$expectedBeans);
 				$type = "energy vs energy";
 			}else{
 				// get Which beans				
