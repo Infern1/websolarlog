@@ -1004,8 +1004,6 @@ var WSL = {
 	},
 
 	init_mainSummary : function(divId){
-		var html = '<div id="mainSummary" style="margin-bottom:5px;"></div>';
-		$(html).prependTo(divId);
 		var currentTime = new Date();
 		date = (currentTime.getDate()) +"-" + (currentTime.getMonth() + 1) + "-" + currentTime.getFullYear();
 		WSL.api.mainSummary(date,function(data) {
@@ -1067,9 +1065,9 @@ var WSL = {
 							var conditionText = 'cold';
 						}else if(cId == 904){
 							var conditionText = 'hot';
-						}else if(cId == 904){
+						}else if(cId == 905){
 							var conditionText = 'windy';
-						}else if(cId == 904){
+						}else if(cId == 906){
 							var conditionText = 'hail';
 						}
 						

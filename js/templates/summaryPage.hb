@@ -1,19 +1,19 @@
 <div id="summaryPage" >
 	<div class="column span">
 		<div class="span-48">
-			<div class="span-14 first" style="border:1px solid #ccc;">	
+			<div class="span-14 first summaryblock">	
 				<strong>CO2 related:</strong><br>
 				Power CO2: {{data.total.totalUsageKWHCO2}} kg<br>
 				Gas CO2:{{data.total.metering.gasUsageCO2}} kg<br>
 			</div>
-			<div class="span-14" style="border:1px solid #ccc;">
+			<div class="span-14 summaryblock">
 				<strong>Solar data:</strong><br>
 				{{data.total.production.KWH}} kWh generated, which equals 
 				<span title="{{data.total.costkwh}} * {{data.total.production.KWH}} = {{data.total.production.costs}}"> {{data.total.production.costs}}</span><br>
 				
 				The generated kWh's equals {{data.total.production.CO2avoid}} kg avoided CO2.			
 			</div>
-			<div class="span-14 last" style="border:1px solid #ccc;">
+			<div class="span-14 last summaryblock">
 				{{#if_gt data.total.weather.pressure compare=0}}
 				<strong>Weather data:</strong><br>
 				<canvas id="layer1" style="z-index: 0;"></canvas><br>
@@ -30,12 +30,12 @@
 			<div class="cl"></div>
 			
 			
-			<div class="span-14 first" style="border:1px solid #ccc;">
+			<div class="span-14 first summaryblock">
 				<strong>trees</strong><br>
 				Total household CO2 usage equals the daily consumption of <span title="The household produces {{data.total.householdCO2}} CO2 and a tree consumses {{data.total.co2CompensationTree}} grams of CO2 a day so we need {{data.total.totalUsageCO2Trees}} trees to compensate this"><strong>{{data.total.householdTrees}}</strong></span> trees.
 			</div>
 			
-			<div class="span-14" style="border:1px solid #ccc;">
+			<div class="span-14 summaryblock">
 				<strong>Household data:</strong><br>
 				<span title="We generated {{data.total.production.KWH}} of that we used {{data.total.usedBeforeMeterKWH}} in the house, so we returned {{data.total.metering.returnKWH}} to the grid">{{data.total.totalUsagekWh}} kWh Used by appliances</span><br>
 				The used kWh's equals 
@@ -48,7 +48,7 @@
 				<span title="m3 gas per degree day;(18 - {{data.total.weather.avgTemp}} = {{data.total.weather.degreeDays}} degree days)">m3/dd: {{data.total.m3PerdegreeDays}}</span>
 				{{/if_gt}}
 			</div>
-			<div class="span-14 last" style="border:1px solid #ccc;">
+			<div class="span-14 last summaryblock">
 				<strong>Grid data:</strong><br>
 				{{#if_gt data.total.metering.returnKWH compare=0}}
 				

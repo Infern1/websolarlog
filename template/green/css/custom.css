@@ -133,3 +133,18 @@ table.jqplot-table-legend-custom{
 { 
 	color: black;
 }
+
+#mainSummary {
+	height: 100px;
+	margin-bottom: 10px;
+}
+
+#mainSummary .column {
+	height: 77px;
+	
+}
+
+.summaryblock {
+	border:1px solid #ccc;
+	padding: 5px;
+}
