@@ -19,9 +19,10 @@ class Updater {
         $result = true;
         if (!extension_loaded('svn')) {
         	$distro = explode("\n",shell_exec('cat /etc/lsb-release'));
-        	self::$problems[] = "SVN module not found. Try to install php5-svn package under ".$distro.".";
+        	self::$problems[] = "SVN module not found. Try to install php5-svn package under ". (is_array($distro) ? $disto[0] : $distro) . ".";
             $result = false;
         }
+        
        // $distro = explode("\n",shell_exec('cat /etc/lsb-release'));
         //self::$problems[] = "SVN module not found. Try to install php5-svn package under ".$distro['DISTRIB_DESCRIPTION'].".";
         //$result = false;

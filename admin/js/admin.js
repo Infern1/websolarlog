@@ -80,6 +80,8 @@ $(function()
             	// else always load the general function
             	init_general(); // First admin item
             }
+            
+            checkUpgradeMessage();
         } else {
             $.ajax({
                 url : 'js/templates/login.hb',
@@ -121,7 +123,15 @@ $(function()
  * Init var/array
  */
 
-
+function checkUpgradeMessage() {
+	WSL.connect.getJSON('../api.php/Config/upgradeMessageShow', function(result) {
+		if (result) {
+			WSL.connect.getJSON('../api.php/Config/upgradeMessage', function(msg) {
+				WSL.notify.show_bar_top('info', 'Upgrade message', msg);
+			});
+		}
+	});
+}
 
 var originalPerc=new Array(2,5,7,10,12,14,14,12,10,7,5,2);
 var Perc=[];

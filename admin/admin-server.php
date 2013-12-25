@@ -1284,8 +1284,7 @@ function diagnostics($adapter) {
 	
 	
 	// check functions
-	$name = "mcrypt_module_open";
-	$extensions[$name] = array('name'=>$name,'status'=>function_exists($name),'type'=>'function');
+	$extensions["mcrypt_module_open"] = array('name'=>"mcrypt_module_open",'status'=>Encryption::isMcryptAvailable(),'type'=>'function');
 	$result['extensions'] = $extensions;
 
 	$result['phpVersion'] = phpversion(); 
@@ -1294,11 +1293,15 @@ function diagnostics($adapter) {
 	$result['sqliteVersionMixed'] = (isset($extensions['sqlite']) && $extensions['sqlite']['status'] && !$extensions['sqlite3']['status']);
 
 	// Encryption/Decryption test
-	$testphrase ="This is an test sentence";
-	$encrypted = Encryption::encrypt($testphrase);
-	$decrypted = Encryption::decrypt($encrypted);
-	
-	$result['encrypting'] = ($testphrase === $decrypted);
+	if (Encryption::isMcryptAvailable()) {
+		$testphrase ="This is an test sentence";
+		$encrypted = Encryption::encrypt($testphrase);
+		$decrypted = Encryption::decrypt($encrypted);
+		
+		$result['encrypting'] = ($testphrase === $decrypted);
+	} else {
+		$result['encrypting'] = false;		
+	}
 
 	
 	$result['browserLanguages'] = Util::getBrowserDefaultLanguage();

@@ -148,3 +148,8 @@ table.jqplot-table-legend-custom{
 	border:1px solid #ccc;
 	padding: 5px;
 }
+
+.ui-pnotify.stack-bar-top {
+	right: 0;
+	top: 0;
+}

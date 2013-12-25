@@ -13,6 +13,15 @@ if (!window.console) console = {log: function() {}};
 $(function(){
 	WSL.stickyNavigation();
 	//WSL.init_languages("languageSelect");
+	
+	// Check if there are upgrade notices
+	if (isFront) {
+		WSL.api.upgradeMessageShow(function(result){
+			if (result) {
+				WSL.notify.show_bar_top('info', 'Upgrade message', 'There is an upgrade message, please check them at the admin section');
+			}
+		});		
+	}
 });
 
 
@@ -2821,10 +2830,18 @@ WSL.api.live = function(success) {
 	WSL.connect.getJSON('api.php/Live', success);
 };
 
+WSL.api.upgradeMessageShow = function (success) {
+	WSL.connect.getJSON('api.php/Config/upgradeMessageShow', success);
+};
+
+WSL.api.upgradeMessage = function (success) {
+	WSL.connect.getJSON('api.php/Config/upgradeMessage', success);
+};
 
 /**
  ****** connect class *******
  */
+WSL.connect.urlPrefix = "";
 
 /**
  * Retrieves some data from the given url
@@ -2933,7 +2950,7 @@ WSL.connect.stats.active = 0;
 WSL.connect.settings = {};
 WSL.connect.settings.useRunOnBlur = true;
 WSL.connect.__ajax = function (url, type, dataType, data, async, success, error, runOnBlur) {
-	$.ajax({ url: url, type: type, dataType : dataType, data: data, async: async, 
+	$.ajax({url: WSL.connect.urlPrefix + url, type: type, dataType : dataType, data: data, async: async, 
 		beforeSend : function(xhr) {
 			WSL.connect.stats.active++;
 			if (WSL.connect.settings.useRunOnBlur && type == 'GET' && getWindowsState() == runOnBlur) {
@@ -3056,3 +3073,19 @@ WSL.stickyNavigation =  function(){
 WSL.capitalize = function(string){
 	 return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+WSL.notify = {};
+WSL.notify.show_bar_top = function(type, title, message) {
+	var opts = {
+		title: title,
+		text: message,
+		addclass: "stack-bar-top",
+		cornerclass: "",
+		width: "100%",
+		hide: false,
+		stack: {"dir1": "down", "dir2": "right", "push": "top", "spacing1": 0, "spacing2": 0},
+		type: type // error | info | success
+	};
+	
+	$.pnotify(opts);
+};

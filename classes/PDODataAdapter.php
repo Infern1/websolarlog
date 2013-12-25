@@ -302,6 +302,9 @@ class PDODataAdapter {
 		$bean->pauseWorker = $config->pauseWorker;
 		$bean->restartWorker = $config->restartWorker;
 
+		$bean->upgradeMessage = $config->upgradeMessage;
+		$bean->upgradeMessageShow = $config->upgradeMessageShow;
+		
 		//Store the bean
 		R::store($bean);
 	}
@@ -388,6 +391,9 @@ class PDODataAdapter {
 
 			$config->pauseWorker = ($bean->pauseWorker != "") ? $bean->pauseWorker : $config->pauseWorker;
 			$config->restartWorker = ($bean->restartWorker != "") ? $bean->restartWorker : $config->restartWorker;
+			
+			$config->upgradeMessage = $bean->upgradeMessage;
+			$config->upgradeMessageShow =($bean->upgradeMessageShow != "") ? $bean->upgradeMessageShow : false;
 		}
 
 		return $config;

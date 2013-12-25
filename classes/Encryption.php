@@ -2,6 +2,10 @@
 class Encryption {
     const CYPHER = MCRYPT_RIJNDAEL_256;
     const MODE   = MCRYPT_MODE_CBC;
+    
+    public static function isMcryptAvailable() {
+    	return function_exists("mcrypt_module_open");
+    }
 
     public static function encrypt($plaintext) {
         $td = mcrypt_module_open(self::CYPHER, '', self::MODE, '');

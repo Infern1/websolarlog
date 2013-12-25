@@ -46,6 +46,9 @@ class Config
     
     public $moneySign;
     
+    public $upgradeMessage;
+    public $upgradeMessageShow;
+    
     /**
      * @deprecated
      */
@@ -169,6 +172,9 @@ class Config
 		
 		$this->pauseWorker = false;
 		$this->restartWorker = false;
+		
+		$this->upgradeMessage = "";
+		$this->upgradeMessageShow = false;
 	}
 	
 	public function getDatabaseUser() {
