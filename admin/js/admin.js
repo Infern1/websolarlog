@@ -124,11 +124,9 @@ $(function()
  */
 
 function checkUpgradeMessage() {
-	WSL.connect.getJSON('../api.php/Config/upgradeMessageShow', function(result) {
-		if (result) {
-			WSL.connect.getJSON('../api.php/Config/upgradeMessage', function(msg) {
-				WSL.notify.show_bar_top('info', 'Upgrade message', msg);
-			});
+	WSL.connect.getJSON('../api.php/Config/upgradeMessage', function(data) {
+		if (data.result == true) {
+			WSL.notify.show_bar_top('info', 'Upgrade message', data.message);
 		}
 	});
 }

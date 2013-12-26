@@ -23,12 +23,12 @@ class ConfigRest {
 			$option = strtolower($options[0]);
 		}
 		if ($option == "upgrademessageshow") {
-			return Session::getConfig()->upgradeMessageShow;
+			return array("result"=>Session::getConfig()->upgradeMessageShow);
 		}
 		if ($option == "upgrademessage") {
-			return isset(Session::getConfig()->upgradeMessage) ? Session::getConfig()->upgradeMessage : "";
+			return array("result"=>Session::getConfig()->upgradeMessageShow, "message"=>isset(Session::getConfig()->upgradeMessage) ? Session::getConfig()->upgradeMessage : "");
 		}
-		return $option;
+		return array("result"=>false);
 	}
 }
 ?>

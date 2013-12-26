@@ -16,8 +16,8 @@ $(function(){
 	
 	// Check if there are upgrade notices
 	if (isFront) {
-		WSL.api.upgradeMessageShow(function(result){
-			if (result) {
+		WSL.api.upgradeMessageShow(function(data){
+			if (data.result == true) {
 				WSL.notify.show_bar_top('info', 'Upgrade message', 'There is an upgrade message, please check them at the admin section');
 			}
 		});		
