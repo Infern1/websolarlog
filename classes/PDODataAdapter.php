@@ -1161,9 +1161,8 @@ class PDODataAdapter {
 				// if $i <= 5
 				if($iMonth<$firstMonth || $iMonth>$lastMonth){
 					$newBean[$i]['time'] = (int)strtotime(date("01-".$iMonth."-".date("Y",strtotime($startDate))));
-					//$newBean[$i]['time'] = date ( "n"  ,$newBean[$i]['time'] );
 					$newBean[$i]['KWH'] = number_format(0,0,',','');
-					$newBean[$i]['Exp'] = number_format($invExp[$i],0,',','');
+					$newBean[$i]['Exp'] = number_format(0,0,',','');
 					$newBean[$i]['Diff'] = number_format($newBean[$i]['KWH']-$newBean[$i]['Exp'],0,',','');
 					if($iMonth > $lastMonth){
 						$cumExp += $invExp[$i];
@@ -1174,9 +1173,23 @@ class PDODataAdapter {
 					$newBean[$i]['cumDiff']=number_format($cumKWH-$cumExp,0,',','');
 					$newBean[$i]['what'] = 'prepend';
 				}else{
-
+					// detect partial month
+					if($newBean[$i-1]['KWH'] == 0 && $beans[$ii]['KWH'] > 0 && $i>0){
+						$currentMonth = $i+1;
+						$beginEndDate = Util::getBeginEndDate('month', 1,date("01-".$currentMonth."-".date("Y",strtotime($startDate))));
+					
+						$getPartialMonthDayCount = R::getAll("SELECT id
+											FROM Energy WHERE INV = :INV AND time > :beginDate AND time < :endDate
+											ORDER BY time ASC",
+								array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+											
+						$expectedCurrentMonth = $invExp[$i];
+						
+						$expectedPartialMonth = $expectedCurrentMonth / cal_days_in_month(CAL_GREGORIAN, $currentMonth , date("Y",strtotime($startDate)));
+						$invExp[$i] = ($expectedPartialMonth * count($getPartialMonthDayCount));
+					}
+					
 					$newBean[$i]['time'] = (int)$beans[$ii]['time'];
-					//$newBean[$i]['time'] = date ( "n"  ,$beans[$ii]['time']);
 					$newBean[$i]['KWH'] =number_format($beans[$ii]['KWH'],0,',','');
 					$newBean[$i]['Exp'] =number_format($invExp[$i],0,',','');
 					$newBean[$i]['Diff'] = number_format($newBean[$i]['KWH']-$newBean[$i]['Exp'],0,',','');
@@ -1188,6 +1201,9 @@ class PDODataAdapter {
 					$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
 					$newBean[$i]['cumDiff']=number_format($cumKWH-$cumExp,0,',','');
 					$newBean[$i]['what'] = 'apprepend';
+					
+
+					
 					$ii++;
 				}
 			}
