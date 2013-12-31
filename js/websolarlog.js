@@ -2692,8 +2692,10 @@ var WSL = {
 
 							graphOptions.axes.yaxis.min = 0;
 							graphOptions.axes.y2axis.min = 0;
+							
 							var maxDailykWh = Math.max.apply(null, dailykWh);
-							graphOptions.axes.y2axis.max = Math.round(parseFloat(maxDailykWh*parseFloat(1.10))*0.1)/0.1;
+							
+							graphOptions.axes.y2axis.max = Math.round(maxDailykWh*parseFloat(1.10));
 							
 							
 							handle = $.jqplot("compareGraph", [ dataDay3,dataDay2,dataDay1, ], graphOptions);
