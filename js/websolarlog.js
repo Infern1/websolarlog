@@ -2689,7 +2689,7 @@ var WSL = {
 							
 							graphOptions.axes.x2axis.min = result.dayData.data.which[0][0]*1000;
 							graphOptions.axes.xaxis.min = result.dayData.data.compare[0][0]*1000;
-
+							
 							graphOptions.axes.yaxis.min = 0;
 							graphOptions.axes.y2axis.min = 0;
 							
