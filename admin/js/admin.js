@@ -243,6 +243,7 @@ function init_plugwise(){
 	WSL.checkURL();
 	setTitle("Plugwise");
 	$('#sidebar').html("");
+
 	$.getJSON('admin-server.php?s=getAllPlugs', function(data) {
         $.ajax({
         	async: true,
@@ -254,14 +255,18 @@ function init_plugwise(){
                 });
                 $('#content').html(html);
                 
-               /* window.setInterval(function(){
+                window.setInterval(function(){
                 	$.getJSON('admin-server.php?s=getAllPlugs', function(data) {
                 		for (var key in data.plugs) {
-                			   var obj = data.plugs[key];
-                			   $("#"+obj.applianceID+'-W').html(obj.currentPowerUsage+' W');                			   
-                			}
+                		   var obj = data.plugs[key];
+                		   if ( $("#"+obj.applianceID+'-W').html() != (obj.currentPowerUsage+" W")){
+                			   $("#"+obj.applianceID+'-W').effect( "highlight" ,1000);
+                		   }
+                			   
+                		   $("#"+obj.applianceID+'-W').html(obj.currentPowerUsage+' W');                			   
+                		}
                 	});
-                }, 3000);*/
+                }, 3000);
             	
                 /*
                  * Catch click to sync all plug-data(actual power usage, switch state) from Stretch with WSL-database
@@ -303,7 +308,7 @@ function init_plugwise(){
             				var value = $("#input-"+id).val();
             				$("#"+id).html(value);
             				if($("#"+id).html() == value){
-            	                $.post('admin-server.php?s=plugwiseSavePlug',{id: id,name: value} , function(){
+            	                $.post('admin-server.php?s=plugwiseUpdatePlug',{id: id,name: value} , function(){
                                     $.pnotify({
                                         title: 'Plug name saved',
                                         text: 'Name "'+value+'" saved',

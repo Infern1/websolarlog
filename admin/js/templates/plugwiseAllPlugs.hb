@@ -1,6 +1,9 @@
 <form>
   <fieldset>
     <legend>Plugwise Stretch</legend>
+    <div class="column span-28" id="syncPlugs">
+    	<button id="btnSyncPlugs">syncPlugs</button>
+    </div>
     <div class="column span-28" id="file{{id}}">
 		<div class="column span-6 first" id="{{this.applianceID}}">Name</div>
 		<div class="column span-6 last">current power usage</div>

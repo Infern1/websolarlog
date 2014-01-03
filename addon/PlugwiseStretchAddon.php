@@ -10,6 +10,14 @@ class PlugwiseStretchAddon {
 		$this->stretchIP = $this->config->plugwiseStrech20IP;
 	}
 	
+	public function onJob(){
+		if($this->stretchID && $this->stretchIP){
+			if (filter_var($this->stretchIP, FILTER_VALIDATE_IP)) {
+				$this->getPlugsWatts();
+			}	
+		}
+	}
+	
 	public function getAllPlugwisePlugs() {
 		$beans =  R::findAndExport('plugwise_plugs');
 		return $beans;
@@ -36,9 +44,11 @@ class PlugwiseStretchAddon {
 				}
 				if($plug->applianceID){
 					($plug->applianceID!='') ? $bean->applianceID = $plug->applianceID : $bean->applianceID = $bean->applianceID;
-					if($firstInput==true){
-						($plug->name!='') ? $bean->name = $plug->name : $bean->name = $bean->name;
-					}
+					
+					($firstInput==true && $plug->name!='') ? $bean->name = $plug->name : $bean->name = $bean->name;
+					
+					($plug->updateName==true) ?  $bean->name = $plug->name : $bean->name = $bean->name;
+
 					($plug->type!='') ? $bean->type = $plug->type : $bean->type = $bean->type;
 					($plug->hardwareVersion!='') ? $bean->hardwareVersion = $plug->hardwareVersion : $bean->hardwareVersion = $bean->hardwareVersion;
 					($plug->firmwareVersion!='') ? $bean->firmwareVersion = $plug->firmwareVersion : $bean->firmwareVersion = $bean->firmwareVersion;
@@ -62,7 +72,6 @@ class PlugwiseStretchAddon {
 		if($return){
 			$this->SavePlugwisePlug($plug);
 		}
-		
 	}
 
 	public function syncPlugsWithDB(){
@@ -97,22 +106,26 @@ class PlugwiseStretchAddon {
 	
 
 	public function getPlugsWatts(){
-		try{
-			$xml = $this->PlugwiseStretchCurl("http://".$this->stretchIP."/minirest/modules");
-			if ($xml['content']!='' && $xml['curl_info']['content_type']=='text/xml') {
-				//simplexml_load_string($fp);
-				$xml =  simplexml_load_string($xml['content']);
-				foreach($xml->module as $module){
-					$plug = new PlugwisePlug();
-					$plug->applianceID = (string)$module->appliance['id'];
-					$plug->currentPowerUsage = (string)$module->current_power_usage;
-					
-					// save plug
-					$this->SavePlugwisePlug($plug);
+		// check if there is a valid Stretch-IP
+		if (filter_var($this->stretchIP, FILTER_VALIDATE_IP)) {
+			try{
+				$xml = $this->PlugwiseStretchCurl("http://".$this->stretchIP."/minirest/modules");
+				if ($xml['content']!='' && $xml['curl_info']['content_type']=='text/xml') {
+					$xml =  simplexml_load_string($xml['content']);
+					foreach($xml->module as $module){
+						$plug = new PlugwisePlug();
+						$plug->applianceID = (string)$module->appliance['id'];
+						$plug->currentPowerUsage = (string)$module->current_power_usage;
+						$plug->name = (string)$module->name;
+						// save plug
+						$this->SavePlugwisePlug($plug);
+					}
 				}
+			}catch( Exception $e ){
+				echo $e->getMessage	();
 			}
-		}catch( Exception $e ){
-			echo $e->getMessage	();
+		}else{
+			return false;
 		}
 	}
 

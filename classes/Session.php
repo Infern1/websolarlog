@@ -311,7 +311,9 @@ class Session
     	$hookHandler->add("defaultSeries", "SmartMeterAddon.defaultSeries");
     	
     	$hookHandler->add("onPVoutputAddStatus", "PvOutputAddon.onJob");
-    	
+
+    	//plugwise update 
+    	$hookHandler->add("onFastJob", "PlugwiseStretchAddon.onJob");
     	
     	// fire from frontend
     	$hookHandler->add("checkEnergy", "EnergyCheckAddon.checkEnergy");

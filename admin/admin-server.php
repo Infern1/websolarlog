@@ -761,16 +761,18 @@ switch ($settingstype) {
 		$plugwise = new PlugwiseStretchAddon();
 		$data['plugs'] = $plugwise->syncPlugsWithDB();
 		break;	
-	case "getPlugWatts":
+	case "getPlugsWatts":
 		$plugwise = new PlugwiseStretchAddon();
 		$data['plugs'] = $plugwise->getPlugsWatts();
 		break;
-	case 'plugwiseSavePlug':
+	case 'plugwiseUpdatePlug':
 		$plugwise = new PlugwiseStretchAddon();
 		$plug = new PlugwisePlug();
-		
+
 		$plug->name = Common::getValue('name');
 		$plug->applianceID = Common::getValue('id');
+		$plug->updateName = true;
+		
 		$plugwise->SavePlugwisePlug($plug);
 		$data['result'] = true;
 		break;	

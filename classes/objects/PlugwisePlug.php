@@ -13,5 +13,6 @@ class PlugwisePlug {
 	public $currentPowerUsage;
 	public $lastKnownMeasurementDate;
 	public $macAddress;
+	public $updateName;
 }
 ?>
