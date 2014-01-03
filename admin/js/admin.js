@@ -255,18 +255,23 @@ function init_plugwise(){
                 });
                 $('#content').html(html);
                 
-                window.setInterval(function(){
-                	$.getJSON('admin-server.php?s=getAllPlugs', function(data) {
-                		for (var key in data.plugs) {
-                		   var obj = data.plugs[key];
-                		   if ( $("#"+obj.applianceID+'-W').html() != (obj.currentPowerUsage+" W")){
-                			   $("#"+obj.applianceID+'-W').effect( "highlight" ,1000);
-                		   }
-                			   
-                		   $("#"+obj.applianceID+'-W').html(obj.currentPowerUsage+' W');                			   
-                		}
-                	});
-                }, 3000);
+                var getAllPlugs = window.setInterval(function(){
+                	if ($('#site-title').text().toLowerCase().indexOf("plugwise") >= 0){
+	                	$.getJSON('admin-server.php?s=getAllPlugs', function(data) {
+	                		for (var key in data.plugs) {
+	                		   var obj = data.plugs[key];
+	                		   if ( $("#"+obj.applianceID+'-W').html() != (obj.currentPowerUsage+" W")){
+	                			   $("#"+obj.applianceID+'-W').effect( "highlight" ,1000);
+	                		   }
+	                			   
+	                		   $("#"+obj.applianceID+'-W').html(obj.currentPowerUsage+' W');                			   
+	                		}
+	                	});
+                	}else{
+                		clearInterval(getAllPlugs);
+                		var getAllPlugs = null;
+                	}
+                }, 5000);
             	
                 /*
                  * Catch click to sync all plug-data(actual power usage, switch state) from Stretch with WSL-database
