@@ -328,6 +328,7 @@ try {
 		case 'getProductionGraph':
 			(!$year)?$year=date("Y"):$year=$year;
 			(!$devicenum)?$devicenum=1:$devicenum=$devicenum;
+			
 			$lines = $dataAdapter->getYearSumPowerPerMonth($devicenum, $year);
 
 			$dayData = new DayDataResult();

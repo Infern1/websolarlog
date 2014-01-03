@@ -14,7 +14,7 @@ class PlugwiseStretchAddon {
 		if($this->stretchID && $this->stretchIP){
 			if (filter_var($this->stretchIP, FILTER_VALIDATE_IP)) {
 				$this->getPlugsWatts();
-				HookHandler::getInstance()->fire("onInfo", "PlugwiseStretchAddon::onJob run");
+				//HookHandler::getInstance()->fire("onInfo", "PlugwiseStretchAddon::onJob run");
 			}	
 		}
 	}

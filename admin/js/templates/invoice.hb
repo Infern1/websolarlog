@@ -30,7 +30,7 @@ The data below is calculated over the period;<br>
 <div class="column span-1">&nbsp;</div>
 <div class="column span-3">&nbsp;</div>
 <div class="column span-1">&nbsp;</div>
-<div class="column span-3"  title="{{data.totals.highUsageTTotal}} * {{data.moneySign}} {{data.costkwh}} = {{data.totals.diffHighLowTotalCosts}}" style="border-top:1px solid #000000;">{{data.totals.diffHighLowTotal}}</div>
+<div class="column span-3"  title="{{data.totals.diffHighLowTotal}} * {{data.moneySign}} {{data.costkwh}} = {{data.totals.diffHighLowTotalCosts}}" style="border-top:1px solid #000000;">{{data.totals.diffHighLowTotal}}</div>
 <br><br>
 <!------------->
 <!-- Table 2 -->
@@ -54,7 +54,7 @@ The data below is calculated over the period;<br>
 <div class="column span-1">&nbsp;</div>
 <div class="column span-3">&nbsp;</div>
 <div class="column span-1">&nbsp;</div>
-<div class="column span-3" title="{{data.totals.diffReturnUsageTTotalCosts}}" style="border-top:1px solid #000000;">{{data.totals.diffReturnUsageTTotal}}</div>
+<div class="column span-3" title="{{data.totals.diffReturnUsageTTotal}} * {{data.moneySign}} {{data.costkwh}}= {{data.totals.diffReturnUsageTTotalCosts}}" style="border-top:1px solid #000000;">{{data.totals.diffReturnUsageTTotal}}</div>
 <br>
 <div class="column span-28">
 	<div class="column span-5">Time</div>

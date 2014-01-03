@@ -36,10 +36,11 @@
 			</div>
 			
 			<div class="span-14 summaryblock">
-				<strong>Household data:</strong><br>
-				<span title="We generated {{data.total.production.KWH}} of that we used {{data.total.usedBeforeMeterKWH}} in the house, so we returned {{data.total.metering.returnKWH}} to the grid">{{data.total.totalUsagekWh}} kWh Used by appliances</span><br>
-				The used kWh's equals 
-				<strong><span title="Used Power is {{data.total.totalUsageKWHCO2}} CO2 {{#if_gt data.total.metering.gasUsageCO2 compare=0}}combined with {{data.total.metering.gasUsageCO2}} CO2 for gas {{/if_gt}}gives a total of {{data.total.householdCO2}} for the household">{{data.total.householdCO2}}</span></strong> kg CO2 and 
+				<strong>Household usage data:</strong><br>
+				from grid: {{data.total.householdUsage}} kWh, {{data.total.householdCO2}} kg, {{data.total.householdCosts}}<br>
+				from sun: {{data.total.usedBeforeMeterKWH}} kWh, {{data.total.usedBeforeCO2}} kg, {{data.total.usedBeforeMeterCosts}}<br>
+				household: <span title="We generated {{data.total.production.KWH}} of that we used {{data.total.usedBeforeMeterKWH}} in the house, so we returned {{data.total.metering.returnKWH}} to the grid">{{data.total.totalUsagekWh}} kWh</span><br>
+				Money{{#if_gt data.total.metering.gasUsageCO2 compare=0}}combined with {{data.total.metering.gasUsageCO2}} CO2 for gas {{/if_gt}}gives a total of {{data.total.householdCO2}} for the household">{{data.total.householdCO2}}</span></strong> kg CO2 and 
 				
 				<span title="{{data.total.moneySign}} {{data.total.costkwh}} * {{data.total.totalUsagekWh}} = {{data.total.moneySign}} {{data.total.totalUsageKWHCosts}}">{{data.total.totalUsageKWHCosts}}</span><br>
 				{{#if_gt data.total.metering.returnKWH compare=0}}

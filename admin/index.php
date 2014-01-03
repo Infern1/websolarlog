@@ -1,5 +1,5 @@
 <?php
-session_start(); 
+session_start(); 	
 ?>
 <!Doctype html>
 <html lang="en">
@@ -65,7 +65,7 @@ session_start();
 					<!-- <li><a href="#tariff" id="btnTariff">Tariff</a></li>-->
 					<li><a href="#update" class="btnUpdate">Update</a></li>
 					<li><a href="#backup" class="btnBackup">Backup</a></li>
-					<li><a href="#plugwise" class="btnPlugwise">Plugwise</a></li>
+					<li id="LiPlugwise"><a href="#plugwise" class="btnPlugwise">Plugwise</a></li>
 					<!-- li><a href="#DataMaintenance" id="btnDataMaintenance">DBM</a></li -->
 					<li class="nav-end"><a href="#diagnostics" class="btnDiagnostics">Diagnostics</a></li>
 				</ul>

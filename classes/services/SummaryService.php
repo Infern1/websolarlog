@@ -84,10 +84,12 @@ class SummaryService {
 		echo $total['metering']['returnKWH']." ";
 		echo $total['metering']['usageKWH']." ";
 		*/
+		if(is_array( $total['metering'])){
 		$total['totalUsagekWh'] =  $total['production']['KWH'] - $total['metering']['returnKWH'] + $total['metering']['usageKWH'];
 		$total['totalUsageKWHCosts'] = ($total['production']['KWH'] - $total['metering']['returnKWH'] + $total['metering']['usageKWH']) * $this->config->costkwh/100;
 		$total['totalUsageKWHCO2'] = round(($total['totalUsagekWh']*$this->config->co2kwh)/1000,2);
 		$total['totalUsageKWHTrees'] = round(($total['totalUsageKWHCO2']*1000)/ $this->config->co2CompensationTree,2);
+		
 		//echo $total['totalUsagekWh'];
 		//echo $this->config->co2kwh;
 		$total['usedBeforeMeterKWH'] = $total['production']['KWH'] - $total['metering']['returnKWH'];
@@ -97,6 +99,7 @@ class SummaryService {
 		
 		$total['householdCO2'] = $total['totalUsageKWHCO2']+$total['metering']['gasUsageCO2'];
 		$total['householdUsage'] = $total['metering']['usageKWH'];
+		$total['householdCosts'] = $total['metering']['usageKWH'] * $this->config->costkwh/100;
 		$total['householdTrees'] = round(($total['totalUsageKWHCO2']+$total['metering']['gasUsageCO2'])/($this->config->co2CompensationTree/1000),0);
 		
 		if($total['householdTrees']>=0){
@@ -105,7 +108,7 @@ class SummaryService {
 		}else{
 			$lang['subscriptTrees'] = _('compensated');
 		}
-		
+		}
 		
 		$total['co2CompensationTree'] = $this->config->co2CompensationTree;
 		if($total['weather']['degreeDays']>0 and is_array($total['weather'])){

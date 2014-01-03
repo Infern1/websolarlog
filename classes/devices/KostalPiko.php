@@ -52,6 +52,24 @@ Class KostalPiko implements DeviceApi {
 11AC3,243.5,6.27,1537,60.07,8560
 12PRT,PIKO-Portal,01h48m49s
 13HST,00h07m36s,00h15m00s";
+            /*
+            0PRO,Piko,1,1.3.2,20131115
+            1TIM,2013-11-16T11:51:40.964105,44563h52m57s,21517h36m49s
+            2INF,081900520,LuzPV,solarfabrik-convert-10t.dqzzjvioek42mkiw.myfritz.net,81,1,convert 10T,3,3
+            3VER,0109 03.01 03.00
+            4STA,3,Running-MPP,16,---L--3,0
+            5ENE,39746731,613
+            6PWR,326,261,80.1
+            7DC1,426.6,0.37,159,29.86,ba40,0009
+            8DC2,460.9,0.36,167,29.79,ba60,000a
+            9DC3,0.0,0.00,0,30.36,b960,0003
+            10AC1,235.3,0.00,0,26.07,c0e0
+            11AC2,235.7,0.00,0,26.14,c0c0
+            12AC3,234.4,1.22,261,26.21,c0a0
+            13PRT,,09h 56m 29s
+            14HST,00h06m45s,00h15m00s
+            */
+            
         } else {
             return trim($this->execute(' -csv -q'));
         }

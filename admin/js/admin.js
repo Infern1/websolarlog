@@ -271,7 +271,7 @@ function init_plugwise(){
                 		clearInterval(getAllPlugs);
                 		var getAllPlugs = null;
                 	}
-                }, 5000);
+                }, 7000);
             	
                 /*
                  * Catch click to sync all plug-data(actual power usage, switch state) from Stretch with WSL-database
