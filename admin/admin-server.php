@@ -746,7 +746,16 @@ switch ($settingstype) {
 		break;
 	case "getAllPlugs":
 		$plugwise = new PlugwiseStretchAddon();
-		$data['plugs'] = $plugwise->getAllPlugwisePlugs();
+		if($config->plugwiseStrech20ID && $config->plugwiseStrech20IP){
+			if (filter_var($config->plugwiseStrech20IP, FILTER_VALIDATE_IP)) {
+				$data['data'] = $plugwise->getAllPlugwisePlugs();
+			}else{
+				$data['plugwise'] = false;
+			}
+		}else{
+			$data['plugwise'] = false;
+		}
+		
 		break;
 	case "switchPowerState":
 		$plugwise = new PlugwiseStretchAddon();

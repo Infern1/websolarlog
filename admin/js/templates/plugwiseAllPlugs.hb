@@ -1,8 +1,18 @@
 <form>
   <fieldset>
     <legend>Plugwise Stretch</legend>
+    {{#if_eq data.plugwise compare=false}}
+    It looks like there is no (failed) Plugwise Stretch configured.<br>
+    Please see Admin::Advanced and configure the IP and ID of the stretch.<br>
+    {{else}}
+    <!--
     <div class="column span-28" id="syncPlugs">
     	<button id="btnSyncPlugs">syncPlugs</button>
+    </div>-->
+    <div class="column span-28" id="info">
+    	SmartMeter usage; {{data.data.live.liveUsageW}} W<br>
+    	Live voltage; {{data.data.live.gridV}} V<br>
+    	Plugs usage:  {{data.data.plugsUsage}} W
     </div>
     <div class="column span-28" id="file{{id}}">
 		<div class="column span-6 first" id="{{this.applianceID}}">Name</div>
@@ -10,7 +20,7 @@
 		<div class="column span-4 last">power state</div>
 		<div class="column span-4 last">Switch state</div>
     </div>
-    {{#each data.plugs}}
+    {{#each data.data.plugs}}
     <div class="column span-28" id="file{{id}}">
     	<a id="anchor-{{this.applianceID}}">&nbsp;</a>
 		<div class="column span-6 first editme" id="{{this.applianceID}}">{{this.name}}</div>
@@ -26,5 +36,6 @@
 		</div>
     </div>
     {{/each}}
+    {{/if_eq}}
   </fieldset>
 </form> 

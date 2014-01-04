@@ -14,14 +14,36 @@ class PlugwiseStretchAddon {
 		if($this->stretchID && $this->stretchIP){
 			if (filter_var($this->stretchIP, FILTER_VALIDATE_IP)) {
 				$this->getPlugsWatts();
-				//HookHandler::getInstance()->fire("onInfo", "PlugwiseStretchAddon::onJob run");
 			}	
 		}
 	}
 	
 	public function getAllPlugwisePlugs() {
+		$live = new LiveService();
+		$smartMeterLive = new LiveSmartMeterService();
+		
 		$beans =  R::findAndExport('plugwise_plugs');
-		return $beans;
+		
+		$data['plugs'] = $beans;
+		$plugsUsage = 0;
+		foreach($beans as $bean){
+			$plugsUsage += (float)$bean['currentPowerUsage'];
+		}
+		
+		foreach ($this->config->devices as $device){
+		if($device->type=="metering"){
+				$meter= $smartMeterLive->getLiveByDevice($device);
+			}
+			if($device->type=="production"){
+				$production= $live->getLiveByDevice($device);
+			}
+		}
+		$data['plugsUsage'] = $plugsUsage;
+		$data['live']['liveUsageW'] =  ((int)$meter->liveUsage > 0) ? (int)$meter->liveUsage : (int)0;
+		$data['live']['gridV'] =  ((int)$production->GV > 0) ? (int)$production->GV : (int)0;
+		$data['live']['GA'] = round((float)($data['live']['liveUsageW'] / $data['live']['gridV']),2);
+		$data['live']['GAlimit'] = (int)20; 
+		return $data;
 	}
 	
 
