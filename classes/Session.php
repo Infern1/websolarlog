@@ -313,7 +313,7 @@ class Session
     	$hookHandler->add("onPVoutputAddStatus", "PvOutputAddon.onJob");
 
     	//plugwise update 
-    	$hookHandler->add("onFastJob", "PlugwiseStretchAddon.onJob");
+    	$hookHandler->add("onSlowJob", "PlugwiseStretchAddon.onJob");
     	
     	// fire from frontend
     	$hookHandler->add("checkEnergy", "EnergyCheckAddon.checkEnergy");
