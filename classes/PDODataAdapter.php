@@ -1119,12 +1119,14 @@ class PDODataAdapter {
 	 */
 	public function getYearSumPowerPerMonth($invtnum,$startDate){
 		$device = array();
+		$startDate = '01-01-'.$startDate;
 		$beginEndDate = Util::getBeginEndDate('year', 1,$startDate);
 		if ($invtnum>0){
-			$beans = R::getAll("SELECT INV, SUM(KWH) as KWH, time 
+			$query = "SELECT INV, SUM(KWH) as KWH, time 
 					FROM Energy WHERE INV = :INV AND time > :beginDate AND time < :endDate 
 					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." 
-					ORDER BY time ASC",
+					ORDER BY time ASC";
+			$beans = R::getAll($query,
 					array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}else{
 			$beans = R::getAll("SELECT INV, SUM(KWH) as KWH, time
@@ -1136,7 +1138,7 @@ class PDODataAdapter {
 		if(count($beans)==0){
 			$newBean = null;
 		}else{
-			$firstMonth = date("n",$beans[0]['time']);
+			$firstMonth = date("n",$beans[0]['time']+700);
 			$lastMonth = date("n",$beans[count($beans)-1]['time']);
 			$device = $this->deviceService->load($invtnum);
 			$expected = $device->expectedkwh;
@@ -1156,10 +1158,10 @@ class PDODataAdapter {
 			$ii	= 0;
 			$cumExp = 0;
 			$cumKWH = 0;
+
 			for ($i = 0; $i < 12; $i++) {
 				$iMonth = $i+1;
-				// if $i <= 5
-				if($iMonth<$firstMonth || $iMonth>$lastMonth){
+				if($iMonth<$firstMonth){
 					$newBean[$i]['time'] = (int)strtotime(date("01-".$iMonth."-".date("Y",strtotime($startDate))));
 					$newBean[$i]['KWH'] = number_format(0,0,',','');
 					$newBean[$i]['Exp'] = number_format(0,0,',','');
@@ -1201,9 +1203,6 @@ class PDODataAdapter {
 					$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
 					$newBean[$i]['cumDiff']=number_format($cumKWH-$cumExp,0,',','');
 					$newBean[$i]['what'] = 'apprepend';
-					
-
-					
 					$ii++;
 				}
 			}

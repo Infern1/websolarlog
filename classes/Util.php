@@ -130,8 +130,8 @@ class Util {
     	if(!$startDate){
     		$startDate = date("d-m-Y");
     	}
-    	// Make de StartDate a timestamp
     	
+    	// Make de StartDate a timestamp
     	$startDate = strtotime($startDate);
 
 
@@ -155,8 +155,8 @@ class Util {
 	    			$endDate = Util::getTimestampOfDate(23,59,59,date("t",$startDate), date("m",$startDate), date("Y",$startDate));
 	    			break;
 	    		case 'year':
-	    			$beginDate = Util::getTimestampOfDate(0,0,0, 1,1, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
-	    			$endDate = Util::getTimestampOfDate(23,59,59,31,12, date("Y",$startDate))-3600; // -3600 = correction daylightsavingtime;
+	    			$beginDate = Util::getTimestampOfDate(0,0,0, 1,1, date("Y",$startDate)); // -3600 = correction daylightsavingtime;
+	    			$endDate = Util::getTimestampOfDate(23,59,59,31,12, date("Y",$startDate)); // -3600 = correction daylightsavingtime;
 	    			break;
 	    		default:
 	    			echo "ERROR::UTIL::getBeginEndDate()::WRONG Type >> Choose from today,week,month,year";
