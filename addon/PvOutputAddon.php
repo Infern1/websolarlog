@@ -34,14 +34,27 @@ class PvOutputAddon {
 					$v1 = $live->KWHT;//v1	Energy Generation	No1	number	watt hours	10000	r1
 					$v2 = $live->GP;//v2	Power Generation	No	number	watts	2000	r1
 					$v6 = $live->GV;//v6	Voltage	No	decimal	volts	210.7	r2
+					$sendDataWholeDay = false;
 				}
 				
 				$smartMeter = $this->metering->PVoutputSmartMeterData($timestamp);
-				$v3 = $smartMeter['energy'];//v3	Energy Consumption	No	number	watt hours	10000	r1
-				$v4 = $smartMeter['power'];//v4	Power Consumption	No	number	watts	2000	r1
-				$v5 = $this->weather->PVoutputWeatherData($timestamp);//v5	Temperature	No	decimal	celsius	23.4	r2
+				if($smartMeter['energy'] > 0 && $smartMeter['power'] > 0){
+					$v3 = $smartMeter['energy'];//v3	Energy Consumption	No	number	watt hours	10000	r1
+					$v4 = $smartMeter['power'];//v4	Power Consumption	No	number	watts	2000	r1
+					
+					//we get SmartMeter data so we want to send this data day and night.
+					$sendDataWholeDay = true;
+				}else{
+					//we get NO SmartMeter data so we don't want to send this data day and night.
+					$sendDataWholeDay = false;
+				}
 
-				$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
+				$v5 = $this->weather->PVoutputWeatherData($timestamp);//v5	Temperature	No	decimal	celsius	23.4	r2
+				
+				//When the sun is NOT down OR if the sun is down and we want to "sendDataWholeDay":
+				if(Util::isSunDown()==false || (Util::isSunDown()==true && $sendDataWholeDay == true)){
+					$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
+				}
 				if ($result['info']['http_code'] == "200") {
 					if(count($live)>=1){
 						$live->pvoutput = 1;
