@@ -1135,12 +1135,15 @@ class PDODataAdapter {
 					ORDER BY time ASC",
 					array(':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}
+		
 		if(count($beans)==0){
 			$newBean = null;
 		}else{
 			$firstMonth = date("n",$beans[0]['time']+700);
 			$lastMonth = date("n",$beans[count($beans)-1]['time']);
 			$device = $this->deviceService->load($invtnum);
+			$cumExp = 0;
+
 			$expected = $device->expectedkwh;
 			$invExp[0] = ($expected/100)*$device->expectedJAN;
 			$invExp[1] = ($expected/100)*$device->expectedFEB;
@@ -1155,59 +1158,73 @@ class PDODataAdapter {
 			$invExp[10] = ($expected/100)*$device->expectedNOV;
 			$invExp[11] = ($expected/100)*$device->expectedDEC;
 
-			$ii	= 0;
-			$cumExp = 0;
-			$cumKWH = 0;
+			
+			// prepend months 1-4 to 5-8
+			$unshiftMonths = $firstMonth-2;
+			for ($i = 0; $i < $unshiftMonths; $i++) {
+				array_unshift($beans, array(
+				"time" => (int)strtotime(date("01-".($unshiftMonths-$i)."-".date("Y",strtotime($startDate)))),
+				"KWH"=>(int)0,
+				"monthNumber"=>($unshiftMonths-$i),
+				"Exp" => number_format(0,0,',',''),
+				"cumExp"=>number_format(0,0,',','')
+				)
+				);
+			}
+				
 
-			for ($i = 0; $i < 12; $i++) {
-				$iMonth = $i+1;
-				if($iMonth<$firstMonth){
-					$newBean[$i]['time'] = (int)strtotime(date("01-".$iMonth."-".date("Y",strtotime($startDate))));
-					$newBean[$i]['KWH'] = number_format(0,0,',','');
-					$newBean[$i]['Exp'] = number_format(0,0,',','');
-					$newBean[$i]['Diff'] = number_format($newBean[$i]['KWH']-$newBean[$i]['Exp'],0,',','');
-					if($iMonth > $lastMonth){
-						$cumExp += $invExp[$i];
-						$newBean[$i]['cumExp']=number_format($cumExp,0,',','');
-					}
-					$cumKWH += 0;
-					$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
-					$newBean[$i]['cumDiff']=number_format($cumKWH-$cumExp,0,',','');
-					$newBean[$i]['what'] = 'prepend';
-				}else{
-					// detect partial month
-					if($newBean[$i-1]['KWH'] == 0 && $beans[$ii]['KWH'] > 0 && $i>0){
-						$currentMonth = $i+1;
-						$beginEndDate = Util::getBeginEndDate('month', 1,date("01-".$currentMonth."-".date("Y",strtotime($startDate))));
-					
-						$getPartialMonthDayCount = R::getAll("SELECT id
+			//months 5-8 from database
+			for ($i = $i; $i < count($beans); $i++) {
+				$beans[$i]['monthNumber'] =  date("n",$beans[$i]['time']);
+				$beans[$i]['KWH'] = number_format($beans[$i]['KWH'],0,',','');
+				
+				if($beans[$i-1]['KWH'] == 0 && $beans[$i]['KWH'] > 0 && $i > 0){
+					$currentMonth = $i+1;
+					$beginEndDate = Util::getBeginEndDate('month', 1,date("01-".$currentMonth."-".date("Y",strtotime($startDate))));
+						
+					$getPartialMonthDayCount = R::getAll("SELECT id
 											FROM Energy WHERE INV = :INV AND time > :beginDate AND time < :endDate
 											ORDER BY time ASC",
-								array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
-											
-						$expectedCurrentMonth = $invExp[$i];
+							array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 						
-						$expectedPartialMonth = $expectedCurrentMonth / cal_days_in_month(CAL_GREGORIAN, $currentMonth , date("Y",strtotime($startDate)));
-						$invExp[$i] = ($expectedPartialMonth * count($getPartialMonthDayCount));
-					}
+					$expectedPartialMonth = $invExp[$i] / cal_days_in_month(CAL_GREGORIAN, $currentMonth , date("Y",strtotime($startDate)));
+					$expected = ($expectedPartialMonth * count($getPartialMonthDayCount));
 					
-					$newBean[$i]['time'] = (int)$beans[$ii]['time'];
-					$newBean[$i]['KWH'] =number_format($beans[$ii]['KWH'],0,',','');
-					$newBean[$i]['Exp'] =number_format($invExp[$i],0,',','');
-					$newBean[$i]['Diff'] = number_format($newBean[$i]['KWH']-$newBean[$i]['Exp'],0,',','');
-
-					$cumExp += $invExp[$i];
-					$newBean[$i]['cumExp']=number_format($cumExp,0,',','');
-
-					$cumKWH += $beans[$ii]['KWH'];
-					$newBean[$i]['cumKWH']=number_format($cumKWH,0,',','');
-					$newBean[$i]['cumDiff']=number_format($cumKWH-$cumExp,0,',','');
-					$newBean[$i]['what'] = 'apprepend';
-					$ii++;
+				}else{
+					$expected = $invExp[$beans[$i]['monthNumber']-1];
 				}
+
+				$beans[$i]['Exp'] = number_format($expected,0,',','');
+				$beans[$i]['cumDiff'] = number_format($cumKWH-$cumExp,0,',','');
+				$beans[$i]['Diff'] = number_format($beans[$i]['KWH']-$beans[$i]['Exp'],0,',','');
+				
+				$cumExp += $expected;
+				$cumKWH += $beans[$i]['KWH'];
+				$beans[$i]['cumKWH'] = number_format($cumKWH,0,',','');
+				$beans[$i]['cumExp'] = number_format($cumExp,0,',','');
+			}
+			
+
+			// append months 9-12 to 5-8
+			for ($i = count($beans)+1; $i <= 12; $i++) {
+				$expected = $invExp[count($beans)];
+				
+				$cumExp += $expected;
+				$cumKWH += $beans[$i]['KWH'];
+				array_push($beans, array(
+						"KWH"			=>(int)0,
+						"time"			=> (int)strtotime(date("01-".($i)."-".date("Y",strtotime($startDate)))),
+						"monthNumber"	=>($i),
+						"Diff" 			=> number_format(0-$expected,0,',',''),
+						"Exp" 			=> number_format($expected,0,',',''),
+						"cumExp" 		=> number_format($cumExp,0,',',''),
+						"cumKWH" 		=> number_format($cumKWH,0,',',''),
+						"cumDiff" 		=> number_format($cumKWH-$cumExp,0,',','')
+					)
+				);
 			}
 		}
-		return array("energy"=>$this->CompareBeansToGraphPoints($newBean),"expected"=>$expected);
+		return array("energy"=>$this->CompareBeansToGraphPoints($beans),"expected"=>$expected);
 	}
 
 
