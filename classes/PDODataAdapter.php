@@ -890,11 +890,28 @@ class PDODataAdapter {
 	public function getYearsMonthCompareFilters(){
 		$month = array();
 		$year = array();
-		$year = R::getAll("
+		$config = Session::getConfig();
+		
+		$i=1;
+		$where = '';
+		
+		foreach ($config->devices as $device){
+			if( $i < count($config->devices)){
+				$or = " or ";
+			}else{
+				$or = "";
+			}
+			$where .= " deviceId = ".$device->id ." ". $or;
+			$i++;
+		}
+
+		$query = "
 				SELECT distinct(".$this->crossSQLDateTime("'%Y'",'time','date').") AS date 
-				FROM Energy 
+				FROM Energy where " . $where . "
 				GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." 
-				ORDER BY date ASC");
+				ORDER BY date ASC";
+
+		$year = R::getAll($query);
 		$month[] = array("number"=>1,"name"=>"Jan");
 		$month[] = array("number"=>2,"name"=>"Feb");
 		$month[] = array("number"=>3,"name"=>"Mar");
@@ -1177,11 +1194,12 @@ class PDODataAdapter {
 			for ($i = $i; $i < count($beans); $i++) {
 				$beans[$i]['monthNumber'] =  date("n",$beans[$i]['time']);
 				$beans[$i]['KWH'] = number_format($beans[$i]['KWH'],0,',','');
-				
+				// if previous bean == 0 and current bean > 0 and we are not at bean 0
+				// we got a partial month
 				if($beans[$i-1]['KWH'] == 0 && $beans[$i]['KWH'] > 0 && $i > 0){
 					$currentMonth = $i+1;
 					$beginEndDate = Util::getBeginEndDate('month', 1,date("01-".$currentMonth."-".date("Y",strtotime($startDate))));
-						
+					
 					$getPartialMonthDayCount = R::getAll("SELECT id
 											FROM Energy WHERE INV = :INV AND time > :beginDate AND time < :endDate
 											ORDER BY time ASC",
@@ -1189,7 +1207,6 @@ class PDODataAdapter {
 						
 					$expectedPartialMonth = $invExp[$i] / cal_days_in_month(CAL_GREGORIAN, $currentMonth , date("Y",strtotime($startDate)));
 					$expected = ($expectedPartialMonth * count($getPartialMonthDayCount));
-					
 				}else{
 					$expected = $invExp[$beans[$i]['monthNumber']-1];
 				}
