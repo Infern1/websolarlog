@@ -2687,9 +2687,14 @@ var WSL = {
 							graphOptions.series[1].label = $("#whichMonth option:selected").text()+ ' '+ $("#whichYear option:selected").text();
 							graphOptions.series[2].label = $("#compareMonth option:selected").text()+ ' '+ $("#compareYear option:selected").text();
 							
-							graphOptions.axes.x2axis.min = result.dayData.data.which[0][0]*1000;
-							graphOptions.axes.xaxis.min = result.dayData.data.compare[0][0]*1000;
+							whichLength = result.dayData.data.which.length-1;
+							graphOptions.axes.xaxis.min = result.dayData.data.which[0][0]*1000;
+							graphOptions.axes.xaxis.max = result.dayData.data.which[whichLength][0]*1000;
 							
+							compareLength = result.dayData.data.compare.length-1;
+							graphOptions.axes.x2axis.min = result.dayData.data.compare[0][0]*1000;
+							graphOptions.axes.x2axis.max = result.dayData.data.compare[compareLength][0]*1000;
+
 							graphOptions.axes.yaxis.min = 0;
 							graphOptions.axes.y2axis.min = 0;
 							
