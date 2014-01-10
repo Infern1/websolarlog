@@ -70,7 +70,13 @@ Class Sma implements DeviceApi {
     }
     
     public function doCommunicationTest() {
-    	return array("result"=>false, "testData"=>"Not yet implemented");
+    	$result = false;
+    	$data = $result = $this->execute('-i -v');
+    	if ($data) {
+    		$result = true;
+    	}
+    	
+    	return array("result"=>$result, "testData"=>$data);
     }
 
     private function execute($options) {
