@@ -76,16 +76,22 @@ Class MasterVolt implements DeviceApi {
     }
     
     public function doCommunicationTest() {
-    	return array("result"=>false, "testData"=>"Not yet implemented");
+    	$result = false;
+    	$data = $this->getData();
+    	if ($data) {
+    		$result = true;
+    	}
+    	return array("result"=>$result, "testData"=>$data);
     }
 
     private function execute($options) {
-    	//echo("Path ".$this->PATH." ADR: ".$this->ADR." Options: ".$options." Port: ".$this->PORT." \n");
-        $cmd = $this->PATH." ".$this->ADR ;
-      //  echo("MasterVolt support is not yet ready.\n");
-        //echo("This should be the command executed cmd=".$cmd." \n");
-        
-        
+    	$cmd = "";
+    	if ($this->useCommunication === true) {
+    		$cmd = $this->communication->uri . ' ' . $this->device->comAddress;
+    	} else {
+	        $cmd = $this->PATH." ".$this->ADR ;
+    	}
+    	
         $proc=proc_open($cmd,
         		array(
         				array("pipe","r"),

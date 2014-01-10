@@ -71,7 +71,7 @@ Class Sma implements DeviceApi {
     
     public function doCommunicationTest() {
     	$result = false;
-    	$data = $result = $this->execute('-i -v');
+    	$data = $this->execute('-i -v');
     	if ($data) {
     		$result = true;
     	}
@@ -80,7 +80,14 @@ Class Sma implements DeviceApi {
     }
 
     private function execute($options) {
-        return shell_exec($this->PATH . ' -n' . $this->ADR . ' ' . $options);
+    	$cmd = "";
+    	if ($this->useCommunication === true) {
+    		$cmd = $this->communication->uri . ' -n' . $this->device->comAddress . ' ' . $this->communication->optional . ' ' . $options . ' ' . $this->communication->port;
+    	} else {
+    		$cmd = $this->PATH . ' -n' . $this->ADR . ' ' . $options;
+    	}
+    	
+        return shell_exec($cmd);
     }
 
 }

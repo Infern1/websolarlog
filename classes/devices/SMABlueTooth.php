@@ -134,11 +134,23 @@ Done.";
     }
     
     public function doCommunicationTest() {
-    	return array("result"=>false, "testData"=>"Not yet implemented");
+    	$result = false;
+    	$data = $this->execute('-i');
+    	if ($data) {
+    		$result = true;
+    	}
+    	return array("result"=>$result, "testData"=>$data);
     }
 
     private function execute($options) {
-        return shell_exec($this->PATH . ' ' . $options);
+    	$cmd = "";
+    	if ($this->useCommunication === true) {
+    		$cmd = $this->communication->uri . ' ' . $options;
+    	} else {
+    		$cmd = $this->PATH . ' ' . $options;
+    	}
+    	
+        return shell_exec($cmd);
     }
 
 }

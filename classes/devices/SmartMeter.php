@@ -85,7 +85,6 @@ Class SmartMeter implements DeviceApi {
     	if ($data) {
     		$result = true;
     	}
-    	
     	return array("result"=>$result, "testData"=>$data);
     }
 

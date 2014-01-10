@@ -122,7 +122,7 @@ Class KostalPiko implements DeviceApi {
     
     public function doCommunicationTest() {
     	$result = false;
-    	$data = $result = $this->execute(' -csv -q');
+    	$data = $this->execute(' -csv -q');
     	if ($data) {
     		$result = true;
     	}
@@ -132,7 +132,14 @@ Class KostalPiko implements DeviceApi {
     
 
     private function execute($options) {
-    	$exec = shell_exec($this->PATH . ' ' . $options);
+    	$cmd = "";
+    	if ($this->useCommunication === true) {
+    		$cmd = $this->communication->uri . ' ' . $this->communication->optional . ' ' . $options . ' ';
+    	} else {
+    		$cmd = $this->PATH . ' ' . $options;
+    	}
+    	
+    	$exec = shell_exec($cmd);
     	HookHandler::getInstance()->fire("onDebug", print_r($exec,true));
 		return $exec;
     }

@@ -90,7 +90,7 @@ Class Aurora implements DeviceApi {
     
     public function doCommunicationTest() {
     	$result = false;
-    	$data = $result = $this->execute('-se -Y10');
+    	$data = $this->execute('-se -Y10');
     	if ($data) {
     		$result = true;
     	}

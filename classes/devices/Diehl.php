@@ -447,20 +447,35 @@ Class Diehl implements DeviceApi {
     }
     
     public function doCommunicationTest() {
-    	return array("result"=>false, "testData"=>"Not yet implemented");
+    	$result = false;
+    	$data = $this->getInfo();
+    	if ($data) {
+    		$result = true;
+    	}
+    	return array("result"=>$result, "testData"=>$data);
     }
 
     private function execute($options) {
+    	$url = "";
+    	if ($this->useCommunication === true) {
+    		$url = $this->communication->uri . "/rpc/GetPowerLog";
+    	} else {
+    		$url = "http://".$this->ADR."/rpc/GetPowerLog";
+    	}
+    	
     	$ch = Diehl::getCurlCh();
 		curl_setopt($ch, CURLOPT_URL, "http://".$this->ADR."/rpc/GetPowerLog");
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    	if ($this->useCommunication === true) {
+			curl_setopt($ch, CURLOPT_TIMEOUT, $this->communication->timeout);
+    	}
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $options);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 		    'Content-Type: application/json',
 		    'Content-Length: ' . strlen($options))
 		);
 		$output = curl_exec($ch);
-		$info = curl_getinfo($ch);
+		//$info = curl_getinfo($ch);
 		//curl_close($ch);
 		//echo $output;
         return trim($output);

@@ -82,10 +82,17 @@ Class SmartMeterRemote implements DeviceApi {
     }
     
     public function doCommunicationTest() {
-    	return array("result"=>false, "testData"=>"Not yet implemented");
+    	$result = false;
+    	$data = $this->getData();
+    	if ($data) {
+    		$result = true;
+    	}
+    	return array("result"=>$result, "testData"=>$data);
     }
 
     private function execute() {
+    	// TODO :: Convert to use with communication
+    	
     	$address = explode(":", $this->ADR);
 		if (count($address) != 2) {
 			$error = "Error: wrong address given " . $address;

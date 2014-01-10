@@ -98,10 +98,17 @@ SMAspot [-scan] [-d#] [-v#] [-ad#] [-am#] [-cfgX.Y] [-u] [-finq] [-q] [-nocsv]
     }
     
     public function doCommunicationTest() {
-    	return array("result"=>false, "testData"=>"Not yet implemented");
+    	$result = false;
+    	$data = $this->execute('-i');
+    	if ($data) {
+    		$result = true;
+    	}
+    	return array("result"=>$result, "testData"=>$data);
     }
 
     private function execute($options) {
+    	// TODO :: Convert to the new communication
+    	
     	// this make multi inverter possible for SMAspot users
     	// if we have a "adress"/configfile, then we add "-cfg/adress/to/config-file" to the options.
     	
