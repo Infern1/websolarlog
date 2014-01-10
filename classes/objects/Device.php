@@ -85,8 +85,11 @@ class Device {
     	if ($this->deviceApi == "DutchSmartMeterRemote") {
 	    	return new SmartMeterRemote($config->smartmeterpath, $this->comAddress, $config->comDebug);
 	    }
-    	if ($this->deviceApi == "MasterVolt") {
+    	if ($this->deviceApi == "Mastervolt") {
 	    	return new MasterVolt($config->mastervoltpath, $this->comAddress, $config->comDebug);
+	    }
+	    if ($this->deviceApi == "SoladinSolget") {
+	    	return new SoladonSolget($config->soladinSolgetpath, $this->comAddress, $config->comDebug);
 	    }
     	if ($this->deviceApi == "Open-Weather-Map") {
 	    	return new WeatherOWM($config->latitude, $config->longitude);

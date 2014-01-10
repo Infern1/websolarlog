@@ -95,6 +95,7 @@ class DeviceService {
 				array('value'=>'DutchSmartMeterRemote','type'=>'metering','name'=>'Dutch Smart Meter Remote'),
 				array('value'=>'KostalPiko','type'=>'production','name'=>'Kostal Piko'),
 				array('value'=>'MasterVolt','type'=>'production','name'=>'MasterVolt'),
+				array('value'=>'SoladinSolget','type'=>'production','name'=>'SoladinSolget'),
 				array('value'=>'Open-Weather-Map','type'=>'weather','name'=>'Open Weather Map'),
 				array('value'=>'SMA-RS485','type'=>'production','name'=>'SMA RS485'),
 				array('value'=>'SMA-BT-WSL','type'=>'production','name'=>'SMA-spot-2.0.6 BlueTooth')

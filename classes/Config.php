@@ -70,6 +70,7 @@ class Config
 
     public $aurorapath; // The path to aurora
     public $mastervoltpath; // The path to aurora
+    public $soladinSolgetpath; // The path to solget
     public $smagetpath; // The path to sma-get
     public $smaspotpath; // The path to sma-spot
     public $smaspotWSLpath; // The path to sma-spot -wsl
@@ -159,6 +160,7 @@ class Config
 
 		$this->aurorapath = 'aurora'; // If in system path this is enough
 		$this->mastervoltpath = 'aurora'; // If in system path this is enough
+		$this->soladinSolgetpath = 'aurora'; // If in system path this is enough
 		$this->smagetpath = 'sma_get'; // If in system path this is enough
 		
 		$this->co2kwh = 440; // 440g/kWh is conform europa average

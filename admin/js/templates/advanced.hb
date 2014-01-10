@@ -39,6 +39,7 @@
     <label for="smartmeterpath">smartmeter:</label><input type="text" name="smartmeterpath" value="{{data.smartmeterpath}}"  size="50"/><br />
     <label for="kostalpikopath">Piko.py:</label><input type="text" name="kostalpikopath" value="{{data.kostalpikopath}}"  size="50"/><br />
     <label for="mastervoltpath">Mastervolt (RS485):</label><input type="text" name="mastervoltpath" value="{{data.mastervoltpath}}" size="50"/><br />
+    <label for="soladinsolgetpath">Soladin Solget(RS232):</label><input type="text" name="soladinSolgetpath" value="{{data.soladinSolgetpath}}" size="50"/><br />
     <label for="plugwiseStrech20IP">Plugwise Stretch 2.0:</label><input type="text" name="plugwiseStrech20IP" value="{{data.plugwiseStrech20IP}}"  size="30"/>Stretch IP adress<br />
     <label for="plugwiseStrech20ID">Plugwise Stretch 2.0:</label><input type="text" name="plugwiseStrech20ID" value="{{data.plugwiseStrech20ID}}"  size="30"/>Stretch ID<br />
     <div class="examples">

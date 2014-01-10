@@ -75,3 +75,16 @@ The data below is calculated over the period;<br>
   <div class="column span-4" style="background-color:#FF7D7D;text-align:right;">{{toFixed value=this.highUsageT fixed=3}}&nbsp;</div>
 </div><br>
 {{/each}}
+
+<br>
+
+{{#each data.months}}
+<div class="column span-28" style="background-color:{{this.backgroundColor}}">
+<div class="column span-5" >{{@key}}&nbsp;</div>
+<div class="column span-4" style="background-color:#9CB3FF;text-align:right;">{{toFixed value=this.gasUsageT fixed=3}}</div>
+<div class="column span-4" style="background-color:#70FF69;text-align:right;">{{toFixed value=this.lowReturnT fixed=3}}</div>
+<div class="column span-3" style="background-color:#70FF69;text-align:right;">{{toFixed value=this.highReturnT fixed=3}}</div>
+<div class="column span-3" style="background-color:#FF7D7D;text-align:right;">{{toFixed value=this.lowUsageT fixed=3}}</div>
+<div class="column span-4" style="background-color:#FF7D7D;text-align:right;">{{toFixed value=this.highUsageT fixed=3}}</div>
+</div><br>
+{{/each}}

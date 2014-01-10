@@ -706,7 +706,9 @@ try {
 		case "phpinfo":
 			$phpinfo = new SMASpotWSL('/home/pi/smaspot/bin/Release/./SMAspot', '/home/pi/smaspot/bin/Release/test.cfg', '', '', false);
 			//var_dump($phpinfo->phpInfo());
-				
+			$weather = new WeatherService();
+			$averages = $weather->saveDailyAverages();
+			var_dump($averages);
 			break;
 		default:
 			break;

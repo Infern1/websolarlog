@@ -360,6 +360,7 @@ class PDODataAdapter {
 			$config->template = ($bean->template != "") ? $bean->template : $config->template;
 			$config->aurorapath = ($bean->aurorapath != "") ? $bean->aurorapath : $config->aurorapath;
 			$config->mastervoltpath = ($bean->mastervoltpath != "") ? $bean->mastervoltpath : $config->mastervoltpath;
+			$config->soladinSolgetpath = ($bean->soladinSolgetpath != "") ? $bean->soladinSolgetpath : $config->soladinSolgetpath;
 			$config->smagetpath = ($bean->smagetpath != "") ? $bean->smagetpath : $config->smagetpath;
 			$config->smaspotpath = ($bean->smaspotpath != "") ? $bean->smaspotpath : $config->smaspotpath;
 			$config->smaspotWSLpath = ($bean->smaspotWSLpath != "") ? $bean->smaspotWSLpath : $config->smaspotWSLpath;
