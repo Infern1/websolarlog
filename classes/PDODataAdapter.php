@@ -278,6 +278,7 @@ class PDODataAdapter {
 		$bean->smagetpath = $config->smagetpath;
 		$bean->smaspotpath = $config->smaspotpath;
 		$bean->smaspotWSLpath = $config->smaspotWSLpath;
+		$bean->soladinSolgetpath = $config->soladinSolgetpath;
 		$bean->kostalpikopath = $config->kostalpikopath;
 		$bean->plugwiseStrech20IP = $config->plugwiseStrech20IP;
 		$bean->plugwiseStrech20ID = $config->plugwiseStrech20ID;
