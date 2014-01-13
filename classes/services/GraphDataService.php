@@ -108,7 +108,7 @@ class GraphDataService {
 			SELECT *
 			FROM history
 			WHERE time > :beginDate AND  time < :endDate AND inv = :inv 
-			ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'], ':inv'=>$device->id));
+			ORDER BY deviceId,time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'], ':inv'=>$device->id));
 
 
 		$_SESSION['timers']['GraphDataServer_LoadData_AfterTheGrandBIGQuery'] =(microtime(true)-$_SESSION['timerBegin'] );
