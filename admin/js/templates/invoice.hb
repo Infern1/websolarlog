@@ -77,7 +77,14 @@ The data below is calculated over the period;<br>
 {{/each}}
 
 <br>
-
+<div class="column span-28">
+	<div class="column span-5">Time</div>
+	<div class="column span-4">Gas</div>
+	<div class="column span-3">low Return</div>
+	<div class="column span-4">high Return</div>
+	<div class="column span-3">low Usage</div>
+	<div class="column span-4">high Usage</div>
+</div>
 {{#each data.months}}
 <div class="column span-28" style="background-color:{{this.backgroundColor}}">
 <div class="column span-5" >{{@key}}&nbsp;</div>
