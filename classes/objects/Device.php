@@ -89,7 +89,7 @@ class Device {
 	    	return new MasterVolt($config->mastervoltpath, $this->comAddress, $config->comDebug);
 	    }
 	    if ($this->deviceApi == "SoladinSolget") {
-	    	return new SoladonSolget($config->soladinSolgetpath, $this->comAddress, $config->comDebug);
+	    	return new SoladinSolget($config->soladinSolgetpath, $this->comAddress, $config->comDebug);
 	    }
     	if ($this->deviceApi == "Open-Weather-Map") {
 	    	return new WeatherOWM($config->latitude, $config->longitude);
