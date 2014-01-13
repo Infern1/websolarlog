@@ -87,7 +87,7 @@ function ajaxAbort(xhr) {
 	secondes = (currentTime - window.beforeLoad) / 1000;
 	// when the page is loaded for more then XX sec. we abort ajaxCalls
 	// We do this to prevent partial loaded pages
-	if(secondes > 15){
+	if(secondes > 30){
 		// the page is loaded more then XX sec ago, abort this call....
 		xhr.abort();
 	}
