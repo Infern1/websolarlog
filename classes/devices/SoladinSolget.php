@@ -1,5 +1,5 @@
 <?php
-Class SoladonSolget implements DeviceApi {
+Class SoladinSolget implements DeviceApi {
     private $ADR;
     private $DEBUG;
     private $PATH;
@@ -40,7 +40,7 @@ Class SoladonSolget implements DeviceApi {
     public function getData() {
         if ($this->DEBUG) {
             //return $this->execute('-b -c -T ' . $this->COMOPTION . ' -d0 -e 2>'. Util::getErrorFile($this->INVTNUM));
-            return "451 1,38 622 233 2,55 580 50,00 42 13,33 748 NoError";
+            return "55,9 0,24 49,97 231 10 24 74,5 813,87 382,51 16481:9 3,87 1,81 16481:9 ERROR description";
         } else {
             //echo("GetData SoladinSolget\n");
         	return trim($this->execute( $this->COMOPTION ));
