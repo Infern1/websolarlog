@@ -74,6 +74,7 @@ class GraphService {
 			$graphBean->name = 'daily';
 			$graphBean->json = json_encode($metaData);
 
+			
 			$defaultSeries = HookHandler::getInstance()->fire("defaultSeries");
 			$series = array_merge(self::defaultSeries(),$defaultSeries);
 			var_dump(self::defaultSeries());
