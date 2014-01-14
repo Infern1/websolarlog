@@ -883,9 +883,9 @@ function init_invoice(data){
 	setTitle("Invoice");
 	window.location.hash = '#invoice';
 	
-	$('#sidebar').html("");
+	$('#sidebar').remove();
     var content = $('#content');
-    content.html('<div id="c_general"><h1> Invoice</h1><form><fieldset><div id="json" name="summary">Loading Data...</div></fieldset></div>'); // Clear old data
+    content.html('<div id="c_general"><h1> Invoice</h1><form><fieldset><div id="json" name="summary">Loading Data...</div></fieldset></div>').css("width",850); // Clear old data
     console.log(data);
     WSL.connect.postJSON('admin-server.php', data, function(result) {
     $.getJSON('admin-server.php?s=invoiceInfo', function(data) {

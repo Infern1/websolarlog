@@ -12,18 +12,13 @@ class GraphDataService {
 	 */
 	
 	public static function GraphDayPoints($args) {
-		//var_dump($args);
 		$device = $args[1];
 		$graphPoints = array();
 		if($args[1]->type=="production"){
 			if($args[3]=='Today'){
-				$_SESSION['timers']['GraphDataService_LoadData_BeforeReadTablesPeriodValues'] =(microtime(true)-$_SESSION['timerBegin'] );
 				$data = self::readTablesPeriodValues($device, self::$tbl, $args[3], $args[2]);
-				$_SESSION['timers']['GraphDataService_LoadData_AfterReadTablesPeriodValues'] =(microtime(true)-$_SESSION['timerBegin'] );
-				
-				$_SESSION['timers']['GraphDataService_BeforeBeansToPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
+
 				$graphPoints = self::DayBeansToGraphPoints($data['device'],$data['beans'], time());
-				$_SESSION['timers']['GraphDataService_AfterBeansToPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
 			}
 		}
 		return $graphPoints;
@@ -55,8 +50,8 @@ class GraphDataService {
 			$cumPower = round(($bean['KWHT']-$firstBean['KWHT'])*1000,0);
 			// 09/30/2010 00:00:00
 			$avgPower = Formulas::calcAveragePower($bean['KWHT'], $preBean['KWHT'], $UTCtimeDiff,0,0);
-			$graph->points['cumPowerWh'][] = array (  $UTCdate ,$cumPower);
-			$graph->points['avgPowerW'][] = array (  $UTCdate ,$avgPower);
+			$graph->points['cumPowerWh-'.$device->id][] = array (  $UTCdate ,$cumPower);
+			$graph->points['avgPowerW-'.$device->id][] = array (  $UTCdate ,$avgPower);
 			$preBeanUTCdate = $bean['time'];
 			$preBean = $bean;
 			$i++;
@@ -94,24 +89,14 @@ class GraphDataService {
 	
 	public static function readTablesPeriodValues($device, $table, $type, $startDate){
 		$count = 0;
-
 		// get the begin and end date/time
-		$_SESSION['timers']['GraphDataServer_Before_getBeginEndDate'] =(microtime(true)-$_SESSION['timerBegin'] );
 		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
-		//var_dump($beginEndDate);
-		
-		$_SESSION['timers']['GraphDataServer_After_getBeginEndDate'] =(microtime(true)-$_SESSION['timerBegin'] );
-
-		$_SESSION['timers']['GraphDataServer_LoadData_BeforeTheGrandBIGQuery'] =(microtime(true)-$_SESSION['timerBegin'] );
 
 		$energyBeans = R::getAll("
 			SELECT *
 			FROM history
 			WHERE time > :beginDate AND  time < :endDate AND inv = :inv 
 			ORDER BY deviceId,time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'], ':inv'=>$device->id));
-
-
-		$_SESSION['timers']['GraphDataServer_LoadData_AfterTheGrandBIGQuery'] =(microtime(true)-$_SESSION['timerBegin'] );
 
 		//see if we have atleast 1 bean, else we make one :)
 		(!$energyBeans) ? $energyBeans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $energyBeans = $energyBeans;

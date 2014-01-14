@@ -45,7 +45,8 @@ class SmartMeterAddon {
 						"renderer"=>'EnhancedLegendRenderer',
 						"rendererOptions"=>array(
 								"seriesToggle"=>'normal',
-								"numberRows"=>2
+								"numberRows"=>2,
+								"seriesToggleReplot"=>array("resetAxes"=>true)
 						),
 						"left"=>10,
 						"width"=>700

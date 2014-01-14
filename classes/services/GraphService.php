@@ -59,10 +59,14 @@ class GraphService {
 							'show'=>true,
 							'location'=>'nw',
 							'renderer'=>'EnhancedLegendRenderer',
-							'rendererOptions'=>array('seriesToggle'=>'normal'),
+							'rendererOptions'=>
+								array('seriesToggle'=>'normal',
+										'seriesToggleReplot'=>array("resetAxes"=>true)
+									),
 							'width'=>0,
 							'left'=>0)
 			);
+			
 			if(isset($graphHook->metaData) && is_array($graphHook->metaData)){
 				$metaData = array_merge($metaData,$graphHook->metaData);
 			}
@@ -72,6 +76,7 @@ class GraphService {
 
 			$defaultSeries = HookHandler::getInstance()->fire("defaultSeries");
 			$series = array_merge(self::defaultSeries(),$defaultSeries);
+			var_dump(self::defaultSeries());
 			$graphBean->sharedSeries = $series;
 
 			$defaultAxes = HookHandler::getInstance()->fire("defaultAxes");
@@ -134,19 +139,33 @@ class GraphService {
 				$show = 'true';
 			}
 		}
-		$serie = R::dispense('series',2);
-		$serie[0]['json'] = json_encode(array('label'=>'Cum Power (Wh)','yaxis'=>'y2axis'));
-		$serie[0]['name'] = 'cumPowerWh';
-		$serie[0]['show'] = $show;
-		$serie[0]['disabled'] = 'false';
-		$serie[0]['addon'] = 'wsl';
-		$serie[0]['order'] = 0;
-		$serie[1]['json'] = json_encode(array('label'=>'Avg Power (W)','yaxis'=>'yaxis'));
-		$serie[1]['name'] = 'avgPowerW';
-		$serie[1]['show'] = $show;
-		$serie[1]['disabled'] = 'false';
-		$serie[1]['addon'] = 'wsl';
-		$serie[1]['order'] = 1;
+
+		
+		$i = 0;
+		foreach (Session::getConfig()->devices as $device) {
+			if($device->type == "production"){
+				$serie[$i] = R::dispense('series');
+				$serie[$i]['json'] = json_encode(array('label'=>'Cum '.$device->name.' (Wh)','yaxis'=>'y2axis'));
+				$serie[$i]['name'] = 'cumPowerWh-'.$device->id;
+				$serie[$i]['show'] = $show;
+				$serie[$i]['disabled'] = 'false';
+				$serie[$i]['addon'] = 'wsl';
+				$serie[$i]['order'] = $i;
+				
+				$i++;
+				$serie[$i] = R::dispense('series');
+				$serie[$i]['json'] = json_encode(array('label'=>'Avg '.$device->name.' (W)','yaxis'=>'yaxis'));
+				$serie[$i]['name'] = 'avgPowerW-'.$device->id;
+				$serie[$i]['show'] = $show;
+				$serie[$i]['disabled'] = 'false';
+				$serie[$i]['addon'] = 'wsl';
+				$serie[$i]['order'] = $i;
+				$i++;
+			}
+		}
+		var_dump($series);
+
+		
 		return $serie;
 	}
 
@@ -190,29 +209,14 @@ class GraphService {
 	 */
 	public function loadGraph($options){
 
-		$_SESSION['timers']['GraphService_BeginLoadGraph'] =(microtime(true)-$_SESSION['timerBegin'] );
-
 		$config = Session::getConfig();
 		$graph = R::findOne('graph',' name = "daily" ');
-		$_SESSION['timers']['GraphService_RedBeanFindGraph'] =(microtime(true)-$_SESSION['timerBegin'] );
 
 		// translate hideSerie labels
-		$_SESSION['timers']['GraphService_BeforeGraphJSONDecde'] =(microtime(true)-$_SESSION['timerBegin'] );
 		$graphJson = json_decode($graph->json);
-		$_SESSION['timers']['GraphService_AfterGraphJSONDecode'] =(microtime(true)-$_SESSION['timerBegin'] );
-		$i=0;
-
-
-
+		
 		// find series of graph
-		$_SESSION['timers']['GraphService_Before_OwnGraph_series'] =(microtime(true)-$_SESSION['timerBegin'] );
-		//$series = $graph->ownGraph_series;
-		$_SESSION['timers']['GraphService_After_OwnGraph_series'] =(microtime(true)-$_SESSION['timerBegin'] );
-
-		$_SESSION['timers']['GraphService_Before_exportAll_series'] =(microtime(true)-$_SESSION['timerBegin'] );
-		//var_dump($ownGraphSeries);
 		$series = $graph->ownGraph_series;
-		$_SESSION['timers']['GraphService_After_exportAll'] =(microtime(true)-$_SESSION['timerBegin'] );
 
 		//translate serie labels
 		$seriesNew = array();
@@ -308,22 +312,25 @@ class GraphService {
 				
 			foreach ($config->devices as $device){
 				if($device->type=='production'){
+					$panels = array();
 					foreach ($device->panels as $panel){
 						$panels[] = array(
 								'roofOrientation'=>$panel->roofOrientation,
 								'roofPitch'=>$panel->roofPitch,
-								'totalWp'=>$panel->amount*$panel->wp
+								'totalWp'=>$panel->amount*$panel->wp,
+								'description' =>$panel->description
 						);
 					}
-					$inverters[] = array(
+					$devices[] = array(
 							'plantPower'=>$device->plantpower,
-							'panels'=> (isset($panels) ? $panels : 0)
+							'panels'=> (isset($panels) ? $panels : 0),
+							'name' => $device->name
 					);
 				}
 			}
 			$slimConfig['lat'] = $config->latitude;
 			$slimConfig['long']= $config->longitude;
-			$slimConfig['inverters'] = $inverters;
+			$slimConfig['devices'] = $devices;
 			$util = new Util();
 			$sunInfo = $util->getSunInfo($config, $options['date']);
 				
@@ -375,7 +382,21 @@ class GraphService {
 			$timezone = new DateTime('now', $dtz);
 			$timezoneOffset = $dtz->getOffset( $timezone )/3600;
 			
-			return array('dataPoints'=>$dataPoints,'json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','timestamp'=>$timestamp,'name'=>$graph->name,'options'=>$options,'slimConfig' => $slimConfig,'sunInfo'=>$sunInfo,'hideSeries'=>$hideSeries,'meta'=>$graphHook['metaData'],'lang'=>$lang,'timezoneOffset'=>$timezoneOffset);	
+			return array(
+					'dataPoints'=>$dataPoints,
+					'json'=>json_decode($graph->json),
+					'series'=>$series,'axes'=>$axes,
+					'axesList'=>$axesList,
+					'source'=>'db',
+					'timestamp'=>$timestamp,
+					'name'=>$graph->name,
+					'options'=>$options,
+					'slimConfig' => $slimConfig,
+					'sunInfo'=>$sunInfo,
+					'hideSeries'=>$hideSeries,
+					'meta'=>$graphHook['metaData'],
+					'lang'=>$lang,
+					'timezoneOffset'=>$timezoneOffset);	
 		}else{
 			return array('json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','name'=>$graph->name,'options'=>$options);
 		}
