@@ -60,9 +60,7 @@ class GraphService {
 							'location'=>'nw',
 							'renderer'=>'EnhancedLegendRenderer',
 							'rendererOptions'=>
-								array('seriesToggle'=>'normal',
-										'seriesToggleReplot'=>array("resetAxes"=>true)
-									),
+								array('seriesToggle'=>'normal'),
 							'width'=>0,
 							'left'=>0)
 			);
@@ -266,8 +264,7 @@ class GraphService {
 		
 		// find axes of graph
 		$axes = $graph->ownAxes_graph;
-		$_SESSION['timers']['GraphService_sharedAxes'] =(microtime(true)-$_SESSION['timerBegin'] );
-		
+
 		usort($axes, function($a, $b) {
 			return $a['order'] - $b['order'];
 		});
@@ -340,30 +337,31 @@ class GraphService {
 			//$graphDataService = new GraphDataService();
 				
 				
-			//echo "deviceNum".$options['deviceNum'];
-			$_SESSION['timers']['GraphService_beforeHookDayPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
 			$graphHook = array();
 			foreach($config->devices as $device){
 				$hookReturn = HookHandler::getInstance()->fire("GraphDayPoints",$device,$options['date'],$options['type'],$disabledSeries);
-				
 				if(is_object($hookReturn)){
 					$graphHook = array_merge_recursive((array)$graphHook,(array)$hookReturn);
 				}
 			}
 			//var_dump($graphHook['metaData']);
-			$_SESSION['timers']['GraphService_afterHookDayPoints'] =(microtime(true)-$_SESSION['timerBegin'] );
-				
-			
+
 			$timestamp = Util::getSunInfo($config, $options['date']);
 			$timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
 		
+
 			//var_dump($series);
 			//var_dump(array_keys($graphHook['points']));
 			$dataPoints = array();
 			foreach ($series as $serie){
-				if(array_key_exists($serie['name'], $graphHook['points'])){
-					$dataPoints[$serie['name']]=$graphHook['points'][$serie['name']];
+				foreach ($graphHook['points'] as $key=>$value){
+					if($serie['name'] == $key){
+						$dataPoints[$key]=$graphHook['points'][$key];
+					}
 				}
+				//if(array_key_exists($serie['name'], $graphHook['points'])){
+				//	//$dataPoints[$serie['name']]=$graphHook['points'][$serie['name']];
+				//}
 			}
 						
 			if(isset($graphHook['timestamp']['beginDate']) AND $graphHook['timestamp']['beginDate']<  $timestamp['beginDate']){

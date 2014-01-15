@@ -230,48 +230,30 @@ jQuery.fn.center = function(left, top, position) {
 	} else {
 		position = '';
 	}
-
-	// console.log(position+" "+top+" "+left);
-
-	this.css({
-		'position' : position,
-		'top' : top,
-		'left' : left
-	});
+	this.css({'position' : position,'top' : top,'left' : left});
 
 	return this;
 }
 
 function modLegenda(plot) {
 	// bind to the data highlighting event to make custom tooltip:
-	$('#detailsGraph')
-			.bind(
-					'jqplotDataMouseOver',
-					function(ev, seriesIndex, pointIndex, data) {
-						var i = 0;
-						$('td.jqplot-table-legend')
-								.each(
-										function() {
-											if (seriesIndex == i) {
-												bold = [
-														'<b><font color="red">',
-														'</font></b>' ];
-											} else {
-												bold = [ '', '' ];
-											}
-											if (typeof handle.data[i] !== 'undefined') {
-												$('#tooltipValue-' + i)
-														.html(
-																bold[0]
-																		+ handle.data[i][pointIndex][1]
-																		+ bold[1]);
-											} else {
-												$('#tooltipValue-' + i).text(
-														'-');
-											}
-											i = i + 1;
-										})
-					});
+	$('#detailsGraph').bind('jqplotDataMouseOver',function(ev, seriesIndex, pointIndex, data) {
+		var i = 0;
+		$('td.jqplot-table-legend').each(
+			function() {
+				if (seriesIndex == i) {
+					bold = ['<b><font color="red">','</font></b>' ];
+				} else {
+					bold = [ '', '' ];
+				}
+				if (typeof handle.data[i] !== 'undefined') {
+					$('#tooltipValue-' + i).html(bold[0]+ handle.data[i][pointIndex][1]+ bold[1]);
+				} else {
+					$('#tooltipValue-' + i).text('-');
+				}
+				i = i + 1;
+			})
+	});
 
 	$('#detailsGraph').bind('jqplotDataUnhighlight', function() {
 		var i = 0;
@@ -286,30 +268,24 @@ function modLegenda(plot) {
 		});
 	});
 	// $('table.jqplot-table-legend').attr('class','jqplot-table-legend-custom');
-	$('table.jqplot-table-legend')
-			.wrapInner(
-					'<div class="column span-21 first" id="legendWrappers" style="margin:0px;">');
+	$('table.jqplot-table-legend').wrapInner('<div class="column span-21 first" id="legendWrappers" style="margin:0px;">');
 	// walkthrough legenda
 	var i = 0;
 	var newLegend = '';
-	$('td.jqplot-table-legend').each(
-			function() {
-				$this = $(this);
-				// walkthrough array with hidden lines
-				if ($this.text().length > 0) {
+	$('td.jqplot-table-legend').each(function() {
+		$this = $(this);
+		// walkthrough array with hidden lines
+		if ($this.text().length > 0) {
+			newLegend += '<div class="column span-5 first" id="' + i
+					+ '" style="margin:0px;">' + $this.text()
+					+ '<br><span id="tooltipValue-' + i
+					+ '">-</span></div>';
+			i = i + 1;
+		}
 
-					newLegend += '<div class="column span-5 first" id="' + i
-							+ '" style="margin:0px;">' + $this.text()
-							+ '<br><span id="tooltipValue-' + i
-							+ '">-</span></div>';
-					i = i + 1;
-				}
-
-			});
+	});
 	var margin = (i / 5) * 15;
-	$('#legendWrappers').after(
-			'<div class="column span-21 last">' + newLegend
-					+ '<br><div style="clear:both;"></div></div>');
+	$('#legendWrappers').after('<div class="column span-21 last">' + newLegend+ '<br><div style="clear:both;"></div></div>');
 	$("#detailsGraph").css('margin-bottom', margin);
 	$('#detailsSwitches').css('margin-top', '50px');
 	$('#detailsSwitches').hide();
@@ -347,79 +323,49 @@ function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot, series) {
 					function(index, value) {
 						eachSerieIndex = index;
 						if (index != seriesIndex) {
-							ClosestPointIndex = getClosest(
-									plot.series[eachSerieIndex].data,
-									plot.series[seriesIndex].data[pointIndex][0]);
-							closestTimeDiff = plot.series[seriesIndex].data[pointIndex][0]
-									- plot.series[eachSerieIndex].data[ClosestPointIndex[0]][0];
-							(closestTimeDiff < -200000) ? displayLow = false
-									: displayLow = true;
-							(closestTimeDiff > 200000) ? displayHigh = false
-									: displayHigh = true;
+							ClosestPointIndex = getClosest(plot.series[eachSerieIndex].data,plot.series[seriesIndex].data[pointIndex][0]);
+							closestTimeDiff = plot.series[seriesIndex].data[pointIndex][0]- plot.series[eachSerieIndex].data[ClosestPointIndex[0]][0];
+							(closestTimeDiff < -200000) ? displayLow = false : displayLow = true;
+							(closestTimeDiff > 200000) ? displayHigh = false : displayHigh = true;
 
-							if (displayHigh == true && displayLow == true
-									&& plot.series[eachSerieIndex].show == true) {
+							if (displayHigh == true && displayLow == true && plot.series[eachSerieIndex].show == true) {
 								returned += tooltipTodayContentEditorLine(
-										plot.series[eachSerieIndex].label,
-										"   "
-												+ plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],
-										false);
-
+										plot.series[eachSerieIndex].label,"   "+ plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],false);
 							}
 						} else {
-							ClosestPointIndex = getClosest(
-									plot.series[eachSerieIndex].data,
-									plot.series[seriesIndex].data[pointIndex][0]);
-							returned += tooltipTodayContentEditorLine(
-									plot.series[eachSerieIndex].label,
-									"   "
-											+ plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],
-									true);
+							ClosestPointIndex = getClosest(plot.series[eachSerieIndex].data,plot.series[seriesIndex].data[pointIndex][0]);
+							returned += tooltipTodayContentEditorLine(plot.series[eachSerieIndex].label,"   "+ plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],true);
 						}
-
 					});
-	var time = timeConverter(plot.series[seriesIndex].data[pointIndex][0],
-			" hour+':'+min ;");
+	var time = timeConverter(plot.series[seriesIndex].data[pointIndex][0]," hour+':'+min ;");
 	returned += tooltipTodayContentEditorLine("Time", "   " + time, true);
 	return returned;
 }
 
 function tooltipPeriodContentEditor(str, seriesIndex, pointIndex, plot, series) {
 	var returned = "";
-	returned += tooltipDefaultLine("Day ", plot.series[0].data[pointIndex][1],
-			"kWh", (seriesIndex == 0));
-	returned += tooltipDefaultLine("Month Cum.",
-			plot.series[1].data[pointIndex][1], "kWh", (seriesIndex == 1));
-	var time = timeConverter(plot.series[seriesIndex].data[pointIndex][0],
-			" day+' '+month_name ;");
+	returned += tooltipDefaultLine("Day ", plot.series[0].data[pointIndex][1],"kWh", (seriesIndex == 0));
+	returned += tooltipDefaultLine("Month Cum.",plot.series[1].data[pointIndex][1], "kWh", (seriesIndex == 1));
+	var time = timeConverter(plot.series[seriesIndex].data[pointIndex][0]," day+' '+month_name ;");
 	returned += tooltipTodayContentEditorLine("Time", "   " + time, true);
 	return returned;
 }
 
-function tooltipProductionContentEditor(str, seriesIndex, pointIndex, plot,
-		series) {
+function tooltipProductionContentEditor(str, seriesIndex, pointIndex, plot, series) {
 	var returned = "";
 	var diff_add = '';
 	var yearDiff_add = "";
-	var diff = plot.series[0].data[pointIndex][1]
-			- plot.series[1].data[pointIndex][1];
+	var diff = plot.series[0].data[pointIndex][1] - plot.series[1].data[pointIndex][1];
 
-	var yearDiff = plot.series[3].data[pointIndex][1]
-			- plot.series[2].data[pointIndex][1];
+	var yearDiff = plot.series[3].data[pointIndex][1] - plot.series[2].data[pointIndex][1];
 	(diff > 0) ? diff_add = '+' : diff_add = diff_add;
 	(yearDiff > 0) ? yearDiff_add = '+' : yearDiff_add = yearDiff_add;
-	returned += tooltipProductionContentEditorLine("Harvested",
-			plot.series[0].data[pointIndex][1], "kWh", (seriesIndex == 0));
-	returned += tooltipProductionContentEditorLine("Expected",
-			plot.series[1].data[pointIndex][1], "kWh", (seriesIndex == 1));
-	returned += tooltipProductionContentEditorLine("This month", diff_add + ""
-			+ diff, "kWh", false);
-	returned += tooltipProductionContentEditorLine("Cum. Harvested",
-			plot.series[3].data[pointIndex][1], "kWh", (seriesIndex == 3));
-	returned += tooltipProductionContentEditorLine("Cum. Expected",
-			plot.series[2].data[pointIndex][1], "kWh", (seriesIndex == 2));
-	returned += tooltipProductionContentEditorLine("This year", yearDiff_add
-			+ "" + yearDiff, "kWh", false);
+	returned += tooltipProductionContentEditorLine("Harvested", plot.series[0].data[pointIndex][1], "kWh", (seriesIndex == 0));
+	returned += tooltipProductionContentEditorLine("Expected", plot.series[1].data[pointIndex][1], "kWh", (seriesIndex == 1));
+	returned += tooltipProductionContentEditorLine("This month", diff_add + "" + diff, "kWh", false);
+	returned += tooltipProductionContentEditorLine("Cum. Harvested", plot.series[3].data[pointIndex][1], "kWh", (seriesIndex == 3));
+	returned += tooltipProductionContentEditorLine("Cum. Expected", plot.series[2].data[pointIndex][1], "kWh", (seriesIndex == 2));
+	returned += tooltipProductionContentEditorLine("This year", yearDiff_add + "" + yearDiff, "kWh", false);
 	return returned;
 }
 
@@ -433,29 +379,18 @@ function tooltipCompareEditor(str, seriesIndex, pointIndex, plot, series) {
 	var returned = "";
 
 	if ($.isArray(plot.series[1].data[pointIndex])) {
-		returned += tooltipCompareEditorLine(plot.series[1].label,
-				plot.series[1].data[pointIndex][1], "kWh", (seriesIndex == 1));
-		returned += tooltipCompareEditorLine("date",
-				timeConverter(plot.series[1].data[pointIndex][0],
-						" day+'-'+month+'-'+year ;"), " ", (seriesIndex == 1));
+		returned += tooltipCompareEditorLine(plot.series[1].label, plot.series[1].data[pointIndex][1], "kWh", (seriesIndex == 1));
+		returned += tooltipCompareEditorLine("date", timeConverter(plot.series[1].data[pointIndex][0], " day+'-'+month+'-'+year ;"), " ", (seriesIndex == 1));
 	} else {
-		returned += tooltipCompareEditorLine("Expected",
-				"No data available for " + plot.series[1].data[pointIndex][2],
-				" ", (seriesIndex == 0));
+		returned += tooltipCompareEditorLine("Expected", "No data available for " + plot.series[1].data[pointIndex][2], " ", (seriesIndex == 0));
 	}
 
 	if ($.isArray(plot.series[0].data[pointIndex])) {
-		returned += tooltipCompareEditorLine(plot.series[0].label,
-				plot.series[0].data[pointIndex][1], "kWh", (seriesIndex == 0));
-		returned += tooltipCompareEditorLine("date", timeConverter(
-				plot.series[0].data[pointIndex][0],
-				" day+'-'+month+'-'+year ;", 'date'), " ", (seriesIndex == 0));
+		returned += tooltipCompareEditorLine(plot.series[0].label,plot.series[0].data[pointIndex][1], "kWh", (seriesIndex == 0));
+		returned += tooltipCompareEditorLine("date", timeConverter( plot.series[0].data[pointIndex][0]," day+'-'+month+'-'+year ;", 'date'), " ", (seriesIndex == 0));
 	} else {
-		returned += tooltipCompareEditorLine("Harvested",
-				"No data available for " + plot.series[0].data[pointIndex][2],
-				" ", (seriesIndex == 1));
+		returned += tooltipCompareEditorLine("Harvested","No data available for " + plot.series[0].data[pointIndex][2]," ", (seriesIndex == 1));
 	}
-
 	return returned;
 }
 
@@ -479,15 +414,13 @@ function tooltipCompareEditorLine(label, value, sign, isBold) {
 function tooltipDefaultLine(label, value, isBold) {
 	bold = (isBold) ? [ '<b>', '</b>' ] : bold = [ '', '' ];
 	line = bold[0] + '<span class="jqplot_hl_label">' + label + ":" + "</span>"
-			+ '<span class="jqplot_hl_value">' + value + "</span>" + bold[1]
-			+ "<br />";
+			+ '<span class="jqplot_hl_value">' + value + "</span>" + bold[1] + "<br />";
 	return line;
 }
 
 function timeConverter(timestamp, format) {
 	var a = new Date(timestamp);
-	var months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
-			'Sep', 'Oct', 'Nov', 'Dec' ];
+	var months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 	var year = a.getFullYear();
 	var month_name = months[a.getMonth()];
 	var month = a.getMonth() + 1;
@@ -542,9 +475,7 @@ function handleGraphs(request, devicenum) {
 
 	if (currentGraphHandler) {
 		currentGraphHandler.destroy();
-		$("#graph" + tab + "Content")
-				.html(
-						'<div id="loading" style="width:1px;height:20px;">loading...</div>');
+		$("#graph" + tab + "Content").html('<div id="loading" style="width:1px;height:20px;">loading...</div>');
 		$("#loading").center();
 	}
 	if (todayTimerHandler) {
@@ -561,9 +492,7 @@ function handleGraphs(request, devicenum) {
 						$("#loading").remove();
 					});
 		} else {
-
-			WSL.createPeriodGraph(devicenum, period, 1, date, "graph" + tab
-					+ "Content", function(handler) {
+			WSL.createPeriodGraph(devicenum, period, 1, date, "graph" + tab + "Content", function(handler) {
 				currentGraphHandler = handler;
 				$("#loading").remove();
 			});
@@ -580,8 +509,7 @@ function handleGraphs(request, devicenum) {
 						$("#loading").remove();
 					});
 		} else {
-			WSL.createPeriodGraph(devicenum, period, 1, date, "graph" + tab
-					+ "Content", function(handler) {
+			WSL.createPeriodGraph(devicenum, period, 1, date, "graph" + tab + "Content", function(handler) {
 				currentGraphHandler = handler;
 				$("#loading").remove();
 			});
@@ -601,91 +529,89 @@ function handleGraphs(request, devicenum) {
 
 function populateTabs(tabIndex) {
 	$.getJSON('server.php?method=getPeriodFilter&type=all', function(data) {
-		$
-				.ajax({
-					url : 'js/templates/datePeriodFilter.hb',
-					beforeSend : function(xhr) {
-						if (getWindowsState() == false) {
-							ajaxAbort(xhr);
-						}
-					},
-					success : function(source) {
-						var template = Handlebars.compile(source);
+		$.ajax({
+			url : 'js/templates/datePeriodFilter.hb',
+			beforeSend : function(xhr) {
+				if (getWindowsState() == false) {
+					ajaxAbort(xhr);
+				}
+			},
+			success : function(source) {
+				var template = Handlebars.compile(source);
 
-						var html = template({
-							'data' : data,
-							'lang' : data.lang
-						});
-						$("#pickerFilter").html(html);
-						$("#datepicker").datepicker({
-							onSelect : function(date) {
-								handleGraphs('picker', devicenum);
-							}
-						});
-						$("#datepicker").datepicker("option", "dateFormat",
-								"dd-mm-yy");
-
-						$("#datepicker").datepicker('setDate', new Date());
-
-						// fix for Graph Tooltip
-						$("#datepicker").css('z-index', 0);
-						// fix for Graph Tooltip
-
-						var devicenum = $('#devicenum').val();
-
-						$('#next').unbind('click');
-						$('#previous').unbind('click');
-						$('#pickerPeriod').unbind('click');
-						$('#devicenum').unbind('click');
-
-						$('#devicenum').click(function() {
-							var picker = $("#datepicker");
-							var date = new Date(picker.datepicker('getDate'));
-							picker.datepicker('setDate', date);
-							handleGraphs('picker', devicenum);
-						});
-
-						$('#next').click(function() {
-							var picker = $("#datepicker");
-							var date = new Date(picker.datepicker('getDate'));
-							var splitDate = $('#datepicker').val().split('-');
-							if ($('#pickerPeriod').val() == 'Today') {
-								date.setDate(date.getDate() + 1);
-							} else if ($('#pickerPeriod').val() == 'Week') {
-								date.setDate(date.getDate() + 7);
-							} else if ($('#pickerPeriod').val() == 'Month') {
-								var value = splitDate[1];
-								date.setMonth(value);
-							} else if ($('#pickerPeriod').val() == 'Year') {
-								var value = parseInt(splitDate[2]) + 1;
-								date.setFullYear(value);
-							}
-							picker.datepicker('setDate', date);
-							handleGraphs('picker', devicenum);
-						});
-
-						$('#previous').click(function() {
-							var picker = $("#datepicker");
-							var date = new Date(picker.datepicker('getDate'));
-							var splitDate = $('#datepicker').val().split('-');
-							if ($('#pickerPeriod').val() == 'Today') {
-								date.setDate(date.getDate() - 1);
-							} else if ($('#pickerPeriod').val() == 'Week') {
-								date.setDate(date.getDate() - 7);
-							} else if ($('#pickerPeriod').val() == 'Month') {
-								var value = splitDate[1] - 2;
-								date.setMonth(value);
-							} else if ($('#pickerPeriod').val() == 'Year') {
-								var value = parseInt(splitDate[2]) - 1;
-								date.setFullYear(value);
-							}
-							picker.datepicker('setDate', date);
-							handleGraphs('picker', devicenum);
-						});
-						handleGraphs('standard', devicenum);
-					},
-					dataType : 'text'
+				var html = template({
+					'data' : data,
+					'lang' : data.lang
 				});
+				$("#pickerFilter").html(html);
+				$("#datepicker").datepicker({
+					onSelect : function(date) {
+						handleGraphs('picker', devicenum);
+					}
+				});
+				$("#datepicker").datepicker("option", "dateFormat","dd-mm-yy");
+
+				$("#datepicker").datepicker('setDate', new Date());
+
+				// fix for Graph Tooltip
+				$("#datepicker").css('z-index', 0);
+				// fix for Graph Tooltip
+
+				var devicenum = $('#devicenum').val();
+
+				$('#next').unbind('click');
+				$('#previous').unbind('click');
+				$('#pickerPeriod').unbind('click');
+				$('#devicenum').unbind('click');
+
+				$('#devicenum').click(function() {
+					var picker = $("#datepicker");
+					var date = new Date(picker.datepicker('getDate'));
+					picker.datepicker('setDate', date);
+					handleGraphs('picker', devicenum);
+				});
+
+				$('#next').click(function() {
+					var picker = $("#datepicker");
+					var date = new Date(picker.datepicker('getDate'));
+					var splitDate = $('#datepicker').val().split('-');
+					if ($('#pickerPeriod').val() == 'Today') {
+						date.setDate(date.getDate() + 1);
+					} else if ($('#pickerPeriod').val() == 'Week') {
+						date.setDate(date.getDate() + 7);
+					} else if ($('#pickerPeriod').val() == 'Month') {
+						var value = splitDate[1];
+						date.setMonth(value);
+					} else if ($('#pickerPeriod').val() == 'Year') {
+						var value = parseInt(splitDate[2]) + 1;
+						date.setFullYear(value);
+					}
+					picker.datepicker('setDate', date);
+					handleGraphs('picker', devicenum);
+				});
+
+				$('#previous').click(function() {
+					var picker = $("#datepicker");
+					var date = new Date(picker.datepicker('getDate'));
+					var splitDate = $('#datepicker').val().split('-');
+					if ($('#pickerPeriod').val() == 'Today') {
+						date.setDate(date.getDate() - 1);
+					} else if ($('#pickerPeriod').val() == 'Week') {
+						date.setDate(date.getDate() - 7);
+					} else if ($('#pickerPeriod').val() == 'Month') {
+						var value = splitDate[1] - 2;
+						date.setMonth(value);
+					} else if ($('#pickerPeriod').val() == 'Year') {
+						var value = parseInt(splitDate[2]) - 1;
+						date.setFullYear(value);
+					}
+					picker.datepicker('setDate', date);
+					handleGraphs('picker', devicenum);
+				});
+				handleGraphs('standard', devicenum);
+			},
+			dataType : 'text'
+		});
 	});
 }
 
@@ -703,15 +629,11 @@ function graphProductionOptions() {
 			},
 			renderer : $.jqplot.BarRenderer,
 			rendererOptions : {
-				barPadding : 5, // number of pixels between adjacent bars in the
-								// same group (same category or bin).
-				barMargin : 5, // number of pixels between adjacent groups of
-								// bars.
+				barPadding : 5, // number of pixels between adjacent bars in the same group (same category or bin).
+				barMargin : 5, // number of pixels between adjacent groups of bars.
 				barDirection : 'vertical', // vertical or horizontal.
-				barWidth : 15, // width of the bars. null to calculate
-								// automatically.
-				shadowOffset : 2, // offset from the bar edge to stroke the
-									// shadow.
+				barWidth : 15, // width of the bars. null to calculate automatically.
+				shadowOffset : 2, // offset from the bar edge to stroke the shadow.
 				shadowDepth : 5, // nuber of strokes to make for the shadow.
 				shadowAlpha : 0.2, // transparency of the shadow.
 			},
@@ -724,22 +646,13 @@ function graphProductionOptions() {
 			},
 			renderer : $.jqplot.BarRenderer,
 			rendererOptions : {
-				barPadding : 5, // number of pixels
-				// between adjacent bars
-				// in the same
-				// group (same category or bin).
-				barMargin : 5, // number of pixels
-				// between adjacent
-				// groups of bars.
-				barDirection : 'vertical', // vertical
-				// or horizontal.
-				barWidth : 15, // width of the bars. null to calculate
-								// automatically.
-				shadowOffset : 2, // offset from thebar edge tostroke
-									// theshadow.
+				barPadding : 5, // number of pixels between adjacent bars in the same group (same category or bin).
+				barMargin : 5, // number of pixels between adjacent groups of bars.
+				barDirection : 'vertical', // vertical or horizontal.
+				barWidth : 15, // width of the bars. null to calculate automatically.
+				shadowOffset : 2, // offset from thebar edge tostroke theshadow.
 				shadowDepth : 5, // nuber of strokesto make for theshadow.
-				shadowAlpha : 0.2, // transparency of
-			// the shadow.
+				shadowAlpha : 0.2, // transparency of the shadow.
 			},
 			min : 0,
 		}, {
@@ -756,47 +669,31 @@ function graphProductionOptions() {
 			pointLabels : {
 				show : false
 			}
-		}, ],
+		}, 
+		],
 		legend : {
 			show : true,
-			location : 'nw', // compass direction, nw, n, ne, e, se, s, sw,
-								// w.
-			xoffset : 12, // pixel offset of the legend box from the x (or x2)
-							// axis.
-			yoffset : 12, // pixel offset of the legend box from the y (or y2)
-							// axis.
+			location : 'nw', // compass direction, nw, n, ne, e, se, s, sw, w.
+			xoffset : 12, // pixel offset of the legend box from the x (or x2) axis.
+			yoffset : 12, // pixel offset of the legend box from the y (or y2) axis.
 		},
 		axes : {
 			xaxis : {
-				show : true, // wether or not to renderer the axis.
-								// Determined automatically.
-				pad : 1, // a factor multiplied by the data range on the axis
-							// to give the axis range so that data points don't
-							// fall on the edges of the axis.
-				ticks : [], // a 1D [val1, val2, ...],or 2D [[val, label],/
-							// [val, label], ...] array of ticks to use.
-							// Computed automatically.
-				renderer : $.jqplot.CategoryAxisRenderer, // renderer to use
-															// to draw the axis,
+				show : true, // wether or not to renderer the axis. Determined automatically.
+				pad : 1, // a factor multiplied by the data range on the axis to give the axis range so that data points don't fall on the edges of the axis.
+				ticks : [], // a 1D [val1, val2, ...],or 2D [[val, label], [val, label], ...] array of ticks to use. Computed automatically.
+				renderer : $.jqplot.CategoryAxisRenderer, // renderer to use to draw the axis,
 				labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
 				tickRenderer : $.jqplot.CanvasAxisTickRenderer,
-				rendererOptions : {}, // options to pass to the renderer.
-										// LinearAxisRenderer has no options,
+				rendererOptions : {}, // options to pass to the renderer. LinearAxisRenderer has no options,
 				tickOptions : {
-					mark : 'outside', // Where to put the tick mark on the
-										// axis'outside', 'inside' or 'cross',
+					mark : 'outside', // Where to put the tick mark on the axis'outside', 'inside' or 'cross',
 					showMark : true,
-					showGridline : true, // wether to draw a gridline (across
-											// the whole grid) at this tick,
-					markSize : 4, // length the tick will extend beyond the
-									// grid in pixels. For 'cross', length will
-									// be added above and below the grid
-									// boundary,
+					showGridline : true, // wether to draw a gridline (across the whole grid) at this tick,
+					markSize : 4, // length the tick will extend beyond the grid in pixels. For 'cross', length will be added above and below the grid boundary,
 					show : true, // wether to show the tick (mark and label),
-					showLabel : true, // wether to show the text label at the
-										// tick,
-					formatString : '', // format string to use with the axis
-										// tick formatter
+					showLabel : true, // wether to show the text label at the tick,
+					formatString : '', // format string to use with the axis tick formatter
 				},
 				showTicks : true, // wether or not to show the tick labels,
 				showTickMarks : true, // wether or not to show the tick marks
@@ -878,8 +775,7 @@ var WSL = {
 
 		if (getWindowsState() == false) {
 			WSL.api.getPageIndexBlurLiveValues(function(data) {
-				document.title = '(' + data.sumInverters.totalSystemACP
-						+ ' W) WebSolarLog';
+				document.title = '(' + data.sumInverters.totalSystemACP + ' W) WebSolarLog';
 			});
 		} else {
 			WSL.api.getPageIndexLiveValues(function(data) {
@@ -895,8 +791,7 @@ var WSL = {
 							min : 0,
 							max : GP * 10,
 							padding : 0,
-							intervals : [ GP, GP * 2, GP * 3, GP * 4, GP * 5,
-									GP * 6, GP * 7, GP * 8, GP * 9, GP * 10 ],
+							intervals : [ GP, GP * 2, GP * 3, GP * 4, GP * 5, GP * 6, GP * 7, GP * 8, GP * 9, GP * 10 ],
 							intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
 									'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
 									'#4BFE78', '#0AFE47', '#01F33E' ]
@@ -915,8 +810,7 @@ var WSL = {
 							min : 0,
 							max : IP * 10,
 							padding : 0,
-							intervals : [ IP, IP * 2, IP * 3, IP * 4, IP * 5,
-									IP * 6, IP * 7, IP * 8, IP * 9, IP * 10 ],
+							intervals : [ IP, IP * 2, IP * 3, IP * 4, IP * 5, IP * 6, IP * 7, IP * 8, IP * 9, IP * 10 ],
 							intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
 									'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
 									'#4BFE78', '#0AFE47', '#01F33E' ]
@@ -935,9 +829,7 @@ var WSL = {
 							min : 0,
 							max : EFF * 10,
 							padding : 0,
-							intervals : [ EFF, EFF * 2, EFF * 3, EFF * 4,
-									EFF * 5, EFF * 6, EFF * 7, EFF * 8,
-									EFF * 9, EFF * 10 ],
+							intervals : [ EFF, EFF * 2, EFF * 3, EFF * 4, EFF * 5, EFF * 6, EFF * 7, EFF * 8, EFF * 9, EFF * 10 ],
 							intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
 									'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
 									'#4BFE78', '#0AFE47', '#01F33E' ]
@@ -962,17 +854,14 @@ var WSL = {
 
 				$('#gaugeGP').empty();
 				gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ], gaugeGPOptions);
-				gaugeGP.series[0].data = [ [ 'W',
-						data.sumInverters.totalSystemACP ] ];
+				gaugeGP.series[0].data = [ [ 'W', data.sumInverters.totalSystemACP ] ];
 				gaugeGP.series[0].label = data.sumInverters.totalSystemACP;
-				document.title = '(' + data.sumInverters.totalSystemACP
-						+ ' W) WebSolarLog';
+				document.title = '(' + data.sumInverters.totalSystemACP + ' W) WebSolarLog';
 				gaugeGP.replot();
 
 				$('#gaugeIP').empty();
 				gaugeIP = $.jqplot('gaugeIP', [ [ 0.1 ] ], gaugeIPOptions);
-				gaugeIP.series[0].data = [ [ 'W',
-						data.sumInverters.totalSystemIP ] ];
+				gaugeIP.series[0].data = [ [ 'W', data.sumInverters.totalSystemIP ] ];
 				gaugeIP.series[0].label = data.sumInverters.totalSystemIP;
 				gaugeIP.replot();
 
@@ -1037,8 +926,6 @@ var WSL = {
 					},
 					dataType : 'text'
 				});
-			} else {
-				alert(data.plantInfo.message);
 			}
 		});
 	},
@@ -1091,8 +978,7 @@ var WSL = {
 
 	init_mainSummary : function(divId) {
 		var currentTime = new Date();
-		date = (currentTime.getDate()) + "-" + (currentTime.getMonth() + 1)
-				+ "-" + currentTime.getFullYear();
+		date = (currentTime.getDate()) + "-" + (currentTime.getMonth() + 1) + "-" + currentTime.getFullYear();
 		WSL.api.mainSummary(date, function(data) {
 			$.ajax({
 				url : 'js/templates/mainSummary.hb',
@@ -1161,7 +1047,6 @@ var WSL = {
 						} else if (cId == 906) {
 							var conditionText = 'hail';
 						}
-
 					}
 
 					function loadImages(sources, callback) {
@@ -1242,22 +1127,24 @@ var WSL = {
 						context.fillText(windSpeed + 'm/s', 77, 25, 34);
 
 						context.fillText('Clouds:', 77, 42, 30);
-						context.fillText(data.total.weather.clouds + '%', 77,
-								55, 30);
+						context.fillText(data.total.weather.clouds + '%', 77,55, 30);
 
 						context.fillText('Last hour:', 160, 42, 60);
-						context.fillText(data.total.weather.rain1h + 'mm', 160,
-								55, 30);
+						context.fillText(data.total.weather.rain1h + 'mm', 160,55, 30);
 
 						context.fillText('Temp', 120, 42, 75);
-						context.fillText(data.total.weather.currentTemp + '°',
-								120, 55, 60);
-						{
+						context.fillText(data.total.weather.currentTemp + '°', 120, 55, 60);
+						
+						
+						// no idea with what it is...
+						/*{
 							{
 								data.total.weather.currentTemp
 							}
-						}
+						}*/
 
+						
+						
 						context.font = '11pt Calibri';
 						context.fillText('N', 35, 13, 10);
 						context.fillText('S', 36, 73, 10);
@@ -1275,53 +1162,49 @@ var WSL = {
 
 	init_tabs : function(page, tabIndex, divId, success) {
 		// initialize languages selector on the given div
-		WSL.api
-				.getTabs(
-						page,
-						function(data) {
-							$
-									.ajax({
-										url : 'js/templates/tabs.hb',
-										beforeSend : function(xhr) {
-											if (getWindowsState() == false) {
-												ajaxAbort(xhr);
-											}
-										},
-										success : function(source) {
-											var template = Handlebars
-													.compile(source);
-											var html = template({
-												'data' : data,
-												'lang' : data.lang
-											});
-											if ($("#mainSummary").length > 0) {
-												$("#mainSummary").after(html);
-											} else {
-												$(html).prependTo(divId);
-											}
+		WSL.api.getTabs(page,function(data) {
+			$.ajax({
+				url : 'js/templates/tabs.hb',
+				beforeSend : function(xhr) {
+					if (getWindowsState() == false) {
+						ajaxAbort(xhr);
+					}
+				},
+				success : function(source) {
+					var template = Handlebars
+							.compile(source);
+					var html = template({
+						'data' : data,
+						'lang' : data.lang
+					});
+					if ($("#mainSummary").length > 0) {
+						$("#mainSummary").after(html);
+					} else {
+						$(html).prependTo(divId);
+					}
 
-											$('#tabs').tabs({
-												active : tabIndex,
-												create : function(event, ui) {
-													// populate the tabs:
-													populateTabs();
-												},
-												activate : function(event, ui) {
-													// populate the tabs:
-													populateTabs();
-												}
-											});
-											// fix the classes
-											$(".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *").removeClass("ui-corner-all ui-corner-top").addClass("ui-corner-bottom");
+					$('#tabs').tabs({
+						active : tabIndex,
+						create : function(event, ui) {
+							// populate the tabs:
+							populateTabs();
+						},
+						activate : function(event, ui) {
+							// populate the tabs:
+							populateTabs();
+						}
+					});
+					// fix the classes
+					$(".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *").removeClass("ui-corner-all ui-corner-top").addClass("ui-corner-bottom");
 
-											// move the nav to the bottom
-											$(".tabs-bottom .ui-tabs-nav").appendTo(".tabs-bottom");
+					// move the nav to the bottom
+					$(".tabs-bottom .ui-tabs-nav").appendTo(".tabs-bottom");
 
-											success.call();
-										},
-										dataType : 'text',
-									});
-						});
+					success.call();
+				},
+				dataType : 'text',
+			});
+		});
 		return true;
 	},
 
@@ -1360,10 +1243,6 @@ var WSL = {
 				'data' : data.IndexValues,
 				'lang' : data.lang
 			}));
-			// WSL.api.getWeatherValues(function(data) {
-			// $(sideBar).append(WSL.template.get("widgetWeather", { 'data' :
-			// data.data }));
-			// });
 		});
 	},
 
@@ -1396,150 +1275,72 @@ var WSL = {
 		}
 
 		// initialize languages selector on the given div
-		WSL.api
-				.getPageMonthValues(
-						completeDate,
-						function(data) {
-							$
-									.ajax({
-										url : 'js/templates/monthValues.hb',
-										beforeSend : function(xhr) {
-											if (getWindowsState() == false) {
-												ajaxAbort(xhr, '');
-											}
-										},
-										success : function(source) {
-											var template = Handlebars
-													.compile(source);
-											var html = template({
-												'data' : data,
-												'lang' : data.lang
-											});
-											$(monthValues).html(html);
+		WSL.api.getPageMonthValues(completeDate,function(data) {
+				$.ajax({
+					url : 'js/templates/monthValues.hb',
+					beforeSend : function(xhr) {
+						if (getWindowsState() == false) {
+							ajaxAbort(xhr, '');
+						}
+					},
+					success : function(source) {
+						var template = Handlebars.compile(source);
+						var html = template({
+							'data' : data,
+							'lang' : data.lang
+						});
+						$(monthValues).html(html);
 
-											$(function() {
-												$(".accordion").accordion({
-													collapsible : true
-												});
-												$(".accordion").accordion({
-													collapsible : true
-												});
-											});
-
-											// $('#pageMonthDateFilter').html(html);
-											if (!pickerDate) {
-												$("#datePickerPeriod")
-														.datepicker(
-																{
-																	dateFormat : 'mm-yy',
-																	changeMonth : true,
-																	changeYear : true,
-																	onClose : function(
-																			dateText,
-																			inst) {
-																		var month = $(
-																				"#ui-datepicker-div .ui-datepicker-month :selected")
-																				.val();
-																		var year = $(
-																				"#ui-datepicker-div .ui-datepicker-year :selected")
-																				.val();
-																		// new
-																		// Date(year,month,day)
-																		// W3schools
-																		$(this)
-																				.val(
-																						$.datepicker
-																								.formatDate(
-																										'mm-yy',
-																										new Date(
-																												year,
-																												month,
-																												1)));
-																		WSL
-																				.init_PageMonthValues(
-																						"#columns",
-																						"#periodList"); // Initial
-																										// loadfast
-																	}
-																});
-												// new Date(year, month, day) //
-												// W3schools
-												$("#datePickerPeriod")
-														.datepicker('setDate',
-																new Date());
-											} else {
-												$("#datePickerPeriod")
-														.datepicker(
-																{
-																	dateFormat : 'mm-yy',
-																	changeMonth : true,
-																	changeYear : true,
-																	onClose : function(
-																			dateText,
-																			inst) {
-																		var month = $(
-																				"#ui-datepicker-div .ui-datepicker-month :selected")
-																				.val();
-																		var year = $(
-																				"#ui-datepicker-div .ui-datepicker-year :selected")
-																				.val();// new
-																						// Date(year,
-																						// month,
-																						// day)//
-																						// W3schools
-																		$(this)
-																				.val(
-																						$.datepicker
-																								.formatDate(
-																										'mm-yy',
-																										new Date(
-																												year,
-																												month,
-																												1)));
-																		WSL
-																				.init_PageMonthValues(
-																						"#columns",
-																						"#periodList"); // Initial
-																		// load
-																		// fast
-																	}
-																});
-												pickerDate = pickerDate
-														.split('-'); // 01-2012
-												// (month-year)
-												pickerDate[0] = pickerDate[0] - 1;
-												// new
-												// Date(year,
-												// month, day)
-												// // W3schools
-												$("#datePickerPeriod")
-														.datepicker(
-																'setDate',
-																new Date(
-																		pickerDate[1],
-																		pickerDate[0],
-																		1));
-											}
-											$("#datePickerPeriod")
-													.focus(
-															function() {
-																$(
-																		".ui-datepicker-calendar")
-																		.hide();
-																$(
-																		"#ui-datepicker-div")
-																		.position(
-																				{
-																					my : "center top",
-																					at : "center bottom",
-																					of : $(this)
-																				});
-															});
-										},
-										dataType : 'text',
-									});
+						$(function() {
+							$(".accordion").accordion({
+								collapsible : true
+							});
+							$(".accordion").accordion({
+								collapsible : true
+							});
 						});
 
+						// $('#pageMonthDateFilter').html(html);
+						if (!pickerDate) {
+							$("#datePickerPeriod").datepicker({
+								dateFormat : 'mm-yy',
+								changeMonth : true,
+								changeYear : true,
+								onClose : function(dateText,inst) {
+									var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+									var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+									// newDate(year,month,day) W3schools
+									$(this).val($.datepicker.formatDate('mm-yy',new Date(year,month,1)));
+									WSL.init_PageMonthValues("#columns","#periodList"); // Initial loadfast
+								}
+							});
+							// new Date(year, month, day) //
+							// W3schools
+							$("#datePickerPeriod").datepicker('setDate',new Date());
+						} else {
+							$("#datePickerPeriod").datepicker({
+								dateFormat : 'mm-yy',
+								changeMonth : true,
+								changeYear : true,
+								onClose : function(dateText,inst) {
+									var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+									var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();// new Date(year,month, day)// W3schools
+									$(this).val($.datepicker.formatDate('mm-yy',new Date(year,month,1)));
+									WSL.init_PageMonthValues("#columns","#periodList"); // Initial load fast
+								}
+							});
+							pickerDate = pickerDate.split('-'); // 01-2012 (month-year)
+							pickerDate[0] = pickerDate[0] - 1; //new Date(year, month, day)// W3schools
+							$("#datePickerPeriod").datepicker('setDate',new Date(pickerDate[1],pickerDate[0],1));
+						}
+						$("#datePickerPeriod").focus(function() {
+							$(".ui-datepicker-calendar").hide();
+							$("#ui-datepicker-div").position({my : "center top",at : "center bottom",of : $(this)});
+						});
+					},
+					dataType : 'text',
+				});
+			});
 		ajaxReady();
 	},
 
@@ -1679,9 +1480,7 @@ var WSL = {
 						context.rotate(angle * TO_RADIANS);
 
 						// then draw the image back and up
-						context
-								.drawImage(images.arrow, -20, -20, width,
-										height);
+						context.drawImage(images.arrow, -20, -20, width,height);
 
 						// save the context's co-ordinate system before
 						// we screw with it
@@ -1693,34 +1492,33 @@ var WSL = {
 						} else {
 							context.fillText(windSpeed + 'm/s', 77, 27, 30);
 						}
-
 						context.fillText('Wind Speed:', 77, 10, 50);
 						context.fillText(windSpeed + 'm/s', 77, 25, 30);
 
 						context.fillText('Clouds:', 77, 42, 30);
-						context.fillText(data.total.weather.clouds + '%', 77,
-								55, 30);
+						context.fillText(data.total.weather.clouds + '%', 77,55, 30);
 
 						context.fillText('Last hour:', 77, 72, 60);
-						context.fillText(data.total.weather.rain1h + 'mm', 77,
-								85, 30);
+						context.fillText(data.total.weather.rain1h + 'mm', 77,85, 30);
 
 						context.fillText('Temp cur/avg:', 140, 42, 75);
-						context
-								.fillText(data.total.weather.currentTemp + '°/'
-										+ data.total.weather.avgTemp + '°',
-										140, 55, 60);
+						context.fillText(data.total.weather.currentTemp + '°/'+ data.total.weather.avgTemp + '°',140, 55, 60);
 						context.fillText('Temp min/max:', 140, 72, 75);
-						context
-								.fillText(data.total.weather.minTemp + '°/'
-										+ data.total.weather.maxTemp + '°',
-										140, 85, 60);
+						context.fillText(data.total.weather.minTemp + '°/'+ data.total.weather.maxTemp + '°',140, 85, 60);
+						
+						
+						
+						
+						// no idea what this is...
+						/*
 						{
 							{
 								data.total.weather.currentTemp
 							}
-						}
+						}*/
 
+						
+						
 						context.font = '11pt Calibri';
 						context.fillText('N', 35, 13, 10);
 						context.fillText('S', 36, 73, 10);
@@ -1728,7 +1526,6 @@ var WSL = {
 						context.fillText('W', 3, 42, 10);
 						context.restore();
 					});
-
 					ajaxReady();
 				},
 				dataType : 'text'
@@ -1750,138 +1547,88 @@ var WSL = {
 		}
 
 		// initialize languages selector on the given div
-		WSL.api
-				.getPageYearValues(
-						completeDate,
-						function(data) {
-							$
-									.ajax({
-										url : 'js/templates/yearValues.hb',
-										beforeSend : function(xhr) {
-											if (getWindowsState() == false) {
-												ajaxAbort(xhr, '');
+		WSL.api.getPageYearValues(completeDate,function(data) {
+							$.ajax({
+					url : 'js/templates/yearValues.hb',
+					beforeSend : function(xhr) {
+						if (getWindowsState() == false) {
+							ajaxAbort(xhr, '');
+						}
+					},
+					success : function(source) {
+						var template = Handlebars
+								.compile(source);
+						var html = template({
+							'data' : data,
+							'lang' : data.lang
+						});
+						$(yearValues).html(html);
+						$(function() {
+							$(".accordion").accordion({
+								collapsible : true
+							});
+							$(".accordion").accordion({
+								collapsible : true
+							});
+						});
+						$.getJSON('server.php?method=getPeriodFilter&type=all',function(PeriodFilter) {
+							$.ajax({
+								url : 'js/templates/pageDateFilter.hb',
+								beforeSend : function(xhr) {
+									if (getWindowsState() == false) {
+										ajaxAbort(xhr,'');
+									}
+								},
+								success : function(source) {
+									var template = Handlebars.compile(source);
+									var html = template({
+										'data' : PeriodFilter,
+										'lang' : PeriodFilter.lang
+									});
+									$('#pageYearDateFilter').html(html);
+									if (!pickerDate) {
+										$("#datePickerPeriod").datepicker({
+											dateFormat : 'yy',
+											changeMonth : false,
+											changeYear : true,
+											onClose : function(dateText,inst) {
+												var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val(); //new Date(year,month, day) // W3schools
+												$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
+												WSL.init_PageYearValues("#columns","#periodList"); // Initial
+												// load fast
 											}
-										},
-										success : function(source) {
-											var template = Handlebars
-													.compile(source);
-											var html = template({
-												'data' : data,
-												'lang' : data.lang
-											});
-											$(yearValues).html(html);
-											$(function() {
-												$(".accordion").accordion({
-													collapsible : true
-												});
-												$(".accordion").accordion({
-													collapsible : true
-												});
-											});
-											$.getJSON('server.php?method=getPeriodFilter&type=all',function(PeriodFilter) {
-												$.ajax({
-																	url : 'js/templates/pageDateFilter.hb',
-																	beforeSend : function(
-																			xhr) {
-																		if (getWindowsState() == false) {
-																			ajaxAbort(
-																					xhr,
-																					'');
-																		}
-																	},
-																	success : function(source) {
-																		var template = Handlebars.compile(source);
-																		var html = template({
-																			'data' : PeriodFilter,
-																			'lang' : PeriodFilter.lang
-																		});
-																		$('#pageYearDateFilter').html(html);
-																		if (!pickerDate) {
-																			$("#datePickerPeriod").datepicker(
-																							{
-																								dateFormat : 'yy',
-																								changeMonth : false,
-																								changeYear : true,
-																								onClose : function(dateText,inst) {
-																									var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-																									// new
-																									// Date(year,month,
-																									// day)
-																									// //
-																									// W3schools
-																									$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
-																									WSL.init_PageYearValues("#columns","#periodList"); // Initial
-																									// load fast
-																								}
-																							});
-																			$("#datePickerPeriod").datepicker('setDate',new Date());
-																		} else {
-																			$("#datePickerPeriod").datepicker(
-																							{
-																								dateFormat : 'yy',
-																								changeMonth : false,
-																								changeYear : true,
-																								onClose : function(
-																										dateText,
-																										inst) {
-																									var year = $(
-																											"#ui-datepicker-div .ui-datepicker-year :selected")
-																											.val();
-																									// new
-																									// Date(year,
-																									// month,
-																									// day)
-																									$(
-																											this)
-																											.val(
-																													$.datepicker
-																															.formatDate(
-																																	'yy',
-																																	new Date(
-																																			year,
-																																			1,
-																																			1)));
-																									WSL
-																											.init_PageYearValues(
-																													"#columns",
-																													"#periodList"); // Initial
-																									// load
-																									// fast
-																								}
-																							});
-																			// new
-																			// Date(year,
-																			// month,
-																			// day)
-																			$(
-																					"#datePickerPeriod")
-																					.datepicker(
-																							'setDate',
-																							new Date(
-																									pickerDate,
-																									1,
-																									1));
-																		}
-																		$("#datePickerPeriod").focus(function() {
-																							$(".ui-datepicker-calendar").hide();
-																							$(".ui-datepicker-month").hide();
-																							$(".ui-icon-circle-triangle-w").hide();
-																							$(".ui-icon-circle-triangle-e").hide();
-																							$("#ui-datepicker-div").position(
-																											{
-																												my : "center top",
-																												at : "center bottom",
-																												of : $(this)
-																											});
-																						});
-																	},
-																	dataType : 'text',
-																});
-													});
+										});
+										$("#datePickerPeriod").datepicker('setDate',new Date());
+									} else {
+										$("#datePickerPeriod").datepicker({
+											dateFormat : 'yy',
+											changeMonth : false,
+											changeYear : true,
+											onClose : function(dateText,inst) {
+												var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();//newDate(year,month,day)
+												$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
+												WSL.init_PageYearValues("#columns","#periodList"); // Initial loadfast
+											}
+										});// newDate(year,month,day)
+										$("#datePickerPeriod").datepicker('setDate',new Date(pickerDate,1,1));
+									}
+									$("#datePickerPeriod").focus(function() {
+										$(".ui-datepicker-calendar").hide();
+										$(".ui-datepicker-month").hide();
+										$(".ui-icon-circle-triangle-w").hide();
+										$(".ui-icon-circle-triangle-e").hide();
+										$("#ui-datepicker-div").position({
+											my : "center top",at : "center bottom",of : $(this)
+										});
+									});
 								},
 								dataType : 'text',
 							});
 						});
+					},
+					dataType : 'text',
+				});
+			});
 		ajaxReady();
 	},
 
@@ -1974,8 +1721,7 @@ var WSL = {
 						});
 					});
 
-					// now transform the object sums back into an array of
-					// pairs
+					// now transform the object sums back into an array ofpairs
 					var results = [];
 					for ( var key in sums) {
 						results.push([ parseInt(key), sums[key] ]);
@@ -1993,7 +1739,6 @@ var WSL = {
 							for (series in result.series) {
 								result.series[series] = $.parseJSON(result.series[series].json);
 							}
-
 							for (line in result.dataPoints) {
 
 								var json = [];
@@ -2006,18 +1751,20 @@ var WSL = {
 								newJsonSeries = [];
 								
 								if (seriesData.length == Object.keys(result.dataPoints).length) {
-									var axesNumber = parseInt(Object.keys(result.dataPoints).length);
-									for ( var i = 0; i < clearSky.length; i++) {
+									var axesNumber = Object.keys(result.dataPoints).length;
+									for (var i = 0; i < clearSky.length; i++) {
 										var clearSkySeriesObject = []; 
 										seriesData.push(clearSky[i]);
 										clearSkySeriesObject['label'] = clearSkyDeviceNames[i];
 										clearSkySeriesObject['yaxis'] = 'yaxis';
-										result.series.splice(axesNumber, 0,clearSkySeriesObject);
+										result.series.splice(axesNumber, 0, clearSkySeriesObject);
 										result.series.join();
 										axesNumber++;
 									}
 								}
 							}
+
+							
 							if (result.json.legend != '') {
 								if (result.json.legend.renderer == 'EnhancedLegendRenderer') {
 									result.json.legend.renderer = $.jqplot.EnhancedLegendRenderer;
@@ -2084,19 +1831,16 @@ var WSL = {
 						// walkthrough legenda
 						$('td.jqplot-table-legend').each(function() {
 							$this = $(this);
-							// walkthrough array with hidden
-							// lines
+							// walkthrough array with hidden lines
 							for (line in result.hideSeries) {
 								// if legenda.text is equal to hideSeries text; 
 								// Click this legenda item to hide is
 								if (seriesHidden.length > 0) {
-									if ($this.text() == seriesHidden[line]) {
-										// CLICK!!
+									if ($this.text() == seriesHidden[line]) { //CLICK!!
 										$("td:contains("+ $this.text()+ ")").click();
 									}
 								} else {
-									if ($this.text() == result.hideSeries[line]) {
-										// CLICK!!
+									if ($this.text() == result.hideSeries[line]) { // CLICK!!
 										$("td:contains("+ $this.text()+ ")").click();
 									}
 								}
@@ -2115,12 +1859,9 @@ var WSL = {
 								+ result.meta.KWH.KWHTUnit+ ' ('
 								+ result.meta.KWH.KWHKWP+ ' kWh/kWp)&nbsp&nbsp;'
 								+ result.lang.max+ ': '
-								+ parseInt(plantTotalPower)
-								+ ' '
-								+ result.meta.KWH.KWHTUnit
-								+ ' ('
-								+ ((typeof totalKWhkWp === 'undefined') ? 0
-										: totalKWhkWp) + ' kWh/kWp)</div>';
+								+ parseInt(plantTotalPower) + ' '
+								+ result.meta.KWH.KWHTUnit + ' ('
+								+ ((typeof totalKWhkWp === 'undefined') ? 0: totalKWhkWp) + ' kWh/kWp)</div>';
 
 						delete seriesData, graphOptions;
 						// if (typeof (result.json.KWH) !== "undefined") {
@@ -2259,69 +2000,62 @@ var WSL = {
 		$(divId).html('<div id="datePickerContainer"></div><div id="graphContainer"></div><div id="figuresContainer">figurs loading...</div>');
 
 		WSL.connect.getJSON('server.php?method=getDevices',function(data) {
-							$('#datePickerContainer').html(
-									WSL.template.get('pageDateFilter', {
-										'data' : data,
-										'lang' : data.lang
-									}));
+			$('#datePickerContainer').html(
+					WSL.template.get('pageDateFilter', {
+						'data' : data,
+						'lang' : data.lang
+					}));
 
-							$("#datePickerPeriod").val(new Date().getFullYear());
-							var currentYear = $("#datePickerPeriod").val();
+			$("#datePickerPeriod").val(new Date().getFullYear());
+			var currentYear = $("#datePickerPeriod").val();
 
-							$("#datePickerPeriod").datepicker({
-												dateFormat : 'yy',
-												changeMonth : false,
-												changeYear : true,
-												onSelect : function(dateText,inst) {
-													// $(this).val($('#datePickerPeriod').val());
-												},
-												onClose : function(dateText,inst) {
-													var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-													// new Date(year,month, day)
-													// // W3schools
-													// if(currentYear != year){
-													// console.log(year);
-													$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
-													$("#graphContainer").html('reloading....');
-													$("#figuresContainer").html('reloading....');
-													devicenum = $('#devicenum').val();
-													WSL.createProductionGraph(devicenum,'graphContainer','1-1-' + year); // Initial load fast
-													// }
-												}
-											});
-
-							$('#devicenum').bind('change',
-											function() {
-												var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-												$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
-												$("#graphContainer").html('reloading....');
-												$("#figuresContainer").html('reloading....');
-												devicenum = $('#devicenum').val();
-												WSL.createProductionGraph(devicenum,'graphContainer','1-1-' + year); // Initial load fast
-											});
-
-							var pickerDate = $('#datePickerPeriod').val();
-							// new Date(year,month, day) // W3schools
-							$(this).val(
-									$.datepicker.formatDate('yy', new Date(
-											pickerDate, 1, 1)));
-							var devicenum = $('#devicenum').val();
-							WSL.createProductionGraph(devicenum,
-									'graphContainer', pickerDate); // Initial
-																	// load fast
-
-							$("#datePickerPeriod").focus(function() {
-								$(".ui-datepicker-calendar").hide();
-								$(".ui-datepicker-month").hide();
-								$(".ui-icon-circle-triangle-w").hide();
-								$(".ui-icon-circle-triangle-e").hide();
-								$("#ui-datepicker-div").position({
-									my : "center top",
-									at : "center bottom",
-									of : $(this)
-								});
+			$("#datePickerPeriod").datepicker({
+								dateFormat : 'yy',
+								changeMonth : false,
+								changeYear : true,
+								onSelect : function(dateText,inst) {
+									// $(this).val($('#datePickerPeriod').val());
+								},
+								onClose : function(dateText,inst) {
+									var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+									// new Date(year,month, day) // W3schools
+									// if(currentYear != year){
+									$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
+									$("#graphContainer").html('reloading....');
+									$("#figuresContainer").html('reloading....');
+									devicenum = $('#devicenum').val();
+									WSL.createProductionGraph(devicenum,'graphContainer','1-1-' + year); // Initial load fast
+									// }
+								}
 							});
-						});
+
+			$('#devicenum').bind('change',
+			function() {
+				var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+				$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
+				$("#graphContainer").html('reloading....');
+				$("#figuresContainer").html('reloading....');
+				devicenum = $('#devicenum').val();
+				WSL.createProductionGraph(devicenum,'graphContainer','1-1-' + year); // Initial load fast
+			});
+
+			var pickerDate = $('#datePickerPeriod').val(); // new Date(year,month, day) // W3schools
+			$(this).val($.datepicker.formatDate('yy', new Date(pickerDate, 1, 1)));
+			var devicenum = $('#devicenum').val();
+			WSL.createProductionGraph(devicenum, 'graphContainer', pickerDate); // Initial load fast
+
+			$("#datePickerPeriod").focus(function() {
+				$(".ui-datepicker-calendar").hide();
+				$(".ui-datepicker-month").hide();
+				$(".ui-icon-circle-triangle-w").hide();
+				$(".ui-icon-circle-triangle-e").hide();
+				$("#ui-datepicker-div").position({
+					my : "center top",
+					at : "center bottom",
+					of : $(this)
+				});
+			});
+		});
 	},
 
 	createProductionGraph : function(devicenum, divId, year) {
@@ -2394,15 +2128,11 @@ var WSL = {
 					graphProductionOptions.axes.xaxis.ticks = ticksTable;
 					var harvested = [];
 					var expected = [];
-					for ( var i = 0; i < dataDay1.length; i++) {
-						// Iterates over numeric indexes from 0 to 5, as
-						// everyone expects
+					for ( var i = 0; i < dataDay1.length; i++) { //Iterates over numeric indexes from 0 to 5, as everyone expects
 						harvested.push(dataDay1[i]);
 					}
 					var maxHarvested = Math.max.apply(Math, harvested);
-					for ( var i = 0; i < dataDay2.length; i++) {
-						// Iterates over numeric indexes from 0 to 5, as
-						// everyone expects
+					for ( var i = 0; i < dataDay2.length; i++) { // Iterates over numeric indexes from 0 to 5, as everyone expects
 						expected[i] = dataDay2[i];
 					}
 					var maxExpected = Math.max.apply(Math, expected);
@@ -2440,443 +2170,405 @@ var WSL = {
 			}));
 		});
 
-		WSL.connect.getJSON('server.php?method=getPeriodFilter&type=today',
-						function(data) {
-							$('#datePeriodFilter').html(
-									WSL.template.get('datePeriodFilter', {
-										'data' : data,
-										'lang' : data.lang
-									}));
+		WSL.connect.getJSON('server.php?method=getPeriodFilter&type=today', function(data) {
+			$('#datePeriodFilter').html(
+				WSL.template.get('datePeriodFilter', {
+					'data' : data,
+					'lang' : data.lang
+				}));
 
-							var date = (queryDate != "undefined") ? queryDate : date;
+			var date = (queryDate != "undefined") ? queryDate : date;
 
-							// Initialize date picker
-							var datePicker = $('#datepicker').datepicker({dateFormat : 'yy-mm-dd'});
-							datePicker.datepicker('setDate', new Date());
-							datePicker.css('z-index', 0); // fix for Graph //Tooltip
+			// Initialize date picker
+			var datePicker = $('#datepicker').datepicker({dateFormat : 'yy-mm-dd'});
+			datePicker.datepicker('setDate', new Date());
+			datePicker.css('z-index', 0); // fix for Graph //Tooltip
 
-							var deviceSelect = $('#devicenum');
-							$('#pickerPeriod, #datepicker, #devicenum').bind('change',function() {
-										var date = new Date(datePicker.datepicker('getDate'));
-										WSL.createDetailsGraph(deviceSelect.val(), divId, date);
-									});
+			var deviceSelect = $('#devicenum');
+			$('#pickerPeriod, #datepicker, #devicenum').bind('change',function() {
+				var date = new Date(datePicker.datepicker('getDate'));
+				WSL.createDetailsGraph(deviceSelect.val(), divId, date);
+			});
 
-							$('#next').unbind('click');
-							$('#previous').unbind('click');
-							$('#pickerPeriod').unbind('click');
+			$('#next').unbind('click');
+			$('#previous').unbind('click');
+			$('#pickerPeriod').unbind('click');
 
-							$('#next').click(
-											function() {
-												var date = new Date(datePicker
-														.datepicker('getDate'));
-												var splitDate = datePicker.val().split('-');
-												if ($('#pickerPeriod').val() == 'Today') {
-													date.setDate(date.getDate() + 1);
-												} else if ($('#pickerPeriod').val() == 'Week') {
-													date.setDate(date.getDate() + 7);
-												} else if ($('#pickerPeriod').val() == 'Month') {
-													var value = splitDate[1];
-													date.setMonth(value);
-												} else if ($('#pickerPeriod').val() == 'Year') {
-													var value = parseInt(splitDate[2]) + 1;
-													date.setFullYear(value);
-												}
-												datePicker.datepicker('setDate', date);
-												var splitDate = $('#datepicker').val().split('-');
-												WSL.createDetailsGraph(
-														deviceSelect.val(),
-														divId, splitDate[0]
-																+ '-'
-																+ splitDate[1]
-																+ '-'
-																+ splitDate[2]);
-											});
+			$('#next').click(function() {
+				var date = new Date(datePicker.datepicker('getDate'));
+				var splitDate = datePicker.val().split('-');
+				if ($('#pickerPeriod').val() == 'Today') {
+					date.setDate(date.getDate() + 1);
+				} else if ($('#pickerPeriod').val() == 'Week') {
+					date.setDate(date.getDate() + 7);
+				} else if ($('#pickerPeriod').val() == 'Month') {
+					var value = splitDate[1];
+					date.setMonth(value);
+				} else if ($('#pickerPeriod').val() == 'Year') {
+					var value = parseInt(splitDate[2]) + 1;
+					date.setFullYear(value);
+				}
+				datePicker.datepicker('setDate', date);
+				var splitDate = $('#datepicker').val().split('-');
+				WSL.createDetailsGraph(deviceSelect.val(),divId, splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2]);
+			});
 
-							$('#previous').click(
-											function() {
-												var date = new Date(datePicker.datepicker('getDate'));
-												var splitDate = datePicker.val().split('-');
-												if ($('#pickerPeriod').val() == 'Today') {
-													date.setDate(date.getDate() - 1);
-												} else if ($('#pickerPeriod').val() == 'Week') {
-													date.setDate(date.getDate() - 7);
-												} else if ($('#pickerPeriod').val() == 'Month') {
-													var value = splitDate[1] - 2;
-													date.setMonth(value);
-												} else if ($('#pickerPeriod').val() == 'Year') {
-													var value = parseInt(splitDate[2]) - 1;
-													date.setFullYear(value);
-												}
-												datePicker.datepicker('setDate', date);
-												var splitDate = datePicker.val().split('-');
-												WSL.createDetailsGraph(
-														deviceSelect.val(),
-														divId, splitDate[0]
-																+ '-'
-																+ splitDate[1]
-																+ '-'
-																+ splitDate[2]);
-											});
-							WSL.createDetailsGraph(deviceSelect.val(), divId,date);
-						});
+			$('#previous').click(function() {
+				var date = new Date(datePicker.datepicker('getDate'));
+				var splitDate = datePicker.val().split('-');
+				if ($('#pickerPeriod').val() == 'Today') {
+					date.setDate(date.getDate() - 1);
+				} else if ($('#pickerPeriod').val() == 'Week') {
+					date.setDate(date.getDate() - 7);
+				} else if ($('#pickerPeriod').val() == 'Month') {
+					var value = splitDate[1] - 2;
+					date.setMonth(value);
+				} else if ($('#pickerPeriod').val() == 'Year') {
+					var value = parseInt(splitDate[2]) - 1;
+					date.setFullYear(value);
+				}
+				datePicker.datepicker('setDate', date);
+				var splitDate = datePicker.val().split('-');
+				WSL.createDetailsGraph(deviceSelect.val(),divId, splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2]);
+			});
+			WSL.createDetailsGraph(deviceSelect.val(), divId,date);
+		});
 	},
 
 	createDetailsGraph : function(devicenum, divId, date) {
 		$.ajax({
-					url : "server.php?method=getDetailsGraph&devicenum="+ devicenum + "&date=" + date,
-					method : 'GET',
-					dataType : 'json',
-					beforeSend : function(xhr) {
-						if (getWindowsState() == false) {
-							ajaxAbort(xhr, '');
+			url : "server.php?method=getDetailsGraph&devicenum="+ devicenum + "&date=" + date,
+			method : 'GET',
+			dataType : 'json',
+			beforeSend : function(xhr) {
+				if (getWindowsState() == false) {
+					ajaxAbort(xhr, '');
+				}
+			},
+			success : function(result) {
+				if (result.dayData.data) {
+					var seriesLabels = [];
+					var seriesData = [];
+					var switches = [];
+					for (line in result.dayData.data) {
+						var json = [];
+						for (values in result.dayData.data[line]) {
+							json.push([
+								result.dayData.data[line][values][0] * 1000,
+								result.dayData.data[line][values][1] ]);
 						}
-					},
-					success : function(result) {
-						if (result.dayData.data) {
-							var seriesLabels = [];
-							var seriesData = [];
-							var switches = [];
-							for (line in result.dayData.data) {
-								var json = [];
-								for (values in result.dayData.data[line]) {
-									json.push([
-										result.dayData.data[line][values][0] * 1000,
-										result.dayData.data[line][values][1] ]);
-								}
-								seriesLabels.push(line);
-								seriesData.push(json);
+						seriesLabels.push(line);
+						seriesData.push(json);
+					}
+					var lang = result.lang;
+					var graphOptions = {
+						series : [ {
+							yaxis : 'yaxis'
+						}, // 0 1
+						{
+							yaxis : 'y2axis'
+						},// 1 2
+						{
+							yaxis : 'y3axis'
+						},// 2 3
+						{
+							yaxis : 'y4axis'
+						},// 3 4
+						{
+							yaxis : 'yaxis'
+						}, // 0 5
+						{
+							yaxis : 'y2axis'
+						},// 1 6
+						{
+							yaxis : 'y4axis'
+						},// 2 7
+
+						{
+							yaxis : 'yaxis'
+						}, // 0 8
+						{
+							yaxis : 'y2axis'
+						},// 1 9
+						{
+							yaxis : 'y3axis'
+						},// 2 10
+
+						{
+							yaxis : 'yaxis'
+						}, // 4 11
+						{
+							yaxis : 'y2axis'
+						},// 5 12
+						{
+							yaxis : 'y3axis'
+						},// 6 13
+						{
+							yaxis : 'y5axis'
+						},// 7 14
+						{
+							yaxis : 'yaxis'
+						}, // 4 15
+						{
+							yaxis : 'y2axis'
+						},// 5 16
+						{
+							yaxis : 'y3axis'
+						},// 6 17
+						{
+							yaxis : 'y5axis'
+						},// 7 18
+						{
+							yaxis : 'yaxis'
+						}, // 8 19
+						{
+							yaxis : 'y2axis'
+						},// 9 20
+						{
+							yaxis : 'y3axis'
+						},// 10 21
+						{
+							yaxis : 'y5axis'
+						},// 11 22
+						{
+							yaxis : 'y7axis'
+						},// 12 23
+						{
+							yaxis : 'y6axis'
+						},// 13 24
+						{
+							yaxis : 'y6axis'
+						} // 14 25
+						],
+						axesDefaults : {
+							useSeriesColor : true
+						},
+						legend : {
+							show : true,
+							location : 's',
+							placement : 'outsideGrid',
+							renderer : $.jqplot.EnhancedLegendRenderer,
+							rendererOptions : {
+								seriesToggle : 'normal',
+								numberColumns : 4,// seriesToggleReplot:{resetAxes:["yaxis"]}
 							}
-							var lang = result.lang;
-							var graphOptions = {
-								series : [ {
-									yaxis : 'yaxis'
-								}, // 0 1
-								{
-									yaxis : 'y2axis'
-								},// 1 2
-								{
-									yaxis : 'y3axis'
-								},// 2 3
-								{
-									yaxis : 'y4axis'
-								},// 3 4
-								{
-									yaxis : 'yaxis'
-								}, // 0 5
-								{
-									yaxis : 'y2axis'
-								},// 1 6
-								{
-									yaxis : 'y4axis'
-								},// 2 7
-
-								{
-									yaxis : 'yaxis'
-								}, // 0 8
-								{
-									yaxis : 'y2axis'
-								},// 1 9
-								{
-									yaxis : 'y3axis'
-								},// 2 10
-
-								{
-									yaxis : 'yaxis'
-								}, // 4 11
-								{
-									yaxis : 'y2axis'
-								},// 5 12
-								{
-									yaxis : 'y3axis'
-								},// 6 13
-								{
-									yaxis : 'y5axis'
-								},// 7 14
-								{
-									yaxis : 'yaxis'
-								}, // 4 15
-								{
-									yaxis : 'y2axis'
-								},// 5 16
-								{
-									yaxis : 'y3axis'
-								},// 6 17
-								{
-									yaxis : 'y5axis'
-								},// 7 18
-								{
-									yaxis : 'yaxis'
-								}, // 8 19
-								{
-									yaxis : 'y2axis'
-								},// 9 20
-								{
-									yaxis : 'y3axis'
-								},// 10 21
-								{
-									yaxis : 'y5axis'
-								},// 11 22
-								{
-									yaxis : 'y7axis'
-								},// 12 23
-								{
-									yaxis : 'y6axis'
-								},// 13 24
-								{
-									yaxis : 'y6axis'
-								} // 14 25
-								],
-								axesDefaults : {
-									useSeriesColor : true
-								},
-								legend : {
-									show : true,
-									location : 's',
-									placement : 'outsideGrid',
-									renderer : $.jqplot.EnhancedLegendRenderer,
-									rendererOptions : {
-										seriesToggle : 'normal',
-										numberColumns : 4,// seriesToggleReplot:{resetAxes:["yaxis"]}
-									}
-								},
-								seriesDefaults : {
-									rendererOptions : {
-										smooth : true
-									},
-									tickOptions : {
-										formatString : '%d'
-									},
-									pointLabels : {
-										show : false
-									},
-									showMarker : false,
-									autoscale : true,
-								},
-								axes : {
-									xaxis : {
-										label : '',
-										labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-										renderer : $.jqplot.DateAxisRenderer,
-										tickInterval : '3600', /* 1 hour */
-										tickOptions : {
-											angle : -30,
-											formatString : '%H:%M'
-										}
-									},
-									yaxis : {
-										label : lang.P,
-										min : 0,
-										labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-										autoscale : true,
-										tickOptions : {
-											formatString : '%.0f'
-										}
-									},
-									y2axis : {
-										label : lang.V,
-										min : 100,
-										labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-										autoscale : true,
-										tickOptions : {
-											formatString : '%.0f'
-										}
-									},
-									y3axis : {
-										label : lang.A,
-										min : 0,
-										max : 20,
-										labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-										autoscale : true,
-										tickOptions : {
-											formatString : '%.0f'
-										}
-									},
-									y4axis : {
-										label : lang.F,
-										min : 0,
-										labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-										autoscale : true,
-										tickOptions : {
-											formatString : '%.0f'
-										}
-									},
-									y5axis : {
-										label : lang.R,
-										min : 0,
-										labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-										autoscale : true,
-										tickOptions : {
-											formatString : '%.0f'
-										}
-									},
-									y6axis : {
-										label : lang.T,
-										min : 0,
-										labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-										autoscale : true,
-										tickOptions : {
-											formatString : '%.0f'
-										}
-									},
-									y7axis : {
-										label : lang.E,
-										min : 0,
-										labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
-										autoscale : true,
-										tickOptions : {
-											formatString : '%.0f'
-										}
-									}
-								},
-
-								cursor : {
-									zoom : true,
-									show : true,
-									showTooltip : false,
-									style : 'default',
-									followMouse : true
-								},
-								highlighter : {
-									show : true,
-									showTooltip : false
+						},
+						seriesDefaults : {
+							rendererOptions : {
+								smooth : true
+							},
+							tickOptions : {
+								formatString : '%d'
+							},
+							pointLabels : {
+								show : false
+							},
+							showMarker : false,
+							autoscale : true,
+						},
+						axes : {
+							xaxis : {
+								label : '',
+								labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+								renderer : $.jqplot.DateAxisRenderer,
+								tickInterval : '3600', /* 1 hour */
+								tickOptions : {
+									angle : -30,
+									formatString : '%H:%M'
 								}
-							};
-							var maxP = result.dayData.max.P;
-							graphOptions.axes.yaxis.max = maxP + ((maxP / 100) * 5);
-							graphOptions.axes.y7axis.max = maxP + ((maxP / 100) * 5);
+							},
+							yaxis : {
+								label : lang.P,
+								min : 0,
+								labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+								autoscale : true,
+								tickOptions : {
+									formatString : '%.0f'
+								}
+							},
+							y2axis : {
+								label : lang.V,
+								min : 100,
+								labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+								autoscale : true,
+								tickOptions : {
+									formatString : '%.0f'
+								}
+							},
+							y3axis : {
+								label : lang.A,
+								min : 0,
+								max : 20,
+								labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+								autoscale : true,
+								tickOptions : {
+									formatString : '%.0f'
+								}
+							},
+							y4axis : {
+								label : lang.F,
+								min : 0,
+								labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+								autoscale : true,
+								tickOptions : {
+									formatString : '%.0f'
+								}
+							},
+							y5axis : {
+								label : lang.R,
+								min : 0,
+								labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+								autoscale : true,
+								tickOptions : {
+									formatString : '%.0f'
+								}
+							},
+							y6axis : {
+								label : lang.T,
+								min : 0,
+								labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+								autoscale : true,
+								tickOptions : {
+									formatString : '%.0f'
+								}
+							},
+							y7axis : {
+								label : lang.E,
+								min : 0,
+								labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+								autoscale : true,
+								tickOptions : {
+									formatString : '%.0f'
+								}
+							}
+						},
 
-							var maxV = result.dayData.max.V;
-							graphOptions.axes.y2axis.max = maxV + ((maxV / 100) * 5);
+						cursor : {
+							zoom : true,
+							show : true,
+							showTooltip : false,
+							style : 'default',
+							followMouse : true
+						},
+						highlighter : {
+							show : true,
+							showTooltip : false
+						}
+					};
+					var maxP = result.dayData.max.P;
+					graphOptions.axes.yaxis.max = maxP + ((maxP / 100) * 5);
+					graphOptions.axes.y7axis.max = maxP + ((maxP / 100) * 5);
 
-							var maxA = result.dayData.max.A;
-							graphOptions.axes.y3axis.max = maxA + ((maxA / 100) * 5);
+					var maxV = result.dayData.max.V;
+					graphOptions.axes.y2axis.max = maxV + ((maxV / 100) * 5);
 
-							var maxFRQ = result.dayData.max.FRQ;
-							graphOptions.axes.y4axis.max = maxFRQ + ((maxFRQ / 100) * 5);
+					var maxA = result.dayData.max.A;
+					graphOptions.axes.y3axis.max = maxA + ((maxA / 100) * 5);
 
-							var maxRatio = result.dayData.max.Ratio;
-							(!maxRatio) ? maxRatio = 10 : maxRatio = maxRatio;
-							graphOptions.axes.y5axis.max = maxRatio + ((maxRatio / 100) * 5);
+					var maxFRQ = result.dayData.max.FRQ;
+					graphOptions.axes.y4axis.max = maxFRQ + ((maxFRQ / 100) * 5);
 
-							var maxT = result.dayData.max.T;
-							graphOptions.axes.y6axis.max = maxT+ ((maxT / 100) * 5);
+					var maxRatio = result.dayData.max.Ratio;
+					(!maxRatio) ? maxRatio = 10 : maxRatio = maxRatio;
+					graphOptions.axes.y5axis.max = maxRatio + ((maxRatio / 100) * 5);
 
-							var maxEFF = result.dayData.max.EFF;
-							(!maxEFF) ? maxEFF = 10 : maxEFF = maxEFF;
-							graphOptions.axes.y7axis.max = maxEFF+ ((maxEFF / 100) * 5);
+					var maxT = result.dayData.max.T;
+					graphOptions.axes.y6axis.max = maxT+ ((maxT / 100) * 5);
 
-							switches = result.dayData.switches;
+					var maxEFF = result.dayData.max.EFF;
+					(!maxEFF) ? maxEFF = 10 : maxEFF = maxEFF;
+					graphOptions.axes.y7axis.max = maxEFF+ ((maxEFF / 100) * 5);
 
-							$("#detailsGraph").height(450);
+					switches = result.dayData.switches;
 
-							graphOptions.axes.xaxis.min = seriesData[0][0][0];
-							graphOptions.legend.labels = result.dayData['labels'];
+					$("#detailsGraph").height(450);
 
-							handle = $.jqplot("detailsGraph", seriesData,graphOptions).destroy();
-							delete handle;
-							handle = $.jqplot("detailsGraph", seriesData,graphOptions);
-							// testZoom();
+					graphOptions.axes.xaxis.min = seriesData[0][0][0];
+					graphOptions.legend.labels = result.dayData['labels'];
+
+					handle = $.jqplot("detailsGraph", seriesData,graphOptions).destroy();
+					delete handle;
+					handle = $.jqplot("detailsGraph", seriesData,graphOptions);
+					// testZoom();
+					modLegenda(handle);
+
+					function testZoom() {
+						$.jqplot.postDrawHooks.push(zoomHandler);
+					}
+					function zoomHandler() {
+						var c = this.plugins.cursor;
+						if (c._zoom.zooming) {
 							modLegenda(handle);
-
-							function testZoom() {
-								$.jqplot.postDrawHooks.push(zoomHandler);
-							}
-							function zoomHandler() {
-								var c = this.plugins.cursor;
-								if (c._zoom.zooming) {
-									modLegenda(handle);
-								} else {
-									modLegenda(handle);
-								}
-							}
-
-							$('#detailsSwitches')
-									.on(
-											'change',
-											'[type=checkbox]',
-											function() {
-												var id = $(this).attr("id");
-												if (id == 'every') {
-													if ($(this).is(':checked')) {
-														for ( var i = 0; i < handle.series.length; i++) {
-															handle.series[i].show = true; // i is an integer
-														}
-														$('[type="checkbox"]').attr('checked',true);
-													} else {
-														for ( var i = 0; i < handle.series.length; i++) {
-															handle.series[i].show = false; // i is an integer
-														}
-														$('[type="checkbox"]').attr('checked',false);
-													}
-												} else {
-													if ($(this).is(':checked')) {
-														for ( var i = 0; i < switches[this.id].length; i++) {
-															handle.series[switches[this.id][i]].show = true; // i is an integer
-														}
-													} else {
-														for ( var i = 0; i < switches[this.id].length; i++) {
-															handle.series[switches[this.id][i]].show = false; // i is an integer
-														}
-													}
-												}
-												handle.replot();
-												// $('table.jqplot-table-legend').attr('class','jqplot-table-legend');
-												$('table.jqplot-table-legend').css('left', 5);
-												$('table.jqplot-table-legend').css('width', 400);
-											});
-							ajaxReady();
+						} else {
+							modLegenda(handle);
 						}
 					}
-				});
+
+					$('#detailsSwitches').on('change','[type=checkbox]',
+						function() {
+							var id = $(this).attr("id");
+							if (id == 'every') {
+								if ($(this).is(':checked')) {
+									for ( var i = 0; i < handle.series.length; i++) {
+										handle.series[i].show = true; // i is an integer
+									}
+									$('[type="checkbox"]').attr('checked',true);
+								} else {
+									for ( var i = 0; i < handle.series.length; i++) {
+										handle.series[i].show = false; // i is an integer
+									}
+									$('[type="checkbox"]').attr('checked',false);
+								}
+							} else {
+								if ($(this).is(':checked')) {
+									for ( var i = 0; i < switches[this.id].length; i++) {
+										handle.series[switches[this.id][i]].show = true; // i is an integer
+									}
+								} else {
+									for ( var i = 0; i < switches[this.id].length; i++) {
+										handle.series[switches[this.id][i]].show = false; // i is an integer
+									}
+								}
+							}
+							handle.replot();
+							// $('table.jqplot-table-legend').attr('class','jqplot-table-legend');
+							$('table.jqplot-table-legend').css('left', 5);
+							$('table.jqplot-table-legend').css('width', 400);
+						});
+				ajaxReady();
+			}
+		}
+	});
 	},
 	init_compare : function(divId) {
 		var dataTable = [];
 		// initialize languages selector on the given div
 
-		WSL.connect.getJSON('server.php?method=getCompareFilters&type=today',
-				function(data) {
-					$(divId).html(WSL.template.get('compareFilters', {
-						'data' : data,
-						'lang' : data.lang
-					}));
+		WSL.connect.getJSON('server.php?method=getCompareFilters&type=today',function(data) {
+			$(divId).html(WSL.template.get('compareFilters', {
+				'data' : data,
+				'lang' : data.lang
+			}));
 
-					WSL.createCompareGraph($('#devicenum').val(), whichMonth,whichYear, compareMonth, compareYear, 0);
+			WSL.createCompareGraph($('#devicenum').val(), whichMonth,whichYear, compareMonth, compareYear, 0);
 
-					$('#compareFilter').on('change','#devicenum',function() {
-								WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(),
-												$('#whichYear').val(), $('#compareMonth').val(),
-												$('#compareYear').val()); // Initial//
-																			// load//
-																			// fast
-							});
-					$('#compareFilter').on('change','#whichMonth',function() {
-								WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(),
-												$('#whichYear').val(), $('#compareMonth').val(),
-												$('#compareYear').val()); // Initial//
-																			// load//
-																			// fast
-							});
-					$('#compareFilter').on('change','#whichYear',
-							function() {
-								WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(),
-												$('#whichYear').val(), $('#compareMonth').val(),
-												$('#compareYear').val()); // Initial load fast
-							});
-					$('#compareFilter').on('change','#compareMonth',function() {
-								WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(),
-										$('#whichYear').val(), $('#compareMonth').val(),
-										$('#compareYear').val()); // Initial load fast
-							});
-					$('#compareFilter').on('change','#compareYear',
-							function() {
-								WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(),
-												$('#whichYear').val(), $('#compareMonth').val(),
-												$('#compareYear').val()); // Initial//
-																			// load//
-																			// fast
-							});
-					ajaxReady();
-				});
+			$('#compareFilter').on('change','#devicenum',function() {
+				WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(),$('#whichYear').val(), $('#compareMonth').val(),$('#compareYear').val()); // Initial load fast
+			});
+			$('#compareFilter').on('change','#whichMonth',function() {
+				WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(),$('#whichYear').val(), $('#compareMonth').val(),$('#compareYear').val()); // Initial load fast
+			});
+			$('#compareFilter').on('change','#whichYear',function() {
+				WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(),$('#whichYear').val(), $('#compareMonth').val(),$('#compareYear').val()); // Initial load fast
+			});
+			$('#compareFilter').on('change','#compareMonth',function() {
+				WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(),$('#whichYear').val(), $('#compareMonth').val(),$('#compareYear').val()); // Initial load fast
+			});
+			$('#compareFilter').on('change','#compareYear',function() {
+				WSL.createCompareGraph($('#devicenum').val(), $('#whichMonth').val(),$('#whichYear').val(), $('#compareMonth').val(),$('#compareYear').val()); // Initial//load//fast
+			});
+			ajaxReady();
+		});
 	},
 
 	createCompareGraph : function(devicenum, whichMonth, whichYear,compareMonth, compareYear, type) {
@@ -2982,10 +2674,7 @@ var WSL = {
 		};
 
 		$.ajax({
-					url : "server.php?method=getCompareGraph&devicenum="
-							+ devicenum + '&whichMonth=' + whichMonth
-							+ '&whichYear=' + whichYear + '&compareMonth='
-							+ compareMonth + '&compareYear=' + compareYear,
+					url : "server.php?method=getCompareGraph&devicenum="+ devicenum + '&whichMonth=' + whichMonth+ '&whichYear=' + whichYear + '&compareMonth='+ compareMonth + '&compareYear=' + compareYear,
 					beforeSend : function(xhr) {
 						if (getWindowsState() == false) {
 							ajaxAbort(xhr, '');
