@@ -46,6 +46,8 @@ class PvOutputAddon {
 					$sendDataWholeDay = true;
 				}else{
 					//we get NO SmartMeter data so we don't want to send this data day and night.
+					$v3 = 0;//v3	Energy Consumption	No	number	watt hours	10000	r1
+					$v4 = 0;//v4	Power Consumption	No	number	watts	2000	r1
 					$sendDataWholeDay = false;
 				}
 
