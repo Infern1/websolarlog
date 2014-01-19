@@ -46,8 +46,9 @@ class SummaryService {
 				$countValues = count($deviceResult);
 				$counter = 0;
 				foreach ($deviceResult as $key => $value){
+					$value = (float)$value;
 					(!isset($total[$deviceApis[$i]][$key])) ? $total[$deviceApis[$i]][$key] = 0 : $total[$deviceApis[$i]][$key] = (float)$total[$deviceApis[$i]][$key];
-					if(is_float($value)){
+					if(is_float	($value)){
 						$total[$deviceApis[$i]][$key] =((float)$total[$deviceApis[$i]][$key]+(float)$value);
 					}else{
 						$total[$deviceApis[$i]][$key] =(float)$value;
