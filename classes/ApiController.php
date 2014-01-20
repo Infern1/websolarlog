@@ -15,7 +15,11 @@
  * At the moment the ones with an * are not supported
  * 
  * @author Martin Diphoorn
- * @version 1.0.2
+ * @version 1.0.3
+ * - added RedBean_OODBBean support
+ * 
+ * version 1.0.2
+ * - first stable version
  */
 class ApiController
 {
@@ -76,7 +80,7 @@ class ApiController
 			// Check if it exists
 			if (!method_exists($object, $propertyName)) {
 				if (method_exists($object, $method)) {
-					return $object->$method($request, $requestPath);
+					return $this->getJson($object->$method($request, $requestPath));
 				} else {
 					return $object;
 				}
@@ -87,7 +91,29 @@ class ApiController
 		}
 		
 		if (count($requestPath) == 0 && method_exists($object, $method)) {
-			return $object->$method($request, $requestPath);
+			return $this->getJson($object->$method($request, $requestPath));
+		}
+		
+		return $object;
+	}
+	
+	private function getJson($object) {
+		// Check if this is an RedBean_OODBBean
+		if (!is_array($object) && "RedBean_OODBBean" == get_class($object)) {
+			return $object->getJson();
+		}
+		
+		// Check if the array contains RedBean_OODBBean classes
+		if (is_array($object)) {
+			$result = array();
+			foreach ($object as $bean) {
+				if ("RedBean_OODBBean" == get_class($bean)) {
+					$result[] = $bean->export();
+				}
+			}
+			if (count($result) > 0) {
+				return $result;
+			}
 		}
 		
 		return $object;
