@@ -103,7 +103,7 @@ class Device {
 	    if ($config->useNewCommunication){
 		    $communicationService = new CommunicationService();
 		    $communication = $communicationService->load($this->communicationId);
-		    $api->setCommunication($communication, $device);
+		    $api->setCommunication($communication, $this);
 	    }
 	    
 	    return $api;
