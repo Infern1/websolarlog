@@ -96,7 +96,8 @@ class Config
     
     public $pauseWorker;
     public $restartWorker;
-    
+
+    public $useNewCommunication;
     
 	/**
 	 * Constructor
@@ -177,6 +178,8 @@ class Config
 		
 		$this->upgradeMessage = "";
 		$this->upgradeMessageShow = false;
+		
+		$this->useNewCommunication = true;
 	}
 	
 	public function getDatabaseUser() {

@@ -969,6 +969,55 @@ switch ($settingstype) {
 		}
 		
 		break;
+	case 'importOldCommunicationSettings':
+		$deviceService = new DeviceService();
+		$communicationService = new CommunicationService();
+		
+		foreach ($deviceService->getAllDevices() as $device) {
+			$communication = new Communication();
+			$communication->name = "comm." . $device->name;
+			
+			if ($device->deviceApi == "AURORA") {
+				$communication->uri = $config->aurorapath;
+			}
+			if ($device->deviceApi == "SMA-RS485") {
+				$communication->uri = $config->smagetpath;
+			}
+			if ($device->deviceApi == "SMA-BT") {
+				$communication->uri = $config->smaspotpath;
+			}
+			if ($device->deviceApi == "SMA-BT-WSL") {
+				$communication->uri = $config->smaspotWSLpath;
+			}
+			if ($device->deviceApi == "Diehl-ethernet") {
+				$communication->uri = $this->comAddress;
+			}
+			if ($device->deviceApi == "DutchSmartMeter") {
+				$communication->uri = $config->smartmeterpath;
+			}
+			if ($device->deviceApi == "DutchSmartMeterRemote") {
+				$communication->uri = $config->smartmeterpath;
+			}
+			if ($device->deviceApi == "MasterVolt") {
+				$communication->uri = $config->mastervoltpath;
+			}
+			if ($this->deviceApi == "SoladinSolget") {
+				$communication->uri = $config->soladinSolgetpath;				
+			}
+			if ($device->deviceApi == "Open-Weather-Map") {
+				$communication->uri = "http://openweathermap.org/data/2.5/find?units=metrics&cnt=1&mode=json";
+			}
+			if ($device->deviceApi == "KostalPiko") {
+				$communication->uri = $config->kostalpikopath;
+			}
+			
+			$savedobject = $communicationService->save($communication);
+			
+			$device->communicationId = $savedobject->id;
+			$deviceService->save($device);
+		}
+		
+		break;
 	case 'invoiceInfo':
 		$bill = new Bill();
 		$config = Session::getConfig(true);

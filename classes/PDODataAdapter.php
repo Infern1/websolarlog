@@ -306,6 +306,8 @@ class PDODataAdapter {
 		$bean->upgradeMessage = $config->upgradeMessage;
 		$bean->upgradeMessageShow = $config->upgradeMessageShow;
 		
+		$bean->useNewCommunication = $config->useNewCommunication;
+		
 		//Store the bean
 		R::store($bean);
 	}
@@ -396,6 +398,8 @@ class PDODataAdapter {
 			
 			$config->upgradeMessage = $bean->upgradeMessage;
 			$config->upgradeMessageShow =($bean->upgradeMessageShow != "") ? $bean->upgradeMessageShow : false;
+			
+			$config->useNewCommunication = ($bean->useNewCommunication != "") ? $bean->useNewCommunication : true;
 		}
 
 		return $config;

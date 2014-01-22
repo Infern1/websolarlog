@@ -477,6 +477,15 @@ function init_communication() {
 	    	$('#new_communication').bind('click', function(){
 	    		load_edit({id:-1, name:'New'});
 	    	});
+
+	    	$('#communication_import').bind('click', function(){
+	    		var conf = confirm("This will create an import for every device, please only use once!");
+	    	    if(conf == true){
+	    	    	WSL.connect.getJSON('admin-server.php?s=importOldCommunicationSettings', function(data){
+	    	    		init_communication();
+	    	    	});	    		
+	    	    }
+	    	});
 	    	
 	    	$('.communication_select').bind('click', function(){
                 var id = $(this).attr('id').split("_")[1];

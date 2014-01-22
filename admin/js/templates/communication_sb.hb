@@ -5,7 +5,9 @@
 <hr>
 
 <form>
-	<strong>Create a new communication</strong><br>
-	<br>
+	<strong>Create a new communication</strong><br/>
+	<br/>
 	<button type="button" id="new_communication" style="width:100%;">Create communication</button><br/><br/>
+	<br/>
+	<button type="button" id="communication_import" style="width:100%;">Import old settings</button><br/><br/>
 </form>
