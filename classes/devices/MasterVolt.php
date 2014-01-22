@@ -43,7 +43,7 @@ Class MasterVolt implements DeviceApi {
             return "451 1,38 622 233 2,55 580 50,00 42 13,33 748 NoError";
         } else {
             //echo("GetData Mastervolt\n");
-        	return trim($this->execute( $this->COMOPTION ));
+        	return trim($this->execute(""));
         }
     }
     
@@ -87,7 +87,7 @@ Class MasterVolt implements DeviceApi {
     private function execute($options) {
     	$cmd = "";
     	if ($this->useCommunication === true) {
-    		$cmd = $this->communication->uri . ' ' . $this->device->comAddress;
+    		$cmd = $this->communication->uri . ' ' . $this->device->comAddress . ' ' . $this->communication->optional . ' ' . $options . ' ' . $this->communication->port;
     	} else {
 	        $cmd = $this->PATH." ".$this->ADR ;
     	}

@@ -43,7 +43,7 @@ Class SoladinSolget implements DeviceApi {
             return "55,9 0,24 49,97 231 10 24 74,5 813,87 382,51 16481:9 3,87 1,81 16481:9 ERROR description";
         } else {
             //echo("GetData SoladinSolget\n");
-        	return trim($this->execute( $this->COMOPTION ));
+        	return trim($this->execute());
         }
     }
     
@@ -76,15 +76,21 @@ Class SoladinSolget implements DeviceApi {
     }
     
     public function doCommunicationTest() {
-    	return array("result"=>false, "testData"=>"Not yet implemented");
+		$result = false;
+    	$data = $this->getData();
+    	if ($data) {
+    		$result = true;
+    	}
+    	return array("result"=>$result, "testData"=>$data);
     }
 
     private function execute($options) {
-    	//echo("Path ".$this->PATH." ADR: ".$this->ADR." Options: ".$options." Port: ".$this->PORT." \n");
-        $cmd = $this->PATH." ".$this->ADR ;
-      //  echo("MasterVolt support is not yet ready.\n");
-        //echo("This should be the command executed cmd=".$cmd." \n");
-        
+        $cmd = "";
+        if ($this->useCommunication === true) {
+        	$cmd = $this->communication->uri . ' ' . $this->device->comAddress . ' ' . $this->communication->optional . ' ' . $options . ' ' . $this->communication->port;
+        } else {
+        	$cmd = $this->PATH . ' ' . $this->ADR . ' ' . $options;
+        }
         
         $proc=proc_open($cmd,
         		array(
