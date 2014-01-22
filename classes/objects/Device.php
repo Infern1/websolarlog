@@ -109,4 +109,5 @@ class Device {
 	    return $api;
     }
 }
+
 ?>
