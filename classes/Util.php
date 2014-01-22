@@ -256,7 +256,7 @@ class Util {
     		$value = ltrim($value[0],0);
     	}
     
-    	return $value." ";
+    	return $value;
     }
     
     /**
