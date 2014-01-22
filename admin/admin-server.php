@@ -1001,7 +1001,7 @@ switch ($settingstype) {
 			if ($device->deviceApi == "MasterVolt") {
 				$communication->uri = $config->mastervoltpath;
 			}
-			if ($this->deviceApi == "SoladinSolget") {
+			if ($device->deviceApi == "SoladinSolget") {
 				$communication->uri = $config->soladinSolgetpath;				
 			}
 			if ($device->deviceApi == "Open-Weather-Map") {
