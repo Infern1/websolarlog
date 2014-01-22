@@ -30,6 +30,7 @@ class LiveRest {
 		$result = array();
 		
 		$totalsProduction = array("devices"=>0,"GP"=>0,"GP2"=>0,"GP3"=>0);
+		$totalsMetering = array("devices"=>0,"liveEnergy"=>0);
 		foreach (Session::getConfig()->devices as $device) {
 			$type = $device->type;
 			$live = null;
@@ -42,7 +43,9 @@ class LiveRest {
 					$totalsProduction["GP3"] = $totalsProduction["GP3"] + $live->GP3;
 					break;
 				case "metering":
-					$live = $this->liveSmartMeterService->getLiveByDevice($device);					
+					$live = $this->liveSmartMeterService->getLiveByDevice($device);
+					$totalsMetering["devices"] = $totalsMetering["devices"] + 1;
+					$totalsMetering["liveEnergy"] = $totalsMetering["liveEnergy"] + $live->liveEnergy;
 					break;
 				case "weather":
 					$live = $this->weatherService->getLastWeather($device);					
@@ -51,7 +54,7 @@ class LiveRest {
 			$result[] = array("type"=>$type, "id"=>$device->id, "name"=>$device->name, "data"=>$live);
 		}
 		
-		$result["totals"] = array("production"=>$totalsProduction);
+		$result["totals"] = array("production"=>$totalsProduction, "metering"=>$totalsMetering);
 		return $result;
 	}
 	

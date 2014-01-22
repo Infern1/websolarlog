@@ -76,6 +76,9 @@ class LiveSmartMeterService {
 			$object->lowUsage = $bObject->lowUsage;
 			$object->liveReturn = $bObject->liveReturn;
 			$object->liveUsage = $bObject->liveUsage;
+			if ($bObject->liveUsage != null && $bObject->liveReturn != null) {
+				$object->liveEnergy = $bObject->liveUsage - $bObject->liveReturn;
+			}
 		}
 		return $object;
 	}
