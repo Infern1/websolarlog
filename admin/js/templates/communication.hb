@@ -1,6 +1,4 @@
 <br/>
-<h1 style="color:red">This is not used!</h1>
-<br/>
 <form id="frm_comm_edit">
   <input type="hidden" name="s" value="save-communication" />
   <input type="hidden" name="id" value="{{data.id}}" />
