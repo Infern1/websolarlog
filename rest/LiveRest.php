@@ -28,12 +28,18 @@ class LiveRest {
 	
 	public function GET($request, $options) {
 		$result = array();
+		
+		$totalsProduction = array("devices"=>0,"GP"=>0,"GP2"=>0,"GP3"=>0);
 		foreach (Session::getConfig()->devices as $device) {
 			$type = $device->type;
 			$live = null;
 			switch ($type) {
 				case "production":
 					$live = $this->liveService->getLiveByDevice($device);
+					$totalsProduction["devices"] = $totalsProduction["devices"] + 1;
+					$totalsProduction["GP"] = $totalsProduction["GP"] + $live->GP;
+					$totalsProduction["GP2"] = $totalsProduction["GP2"] + $live->GP2;
+					$totalsProduction["GP3"] = $totalsProduction["GP3"] + $live->GP3;
 					break;
 				case "metering":
 					$live = $this->liveSmartMeterService->getLiveByDevice($device);					
@@ -44,6 +50,8 @@ class LiveRest {
 			}
 			$result[] = array("type"=>$type, "id"=>$device->id, "name"=>$device->name, "data"=>$live);
 		}
+		
+		$result["totals"] = array("production"=>$totalsProduction);
 		return $result;
 	}
 	
