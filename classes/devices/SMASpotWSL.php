@@ -129,15 +129,26 @@ SMAspot [-scan] [-d#] [-v#] [-ad#] [-am#] [-cfgX.Y] [-u] [-finq] [-q] [-nocsv]
     			$SMAspotDevices++;
     		}
     	}
-    	if($SMAspotDevices==0){
-    		// We are not in Multi SMA inverter setup, so clear $this->ADR
-    		$this->ADR = '';
+
+    	$multioptions="";
+   		if($SMAspotDevices > 0){
+	    	if ($this->useCommunication === true) {
+    			$multioptions = ($this->device->comAddress) ? ' -cfg'. $this->device->comAddress : "";
+	    	} else {
+		    	$multioptions = ($this->ADR) ? ' -cfg'.$this->ADR : "";
+	    	}
+   		}
+    	
+    	
+    	$cmd = "";
+    	if ($this->useCommunication === true) {
+    		$cmd = $this->communication->uri . ' ' . $options . ' ' . $multioptions . ' ' . $this->communication->port .  ' ' . $this->communication->optional;
+    	} else {
+    		$cmd = $this->PATH . ' ' .$options . ' ' . $multioptions;
     	}
     	
-    	($this->ADR) ? $options .= ' -cfg'.$this->ADR : $options = $options;
-    	
     	try{
-    		$result = shell_exec($this->PATH . ' ' . $options);
+    		$result = shell_exec($cmd);
     	} catch (Exception $e) {
 			HookHandler::getInstance()->fire("onDebug", "Device::SMAspotWSL generated:".$e->getMessage());
     	}
