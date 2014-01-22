@@ -15,7 +15,10 @@
  * At the moment the ones with an * are not supported
  * 
  * @author Martin Diphoorn
- * @version 1.0.3
+ * @version 1.0.4
+ * - fixed bug: object exepected but array give
+ * 
+ * version 1.0.3
  * - added RedBean_OODBBean support
  * 
  * version 1.0.2
@@ -107,7 +110,7 @@ class ApiController
 		if (is_array($object)) {
 			$result = array();
 			foreach ($object as $bean) {
-				if ("RedBean_OODBBean" == get_class($bean)) {
+				if (!is_array($object) && "RedBean_OODBBean" == get_class($bean)) {
 					$result[] = $bean->export();
 				}
 			}
