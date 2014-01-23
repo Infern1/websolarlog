@@ -73,9 +73,9 @@ class CommunicationRest {
 		$checkCommunicationUsed = $this->deviceService->checkCommunicationUsed($communicationId);
 
 		if(count($checkCommunicationUsed)==0){
-			return $this->communicationService->delete($communicationId);
+			return array("result"=>$this->communicationService->delete($communicationId),"linked"=>false);
 		}else{
-			return false;
+			return array("result"=>false,"linked"=>true);
 		}
 	}
 	
