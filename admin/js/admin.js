@@ -434,10 +434,9 @@ function init_communication() {
     		});
     	});  
     	
-    	$('.btnCommunicationDelete').bind('click',function(){
+    	$("input[name = 'btnCommunicationDelete']").bind('click', function(){  
         	$this = $(this);
-        	var get = $this.attr("id").split('-');
-    		delete_communication(get[1]);
+    		delete_communication($this.val());
     	});
     	
     	if (data.id > 0) {
