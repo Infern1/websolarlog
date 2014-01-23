@@ -449,18 +449,26 @@ function init_communication() {
             type: "DELETE",
             url: "../api.php/Communication/"+thisId,
             success: function(response){
-				if (response == true) {
+				if (response.result == true) {
 					$.pnotify({
 						title: 'Succes',
 				        text: 'Item removed',
 				        type: 'success'                                    
 					});     
 				} else {
-					$.pnotify({
-				        title: 'Error',
-				        text: 'Could not remove item.<br>Please check if it is used by a device.',
-				        type: 'error'
-				    });      
+					if(response.linked == true){
+						$.pnotify({
+					        title: 'Error',
+					        text: 'Could not remove item because it is still linked to a device.',
+					        type: 'error'
+					    }); 	
+					}else{
+						$.pnotify({
+					        title: 'Error',
+					        text: 'Could not remove item.',
+					        type: 'error'
+					    });
+					}
 				}
 				init_communication();
             }
