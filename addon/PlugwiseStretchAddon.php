@@ -170,8 +170,8 @@ class PlugwiseStretchAddon {
 		));
 		curl_setopt($c, CURLOPT_VERBOSE, true);
 		
-		$verbose = fopen('/home/marco/curl.txt', 'wb+');
-		curl_setopt($c, CURLOPT_STDERR, $verbose);
+		//$verbose = fopen('/home/marco/curl.txt', 'wb+');
+		//curl_setopt($c, CURLOPT_STDERR, $verbose);
 		
 		$contents = curl_exec($c);
 		$info = curl_getinfo($c);
