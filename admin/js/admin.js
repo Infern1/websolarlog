@@ -263,7 +263,6 @@ function init_plugwise(){
 	                		   if ( $("#"+obj.applianceID+'-W').html() != (obj.currentPowerUsage+" W")){
 	                			   $("#"+obj.applianceID+'-W').effect( "highlight" ,1000);
 	                		   }
-	                			   
 	                		   $("#"+obj.applianceID+'-W').html(obj.currentPowerUsage+' W');                			   
 	                		}
 	                	});
@@ -430,7 +429,9 @@ function init_communication() {
     	
     	$('#btnCommunicationSubmit').bind('click',function(){
     		var postdata = $(this).closest('form').serialize();
-    		WSL.connect.postJSON("../api.php/Communication", postdata, function(){console.log('success')});
+    		WSL.connect.postJSON("../api.php/Communication", postdata, function(){
+    			init_communication();
+    		});
     	});
     	
     	if (data.id > 0) {
@@ -473,20 +474,69 @@ function init_communication() {
     WSL.connect.getJSON('../api.php/Communication', 
     	function(data) {
 	    	sidebar.html(WSL.template.get('communication_sb', {data: data}));
-	    	
+	    	var communicationDevices = $('.communication_select').length;
+	    	if(communicationDevices==0){
+	    		$("#communication_import").show();
+	    	}
 	    	$('#new_communication').bind('click', function(){
 	    		load_edit({id:-1, name:'New'});
 	    	});
 
 	    	$('#communication_import').bind('click', function(){
-	    		var conf = confirm("This will create an import for every device, please only use once!");
-	    	    if(conf == true){
+	    		var modal_overlay;
+	    		var text = '<form id="pnotify-confirm" name="pnotify-confirm">This will create an import for every device, please only use once!<br>';
+	    		text += '<input type="submit" name="submit" value="Create Communication Devices">&nbsp&nbsp&nbsp&nbsp;&nbsp&nbsp&nbsp&nbsp;';
+	    		text += '<button type="button" id="pnotify-cancel" id="pnotify-cancel">Cancel!</button></form>';
+
+	    		var box = $.pnotify({
+					title: "Import Advanced settigng to communication manager",
+					text: text,
+					type: "error",
+					hide: false,
+					closer: false,
+					sticker: false,
+					history: false,
+					stack: false,
+					before_open: function(pnotify) {
+					    // Position this notice in the center of the screen.
+					    pnotify.css({"width":400,"top": ($(window).height() / 2) - (pnotify.height() / 2),"left": ($(window).width() / 2) - (pnotify.width() / 2)});
+					    // Make a modal screen overlay.
+					    if (modal_overlay) modal_overlay.fadeIn("fast");
+					    else modal_overlay = $("<div />", {
+					        "class": "ui-widget-overlay","css": {"display": "none","position": "fixed","top": "0","bottom": "0","right": "0","left": "0"}
+					    }).appendTo("body").fadeIn("fast");
+					},
+					before_close: function() {
+					    modal_overlay.fadeOut("fast");
+					    }
+	    		});
+
+	    		//confirmed;
+	    		box.find('#pnotify-confirm').submit(function() {
 	    	    	WSL.connect.getJSON('admin-server.php?s=importOldCommunicationSettings', function(data){
 	    	    		init_communication();
 	    	    	});	    		
-	    	    }
+    		    	box.pnotify_remove();
+    		        return false;
+    		    });
+	    		
+	    		// cancelled
+	 	        box.find('#pnotify-cancel').bind('click',function() {
+		        	$.pnotify({
+		                title: 'Cancelled creation communication devices',
+		                text: 'You cancelled the creation of communication devices',
+		                icon: true,
+		                width: $.pnotify.defaults.width,
+		                hide: true,
+		                closer: true,
+		                sticker: true,
+		                type: 'warning'
+		            });
+		        	box.pnotify_remove();
+		            return false;
+		        });
 	    	});
-	    	
+
 	    	$('.communication_select').bind('click', function(){
                 var id = $(this).attr('id').split("_")[1];
                 currentCommunicationId = id;
@@ -700,7 +750,6 @@ function init_advanced() {
                         });
                     });
                 });   
-
             },
             dataType : 'text'
         });
@@ -750,7 +799,6 @@ function init_social(){
 	                	 }
                      });
                 });
-                              
 
                 $('#detachTwitter').bind('click', function(){
                  	$.pnotify({
@@ -771,10 +819,8 @@ function init_social(){
 		                     	type: 'error'
 		                    });
 	                	 }
-	                	 
                      });
                 	 init_social();
-
                 });
 
                 $('#attachTwitter').bind('click', function(){
@@ -796,38 +842,12 @@ function init_social(){
 		                     	type: 'error'
 		                    });
 	                	 }
-	                	 
                      });
-                	 
-                });
-                              
-                
-                
-                /*
-                 * Because of the requests limitation of 60 request an hour, we disabled this...
-                 * 
-                $.getJSON('admin-server.php?s=getTeamFiguresFromPVoutput', function(data,response) {
-                    $.ajax({
-                        url : 'js/templates/pvoutputteams.hb',
-                        success : function(source) {
-                            var template = Handlebars.compile(source);
-                            var html = template({ 'data' : data,'lang':data.lang });
-                            $('#pvoutputteams').html(html);
-                        },
-                        dataType : 'text'
-                     });
-                });
-                */
-                
-                
-                
+                });                
             },
             dataType : 'text'
         });
-        
     });
-            
-	
 }
 
 function deviceStatuses(){
@@ -895,7 +915,6 @@ function init_invoice(data){
 	$('#sidebar').remove();
     var content = $('#content');
     content.html('<div id="c_general"><h1> Invoice</h1><form><fieldset><div id="json" name="summary">Loading Data...</div></fieldset></div>').css("width",850); // Clear old data
-    console.log(data);
     WSL.connect.postJSON('admin-server.php', data, function(result) {
     $.getJSON('admin-server.php?s=invoiceInfo', function(data) {
         $.ajax({
