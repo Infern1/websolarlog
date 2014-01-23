@@ -149,3 +149,7 @@ fieldset fieldset {
 	right: 0;
 	top: 0;
 }
+
+.commTextField {
+	width: 350px;
+}

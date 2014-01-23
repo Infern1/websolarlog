@@ -432,12 +432,42 @@ function init_communication() {
     		WSL.connect.postJSON("../api.php/Communication", postdata, function(){
     			init_communication();
     		});
+    	});  
+    	
+    	$('.btnCommunicationDelete').bind('click',function(){
+        	$this = $(this);
+        	var get = $this.attr("id").split('-');
+    		delete_communication(get[1]);
     	});
     	
     	if (data.id > 0) {
     		load_test(data.id);    		
     	}
     };
+    
+    var delete_communication = function(thisId){
+    	$.ajax({
+            type: "DELETE",
+            url: "../api.php/Communication/"+thisId,
+            success: function(response){
+				if (response == true) {
+					$.pnotify({
+						title: 'Succes',
+				        text: 'Item removed',
+				        type: 'success'                                    
+					});     
+				} else {
+					$.pnotify({
+				        title: 'Error',
+				        text: 'Could not remove item.<br>Please check if it is used by a device.',
+				        type: 'error'
+				    });      
+				}
+				init_communication();
+            }
+    	});
+    }
+    
     
     var load_test= function(communicationId) {
     	WSL.connect.getJSON('../api.php/Device/ShortList/true', function(devices) {

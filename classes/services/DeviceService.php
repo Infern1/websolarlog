@@ -34,7 +34,16 @@ class DeviceService {
 		return isset($object) ? $object : new Device();
 	}
 	
+
+	public function checkCommunicationUsed($communicationId){
+		$bObjects = R::find( self::$tbl, ' 	communicationId = '.$communicationId);
+		$objects = array();
+		foreach ($bObjects as $bObject) {
+			$objects[] = $this->toObject($bObject);
+		}
+		return $objects;
 	
+	}
 
 	/**
 	 * Delete an object from the database

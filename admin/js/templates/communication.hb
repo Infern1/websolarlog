@@ -10,5 +10,6 @@
     <label for="timeout">timeout:</label><input type="text" class="commTextField" name="timeout" value="{{data.timeout}}" /><br />
     <label for="optional">optional:</label><input type="text" class="commTextField" name="optional" value="{{data.optional}}" /><br />
     <button type="button" id="btnCommunicationSubmit">Save</button>
+    <button type="button" class="btnCommunicationDelete" id="id-{{data.id}}">Delete</button>
   </fieldset>
 </form> 

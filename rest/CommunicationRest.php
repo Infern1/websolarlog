@@ -1,12 +1,14 @@
 <?php
 class CommunicationRest {
 	private $communicationService;
+	private $deviceService;
 	
 	/**
 	 * Constructor
 	 */
 	function __construct() {
 		$this->communicationService = new CommunicationService();
+		$this->deviceService = new DeviceService();
 	}
 	
 	/**
@@ -67,8 +69,16 @@ class CommunicationRest {
 	 * @param unknown $options
 	 */
 	public function DELETE($request, $options){
-		return $this->deviceService->delete($options[0]);
+		$communicationId = $options[0];
+		$checkCommunicationUsed = $this->deviceService->checkCommunicationUsed($communicationId);
+
+		if(count($checkCommunicationUsed)==0){
+			return $this->communicationService->delete($communicationId);
+		}else{
+			return false;
+		}
 	}
+	
 	
 	public function getStartTest($request) {
 		$communicationId = Common::getValue("communicationId", -1);
