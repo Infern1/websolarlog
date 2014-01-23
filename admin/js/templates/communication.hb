@@ -13,8 +13,10 @@
         <div class="span-20 first">
         	 <button type="button" id="btnCommunicationSubmit">Save</button>
         </div>
+        {{#if_gt data.id compare=0}}
         <div class="span-6 last">
         	{{checkboxWithHidden 'btnCommunicationDelete' '' data.id}}&nbsp;remove this device<br />
         </div>
+        {{/if_gt}}
   </fieldset>
 </form> 
