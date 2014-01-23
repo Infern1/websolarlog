@@ -28,7 +28,7 @@
 			Below you need to set the path of the software you use to communicate with the device.<br>See the examples for help.<br />
 			<div class="examples">
 				<h3>Path examples</h3>
-				<div>
+				<div style="min-height:180px;">
 					<strong>Smartmeter:</strong><br />
 					python3 /var/www/websolarlog/scripts/P1.py /dev/ttyUSB0<br />(executor script serialDevice)<br />
 					<br />
