@@ -9,7 +9,12 @@
     <label for="port">port:</label><input type="text" class="commTextField" name="port" value="{{data.port}}" /><br />
     <label for="timeout">timeout:</label><input type="text" class="commTextField" name="timeout" value="{{data.timeout}}" /><br />
     <label for="optional">optional:</label><input type="text" class="commTextField" name="optional" value="{{data.optional}}" /><br />
-    <button type="button" id="btnCommunicationSubmit">Save</button>
-    <button type="button" class="btnCommunicationDelete" id="id-{{data.id}}">Delete</button>
+    
+        <div class="span-20 first">
+        	 <button type="button" id="btnCommunicationSubmit">Save</button>
+        </div>
+        <div class="span-6 last">
+        	{{checkboxWithHidden 'btnCommunicationDelete' '' data.id}}&nbsp;remove this device<br />
+        </div>
   </fieldset>
 </form> 
