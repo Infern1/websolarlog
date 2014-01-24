@@ -20,14 +20,11 @@ $(function() {
 
 	// Check if there are upgrade notices
 	if (isFront) {
-		WSL.api
-				.upgradeMessageShow(function(data) {
-					if (data.result == true) {
-						WSL.notify
-								.show_bar_top('info', 'Upgrade message',
-										'There is an upgrade message, please check them at the admin section');
-					}
-				});
+		WSL.api.upgradeMessageShow(function(data) {
+			if (data.result == true) {
+			WSL.notify.show_bar_top('info', 'Upgrade message','There is an upgrade message, please check them at the admin section');
+			}
+		});
 	}
 });
 
@@ -43,17 +40,15 @@ function getClosest(theArray, goal) {
 	var counter = 0;
 	var arrReturn = [];
 
-	$.each(theArray,
-			function(index, value) {
-				if (closestTimestamp == null
-						|| Math.abs(this[0] - goal) < Math.abs(closestTimestamp
-								- goal)) {
-					counter = index;
-					closestTimestamp = this[0];
-					closestValue = this[1];
+	$.each(theArray,function(index, value) {
+		if (closestTimestamp == null
+				|| Math.abs(this[0] - goal) < Math.abs(closestTimestamp - goal)) {
+			counter = index;
+			closestTimestamp = this[0];
+			closestValue = this[1];
 
-				}
-			});
+		}
+	});
 	arrReturn.push(counter, closestTimestamp, closestValue);
 
 	return arrReturn;
@@ -317,26 +312,23 @@ function tooltipTodayContentEditor(str, seriesIndex, pointIndex, plot, series) {
 	var returned = "";
 	seriesCount = plot.series.length - 1;
 
-	$
-			.each(
-					plot.series,
-					function(index, value) {
-						eachSerieIndex = index;
-						if (index != seriesIndex) {
-							ClosestPointIndex = getClosest(plot.series[eachSerieIndex].data,plot.series[seriesIndex].data[pointIndex][0]);
-							closestTimeDiff = plot.series[seriesIndex].data[pointIndex][0]- plot.series[eachSerieIndex].data[ClosestPointIndex[0]][0];
-							(closestTimeDiff < -200000) ? displayLow = false : displayLow = true;
-							(closestTimeDiff > 200000) ? displayHigh = false : displayHigh = true;
+	$.each(plot.series,	function(index, value) {
+		eachSerieIndex = index;
+		if (index != seriesIndex) {
+			ClosestPointIndex = getClosest(plot.series[eachSerieIndex].data,plot.series[seriesIndex].data[pointIndex][0]);
+			closestTimeDiff = plot.series[seriesIndex].data[pointIndex][0]- plot.series[eachSerieIndex].data[ClosestPointIndex[0]][0];
+			(closestTimeDiff < -200000) ? displayLow = false : displayLow = true;
+			(closestTimeDiff > 200000) ? displayHigh = false : displayHigh = true;
 
-							if (displayHigh == true && displayLow == true && plot.series[eachSerieIndex].show == true) {
-								returned += tooltipTodayContentEditorLine(
-										plot.series[eachSerieIndex].label,"   "+ plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],false);
-							}
-						} else {
-							ClosestPointIndex = getClosest(plot.series[eachSerieIndex].data,plot.series[seriesIndex].data[pointIndex][0]);
-							returned += tooltipTodayContentEditorLine(plot.series[eachSerieIndex].label,"   "+ plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],true);
-						}
-					});
+			if (displayHigh == true && displayLow == true && plot.series[eachSerieIndex].show == true) {
+				returned += tooltipTodayContentEditorLine(
+						plot.series[eachSerieIndex].label,"   "+ plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],false);
+			}
+		} else {
+			ClosestPointIndex = getClosest(plot.series[eachSerieIndex].data,plot.series[seriesIndex].data[pointIndex][0]);
+			returned += tooltipTodayContentEditorLine(plot.series[eachSerieIndex].label,"   "+ plot.series[eachSerieIndex].data[ClosestPointIndex[0]][1],true);
+		}
+	});
 	var time = timeConverter(plot.series[seriesIndex].data[pointIndex][0]," hour+':'+min ;");
 	returned += tooltipTodayContentEditorLine("Time", "   " + time, true);
 	return returned;
