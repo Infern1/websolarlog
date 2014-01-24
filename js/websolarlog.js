@@ -610,9 +610,10 @@ function populateTabs(tabIndex) {
 var gaugeGP;
 var gaugeIP;
 var gaugeEFF;
+var graphProductionSettings = new Object();
 
-function graphProductionOptions() {
-	var graphProductionOptions = {
+var graphProductionSettings = function() {
+	return {
 		series : [ {
 			label : 'Harvested(kWh)',
 			yaxis : 'yaxis',
@@ -720,7 +721,7 @@ function graphProductionOptions() {
 			show : false
 		},
 	};
-	return graphProductionOptions;
+	//return graphProductionOptions;
 };
 
 // WSL class
@@ -2016,19 +2017,18 @@ var WSL = {
 									$("#graphContainer").html('reloading....');
 									$("#figuresContainer").html('reloading....');
 									devicenum = $('#devicenum').val();
-									WSL.createProductionGraph(devicenum,'graphContainer','1-1-' + year); // Initial load fast
+									WSL.createProductionGraph(devicenum,'graphContainer', year); // Initial load fast
 									// }
 								}
 							});
 
-			$('#devicenum').bind('change',
-			function() {
-				var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-				$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
+			$('#devicenum').bind('change',function() {
+				devicenum = $(this).val();
+				var year = $("#datePickerPeriod").val();
+				//$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
 				$("#graphContainer").html('reloading....');
 				$("#figuresContainer").html('reloading....');
-				devicenum = $('#devicenum').val();
-				WSL.createProductionGraph(devicenum,'graphContainer','1-1-' + year); // Initial load fast
+				WSL.createProductionGraph(devicenum,'graphContainer', year); // Initial load fast
 			});
 
 			var pickerDate = $('#datePickerPeriod').val(); // new Date(year,month, day) // W3schools
@@ -2105,6 +2105,10 @@ var WSL = {
 					// create "white-space" on begin of x-axes
 					ticksTable.push("0");
 					var monthTable = [];
+					var harvested = [];
+					var expected = [];
+					var maxes = [];
+					
 					for (line in result.dayData.data) {
 						var object = result.dayData.data[line];
 						dataDay1.push(object[0]);
@@ -2115,11 +2119,10 @@ var WSL = {
 					// create "white-space" on end of x-axes
 					ticksTable.push("13");
 
-					graphProductionOptions = graphProductionOptions();
+					graphProductionOptions = graphProductionSettings();
 					graphProductionOptions.axes.xaxis.numberTicks = ticksTable;
 					graphProductionOptions.axes.xaxis.ticks = ticksTable;
-					var harvested = [];
-					var expected = [];
+
 					for ( var i = 0; i < dataDay1.length; i++) { //Iterates over numeric indexes from 0 to 5, as everyone expects
 						harvested.push(dataDay1[i]);
 					}
@@ -2128,13 +2131,22 @@ var WSL = {
 						expected[i] = dataDay2[i];
 					}
 					var maxExpected = Math.max.apply(Math, expected);
+					
 
-					maxAxesValue = Math.max(Math.round(maxHarvested / 100) * 100, Math.round(maxExpected / 100) * 100);
+					maxes.push(Math.round(maxHarvested / 10) * 10);
+					maxes.push(Math.round(maxExpected / 10) * 10);
+
+					//get Max values for axe
+					maxAxesValue = Math.max.apply(Math,maxes);
+					
+					//calculate 10% from Max Axe value
 					var axesMargin = Math.round(maxAxesValue / 100) * 10;
+					
+					//set the Max value summed with Margin
 					graphProductionOptions.axes.yaxis.max = maxAxesValue + axesMargin;
 					graphProductionOptions.axes.y2axis.max = maxAxesValue + axesMargin;
 
-					maxAxesValue = Math.max(Math.round(dataDay3[11] / 100) * 100, Math.round(dataDay4[11] / 100) * 100);
+					maxAxesValue = Math.max(Math.round(dataDay3[11] / 100) * 100, Math.round(dataDay4[11] / 100) * 100)+10;
 					var axesMargin = Math.round(maxAxesValue / 100) * 10;
 					graphProductionOptions.axes.y3axis.max = maxAxesValue + axesMargin;
 					graphProductionOptions.axes.y4axis.max = maxAxesValue + axesMargin;
