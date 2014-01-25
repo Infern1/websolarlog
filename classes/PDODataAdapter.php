@@ -1705,7 +1705,7 @@ class PDODataAdapter {
 
 					$live->IP = number_format(0,2,',','');
 					$live->EFF = number_format(0,2,',','');
-					$live->trend = _("equal");
+					$live->trend = "equal";
 					$live->avgPower = number_format(0,2,',','');
 				}else{
 					$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
