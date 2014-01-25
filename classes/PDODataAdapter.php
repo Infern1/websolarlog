@@ -1705,7 +1705,8 @@ class PDODataAdapter {
 
 					$live->IP = number_format(0,2,',','');
 					$live->EFF = number_format(0,2,',','');
-					$live->trend = "equal";
+					$live->trendImage = "equal";
+					$live->trend = _("equal");
 					$live->avgPower = number_format(0,2,',','');
 				}else{
 					$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
@@ -1765,7 +1766,8 @@ class PDODataAdapter {
 					$live->EFF = ($liveBean['EFF']<1000) ? number_format($liveBean['EFF'],1,'.','') : number_format($liveBean['EFF'],0,'','');
 						
 					$avgPower = $this->readCache("","index","live",$device->id,"trend");
-					$live->trend = $avgPower[0]['value'];
+					$live->trendImage = $avgPower[0]['value'];
+					$live->trend = _($live->trendImage);
 				}
 
 				$oInverter["id"] = $liveBean['INV'];

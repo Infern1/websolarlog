@@ -13,7 +13,7 @@
 	
 </div>
 <div class="column span-6  liveToolTip" style="overflow:hidden;" title="{{this.live.name}}">
-	<img src="images/arrow_{{this.live.trend}}.gif" title="{{this.live.trend}}"/>&nbsp;{{this.live.name}}
+	<img src="images/arrow_{{this.live.trendImage}}.gif" title="{{this.live.trend}}"/>&nbsp;{{this.live.name}}
 </div>
 <div class="column span-3">{{this.live.time}}</div>
 <div class="column span-3" title="{{this.live.totalDeviceACP}} W = {{this.live.GV}} V * {{this.live.GA}} A">{{this.live.totalDeviceACP}}</div>

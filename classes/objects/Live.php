@@ -45,6 +45,7 @@ class Live {
 	 */
 	public $status;
 	public $name;
+	public $trendImage; // Untranslated version off trend for the image selection
 	public $trend;
 	public $avgPower;
 	public $type;
