@@ -15,7 +15,7 @@
         </div>
         {{#if_gt data.id compare=0}}
         <div class="span-6 last">
-        	{{checkboxWithHidden 'btnCommunicationDelete' '' data.id}}&nbsp;remove this device<br />
+        	{{checkboxWithHidden 'btnCommunicationDelete' '' data.id}}&nbsp;remove<br />
         </div>
         {{/if_gt}}
   </fieldset>
