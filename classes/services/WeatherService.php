@@ -93,24 +93,20 @@ class WeatherService {
 	}
 	
 	public function onSummary($args) {
+		$_SESSION['log'][__method__]['start'] = (microtime(true) - $_SESSION['log']['startTime']);
+		
 		$device = $args[1];
 		$date = $args[2];
-		$_SESSION['log']['WeatherServiceOnSummary']['startTime'] = microtime(true);
 			
 		if($device->deviceApi == "Open-Weather-Map"){
 	
 			(!$date)? $date = date('d-m-Y') : $date = $date;
 			$beginEndDate = Util::getBeginEndDate('day', 1,$date);
-			$_SESSION['log']['WeatherServicegetEnergyByDeviceAndTime']['startTime'] = microtime(true);
-				
+			
 			$beans =  R::findAll( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
 					array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 			);
-			
-				
-			
-			$_SESSION['log']['WeatherServicegetEnergyByDeviceAndTime']['endTime'] = microtime(true);
-			$_SESSION['log']['WeatherServicegetEnergyByDeviceAndTime']['diff'] = $_SESSION['log']['WeatherServicegetEnergyByDeviceAndTime']['endTime'] - $_SESSION['log']['WeatherServicegetEnergyByDeviceAndTime']['startTime'];
+			$_SESSION['log'][__method__]['afterFind'] =  (microtime(true) - $_SESSION['log']['startTime']);
 			
 			
 			$i=0;
@@ -119,6 +115,7 @@ class WeatherService {
 				$temp += $bean['temp'];
 				$i++;
 			}
+			$_SESSION['log'][__method__]['afterTempAdd'] =  (microtime(true) - $_SESSION['log']['startTime']);
 			$avgTemp = round($temp/$i,2);
 			
 			if($avgTemp<18){
@@ -145,9 +142,8 @@ class WeatherService {
 					"rain3h" =>($lastBean['rain3h']==0)? 0 : $lastBean['rain3h'],
 					"clouds" =>$lastBean['clouds']
 			);
-			$_SESSION['log']['WeatherServiceOnSummary']['endTime'] = microtime(true);
-			$_SESSION['log']['WeatherServiceOnSummary']['diff'] = $_SESSION['log']['WeatherServiceOnSummary']['endTime'] - $_SESSION['log']['WeatherServiceOnSummary']['startTime'];
-				
+			$_SESSION['log'][__method__]['return'] =  (microtime(true) - $_SESSION['log']['startTime']);
+							
 			return $return; 
 		}else{
 			return;
