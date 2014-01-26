@@ -77,7 +77,6 @@ foreach($_SESSION['log']  as $key=>$value){
 	}
 }
 $util = new Util();
-$result['log2'] = $log;
 $log = $util->aasort($log,'value');
 
 $result['log'] = $log;
