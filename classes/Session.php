@@ -80,21 +80,25 @@ class Session
     		} else {
     			R::setup($config->dbDSN);
     		}
-
+    		$_SESSION['log'][__METHOD__]['afterRBsetup'] = (microtime(true) - $_SESSION['log']['startTime']);
     		// Switch on/off debug
     		R::debug(false);
-    	
+    		$_SESSION['log'][__METHOD__]['afterRBdebug'] = (microtime(true) - $_SESSION['log']['startTime']);
     		// Only use on sqlite for speedup
     		if (strpos($config->dbDSN,'sqlite') !== false) {
     			R::exec("PRAGMA synchronous = NORMAL"); // A little less secure then FULL, but much less IO
     			R::exec("PRAGMA PRAGMA temp_store = 2"); // In memory (IO on SD is slow)
     			PDODataAdapter::getInstance()->sqlEngine = 'sqlite';
+    			$_SESSION['log'][__METHOD__]['afterRBsqlite'] = (microtime(true) - $_SESSION['log']['startTime']);
     		}elseif(strpos($config->dbDSN,'mysql') !== false){
     			PDODataAdapter::getInstance()->sqlEngine = 'mysql';
+    			$_SESSION['log'][__METHOD__]['afterRBmysql'] = (microtime(true) - $_SESSION['log']['startTime']);
     		}
     		RedBean_OODBBean::setFlagBeautifulColumnNames(false);
+    		$_SESSION['log'][__METHOD__]['afterRBsetFlag'] = (microtime(true) - $_SESSION['log']['startTime']);
     	
     		R::setStrictTyping(false);
+    		$_SESSION['log'][__METHOD__]['afterSetStrict'] = (microtime(true) - $_SESSION['log']['startTime']);
     	} catch (PDOException $e) {
     		exit("Could not connect with the database, this can be a wrong dsn in the configuration or php modules not installed like php5-sqlite");
     	}
