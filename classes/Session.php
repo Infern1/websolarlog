@@ -62,9 +62,13 @@ class Session
     
     public static function initializeLight() {
     	self::initialize_db();
+    	$_SESSION['log'][__METHOD__]['initialize_db'] = (microtime(true) - $_SESSION['log']['startTime']);
     	self::setTimezone();
+    	$_SESSION['log'][__METHOD__]['setTimezone'] = (microtime(true) - $_SESSION['log']['startTime']);
     	self::setLanguage();
+    	$_SESSION['log'][__METHOD__]['setLanguage'] = (microtime(true) - $_SESSION['log']['startTime']);
     	self::registerHooks();
+    	$_SESSION['log'][__METHOD__]['registerHooks'] = (microtime(true) - $_SESSION['log']['startTime']);
     }
     
     private static function initialize_db() {
