@@ -9,6 +9,7 @@ Session::initializeLight();
 header('Cache-Control: no-cache, must-revalidate');
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 header('Content-type: application/json; charset=utf-8');
+$_SESSION['log'] = array();
 
 $result = array();
 try {
@@ -19,5 +20,6 @@ try {
     $msg = $e->getMessage() . " in file " . $e->getFile() . '[' . $e->getLine() . ']';
     $result = array('result'=>'error', 'success'=>false, 'exception'=>get_class($e), 'message'=>$msg);
 }
+$result['log'] = $_SESSION['log'];
 echo json_encode($result);
 ?>

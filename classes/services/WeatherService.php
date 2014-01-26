@@ -95,14 +95,23 @@ class WeatherService {
 	public function onSummary($args) {
 		$device = $args[1];
 		$date = $args[2];
+		$_SESSION['log']['WeatherServiceOnSummary']['startTime'] = microtime(true);
+			
 		if($device->deviceApi == "Open-Weather-Map"){
 	
 			(!$date)? $date = date('d-m-Y') : $date = $date;
 			$beginEndDate = Util::getBeginEndDate('day', 1,$date);
-		
+			$_SESSION['log']['WeatherServicegetEnergyByDeviceAndTime']['startTime'] = microtime(true);
+				
 			$beans =  R::findAll( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
 					array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 			);
+			
+				
+			
+			$_SESSION['log']['WeatherServicegetEnergyByDeviceAndTime']['endTime'] = microtime(true);
+			$_SESSION['log']['WeatherServicegetEnergyByDeviceAndTime']['diff'] = $_SESSION['log']['WeatherServicegetEnergyByDeviceAndTime']['endTime'] - $_SESSION['log']['WeatherServicegetEnergyByDeviceAndTime']['startTime'];
+			
 			
 			$i=0;
 			$temp = 0;
@@ -136,7 +145,9 @@ class WeatherService {
 					"rain3h" =>($lastBean['rain3h']==0)? 0 : $lastBean['rain3h'],
 					"clouds" =>$lastBean['clouds']
 			);
-			
+			$_SESSION['log']['WeatherServiceOnSummary']['endTime'] = microtime(true);
+			$_SESSION['log']['WeatherServiceOnSummary']['diff'] = $_SESSION['log']['WeatherServiceOnSummary']['endTime'] - $_SESSION['log']['WeatherServiceOnSummary']['startTime'];
+				
 			return $return; 
 		}else{
 			return;

@@ -62,6 +62,7 @@ class EnergySmartMeterService {
 	public function onSummary($args){
 		$device = $args[1];
 		$date = $args[2];
+		$_SESSION['log']['EnergySmartMeterServiceOnSummary']['startTime'] = microtime(true);
 		
 		if($device->type == "production"){
 			$energy = self::getEnergyByDeviceAndTime($device,$date);
@@ -70,6 +71,10 @@ class EnergySmartMeterService {
 			$data['costs'] 	  =  ($energy->KWH*$this->config->costkwh)/100;
 			$data['CO2avoid'] =  ($energy->KWH*$this->config->co2kwh)/1000;
 			$data['trees'] =  $energy->KWH*$this->config->co2CompensationTree;
+			
+			$_SESSION['log']['WeatherServiceOnSummary']['endTime'] = microtime(true);
+			$_SESSION['log']['WeatherServiceOnSummary']['diff'] = $_SESSION['log']['WeatherServiceOnSummary']['endTime'] - $_SESSION['log']['WeatherServiceOnSummary']['startTime'];
+			
 			return $data;
 		}else{
 			return;
@@ -94,7 +99,17 @@ class EnergySmartMeterService {
 	 * @return Array of Energy
 	 */
 	public function getEnergyListByDevice(Device $device) {
+		$_SESSION['log']['EnergyServiceSMgetEnergyByDeviceAndTime']['startTime'] = microtime(true);
+			
+		
 		$bObjects = R::find( self::$tbl, ' INV = :deviceId ORDER BY time', array("deviceId"=>$device->id));
+		
+		$_SESSION['log']['EnergyServiceSMgetEnergyByDeviceAndTime']['endTime'] = microtime(true);
+		
+		$_SESSION['log']['EnergyServiceSMgetEnergyByDeviceAndTime']['diff'] =
+			$_SESSION['log']['EnergyServiceSMgetEnergyByDeviceAndTime']['endTime'] - 
+			$_SESSION['log']['EnergyServiceSMgetEnergyByDeviceAndTime']['startTime'];
+		
 		$objects = array();
 		foreach ($bObjects as $bObject) {
 			$objects[] = $this->toObject($bObject);
