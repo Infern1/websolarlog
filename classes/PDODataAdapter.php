@@ -382,15 +382,15 @@ class PDODataAdapter {
 			$config->costWater = ($bean->costWater > 0) ? $bean->costWater : $config->costWater;
 			$config->moneySign = $bean->moneySign;
 			
-			
-			$config->devices = $this->deviceService->getActiveDevices();
 			$_SESSION['log'][__METHOD__]['getActiveDevices'] = (microtime(true) - $_SESSION['log']['startTime']);
+			$config->devices = $this->deviceService->getActiveDevices();
 			
-			$config->allDevices = $this->deviceService->getAllDevices();
 			$_SESSION['log'][__METHOD__]['getAlleDevices'] = (microtime(true) - $_SESSION['log']['startTime']);
+			$config->allDevices = $this->deviceService->getAllDevices();
 			
-			$config->inverters = $config->devices; // @Deprecated
 			$_SESSION['log'][__METHOD__]['devices'] = (microtime(true) - $_SESSION['log']['startTime']);
+			$config->inverters = $config->devices; // @Deprecated
+			
 			
 			$config->graphSeries = $this->getGraphSeries();
 			$config->graphAxes = $this->getGraphAxes();
