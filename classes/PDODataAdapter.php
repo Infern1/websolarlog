@@ -2267,7 +2267,7 @@ class PDODataAdapter {
 	}
 
 	public function checkDefaultPassword(){
-		$bean = R::findAndExport('config');
+		$bean = R::find('config');
 		if (!isset($bean)) {
 			// No config leaving
 			return;
