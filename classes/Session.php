@@ -87,7 +87,9 @@ class Session
     		// Only use on sqlite for speedup
     		if (strpos($config->dbDSN,'sqlite') !== false) {
     			R::exec("PRAGMA synchronous = NORMAL"); // A little less secure then FULL, but much less IO
+    			$_SESSION['log'][__METHOD__]['afterRBPragmaNormal'] = (microtime(true) - $_SESSION['log']['startTime']);
     			R::exec("PRAGMA PRAGMA temp_store = 2"); // In memory (IO on SD is slow)
+    			$_SESSION['log'][__METHOD__]['afterRBPragmaTempStor'] = (microtime(true) - $_SESSION['log']['startTime']);
     			PDODataAdapter::getInstance()->sqlEngine = 'sqlite';
     			$_SESSION['log'][__METHOD__]['afterRBsqlite'] = (microtime(true) - $_SESSION['log']['startTime']);
     		}elseif(strpos($config->dbDSN,'mysql') !== false){
