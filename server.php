@@ -716,8 +716,6 @@ try {
 	
 		}
 	}
-	$util = new Util();
-	$log = $util->aasort($log,'value');
 	
 	$data['log'] = $log;
 	echo json_encode($data);

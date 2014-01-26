@@ -76,9 +76,6 @@ foreach($_SESSION['log']  as $key=>$value){
 		
 	}
 }
-$util = new Util();
-$log = $util->aasort($log,'value');
-
 $result['log'] = $log;
 
 echo json_encode($result);
