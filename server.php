@@ -669,7 +669,7 @@ try {
 			//var_dump($phpinfo->phpInfo());
 			$weather = new WeatherService();
 			$averages = $weather->saveDailyAverages();
-			var_dump($averages);
+
 			break;
 		default:
 			break;
