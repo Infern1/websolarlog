@@ -22,7 +22,7 @@ class PlugwiseStretchAddon {
 		$live = new LiveService();
 		$smartMeterLive = new LiveSmartMeterService();
 		
-		$beans =  R::findAndExport('plugwise_plugs');
+		$beans =  R::find('plugwise_plugs');
 		
 		$data['plugs'] = $beans;
 		$plugsUsage = 0;
