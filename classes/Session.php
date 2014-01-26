@@ -118,6 +118,7 @@ class Session
     		$config = new Config();
     		// Get dbase settings
     		$dbconfig = self::loadConfigFile('database');
+    		$_SESSION['log'][__METHOD__]['loadConfigFile'] = (microtime(true) - $_SESSION['log']['startTime']);
     		if ($dbconfig != null && isset($dbconfig['database'])) {
     			$section = $dbconfig['database'];
     			if (is_array($section)) {
@@ -125,12 +126,15 @@ class Session
     				$config->setDatabaseUser($section['username']);
     				$config->setDatabasePassword($section['password']);
     			}
-    		}    		
+    		}
+    		$_SESSION['log'][__METHOD__]['returnNotDBConfig'] = (microtime(true) - $_SESSION['log']['startTime']);
     		return $config;
     	}
     	
     	if (!isset(self::$config) || self::$config == null || $reload == true) {
+    		$_SESSION['log'][__METHOD__]['beginReadConfig'] = (microtime(true) - $_SESSION['log']['startTime']);
     		self::$config = PDODataAdapter::getInstance()->readConfig();
+    		$_SESSION['log'][__METHOD__]['afterReadConfig'] = (microtime(true) - $_SESSION['log']['startTime']);
     	}
     	
     	if (strpos(self::$config->dbDSN,'sqlite') !== false) {
@@ -138,7 +142,7 @@ class Session
     	}elseif(strpos(self::$config->dbDSN,'mysql') !== false){
     		self::$config->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
     	}
-    	
+    	$_SESSION['log'][__METHOD__]['return'] = (microtime(true) - $_SESSION['log']['startTime']);
     	return self::$config;
     }
     
@@ -254,7 +258,9 @@ class Session
      * Sets the time zone
      */
     public static function setTimezone() {
+    	$_SESSION['log'][__METHOD__]['beginSetTimezone'] = (microtime(true) - $_SESSION['log']['startTime']);
     	ini_set('date.timezone', self::getConfig()->timezone);
+    	$_SESSION['log'][__METHOD__]['afterSettingTimezone'] = (microtime(true) - $_SESSION['log']['startTime']);
     }
     
     /**
