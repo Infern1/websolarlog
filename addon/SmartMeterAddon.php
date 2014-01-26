@@ -225,18 +225,19 @@ class SmartMeterAddon {
 		if($device->deviceApi == "DutchSmartMeter"){
 			$locale  = localeconv();
 			$deviceId = $device->id;
-			//echo $deviceId;
+
 			$date = $args[2];
 			
 			$beginEndDate = Util::getBeginEndDate('day', 1,$date);
-			//var_dump($beginEndDate);
+
 			$parameters = array(':deviceId'=>$deviceId,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']);
-			//var_dump($parameters);
-			//R::debug(true);
-			$finds =  R::findAndExport( 'energySmartMeter',
+
+			$finds =  R::find( 'energySmartMeter',
 					' deviceId = :deviceId AND time >= :beginDate AND  time <= :endDate ',
 					$parameters
 			);
+			
+			
 			$find = reset ( $finds );
 			
 			$bean['lowReturn'] = $find['lowReturn']/1000;
@@ -288,7 +289,7 @@ class SmartMeterAddon {
  		(!$date)? $date = date('d-m-Y') : $date = $date;
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 
-		$bean =  R::findAndExport( 'historySmartMeter',
+		$bean =  R::findAll( 'historySmartMeter',
 				' deviceId = :deviceId AND time > :beginDate AND  time < :endDate order by time',
 				array(':deviceId'=>$deviceId,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
