@@ -317,7 +317,7 @@ class PDODataAdapter {
 	public function readConfig() {
 		
 		$bean = R::findOne('config');
-		$_SESSION['log'][__METHOD__]['findOneConfig'] = (microtime(true) - $_SESSION['log']['startTime']);
+		$_SESSION[$_SESSION['logId']][__METHOD__.'.findOneConfig'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 		
 		if (!$bean){
 			$bean = R::dispense('config');
@@ -382,13 +382,13 @@ class PDODataAdapter {
 			$config->costWater = ($bean->costWater > 0) ? $bean->costWater : $config->costWater;
 			$config->moneySign = $bean->moneySign;
 			
-			$_SESSION['log'][__METHOD__]['getActiveDevices'] = (microtime(true) - $_SESSION['log']['startTime']);
+			$_SESSION[$_SESSION['logId']][__METHOD__.'.getActiveDevices'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 			$config->devices = $this->deviceService->getActiveDevices();
 			
-			$_SESSION['log'][__METHOD__]['getAlleDevices'] = (microtime(true) - $_SESSION['log']['startTime']);
+			$_SESSION[$_SESSION['logId']][__METHOD__.'.getAlleDevices'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 			$config->allDevices = $this->deviceService->getAllDevices();
 			
-			$_SESSION['log'][__METHOD__]['devices'] = (microtime(true) - $_SESSION['log']['startTime']);
+			$_SESSION[$_SESSION['logId']][__METHOD__.'.devices'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 			$config->inverters = $config->devices; // @Deprecated
 			
 			

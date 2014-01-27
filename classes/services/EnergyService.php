@@ -64,8 +64,7 @@ class EnergyService {
 		$date = $args[2];
 		
 		if($device->type == "production"){
-			$_SESSION['log']['EnergyServiceOnSummary']['startTime'] = microtime(true);
-			
+
 			$energy = self::getEnergyByDeviceAndTime($device,$date);
 			$data = array();
 			$data['KWH'] 	  =  $energy->KWH;
@@ -73,8 +72,7 @@ class EnergyService {
 			$data['CO2avoid'] =  ($energy->KWH*$this->config->co2kwh)/1000;
 			$data['trees'] =  $energy->KWH*$this->config->co2CompensationTree;
 			
-			$_SESSION['log']['EnergyServiceOnSummary']['endTime'] = microtime(true);
-			$_SESSION['log']['EnergyServiceOnSummary']['diff'] = $_SESSION['log']['EnergyServiceOnSummary']['endTime'] - $_SESSION['log']['EnergyServiceOnSummary']['startTime'];
+
 			return $data;
 		}else{
 			return;
@@ -115,16 +113,13 @@ class EnergyService {
 	 */
 	public function getEnergyByDeviceAndTime(Device $device, $time) {
 		$beginEndDate = Util::getBeginEndDate('day', 1,$time);
-		
-		$_SESSION['log']['EnergyServicegetEnergyByDeviceAndTime']['startTime'] = microtime(true);
+
 		
 		$bean =  R::findOne( self::$tbl, ' INV = :deviceId AND time > :beginDate AND time < :endDate ',
 				array(':deviceId'=>$device->id, ':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 	
-		$_SESSION['log']['EnergyServicegetEnergyByDeviceAndTime']['endTime'] = microtime(true);
-		$_SESSION['log']['EnergyServicegetEnergyByDeviceAndTime']['diff'] = $_SESSION['log']['EnergyServicegetEnergyByDeviceAndTime']['endTime'] - $_SESSION['log']['EnergyServicegetEnergyByDeviceAndTime']['startTime'];
-		
+
 		if (!$bean){
 			return null;
 		}

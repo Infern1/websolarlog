@@ -614,17 +614,13 @@ class SmartMeterAddon {
 		$count = 0;
 	
 		// get the begin and end date/time
-		$_SESSION['timers']['GraphDataServer_Before_getBeginEndDate'] =(microtime(true)-$_SESSION['timerBegin'] );
 		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
-		$_SESSION['timers']['GraphDataServer_After_getBeginEndDate'] =(microtime(true)-$_SESSION['timerBegin'] );
 		$energyBeans = array();
 
 		$energyBeans = R::getAll("SELECT *
                                         FROM historySmartMeter
                                         WHERE deviceId = :deviceId AND time > :beginDate AND  time < :endDate
                                         ORDER BY time",array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
-		
-		$_SESSION['timers']['GraphDataServer_LoadData_AfterTheGrandBIGQuery'] =(microtime(true)-$_SESSION['timerBegin'] );
 	
 		
 		//see if we have atleast 1 bean, else we make one :)

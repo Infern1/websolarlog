@@ -76,7 +76,7 @@ class DeviceService {
 	 */
 	public function getAllDevices() {
 		$bObjects = R::find( self::$tbl);
-		$_SESSION['log'][__METHOD__]['afterFind'] = (microtime(true) - $_SESSION['log']['startTime']);
+		$_SESSION[$_SESSION['logId']][__METHOD__.'.afterFind'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 		$objects = array();
 		foreach ($bObjects as $bObject) {
 			$objects[] = $this->toObject($bObject);
@@ -90,7 +90,7 @@ class DeviceService {
 	 */
 	public function getActiveDevices() {
 		$bObjects = R::find( self::$tbl, ' active = 1 ');
-		$_SESSION['log'][__METHOD__]['afterFind'] = (microtime(true) - $_SESSION['log']['startTime']);
+		$_SESSION[$_SESSION['logId']][__METHOD__.'.afterFind'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 		$objects = array();
 		foreach ($bObjects as $bObject) {
 			$objects[] = $this->toObject($bObject);

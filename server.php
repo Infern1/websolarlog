@@ -1,13 +1,16 @@
 <?php
 define('checkaccess', TRUE);
-$_SESSION['log'] = array();
-$_SESSION['log']['startTime'] = microtime(true);
-$_SESSION['log']['server']['start'] = microtime(true);
+$_SESSION[$_SESSION['logId']] = null;
+$_SESSION[$_SESSION['logId']] = array();
+
+$logId = rand(100, 99999);
+$_SESSION['logId'] = $logId;
+$_SESSION[$_SESSION['logId']]['startTime'] = microtime(true);
 
 require 'classes/classloader.php';
-$_SESSION['log']['server']['afterClassLoader'] = (microtime(true) - $_SESSION['log']['startTime']);
+$_SESSION[$_SESSION['logId']]['server.afterClassLoader'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 Session::initializeLight();
-$_SESSION['log']['server']['afterLightInit'] = (microtime(true) - $_SESSION['log']['startTime']);
+$_SESSION[$_SESSION['logId']]['server.afterLightInit'] =   (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 
 try {
 	if (PeriodHelper::isPeriodJob("inActiveJob", 30)) {
@@ -675,49 +678,35 @@ try {
 			break;
 	}
 	
+	foreach($_SESSION[$_SESSION['logId']]  as $key=>$value){
+		//echo $value;
+        if(isset($backupValue)){
+                $diff = $value - $backupValue;
+                if($diff < 0.0001){
+                        $diffText = 'to small';
+                }
+                if($diff> 0.5){
+                        $diffText ='<<<<<';
+                        $logSlow[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff,"diffText"=>$diffText);
+                }
+        }else{
+                $diff = 0;
+        }
+  		$log[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff,"diffText"=>$diffText);
 
-	foreach($_SESSION['log']  as $key=>$value){
-		if(is_array($value)){
-			foreach($value  as $logKey=>$logValue){
-				if(isset($backupValue)){
-					$diff = (float)$logValue - (float)$backupValue;
-					if($diff <= 0.0001){
-						$diffText = 'to small';
-					}
-					if($diff>= 0.5){
-						$diffText ='<<<<<';
-					}
-				}else{
-					$diff = 0;
-					$diffText ='equal';
-				}
-				$log[]= array("key"=>$key."-".$logKey,"value"=>$logValue,"diff"=>$diff,"diffText"=>$diffText);
-	
-				$backupKey = $logKey;
-				$backupValue = $logValue;
-			}
-		}else{
-			if(isset($backupValue)){
-				$diff = (float)$value - (float)$backupValue;
-				if($diff <= 0.0001){
-					$diffText = 'to small';
-				}
-				if($diff>= 0.5){
-					$diffText ='<<<<<';
-				}
-			}else{
-				$diff = 0;
-				$diffText ='equal';
-			}
-			$log[]= array("key"=>$key,"value"=>$value,"diff"=>$diff,"diffText"=>$diffText);
-	
-			$backupKey = $key;
-			$backupValue = $value;
-	
-		}
+        $backupKey = $key;
+        $backupValue = $value;
 	}
 	
+	// total time for the API run:
+	$_SESSION[$_SESSION['logId']]['server.endTime'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+	
+	$log[]= array("logId"=>$_SESSION['logId'],"key"=>"server.endTime","value"=>microtime(true),"diff"=>(microtime(true)-$_SESSION[$_SESSION['logId']]['startTime']),"diffText"=>"");
+	
+	$_SESSION[$_SESSION['logId']] = null;
+	
 	$data['log'] = $log;
+	$data['logSlow'] = $logSlow;
 	echo json_encode($data);
 } catch (Exception $e) {
 	// get ErrorMessage
