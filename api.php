@@ -40,7 +40,7 @@ $_SESSION[$_SESSION['logId']]['api.apiTime'] = (microtime(true) - $_SESSION[$_SE
 
 	
 	foreach($_SESSION[$_SESSION['logId']]  as $key=>$value){
-		var_dump($value);
+		//var_dump($value);
         if(isset($backupValue)){
                 $diff = ($value - $backupValue);
                 if($diff < 0.0001){
