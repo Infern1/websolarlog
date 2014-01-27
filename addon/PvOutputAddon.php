@@ -80,7 +80,7 @@ class PvOutputAddon {
 		$parameters = array( ':time' => $date,':deviceId'=>$deviceId);
 		$beans =  R::findOne(
 				'history',
-				' deviceId = :deviceId AND time > :time AND (pvoutput is null or pvoutput = "" or pvoutput = 0) AND pvoutputSend = 1 order by time ASC limit 1',
+				' deviceId = :deviceId AND time > :time AND (pvoutput IN (null,"",0) AND pvoutputSend = 1 order by time ASC limit 1',
 				$parameters
 		);	
 		return $beans;

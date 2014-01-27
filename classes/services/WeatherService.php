@@ -93,7 +93,7 @@ class WeatherService {
 	}
 	
 	public function onSummary($args) {
-		$_SESSION[$_SESSION['logId']][__METHOD__.'.start'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+		$_SESSION[$_SESSION['logId']][][__METHOD__.'.start'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 		
 		$device = $args[1];
 		$date = $args[2];
@@ -106,7 +106,7 @@ class WeatherService {
 			$beans =  R::findAll( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
 					array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 			);
-			$_SESSION[$_SESSION['logId']][__METHOD__.'.afterFind'] =  (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+			$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterFind'] =  (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 			
 			
 			$i=0;
@@ -115,7 +115,7 @@ class WeatherService {
 				$temp += $bean['temp'];
 				$i++;
 			}
-			$_SESSION[$_SESSION['logId']][__METHOD__.'.afterTempAdd'] =  (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+			$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterTempAdd'] =  (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 			$avgTemp = round($temp/$i,2);
 			
 			if($avgTemp<18){
@@ -142,7 +142,7 @@ class WeatherService {
 					"rain3h" =>($lastBean['rain3h']==0)? 0 : $lastBean['rain3h'],
 					"clouds" =>$lastBean['clouds']
 			);
-			$_SESSION[$_SESSION['logId']][__METHOD__.'.return'] =  (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+			$_SESSION[$_SESSION['logId']][][__METHOD__.'.return'] =  (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 							
 			return $return; 
 		}else{
