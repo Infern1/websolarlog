@@ -4,7 +4,7 @@ New communication manager is now active</a>
 <br>
 
 {{#data}}
-<button type="button" id="btnCommunication_{{this.id}}" class="communication_select" style="width:100%;">{{this.name}}</button><br/>
+<button type="button" id="btnCommunication_{{this.id}}" class="communication_select" style="width:100%;">{{this.name}} </button><br/>
 {{/data}}
 <br />
 <hr>
