@@ -145,6 +145,7 @@ class Session
     	}elseif(strpos(self::$config->dbDSN,'mysql') !== false){
     		self::$config->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
     	}
+    	
     	$_SESSION[$_SESSION['logId']][][__METHOD__.'.return'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
     	return self::$config;
     }
@@ -271,8 +272,11 @@ class Session
      */
     public static function registerHooks() {
     	// TODO :: Get from dbase
+    	$_SESSION[$_SESSION['logId']][][__METHOD__.'.start'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    	
     	$hookHandler = HookHandler::getInstance();
-
+    	$_SESSION[$_SESSION['logId']][][__METHOD__.'.hookHandler::GetInstance()'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    	
     	// LoggerAddon, Needs to be first so we can use debug as fast as possible
     	$hookHandler->add("onDebug", "LoggerAddon.onDebug");
     	$hookHandler->add("onError", "LoggerAddon.onError");
@@ -343,6 +347,9 @@ class Session
     	// Statistics
     	$hookHandler->add("onFastJob", "CacheAddon.averagePower");
     	$hookHandler->add("onFastJob", "CacheAddon.EnergyValues");
+    	
+    	$_SESSION[$_SESSION['logId']][][__METHOD__.'.AllHooksAdded'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    	
     }
 }
 ?>

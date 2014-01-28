@@ -1,12 +1,16 @@
 <?php
 class GraphRest {
 	private $graphService;
+	private $config;
 	
 	/**
 	 * Constructor
 	 */
 	function __construct() {
-		$this->graphService = new GraphService();
+		$_SESSION[$_SESSION['logId']][]['graphRest __construct'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+		// set config for this rest call
+		$this->config = Session::getConfig();
+		$this->graphService = new GraphService($this->config);
 	}
 	
 	/**
@@ -29,13 +33,17 @@ class GraphRest {
 	 * Rest functions 
 	 */
 	public function GET($request, $options) {
-		//R::debug(true);
+		$_SESSION[$_SESSION['logId']][]['graphRest.GET'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 		if($options[0]=="daily"){
 			$graphOptions['deviceNum'] = $options[3];
 			$graphOptions['mode'] = $options[4];
 			$graphOptions['date'] = $options[2];
 			$graphOptions['type'] = $options[1];
-			$data = $this->graphService->loadGraph($graphOptions);			
+			// move this config to others parts of WSL.
+			$graphOptions['config'] = $this->config;
+			
+			$data = $this->graphService->loadGraph($graphOptions);
+			$_SESSION[$_SESSION['logId']][]['graphRest.GETAfterLoadGraph'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 			return $data;
 		}
 		$option = "";
@@ -50,12 +58,9 @@ class GraphRest {
 			$graphOptions['deviceNum'] = $id;
 			$graphOptions['mode'] = 'edit';
 			$graphOptions['type'] = '';
+			$graphOptions['config'] = $this->config;
 			$data = $this->graphService->loadGraph($graphOptions);
-			/*$queryLogger = RedBean_Plugin_QueryLogger::getInstanceAndAttach(
-					R::getDatabaseAdapter()
-			);
-			var_dump($queryLogger->getLogs());*/
-			
+
 			return $data;
 		}
 

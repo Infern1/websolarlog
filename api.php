@@ -6,6 +6,7 @@ $_SESSION[$_SESSION['logId']] = array();
 $logId = rand(100, 99999);
 $_SESSION['logId'] = $logId;
 $_SESSION[$_SESSION['logId']]['startTime'] = microtime(true);
+
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
@@ -26,7 +27,6 @@ header('Content-type: application/json; charset=utf-8');
 $result = array();
 try {
 	$result = ApiController::getInstance()->route();
-	
 	// time it took for the route routine to run:
 	$_SESSION[$_SESSION['logId']][]['api.AfterRoute()'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 } catch (SetupException $e) {
@@ -39,31 +39,31 @@ try {
 $_SESSION[$_SESSION['logId']][]['api.apiTime'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 
 	
-	foreach ($_SESSION[$_SESSION['logId']] as $value) {
-		foreach($value  as $key=>$value){
-			//echo $value;
-	        if(isset($backupValue)){
-	        	$diff = $value - $backupValue;
-	            if($diff> 0.5){
-	            	$logSlow[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff,"diffText"=>$diffText);
-	            }
-	        }else{
-	                $diff = 0;
-	        }
-	  		$log[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff,"diffText"=>$diffText);
-	
-	        $backupKey = $key;
-	        $backupValue = $value;
-		}
+foreach ($_SESSION[$_SESSION['logId']] as $value) {
+	foreach($value  as $key=>$value){
+		//echo $value;
+        if(isset($backupValue)){
+        	$diff = $value - $backupValue;
+            if($diff> 0.5){
+            	$logSlow[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff,"diffText"=>$diffText);
+            }
+        }else{
+                $diff = 0;
+        }
+  		$log[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff,"diffText"=>$diffText);
+
+        $backupKey = $key;
+        $backupValue = $value;
 	}
-	
-	
+}
 
-	$log[]= array("logId"=>$_SESSION['logId'],"key"=>"server.endTime","value"=>microtime(true),"diff"=>(microtime(true)-$_SESSION[$_SESSION['logId']]['startTime']));
 
-	$result['log'] = $log;
-	$result['logSlow'] = $logSlow;
-	unset($_SESSION[$_SESSION['logId']]);
+
+$log[]= array("logId"=>$_SESSION['logId'],"key"=>"server.endTime","value"=>microtime(true),"diff"=>(microtime(true)-$_SESSION[$_SESSION['logId']]['startTime']));
+
+$result['log'] = $log;
+$result['logSlow'] = $logSlow;
+unset($_SESSION[$_SESSION['logId']]);
 	
 echo json_encode($result);
 ?>

@@ -147,9 +147,7 @@ class PDODataAdapter {
 	 *
 	 * @param unknown_type $beans
 	 */
-	public function DayBeansToGraphPoints($beans,$graph,$startDate){
-		$config = Session::getConfig();
-
+	public function DayBeansToGraphPoints($beans,$graph,$startDate,$config){
 		$i=0;
 		$firstBean = array();
 		$preBean = array();
@@ -1299,7 +1297,7 @@ class PDODataAdapter {
 	 * @param date $startDate ("Y-m-d") ("1900-12-31"), when no date given, the date of today is used.
 	 * @return array($beginDate, $endDate);
 	 */
-	public function getGraphDayPoint($invtnum,$type, $startDate){
+	public function getGraphDayPoint($invtnum,$type, $startDate,$config){
 		($type == 'today')?$type='day':$type=$type;
 		$graph = new Graph();
 
@@ -1311,7 +1309,7 @@ class PDODataAdapter {
 				'tickRenderer'=>'CanvasAxisTickRenderer','labelRenderer'=>'CanvasAxisLabelRenderer',
 				'tickInterval'=>3600,'tickOptions'=>array('formatter'=>'DayDateTickFormatter','angle'=>-45));
 
-		$graph = $this->DayBeansToGraphPoints($beans,$graph,$startDate);
+		$graph = $this->DayBeansToGraphPoints($beans,$graph,$startDate,$config);
 		
 
 		$hookGraph = HookHandler::getInstance()->fire("GraphDayPoints",$invtnum,$startDate,$type);
@@ -1332,8 +1330,8 @@ class PDODataAdapter {
 			}
 		}
 
+		// if timestamp of the hook is not null, we override the current timestamp
 		if($hookGraph->timestamp!=null){
-			
 			$graph->timestamp = $hookGraph->timestamp;
 		}
 
@@ -1344,6 +1342,7 @@ class PDODataAdapter {
 			}
 			$graph->metaData= array_merge_recursive((array)$hookGraph->metaData,(array)$graph->metaData);
 			
+			// if metaData['legend'] of the hook is not null, we override the current metaData['legend']
 			if($hookGraph->metaData['legend']!=null){
 				$graph->metaData['legend'] = $hookGraph->metaData['legend'];
 			}

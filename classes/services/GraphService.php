@@ -6,7 +6,6 @@ class GraphService {
 	private $config;
 
 	function __construct() {
-		$this->config = Session::getConfig();
 		HookHandler::getInstance()->add("onJanitorDbCheck", "GraphService.janitorDbCheck");
 	}
 
@@ -16,6 +15,7 @@ class GraphService {
 
 	public static function installGraph($reset=false){
 		$series = array();
+		$config = Session::getConfig();
 		HookHandler::getInstance()->fire("onDebug", "Run GraphService::janitorDbCheck->installGraph");
 		$graph = R::load('graph',1);
 
@@ -23,14 +23,14 @@ class GraphService {
 		$axe_exist = R::find('axe',1);
 
 		$checkOldSerie = (R::count('graph_series',' name = :name',array(':name'=>'cumGasL'))>0) ? true : false;
-		
-		HookHandler::getInstance()->fire("onDebug", 
+
+		HookHandler::getInstance()->fire("onDebug",
 		"graph->json:".(($graph->json) ? 'true' : 'false')." \r\n ".
 		"graph:".(($graph) ? 'true' : 'false')." \r\n ".
 		"reset:".print_r($reset,true)." \r\n ".
 		"axe_exists:".print_r($axe_exist,true)." \r\n ".
 		"checkOldSerie".print_r($checkOldSerie,true));
-		
+
 		if ($graph && ($graph->json=='null' || $reset == true || $axe_exist || $checkOldSerie)){
 			R::exec( "DROP TABLE IF EXISTS axes;" );
 			R::exec( "DROP TABLE IF EXISTS axe;" );
@@ -45,8 +45,8 @@ class GraphService {
 			HookHandler::getInstance()->fire("onDebug",'all tabels dropped');
 			$graph = null;
 		}
-		
-		
+
+
 
 		if (!$graph){
 
@@ -60,26 +60,25 @@ class GraphService {
 							'location'=>'nw',
 							'renderer'=>'EnhancedLegendRenderer',
 							'rendererOptions'=>
-								array('seriesToggle'=>'normal'),
+							array('seriesToggle'=>'normal'),
 							'width'=>0,
 							'left'=>0)
 			);
-			
+				
 			if(isset($graphHook->metaData) && is_array($graphHook->metaData)){
 				$metaData = array_merge($metaData,$graphHook->metaData);
 			}
 
 			$graphBean->name = 'daily';
 			$graphBean->json = json_encode($metaData);
-
-			
-			$defaultSeries = HookHandler::getInstance()->fire("defaultSeries");
-			$series = array_merge(self::defaultSeries(),$defaultSeries);
+				
+			$defaultSeries = HookHandler::getInstance()->fire("defaultSeries",$config);
+			$series = array_merge(self::defaultSeries($config),$defaultSeries);
 			var_dump(self::defaultSeries());
 			$graphBean->sharedSeries = $series;
 
-			$defaultAxes = HookHandler::getInstance()->fire("defaultAxes");
-			$axes = array_merge(self::defaultAxes(),$defaultAxes);
+			$defaultAxes = HookHandler::getInstance()->fire("defaultAxes",$config);
+			$axes = array_merge(self::defaultAxes($config),$defaultAxes);
 			$graphBean->sharedAxes = $axes;
 
 			R::store($graphBean);
@@ -107,7 +106,7 @@ class GraphService {
 			}
 			R::store($graphBean);
 			$links = null;
-			
+				
 			$links = $graphBean->ownAxes_graph;
 			$i=0;
 			foreach($links as $link){
@@ -124,24 +123,25 @@ class GraphService {
 				$link->order = $axes[$i]->order;
 				$i++;
 			}
-			
+				
 			R::store($graphBean);
 
 		}
 	}
 
 
-	public static function defaultSeries(){
+	public static function defaultSeries($config){
 		$show = 'false';
-		foreach (Session::getConfig()->devices as $device) {
+
+		foreach ($config->devices as $device) {
 			if($device->type == "production"){
 				$show = 'true';
 			}
 		}
 
-		
+
 		$i = 0;
-		foreach (Session::getConfig()->devices as $device) {
+		foreach ($config->devices as $device) {
 			if($device->type == "production"){
 				$serie[$i] = R::dispense('series');
 				$serie[$i]['json'] = json_encode(array('label'=>'Cum '.$device->name.' (Wh)','yaxis'=>'y2axis'));
@@ -150,7 +150,7 @@ class GraphService {
 				$serie[$i]['disabled'] = 'false';
 				$serie[$i]['addon'] = 'wsl';
 				$serie[$i]['order'] = $i;
-				
+
 				$i++;
 				$serie[$i] = R::dispense('series');
 				$serie[$i]['json'] = json_encode(array('label'=>'Avg '.$device->name.' (W)','yaxis'=>'yaxis'));
@@ -162,15 +162,14 @@ class GraphService {
 				$i++;
 			}
 		}
-		var_dump($series);
 
-		
 		return $serie;
 	}
 
-	public static function defaultAxes(){
+	public static function defaultAxes($config){
 		$show = 'false';
-		foreach (Session::getConfig()->devices as $device) {
+
+		foreach ($this->config->devices as $device) {
 			if($device->type == "production"){
 				$show = 'true';
 			}
@@ -207,13 +206,14 @@ class GraphService {
 	 * @return unknown
 	 */
 	public function loadGraph($options){
-
-		$config = Session::getConfig();
+		// get config from GraphRest
+		$config = $options['config'];
 		$graph = R::findOne('graph',' name = "daily" ');
 
 		// translate hideSerie labels
 		$graphJson = json_decode($graph->json);
-		
+		$_SESSION[$_SESSION['logId']][]['graphService.loadGraph'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+			
 		// find series of graph
 		$series = $graph->ownGraph_series;
 
@@ -254,21 +254,21 @@ class GraphService {
 				$seriesNew[$i]['order'] = $serie['order'];
 				$i++;
 			}
-				
+
 		}
 		$series = $seriesNew;
-		
+
 		usort($series, function($a, $b) {
 			return $a['order'] - $b['order'];
 		});
-		
+
 		// find axes of graph
 		$axes = $graph->ownAxes_graph;
 
 		usort($axes, function($a, $b) {
 			return $a['order'] - $b['order'];
 		});
-		
+
 		$axesList = array();
 		$i=0;
 		$x=0;
@@ -277,7 +277,7 @@ class GraphService {
 			$json = json_decode($axe['json']);
 			$axesList[$i]['axe'] = $json->axe;
 			$axesList[$i]['label'] = $json->label;
-			
+				
 			$axeNew[$i]['json'] =  $json;
 			$axeNew[$i]['name'] = (strlen($json->axe)<=5) ? 'left-'.($i+1) : 'right';
 			$axeNew[$i]['id'] = $axe['id'];
@@ -307,7 +307,7 @@ class GraphService {
 
 		if($options['mode']=='frontend'){
 			$timestamp = array("beginDate"=>strtotime($options['date']." 06:00")-3600,"endDate"=>strtotime("21:00")+3600);
-				
+
 			foreach ($config->devices as $device){
 				if($device->type=='production'){
 					$panels = array();
@@ -331,27 +331,27 @@ class GraphService {
 			$slimConfig['devices'] = $devices;
 			$util = new Util();
 			$sunInfo = $util->getSunInfo($config, $options['date']);
-				
-				
+
+
 			// get data of graph
 			//$graphDataService = new GraphDataService();
-				
-				
+
+
 			$graphHook = array();
+			$_SESSION[$_SESSION['logId']][]['graphService.loadGraph'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+			
 			foreach($config->devices as $device){
 				$hookReturn = HookHandler::getInstance()->fire("GraphDayPoints",$device,$options['date'],$options['type'],$disabledSeries);
 				if(is_object($hookReturn)){
 					$graphHook = array_merge_recursive((array)$graphHook,(array)$hookReturn);
 				}
 			}
-			//var_dump($graphHook['metaData']);
-
+			$_SESSION[$_SESSION['logId']][]['graphService After GraphDayPoints Hooks'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+				
 			$timestamp = Util::getSunInfo($config, $options['date']);
 			$timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
-		
 
-			//var_dump($series);
-			//var_dump(array_keys($graphHook['points']));
+
 			$dataPoints = array();
 			foreach ($series as $serie){
 				foreach ($graphHook['points'] as $key=>$value){
@@ -359,11 +359,8 @@ class GraphService {
 						$dataPoints[$key]=$graphHook['points'][$key];
 					}
 				}
-				//if(array_key_exists($serie['name'], $graphHook['points'])){
-				//	//$dataPoints[$serie['name']]=$graphHook['points'][$serie['name']];
-				//}
 			}
-						
+
 			if(isset($graphHook['timestamp']['beginDate']) AND $graphHook['timestamp']['beginDate']<  $timestamp['beginDate']){
 				$timestamp['beginDate'] = $graphHook['timestamp']['beginDate'];
 			}
@@ -373,29 +370,30 @@ class GraphService {
 			}
 			$timestamp['endDate'] = $timestamp['endDate'] + 3600;
 			$timestamp['beginDate'] = $timestamp['beginDate'] - 3600;
-			
+				
 			$lang['generated'] = _('generated');
 			$lang['max'] = _('max');
-			
+				
 			$dtz = new DateTimeZone($config->timezone);
 			$timezone = new DateTime('now', $dtz);
 			$timezoneOffset = $dtz->getOffset( $timezone )/3600;
+			$_SESSION[$_SESSION['logId']][]['graphService.loadGraph Return'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 			
 			return array(
-					'dataPoints'=>$dataPoints,
-					'json'=>json_decode($graph->json),
-					'series'=>$series,'axes'=>$axes,
-					'axesList'=>$axesList,
-					'source'=>'db',
-					'timestamp'=>$timestamp,
-					'name'=>$graph->name,
-					'options'=>$options,
-					'slimConfig' => $slimConfig,
-					'sunInfo'=>$sunInfo,
-					'hideSeries'=>$hideSeries,
-					'meta'=>$graphHook['metaData'],
-					'lang'=>$lang,
-					'timezoneOffset'=>$timezoneOffset);	
+				'dataPoints'=>$dataPoints,
+				'json'=>json_decode($graph->json),
+				'series'=>$series,'axes'=>$axes,
+				'axesList'=>$axesList,
+				'source'=>'db',
+				'timestamp'=>$timestamp,
+				'name'=>$graph->name,
+				'options'=>$options,
+				'slimConfig' => $slimConfig,
+				'sunInfo'=>$sunInfo,
+				'hideSeries'=>$hideSeries,
+				'meta'=>$graphHook['metaData'],
+				'lang'=>$lang,
+				'timezoneOffset'=>$timezoneOffset);
 		}else{
 			return array('json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','name'=>$graph->name,'options'=>$options);
 		}
@@ -406,7 +404,7 @@ class GraphService {
 
 		if ($bObject->id > 0) {
 			$object = $this->toAxeObject($bObject);
-				
+
 		}
 		return isset($object) ? $object : new GraphAxe();
 	}

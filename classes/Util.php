@@ -15,7 +15,7 @@ class Util {
     }
     
     public static function getSunInfo($config,$startDate) {
-    	if (Session::getConfig()->isValidCoords()) {
+    	if ($config->isValidCoords()) {
 	    	$startDate= strtotime($startDate);
 	    	
 	    	if($startDate == null){

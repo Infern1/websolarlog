@@ -115,7 +115,7 @@ class EnergyService {
 		$beginEndDate = Util::getBeginEndDate('day', 1,$time);
 
 		
-		$bean =  R::findOne( self::$tbl, ' INV = :deviceId AND time > :beginDate AND time < :endDate ',
+		$bean =  R::findOne( self::$tbl, ' INV = :deviceId AND time > :beginDate AND time < :endDate LIMIT 10 ',
 				array(':deviceId'=>$device->id, ':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 	

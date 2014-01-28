@@ -27,7 +27,6 @@ try {
 
 	// Initialize return array
 	$dataAdapter = PDODataAdapter::getInstance();
-	$config = Session::getConfig();
 
 	$data = array();
 	$devicenum = Common::getValue('devicenum', 0);
@@ -83,6 +82,8 @@ try {
 			$data['currentlanguage'] = $currentLang[0];
 			break;
 		case 'analyticsSettings':
+			$config = Session::getConfig();
+			
 			$data['googleSuccess'] = false;
 			if (isset($config->googleAnalytics) && $config->googleAnalytics != "") {
 				$data['googleSuccess'] = true;
@@ -97,6 +98,7 @@ try {
 			break;
 				
 		case 'getDevices':
+			$config = Session::getConfig();
 			$devices = array();
 			foreach ($config->devices as $device){
 				if($device->type=="production"){
@@ -111,6 +113,7 @@ try {
 			$data['slimConfig'] = $slimConfig;
 			break;
 		case 'getMisc':
+			$config = Session::getConfig();
 			$eventService = new EventService();
 				
 			$serverUptime = Util::serverUptime();
@@ -195,6 +198,7 @@ try {
 			$data['serverUptime'] = $serverUptime;
 			break;
 		case 'getGraphDayPoints':
+			$config = Session::getConfig();
 			$lines = array();
 			$lines['graph'] = null;
 			$dtz = new DateTimeZone($config->timezone);
@@ -300,7 +304,7 @@ try {
 			}else{
 				$options[] =array( "value" => "Today","name"=> _("Day"));
 			}
-
+			$config = Session::getConfig();
 			foreach ($config->devices as $device){
 				//if($device->graphOnFrontend){
 				$data['devices'][] = array('id'=>$device->id,'name'=>$device->name);
@@ -357,6 +361,8 @@ try {
 			$energy=array();
 			$maxPower=array();
 			$minMaxEnergyYear=array();
+			
+			$config = Session::getConfig();
 			foreach ($config->devices as $device){
 				if($device->type == 'production'){
 					$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($device->id,$date);
@@ -432,7 +438,7 @@ try {
 		case 'getPageTodayValues':
 			$maxEnergy = array();
 			$maxPower = array();
-				
+			$config = Session::getConfig();
 			foreach ($config->devices as $device){
 				if($device->type == 'production'){
 					$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($device->id);
@@ -469,7 +475,7 @@ try {
 			$lang['to'] 			= _("to");
 			$lang['expected'] 		= _("expected");
 			$data['lang'] = $lang;
-				
+			$config = Session::getConfig();
 			foreach ($config->devices as $device){
 				if($device->type == "production"){
 					$inverter[] = array("name"=>$device->name,"id"=>$device->id);
@@ -490,7 +496,7 @@ try {
 			$whichYear = Common::getValue('whichYear', 0);
 			$compareMonth = Common::getValue('compareMonth', 0);
 			$compareYear = Common::getValue('compareYear', 0);
-				
+			$config = Session::getConfig();
 			foreach ($config->devices as $device){
 				$inverter[] = array("name"=>$device->name,"id"=>$device->id);
 			}
@@ -596,6 +602,7 @@ try {
 				
 			break;
 		case 'getPageIndexBlurLiveValues':
+			$config = Session::getConfig();
 			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
 			$data['sumInverters'] = $indexValues['sum'];
 			break;
@@ -617,7 +624,7 @@ try {
 			$lang['KWHKWP']			= _("kWh/kWp");
 			$lang['allFiguresAreInKWH']= _("* All figures are in kWh");
 			$lang['overallTotalText']= _("** Incl. initial kWh");
-
+			$config = Session::getConfig();
 			$indexValues = $dataAdapter->readPageIndexData($config);
 			$data['IndexValues'] = $indexValues;
 			$data['lang'] = $lang;
