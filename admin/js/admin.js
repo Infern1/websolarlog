@@ -1289,7 +1289,7 @@ function load_device(deviceId,deviceApi,deviceType) {
         
         WSL.connect.getJSON('../api.php/Communication', function(data){
         	$('#communicationId').html("");
-        	$.each(data.devices, function(){
+        	$.each(data, function(){
 				$('#communicationId').append($('<option>', { value : this.id }).text(this.name));
     		});
     		$('#communicationId').val(inv_data.inverter.communicationId);

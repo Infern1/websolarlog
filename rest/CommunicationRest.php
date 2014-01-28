@@ -29,7 +29,7 @@ class CommunicationRest {
 		if ($id > 0) {
 			return $this->communicationService->load($id);
 		}
-		return array("devices"=>$this->communicationService->getList());
+		return $this->communicationService->getList();
 	}
 	
 	public function POST($request, $options) {

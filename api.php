@@ -61,8 +61,8 @@ foreach ($_SESSION[$_SESSION['logId']] as $value) {
 
 $log[]= array("logId"=>$_SESSION['logId'],"key"=>"server.endTime","value"=>microtime(true),"diff"=>(microtime(true)-$_SESSION[$_SESSION['logId']]['startTime']));
 
-$result['log'] = $log;
-$result['logSlow'] = $logSlow;
+//$result['log'] = $log;
+//$result['logSlow'] = $logSlow;
 unset($_SESSION[$_SESSION['logId']]);
 	
 echo json_encode($result);
