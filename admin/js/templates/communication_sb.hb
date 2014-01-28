@@ -3,9 +3,9 @@ See this forum post for more info:<br>
 New communication manager is now active</a>
 <br>
 
-{{#data}}
+{{#each data.devices}}
 <button type="button" id="btnCommunication_{{this.id}}" class="communication_select" style="width:100%;">{{this.name}} </button><br/>
-{{/data}}
+{{/each}}
 <br />
 <hr>
 <form>
