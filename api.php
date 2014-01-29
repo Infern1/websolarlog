@@ -39,23 +39,32 @@ try {
 $_SESSION[$_SESSION['logId']][]['api.apiTime'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
 
 	
-foreach ($_SESSION[$_SESSION['logId']] as $value) {
-	foreach($value  as $key=>$value){
-		//echo $value;
-        if(isset($backupValue)){
-        	$diff = $value - $backupValue;
-            if($diff> 0.5){
-            	$logSlow[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff,"diffText"=>$diffText);
-            }
-        }else{
-                $diff = 0;
-        }
-  		$log[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff,"diffText"=>$diffText);
+	
+	// create the Log and SlowLog array
+	if(isset($_SESSION[$_SESSION['logId']])){
+		foreach ($_SESSION[$_SESSION['logId']] as $values) {
+			if(isset($values)){
+				foreach($values  as $key=>$value){
+					//echo $value;
+			        if(isset($backupValue)){
+			        	$diff = $value - $backupValue;
+			            if($diff> 0.5){
+			            	$logSlow[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff,"diffText"=>$diffText);
+			            }
+			        }else{
+			                $diff = 0;
+			        }
+			        if(($value - $backupValue) < 0.0001){
+			        	$diff = 0.0001;
+			        }
+			  		$log[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff);
 
-        $backupKey = $key;
-        $backupValue = $value;
+			        $backupKey = $key;
+			        $backupValue = $value;
+				}
+			}
+		}
 	}
-}
 
 
 
