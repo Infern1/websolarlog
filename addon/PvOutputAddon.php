@@ -56,20 +56,21 @@ class PvOutputAddon {
 				//When the sun is NOT down OR if the sun is down and we want to "sendDataWholeDay":
 				if(Util::isSunDown()==false || (Util::isSunDown()==true && $sendDataWholeDay == true)){
 					$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
-				}
-				if ($result['info']['http_code'] == "200") {
-					if(count($live)>=1){
-						$live->pvoutput = 1;
-						$this->history->save($live);
+				
+					if ($result['info']['http_code'] == "200") {
+						if(count($live)>=1){
+							$live->pvoutput = 1;
+							$this->history->save($live);
+						}
+					}elseif ($result['info']['http_code'] == "400") {
+						if(count($live)>=1){
+							$live->pvoutput = 2;
+							$live->pvoutputErrorMessage = $result['response'];
+							$this->history->save($live);
+						}
+					}else{
+						HookHandler::getInstance()->fire("onDebug", "http_code:unknown:\r\n".print_r($result,true));
 					}
-				}elseif ($result['info']['http_code'] == "400") {
-					if(count($live)>=1){
-						$live->pvoutput = 2;
-						$live->pvoutputErrorMessage = $result['response'];
-						$this->history->save($live);
-					}
-				}else{
-					HookHandler::getInstance()->fire("onDebug", "http_code:unknown:\r\n".print_r($result,true));
 				}
 			}
 		}
