@@ -41,9 +41,9 @@ class Session
       
     public static function initialize() {
 
-    	if(!isset($_SESSION['logId']) || $_SESSION[$_SESSION['logId']]['startTime']){
+    	if(!isset($_SESSION['logId']) || $_SESSION['logId'.$_SESSION['logId']]['startTime']){
     		$_SESSION['logId'] = rand(100,99999);
-    		$_SESSION[$_SESSION['logId']]['startTime'] = microtime(true);
+    		$_SESSION['logId'.$_SESSION['logId']]['startTime'] = microtime(true);
     	}
     	
     	self::initialize_db();
@@ -66,18 +66,18 @@ class Session
     
     public static function initializeLight() {
 
-    	if(!isset($_SESSION['logId']) || $_SESSION[$_SESSION['logId']]['startTime']){
+    	if(!isset($_SESSION['logId']) || $_SESSION['logId'.$_SESSION['logId']]['startTime']){
     		$_SESSION['logId'] = rand(100,99999);
-    		$_SESSION[$_SESSION['logId']]['startTime'] = microtime(true);
+    		$_SESSION['logId'.$_SESSION['logId']]['startTime'] = microtime(true);
     	}
     	
-    	$_SESSION[$_SESSION['logId']][][__METHOD__.'.initialize_db'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    	$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.initialize_db'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     	self::initialize_db();
-    	$_SESSION[$_SESSION['logId']][][__METHOD__.'.setTimezone'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    	$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.setTimezone'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     	self::setTimezone();
-    	$_SESSION[$_SESSION['logId']][][__METHOD__.'.setLanguage'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    	$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.setLanguage'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     	self::setLanguage();
-    	$_SESSION[$_SESSION['logId']][][__METHOD__.'.registerHooks'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    	$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.registerHooks'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     	self::registerHooks();
     	
     }
@@ -86,35 +86,35 @@ class Session
     	try {
     		// Setup the database
     		$config = Session::getConfig(true, false); // We dont need data from dbase
-    		$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterGetConfig(true, false)'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterGetConfig(true, false)'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     		if ($config->getDatabaseUser() != "" && $config->getDatabasePassword() != "") {
     			R::setup($config->dbDSN, $config->getDatabaseUser(), $config->getDatabasePassword());
     		} else {
     			R::setup($config->dbDSN);
     		}
-    		$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterRBsetup'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterRBsetup'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     		// Switch on/off debug
     		R::debug(false);
-    		$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterRBdebug'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterRBdebug'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     		// Only use on sqlite for speedup
     		if (strpos($config->dbDSN,'sqlite') !== false) {
     			R::exec("PRAGMA synchronous = NORMAL"); // A little less secure then FULL, but much less IO
-    			$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterRBPragmaNormal'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterRBPragmaNormal'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     			
     			R::exec("PRAGMA PRAGMA temp_store = 2"); // In memory (IO on SD is slow)
-    			$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterRBPragmaTempStor'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterRBPragmaTempStor'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     			
     			PDODataAdapter::getInstance()->sqlEngine = 'sqlite';
-    			$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterRBsqlite'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterRBsqlite'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     		}elseif(strpos($config->dbDSN,'mysql') !== false){
     			PDODataAdapter::getInstance()->sqlEngine = 'mysql';
-    			$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterRBmysql'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterRBmysql'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     		}
     		RedBean_OODBBean::setFlagBeautifulColumnNames(false);
-    		$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterRBsetFlag'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterRBsetFlag'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     	
     		R::setStrictTyping(false);
-    		$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterSetStrict'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterSetStrict'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     	} catch (PDOException $e) {
     		exit("Could not connect with the database, this can be a wrong dsn in the configuration or php modules not installed like php5-sqlite");
     	}
@@ -133,7 +133,7 @@ class Session
     		$config = new Config();
     		// Get dbase settings
     		$dbconfig = self::loadConfigFile('database');
-    		$_SESSION[$_SESSION['logId']][][__METHOD__.'.loadConfigFile'.rand()] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.loadConfigFile'.rand()] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     		
     		if ($dbconfig != null && isset($dbconfig['database'])) {
     			$section = $dbconfig['database'];
@@ -143,14 +143,14 @@ class Session
     				$config->setDatabasePassword($section['password']);
     			}
     		}
-    		$_SESSION[$_SESSION['logId']][][__METHOD__.'.returnNotDBConfig'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.returnNotDBConfig'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     		return $config;
     	}
     	
     	if (!isset(self::$config) || self::$config == null || $reload == true) {
-    		$_SESSION[$_SESSION['logId']][][__METHOD__.'.beginReadConfig'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.beginReadConfig'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     		self::$config = PDODataAdapter::getInstance()->readConfig();
-    		$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterReadConfig'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterReadConfig'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     	}
     	
     	if (strpos(self::$config->dbDSN,'sqlite') !== false) {
@@ -158,7 +158,7 @@ class Session
     	}elseif(strpos(self::$config->dbDSN,'mysql') !== false){
     		self::$config->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
     	}
-    	$_SESSION[$_SESSION['logId']][][__METHOD__.'.return'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    	$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.return'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     	return self::$config;
     }
     
@@ -274,9 +274,9 @@ class Session
      * Sets the time zone
      */
     public static function setTimezone() {
-    	$_SESSION[$_SESSION['logId']][][__METHOD__.'.beginSetTimezone'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    	$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.beginSetTimezone'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     	ini_set('date.timezone', self::getConfig()->timezone);
-    	$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterSettingTimezone'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    	$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterSettingTimezone'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     }
     
     /**
@@ -284,10 +284,10 @@ class Session
      */
     public static function registerHooks() {
     	// TODO :: Get from dbase
-    	$_SESSION[$_SESSION['logId']][][__METHOD__.'.start'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    	$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.start'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     	
     	$hookHandler = HookHandler::getInstance();
-    	$_SESSION[$_SESSION['logId']][][__METHOD__.'.hookHandler::GetInstance()'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    	$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.hookHandler::GetInstance()'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     	
     	// LoggerAddon, Needs to be first so we can use debug as fast as possible
     	$hookHandler->add("onDebug", "LoggerAddon.onDebug");
@@ -360,7 +360,7 @@ class Session
     	$hookHandler->add("onFastJob", "CacheAddon.averagePower");
     	$hookHandler->add("onFastJob", "CacheAddon.EnergyValues");
     	
-    	$_SESSION[$_SESSION['logId']][][__METHOD__.'.AllHooksAdded'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+    	$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.AllHooksAdded'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     	
     }
 }

@@ -1,16 +1,16 @@
 <?php
 define('checkaccess', TRUE);
-$_SESSION[$_SESSION['logId']] = null;
-$_SESSION[$_SESSION['logId']] = array();
+$_SESSION['logId'.$_SESSION['logId']] = null;
+$_SESSION['logId'.$_SESSION['logId']] = array();
 
 $logId = rand(100, 99999);
 $_SESSION['logId'] = $logId;
-$_SESSION[$_SESSION['logId']]['startTime'] = microtime(true);
+$_SESSION['logId'.$_SESSION['logId']]['startTime'] = microtime(true);
 
 require 'classes/classloader.php';
-$_SESSION[$_SESSION['logId']][]['server.afterClassLoader'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+$_SESSION['logId'.$_SESSION['logId']][]['server.afterClassLoader'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 Session::initializeLight();
-$_SESSION[$_SESSION['logId']][]['server.afterLightInit'] =   (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+$_SESSION['logId'.$_SESSION['logId']][]['server.afterLightInit'] =   (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 
 try {
 	if (PeriodHelper::isPeriodJob("inActiveJob", 30)) {
@@ -703,8 +703,8 @@ try {
 	}
 	
 	// create the Log and SlowLog array
-	if(is_array($_SESSION[$_SESSION['logId']])){
-		foreach ($_SESSION[$_SESSION['logId']] as $values) {
+	if(is_array($_SESSION['logId'.$_SESSION['logId']])){
+		foreach ($_SESSION['logId'.$_SESSION['logId']] as $values) {
 			if(is_array($values)){
 				foreach($values  as $key=>$value){
 					//echo $value;
@@ -730,11 +730,11 @@ try {
 		}
 	}
 	// total time for the API run:
-	$_SESSION[$_SESSION['logId']][]['server.endTime'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+	$_SESSION['logId'.$_SESSION['logId']][]['server.endTime'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 	
-	$log[]= array("logId"=>$_SESSION['logId'],"key"=>"server.endTime","value"=>microtime(true),"diff"=>(microtime(true)-$_SESSION[$_SESSION['logId']]['startTime']),"diffText"=>"");
+	$log[]= array("logId"=>$_SESSION['logId'],"key"=>"server.endTime","value"=>microtime(true),"diff"=>(microtime(true)-$_SESSION['logId'.$_SESSION['logId']]['startTime']),"diffText"=>"");
 	
-	$_SESSION[$_SESSION['logId']] = null;
+	$_SESSION['logId'.$_SESSION['logId']] = null;
 	if($_GET['log']==true){
 		$data['log'] = $log;
 		$data['logSlow'] = $logSlow;

@@ -1,22 +1,22 @@
 <?php
 
-$_SESSION[$_SESSION['logId']] = null;
-$_SESSION[$_SESSION['logId']] = array();
+$_SESSION['logId'.$_SESSION['logId']] = null;
+$_SESSION['logId'.$_SESSION['logId']] = array();
 
 $logId = rand(100, 99999);
 $_SESSION['logId'] = $logId;
-$_SESSION[$_SESSION['logId']]['startTime'] = microtime(true);
+$_SESSION['logId'.$_SESSION['logId']]['startTime'] = microtime(true);
 
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
 require 'classes/classloader.php';
 // time it took to load the classloader:
-$_SESSION[$_SESSION['logId']][]['api.afterClassLoader'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+$_SESSION['logId'.$_SESSION['logId']][]['api.afterClassLoader'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 
 Session::initializeLight();
 // time it took to load initLightx:
-$_SESSION[$_SESSION['logId']][]['api.afterLightInit'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+$_SESSION['logId'.$_SESSION['logId']][]['api.afterLightInit'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 
 // Set headers for JSON response
 header('Cache-Control: no-cache, must-revalidate');
@@ -28,7 +28,7 @@ $result = array();
 try {
 	$result = ApiController::getInstance()->route();
 	// time it took for the route routine to run:
-	$_SESSION[$_SESSION['logId']][]['api.AfterRoute()'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+	$_SESSION['logId'.$_SESSION['logId']][]['api.AfterRoute()'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 } catch (SetupException $e) {
 	$result = $e->getJSONMessage();
 } catch (Exception $e) {        // Skipped
@@ -36,13 +36,13 @@ try {
     $result = array('result'=>'error', 'success'=>false, 'exception'=>get_class($e), 'message'=>$msg);
 }
 // total time for the API run:
-$_SESSION[$_SESSION['logId']][]['api.apiTime'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+$_SESSION['logId'.$_SESSION['logId']][]['api.apiTime'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 
 	
 	
 	// create the Log and SlowLog array
-	if(is_array($_SESSION[$_SESSION['logId']])){
-		foreach ($_SESSION[$_SESSION['logId']] as $values) {
+	if(is_array($_SESSION['logId'.$_SESSION['logId']])){
+		foreach ($_SESSION['logId'.$_SESSION['logId']] as $values) {
 			if(is_array($values)){
 				foreach($values  as $key=>$value){
 					//echo $value;
@@ -73,13 +73,13 @@ $_SESSION[$_SESSION['logId']][]['api.apiTime'] = (microtime(true) - $_SESSION[$_
 
 
 
-$log[]= array("logId"=>$_SESSION['logId'],"key"=>"server.endTime","value"=>microtime(true),"diff"=>(microtime(true)-$_SESSION[$_SESSION['logId']]['startTime']));
+$log[]= array("logId"=>$_SESSION['logId'],"key"=>"server.endTime","value"=>microtime(true),"diff"=>(microtime(true)-$_SESSION['logId'.$_SESSION['logId']]['startTime']));
 
 if($_GET['log']==true){
 	$result['log'] = $log;
 	$result['logSlow'] = $logSlow;
 }
-unset($_SESSION[$_SESSION['logId']]);
+unset($_SESSION['logId'.$_SESSION['logId']]);
 	
 echo json_encode($result);
 ?>

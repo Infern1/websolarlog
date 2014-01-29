@@ -212,7 +212,7 @@ class GraphService {
 
 		// translate hideSerie labels
 		$graphJson = json_decode($graph->json);
-		$_SESSION[$_SESSION['logId']][]['graphService.loadGraph'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+		$_SESSION['logId'.$_SESSION['logId']][]['graphService.loadGraph'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			
 		// find series of graph
 		$series = $graph->ownGraph_series;
@@ -338,7 +338,7 @@ class GraphService {
 
 
 			$graphHook = array();
-			$_SESSION[$_SESSION['logId']][]['graphService.loadGraph'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+			$_SESSION['logId'.$_SESSION['logId']][]['graphService.loadGraph'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			
 			foreach($config->devices as $device){
 				$hookReturn = HookHandler::getInstance()->fire("GraphDayPoints",$device,$options['date'],$options['type'],$disabledSeries);
@@ -346,7 +346,7 @@ class GraphService {
 					$graphHook = array_merge_recursive((array)$graphHook,(array)$hookReturn);
 				}
 			}
-			$_SESSION[$_SESSION['logId']][]['graphService After GraphDayPoints Hooks'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+			$_SESSION['logId'.$_SESSION['logId']][]['graphService After GraphDayPoints Hooks'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 				
 			$timestamp = Util::getSunInfo($config, $options['date']);
 			$timestamp = array("beginDate"=>$timestamp['sunrise']-3600,"endDate"=>$timestamp['sunset']+3600);
@@ -377,7 +377,7 @@ class GraphService {
 			$dtz = new DateTimeZone($config->timezone);
 			$timezone = new DateTime('now', $dtz);
 			$timezoneOffset = $dtz->getOffset( $timezone )/3600;
-			$_SESSION[$_SESSION['logId']][]['graphService.loadGraph Return'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+			$_SESSION['logId'.$_SESSION['logId']][]['graphService.loadGraph Return'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			
 			return array(
 				'dataPoints'=>$dataPoints,

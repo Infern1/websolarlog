@@ -76,7 +76,7 @@ class DeviceService {
 	 */
 	public function getAllDevices() {
 		$bObjects = R::find( self::$tbl);
-		$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterFind'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterFind'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 		$objects = array();
 		foreach ($bObjects as $bObject) {
 			$objects[] = $this->toObject($bObject);
@@ -90,7 +90,7 @@ class DeviceService {
 	 */
 	public function getActiveDevices() {
 		$bObjects = R::find( self::$tbl, ' active = 1 ');
-		$_SESSION[$_SESSION['logId']][][__METHOD__.'.afterFind'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterFind'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 		$objects = array();
 		foreach ($bObjects as $bObject) {
 			$objects[] = $this->toObject($bObject);
@@ -101,6 +101,7 @@ class DeviceService {
 	public function getSupportedDevices(){
 		return array(
 				array('value'=>'AURORA','type'=>'production','name'=>'Aurora'),
+				array('value'=>'DeltaSolivia','type'=>'production','name'=>'DeltaSolivia'),
 				array('value'=>'Diehl-ethernet','type'=>'production','name'=>'Diehl Ethernet'),
 				array('value'=>'DutchSmartMeter','type'=>'metering','name'=>'Dutch Smart Meter'),
 				array('value'=>'DutchSmartMeterRemote','type'=>'metering','name'=>'Dutch Smart Meter Remote'),

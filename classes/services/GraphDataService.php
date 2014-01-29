@@ -12,7 +12,7 @@ class GraphDataService {
 	 */
 
 	public static function GraphDayPoints($args) {
-		$_SESSION[$_SESSION['logId']][]['GraphDataService::GraphDayPoints'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+		$_SESSION['logId'.$_SESSION['logId']][]['GraphDataService::GraphDayPoints'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 		
 		$device = $args[1];
 		$date = $args[2];
@@ -32,7 +32,7 @@ class GraphDataService {
 	 * @param unknown_type $beans
 	 */
 	public static function  DayBeansToGraphPoints($device,$beans,$startDate){
-		$_SESSION[$_SESSION['logId']][]['GraphDataService::DayBeansToGraphPoints start'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+		$_SESSION['logId'.$_SESSION['logId']][]['GraphDataService::DayBeansToGraphPoints start'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 		
 		$graph = new Graph();
 		$i=0;
@@ -79,7 +79,7 @@ class GraphDataService {
 
 			$graph->metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
 		}
-		$_SESSION[$_SESSION['logId']][]['GraphDataService::DayBeansToGraphPoints return'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+		$_SESSION['logId'.$_SESSION['logId']][]['GraphDataService::DayBeansToGraphPoints return'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 		
 		return $graph;
 	}
@@ -94,7 +94,7 @@ class GraphDataService {
 	 */
 
 	public static function readTablesPeriodValues($device, $table, $type, $startDate){
-		$_SESSION[$_SESSION['logId']][]['GraphDataService::readTablesPeriodValues start'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+		$_SESSION['logId'.$_SESSION['logId']][]['GraphDataService::readTablesPeriodValues start'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 		
 		
 		$count = 0;
@@ -109,7 +109,7 @@ class GraphDataService {
 
 		//see if we have atleast 1 bean, else we make one :)
 		(!$energyBeans) ? $energyBeans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $energyBeans = $energyBeans;
-		$_SESSION[$_SESSION['logId']][]['GraphDataService::readTablesPeriodValues return'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+		$_SESSION['logId'.$_SESSION['logId']][]['GraphDataService::readTablesPeriodValues return'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 		
 		
 		return array('device'=>$device,'beans'=>$energyBeans);
