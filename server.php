@@ -701,6 +701,8 @@ try {
 		default:
 			break;
 	}
+	
+	// create the Log and SlowLog array
 	foreach ($_SESSION[$_SESSION['logId']] as $value) {
 		foreach($value  as $key=>$value){
 			//echo $value;
@@ -712,7 +714,11 @@ try {
 	        }else{
 	                $diff = 0;
 	        }
+	        if(($value - $backupValue) < 0.0001){
+	        	$diff = 0.0001;
+	        }
 	  		$log[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff,"diffText"=>$diffText);
+			
 	
 	        $backupKey = $key;
 	        $backupValue = $value;
