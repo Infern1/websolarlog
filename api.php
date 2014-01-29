@@ -41,9 +41,9 @@ $_SESSION[$_SESSION['logId']][]['api.apiTime'] = (microtime(true) - $_SESSION[$_
 	
 	
 	// create the Log and SlowLog array
-	if(isset($_SESSION[$_SESSION['logId']])){
+	if(is_array($_SESSION[$_SESSION['logId']])){
 		foreach ($_SESSION[$_SESSION['logId']] as $values) {
-			if(isset($values)){
+			if(is_array($values)){
 				foreach($values  as $key=>$value){
 					//echo $value;
 			        if(isset($backupValue)){
