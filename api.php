@@ -57,10 +57,15 @@ $_SESSION[$_SESSION['logId']][]['api.apiTime'] = (microtime(true) - $_SESSION[$_
 			        if(($value - $backupValue) < 0.0001){
 			        	$diff = 0.0001;
 			        }
-			  		$log[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff);
 
 			        $backupKey = $key;
 			        $backupValue = $value;
+			         
+			        if(($value - $backupValue) < 0.0001){
+			        	$diff = 0.0001;
+			        }
+			  		$log[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff);
+			        
 				}
 			}
 		}
