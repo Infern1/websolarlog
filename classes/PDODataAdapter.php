@@ -1807,9 +1807,10 @@ class PDODataAdapter {
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
 	 */
-	public function getMaxTotalEnergyValues($invtnum,$type,$limit=1){
+	public function getMaxTotalEnergyValues($invtnum,$type,$config,$limit=1){
 		// get config
-		$config = Session::getConfig();
+		// We now get is from the parent
+		//$config = Session::getConfig();
 		// init var
 		$sumPlantPower = $this->readPlantPower()/1000;
 		//echo "SELECT INV,COUNT(kwh) as countkWh,MAX(kwh) AS kWh, SUM(kwh) AS sumkWh, time AS date FROM energy WHERE INV = :INV GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')." ORDER BY time DESC limit 0,1";
@@ -2202,12 +2203,13 @@ class PDODataAdapter {
 	 * @param string $type (options: panels, average) default = panels
 	 * @param unknown $deviceNum
 	 */
-	function getAvgPower($type='panels',$deviceNum=0){
-		$config = Session::getConfig();
-
+	function getAvgPower($config,$deviceNum=0){
+		
+		($config->gaugeMaxType=='') ? $type='panels' : $type = $config->gaugeMaxType;
+		
 		switch ($type) {
 			case 'panels':
-				foreach (Session::getConfig()->devices as $device) {
+				foreach ($config->devices as $device) {
 					$average['recent'] += $device->plantpower;
 				}
 				break;
@@ -2247,7 +2249,10 @@ class PDODataAdapter {
 	}
 
 
-
+	// TODO: remove ?
+	/*
+	 * Looks the code below is not used.
+	 */
 	/**
 	 *
 	 * @param string $type (options: panels, average) default = panels
@@ -2273,15 +2278,8 @@ class PDODataAdapter {
 		$id = R::store($bean);
 	}
 
-	public function checkDefaultPassword(){
-		$bean = R::find('config');
-		if (!isset($bean)) {
-			// No config leaving
-			return;
-		}
-		//below is the default SHA1() hash for "admin"
-		//d033e22ae348aeb5660fc2140aec35850c4da997
-		if($bean[1]['adminpasswd']=='d033e22ae348aeb5660fc2140aec35850c4da997'){
+	public function checkDefaultPassword($config){
+		if($config->adminpasswd=='d033e22ae348aeb5660fc2140aec35850c4da997'){
 			//We have a default password....
 			return true;
 		}else{

@@ -604,7 +604,6 @@ switch ($settingstype) {
 		$dropbox = new Dropbox;
 
 		/* not needed till we can switch DB-engines
-		$config = Session::getConfig();
 		$dbName = explode('/',$config->dbHost);
 		$dbName = explode('.',$dbName[count($dbName)-1]);
 		$backupFileName = $dbName[0].'_'.date('Ymd').''.date('His').'.backup';
@@ -788,7 +787,6 @@ switch ($settingstype) {
 		$data['result'] = true;
 		break;	
 	case 'current-trunk-version':
-		$config = Session::getConfig();
 		$versions = Updater::getVersions(true);
 		foreach ($versions as $key => $version){
 			if($key=='trunk'){
@@ -1020,7 +1018,6 @@ switch ($settingstype) {
 		break;
 	case 'invoiceInfo':
 		$bill = new Bill();
-		$config = Session::getConfig(true);
 		$splitDate = explode("-",$config->invoiceDate);
 		
 		$data['invoiceStartDate'] = $config->invoiceDate;
@@ -1234,7 +1231,7 @@ switch ($settingstype) {
 }
 
 if(Session::isLogin()){
-	$pass = $adapter->checkDefaultPassword();
+	$pass = $adapter->checkDefaultPassword($config);
 }
 
 if(isset($pass) && $pass){
@@ -1270,7 +1267,6 @@ function updaterJsonFile($state, $info, $percentage) {
  * @return array
  */
 function diagnostics($adapter) {
-	$config = Session::getConfig();	
 	$result = array();
 	$result['sqlite'] = false;
 	$result['available_drivers'] = PDO::getAvailableDrivers();

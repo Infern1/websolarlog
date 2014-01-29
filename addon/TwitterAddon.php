@@ -72,7 +72,6 @@ class TwitterAddon {
 	}
 	
 	function sendTweet(){
-		$config = Session::getConfig();
 		HookHandler::getInstance()->fire("onDebug", 'Fire(sendTwitter)');
 		if($this->hybridauth_session_data){
 			HookHandler::getInstance()->fire("onDebug", 'Found session data, lets try to Tweet');
@@ -80,7 +79,7 @@ class TwitterAddon {
 			try{
 				$twitter = $this->hybridauth->getAdapter( "Twitter" );
 				$indexValues = $this->adapter->readPageIndexData();
-				$url = Common::getShortUrl($config->url);
+				$url = Common::getShortUrl($this->config->url);
 				$twitter->setUserStatus("Today we generated ". $indexValues['summary']['today']['todayAvgKwh-0']." kWh. Check out: " . $url . " #SunCounter" );
 				$twitter->logout();
 				$data['message']=print_r($indexValues, true);

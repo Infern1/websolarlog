@@ -80,7 +80,6 @@ class FacebookAddon {
 	}
 	
 	function sendFacebook(){
-		$config = Session::getConfig();
 		HookHandler::getInstance()->fire("onDebug", 'Fire(sendFacebook)');
 		if($this->hybridauth_session_data){
 			HookHandler::getInstance()->fire("onDebug", 'Found session data, lets try to Tweet');
@@ -88,7 +87,7 @@ class FacebookAddon {
 			try{
 				$twitter = $this->hybridauth->getAdapter( "Facebook" );
 				$indexValues = $this->adapter->readPageIndexData($this->config->hybridAuth);
-				$url = Common::getShortUrl($config->url);
+				$url = Common::getShortUrl($this->config->url);
 				$twitter->setUserStatus("Today we generated ". $indexValues['summary']['totalEnergyToday'][0]['KWH']." kWh. Check out: " . $url );
 				$twitter->logout();
 				$data['message']='Facebook send';

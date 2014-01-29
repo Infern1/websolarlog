@@ -50,8 +50,6 @@ class CompareService {
 		}
 
 		return array(
-				//"whichMonthDays"=>$whichMonthDays,
-				//"compareMonthDays"=>$compareMonthDays,
 				"compareBeans"=>self::beansToGraphPoints($expectedBeans),
 				"whichBeans"=>self::beansToGraphPoints($whichBeans),
 				"whichCompareDiff"=>$diff,

@@ -7,8 +7,9 @@ class Util {
 	 * @return boolean
 	 */
     public static function isSunDown($correction=300) {
-    	if (Session::getConfig()->isValidCoords()) {
-	        $sun_info = date_sun_info(time(), Session::getConfig()->latitude , Session::getConfig()->longitude);
+    	$config =  Session::getConfig();
+    	if ($config->isValidCoords()) {
+	        $sun_info = date_sun_info(time(), $config->latitude , $config->longitude);
 	        return time()<($sun_info['sunrise']+$correction) || time()>($sun_info['sunset']-$correction);
     	}
 		return false;    	
