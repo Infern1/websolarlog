@@ -501,12 +501,14 @@ try {
 				
 			break;
 		case 'getCompareGraph':
+			// in some 'case' the $config is not used, so lets only load when its needed.
+			$config = Session::getConfig();
+			
 			$whichMonth = Common::getValue('whichMonth', 0);
 			$whichYear = Common::getValue('whichYear', 0);
 			$compareMonth = Common::getValue('compareMonth', 0);
 			$compareYear = Common::getValue('compareYear', 0);
-			// in some 'case' the $config is not used, so lets only load when its needed.
-			$config = Session::getConfig();
+
 			foreach ($config->devices as $device){
 				$inverter[] = array("name"=>$device->name,"id"=>$device->id);
 			}
@@ -550,6 +552,9 @@ try {
 			$data['dayData'] = $dayData;
 			break;
 		case 'getHistoryValues':
+			// in some 'case' the $config is not used, so lets only load when its needed.
+			$config = Session::getConfig();
+			
 			($devicenum!=0) ? $devicenum = $devicenum : $devicenum = 0;
 			$history = $dataAdapter->getDayHistoryPerRecord($devicenum,$config);
 			$c = 0;
@@ -720,9 +725,10 @@ try {
 	$log[]= array("logId"=>$_SESSION['logId'],"key"=>"server.endTime","value"=>microtime(true),"diff"=>(microtime(true)-$_SESSION[$_SESSION['logId']]['startTime']),"diffText"=>"");
 	
 	$_SESSION[$_SESSION['logId']] = null;
-	
-	$data['log'] = $log;
-	$data['logSlow'] = $logSlow;
+	if($_GET['log']==true){
+		$data['log'] = $log;
+		$data['logSlow'] = $logSlow;
+	}
 	echo json_encode($data);
 } catch (Exception $e) {
 	// get ErrorMessage
