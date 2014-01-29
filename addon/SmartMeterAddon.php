@@ -202,18 +202,24 @@ class SmartMeterAddon {
 	 * Check to see if this is a PVoutput record
 	 * @return 0/1
 	 */
+	
 	public function CheckPVoutputSend() {
-		$bean = R::findAll('historySmartMeter','pvoutputSend = 1 ORDER BY id DESC LIMIT 1');
+		$bean = R::findOne('historySmartMeter','pvoutputSend = 1 ORDER BY id DESC LIMIT 1');
 	
 		// Check if we got a record thats been marked as a PVoutput record
-		if($bean['id'] > 0){
-			if((time() - $bObject['time']) >= 300){
-				return '1';
+		if (!$bean){
+			if($bean['id'] > 0){
+				if((time() - $bean['time']) >= 300){
+					return '1';
+				}else{
+					return '0';
+				}
 			}else{
-				return '0';
+				// We do not have a record, so this record needs to be a PVoutput record
+				return '1';
 			}
 		}else{
-			// We do not have a record, so this record needs to be a PVoutput record
+			//We do not have a record, so this record needs to be a PVoutput record
 			return '1';
 		}
 	}
