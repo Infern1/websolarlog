@@ -21,10 +21,14 @@ require_once("template/" .  $config->template . "/index.php");
 			function(){
 				WSL.init_PageLiveValues("#content",function(){indexLiveInverters});
 				WSL.init_PageIndexTotalValues("#sidebar",function(){sidebar});
+				analyticsJSCodeBlock();
     		}
 		)	
 	});
-	analyticsJSCodeBlock();
+
+			
+
+	
 	</script>
 	<!-- END Wrapper -->
 </body>

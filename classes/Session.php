@@ -40,6 +40,12 @@ class Session
     }
       
     public static function initialize() {
+
+    	if(!isset($_SESSION['logId'])){
+    		$_SESSION['logId'] = rand(100,99999);
+    		$_SESSION[$_SESSION['logId']]['startTime'] = microtime(true);
+    	}
+    	
     	self::initialize_db();
     	self::setTimezone();
     	self::setLanguage(); 
@@ -59,6 +65,12 @@ class Session
     }
     
     public static function initializeLight() {
+
+    	if(!isset($_SESSION['logId'])){
+    		$_SESSION['logId'] = rand(100,99999);
+    		$_SESSION[$_SESSION['logId']]['startTime'] = microtime(true);
+    	}
+    	
     	$_SESSION[$_SESSION['logId']][][__METHOD__.'.initialize_db'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
     	self::initialize_db();
     	$_SESSION[$_SESSION['logId']][][__METHOD__.'.setTimezone'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
@@ -116,11 +128,6 @@ class Session
      * @return Config
      */
     public static function getConfig($reload=false,$usedb=true) {
-    	
-    	if(!isset($_SESSION['logId'])){
-    		$_SESSION['logId'] = rand(100,99999);
-    		$_SESSION[$_SESSION['logId']]['startTime'] = microtime(true);
-    	}
     	
     	if (!$usedb) {
     		$config = new Config();
