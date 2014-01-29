@@ -1,5 +1,9 @@
-<?php 
-$config = Session::getConfig();
+<?php
+/*
+ * already loaded in parent (index/today/month/year/compare/production).php file
+ * $config = Session::getConfig(); 
+ */ 
+
 ?>
 <!DOCTYPE HTML>
 <html>
