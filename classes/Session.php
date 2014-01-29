@@ -116,6 +116,10 @@ class Session
      * @return Config
      */
     public static function getConfig($reload=false,$usedb=true) {
+    	if(!isset($_SESSION['logId'])){
+    		$_SESSION[$_SESSION['logId']] = rand(100,99999);
+    		$_SESSION[$_SESSION['logId']]['startTime'] = microtime(true);
+    	}
     	if (!$usedb) {
     		$config = new Config();
     		// Get dbase settings
@@ -145,7 +149,6 @@ class Session
     	}elseif(strpos(self::$config->dbDSN,'mysql') !== false){
     		self::$config->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
     	}
-    	
     	$_SESSION[$_SESSION['logId']][][__METHOD__.'.return'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
     	return self::$config;
     }
