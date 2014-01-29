@@ -420,5 +420,26 @@ class GraphService {
 	}
 
 
-	public function getGraphAddonAxes($addon){
-		$bObject = R:
+	public function getGraphAddonSeries($addon){
+		$bObject = R::findAll(self::$tblSeries,' addon = :addon',array(':addon'=>$addon));
+		if ($bObject->id > 0) {
+			$object = $this->toAxeObject($bObject);
+		}
+		return isset($object) ? $object : new GraphAxe();
+	}
+
+
+	private function toAxeBean($object, $bObject) {
+		$bObject->id = $object->id;
+		$bObject->label = $object->label;
+		return $bObject;
+	}
+
+	private function toAxeObject($bObject) {
+		$object = new GraphAxe();
+		$object->id = $bObject->id;
+		$object->label = $bObject->label;
+		return $object;
+	}
+}
+?>
