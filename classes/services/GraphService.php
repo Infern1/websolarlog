@@ -169,7 +169,7 @@ class GraphService {
 	public static function defaultAxes($config){
 		$show = 'false';
 
-		foreach ($this->config->devices as $device) {
+		foreach ($config->devices as $device) {
 			if($device->type == "production"){
 				$show = 'true';
 			}
@@ -421,42 +421,4 @@ class GraphService {
 
 
 	public function getGraphAddonAxes($addon){
-		$bObject = R::findAll(self::$tblAxes,' addon = :addon',array(':addon'=>$addon));
-		if ($bObject->id > 0) {
-			$object = $this->toAxeObject($bObject);
-		}
-		return isset($object) ? $object : new GraphAxe();
-	}
-
-	public function getGraphAllSeries(){
-		$bObject = R::find(self::$tblSeries);
-		if ($bObject->id > 0) {
-			$object = $this->toSerieObject($bObject);
-		}
-		return isset($object) ? $object : new GraphSerie();
-	}
-
-
-	public function getGraphAddonSeries($addon){
-		$bObject = R::findAll(self::$tblSeries,' addon = :addon',array(':addon'=>$addon));
-		if ($bObject->id > 0) {
-			$object = $this->toAxeObject($bObject);
-		}
-		return isset($object) ? $object : new GraphAxe();
-	}
-
-
-	private function toAxeBean($object, $bObject) {
-		$bObject->id = $object->id;
-		$bObject->label = $object->label;
-		return $bObject;
-	}
-
-	private function toAxeObject($bObject) {
-		$object = new GraphAxe();
-		$object->id = $bObject->id;
-		$object->label = $bObject->label;
-		return $object;
-	}
-}
-?>
+		$bObject = R:
