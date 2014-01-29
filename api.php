@@ -49,7 +49,7 @@ $_SESSION[$_SESSION['logId']][]['api.apiTime'] = (microtime(true) - $_SESSION[$_
 			        if(isset($backupValue)){
 			        	$diff = $value - $backupValue;
 			            if($diff> 0.5){
-			            	$logSlow[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff,"diffText"=>$diffText);
+			            	$logSlow[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff);
 			            }
 			        }else{
 			                $diff = 0;
