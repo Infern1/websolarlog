@@ -703,8 +703,8 @@ try {
 	}
 	
 	// create the Log and SlowLog array
-	foreach ($_SESSION[$_SESSION['logId']] as $value) {
-		foreach($value  as $key=>$value){
+	foreach ($_SESSION[$_SESSION['logId']] as $values) {
+		foreach($values  as $key=>$value){
 			//echo $value;
 	        if(isset($backupValue)){
 	        	$diff = $value - $backupValue;
