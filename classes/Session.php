@@ -41,7 +41,7 @@ class Session
       
     public static function initialize() {
 
-    	if(!isset($_SESSION['logId'])){
+    	if(!isset($_SESSION['logId']) || $_SESSION[$_SESSION['logId']]['startTime']){
     		$_SESSION['logId'] = rand(100,99999);
     		$_SESSION[$_SESSION['logId']]['startTime'] = microtime(true);
     	}
@@ -66,7 +66,7 @@ class Session
     
     public static function initializeLight() {
 
-    	if(!isset($_SESSION['logId'])){
+    	if(!isset($_SESSION['logId']) || $_SESSION[$_SESSION['logId']]['startTime']){
     		$_SESSION['logId'] = rand(100,99999);
     		$_SESSION[$_SESSION['logId']]['startTime'] = microtime(true);
     	}
