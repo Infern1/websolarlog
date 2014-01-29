@@ -19,8 +19,8 @@ require_once("template/" .  $config->template . "/index.php");
 		WSL.init_mainSummary("#main-middle");
 		WSL.init_tabs("index",0, "#main-middle",
 			function(){
-				WSL.init_PageLiveValues("#content",function(){sidebar});
-				WSL.init_PageIndexTotalValues("#sidebar",function(){indexLiveInverters});
+				WSL.init_PageLiveValues("#content",function(){indexLiveInverters});
+				WSL.init_PageIndexTotalValues("#sidebar",function(){sidebar});
     		}
 		)	
 	});
