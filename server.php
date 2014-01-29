@@ -717,7 +717,7 @@ try {
 	        if(($value - $backupValue) < 0.0001){
 	        	$diff = 0.0001;
 	        }
-	  		$log[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff,"diffText"=>$diffText);
+	  		$log[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff);
 			
 	
 	        $backupKey = $key;
