@@ -67,7 +67,12 @@ class CacheAddon {
 				$average['past'] = ($avgPast[0]['avgGP']>0)? $avgPast[0]['avgGP']:'0';
 				
 				$live = $this->liveService->getLiveByDevice($device);
-				$average['recent'] = ($live->GP + $average['recent'])/2;
+				
+				if(isset($live->GP)){
+					$average['recent'] = ($live->GP + $average['recent'])/2;
+				}else{
+					$average['recent'] = 0;
+				}
 				
 				if($average['recent']>$average['past']){
 					$trend = "up";
