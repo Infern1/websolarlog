@@ -46,7 +46,7 @@ class ProductionDeviceHandler {
 	
 	public static function handleHistory(QueueItem $item, Device $device) {
 		$liveService = new LiveService();
-		HookHandler::getInstance()->fire("onDebug", print_r($item,true));
+		
 		
 		// Only create history when the device is online
 		if ($device->state == 1 ) {
