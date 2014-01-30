@@ -273,9 +273,9 @@ class SmartMeterAddon {
 			$bean['returnCosts'] = ($bean['returnKWH'] * $this->config->costkwh)/100;
 			
 			$bean['usageKWH'] = $bean['lowUsage'] + $bean['highUsage'];
-			$bean['usageCosts'] = ($bean['usage'] / $this->config->costkwh);
-			$bean['usageCO2'] = $bean['usage'] * $this->config->co2kwh;
-			$bean['effUsageKWH'] = $bean['usage']-$bean['return'];
+			$bean['usageCosts'] = ($bean['usageKWH'] / $this->config->costkwh);
+			$bean['usageCO2'] = $bean['usageKWH'] * $this->config->co2kwh;
+			$bean['effUsageKWH'] = $bean['usageKWH']-$bean['returnKWH'];
 			$bean['effUsageCosts'] = $find['effUsage'] * $this->config->costkwh;
 
 			return $bean;
