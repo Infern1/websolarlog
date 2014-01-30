@@ -180,7 +180,7 @@ class PvOutputAddon {
 			$result = $this->PVoutputCurl($url,$vars,$headerInfo,true);
 			return $result;
 		} catch (Exception $e) {
-			HookHandler::getInstance()->fire("onError", $e->getMessage());
+			HookHandler::getInstance()->fire("onError","PVoutput::SendStatus".$e->getMessage());
 		}
 		return false;	
 	}
@@ -226,7 +226,7 @@ class PvOutputAddon {
 				return null;
 			}
 		}catch (Exception $e){
-			HookHandler::getInstance()->fire("onError", $e->getMessage());
+			HookHandler::getInstance()->fire("onError", "PVoutput::saveTeamStateFromPVoutputToDB".$e->getMessage());
 		}
 	}
 	

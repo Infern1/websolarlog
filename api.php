@@ -1,14 +1,16 @@
 <?php
-
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
+// clear old session logs
 $_SESSION['logId'.$_SESSION['logId']] = null;
 $_SESSION['logId'.$_SESSION['logId']] = array();
 
+//create new session logId
 $logId = rand(100, 99999);
+//set logId for session
 $_SESSION['logId'] = $logId;
+//create startTime for this logId
 $_SESSION['logId'.$_SESSION['logId']]['startTime'] = microtime(true);
-
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
 
 require 'classes/classloader.php';
 // time it took to load the classloader:

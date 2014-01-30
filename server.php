@@ -1,11 +1,16 @@
 <?php
 define('checkaccess', TRUE);
+// clear old session logs
 $_SESSION['logId'.$_SESSION['logId']] = null;
 $_SESSION['logId'.$_SESSION['logId']] = array();
 
+//create new session logId
 $logId = rand(100, 99999);
+//set logId for session
 $_SESSION['logId'] = $logId;
+//create startTime for this logId
 $_SESSION['logId'.$_SESSION['logId']]['startTime'] = microtime(true);
+
 
 require 'classes/classloader.php';
 $_SESSION['logId'.$_SESSION['logId']][]['server.afterClassLoader'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);

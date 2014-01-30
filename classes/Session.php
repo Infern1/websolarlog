@@ -158,7 +158,7 @@ class Session
     	}elseif(strpos(self::$config->dbDSN,'mysql') !== false){
     		self::$config->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
     	}
-    	$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.return'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
+    	//$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.return'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
     	return self::$config;
     }
     
