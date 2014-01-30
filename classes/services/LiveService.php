@@ -93,6 +93,7 @@ class LiveService {
 		$bObject->INVT = $object->INVT;
 		
 		$bObject->time = $object->time;
+		$bObject->SDTE = $object->SDTE;
 		$bObject->BOOT = $object->BOOT;
 		$bObject->KWHT = $object->KWHT;
 		$bObject->IP = $object->IP;
