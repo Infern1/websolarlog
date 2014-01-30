@@ -165,7 +165,7 @@ class HistoryService {
 		$object->KWHT = $bObject->KWHT;
 		$object->pvoutput = $bObject->pvoutput;
 		$object->pvoutputErrorMessage = $bObject->pvoutputErrorMessage;
-		$Object->pvoutputSend = $bObject->pvoutputSend;
+		$object->pvoutputSend = $bObject->pvoutputSend;
 		return $object;
 	}
 }
