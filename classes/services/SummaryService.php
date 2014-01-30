@@ -113,7 +113,7 @@ class SummaryService {
 		
 		$total['co2CompensationTree'] = $this->config->co2CompensationTree;
 		if($total['weather']['degreeDays']>0 and is_array($total['weather'])){
-			$total['degreeDays'] = round((18-$total['weather']['degreeTemp']),2);
+			$total['degreeDays'] = round((18-$total['weather']['degreeDays']),2);
 			$total['m3PerdegreeDays'] = round($total['metering']['gasUsage']/$total['degreeDays'],3);
 		}else{
 			$total['degreeDays'] = round(0,2);
