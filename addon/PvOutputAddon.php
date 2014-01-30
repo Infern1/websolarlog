@@ -115,9 +115,8 @@ class PvOutputAddon {
 								$object->pvoutputErrorMessage = $result['response'];
 								$this->history->save($object);
 						}
-							
 					}else{
-						HookHandler::getInstance()->fire("onDebug", "http_code:unknown:\r\n".print_r($result,true));
+						HookHandler::getInstance()->fire("onDebug", "http_code:unknown:".print_r($result,true));
 					}
 				}
 			}
@@ -353,6 +352,5 @@ class PvOutputAddon {
 			}
 		}
 	}
-
 }
 ?>

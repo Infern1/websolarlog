@@ -1294,7 +1294,6 @@ function diagnostics($adapter) {
 		$result['pid']['timeDiff'] = time()-$stat['atime'];
 		if($result['pid']['timeDiff'] >= 65){
 			$result['pid']['WSLRunningState']=false;
-
 		}else{ 
 			$result['pid']['WSLRunningState']=true;
 		}
