@@ -735,7 +735,7 @@ try {
 	$log[]= array("logId"=>$_SESSION['logId'],"key"=>"server.endTime","value"=>microtime(true),"diff"=>(microtime(true)-$_SESSION['logId'.$_SESSION['logId']]['startTime']),"diffText"=>"");
 	
 	$_SESSION['logId'.$_SESSION['logId']] = null;
-	if($_GET['log']==true){
+	if(isset($_GET['log'])){
 		$data['log'] = $log;
 		$data['logSlow'] = $logSlow;
 	}
