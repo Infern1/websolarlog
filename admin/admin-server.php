@@ -1052,6 +1052,7 @@ switch ($settingstype) {
 
 		$temp['gasUsageTTotal'] = 0;
 		$temp['gasUsageTTotalCosts'] = 0;
+
 		$countDays = count($invoiceData);
 
 		for ($i = 0; $i < $countDays; $i++) {
@@ -1135,7 +1136,7 @@ switch ($settingstype) {
 
 					if( (int)$invoiceData[$i-1]['lowReturnT'] >= (int)$invoiceData[$i]['lowReturnT'] ){
 						$days[$i]['lowReturnT'] = 0;
-						$temp[$i]['lowReturnTTotal'] += $days[$i]['lowReturnT'];
+						$temp['lowReturnTTotal'] += $days[$i]['lowReturnT'];
 						$month[$days[$i]['year'].$days[$i]['month']]['lowReturnT'] += $days[$i]['lowReturnT'];
 						$days[$i]['lowReturnTCosts'] = $config->moneySign." ".($days[$i]['lowReturnT'] * $config->costkwh)/100;
 					}else{
