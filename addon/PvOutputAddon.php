@@ -108,12 +108,9 @@ class PvOutputAddon {
 							
 						
 						if ($result['info']['http_code'] == "200") {
-							
 								$object->pvoutput = 1;
 								$this->history->save($object);
-							
 						}elseif ($result['info']['http_code'] == "400") {
-							
 								$object->pvoutput = 2;
 								$object->pvoutputErrorMessage = $result['response'];
 								$this->history->save($object);

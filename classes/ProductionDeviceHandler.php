@@ -46,8 +46,7 @@ class ProductionDeviceHandler {
 	
 	public static function handleHistory(QueueItem $item, Device $device) {
 		$liveService = new LiveService();
-		
-		
+
 		// Only create history when the device is online
 		if ($device->state == 1 ) {
 			$live = $liveService->getLiveByDevice($device);
