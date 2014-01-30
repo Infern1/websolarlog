@@ -2,9 +2,10 @@
 require_once("classes/classloader.php");
 Session::initializeLight();
 
-$template = Session::getConfig()->template;
-require_once("template/" . $template . "/header.php");
-require_once("template/" . $template . "/index.php");
+$config = Session::getConfig();
+
+require_once("template/" .  $config->template . "/header.php");
+require_once("template/" .  $config->template . "/index.php");
 $date = Common::getValue('date', 0);
 ?>
 	<script type="text/javascript">
