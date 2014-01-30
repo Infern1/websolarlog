@@ -49,17 +49,21 @@ class ProductionDeviceHandler {
 		HookHandler::getInstance()->fire("onDebug", print_r($item,true));
 		
 		// Only create history when the device is online
-		if ($device->state == 1 && isset($item->time)) {
+		if ($device->state == 1 ) {
 			$live = $liveService->getLiveByDevice($device);
 			
-			if ( time() - $live->time > 30 * 60 ) {
-				// We don't want to create an history item for an live record older then 30 minutes
-				HookHandler::getInstance()->fire("onDebug", "History blocked: live record to old! live->time = " . date("Y/m/d H:i:s", $live->time ));
-			} else {
-				// Set the time to this job time
-				$live->time = $item->time;
-				$live->SDTE = date("Ymd-H:i:s", $item->time);
-				HookHandler::getInstance()->fire("onHistory", $device, $live, $item->time);
+			if(isset($live->time)){
+				if ( time() - $live->time > 30 * 60 ) {
+					// We don't want to create an history item for an live record older then 30 minutes
+					HookHandler::getInstance()->fire("onDebug", "History blocked: live record to old! live->time = " . date("Y/m/d H:i:s", $live->time ));
+				} else {
+					// Set the time to this job time
+					$live->time = $item->time;
+					$live->SDTE = date("Ymd-H:i:s", $item->time);
+					HookHandler::getInstance()->fire("onHistory", $device, $live, $item->time);
+				}
+			}else{
+				HookHandler::getInstance()->fire("onDebug", "No Live object from getLiveByDevice");
 			}
 		}
 	}
