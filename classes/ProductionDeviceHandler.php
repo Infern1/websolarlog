@@ -56,7 +56,7 @@ class ProductionDeviceHandler {
 				HookHandler::getInstance()->fire("onDebug", "History blocked: live record to old! live->time = " . date("Y/m/d H:i:s", $live->time ));
 			} else {
 				// Set the time to this job time
-				$live->time = $item->time;
+				$live->time = $live->time;
 				$live->SDTE = date("Ymd-H:i:s", $item->time);
 				HookHandler::getInstance()->fire("onHistory", $device, $live, $item->time);
 			}
