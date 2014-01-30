@@ -50,7 +50,8 @@ class ProductionDeviceHandler {
 		// Only create history when the device is online
 		if ($device->state == 1) {
 			$live = $liveService->getLiveByDevice($device);
-			if (time() - $live->time > 30 * 60 ) {
+			
+			if (isset($live->time) && time() - $live->time > 30 * 60 ) {
 				// We don't want to create an history item for an live record older then 30 minutes
 				HookHandler::getInstance()->fire("onDebug", "History blocked: live record to old! live->time = " . date("Y/m/d H:i:s", $live->time ));
 			} else {
