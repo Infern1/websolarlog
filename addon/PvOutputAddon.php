@@ -57,66 +57,68 @@ class PvOutputAddon {
 				if(Util::isSunDown()==false || (Util::isSunDown()==true && $sendDataWholeDay == true)){
 					$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
 				
-					
-					$object = new History();
-					$object->id = $live->id;
-					$object->INV = $live->INV;
-					$object->deviceId = $live->deviceId;
-					$object->SDTE = $live->SDTE;
-					$object->time = $live->time;
-					$object->dayNum = $live->dayNum;
+					if(count($live)>=1){
+						$object = new History();
 						
-					$object->I1V = $live->I1V;
-					$object->I1A = $live->I1A;
-					$object->I1P = $live->I1P;
-					$object->I1Ratio = $live->I1Ratio;
+						$object->id = $live->id;
+						$object->INV = $live->INV;
+						$object->deviceId = $live->deviceId;
+						$object->SDTE = $live->SDTE;
+						$object->time = $live->time;
+						$object->dayNum = $live->dayNum;
+							
+						$object->I1V = $live->I1V;
+						$object->I1A = $live->I1A;
+						$object->I1P = $live->I1P;
+						$object->I1Ratio = $live->I1Ratio;
+							
+						$object->I2V = $live->I2V;
+						$object->I2A = $live->I2A;
+						$object->I2P = $live->I2P;
+						$object->I2Ratio = $live->I2Ratio;
+							
+						$object->I3V = $live->I3V;
+						$object->I3A = $live->I3A;
+						$object->I3P = $live->I3P;
+						$object->I3Ratio = $live->I3Ratio;
+							
+						$object->GV = $live->GV;
+						$object->GA = $live->GA;
+						$object->GP = $live->GP;
+							
+						$object->GV2 = $live->GV2;
+						$object->GA2 = $live->GA2;
+						$object->GP2 = $live->GP2;
+							
+						$object->GV3 = $live->GV3;
+						$object->GA3 = $live->GA3;
+						$object->GP3 = $live->GP3;
+							
+						$object->IP = $live->IP;
+						$object->ACP = $live->ACP;
+							
+						$object->FRQ = $live->FRQ;
+						$object->EFF = $live->EFF;
+						$object->INVT = $live->INVT;
+						$object->BOOT = $live->BOOT;
+						$object->KWHT = $live->KWHT;
+						$object->pvoutput = $live->pvoutput;
+						$object->pvoutputErrorMessage = $live->pvoutputErrorMessage;
+						$object->pvoutputSend = $live->pvoutputSend;
+							
 						
-					$object->I2V = $live->I2V;
-					$object->I2A = $live->I2A;
-					$object->I2P = $live->I2P;
-					$object->I2Ratio = $live->I2Ratio;
-						
-					$object->I3V = $live->I3V;
-					$object->I3A = $live->I3A;
-					$object->I3P = $live->I3P;
-					$object->I3Ratio = $live->I3Ratio;
-						
-					$object->GV = $live->GV;
-					$object->GA = $live->GA;
-					$object->GP = $live->GP;
-						
-					$object->GV2 = $live->GV2;
-					$object->GA2 = $live->GA2;
-					$object->GP2 = $live->GP2;
-						
-					$object->GV3 = $live->GV3;
-					$object->GA3 = $live->GA3;
-					$object->GP3 = $live->GP3;
-						
-					$object->IP = $live->IP;
-					$object->ACP = $live->ACP;
-						
-					$object->FRQ = $live->FRQ;
-					$object->EFF = $live->EFF;
-					$object->INVT = $live->INVT;
-					$object->BOOT = $live->BOOT;
-					$object->KWHT = $live->KWHT;
-					$object->pvoutput = $live->pvoutput;
-					$object->pvoutputErrorMessage = $live->pvoutputErrorMessage;
-					$object->pvoutputSend = $live->pvoutputSend;
-						
-					
-					if ($result['info']['http_code'] == "200") {
-						if(count($live)>=1){
-							$object->pvoutput = 1;
-							$this->history->save($object);
+						if ($result['info']['http_code'] == "200") {
+							
+								$object->pvoutput = 1;
+								$this->history->save($object);
+							
+						}elseif ($result['info']['http_code'] == "400") {
+							
+								$object->pvoutput = 2;
+								$object->pvoutputErrorMessage = $result['response'];
+								$this->history->save($object);
 						}
-					}elseif ($result['info']['http_code'] == "400") {
-						if(count($live)>=1){
-							$object->pvoutput = 2;
-							$object->pvoutputErrorMessage = $result['response'];
-							$this->history->save($object);
-						}
+							
 					}else{
 						HookHandler::getInstance()->fire("onDebug", "http_code:unknown:\r\n".print_r($result,true));
 					}
