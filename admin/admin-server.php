@@ -212,6 +212,7 @@ switch ($settingstype) {
 		$data['timezones'] = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
 		$data['moneySign'] = $config->moneySign;
 		$data['invoiceDate'] = $config->invoiceDate;
+		$data['meteringDevicePresent']= 0;
 		foreach($config->allDevices as $device){
 			if($device->type == "metering"){
 				$data['meteringDevicePresent']++;
