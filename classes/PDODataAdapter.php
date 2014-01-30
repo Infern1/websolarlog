@@ -315,7 +315,7 @@ class PDODataAdapter {
 	public function readConfig() {
 		
 		$bean = R::findOne('config');
-		$_SESSION[$_SESSION['logId']][][__METHOD__.'.findOneConfig'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.findOneConfig'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 		
 		if (!$bean){
 			$bean = R::dispense('config');
@@ -380,13 +380,13 @@ class PDODataAdapter {
 			$config->costWater = ($bean->costWater > 0) ? $bean->costWater : $config->costWater;
 			$config->moneySign = $bean->moneySign;
 			
-			$_SESSION[$_SESSION['logId']][][__METHOD__.'.getActiveDevices'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.getActiveDevices'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			$config->devices = $this->deviceService->getActiveDevices();
 			
-			$_SESSION[$_SESSION['logId']][][__METHOD__.'.getAlleDevices'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.getAlleDevices'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			$config->allDevices = $this->deviceService->getAllDevices();
 			
-			$_SESSION[$_SESSION['logId']][][__METHOD__.'.devices'] = (microtime(true) - $_SESSION[$_SESSION['logId']]['startTime']);
+			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.devices'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			$config->inverters = $config->devices; // @Deprecated
 			
 			
@@ -2209,6 +2209,8 @@ class PDODataAdapter {
 		
 		switch ($type) {
 			case 'panels':
+				$avarage = array();
+				$average['recent'] = 0;
 				foreach ($config->devices as $device) {
 					$average['recent'] += $device->plantpower;
 				}
