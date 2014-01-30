@@ -78,7 +78,7 @@ $_SESSION['logId'.$_SESSION['logId']][]['api.apiTime'] = (microtime(true) - $_SE
 
 $log[]= array("logId"=>$_SESSION['logId'],"key"=>"server.endTime","value"=>microtime(true),"diff"=>(microtime(true)-$_SESSION['logId'.$_SESSION['logId']]['startTime']));
 
-if($_GET['log']==true){
+if(isset($_GET['log'])){
 	$result['log'] = $log;
 	$result['logSlow'] = $logSlow;
 }
