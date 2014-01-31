@@ -73,8 +73,8 @@ class GraphService {
 			$graphBean->json = json_encode($metaData);
 				
 			$defaultSeries = HookHandler::getInstance()->fire("defaultSeries",$config);
-			$series = array_merge(self::defaultSeries($config),$defaultSeries);
-			var_dump(self::defaultSeries());
+			$series = self::defaultSeries($config);
+			$series = array_merge( ($series) ? $series : array() ,$defaultSeries);
 			$graphBean->sharedSeries = $series;
 
 			$defaultAxes = HookHandler::getInstance()->fire("defaultAxes",$config);
@@ -343,7 +343,7 @@ class GraphService {
 			foreach($config->devices as $device){
 				$hookReturn = HookHandler::getInstance()->fire("GraphDayPoints",$device,$options['date'],$options['type'],$disabledSeries);
 				if(is_object($hookReturn)){
-					$graphHook = array_merge_recursive((array)$graphHook,(array)$hookReturn);
+					$graphHook = array_merge_recursive($graphHook,(array)$hookReturn);
 				}
 			}
 			$_SESSION['logId'.$_SESSION['logId']][]['graphService After GraphDayPoints Hooks'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);

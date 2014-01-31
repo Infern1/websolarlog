@@ -1690,17 +1690,19 @@ var WSL = {
 					var config = [];
 					var clearSkyDeviceNames = [];
 					config = result.slimConfig;
-					for ( var i = 0; i < config.devices.length; i++) {
-						for ( var ii = 0; ii < config.devices[i].panels.length; ii++) {
-							var lat = config.lat;
-							var long = config.long;
-							var totalWp = config.devices[i].panels[ii].totalWp;
-							var roofPitch = config.devices[i].panels[ii].roofPitch;
-							var roofOrientation = config.devices[i].panels[ii].roofOrientation;
-							var clearSkyGenerated = generatePanelClearSky(result, roofOrientation, roofPitch,totalWp, date);
-							var plantTotalPower = plantTotalPower+ clearSkyGenerated[3];
-							clearSkyDeviceNames.push('C.S. '+config.devices[i].panels[ii].description+' (W)');
-							clearSky.push(clearSkyGenerated[1]);
+					if (config.devices) {
+						for ( var i = 0; i < config.devices.length; i++) {
+							for ( var ii = 0; ii < config.devices[i].panels.length; ii++) {
+								var lat = config.lat;
+								var long = config.long;
+								var totalWp = config.devices[i].panels[ii].totalWp;
+								var roofPitch = config.devices[i].panels[ii].roofPitch;
+								var roofOrientation = config.devices[i].panels[ii].roofOrientation;
+								var clearSkyGenerated = generatePanelClearSky(result, roofOrientation, roofPitch,totalWp, date);
+								var plantTotalPower = plantTotalPower+ clearSkyGenerated[3];
+								clearSkyDeviceNames.push('C.S. '+config.devices[i].panels[ii].description+' (W)');
+								clearSky.push(clearSkyGenerated[1]);
+							}
 						}
 					}
 
