@@ -1848,7 +1848,8 @@ var WSL = {
 						// make graph title
 						//
 						/**/
-						var graphTitle = '<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'
+						if($(result.meta).hasOwnProperty('KWH')){
+							var graphTitle = '<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'
 								+ result.lang.generated+ ': '
 								+ result.meta.KWH.cumPower+ ' '
 								+ result.meta.KWH.KWHTUnit+ ' ('
@@ -1857,6 +1858,9 @@ var WSL = {
 								+ parseInt(plantTotalPower) + ' '
 								+ result.meta.KWH.KWHTUnit + ' ('
 								+ ((typeof totalKWhkWp === 'undefined') ? 0: totalKWhkWp) + ' kWh/kWp)</div>';
+						}else{
+							var graphTitle = '';
+						}
 
 						delete seriesData, graphOptions;
 						// if (typeof (result.json.KWH) !== "undefined") {
