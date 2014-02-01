@@ -1269,6 +1269,7 @@ function updaterJsonFile($state, $info, $percentage) {
  * @return array
  */
 function diagnostics($adapter) {
+	$config = Session::getConfig();
 	$result = array();
 	$result['sqlite'] = false;
 	$result['available_drivers'] = PDO::getAvailableDrivers();
