@@ -453,8 +453,8 @@ try {
 			$config = Session::getConfig();
 			foreach ($config->devices as $device){
 				if($device->type == 'production'){
-					$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($device->id);
-					$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($device->id);
+					$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($device);
+					$maxPower[] = $dataAdapter->getDayMaxPowerPerDay($device);
 				}
 			}
 
@@ -564,14 +564,10 @@ try {
 			($devicenum!=0) ? $devicenum = $devicenum : $devicenum = 0;
 			$history = $dataAdapter->getDayHistoryPerRecord($devicenum,$config);
 			$c = 0;
-			foreach($historyDevices as $historyDevice){
-				for ($i = 0; $i < count($historyDevice); $i++) {
-					$history[$c][$i]['GP'] = number_format($historyDevice[$i]['GP'],2,',','');
-				}
-				$c++;
-			}
+//			var_dump($history);
+
 			$dayData = new DayDataResult();
-			$dayData->data = array("history"=>$history);
+			$dayData->history = $history;
 			$dayData->success = true;
 			$data['dayData'] = $dayData;
 			break;

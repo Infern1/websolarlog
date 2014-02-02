@@ -11,7 +11,7 @@
 		<div class="post">
 			<div id="yearPowerAcc" class="column span-22 last accordion">
 			{{#each data.yearData.data.maxPower}}	
-			<h3 style="margin:0px;">Inv. 1</h3><div class="innerAccordionPeriod">
+			<h3 style="margin:0px;">{{this.device.name}}</h3><div class="innerAccordionPeriod">
     			<div class="column span-4 first">{{../lang.inv}}</div>
 				<div class="column span-3" style="text-align:right;">{{../lang.watt}}</div>
 				<div class="column span-9" style="text-align:center;">{{../lang.date}}</div>
@@ -33,7 +33,7 @@
 		<div class="post">
 			<div id="yearPowerAcc" class="column span-22 last accordion">
 			{{#each data.yearData.data.maxEnergy}}
-	    		<h3 style="margin:0px;">Inv. 1</h3>
+	    		<h3 style="margin:0px;">{{this.device.name}}</h3>
 	    		<div>
     				<div class="column span-4 first">{{../lang.inv}}</div>
 					<div class="column span-3" style="text-align:right;">{{../lang.kwh}}</div>
@@ -57,7 +57,7 @@
 		<h3>The best/worst day</h3>
 		<div id="yearPowerAcc" class="column span-22 last accordion">
 		{{#each data.yearData.data.minMaxEnergy}}
-			<h3 style="margin:0px;">Inv. 1</h3>
+			<h3 style="margin:0px;">{{this.device.name}}</h3>
 			<div>
 				<div class="column span-4" style="text-align:right;">&nbsp;</div>
 				<div class="column span-3" style="text-align:right;">{{../lang.watt}}</div>

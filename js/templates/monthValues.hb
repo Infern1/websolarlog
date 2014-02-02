@@ -11,7 +11,7 @@
 		<div class="post">
 			<div id="monthPowerAcc" class="column span-22 last accordion">
 			{{#each data.monthData}}	
-			<h3>Inv. {{this.device.name}}</h3>
+			<h3>{{this.device.name}}</h3>
 				<div class="innerAccordionPeriod">
 	    			<div class="column span-5 first">{{../lang.inv}}</div>
 					<div class="column span-4" style="text-align:right;">{{../lang.watt}}</div>
@@ -34,7 +34,7 @@
 		<div class="post">
 			<div id="monthPowerAcc" class="column span-22 last accordion">
 			{{#each data.monthData}}
-	    		<h3 style="margin:0px;">Inv. {{this.device.name}}</h3>
+	    		<h3 style="margin:0px;">{{this.device.name}}</h3>
 	    		<div class="innerAccordionPeriod">
     				<div class="column span-5 first">{{../lang.inv}}</div>
 					<div class="column span-4" style="text-align:right;">{{../lang.kwh}}</div>
@@ -58,7 +58,7 @@
 		<h3>The best/worst day</h3>
 		<div id="monthPowerAcc" class="column span-22 last accordion">
 		{{#each data.monthData}}
-			<h3 style="margin:0px;">Inv. {{this.device.name}}</h3>
+			<h3 style="margin:0px;">{{this.device.name}}</h3>
 			<div class="innerAccordionPeriod">
 				<div class="column span-4" style="text-align:right;">&nbsp;</div>
 				<div class="column span-3" style="text-align:right;">{{../lang.kwh}}</div>

@@ -716,14 +716,14 @@ class PDODataAdapter {
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
 	 */
-	public function getDayEnergyPerDay($invtnum=0){
+	public function getDayEnergyPerDay($device){
 		$beginEndDate = Util::getBeginEndDate('today', 1);
 
-		if ($invtnum>0){
+		if ($device->id > 0){
 			$beans = R::getAll("SELECT INV,MAX(kwh) AS kWh, time AS date
 					FROM energy WHERE INV = :INV  AND time > :beginDate AND time < :endDate
 					GROUP BY ".$this->crossSQLDateTime("'d%-%m-%Y'",'time','date')."  
-					ORDER BY time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+					ORDER BY time DESC",array(':INV'=>$device->id,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}else{
 			$beans = R::getAll("SELECT INV,MAX(kwh) AS kWh, time AS date
 					FROM energy WHERE time > :beginDate AND time < :endDate 
@@ -732,6 +732,7 @@ class PDODataAdapter {
 		}
 		for ($i = 0; $i < count($beans); $i++) {
 			$beans[$i]['kWh'] = number_format($beans[$i]['kWh'],2,',','');
+			$beans[$i]['name'] = $device->name;
 		}
 		return $beans;
 	}
@@ -740,14 +741,14 @@ class PDODataAdapter {
 	 * Get Max & (summed)Total Energy Values from Energy Tabel
 	 * Return a Array() with MaxEnergyDay, MaxEnergyMonth, MaxEnergyYear, MaxEnergyOverall
 	 */
-	public function getDayMaxPowerPerDay($invtnum=0){
+	public function getDayMaxPowerPerDay($device){
 		$beginEndDate = Util::getBeginEndDate('today', 1);
 
-		if ($invtnum>0){
+		if ($device->id > 0){
 			$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, time AS date
 					FROM pMaxOTD WHERE INV = :INV AND time > :beginDate AND time < :endDate 
 					GROUP BY ".$this->crossSQLDateTime("'d%-%m-%Y'",'time','date')." 
-					ORDER BY time DESC",array(':INV'=>$invtnum,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
+					ORDER BY time DESC",array(':INV'=>$device->id,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']));
 		}else{
 			$beans = R::getAll("SELECT INV,MAX(GP) AS maxGP, time AS date
 					FROM pMaxOTD WHERE time > :beginDate AND time < :endDate 
@@ -757,6 +758,7 @@ class PDODataAdapter {
 		}
 		for ($i = 0; $i < count($beans); $i++) {
 			$beans[$i]['maxGP'] = number_format($beans[$i]['maxGP'],2,',','');
+			$beans[$i]['name'] = $device->name;
 		}
 		return $beans;
 	}
@@ -1276,10 +1278,18 @@ class PDODataAdapter {
 				
 				if($device->type=="production"){
 					$parameters = array(':deviceId'=>$device->id,':endDate'=>$beginEndDate['endDate'],':beginDate'=>$beginEndDate['beginDate']);
-					$beans[] = R::getAll("SELECT deviceId, GP,KWHT, time AS date
+					
+					$beans = R::getAll("SELECT deviceId, GP,KWHT, time AS date
 						FROM history
 						WHERE deviceId = :deviceId  AND time > :beginDate AND time < :endDate
 						ORDER BY time DESC",$parameters);
+					$newBeans = array();
+					foreach ($beans as $key => &$value) {
+  						$newBeans[$key]['GP'] = number_format($beans[$key]['GP'],2,',','');
+  						$newBeans[$key]['date'] = $beans[$key]['date'];
+  						
+					}
+					$result[] = array('deviceName'=>$device->name, "data"=>$newBeans);
 				}
 			}
 		}
@@ -1287,7 +1297,7 @@ class PDODataAdapter {
 
 
 		
-		return $beans;
+		return $result;
 	}
 
 

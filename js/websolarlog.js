@@ -749,9 +749,9 @@ var WSL = {
 				success : function(source) {
 					var template = Handlebars.compile(source);
 					var html = template({
-						'data' : data
+						'data' : data.dayData.history
 					});
-					$(divId).html(html);
+					$('#historyContainer').html(html);
 					$("#todayHistoryAcc").accordion({
 						collapsible : true
 					});
