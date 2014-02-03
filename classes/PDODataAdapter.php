@@ -1679,7 +1679,7 @@ class PDODataAdapter {
 	 */
 	public function readPageIndexLiveValues($config) {
 		// summary live data
-		$inverters = array();
+		$devices = array();
 		$GP  = 0;
 		$GP2 = 0;
 		$GP3 = 0;
@@ -1694,11 +1694,14 @@ class PDODataAdapter {
 		$liveBean = array();
 
 		foreach ($config->devices as $device){
+			date_default_timezone_set('America/Los_Angeles');
+			
 			if($device->type=="production"){
 				$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
-				$oInverter = 	array();
-
-				if(Util::isSunDown()){
+				$oDevice = 	array();
+				
+				// if sun is down AND voltage of string1 is 0, then we are down.
+				if(Util::isSunDown() && $liveBean['I1V']==0){
 					$live = new Live();
 					$live->name = $device->name;
 					$live->status = 'offline';
@@ -1726,7 +1729,7 @@ class PDODataAdapter {
 					$live->trend = _("equal");
 					$live->avgPower = number_format(0,2,',','');
 				}else{
-					$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
+					$liveBean =  R::findOne('live',' deviceId = :deviceId ', array(':deviceId'=>$device->id));
 
 					$GP += $liveBean['GP'];
 					$GP2 += $liveBean['GP2'];
@@ -1784,14 +1787,14 @@ class PDODataAdapter {
 						
 					$avgPower = $this->readCache("","index","live",$device->id,"trend");
 					$live->trendImage = $avgPower[0]['value'];
-					$live->trend = _($live->trendImage);
+					$live->trend = _($live->trendImage).'aa';
 				}
 
-				$oInverter["id"] = $liveBean['INV'];
-				$oInverter["currentTime"] = time();
-				$oInverter["live"] = $live;
+				$oDevice["id"] = $liveBean['INV'];
+				$oDevice["currentTime"] = time();
+				$oDevice["live"] = $live;
 
-				$inverters[] = $oInverter;
+				$devices[] = $oDevice;
 			}
 		}
 
@@ -1810,7 +1813,7 @@ class PDODataAdapter {
 		}
 		
 		$sum['EFF'] = ($totalSystemEff>0) ? number_format($totalSystemEff,1,'.','') : '0,0';
-		return array('inverters'=>$inverters,'sum'=>$sum);
+		return array('devices'=>$devices,'sum'=>$sum);
 	}
 
 	/**
