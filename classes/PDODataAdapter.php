@@ -1693,15 +1693,13 @@ class PDODataAdapter {
 
 		$liveBean = array();
 
-		foreach ($config->devices as $device){
-			date_default_timezone_set('America/Los_Angeles');
-			
+		foreach ($config->devices as $device){			
 			if($device->type=="production"){
 				$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
 				$oDevice = 	array();
 				
 				// if sun is down AND voltage of string1 is 0, then we are down.
-				if(Util::isSunDown() && $liveBean['I1V']==0){
+				if(Util::isSunDown() && $liveBean['I1V']==0 && $liveBean['I2V']==0 && $liveBean['I3V']==0){
 					$live = new Live();
 					$live->name = $device->name;
 					$live->status = 'offline';
