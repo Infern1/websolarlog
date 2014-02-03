@@ -16,7 +16,7 @@
 				<div class="column span-3" style="text-align:right;">{{../lang.watt}}</div>
 				<div class="column span-9" style="text-align:center;">{{../lang.date}}</div>
     			{{#each this}}
-		    		<div class="column span-3 first">{{this.INV}}</div>
+		    		<div class="column span-3 first">{{../this.device.name}}</div>
 		    		<div class="column span-3" style="text-align:right;">{{this.maxGP}}</div>
 		    		<div class="column span-9" last" style="text-align:right;"><a href="month.php?date={{timestampDateFormat this.date format="DD-MM-YYYY"}}">{{timestampDateFormat this.date format="DD-MM-YYYY"}}</a></div>
 			    	{{/each}}
@@ -40,7 +40,7 @@
 					<div class="column span-9" style="text-align:center;">{{../lang.date}}</div>
 		
     				{{#each this}}
-		    			<div class="column span-4 first">{{this.INV}}</div>
+		    			<div class="column span-4 first">{{../this.device.name}}</div>
 			    		<div class="column span-3" style="text-align:right;">{{this.KWH}}</div>
 			    		<div class="column span-9" last" style="text-align:right;">{{timestampDateFormat this.date format="DD-MM-YYYY"}}</div>
 				    {{/each}}

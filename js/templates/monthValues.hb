@@ -17,7 +17,7 @@
 					<div class="column span-4" style="text-align:right;">{{../lang.watt}}</div>
 					<div class="column span-8" style="text-align:center;">{{../lang.date}}</div>
     				{{#each this.maxPower}}
-			    		<div class="column span-5 first">{{this.INV}}</div>
+			    		<div class="column span-5 first">{{../this.device.name}}</div>
 		    			<div class="column span-4" style="text-align:right;">{{this.maxGP}}</div>
 		    			<div class="column span-8" last" style="text-align:right;">{{timestampDateFormat this.date format="DD MMM YYYY"}}</div>
 			   		{{/each}}
@@ -41,7 +41,7 @@
 					<div class="column span-8" style="text-align:center;">{{../lang.date}}</div>
 		
     				{{#each this.maxEnergy}}
-		    			<div class="column span-5 first">{{this.INV}}</div>
+		    			<div class="column span-5 first">{{../this.device.name}}</div>
 			    		<div class="column span-4" style="text-align:right;">{{this.KWH}}</div>
 			    		<div class="column span-8" last" style="text-align:right;">{{timestampDateFormat this.date format="DD MMM YYYY"}}</div>
 				    {{/each}}
