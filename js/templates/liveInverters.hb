@@ -1,4 +1,4 @@
-{{#each data.inverters}}
+{{#each data.devices}}
 <div class="column span-27  liveToolTip">
 <div class="column span-1 first liveToolTip">
 	{{#if_eq 'standby' compare=this.live.status}}

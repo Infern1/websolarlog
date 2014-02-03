@@ -615,7 +615,7 @@ try {
 			($avgGP['recent']<=0) ? $avgGPRecent = 1 : $avgGPRecent = $avgGP['recent'];
 			$gaugeMaxPower = ceil( ( ($avgGPRecent*1.1)+100) / 100 ) * 100;
 			$data['lang'] = $lang;
-			$data['inverters'] = $indexValues['inverters'];
+			$data['devices'] = $indexValues['devices'];
 			$data['maxGauges'] = $gaugeMaxPower;
 			$data['sumInverters'] = $indexValues['sum'];
 				
