@@ -99,7 +99,7 @@ class BasicChecksAddon {
 		$this->InactiveCheck();
 
 		// Only in debug mode display all items in queue
-		if (Session::getConfig()->debugmode) {
+		if ($this->config->debugmode) {
 			QueueServer::printDebugInfo();
 		}
 	}
@@ -124,7 +124,7 @@ class BasicChecksAddon {
 					if (!empty($live->time) && (time() - $live->time > 3600)) {
 						$event = new Event($device->id, time(), 'Check', "Live data for inverter '" . $device->name . "' not updated for more then one hour.");
 						$subject = "WSL :: Event message";
-						$body = "Hello, \n\n We have detected an problem on your device.\n\n";
+						$body  = "Hello, \n\n We have detected an problem on your device.\n\n";
 						$body .= $event->event . "\n\n";
 						$body .= "Please check if everything is alright.\n\n";
 						$body .= "Time of live data : " . date("d-m-Y H:i:s", $live->time) . "\n\n";
