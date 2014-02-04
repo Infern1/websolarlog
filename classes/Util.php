@@ -6,7 +6,7 @@ class Util {
 	 * @param number $correction
 	 * @return boolean
 	 */
-    public static function isSunDown($correction=300) {
+    public static function isSunDown($correction=450) {
     	$config =  Session::getConfig();
     	if ($config->isValidCoords()) {
 	        $sun_info = date_sun_info(time(), $config->latitude , $config->longitude);
@@ -141,30 +141,35 @@ class Util {
 	    		case 'day':
 	    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
 	    			$endDate = Util::getTimestampOfDate(23,59,59,date("d",$startDate), date("m",$startDate), date("Y",$startDate));
+	    			$days = 1;
 	    			break;
 	    		case 'yesterday':
 	    			$beginDate = Util::getTimestampOfDate(0,0,0,date("d",time()-86400), date("m",time()-86400), date("Y",time()-86400));
 	    			$endDate = Util::getTimestampOfDate(23,59,59,date("d",time()-86400), date("m",time()-86400), date("Y",time()-86400));
+	    			$days = 1;
 	    			break;
 	    		case 'week':
 	    			$beginEndDate = Util::getStartAndEndOfWeek($startDate);
 	    			$beginDate = $beginEndDate[0];
 	    			$endDate = $beginEndDate[1];
+	    			$days = 7;
 	    			break;
 	    		case 'month':
 	    			$beginDate = Util::getTimestampOfDate(0,0,0, 1, date("m",$startDate), date("Y",$startDate));
 	    			$endDate = Util::getTimestampOfDate(23,59,59,date("t",$startDate), date("m",$startDate), date("Y",$startDate));
+	    			$days = 31;
 	    			break;
 	    		case 'year':
 	    			$beginDate = Util::getTimestampOfDate(0,0,0, 1,1, date("Y",$startDate)); // -3600 = correction daylightsavingtime;
 	    			$endDate = Util::getTimestampOfDate(23,59,59,31,12, date("Y",$startDate)); // -3600 = correction daylightsavingtime;
+	    			$days = 366;
 	    			break;
 	    		default:
 	    			echo "ERROR::UTIL::getBeginEndDate()::WRONG Type >> Choose from today,week,month,year";
 	    			break;
 	    	}
     	
-    	return array("beginDate"=>$beginDate,"endDate"=>$endDate);
+    	return array("beginDate"=>$beginDate,"endDate"=>$endDate,"days"=>$days);
     }
 
     public static function formatPower($value,$decimals){
