@@ -436,13 +436,13 @@ class PDODataAdapter {
 					SELECT *
 					FROM ".$table."
 					WHERE INV = :INV AND time > :beginDate AND  time < :endDate
-					ORDER BY time",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+					ORDER BY time LIMIT ". $beginEndDate['days'],array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
 			$energyBeans = R::getAll("
 					SELECT *
 					FROM ".$table."
 					WHERE time > :beginDate AND  time < :endDate
-					ORDER BY time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+					ORDER BY time LIMIT ". $beginEndDate['days'],array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
 		//see if we have atleast 1 bean, else we make one :)
 		(!$energyBeans) ? $energyBeans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $energyBeans = $energyBeans;
@@ -460,13 +460,13 @@ class PDODataAdapter {
 			$beans = R::getAll("
 					SELECT INV, time AS date, KWH
 					FROM energy WHERE INV = :INV AND time > :beginDate AND time < :endDate 
-					ORDER BY time DESC",
+					ORDER BY time DESC LIMIT ". $beginEndDate['days'],
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
 			$beans = R::getAll("
 					SELECT INV, time AS date, KWH
 					FROM energy  WHERE time > :beginDate AND time < :endDate  
-					ORDER BY time DESC",
+					ORDER BY time DESC LIMIT ". $beginEndDate['days'],
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
 		for ($i = 0; $i < count($beans); $i++) {
@@ -486,13 +486,13 @@ class PDODataAdapter {
 			$beans = R::getAll("
 					SELECT INV, time AS date, GP as maxGP
 					FROM pMaxOTD WHERE INV = :INV AND time > :beginDate AND time < :endDate 
-					ORDER BY time DESC",
+					ORDER BY time DESC LIMIT ". $beginEndDate['days'],
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
 			$beans = R::getAll("
 					SELECT INV, time AS date, GP as maxGP
 					FROM pMaxOTD  WHERE time > :beginDate AND time < :endDate  
-					ORDER BY time DESC",
+					ORDER BY time DESC LIMIT ". $beginEndDate['days'],
 					array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
 		for ($i = 0; $i < count($beans); $i++) {
@@ -513,14 +513,14 @@ class PDODataAdapter {
 					FROM energy
 					WHERE INV = :INV AND time > :beginDate AND time < :endDate
 					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')."
-					ORDER BY time DESC",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+					ORDER BY time DESC LIMIT ". $beginEndDate['days'],array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
 
 			$beans = R::getAll("
 					SELECT INV,MAX(kwh) AS KWH, time AS date
 					FROM energy WHERE time > :beginDate AND time < :endDate
 					GROUP BY ".$this->crossSQLDateTime("'%m-%Y'",'time','date')."
-					ORDER BY time DESC",
+					ORDER BY time DESC LIMIT ". $beginEndDate['days'],
 					array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
 		return $beans;
