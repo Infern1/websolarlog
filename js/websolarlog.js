@@ -482,11 +482,13 @@ function handleGraphs(request, devicenum) {
 					currentGraphHandler, function(handler) {
 						currentGraphHandler = handler;
 						$("#loading").remove();
+						$("#graphReady").val('true');
 					});
 		} else {
 			WSL.createPeriodGraph(devicenum, period, 1, date, "graph" + tab + "Content", function(handler) {
 				currentGraphHandler = handler;
 				$("#loading").remove();
+				$("#graphReady").val('true');
 			});
 		}
 	} else {
@@ -499,11 +501,13 @@ function handleGraphs(request, devicenum) {
 					currentGraphHandler, function(handler) {
 						currentGraphHandler = handler;
 						$("#loading").remove();
+						$("#graphReady").val('true');
 					});
 		} else {
 			WSL.createPeriodGraph(devicenum, period, 1, date, "graph" + tab + "Content", function(handler) {
 				currentGraphHandler = handler;
 				$("#loading").remove();
+				$("#graphReady").val('true');
 			});
 		}
 	}
@@ -514,12 +518,13 @@ function handleGraphs(request, devicenum) {
 					currentGraphHandler, function(handler) {
 						currentGraphHandler = handler;
 						$("#loading").remove();
+						$("#graphReady").val('true');
 					});
 		}, 90000); // every minute
 	}
 }
 
-function populateTabs(tabIndex) {
+function populateTabs() {
 	$.getJSON('server.php?method=getPeriodFilter&type=all', function(data) {
 		$.ajax({
 			url : 'js/templates/datePeriodFilter.hb',
@@ -1627,7 +1632,7 @@ var WSL = {
 
 	createDayGraph : function(devicenum, getDay, tab, date, currentHandler,fnFinish, graph) {
 		ajaxStart();
-
+		$("#graphReady").val('false');
 		var graphOptions = {
 			seriesDefaults : {
 				rendererOptions : {
@@ -1874,6 +1879,7 @@ var WSL = {
 	},
 	createPeriodGraph : function(devicenum, type, count, date, divId, fnFinish) {
 		ajaxStart();
+		$("#graphReady").val('false');
 		$.ajax({url : "server.php?method=getGraphPoints&type=" + type + "&count=" + count + "&date=" + date + "&devicenum=" + devicenum,
 					beforeSend : function(xhr) {
 						if (getWindowsState() == false) {
@@ -1991,6 +1997,7 @@ var WSL = {
 						var plot = $.jqplot(divId, [ dayData1, dayData2 ],
 								graphDayPeriodOptions);
 						ajaxReady();
+						$("#graphReady").val('true');
 					}
 				});
 	},
@@ -2058,6 +2065,7 @@ var WSL = {
 
 	createProductionGraph : function(devicenum, divId, year) {
 		ajaxStart();
+		$("#graphReady").val('false');
 		$.ajax({
 			url : "server.php?method=getProductionGraph&devicenum=" + devicenum
 					+ "&year=" + year,
