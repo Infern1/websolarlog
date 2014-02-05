@@ -111,15 +111,19 @@ class WeatherService {
 			
 			$i=0;
 			$temp = 0;
+			$degreeDays = 0;
 			foreach ($beans as $bean){
-				$temp += $bean['temp'];
+				$countTemp += (float)$bean['temp'];
 				$i++;
 			}
+			$degreeDays = round($degreeDays/$i,2);
+			
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterTempAdd'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-			$avgTemp = round($temp/$i,2);
+			
+			$avgTemp = round($countTemp/$i,2);
 			
 			if($avgTemp<18){
-				$degreeDays = (18 - $avgTemp);
+				$degreeDays = (18 - ((float)$avgTemp));
 				
 			}else{
 				$degreeDays = 0;
@@ -130,6 +134,7 @@ class WeatherService {
 					"weatherSamples"=>$i,
 					"avgTemp"=>round($avgTemp,1),
 					"currentTemp"=>round($lastBean['temp'],1),
+					"countTemp"=>$countTemp,
 					"minTemp"=>round($lastBean['temp_min'],1),
 					"maxTemp"=>round($lastBean['temp_max'],1),
 					"degreeDays"=>$degreeDays,
