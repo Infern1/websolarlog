@@ -1,4 +1,3 @@
-<input type="hidden" id="graphReady" value="false"/>
 <?php
 require_once("classes/classloader.php");
 Session::initializeLight();
@@ -8,6 +7,7 @@ $config = Session::getConfig();
 require_once("template/" .  $config->template . "/header.php");
 require_once("template/" .  $config->template . "/index.php");
 ?>
+<input type="hidden" id="graphReady" value="false"/>
 	<script type="text/javascript">
     // Make sure the page is loaded
     
@@ -19,23 +19,20 @@ require_once("template/" .  $config->template . "/index.php");
 	$(function(){
 		WSL.init_mainSummary("#main-middle");
 		WSL.init_tabs("index",0, "#main-middle",
-				function(){
+			function(){
 			$('#graphReady').on("change",function(){
-				if($('#graphReady').val() == 'true'){
-				
-					console.log('loading');
+				if($('#graphReady').val() == 'true'){			
 					WSL.init_PageLiveValues("#content",function(){indexLiveInverters});
 					WSL.init_PageIndexTotalValues("#sidebar",function(){sidebar});
-					analyticsJSCodeBlock();
+					window.setTimeout(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");},100);
+					
 					$('#graphTodayContent canvas').ready(function(){
-						window.setInterval(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");}, 5000);
+						window.setInterval(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");}, 2000);
 					});
-	    		}else{
-		    		console.log('graph not ready....');
-	    		}
-		    		
-			})
-		}
+					analyticsJSCodeBlock();
+	    		}		    		
+			})	
+    		}
 		)	
 	});
 
@@ -44,6 +41,6 @@ require_once("template/" .  $config->template . "/index.php");
 	
 	</script>
 	<!-- END Wrapper -->
-
+	
 </body>
 </html>

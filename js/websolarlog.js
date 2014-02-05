@@ -482,13 +482,13 @@ function handleGraphs(request, devicenum) {
 					currentGraphHandler, function(handler) {
 						currentGraphHandler = handler;
 						$("#loading").remove();
-						$("#graphReady").val('true');
+						$("#graphReady").val('true').trigger('change');
 					});
 		} else {
 			WSL.createPeriodGraph(devicenum, period, 1, date, "graph" + tab + "Content", function(handler) {
 				currentGraphHandler = handler;
 				$("#loading").remove();
-				$("#graphReady").val('true');
+				$("#graphReady").val('true').trigger('change');
 			});
 		}
 	} else {
@@ -501,13 +501,13 @@ function handleGraphs(request, devicenum) {
 					currentGraphHandler, function(handler) {
 						currentGraphHandler = handler;
 						$("#loading").remove();
-						$("#graphReady").val('true');
+						$("#graphReady").val('true').trigger('change');
 					});
 		} else {
 			WSL.createPeriodGraph(devicenum, period, 1, date, "graph" + tab + "Content", function(handler) {
 				currentGraphHandler = handler;
 				$("#loading").remove();
-				$("#graphReady").val('true');
+				$("#graphReady").val('true').trigger('change');
 			});
 		}
 	}
@@ -518,7 +518,7 @@ function handleGraphs(request, devicenum) {
 					currentGraphHandler, function(handler) {
 						currentGraphHandler = handler;
 						$("#loading").remove();
-						$("#graphReady").val('true');
+						$("#graphReady").val('true').trigger('change');
 					});
 		}, 90000); // every minute
 	}
@@ -1997,7 +1997,7 @@ var WSL = {
 						var plot = $.jqplot(divId, [ dayData1, dayData2 ],
 								graphDayPeriodOptions);
 						ajaxReady();
-						$("#graphReady").val('true');
+						$("#graphReady").val('true').trigger('change');
 					}
 				});
 	},
