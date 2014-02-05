@@ -6,7 +6,7 @@ class Util {
 	 * @param number $correction
 	 * @return boolean
 	 */
-    public static function isSunDown($correction=450) {
+    public static function isSunDown($correction=900) {
     	$config =  Session::getConfig();
     	if ($config->isValidCoords()) {
 	        $sun_info = date_sun_info(time(), $config->latitude , $config->longitude);
