@@ -22,9 +22,9 @@ require_once("template/" .  $config->template . "/index.php");
 			function(){
 			$('#graphReady').on("change",function(){
 				if($('#graphReady').val() == 'true'){			
-					WSL.init_PageLiveValues("#content",function(){indexLiveInverters});
-					WSL.init_PageIndexTotalValues("#sidebar",function(){sidebar});
-					window.setTimeout(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");},100);
+					window.setTimeout(function(){WSL.init_PageLiveValues("#content",function(){indexLiveInverters});},400);
+					window.setTimeout(function(){WSL.init_PageIndexTotalValues("#sidebar",function(){sidebar});},800);
+					window.setTimeout(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");},1200);
 					
 					$('#graphTodayContent canvas').ready(function(){
 						window.setInterval(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");}, 2000);
