@@ -1,9 +1,11 @@
 <?php
 class WeatherService {
 	public static $tbl = "weather";
+	private $config;
 	
 	function __construct() {
 		HookHandler::getInstance()->add("onJanitorDbCheck", "WeatherService.janitorDbCheck");
+		$this->config = Session::getConfig();
 	}
 	
 	/**
@@ -112,19 +114,21 @@ class WeatherService {
 			$i=0;
 			$temp = 0;
 			$degreeDays = 0;
+			$sumWindSpeed = 0;
 			foreach ($beans as $bean){
-				$countTemp += (float)$bean['temp'];
+				$sumTemp += (float)$bean['temp'];
+				$sumWindSpeed += (float)$bean['wind_speed'];
 				$i++;
 			}
 			$degreeDays = round($degreeDays/$i,2);
 			
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterTempAdd'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			
-			$avgTemp = round($countTemp/$i,2);
+			$avgTemp = round($sumTemp/$i,2);
+			$avgWind = round($sumWindSpeed/$i,2);
 			
 			if($avgTemp<18){
 				$degreeDays = (18 - ((float)$avgTemp));
-				
 			}else{
 				$degreeDays = 0;
 			}
@@ -133,8 +137,10 @@ class WeatherService {
 			$return = array(
 					"weatherSamples"=>$i,
 					"avgTemp"=>round($avgTemp,1),
+					"avgWindSpeed"=>round($avgWind,1),
 					"currentTemp"=>round($lastBean['temp'],1),
 					"countTemp"=>$countTemp,
+					"sunInfo"=>date_sun_info(Util::getBeginEndDate('today', 1)['beginDate'],$this->config->latitude,$this->config->longitude),
 					"minTemp"=>round($lastBean['temp_min'],1),
 					"maxTemp"=>round($lastBean['temp_max'],1),
 					"degreeDays"=>$degreeDays,

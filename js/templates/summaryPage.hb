@@ -17,7 +17,12 @@
 				{{#if_gt data.total.weather.pressure compare=0}}
 				<strong>Weather data:</strong><br>
 				<canvas id="layer1" style="z-index: 0;"></canvas><br>
-				Degree days:{{data.total.weather.degreeDays}}
+				Degree days:{{data.total.weather.degreeDays}}<br>
+				Avarage temp:{{data.total.weather.avgWindSpeed}} m/s<br>
+				Sunrise:{{timestampDateFormat data.total.weather.sunrise format="HH:MM:SS"}}<br>
+				Sun transit:{{timestampDateFormat data.total.weather.transit format="HH:MM:SS"}}<br>
+				sunset:{{timestampDateFormat data.total.weather.sunset format="HH:MM:SS"}}<br>
+				
 				{{else}}
 				No weather data available.
 				{{/if_gt}}<br>

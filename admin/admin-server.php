@@ -796,7 +796,7 @@ switch ($settingstype) {
 		}
 		break;
 	case 'test':
-		$data['test'] = diagnostics($adapter);
+		$data['test'] = diagnostics($adapter,$config);
 		break;
 	case 'graphs':
 		$graphService = new GraphService();
@@ -1268,8 +1268,7 @@ function updaterJsonFile($state, $info, $percentage) {
  * It also returns the available drivers/extensions/classes, version check, DB info, log paths etc... 
  * @return array
  */
-function diagnostics($adapter) {
-	$config = Session::getConfig();
+function diagnostics($adapter,$config) {
 	$result = array();
 	$result['sqlite'] = false;
 	$result['available_drivers'] = PDO::getAvailableDrivers();
