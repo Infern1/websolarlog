@@ -394,7 +394,7 @@ class GraphService {
 				'lang'=>$lang,
 				'timezoneOffset'=>$timezoneOffset);
 		}else{
-			return array('json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','name'=>$graph->name,'options'=>$options);
+			return array('json'=>json_decode($graph->json),'series'=>$series,'axes'=>$axes,'axesList'=>$axesList,'source'=>'db','name'=>$graph->name);
 		}
 	}
 
