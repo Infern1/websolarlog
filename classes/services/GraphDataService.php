@@ -21,7 +21,7 @@ class GraphDataService {
 		if($args[1]->type=="production"){
 			if($args[3]=='Today'){
 				$data = self::readTablesPeriodValues($device, self::$tbl, $type, $date);
-				$graphPoints = self::DayBeansToGraphPoints($data['device'],$data['beans'], time());
+				$graphPoints = self::DayBeansToGraphPoints($device,$data['beans'], time());
 			}
 		}
 		return $graphPoints;
