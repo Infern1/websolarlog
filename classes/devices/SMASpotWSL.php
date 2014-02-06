@@ -99,7 +99,7 @@ SMAspot [-scan] [-d#] [-v#] [-ad#] [-am#] [-cfgX.Y] [-u] [-finq] [-q] [-nocsv]
     
     public function doCommunicationTest() {
     	$result = false;
-    	$data = $this->getLiveData();
+    	$data = $this->execute('-finq -q -wsl -nocsv');
     	if ($data) {
     		$result = true;
     	}
