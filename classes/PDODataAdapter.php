@@ -436,13 +436,13 @@ class PDODataAdapter {
 					SELECT *
 					FROM ".$table."
 					WHERE INV = :INV AND time > :beginDate AND  time < :endDate
-					ORDER BY time LIMIT ". $beginEndDate['days'],array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+					ORDER BY time LIMIT ". $beginEndDate['days'].";",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}else{
 			$energyBeans = R::getAll("
 					SELECT *
 					FROM ".$table."
 					WHERE time > :beginDate AND  time < :endDate
-					ORDER BY time LIMIT ". $beginEndDate['days'],array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+					ORDER BY time LIMIT ". $beginEndDate['days'].";",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
 		//see if we have atleast 1 bean, else we make one :)
 		(!$energyBeans) ? $energyBeans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $energyBeans = $energyBeans;
@@ -1699,7 +1699,7 @@ class PDODataAdapter {
 				$oDevice = 	array();
 				
 				// if sun is down AND voltage of string1 is 0, then we are down.
-				if(Util::isSunDown() && $liveBean['I1V']==0 && $liveBean['I2V']==0 && $liveBean['I3V']==0){
+				if(Util::isSunDown()){
 					$live = new Live();
 					$live->name = $device->name;
 					$live->status = 'offline';
@@ -1728,14 +1728,14 @@ class PDODataAdapter {
 					$live->avgPower = number_format(0,2,',','');
 				}else{
 					$liveBean =  R::findOne('live',' deviceId = :deviceId ', array(':deviceId'=>$device->id));
-
+					/*
 					$GP += $liveBean['GP'];
 					$GP2 += $liveBean['GP2'];
 					$GP3 += $liveBean['GP3'];
 					
 					$I1P += $liveBean['I1P'];
 					$I2P += $liveBean['I2P'];
-					$I3P += $liveBean['I3P'];
+					$I3P += $liveBean['I3P'];*/
 
 					// sum system (all devices) power values
 					$totalSystemIP  += $liveBean['I1P'] + $liveBean['I2P'] + $liveBean['I3P'];
@@ -1797,12 +1797,13 @@ class PDODataAdapter {
 		}
 
 		$sum = array();
+		/*
 		$sum['GP'] = ($GP<1000) ? number_format($GP,1,'.','') : number_format($GP,0,'','');
 		$sum['GP2'] = ($GP2<1000) ? number_format($GP2,1,'.','') : number_format($GP2,0,'','');
 		$sum['GP3'] = ($GP3<1000) ? number_format($GP3,1,'.','') : number_format($GP3,0,'','');
 		$sum['I1P'] = ($I1P<1000) ? number_format($I1P,1,'.','') : number_format($I1P,0,'','');
 		$sum['I2P'] = ($I2P<1000) ? number_format($I2P,1,'.','') : number_format($I2P,0,'','');
-		$sum['I3P'] = ($I3P<1000) ? number_format($I3P,1,'.','') : number_format($I3P,0,'','');
+		$sum['I3P'] = ($I3P<1000) ? number_format($I3P,1,'.','') : number_format($I3P,0,'','');*/
 		$sum['totalSystemACP'] = ($totalSystemACP<1000) ? number_format($totalSystemACP,1,'.','') : number_format($totalSystemACP,0,'','');
 		$sum['totalSystemIP'] = ($totalSystemIP<1000) ? number_format($totalSystemIP,1,'.','') : number_format($totalSystemIP,0,'','');
 		$totalSystemEff = 0;
