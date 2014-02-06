@@ -210,6 +210,12 @@ class GraphService {
 		$config = $options['config'];
 		$graph = R::findOne('graph',' name = "daily" ');
 
+		if(!is_object($graph)){
+			$this->installGraph(true);
+			$graph = R::findOne('graph',' name = "daily" ');
+			HookHandler::getInstance()->fire("onDebug", "No daily graph found, so we launch 'GraphService::installGraph' to reset it.");
+			
+		}
 		// translate hideSerie labels
 		$graphJson = json_decode($graph->json);
 		$_SESSION['logId'.$_SESSION['logId']][]['graphService.loadGraph'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
