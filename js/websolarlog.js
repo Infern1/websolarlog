@@ -1736,18 +1736,26 @@ var WSL = {
 
 					if (result) {
 						if (result) {
+							
+							seriesDataDummy = [];
 							for (series in result.series) {
 								result.series[series] = $.parseJSON(result.series[series].json);
+								// fix for if there is no seriesData.
+								// Add 1 datapoint for each serie.
+								json.push([new Date().getTime(),0 ]);
+								seriesDataDummy.push(json);
 							}
 							for (line in result.dataPoints) {
 
 								var json = [];
+
 								for (values in result.dataPoints[line]) {
 									json.push([
 												result.dataPoints[line][values][0] * 1000,
 												result.dataPoints[line][values][1] ]);
 								}
 								seriesData.push(json);
+
 								newJsonSeries = [];
 								
 								if (seriesData.length == Object.keys(result.dataPoints).length) {
@@ -1763,7 +1771,13 @@ var WSL = {
 									}
 								}
 							}
-
+							
+							// if there is no seriesData;
+							// set dummy data as serieData
+							if(seriesData.length==0){
+								seriesData = null;
+								seriesData = seriesDataDummy;
+							}
 							
 							if (result.json.legend != '') {
 								if (result.json.legend.renderer == 'EnhancedLegendRenderer') {
