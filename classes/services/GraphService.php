@@ -387,7 +387,6 @@ class GraphService {
 				'source'=>'db',
 				'timestamp'=>$timestamp,
 				'name'=>$graph->name,
-				'options'=>$options,
 				'slimConfig' => $slimConfig,
 				'sunInfo'=>$sunInfo,
 				'hideSeries'=>$hideSeries,
