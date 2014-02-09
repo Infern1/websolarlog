@@ -281,6 +281,7 @@ class PDODataAdapter {
 		$bean->plugwiseStrech20IP = $config->plugwiseStrech20IP;
 		$bean->plugwiseStrech20ID = $config->plugwiseStrech20ID;
 		$bean->smartmeterpath = $config->smartmeterpath;
+		$bean->frontendLiveInterval = $config->frontendLiveInterval;
 		
 		$bean->invoiceDate = $config->invoiceDate;
 		
@@ -372,6 +373,8 @@ class PDODataAdapter {
 			$config->plugwiseStrech20ID = ($bean->plugwiseStrech20ID != "") ? $bean->plugwiseStrech20ID : $config->plugwiseStrech20ID;
 			$config->smartmeterpath = ($bean->smartmeterpath != "") ? $bean->smartmeterpath : $config->smartmeterpath;
 
+			$config->frontendLiveInterval =($bean->frontendLiveInterval > 0) ? $bean->frontendLiveInterval : $config->frontendLiveInterval; 
+			
 			$config->co2kwh = ($bean->co2kwh > 0) ? $bean->co2kwh : $config->co2kwh;
 			$config->co2gas = ($bean->co2gas > 0) ? $bean->co2gas : $config->co2gas;
 			$config->co2CompensationTree = ($bean->co2CompensationTree > 0) ? $bean->co2CompensationTree : $config->co2CompensationTree;

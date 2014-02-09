@@ -59,7 +59,8 @@ class Config
     public $graphSeries; // Contains an array of Graph Series
     public $graphAxes; // Contains an array of Graph axes
     public $graphShowACDC; // Should we show AC, DC of Both values in Graph?
-
+    public $frontendLiveInterval; // X seconds interval that the frontend request live data from the database
+    
     public $co2kwh;
     public $co2gas;
     public $co2CompensationTree;
@@ -140,10 +141,11 @@ class Config
 		$this->graphShowACDC = 'AC';
 
 		// ### FRONT PAGE
+		// not used....
 		$this->YMAX='4600';
 		$this->YINTERVAL='1000';
 		$this->PRODXDAYS='20';
-
+		//  /not used....
 		
 		// ### EMAIL
 		$this->emailFrom = "test-from@test.localhost";
@@ -163,6 +165,8 @@ class Config
 		$this->mastervoltpath = 'aurora'; // If in system path this is enough
 		$this->soladinSolgetpath = 'aurora'; // If in system path this is enough
 		$this->smagetpath = 'sma_get'; // If in system path this is enough
+		
+		$this->frontendLiveInterval = 3;
 		
 		$this->co2kwh = 440; // 440g/kWh is conform europa average
 		$this->co2gas = 2200; // 2200g/m3 natural gas is conform europa average

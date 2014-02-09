@@ -212,6 +212,7 @@ switch ($settingstype) {
 		$data['timezones'] = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
 		$data['moneySign'] = $config->moneySign;
 		$data['invoiceDate'] = $config->invoiceDate;
+		$data['frontendLiveInterval'] = $config->frontendLiveInterval;
 		$data['meteringDevicePresent']= 0;
 		foreach($config->allDevices as $device){
 			if($device->type == "metering"){
@@ -451,6 +452,7 @@ switch ($settingstype) {
 		$config->timezone = Common::getValue("timezone");
 		$config->template = Common::getValue("template");
 		$config->moneySign = Common::getValue("moneySign");
+		$config->frontendLiveInterval = Common::getValue("frontendLiveInterval");
 		$adapter->writeConfig($config);
 		break;
 	case 'save-inverter': // backwords compatibility

@@ -999,6 +999,23 @@ function init_general() {
                 	$("input[name=longitude]").val($("input[name=longitude]").val().replace(/,/g,"."));
                 });
 				
+                $( "#sliderFrontendLiveInterval" ).slider({
+                    min: 1,
+                    max: 60,
+                    step: 1,
+                    slide: function( event, ui ) {
+                      $( "#frontendLiveInterval" ).val( ui.value );
+                    }
+                  });
+                  // setter
+                
+
+              	$( "#sliderFrontendLiveInterval" ).slider( "option", "value", $( "#frontendLiveInterval" ).val() );
+
+              	$( "#frontendLiveInterval" ).on('keyup',function(){
+              		$( "#sliderFrontendLiveInterval" ).slider( "option", "value", $(this).val() );
+              	});
+                
                 $('#btnSetLatLong').bind('click',function(){
                 	$('#content').append('<div id="mapsDialog"></div>');
 					var lat = $("input[name=latitude]").val();

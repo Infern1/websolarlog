@@ -8,6 +8,7 @@ require_once("template/" .  $config->template . "/header.php");
 require_once("template/" .  $config->template . "/index.php");
 ?>
 <input type="hidden" id="graphReady" value="false"/>
+<input type="hidden" id="frontendLiveInterval" value="<?php echo $config->frontendLiveInterval*1000;?>"/>
 	<script type="text/javascript">
     // Make sure the page is loaded
     
@@ -27,7 +28,7 @@ require_once("template/" .  $config->template . "/index.php");
 					window.setTimeout(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");},1200);
 					
 					$('#graphTodayContent canvas').ready(function(){
-						window.setInterval(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");}, 2000);
+						window.setInterval(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");}, $('#frontendLiveInterval').val());
 					});
 					analyticsJSCodeBlock();
 	    		}		    		
