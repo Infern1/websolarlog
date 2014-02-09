@@ -120,6 +120,8 @@ class WeatherService {
 				$sumWindSpeed += (float)$bean['wind_speed'];
 				$i++;
 			}
+			
+			
 			$degreeDays = round($degreeDays/$i,2);
 			
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterTempAdd'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
@@ -132,13 +134,21 @@ class WeatherService {
 			}else{
 				$degreeDays = 0;
 			}
+			$avgBeaufort = Util::beaufortScale($avgWind);
+			$beaufort = Util::beaufortScale((float)$bean['wind_speed']);
 			$lastBean = end($beans);
 
+
+			
 			$return = array(
 					"weatherSamples"=>$i,
+					"beaufort"=>$beaufort,
+					"avgBeaufort"=>$avgBeaufort,
 					"avgTemp"=>round($avgTemp,1),
 					"avgWindSpeed"=>round($avgWind,1),
+					"avgWindChill"=>Util::getWindChill((float)round($avgWind,1),(float)round($lastBean['temp'],1)),
 					"currentTemp"=>round($lastBean['temp'],1),
+					"currentWindChill"=>Util::getWindChill((float)$lastBean['wind_speed'],(float)round($lastBean['temp'],1)),
 					"countTemp"=>$countTemp,
 					"sunInfo"=>date_sun_info(Util::getBeginEndDate('today', 1)['beginDate'],$this->config->latitude,$this->config->longitude),
 					"minTemp"=>round($lastBean['temp_min'],1),

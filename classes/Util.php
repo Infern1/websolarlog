@@ -406,5 +406,72 @@ class Util {
 		
 		return array('closestBean'=>$beans[$beanKey],'closestKey'=>$beanKey);
 	}
+	/**
+	 * 
+	 * @param float $windSpeed
+	 */
+	public function beaufortScale(float $windSpeed){
+		if($windSpeed >= 0 && $windSpeed <= 0.2){
+			return $beaufort = 0;	
+		}elseif($windSpeed > 0.2 && $windSpeed <= 1.5){
+			return $beaufort = 1;
+		}elseif($windSpeed > 1.5 && $windSpeed <= 3.3){
+			return $beaufort = 2;
+		}elseif($windSpeed > 3.4 && $windSpeed <= 5.4){
+			return $beaufort = 3;
+		}elseif($windSpeed > 5.4 && $windSpeed <= 7.9){
+			return $beaufort = 4;
+		}elseif($windSpeed > 7.9 && $windSpeed <= 10.7){
+			return $beaufort = 5;
+		}elseif($windSpeed > 10.7 && $windSpeed <= 13.8){
+			return $beaufort = 6;
+		}elseif($windSpeed > 13.8 && $windSpeed <= 17.1){
+			return $beaufort = 7;
+		}elseif($windSpeed >= 17.1 && $windSpeed <= 20.7){
+			return $beaufort = 8;
+		}elseif($windSpeed >= 20.7 && $windSpeed <= 24.4){
+			return $beaufort = 9;
+		}elseif($windSpeed >= 24.4 && $windSpeed <= 28.4){
+			return $beaufort = 10;
+		}elseif($windSpeed >= 28.4 && $windSpeed <= 32.6){
+			return $beaufort = 11;
+		}elseif($windSpeed > 32.6){
+			return $beaufort = 12;
+		}
+	}
+	/**
+	 * 
+	 * @param unknown $wind
+	 * @param unknown $temp
+	 * @return unknown
+	 */
+	function getWindChill($windMS, $temp) {
+		
+		$windKMH = ((float)$windMS * 3.6);
+		$wind2 = pow($windKMH, 0.16);
+		$wind_chill = (13.12 + 0.6215 * $temp - 11.37 * $wind2 + 0.3965 * $temp * $wind2);
+		$wind_chill = round($wind_chill, 1);
+		 
+		$wind_chill = ($windKMH <= 4.8) ? $temp : $wind_chill;
+		$wind_chill = ($temp > 10) ? $temp : $wind_chill;
+		
+		return $wind_chill;
+	}
+	
+	/**
+	 *
+	 * @param unknown $wind
+	 * @param unknown $temp
+	 * @return unknown
+	 */
+	function getWindChillOrg($wind, $temp) {
+		$wind = $wind * 1.852;
+		$wind2 = pow($wind, 0.16);
+		$wind_chill = (13.12 + 0.6215 * $temp - 11.37 * $wind2 + 0.3965 * $temp * $wind2);
+		$wind_chill = round($wind_chill, 2);
+		$wind_chill = ($wind <= 4.8) ? $temp : $wind_chill;
+		$wind_chill = ($temp > 10) ? $temp : $wind_chill;
+		return $wind_chill;
+	}
 }
 ?>

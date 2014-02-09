@@ -61,7 +61,7 @@
 <div class="column span">
 	<div class="span" style="text-align:center;">{{data.lang.weather}}:</div>
 	<div class="cl"></div>
-	<div class="column span-11 verticalLine">
+	<div class="column span-14 verticalLine">
 		<canvas id="layer1" style="z-index: 0;"></canvas>
 	</div>
 </div>

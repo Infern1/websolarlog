@@ -1080,7 +1080,7 @@ var WSL = {
 						var TO_RADIANS = Math.PI / 180;
 						var canvas = document.getElementById('layer1');
 						var context = canvas.getContext('2d');
-						canvas.width = 270;
+						canvas.width = 400;
 						canvas.height = 73;
 
 						var x = 20;
@@ -1116,7 +1116,7 @@ var WSL = {
 
 						context.save();
 						if (conditionImage) {
-							context.drawImage(images.condition, 130, -12);
+							context.drawImage(images.condition, 140, -9);
 						} else {
 							context.fillText(windSpeed + 'm/s', 77, 27, 30);
 						}
@@ -1132,6 +1132,17 @@ var WSL = {
 
 						context.fillText('Temp', 120, 42, 75);
 						context.fillText(data.total.weather.currentTemp + '°', 120, 55, 60);
+						
+						context.fillText('Sun', 213, 42, 75);
+						var date = new Date(data.total.weather.sunrise*1000);
+						context.fillText('rise:' , 213, 51, 60);
+						context.fillText(("0"+date.getHours()).slice(-2)+':'+ ("0"+date.getMinutes()).slice(-2) , 243, 51, 60);
+						var date = new Date(data.total.weather.transit*1000);
+						context.fillText('transit:' , 213, 62, 60);
+						context.fillText(("0"+date.getHours()).slice(-2)+':'+ ("0"+date.getMinutes()).slice(-2), 243, 62, 60);
+						context.fillText('set:' , 213, 73, 60);
+						var date = new Date(data.total.weather.sunset*1000);
+						context.fillText(("0"+date.getHours()).slice(-2)+':'+ ("0"+date.getMinutes()).slice(-2) , 243, 73, 60);
 						
 						
 						// no idea with what it is...
