@@ -1106,9 +1106,7 @@ var WSL = {
 						context.rotate(angle * TO_RADIANS);
 
 						// then draw the image back and up
-						context
-								.drawImage(images.arrow, -20, -20, width,
-										height);
+						context.drawImage(images.arrow, -20, -20, width,height);
 
 						// save the context's co-ordinate system before
 						// we screw with it
@@ -1463,7 +1461,7 @@ var WSL = {
 						var TO_RADIANS = Math.PI / 180;
 						var canvas = document.getElementById('layer1');
 						var context = canvas.getContext('2d');
-						canvas.width = 220;
+						canvas.width = 270;
 						canvas.height = 90;
 
 						var x = 20;
@@ -1515,6 +1513,17 @@ var WSL = {
 						context.fillText('Temp min/max:', 140, 72, 75);
 						context.fillText(data.total.weather.minTemp + '°/'+ data.total.weather.maxTemp + '°',140, 85, 60);
 						
+						
+						context.fillText('Sun', 213, 42, 75);
+						var date = new Date(data.total.weather.sunrise*1000);
+						context.fillText('rise:' , 213, 51, 60);
+						context.fillText(("0"+date.getHours()).slice(-2)+':'+ ("0"+date.getMinutes()).slice(-2) , 243, 51, 60);
+						var date = new Date(data.total.weather.transit*1000);
+						context.fillText('transit:' , 213, 62, 60);
+						context.fillText(("0"+date.getHours()).slice(-2)+':'+ ("0"+date.getMinutes()).slice(-2), 243, 62, 60);
+						context.fillText('set:' , 213, 73, 60);
+						var date = new Date(data.total.weather.sunset*1000);
+						context.fillText(("0"+date.getHours()).slice(-2)+':'+ ("0"+date.getMinutes()).slice(-2) , 243, 73, 60);
 						
 						
 						

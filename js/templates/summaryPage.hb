@@ -21,11 +21,7 @@
 				Avarage wind speed:{{data.total.weather.avgWindSpeed}} m/s<br>
 				Avarage temperature:{{data.total.weather.avgTemp}} &deg;C<br>
 				Avarage wind Chill:{{data.total.weather.avgWindChill}} &deg;C<br>
-				Wind chill:{{data.total.weather.currentWindChill}}  &deg;C<br>
-				Sunrise:{{timestampDateFormat data.total.weather.sunrise format="HH:MM:SS"}}<br>
-				Sun transit:{{timestampDateFormat data.total.weather.transit format="HH:MM:SS"}}<br>
-				sunset:{{timestampDateFormat data.total.weather.sunset format="HH:MM:SS"}}<br>
-				
+				Current Wind chill:{{data.total.weather.currentWindChill}}  &deg;C<br>
 				{{else}}
 				No weather data available.
 				{{/if_gt}}<br>
