@@ -106,25 +106,25 @@ class WeatherService {
 			$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 			
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.beforeFind.DeviceId='.$device->id] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-			$beans =  R::find( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
+			
+			// from findAll(return beans) to getAll(return array)
+			$beans =  R::getAll('SELECT * FROM weather WHERE deviceId = :deviceId AND time > :beginDate AND time < :endDate ',
 					array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 			);
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterFind'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-			
 			
 			$i=0;
 			$temp = 0;
 			$degreeDays = 0;
 			$sumWindSpeed = 0;
-			foreach ($beans as $bean){
+			
+			foreach($beans as $bean){
+				echo $bean['temp'];
 				$sumTemp += (float)$bean['temp'];
 				$sumWindSpeed += (float)$bean['wind_speed'];
 				$i++;
 			}
-			
-			
 			$degreeDays = round($degreeDays/$i,2);
-			
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterTempAdd'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			
 			$avgTemp = round($sumTemp/$i,2);
