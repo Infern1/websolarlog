@@ -64,7 +64,10 @@ class EnergySmartMeterService {
 		$device = $args[1];
 		$date = $args[2];
 		
-		
+		// TODO
+		/*
+		 * SmartMeter is metering and we check on Production :S
+		 */
 		if($device->type == "production"){
 			$energy = self::getEnergyByDeviceAndTime($device,$date);
 			$data = array();
