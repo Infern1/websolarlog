@@ -105,7 +105,7 @@ class WeatherService {
 			(!$date)? $date = date('d-m-Y') : $date = $date;
 			$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 			
-			$beans =  R::findAll( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
+			$beans =  R::find( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
 					array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 			);
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterFind'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
