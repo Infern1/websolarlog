@@ -426,7 +426,7 @@ class GraphService {
 
 
 	public function getGraphAddonSeries($addon){
-		$bObject = R::findAll(self::$tblSeries,' addon = :addon',array(':addon'=>$addon));
+		$bObject = R::find(self::$tblSeries,' addon = :addon',array(':addon'=>$addon));
 		if ($bObject->id > 0) {
 			$object = $this->toAxeObject($bObject);
 		}
