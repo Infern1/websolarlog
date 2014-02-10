@@ -2850,7 +2850,7 @@ WSL.api.getHistoryValues = function(success) {
 };
 
 WSL.api.getTabs = function(page, success) {
-	WSL.connect.getJSON('server.php?method=getTabs&page=' + page, success);
+	WSL.connect.getJSON('server.php?method=getTabs&page=' + page + '&noDB=true', success);
 };
 
 WSL.api.getCompare = function(success) {
