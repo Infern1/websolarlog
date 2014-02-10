@@ -82,7 +82,7 @@ class WeatherService {
 		(!$date)? $date = date('d-m-Y') : $date = $date;
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 	
-		$beans =  R::findAll( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
+		$beans =  R::find( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
 				array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 		
@@ -95,7 +95,7 @@ class WeatherService {
 	}
 	
 	public function onSummary($args) {
-		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.start'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
+		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.start.DeviceId='.$device->id] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 		
 		$device = $args[1];
 		$date = $args[2];
@@ -105,6 +105,7 @@ class WeatherService {
 			(!$date)? $date = date('d-m-Y') : $date = $date;
 			$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 			
+			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.beforeFind.DeviceId='.$device->id] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			$beans =  R::find( 'weather', ' where deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY time',
 					array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 			);
@@ -167,6 +168,7 @@ class WeatherService {
 							
 			return $return; 
 		}else{
+			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.noRelevantDevice'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			return;
 		}
 	}
