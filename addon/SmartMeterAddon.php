@@ -295,7 +295,7 @@ class SmartMeterAddon {
  		(!$date)? $date = date('d-m-Y') : $date = $date;
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 
-		$bean =  R::findAll( 'historySmartMeter',
+		$bean =  R::find( 'historySmartMeter',
 				' deviceId = :deviceId AND time > :beginDate AND  time < :endDate order by time',
 				array(':deviceId'=>$deviceId,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
