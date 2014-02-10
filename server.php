@@ -12,17 +12,27 @@ $_SESSION['logId'] = $logId;
 //create startTime for this logId
 $_SESSION['logId'.$_SESSION['logId']]['startTime'] = microtime(true);
 
-
 require 'classes/classloader.php';
 $_SESSION['logId'.$_SESSION['logId']][]['server.afterClassLoader'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-Session::initializeLight();
+
+
+if(!(Common::getValue('noDB'))){
+	Session::initializeLight();
+	$noDB = false;
+}else{
+	$noDB = true;
+}
 $_SESSION['logId'.$_SESSION['logId']][]['server.afterLightInit'] =   (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 
 try {
-	if (PeriodHelper::isPeriodJob("inActiveJob", 30)) {
-		HookHandler::getInstance()->fire("onInActiveJob");
+	if(!(Common::getValue('noDB'))){
+		if (PeriodHelper::isPeriodJob("inActiveJob", 30)) {
+			HookHandler::getInstance()->fire("onInActiveJob");
+		}
+		// Initialize return array
+		$dataAdapter = PDODataAdapter::getInstance();
 	}
-
+	
 	// Retrieve action params
 	$method = $_GET['method'];
 
@@ -31,8 +41,6 @@ try {
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 	header('Content-type: application/json');
 
-	// Initialize return array
-	$dataAdapter = PDODataAdapter::getInstance();
 
 	$data = array();
 	$devicenum = Common::getValue('devicenum', 0);
@@ -374,10 +382,10 @@ try {
 			$config = Session::getConfig();
 			foreach ($config->devices as $device){
 				if($device->type == 'production'){
-					$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($device->id,$date);
-					$energy[] = $dataAdapter->getYearEnergyPerMonth($device->id,$date);
-					$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($device->id,$date);
-					$maxMinEnergyYear[] = $dataAdapter->getMaxMinEnergyYear($device->id,$date);
+					$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($device->id,$date,$device);
+					$energy[] = $dataAdapter->getYearEnergyPerMonth($device->id,$date,$device);
+					$maxPower[] = $dataAdapter->getYearMaxPowerPerMonth($device->id,$date,$device);
+					$maxMinEnergyYear[] = $dataAdapter->getMaxMinEnergyYear($device->id,$date,$device);
 				}
 			}
 			$lang = array();
