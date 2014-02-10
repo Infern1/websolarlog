@@ -119,7 +119,6 @@ class WeatherService {
 			$sumWindSpeed = 0;
 			
 			foreach($beans as $bean){
-				echo $bean['temp'];
 				$sumTemp += (float)$bean['temp'];
 				$sumWindSpeed += (float)$bean['wind_speed'];
 				$i++;
