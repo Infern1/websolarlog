@@ -49,10 +49,9 @@
     		<option value="{{this}}" {{#if_eq ../data.timezone compare=this}}selected=selected{{/if_eq}}>{{this}}</option>
     	{{/each}}
     </select><br />
-    Frontend live poll to database:<br>
-    <div id="sliderFrontendLiveInterval" class="span-20"></div><br>
-    <input type="text" name="frontendLiveInterval" id="frontendLiveInterval" value="{{data.frontendLiveInterval}}" />
-    <br>
+    <label for="frontLivePoll">Frontend live poll to database:</label>
+    <input type="text" size="5" name="frontendLiveInterval" id="frontendLiveInterval" value="{{data.frontendLiveInterval}}" />seconds
+    <div id="sliderFrontendLiveInterval" class="span-28"></div><br>
     <button type="button" id="btnGeneralSubmit">Save</button>
   </fieldset>
 </form> 
