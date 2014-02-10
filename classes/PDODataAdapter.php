@@ -392,9 +392,9 @@ class PDODataAdapter {
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.devices'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			$config->inverters = $config->devices; // @Deprecated
 			
-			
-			$config->graphSeries = $this->getGraphSeries();
-			$config->graphAxes = $this->getGraphAxes();
+			// looks like we do not use this......
+			//$config->graphSeries = $this->getGraphSeries();
+			//$config->graphAxes = $this->getGraphAxes();
 
 			$config->googleAnalytics = $bean->googleAnalytics;
 			$config->piwikServerUrl = $bean->piwikServerUrl;
