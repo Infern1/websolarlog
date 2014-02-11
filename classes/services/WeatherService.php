@@ -108,11 +108,11 @@ class WeatherService {
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.beforeFind.DeviceId='.$device->id] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			
 			// from findAll(return beans) to getAll(return array)
-			$beans =  R::getAll('SELECT * FROM weather WHERE deviceId = :deviceId AND time > :beginDate AND time < :endDate ',
+			$beans =  R::findAll('weather', ' WHERE deviceId = :deviceId AND time > :beginDate AND time < :endDate ',
 					array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 			);
-			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterFind'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-			
+			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterFind.DeviceId='.$device->id] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
+		
 			$i=0;
 			$temp = 0;
 			$degreeDays = 0;

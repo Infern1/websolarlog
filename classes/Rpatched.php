@@ -12992,6 +12992,6 @@ class RedBean_DuplicationManager
 }
 
 
-class Rpatched extends RedBean_Facade{
+class R extends RedBean_Facade{
   
 }
