@@ -21,7 +21,6 @@
 	<link rel="stylesheet" href="css/jquery.jqplot.min.css" type="text/css" />
 	<link rel="stylesheet" href="css/jquery.jqplot.overrule.style.css" type="text/css" />
 	<link rel="stylesheet" href="css/jquery.pnotify.default.css" type="text/css" />
-	<link rel="stylesheet" href="css/jquery.pnotify.default.css" type="text/css" />
 
 	<link rel="stylesheet" href="js/jqueryuicss/jquery-ui.min.css" type="text/css" />
 	<link rel="stylesheet" href="js/jqueryuicss/jquery.ui.overrule.css" type="text/css" />
