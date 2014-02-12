@@ -19,7 +19,7 @@ session_start();
 <link rel="stylesheet" href="../js/jqueryuicss/jquery.ui.overrule.css" type="text/css" />
 
 <script type="text/javascript">var isFront=false;</script>
-<script type="text/javascript" src="../js/jquery-1.10.1.min.js"></script>
+<script type="text/javascript" src="../js/jquery-2.1.0.min.js"></script>
 <script type="text/javascript" src="../js/moment-2.4.0.min.js"></script>
 <script type="text/javascript" src="../js/jquery-ui-1.10.3.min.js"></script>
 <script type="text/javascript" src="../js/jquery.calculation.min.js"></script>

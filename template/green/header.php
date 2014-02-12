@@ -11,13 +11,12 @@
 	<title><?php echo $config->title; ?></title>
 	<META http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-	<link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
-    <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/>
-    <!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"/><![endif]-->
-
 	<link rel="shortcut icon" href="template/green/css/images/favicon.ico" />
-	<link rel="stylesheet" href="template/green/css/style.css" type="text/css" media="all" />
 	
+	<?php if($config->phpMinify == false){?>
+	<link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection"/>
+	<link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print"/>
+	<link rel="stylesheet" href="template/green/css/style.css" type="text/css" media="all" />
 	<link rel="stylesheet" href="css/jquery.jqplot.min.css" type="text/css" />
 	<link rel="stylesheet" href="css/jquery.jqplot.overrule.style.css" type="text/css" />
 	<link rel="stylesheet" href="css/jquery.pnotify.default.css" type="text/css" />
@@ -28,7 +27,7 @@
 	
 	<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
 	<script type="text/javascript">var isFront=true;</script>
-	<script type="text/javascript" src="js/jquery-1.10.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-2.1.0.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.10.3.min.js"></script>
 	<script type="text/javascript" src="js/jquery.pnotify-1.2.0.min.js"></script>
 	<script type="text/javascript" src="js/moment-2.4.0.min.js"></script>
@@ -50,4 +49,19 @@
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.enhancedLegendRenderer.min.js"></script>
     <script type="text/javascript" src="js/astrocal.js"></script>
     <script type="text/javascript" src="js/websolarlog.js"></script>
+    <?php }else{?>
+    <script type="text/javascript">var isFront=true;</script>
+
+    <link rel="stylesheet" href="PHPMinify/min/?g=css" type="text/css" media="all" />
+    
+    <link rel="stylesheet" href="PHPMinify/min/?g=cssPrint" type="text/css" media="print"/>
+    <link rel="stylesheet" href="PHPMinify/min/?g=cssProjection" type="text/css" media="projection"/>
+    
+	<!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"/><![endif]-->
+
+    
+    <script type="text/javascript" src="PHPMinify/min/?g=jqueryMomentsHandlebars"></script>
+    <script type="text/javascript" src="PHPMinify/min/?g=jqplotAstroWSL"></script>
+
+    <?php }?>
 </head>
