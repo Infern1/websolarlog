@@ -28,17 +28,20 @@ return array(
 				'//websolarlog/js/jqueryuicss/jquery.ui.overrule.css',
 				'//websolarlog/template/green/css/custom.css',
 		),
-		'jqueryMomentsHandlebars' => array(
+		'js1' => array(
 				'//websolarlog/js/jquery-2.1.0.min.js', 
-				'//websolarlog/js/jquery-ui-1.10.3.min.js',
+				'//websolarlog/js/jquery-ui-1.10.4.custom.min.js',
+		),
+		'js2' => array(
 				'//websolarlog/js/jquery.pnotify-1.2.0.min.js',
-				'//websolarlog/js/moment-2.4.0.min.js',
 				'//websolarlog/js/handlebars-1.1.2.js',
-				'//websolarlog/js/helpers.js',
+				'//websolarlog/js/astrocal.js',
+				'//websolarlog/js/jquery.jqplot-1.0.8r1250.min.js',
 		),
 		
-		'jqplotAstroWSL'=>array(
-				'//websolarlog/js/jquery.jqplot-1.0.8r1250.min.js',
+		'js3'=>array(
+				'//websolarlog/js/moment-2.4.0.min.js',
+				'//websolarlog/js/helpers.js',
 				'//websolarlog/js/jqplot_plugins/jqplot.json2.min.js',
 				'//websolarlog/js/jqplot_plugins/jqplot.barRenderer.min.js',
 				'//websolarlog/js/jqplot_plugins/jqplot.canvasTextRenderer.min.js',
@@ -52,7 +55,6 @@ return array(
 				'//websolarlog/js/jqplot_plugins/jqplot.pointLabels.min.js',
 				'//websolarlog/js/jqplot_plugins/jqplot.highlighter.min.js',
 				'//websolarlog/js/jqplot_plugins/jqplot.enhancedLegendRenderer.min.js',
-				'//websolarlog/js/astrocal.js',
 				'//websolarlog/js/websolarlog.js',
 		),
 		

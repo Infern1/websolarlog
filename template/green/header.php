@@ -60,8 +60,9 @@
 	<!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"/><![endif]-->
 
     
-    <script type="text/javascript" src="PHPMinify/min/?g=jqueryMomentsHandlebars"></script>
-    <script type="text/javascript" src="PHPMinify/min/?g=jqplotAstroWSL"></script>
+    <script type="text/javascript" src="PHPMinify/min/?g=js1"></script>
+    <script type="text/javascript" src="PHPMinify/min/?g=js2"></script>
+    <script type="text/javascript" src="PHPMinify/min/?g=js3"></script>
 
     <?php }?>
 </head>
