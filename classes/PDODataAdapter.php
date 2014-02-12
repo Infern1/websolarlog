@@ -1711,6 +1711,8 @@ class PDODataAdapter {
 					$live->status = 'offline';
 					$live->time = date("H:i:s");
 					$live->INV = $device->id;
+					$live->totalDeviceIP = 0;
+					$live->totalDeviceACP =0;
 					$live->GP = number_format(0,0,',','');
 					$live->GA = number_format(0,0,',','');
 					$live->GV = number_format(0,0,',','');
