@@ -60,7 +60,7 @@
 			<div id="main-middle"><div id="contentLoading"><br><img src="template/green/css/images/contentLoading.gif"/></div>
 				<!-- Content -->
 				<div id="content">
-				
+				<div style="height:100px;text-align:center;"><br><br>loading....</div>
 				</div>
 				<!-- END Content -->
 				<!-- Sidebar -->
