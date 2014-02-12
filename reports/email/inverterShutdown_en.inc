@@ -2,7 +2,7 @@
 	Your inverter {{inverter.name}} is done for the day.
 </p>
 <p>
-	These are the figures off the day:
+	These are the figures of the day:
 </p>
 <table>
 	<tr>
