@@ -84,7 +84,7 @@ class EnergyService {
 	 * @return Array of Energy
 	 */
 	public function getEnergyList() {
-		$bObjects = R::findAll( self::$tbl, ' ORDER BY time');
+		$bObjects = R::find( self::$tbl, ' ORDER BY time');
 		$objects = array();
 		foreach ($bObjects as $bObject) {
 			$objects[] = $this->toObject($bObject);
@@ -115,8 +115,8 @@ class EnergyService {
 		$beginEndDate = Util::getBeginEndDate('day', 1,$time);
 
 		
-		$bean =  R::findOne( self::$tbl, ' INV = :deviceId AND time > :beginDate AND time < :endDate LIMIT 10 ',
-				array(':deviceId'=>$device->id, ':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
+		$bean =  R::findOne( self::$tbl, ' INV = :deviceId AND time > :beginDate AND time < :endDate LIMIT 1 ',
+				array(':deviceId'=>$device->id, ':beginDate'=>$beginEndDate['beginDate']+60,':endDate'=>$beginEndDate['endDate']-60)
 		);
 	
 

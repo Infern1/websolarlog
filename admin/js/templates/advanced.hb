@@ -64,8 +64,10 @@
     </div>
     <br>
     <hr>
-    activate debugging:<br />
-    <label for="debugmode">Debug mode:</label>{{checkboxWithHidden 'debugmode' data.debugmode}}<br />
+    <label for="debugmode">Debug mode:</label>{{checkboxWithHidden 'debugmode' data.debugmode}} activate debug mode<br />
+    <hr>
+    <label for="phpMinify">PHP minify:</label>{{checkboxWithHidden 'phpMinify' data.phpMinify}} minify requests and sources<br />
+    Fpr best performance make sure that the /websolarlog/PHPMinify/tmp is writable for the webserver.
     <hr>
     configure stat-tools:<br />
     <label for="googleAnalytics">Google Analytics:</label><input type="text" name="googleAnalytics" value="{{data.googleAnalytics}}" />(XX-00000000-0)<br />

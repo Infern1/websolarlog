@@ -242,7 +242,7 @@ class SmartMeterAddon {
 					' deviceId = :deviceId AND time >= :beginDate AND  time <= :endDate ',
 					$parameters
 			);
-			
+			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterFind'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			
 			$find = reset ( $finds );
 			
@@ -630,9 +630,9 @@ class SmartMeterAddon {
 		$energyBeans = array();
 
 		$energyBeans = R::getAll("SELECT *
-                                        FROM historySmartMeter
-                                        WHERE deviceId = :deviceId AND time > :beginDate AND  time < :endDate
-                                        ORDER BY time",array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+                                  FROM historySmartMeter
+                                  WHERE deviceId = :deviceId AND time > :beginDate AND  time < :endDate ORDER BY id",
+		array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 	
 		
 		//see if we have atleast 1 bean, else we make one :)

@@ -104,8 +104,8 @@ class GraphDataService {
 		$energyBeans = R::getAll("
 				SELECT *
 				FROM history
-				WHERE time > :beginDate AND  time < :endDate AND inv = :inv
-				ORDER BY inv,time",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'], ':inv'=>$device->id));
+				WHERE time > :beginDate AND  time < :endDate AND inv = :inv ORDER BY id",
+				array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'], ':inv'=>$device->id));
 
 		//see if we have atleast 1 bean, else we make one :)
 		(!$energyBeans) ? $energyBeans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $energyBeans = $energyBeans;

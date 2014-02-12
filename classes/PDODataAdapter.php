@@ -253,7 +253,8 @@ class PDODataAdapter {
 		$bean->longitude = $config->longitude;
 		$bean->timezone = $config->timezone;
 		$bean->debugmode = $config->debugmode;
-
+		$bean->phpMinify = $config->phpMinify;
+		
 		$bean->comPort = $config->comPort;
 		$bean->comOptions = $config->comOptions;
 		$bean->comDebug = $config->comDebug;
@@ -345,6 +346,8 @@ class PDODataAdapter {
 			$config->comPort = $bean->comPort;
 			$config->comOptions = $bean->comOptions;
 			$config->comDebug = $bean->comDebug;
+			$config->phpMinify = $bean->phpMinify;
+		
 			
 			$config->invoiceDate = $bean->invoiceDate;
 			

@@ -23,6 +23,7 @@ class Config
     public $latitude;
     public $longitude;
     public $timezone;
+    public $phpMinify;
 
     public $comPort;
     public $comOptions;
@@ -176,7 +177,7 @@ class Config
 		$this->costWater = 1200;
 		$this->moneySign = "$";
 		$this->adminpasswd = sha1('admin');
-		
+		$this->phpMinify = false;
 		$this->pauseWorker = false;
 		$this->restartWorker = false;
 		

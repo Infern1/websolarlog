@@ -35,6 +35,7 @@ switch ($settingstype) {
 		$data['plugwiseStrech20IP'] = $config->plugwiseStrech20IP;
 		$data['plugwiseStrech20ID'] = $config->plugwiseStrech20ID;
 		$data['debugmode'] = $config->debugmode;
+		$data['phpMinify'] = $config->phpMinify;
 		$data['googleAnalytics'] = $config->googleAnalytics;
 		$data['piwikServerUrl'] = $config->piwikServerUrl;
 		$data['piwikSiteId'] = $config->piwikSiteId;
@@ -429,6 +430,7 @@ switch ($settingstype) {
 		$config->plugwiseStrech20ID =Common::getValue("plugwiseStrech20ID");
 		$config->smartmeterpath =Common::getValue("smartmeterpath");
 		$config->debugmode =Common::getValue("debugmode");
+		$config->phpMinify =Common::getValue("phpMinify");
 		$config->googleAnalytics = Common::getValue("googleAnalytics");
 		$config->piwikServerUrl = Common::getValue("piwikServerUrl");
 		$config->piwikSiteId = Common::getValue("piwikSiteId");
