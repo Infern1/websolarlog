@@ -322,8 +322,9 @@ class PDODataAdapter {
 		if (!$bean){
 			$bean = R::dispense('config');
 		}
-
-		$deviceService = new DeviceService();
+		// not used?!
+		// TODO
+		//$deviceService = new DeviceService();
 		
 		$config = new Config();
 		if ($bean) {
@@ -392,8 +393,9 @@ class PDODataAdapter {
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.getAlleDevices'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			$config->allDevices = $this->deviceService->getAllDevices();
 			
-			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.devices'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-			$config->inverters = $config->devices; // @Deprecated
+			// looks like we don't use this anymore.
+			//$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.devices'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
+			//$config->inverters = $config->devices; // @Deprecated
 			
 			// looks like we do not use this......
 			//$config->graphSeries = $this->getGraphSeries();

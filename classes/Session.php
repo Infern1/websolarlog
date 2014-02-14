@@ -162,6 +162,36 @@ class Session
     	return self::$config;
     }
     
+    public static function writeConfig2FileSystem(){
+    	$config = self::getConfig(true,true);
+    	$config->smtpPassword=null;
+    	$config->smtpUser=null;
+    	$config->smtpServer=null;
+    	$config->smtpSecurity=null;
+    	$config->smtpPort=null;
+    	$i=0;
+    	foreach ($config->devices as $device){
+    		$device->pvoutputApikey = null;
+    		$device->pvoutputSystemId = null;
+    		
+    		$config->devices[$i] = $device;
+    		$i++;
+    	}
+    	$i=0;
+    	foreach ($config->allDevices as $device){
+    		$device->pvoutputApikey = null;
+    		$device->pvoutputSystemId = null;
+    	
+    		$config->allDevices[$i] = $device;
+    		$i++;
+    	}
+    	
+    	$jsonFilePath = dirname(dirname(__FILE__)) . "/tmp/config.json";
+    	$status = array();
+    	FileUtil::writeObjectToJsonFile($jsonFilePath, $config);
+    } 
+    
+    
     /**
      * Tries to load an config file
      * @param unknown $name
@@ -349,6 +379,9 @@ class Session
 
     	//plugwise update 
     	$hookHandler->add("onFastJob", "PlugwiseStretchAddon.onJob");
+    	
+    	//write config as a JSON config file to filesystem
+    	$hookHandler->add("onFastJob", "Session.writeConfig2FileSystem");
     	
     	// fire from frontend
     	$hookHandler->add("checkEnergy", "EnergyCheckAddon.checkEnergy");
