@@ -24,14 +24,6 @@ if(!(Common::getValue('noDB'))){
 }
 $_SESSION['logId'.$_SESSION['logId']][]['server.afterLightInit'] =   (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 
-
-if(file_exists("tmp/config.json")){
-	$config = json_decode(file_get_contents(("tmp/config.json")));
-}
-if($config->name == ""){
-	$config = Session::getConfig();
-}
-
 try {
 	if(!(Common::getValue('noDB'))){
 		if (PeriodHelper::isPeriodJob("inActiveJob", 30)) {
@@ -105,7 +97,7 @@ try {
 			break;
 		case 'analyticsSettings':
 			// in some 'case' the $config is not used, so lets only load when its needed.
-			
+			$config = Session::getConfig();
 			
 			$data['googleSuccess'] = false;
 			if (isset($config->googleAnalytics) && $config->googleAnalytics != "") {
@@ -122,7 +114,7 @@ try {
 				
 		case 'getDevices':
 			// in some 'case' the $config is not used, so lets only load when its needed.
-			
+			$config = Session::getConfig();
 			$devices = array();
 			foreach ($config->devices as $device){
 				if($device->type=="production"){
@@ -138,7 +130,7 @@ try {
 			break;
 		case 'getMisc':
 			// in some 'case' the $config is not used, so lets only load when its needed.
-			
+			$config = Session::getConfig();
 			$eventService = new EventService();
 				
 			$serverUptime = Util::serverUptime();
@@ -224,7 +216,7 @@ try {
 			break;
 		case 'getGraphDayPoints':
 			// in some 'case' the $config is not used, so lets only load when its needed.
-			
+			$config = Session::getConfig();
 			$lines = array();
 			$lines['graph'] = null;
 			$dtz = new DateTimeZone($config->timezone);
@@ -329,7 +321,7 @@ try {
 				$options[] =array( "value" => "Today","name"=> _("Day"));
 			}
 			// in some 'case' the $config is not used, so lets only load when its needed.
-			
+			$config = Session::getConfig();
 			foreach ($config->devices as $device){
 				//if($device->graphOnFrontend){
 				$data['devices'][] = array('id'=>$device->id,'name'=>$device->name);
@@ -387,7 +379,7 @@ try {
 			$maxPower=array();
 			$minMaxEnergyYear=array();
 			// in some 'case' the $config is not used, so lets only load when its needed.
-			
+			$config = Session::getConfig();
 			foreach ($config->devices as $device){
 				if($device->type == 'production'){
 					$maxEnergy[] = $dataAdapter->getYearMaxEnergyPerMonth($device->id,$date,$device);
@@ -425,7 +417,7 @@ try {
 		case 'getPageMonthValues':
 			$dayData = array();
 			// in some 'case' the $config is not used, so lets only load when its needed.
-			
+			$config = Session::getConfig();
 			foreach ($config->devices as $device){
 				if ($device->type == "production") {
 					$maxPower = $dataAdapter->getMonthMaxPowerPerDay($device->id, $date);
@@ -466,7 +458,7 @@ try {
 			$maxEnergy = array();
 			$maxPower = array();
 			// in some 'case' the $config is not used, so lets only load when its needed.
-			
+			$config = Session::getConfig();
 			foreach ($config->devices as $device){
 				if($device->type == 'production'){
 					$maxEnergy[] = $dataAdapter->getDayEnergyPerDay($device);
@@ -497,7 +489,7 @@ try {
 			break;
 		case 'getCompareFilters':
 			// in some 'case' the $config is not used, so lets only load when its needed.
-			
+			$config = Session::getConfig();
 			$monthYear = $dataAdapter->getYearsMonthCompareFilters($config);
 			$lang = array();
 			$lang['inverter'] 		= _("inverter");
@@ -506,7 +498,7 @@ try {
 			$lang['expected'] 		= _("expected");
 			$data['lang'] = $lang;
 			// in some 'case' the $config is not used, so lets only load when its needed.
-			
+			$config = Session::getConfig();
 			foreach ($config->devices as $device){
 				if($device->type == "production"){
 					$inverter[] = array("name"=>$device->name,"id"=>$device->id);
@@ -524,7 +516,7 @@ try {
 			break;
 		case 'getCompareGraph':
 			// in some 'case' the $config is not used, so lets only load when its needed.
-			
+			$config = Session::getConfig();
 			
 			$whichMonth = Common::getValue('whichMonth', 0);
 			$whichYear = Common::getValue('whichYear', 0);
@@ -575,7 +567,7 @@ try {
 			break;
 		case 'getHistoryValues':
 			// in some 'case' the $config is not used, so lets only load when its needed.
-			
+			$config = Session::getConfig();
 			
 			($devicenum!=0) ? $devicenum = $devicenum : $devicenum = 0;
 			$history = $dataAdapter->getDayHistoryPerRecord($devicenum,$config);
@@ -621,7 +613,7 @@ try {
 			break;
 		case 'getPageIndexLiveValues':
 			// in some 'case' the $config is not used, so lets only load when its needed. 
-			
+			$config = Session::getConfig();
 			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
 			$lang['DCPower'] = _("DC Power");
 			$lang['ACPower'] = _("AC Power");
@@ -638,7 +630,7 @@ try {
 			break;
 		case 'getPageIndexBlurLiveValues':
 			// in some 'case' the $config is not used, so lets only load when its needed.
-			
+			$config = Session::getConfig();
 			$indexValues = $dataAdapter->readPageIndexLiveValues($config);
 			$data['sumInverters'] = $indexValues['sum'];
 			break;
