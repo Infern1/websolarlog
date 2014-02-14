@@ -25,10 +25,6 @@ class Config
     public $timezone;
     public $phpMinify;
 
-    public $comPort;
-    public $comOptions;
-    public $comDebug;
-
     public $emailFromName;
     public $emailFrom;
     public $emailTo;
@@ -123,14 +119,12 @@ class Config
 		$this->latitude = '51.618017';
 		$this->longitude = '2.48291';
 		$this->timezone = 'UTC';
-
-		// ### Communication
-		$this->comPort = "/dev/ttyUSB0";
-		$this->comOptions = "-Y3 -l3 -M3";
-		$this->comDebug = false;
-
+		
+		//looks like we don't use this anymore
 		// ### Create 2 inverter config for testing multi inverter config
-		$this->inverters = array();
+		//$this->inverters = array();
+		//
+		
 		
 		// ### Graph series
 		$this->graphSeries = array();
@@ -141,13 +135,6 @@ class Config
 		// ### Which Power data should we show? AC, DC of Both?
 		$this->graphShowACDC = 'AC';
 
-		// ### FRONT PAGE
-		// not used....
-		$this->YMAX='4600';
-		$this->YINTERVAL='1000';
-		$this->PRODXDAYS='20';
-		//  /not used....
-		
 		// ### EMAIL
 		$this->emailFrom = "test-from@test.localhost";
 		$this->emailTo = "test-to@test.localhost";
