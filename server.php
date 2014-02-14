@@ -25,8 +25,8 @@ if(!(Common::getValue('noDB'))){
 $_SESSION['logId'.$_SESSION['logId']][]['server.afterLightInit'] =   (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 
 
-if(file_exists("/tmp/config.json")){
-	$config = json_decode(file_get_contents(("/tmp/config.json")));
+if(file_exists("tmp/config.json")){
+	$config = json_decode(file_get_contents(("tmp/config.json")));
 }
 if($config->name == ""){
 	$config = Session::getConfig();
