@@ -21,7 +21,7 @@ session_start();
 <script type="text/javascript">var isFront=false;</script>
 <script type="text/javascript" src="../js/jquery-2.1.0.min.js"></script>
 <script type="text/javascript" src="../js/moment-2.4.0.min.js"></script>
-<script type="text/javascript" src="../js/jquery-ui-1.10.3.min.js"></script>
+<script type="text/javascript" src="../js/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="../js/jquery.calculation.min.js"></script>
 <script type="text/javascript" src="../js/jquery.pnotify-1.2.0.min.js"></script>
 <script type="text/javascript" src="../js/handlebars-1.1.2.js"></script>
