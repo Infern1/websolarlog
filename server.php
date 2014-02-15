@@ -24,14 +24,6 @@ if(!(Common::getValue('noDB'))){
 }
 $_SESSION['logId'.$_SESSION['logId']][]['server.afterLightInit'] =   (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 
-if(file_exists("tmp/config.json")){
-	$data['configType'] = 'json';
-	$config = json_decode(file_get_contents(("tmp/config.json")));
-}
-if($config->title == ""){
-	$data['configType'] = 'db';
-	$config = Session::getConfig();
-}
 
 try {
 	if(!(Common::getValue('noDB'))){
@@ -59,6 +51,16 @@ try {
 	$date = Common::getValue('date', 0);
 	$year = Common::getValue('year', 0);
 
+	if(file_exists("tmp/config.json")){
+		$data['configType'] = 'json';
+		$config = json_decode(file_get_contents(("tmp/config.json")));
+	}
+	if($config->title == ""){
+		$data['configType'] = 'db';
+		$config = Session::getConfig();
+	}
+	
+	
 	switch ($method) {
 		case 'getTabs':
 			$tabs = array();
