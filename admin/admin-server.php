@@ -1021,6 +1021,10 @@ switch ($settingstype) {
 		}
 		
 		break;
+	case 'ReorganizeIndexes':
+		$beans = R::getAll('sqlite_master',"WHERE  tbl_name == ':tableName'",array(":type"=>'index',":tableName"=>'history'));
+		var_dump($beans);	
+		break;
 	case 'invoiceInfo':
 		$bill = new Bill();
 		$splitDate = explode("-",$config->invoiceDate);

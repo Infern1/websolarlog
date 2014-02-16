@@ -51,11 +51,11 @@ try {
 	$date = Common::getValue('date', 0);
 	$year = Common::getValue('year', 0);
 
-	if(file_exists("tmp/config.json")){
+	// check if WSLConfig.json exists in the php tmp directory
+	if(file_exists(sys_get_temp_dir()."/WSLConfig.json")){
 		$data['configType'] = 'json';
-		$config = json_decode(file_get_contents(("tmp/config.json")));
-	}
-	if($config->title == ""){
+		$config = json_decode(file_get_contents((sys_get_temp_dir()."/WSLConfig.json")));
+	}else{
 		$data['configType'] = 'db';
 		$config = Session::getConfig();
 	}
@@ -667,9 +667,8 @@ try {
 		case "phpinfo":
 			$phpinfo = new SMASpotWSL('/home/pi/smaspot/bin/Release/./SMAspot', '/home/pi/smaspot/bin/Release/test.cfg', '', '', false);
 			//var_dump($phpinfo->phpInfo());
-			$weather = new WeatherService();
-			$averages = $weather->saveDailyAverages();
-
+			//$weather = new WeatherService();
+			//$averages = $weather->saveDailyAverages();
 			break;
 		default:
 			break;

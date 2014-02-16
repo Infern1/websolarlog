@@ -1,7 +1,15 @@
 <?php
-require_once("classes/classloader.php");
-Session::initializeLight();
-$config = Session::getConfig();
+//require_once("classes/classloader.php");
+//Session::initializeLight();
+
+// check if WSLConfig.json exists in the php tmp directory
+if(file_exists(sys_get_temp_dir()."/WSLConfig.json")){
+	$data['configType'] = 'json';
+	$config = json_decode(file_get_contents((sys_get_temp_dir()."/WSLConfig.json")));
+}else{
+	$data['configType'] = 'db';
+	$config = Session::getConfig();
+}
 
 require_once("template/" .  $config->template . "/header.php");
 require_once("template/" .  $config->template . "/index.php");

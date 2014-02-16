@@ -128,7 +128,6 @@ class Session
      * @return Config
      */
     public static function getConfig($reload=false,$usedb=true) {
-    	
     	if (!$usedb) {
     		$config = new Config();
     		// Get dbase settings
@@ -158,7 +157,8 @@ class Session
     	}elseif(strpos(self::$config->dbDSN,'mysql') !== false){
     		self::$config->sqlEngine = 'mysql'; //set db-engine dependent dateFunction
     	}
-    	//$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.return'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
+	    	
+	    
     	return self::$config;
     }
     
@@ -185,8 +185,10 @@ class Session
     		$config->allDevices[$i] = $device;
     		$i++;
     	}
+    	// write to configfile that it is a filesystem config 
+    	$config->configType = 'filesystem';
     	
-    	$jsonFilePath = dirname(dirname(__FILE__)) . "/tmp/config.json";
+    	$jsonFilePath = sys_get_temp_dir()."/WSLConfig.json";
     	$status = array();
     	FileUtil::writeObjectToJsonFile($jsonFilePath, $config);
     } 

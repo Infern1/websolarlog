@@ -1178,8 +1178,7 @@ var WSL = {
 					}
 				},
 				success : function(source) {
-					var template = Handlebars
-							.compile(source);
+					var template = Handlebars.compile(source);
 					var html = template({
 						'data' : data,
 						'lang' : data.lang
