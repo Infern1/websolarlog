@@ -15,21 +15,23 @@ $_SESSION['logId'.$_SESSION['logId']]['startTime'] = microtime(true);
 require 'classes/classloader.php';
 $_SESSION['logId'.$_SESSION['logId']][]['server.afterClassLoader'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 
-$data = array();
-
-if(file_exists(sys_get_temp_dir()."/WSLConfig.json")){
-	$data['configType'] = 'json';
-	$config = json_decode(file_get_contents(sys_get_temp_dir()."/WSLConfig.json"));
-}else{
-	Session::initializeLight();
-	$data['configType'] = 'db';
-	$config = Session::getConfig();
-}
 
 $_SESSION['logId'.$_SESSION['logId']][]['server.afterLightInit'] =   (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 
 
 try {
+	$data = array();
+	Session::initializeLight();
+	
+	if(file_exists(sys_get_temp_dir()."/WSLConfig.json")){
+		$data['configType'] = 'json';
+		$config = json_decode(file_get_contents(sys_get_temp_dir()."/WSLConfig.json"));
+	}else{
+	
+		$data['configType'] = 'db';
+		$config = Session::getConfig();
+	}
+	
 	if(!(Common::getValue('noDB'))){
 		if (PeriodHelper::isPeriodJob("inActiveJob", 30)) {
 			HookHandler::getInstance()->fire("onInActiveJob");
