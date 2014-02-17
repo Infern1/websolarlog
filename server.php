@@ -51,16 +51,17 @@ try {
 	$date = Common::getValue('date', 0);
 	$year = Common::getValue('year', 0);
 
-	// check if WSLConfig.json exists in the php tmp directory
-	if(file_exists(sys_get_temp_dir()."/WSLConfig.json")){
-		$data['configType'] = 'json';
-		$config = json_decode(file_get_contents((sys_get_temp_dir()."/WSLConfig.json")));
-	}
-	if($config->template == ''){
-		$data['configType'] = 'db';
-		$config = Session::getConfig();
-	}
-	
+// check if WSLConfig.json exists in the php tmp directory AND file-age is not older then 600sec/5min.
+if(file_exists(sys_get_temp_dir()."/WSLConfig.json") &&  (time()-filemtime($filename) < 600)){
+	$data['configType'] = 'json';
+	$config = json_decode(file_get_contents((sys_get_temp_dir()."/WSLConfig.json")));
+}else{
+	$config = null;
+}
+if(!$config){
+	$data['configType'] = 'db';
+	$config = Session::getConfig();
+}
 	
 	switch ($method) {
 		case 'getTabs':
