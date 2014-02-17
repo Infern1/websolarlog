@@ -1025,6 +1025,18 @@ switch ($settingstype) {
 		$beans = R::getAll('sqlite_master',"WHERE  tbl_name == ':tableName'",array(":type"=>'index',":tableName"=>'history'));
 		var_dump($beans);	
 		break;
+	case 'getConfig':
+		// check if WSLConfig.json exists in the php tmp directory
+		if(file_exists(sys_get_temp_dir()."/WSLConfig.json")){
+			$data['configType'] = 'json';
+			$config = json_decode(file_get_contents((sys_get_temp_dir()."/WSLConfig.json")));
+		}
+		if($config->template == ''){
+			$data['configType'] = 'db';
+			$config = Session::getConfig();
+		}
+		$datap['config'] = $config; 
+		break;
 	case 'invoiceInfo':
 		$bill = new Bill();
 		$splitDate = explode("-",$config->invoiceDate);
