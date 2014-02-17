@@ -170,21 +170,7 @@ class Session
     	$config->smtpSecurity=null;
     	$config->smtpPort=null;
     	$i=0;
-    	foreach ($config->devices as $device){
-    		$device->pvoutputApikey = null;
-    		$device->pvoutputSystemId = null;
-    		
-    		$config->devices[$i] = $device;
-    		$i++;
-    	}
-    	$i=0;
-    	foreach ($config->allDevices as $device){
-    		$device->pvoutputApikey = null;
-    		$device->pvoutputSystemId = null;
-    	
-    		$config->allDevices[$i] = $device;
-    		$i++;
-    	}
+
     	// write to configfile that it is a filesystem config 
     	$config->configType = 'filesystem';
     	
