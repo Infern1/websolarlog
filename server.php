@@ -15,7 +15,7 @@ $_SESSION['logId'.$_SESSION['logId']]['startTime'] = microtime(true);
 require 'classes/classloader.php';
 $_SESSION['logId'.$_SESSION['logId']][]['server.afterClassLoader'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 
-
+$data = array();
 
 if(file_exists(sys_get_temp_dir()."WSLConfig.json")){
 	$data['configType'] = 'json';
@@ -47,7 +47,7 @@ try {
 	header('Content-type: application/json');
 
 
-	$data = array();
+	
 	$devicenum = Common::getValue('devicenum', 0);
 	$page = Common::getValue('page', 0);
 	$count = Common::getValue('count', 0);
