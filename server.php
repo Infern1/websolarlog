@@ -59,6 +59,7 @@ if(file_exists(sys_get_temp_dir()."/WSLConfig.json") &&  (time()-filemtime($file
 	$config = null;
 }
 if(!$config){
+	Session::initializeLight();
 	$data['configType'] = 'db';
 	$config = Session::getConfig();
 }
