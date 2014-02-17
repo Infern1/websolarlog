@@ -16,12 +16,16 @@ require 'classes/classloader.php';
 $_SESSION['logId'.$_SESSION['logId']][]['server.afterClassLoader'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 
 
-if(!(Common::getValue('noDB'))){
-	Session::initializeLight();
-	$noDB = false;
+
+if(file_exists(sys_get_temp_dir()."WSLConfig.json")){
+	$data['configType'] = 'json';
+	$config = json_decode(file_get_contents(sys_get_temp_dir()."WSLConfig.json"));
 }else{
-	$noDB = true;
+	Session::initializeLight();
+	$data['configType'] = 'db';
+	$config = Session::getConfig();
 }
+
 $_SESSION['logId'.$_SESSION['logId']][]['server.afterLightInit'] =   (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 
 
@@ -51,18 +55,7 @@ try {
 	$date = Common::getValue('date', 0);
 	$year = Common::getValue('year', 0);
 
-// check if WSLConfig.json exists in the php tmp directory AND file-age is not older then 600sec/5min.
-if(file_exists(sys_get_temp_dir()."/WSLConfig.json") &&  (time()-filemtime($filename) < 600)){
-	$data['configType'] = 'json';
-	$config = json_decode(file_get_contents((sys_get_temp_dir()."/WSLConfig.json")));
-}else{
-	$config = null;
-}
-if(!$config){
-	Session::initializeLight();
-	$data['configType'] = 'db';
-	$config = Session::getConfig();
-}
+	
 	
 	switch ($method) {
 		case 'getTabs':
@@ -670,8 +663,9 @@ if(!$config){
 		case "phpinfo":
 			$phpinfo = new SMASpotWSL('/home/pi/smaspot/bin/Release/./SMAspot', '/home/pi/smaspot/bin/Release/test.cfg', '', '', false);
 			//var_dump($phpinfo->phpInfo());
-			//$weather = new WeatherService();
-			//$averages = $weather->saveDailyAverages();
+			$weather = new WeatherService();
+			$averages = $weather->saveDailyAverages();
+
 			break;
 		default:
 			break;
