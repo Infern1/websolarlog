@@ -3,9 +3,9 @@ require_once("classes/classloader.php");
 Session::initializeLight();
 
 // check if WSLConfig.json exists in the php tmp directory AND file-age is not older then 600sec/5min.
-if(file_exists(sys_get_temp_dir()."WSLConfig.json")){
+if(file_exists(sys_get_temp_dir()."W/SLConfig.json")){
 	$data['configType'] = 'json';
-	$config = json_decode(file_get_contents(sys_get_temp_dir()."WSLConfig.json"));
+	$config = json_decode(file_get_contents(sys_get_temp_dir()."/WSLConfig.json"));
 }else{
 	//Session::initializeLight();
 	$data['configType'] = 'db';

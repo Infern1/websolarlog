@@ -17,9 +17,9 @@ $_SESSION['logId'.$_SESSION['logId']][]['server.afterClassLoader'] = (microtime(
 
 $data = array();
 
-if(file_exists(sys_get_temp_dir()."WSLConfig.json")){
+if(file_exists(sys_get_temp_dir()."/WSLConfig.json")){
 	$data['configType'] = 'json';
-	$config = json_decode(file_get_contents(sys_get_temp_dir()."WSLConfig.json"));
+	$config = json_decode(file_get_contents(sys_get_temp_dir()."/WSLConfig.json"));
 }else{
 	Session::initializeLight();
 	$data['configType'] = 'db';
