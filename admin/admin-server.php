@@ -1035,7 +1035,7 @@ switch ($settingstype) {
 			$data['configType'] = 'db';
 			$config = Session::getConfig();
 		}
-		$datap['config'] = $config; 
+		$data['config'] = $config; 
 		break;
 	case 'invoiceInfo':
 		$bill = new Bill();
