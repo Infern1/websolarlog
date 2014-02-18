@@ -105,6 +105,7 @@ class DeviceService {
 				array('value'=>'Diehl-ethernet','type'=>'production','name'=>'Diehl Ethernet'),
 				array('value'=>'DutchSmartMeter','type'=>'metering','name'=>'Dutch Smart Meter'),
 				array('value'=>'DutchSmartMeterRemote','type'=>'metering','name'=>'Dutch Smart Meter Remote'),
+				array('value'=>'SmartMeterAmpy','type'=>'metering','name'=>'Smart Meter Ampy'),
 				array('value'=>'KostalPiko','type'=>'production','name'=>'Kostal Piko'),
 				array('value'=>'MasterVolt','type'=>'production','name'=>'MasterVolt'),
 				array('value'=>'SoladinSolget','type'=>'production','name'=>'SoladinSolget'),
