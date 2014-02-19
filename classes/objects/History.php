@@ -44,5 +44,6 @@ class History {
 	public $pvoutput;
 	public $pvoutputErrorMessage;
 	public $pvoutputSend;
+	public $pvoutputSendTime;
 }
 ?>

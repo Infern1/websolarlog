@@ -113,6 +113,7 @@ class HistoryService {
 		$bObject->pvoutput = $object->pvoutput;
 		$bObject->pvoutputErrorMessage = $object->pvoutputErrorMessage;
 		$bObject->pvoutputSend = $object->pvoutputSend;
+		$bObject->pvoutputSendTime = $object->pvoutputSendTime;
 		return $bObject;
 	}
 	
@@ -166,6 +167,7 @@ class HistoryService {
 		$object->pvoutput = $bObject->pvoutput;
 		$object->pvoutputErrorMessage = $bObject->pvoutputErrorMessage;
 		$object->pvoutputSend = $bObject->pvoutputSend;
+		$object->pvoutputSendTime = $bObject->pvoutputSendTime;
 		return $object;
 	}
 }
