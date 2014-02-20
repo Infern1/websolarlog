@@ -241,7 +241,7 @@ class PvOutputAddon {
 		
 		$parameters = array( ':beginDate' => $date['beginDate'],':endDate' => $date['endDate'],':deviceId'=>$deviceId);
 
-		$beans['data'] =  R::getAll('select * from history WHERE deviceId = :deviceId AND time > :beginDate AND time < :endDate  ORDER BY time',
+		$beans['data'] =  R::getAll('select * from history WHERE deviceId = :deviceId AND time > :beginDate AND time < :endDate  ORDER BY time desc',
 				$parameters
 		);
 		return $beans;
