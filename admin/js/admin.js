@@ -1274,6 +1274,7 @@ function showAlertOverlay($this,inverterId,typeName) {
 }
 
 function load_device(deviceId,deviceApi,deviceType) {
+	$('#content').html('Loading...');
 	WSL.connect.getJSON('admin-server.php?s=inverter&id='+deviceId, function(inv_data) {
 		if(deviceApi){
 			inv_data.inverter.deviceApi = deviceApi; 
