@@ -1414,7 +1414,7 @@ function load_device(deviceId,deviceApi,deviceType) {
 function init_PVOutputData(date,deviceId){
 	setTitle("PVOutputData");
 	WSL.checkURL();
-	$('#content').html('');
+	$('#content').html('Loading...');
 	if(deviceId === undefined && hashId != ''){
 		deviceId = hashId;
 	}
