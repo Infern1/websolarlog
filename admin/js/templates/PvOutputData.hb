@@ -10,7 +10,7 @@
 	    
 {{#each data}}
 	{{#each this}}
-		<div class="column span-7">{{timestampDateFormat this.time format="DD-MM-YYYY  hh:mm:ss"}}</div>
+		<div class="column span-7">{{timestampDateFormat this.time format="DD-MM-YYYY  HH:mm:ss"}}</div>
 		 
 		 {{#if_eq this.pvoutputSend compare=1}}
 		 	<div class="column span-7">true</div>
@@ -24,7 +24,7 @@
 		 	{{/if_eq}}
 		 
 		 <div class="column span-7">
-		 	{{timestampDateFormat this.pvoutputSendTime format="DD-MM-YYYY  hh:mm:ss"}}
+		 	{{timestampDateFormat this.pvoutputSendTime format="DD-MM-YYYY  HH:mm:ss"}}
 		 </div>
 		 {{else}}
 		 
