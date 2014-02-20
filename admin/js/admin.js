@@ -1414,14 +1414,14 @@ function load_device(deviceId,deviceApi,deviceType) {
 function init_PVOutputData(date,deviceId){
 	setTitle("PVOutputData");
 	WSL.checkURL();
-	
+	$('#content').html('');
 	if(deviceId === undefined && hashId != ''){
 		deviceId = hashId;
 	}
 	if(moment(date).isValid() == false || date === undefined){
 		date = new moment().format("DD-MM-YYYY");
 	}
-	console.log(date+" "+deviceId);
+	//console.log(date+" "+deviceId);
 	WSL.connect.getJSON('../api.php/PvOutput/'+date+'/'+deviceId, function(PvOutputData) {
 		$.ajax({
             url : 'js/templates/PvOutputData.hb',
