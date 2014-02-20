@@ -1001,6 +1001,9 @@ switch ($settingstype) {
 			if ($device->deviceApi == "DutchSmartMeterRemote") {
 				$communication->uri = $config->smartmeterpath;
 			}
+			if ($device->deviceApi == "SmartMeterAmpy") {
+				$communication->uri = $config->smartmeterpath;
+			}
 			if ($device->deviceApi == "MasterVolt") {
 				$communication->uri = $config->mastervoltpath;
 			}

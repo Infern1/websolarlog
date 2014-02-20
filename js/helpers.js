@@ -255,4 +255,29 @@
 		return new Handlebars.SafeString(value);
 	})
 	
+	
+	Handlebars.registerHelper("PvOutputDataRow", function (context,block){
+		// we want to send this record to PvOutput;
+		if(context.pvoutput == 1){
+
+			//we wanted to send it and PVoutput return a 
+			if(context.pvoutputSend == 1){
+				var img = '<img src="images/accept.png">';
+			}else{
+				var img = '<img src="images/exclamation.png">';
+			}
+		}
+		// we do not want to send this record to PvOutput
+		if(context.pvoutput == 0){
+			if(context.pvoutputSend == 1){
+				var img = '<img src="images/exclamation.png">';
+			}else{
+				var img = '<img src="images/accept.png">';
+				
+			}
+		}
+		
+		return new Handlebars.SafeString(img);
+	})
+	
 }));

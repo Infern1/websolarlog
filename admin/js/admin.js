@@ -1284,6 +1284,8 @@ function load_device(deviceId,deviceApi,deviceType) {
 		
 		$('#content').html(WSL.template.get('device', { 'inverterId' : deviceId, 'data' : inv_data }));
 
+		$('#pvoutputDataDate').val(new moment().format("DD-MM-YYYY"));
+		
 		// hide ALL elements with (sub)class 'all'
         $("#content").find("[class*='all']").hide();
 
@@ -1325,6 +1327,17 @@ function load_device(deviceId,deviceApi,deviceType) {
                 $('#btnDeviceSubmit').removeAttr("disabled");
                 window.location.hash = '#devices-'+result.id;
             }, function($resultError){$('#btnDeviceSubmit').removeAttr("disabled");});
+        });
+        
+        $('#buttonPVoutputData').bind('click',function(){
+        	var deviceId = $("input[name=id]").val();
+            window.location.hash = "PVOutputData-"+deviceId;
+            var date = $("#pvoutputDataDate").val();
+            
+            if(moment(date).isValid() == false){
+            	date = new moment().format("DD-MM-YYYY");
+            }
+            init_PVOutputData(date,deviceId);
         });
         
         $( "#sliderLiveRate" ).slider({
@@ -1398,6 +1411,30 @@ function load_device(deviceId,deviceApi,deviceType) {
     });
 }
 
+function init_PVOutputData(date,deviceId){
+	setTitle("PVOutputData");
+	WSL.checkURL();
+	
+	if(deviceId === undefined && hashId != ''){
+		deviceId = hashId;
+	}
+	if(moment(date).isValid() == false || date === undefined){
+		date = new moment().format("DD-MM-YYYY");
+	}
+	console.log(date+" "+deviceId);
+	WSL.connect.getJSON('../api.php/PvOutput/'+date+'/'+deviceId, function(PvOutputData) {
+		$.ajax({
+            url : 'js/templates/PvOutputData.hb',
+            success : function(source) {
+                var template = Handlebars.compile(source);
+                var html = template({
+                    'data' : PvOutputData
+                });
+                $('#content').html(html);
+            }
+		});
+	});
+}
 
 function load_graph(graphId) {
 	WSL.connect.getJSON('../api.php/Graph/'+graphId, function(graph) {

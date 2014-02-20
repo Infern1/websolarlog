@@ -234,6 +234,19 @@ class PvOutputAddon {
 		}
 	}
 	
+	public function getPvOutputDayData($date,$deviceId){
+		
+		// get timestamps for the dates begin and end.
+		$date = Util::getBeginEndDate('day', 1,$date);
+		
+		$parameters = array( ':beginDate' => $date['beginDate'],':endDate' => $date['endDate'],':deviceId'=>$deviceId);
+
+		$beans['data'] =  R::getAll('select * from history WHERE deviceId = :deviceId AND time > :beginDate AND time < :endDate  ORDER BY time',
+				$parameters
+		);
+		return $beans;
+		
+	}
 	
 	
 	public function getTeamStatusFromDB($device) {
