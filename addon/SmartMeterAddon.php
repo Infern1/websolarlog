@@ -188,7 +188,7 @@ class SmartMeterAddon {
 		$bean->liveReturn = $live->liveReturn;
 		$bean->liveUsage = $live->liveUsage;
 		$bean->pvoutput = 0;
-		$bean->pvoutputSend = $this->CheckPVoutputSend();
+		$bean->pvoutputSend = $this->CheckPVoutputSend($deviceId);
 		$bean->time = $timestamp;
 		
 		//Store the bean
@@ -203,8 +203,8 @@ class SmartMeterAddon {
 	 * @return 0/1
 	 */
 	
-	public function CheckPVoutputSend() {
-		$bean = R::findOne('historySmartMeter','pvoutputSend = 1 ORDER BY id DESC LIMIT 1');
+	public function CheckPVoutputSend($deviceId) {
+		$bean = R::findOne('historySmartMeter','pvoutputSend = 1 AND deviceId = :deviceId ORDER BY id DESC LIMIT 1',array("deviceId"=>$deviceId));
 	
 		// Check if we got a record thats been marked as a PVoutput record
 		if (!$bean){

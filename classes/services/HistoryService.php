@@ -32,8 +32,8 @@ class HistoryService {
 	 * Check to see if this is a PVoutput record
 	 * @return 0/1
 	 */
-	public function CheckPVoutputSend() {
-		$bObject = R::getall('select * from '.self::$tbl.' where pvoutputSend = 1 ORDER BY id DESC LIMIT 1');
+	public function CheckPVoutputSend($deviceId) {
+		$bObject = R::getall('select * from '.self::$tbl.' where pvoutputSend = 1 AND deviceId = :deviceId ORDER BY id DESC LIMIT 1',array(":deviceId"=>$deviceId));
 		if($bObject[0]['id'] > 0){
 			if((time() - $bObject[0]['time']) >= 300){
 				return '1';
