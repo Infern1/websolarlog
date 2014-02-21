@@ -194,8 +194,8 @@ msgstr "min."
 
 #: server.php:215 server.php:231 tmp/export/server.php:210
 #: tmp/export/server.php:226
-msgid "cum. Power (W)"
-msgstr "Puissance cumulée (W)"
+msgid "Energy (Wh)"
+msgstr "Puissance cumulée (Wh)"
 
 #: server.php:216 server.php:232 tmp/export/server.php:211
 #: tmp/export/server.php:227

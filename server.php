@@ -261,7 +261,7 @@ try {
 				
 			$dayData->success = true;
 			$lang = array();
-			$lang['cumPowerW'] = _('cum. Power (W)');
+			$lang['cumPowerW'] = _('Energy (Wh)');
 			$lang['avgPowerW'] = _('avg. Power (W)');
 			$lang['harvested'] = _('harvested (W)');
 			$lang['cumulative'] = _('cumulative (W)');
@@ -277,7 +277,7 @@ try {
 			$dayData->data = $lines->points;
 			$dayData->success = true;
 			$lang = array();
-			$lang['cumPowerW'] = _('cum. Power (W)');
+			$lang['cumPowerW'] = _('Energy (Wh)');
 			$lang['avgPowerW'] = _('avg. Power (W)');
 			$lang['harvested'] = _('harvested (W)');
 			$lang['cumulative'] = _('cumulative (W)');

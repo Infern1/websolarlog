@@ -189,12 +189,12 @@ class PDODataAdapter {
 			}
 
 			$graph->metaData['KWH']=array('cumPower'=>$cumPower,'KWHTUnit'=>$cumPowerUnit,'KWHKWP'=>$kWhkWp);
-			$graph->series[0] = array('label'=>'Cum. Power(Wh)','yaxis'=>'y2axis');
+			$graph->series[0] = array('label'=>'Energy (Wh)','yaxis'=>'y2axis');
 			$graph->series[1] = array('label'=>'Avg. Power(W)','yaxis'=>'yaxis');
 			
 
 			$graph->axes['yaxis']  = array('label'=>'Avg. Power(Wh)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
-			$graph->axes['y2axis'] = array('label'=>'Cum. Power(W)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
+			$graph->axes['y2axis'] = array('label'=>'Energy (Wh)','min'=>0,'labelRenderer'=>'CanvasAxisLabelRenderer');
 			$graph->metaData['hideSeries']= array();
 			
 			$graph->metaData['legend']= array(

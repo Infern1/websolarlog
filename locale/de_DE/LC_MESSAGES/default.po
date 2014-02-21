@@ -163,8 +163,8 @@ msgid "mins"
 msgstr "Minimum"
 
 #: server.php:175 server.php:190
-msgid "cum. Power (W)"
-msgstr "kum. Leistung (W)"
+msgid "Energy (Wh)"
+msgstr "kum. Leistung (Wh)"
 
 #: server.php:176 server.php:191
 msgid "avg. Power (W)"
