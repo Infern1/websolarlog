@@ -1507,7 +1507,7 @@ function init_PVOutputData(date,deviceId){
             					picker.datepicker('setDate', date);
             					var splitDate = $('#datepicker').val().split('-');
             					var date = splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2];
-            					deviceId = $(this).val();
+            					deviceId = $('#devicenum').val();
             					init_PVOutputData(date,deviceId);
             				});
 
@@ -1530,7 +1530,7 @@ function init_PVOutputData(date,deviceId){
             					
             					var splitDate = $('#datepicker').val().split('-');
             					var date = splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2];
-            					deviceId = $(this).val();
+            					deviceId = $('#devicenum').val();
             					init_PVOutputData(date,deviceId);
             				});
             			},
