@@ -1029,7 +1029,6 @@ var WSL = {
 						}
 
 					} else if (cId >= 900 && cId <= 950) {
-
 						if (cId == 900) {
 							var conditionText = 'tornado';
 						} else if (cId == 901) {
@@ -1045,6 +1044,8 @@ var WSL = {
 						} else if (cId == 906) {
 							var conditionText = 'hail';
 						}
+					}else{
+						conditionImage = 'images/weather/smile.png';
 					}
 
 					function loadImages(sources, callback) {
@@ -1062,6 +1063,7 @@ var WSL = {
 									callback(images);
 								}
 							};
+							console.log(sources[src]);
 							images[src].src = sources[src];
 						}
 					}
