@@ -1707,7 +1707,7 @@ class PDODataAdapter {
 				$oDevice = 	array();
 				
 				// if sun is down AND voltage of string1 is 0, then we are down.
-				if(Util::isSunDown()){
+				if(Util::isSunDown(900)){
 					$live = new Live();
 					$live->name = $device->name;
 					$live->status = 'offline';
