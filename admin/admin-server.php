@@ -1055,9 +1055,9 @@ switch ($settingstype) {
 			
 			
 		foreach ($config->devices as $device){
-			//if($device->graphOnFrontend){
-			$data['devices'][] = array('id'=>$device->id,'name'=>$device->name);
-			//}
+			if($device->type == "production"){
+				$data['devices'][] = array('id'=>$device->id,'name'=>$device->name);
+			}
 		}
 		$lang = array();
 		$lang['date'] = _('date');
