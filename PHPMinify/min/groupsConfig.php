@@ -34,7 +34,7 @@ return array(
 		),
 		'js2' => array(
 				'//websolarlog/js/jquery.pnotify-1.2.0.min.js',
-				'//websolarlog/js/handlebars-1.1.2.js',
+				'//websolarlog/js/handlebars-1.3.js',
 				'//websolarlog/js/astrocal.js',
 				'//websolarlog/js/jquery.jqplot-1.0.8r1250.min.js',
 		),

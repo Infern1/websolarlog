@@ -24,7 +24,7 @@ session_start();
 <script type="text/javascript" src="../js/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="../js/jquery.calculation.min.js"></script>
 <script type="text/javascript" src="../js/jquery.pnotify-1.2.0.min.js"></script>
-<script type="text/javascript" src="../js/handlebars-1.1.2.js"></script>
+<script type="text/javascript" src="../js/handlebars-1.3.js"></script>
 <script type="text/javascript" src="../js/helpers.js"></script>
 <script type="text/javascript" src="../js/websolarlog.js"></script>
 <script type="text/javascript" src="js/admin.js"></script>
