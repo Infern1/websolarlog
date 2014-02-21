@@ -235,17 +235,17 @@ class PvOutputAddon {
 	}
 	
 	public function getPvOutputDayData($date,$deviceId){
-		
+		$device = $this->config->getDeviceConfig($deviceId);
 		// get timestamps for the dates begin and end.
-		$date = Util::getBeginEndDate('day', 1,$date);
+		$timestamps = Util::getBeginEndDate('day', 1,$date);
 		
-		$parameters = array( ':beginDate' => $date['beginDate'],':endDate' => $date['endDate'],':deviceId'=>$deviceId);
-
-		$beans['data'] =  R::getAll('select * from history WHERE deviceId = :deviceId AND time > :beginDate AND time < :endDate  ORDER BY time desc',
+		$parameters = array( ':beginDate' => $timestamps['beginDate'],':endDate' => $timestamps['endDate'],':deviceId'=>$deviceId);
+		$sql = 'select * from history WHERE deviceId = :deviceId AND time > :beginDate AND time < :endDate  ORDER BY time desc';
+		$beans =  R::getAll($sql,
 				$parameters
 		);
-		return $beans;
-		
+		//return $beans = array("parameters"=>$parameters,"beans"=>$beans,"sql"=>$sql,"date"=>$date);
+		return array("beans"=>$beans,"date"=>$date,"deviceName"=>$device->name,"recordCount"=>count($beans));
 	}
 	
 	

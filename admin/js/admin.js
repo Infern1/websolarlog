@@ -1335,9 +1335,12 @@ function load_device(deviceId,deviceApi,deviceType) {
             window.location.hash = "PVOutputData-"+deviceId;
             var date = $("#pvoutputDataDate").val();
             
-            if(moment(date).isValid() == false){
+            console.log("get date"+date);
+            
+            if(moment(date,"DD-MM-YYYY").isValid() == false){
             	date = new moment().format("DD-MM-YYYY");
             }
+            console.log('query date');
             init_PVOutputData(date,deviceId);
         });
         
@@ -1419,7 +1422,9 @@ function init_PVOutputData(date,deviceId){
 	if(deviceId === undefined && hashId != ''){
 		deviceId = hashId;
 	}
-	if(moment(date).isValid() == false || date === undefined){
+	console.log(date);
+	if(moment(date,"DD-MM-YYYY").isValid() == false || date === undefined){
+		console.log('reset date in pvoutput');
 		date = new moment().format("DD-MM-YYYY");
 	}
 	//console.log(date+" "+deviceId);
@@ -1432,6 +1437,101 @@ function init_PVOutputData(date,deviceId){
                     'data' : PvOutputData
                 });
                 $('#content').html(html);
+                $.getJSON('admin-server.php?s=getPeriodFilter&type=all', function(data) {
+            		$.ajax({
+            			url : 'js/templates/datePeriodFilter.hb',
+            			beforeSend : function(xhr) {
+            				if (getWindowsState() == false) {
+            					ajaxAbort(xhr);
+            				}
+            			},
+            			success : function(source) {
+            				var template = Handlebars.compile(source);
+
+            				var html = template({
+            					'data' : data,
+            					'lang' : data.lang
+            				});
+            				$("#pickerFilter").html(html);
+            				
+            				$("#datepicker").datepicker({
+            					onSelect : function(date) {
+            						init_PVOutputData(date,deviceId);
+            					}
+            				});
+            				
+            				
+            				$("#datepicker").datepicker("option", "dateFormat","dd-mm-yy");
+            				$("#datepicker").datepicker('setDate', date);
+
+            				// fix for Graph Tooltip
+            				$("#datepicker").css('z-index', 0);
+            				// fix for Graph Tooltip
+
+            				var devicenum = $('#devicenum').val();
+
+            				$('#next').unbind('click');
+            				$('#previous').unbind('click');
+            				$('#pickerPeriod').unbind('click');
+            				$('#devicenum').unbind('click');
+            				$('#pickerPeriod').hide();
+            				$('#devicenum').click(function() {
+            					var picker = $("#datepicker");
+            					var date = new Date(picker.datepicker('getDate'));
+            					picker.datepicker('setDate', date);
+            					deviceId = $(this).val();
+            					init_PVOutputData(date,deviceId);
+            				});
+
+            				$('#next').click(function() {
+            					var picker = $("#datepicker");
+            					var date = new Date(picker.datepicker('getDate'));
+            					var splitDate = $('#datepicker').val().split('-');
+            					if ($('#pickerPeriod').val() == 'Today') {
+            						date.setDate(date.getDate() + 1);
+            					} else if ($('#pickerPeriod').val() == 'Week') {
+            						date.setDate(date.getDate() + 7);
+            					} else if ($('#pickerPeriod').val() == 'Month') {
+            						var value = splitDate[1];
+            						date.setMonth(value);
+            					} else if ($('#pickerPeriod').val() == 'Year') {
+            						var value = parseInt(splitDate[2]) + 1;
+            						date.setFullYear(value);
+            					}
+            					picker.datepicker('setDate', date);
+            					var splitDate = $('#datepicker').val().split('-');
+            					var date = splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2];
+            					deviceId = $(this).val();
+            					init_PVOutputData(date,deviceId);
+            				});
+
+            				$('#previous').click(function() {
+            					var picker = $("#datepicker");
+            					var date = new Date(picker.datepicker('getDate'));
+            					var splitDate = $('#datepicker').val().split('-');
+            					if ($('#pickerPeriod').val() == 'Today') {
+            						date.setDate(date.getDate() - 1);
+            					} else if ($('#pickerPeriod').val() == 'Week') {
+            						date.setDate(date.getDate() - 7);
+            					} else if ($('#pickerPeriod').val() == 'Month') {
+            						var value = splitDate[1] - 2;
+            						date.setMonth(value);
+            					} else if ($('#pickerPeriod').val() == 'Year') {
+            						var value = parseInt(splitDate[2]) - 1;
+            						date.setFullYear(value);
+            					}
+            					picker.datepicker('setDate', date);
+            					
+            					var splitDate = $('#datepicker').val().split('-');
+            					var date = splitDate[0]+ '-'+ splitDate[1]+ '-'+ splitDate[2];
+            					deviceId = $(this).val();
+            					init_PVOutputData(date,deviceId);
+            				});
+            			},
+            			dataType : 'text'
+            		});
+            	});
+               
             }
 		});
 	});

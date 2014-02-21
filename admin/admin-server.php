@@ -1040,6 +1040,36 @@ switch ($settingstype) {
 		}
 		$data['config'] = $config; 
 		break;
+		
+	case 'getPeriodFilter':
+		$dayData = new DayDataResult();
+		$options = array();
+		if($type=="all" ){
+			$options[] =array( "value" => "Today","name"=> _("Day"));
+			$options[] =array( "value" => "Week","name"=> _("Week"));
+			$options[] =array( "value" => "Month","name"=> _("Month"));
+			$options[] =array( "value" => "Year","name"=> _("Year"));
+		}else{
+			$options[] =array( "value" => "Today","name"=> _("Day"));
+		}
+			
+			
+		foreach ($config->devices as $device){
+			//if($device->graphOnFrontend){
+			$data['devices'][] = array('id'=>$device->id,'name'=>$device->name);
+			//}
+		}
+		$lang = array();
+		$lang['date'] = _('date');
+		$lang['inv'] = _('inv');
+		$lang['periode'] = _('periode');
+		$lang['previous'] = _('previous');
+		$lang['next'] = _('next');
+		$dayData->success = true;
+		$data['lang'] = $lang;
+		$data['options'] = $options;
+		$data['dayData'] = $dayData;
+		break;
 	case 'invoiceInfo':
 		$bill = new Bill();
 		$splitDate = explode("-",$config->invoiceDate);
@@ -1253,6 +1283,7 @@ switch ($settingstype) {
 		$data['months'] = $month;
 		$data['success'] = true;
 		break;
+		
 }
 
 if(Session::isLogin()){

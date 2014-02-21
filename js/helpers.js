@@ -250,34 +250,69 @@
     });
 	
 	Handlebars.registerHelper("toFixed", function (context,block,fixed){
-		//console.log(context);
 		var value = parseFloat(context.hash.value).toFixed(context.hash.fixed).replace(".",",");
 		return new Handlebars.SafeString(value);
 	})
 	
 	
-	Handlebars.registerHelper("PvOutputDataRow", function (context,block){
+	Handlebars.registerHelper("PvOutputDataRow", function (context){
 		// we want to send this record to PvOutput;
-		if(context.pvoutput == 1){
+		var row = null;
+		var img = null;
+		var sendStatus = null;
+		var time = null;
+		var timeSend = null;
+		var result = null;
 
+		if(context.pvoutput == 1){
 			//we wanted to send it and PVoutput return a 
 			if(context.pvoutputSend == 1){
 				var img = '<img src="images/accept.png">';
+				var sendStatus = "true";
+				var time = moment(context.time*1000).format("DD-MM-YY HH:mm:ss");
+				if(context.pvoutputSendTime>0){
+					var timeSend = moment(context.pvoutputSendTime*1000).format("DD-MM-YY HH:mm:ss");
+				}else{
+					var timeSend = "unknown";
+				}
+				var result = "recieved by PVo";
 			}else{
 				var img = '<img src="images/exclamation.png">';
+				var sendStatus = "false";
+				var time = moment(context.time*1000).format("DD-MM-YY HH:mm:ss");
+				if(context.pvoutputSendTime>0){
+					var timeSend = moment(context.pvoutputSendTime*1000).format("DD-MM-YY HH:mm:ss");
+				}else{
+					var timeSend = "unknown";
+				}
+				var result = "NOT recieved by PVo";
 			}
 		}
 		// we do not want to send this record to PvOutput
-		if(context.pvoutput == 0){
+		if(context.pvoutput == 0 || context.pvoutput === undefined){
+			var sendStatus = "false";
+			var time = moment(context.time*1000).format("DD-MM-YY HH:mm:ss");
+			if(context.pvoutputSendTime>0){
+				var timeSend = moment(context.pvoutputSendTime*1000).format("DD-MM-YY HH:mm:ss");
+			}else{
+				var timeSend = '<span title="sendTime not yet implemented">unknown</span>';
+			}
+			
 			if(context.pvoutputSend == 1){
 				var img = '<img src="images/exclamation.png">';
-			}else{
+				var result = "Tried to send non sendable record";
+			}else if(context.pvoutputSend == 0){
 				var img = '<img src="images/accept.png">';
-				
+				var result = "Not a sendable record.";
 			}
 		}
-		
-		return new Handlebars.SafeString(img);
+		var row = ''+
+		'<div class="column span-7">'+time+'</div>'+
+		'<div class="column span-5">'+sendStatus+'</div>'+
+		'<div class="column span-7">'+result+'</div>'+
+		'<div class="column span-7">'+timeSend+'</div>'+
+		'<div class="column span-1">'+img+'</div>';
+		return new Handlebars.SafeString(row);
 	})
 	
 }));
