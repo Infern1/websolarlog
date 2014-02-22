@@ -62,6 +62,11 @@
 				<a href="http://sourceforge.net/projects/piko/" target="_blank">http://sourceforge.net/projects/piko/</a>
 				{{/if_eq}}
 				
+				{{#if_eq this.deviceApi compare="deltaSolivia"}}
+                This device is using Python scripts.<br>
+				The software can be found here:
+               	https://github.com/bprice/DeltaPVOutput [^]
+                {{/if_eq}}
 				
 				
 				</div>
