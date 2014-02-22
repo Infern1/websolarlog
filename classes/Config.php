@@ -69,6 +69,7 @@ class Config
     public $aurorapath; // The path to aurora
     public $mastervoltpath; // The path to aurora
     public $soladinSolgetpath; // The path to solget
+    public $deltaSoliviapath; // The path to solget
     public $smagetpath; // The path to sma-get
     public $smaspotpath; // The path to sma-spot
     public $smaspotWSLpath; // The path to sma-spot -wsl

@@ -89,13 +89,18 @@ class Device {
     	if ($this->deviceApi == "Mastervolt") {
 	    	$api = new MasterVolt($config->mastervoltpath, $this->comAddress, $config->comDebug);
 	    }
-	    if ($this->deviceApi == "SoladinSolget") {
+    	if ($this->deviceApi == "SoladinSolget") {
 	    	$api = new SoladinSolget($config->soladinSolgetpath, $this->comAddress, $config->comDebug);
 	    }
+	    if ($this->deviceApi == "deltaSolivia") {
+	    	$api = new DeltaSolivia($config->deltaSoliviapath, $this->comAddress, $config->comDebug);
+	    }
+	     
+	    
     	if ($this->deviceApi == "Open-Weather-Map") {
 	    	$api = new WeatherOWM($config->latitude, $config->longitude);
 	    }
-	    if ($this->deviceApi == "KostalPiko") {
+    	if ($this->deviceApi == "KostalPiko") {
 	    	$api = new KostalPiko($config->kostalpikopath, $this->comAddress, $config->comDebug);
 	    }
 

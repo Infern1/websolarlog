@@ -27,6 +27,8 @@ switch ($settingstype) {
 		$data['aurorapath'] = $config->aurorapath;
 		$data['mastervoltpath'] = $config->mastervoltpath;
 		$data['soladinSolgetpath'] = $config->soladinSolgetpath;
+		$data['deltaSoliviapath'] = $config->deltaSoliviapath;
+		
 		$data['smagetpath'] = $config->smagetpath;
 		$data['smaspotpath'] = $config->smaspotpath;
 		$data['smaspotWSLpath'] = $config->smaspotWSLpath;
@@ -422,6 +424,7 @@ switch ($settingstype) {
 		$config->aurorapath =Common::getValue("aurorapath");
 		$config->mastervoltpath =Common::getValue("mastervoltpath");
 		$config->soladinSolgetpath =Common::getValue("soladinSolgetpath");
+		$config->deltaSoliviapath =Common::getValue("deltaSoliviapath");
 		$config->smagetpath =Common::getValue("smagetpath");
 		$config->smaspotpath =Common::getValue("smaspotpath");
 		$config->smaspotWSLpath =Common::getValue("smaspotWSLpath");
@@ -1009,6 +1012,9 @@ switch ($settingstype) {
 			}
 			if ($device->deviceApi == "SoladinSolget") {
 				$communication->uri = $config->soladinSolgetpath;				
+			}
+			if ($device->deviceApi == "DeltaSolivia") {
+				$communication->uri = $config->deltaSoliviapath;
 			}
 			if ($device->deviceApi == "Open-Weather-Map") {
 				$communication->uri = "http://openweathermap.org/data/2.5/find?units=metrics&cnt=1&mode=json";

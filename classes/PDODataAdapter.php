@@ -278,6 +278,7 @@ class PDODataAdapter {
 		$bean->smaspotpath = $config->smaspotpath;
 		$bean->smaspotWSLpath = $config->smaspotWSLpath;
 		$bean->soladinSolgetpath = $config->soladinSolgetpath;
+		$bean->deltaSoliviapath = $config->deltaSoliviapath;
 		$bean->kostalpikopath = $config->kostalpikopath;
 		$bean->plugwiseStrech20IP = $config->plugwiseStrech20IP;
 		$bean->plugwiseStrech20ID = $config->plugwiseStrech20ID;
@@ -369,6 +370,7 @@ class PDODataAdapter {
 			$config->aurorapath = ($bean->aurorapath != "") ? $bean->aurorapath : $config->aurorapath;
 			$config->mastervoltpath = ($bean->mastervoltpath != "") ? $bean->mastervoltpath : $config->mastervoltpath;
 			$config->soladinSolgetpath = ($bean->soladinSolgetpath != "") ? $bean->soladinSolgetpath : $config->soladinSolgetpath;
+			$config->deltaSoliviapath = ($bean->deltaSoliviapath != "") ? $bean->deltaSoliviapath : $config->deltaSoliviapath;			
 			$config->smagetpath = ($bean->smagetpath != "") ? $bean->smagetpath : $config->smagetpath;
 			$config->smaspotpath = ($bean->smaspotpath != "") ? $bean->smaspotpath : $config->smaspotpath;
 			$config->smaspotWSLpath = ($bean->smaspotWSLpath != "") ? $bean->smaspotWSLpath : $config->smaspotWSLpath;
