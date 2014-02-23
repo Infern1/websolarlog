@@ -70,7 +70,7 @@ class LoggerAddon {
 		}
 	}
 	
-	private $maxLogFileSize = 1; // MB
+	private $maxLogFileSize = 10; // MB
 	private $useCompression = true;
 	
 	private function checkLogFile($filename) {
@@ -81,12 +81,13 @@ class LoggerAddon {
 		}
 		
 		// Check if max log file size is enabled
-		if ($this->maxLogFileSize > 1) {
+		if ($this->maxLogFileSize > 0) {
 			$sizeOfFile = filesize($filename) / pow(1024, 2); // MB
 			if ($sizeOfFile > $maxLogFileSize) {
 				$archive = $filename . "." . date("Ymd.His");
 				if ($this->useCompression) {
-					file_put_contents("compress.zlib://".$archive . ".gz", file_get_contents($filename));
+					rename ($filename, $archivetmp);
+					file_put_contents("compress.zlib://".$archive . ".gz", file_get_contents($archivetmp));
 					unlink($filename);
 				} else {
 					rename($filename, $archive);
@@ -98,7 +99,7 @@ class LoggerAddon {
 	
 	private function createLogFile($filename) {
 		touch($filename);
-		chmod($filename, 0766);
+		chmod($filename, octdec("0766"));
 	}
 }
 ?>
