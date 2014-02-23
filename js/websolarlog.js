@@ -475,15 +475,15 @@ function handleGraphs(request, devicenum) {
 	}
 
 	if (request == 'picker') {
+		
 		$('#lastCall').val('picker');
 		period = $('#pickerPeriod').val();
 		if (period == "Today") {
-			WSL.createDayGraph(devicenum, "Today", tab, date,
-					currentGraphHandler, function(handler) {
-						currentGraphHandler = handler;
-						$("#loading").remove();
-						$("#graphReady").val('true').trigger('change');
-					});
+			WSL.createDayGraph(devicenum, "Today", tab, date, currentGraphHandler, function(handler) {
+				currentGraphHandler = handler;
+				$("#loading").remove();
+				$("#graphReady").val('true').trigger('change');
+			});
 		} else {
 			WSL.createPeriodGraph(devicenum, period, 1, date, "graph" + tab + "Content", function(handler) {
 				currentGraphHandler = handler;
@@ -1275,6 +1275,7 @@ var WSL = {
 		} else {
 			var completeDate = $('#datePickerPeriod').val();
 		}
+
 		var pickerDate = $('#datePickerPeriod').val();
 		if (typeof completeDate == 'undefined') {
 			var currentTime = new Date();
@@ -1298,7 +1299,12 @@ var WSL = {
 							'lang' : data.lang
 						});
 						$(monthValues).html(html);
-
+						
+						$('#pickerPeriod option').each(function(){
+							if($(this).val() == "Month"){
+								$(this).attr("selected","selected");
+							}
+						});
 						$(function() {
 							$(".accordion").accordion({
 								collapsible : true
@@ -1550,6 +1556,7 @@ var WSL = {
 			});
 		});
 	},
+	
 	init_PageYearValues : function(yearValues, periodList) {
 		ajaxStart();
 
@@ -1558,6 +1565,7 @@ var WSL = {
 		} else {
 			var completeDate = $('#datePickerPeriod').val();
 		}
+		
 		var pickerDate = $('#datePickerPeriod').val();
 		if (typeof completeDate == 'undefined') {
 			var currentTime = new Date();
@@ -1566,7 +1574,7 @@ var WSL = {
 
 		// initialize languages selector on the given div
 		WSL.api.getPageYearValues(completeDate,function(data) {
-							$.ajax({
+				$.ajax({
 					url : 'js/templates/yearValues.hb',
 					beforeSend : function(xhr) {
 						if (getWindowsState() == false) {
@@ -1581,6 +1589,13 @@ var WSL = {
 							'lang' : data.lang
 						});
 						$(yearValues).html(html);
+						
+						$('#pickerPeriod option').each(function(){
+							if($(this).val() == "Year"){
+								$(this).attr("selected","selected");
+							}
+						});
+						
 						$(function() {
 							$(".accordion").accordion({
 								collapsible : true
@@ -1612,8 +1627,7 @@ var WSL = {
 											onClose : function(dateText,inst) {
 												var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val(); //new Date(year,month, day) // W3schools
 												$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
-												WSL.init_PageYearValues("#columns","#periodList"); // Initial
-												// load fast
+												WSL.init_PageYearValues("#columns","#periodList"); // Initial load fast
 											}
 										});
 										$("#datePickerPeriod").datepicker('setDate',new Date());
@@ -1627,7 +1641,8 @@ var WSL = {
 												$(this).val($.datepicker.formatDate('yy',new Date(year,1,1)));
 												WSL.init_PageYearValues("#columns","#periodList"); // Initial loadfast
 											}
-										});// newDate(year,month,day)
+										});
+										// newDate(year,month,day)
 										$("#datePickerPeriod").datepicker('setDate',new Date(pickerDate,1,1));
 									}
 									$("#datePickerPeriod").focus(function() {
@@ -1635,9 +1650,7 @@ var WSL = {
 										$(".ui-datepicker-month").hide();
 										$(".ui-icon-circle-triangle-w").hide();
 										$(".ui-icon-circle-triangle-e").hide();
-										$("#ui-datepicker-div").position({
-											my : "center top",at : "center bottom",of : $(this)
-										});
+										$("#ui-datepicker-div").position({my : "center top",at : "center bottom",of : $(this)});
 									});
 								},
 								dataType : 'text',
@@ -2025,11 +2038,9 @@ var WSL = {
 						};
 						graphDayPeriodOptions.axes.xaxis.min = result.dayData.data[0][0] * 1000;
 						graphDayPeriodOptions.axes.xaxis.max = result.dayData.data[i - 1][0] * 1000;
-						var plot = $.jqplot(divId, [ dayData1, dayData2 ],
-								graphDayPeriodOptions).destroy();
+						var plot = $.jqplot(divId, [ dayData1, dayData2 ], graphDayPeriodOptions).destroy();
 						plot = null;
-						var plot = $.jqplot(divId, [ dayData1, dayData2 ],
-								graphDayPeriodOptions);
+						var plot = $.jqplot(divId, [ dayData1, dayData2 ], graphDayPeriodOptions);
 						ajaxReady();
 						$("#graphReady").val('true').trigger('change');
 					}
