@@ -69,7 +69,7 @@ class SmartMeterAddon {
 
 		// We are live, but db things offline
 		if ($device->state == 0) {
-			$this->deviceHistory->changeDeviceStatus($device, 1);
+			$this->deviceService->changeDeviceStatus($device, 1);
 			$device->state == 1;
 		}
 		$sessionKey = 'noLiveCounter-' . $device->id;
