@@ -85,14 +85,14 @@ class LoggerAddon {
 			$sizeOfFile = filesize($filename) / pow(1024, 2); // MB
 			if ($sizeOfFile > $this->maxLogFileSize) {
 				$archive = $filename . "." . date("Ymd.His");
-				if ($this->useCompression) {
-					rename ($filename, $archivetmp);
-					file_put_contents("compress.zlib://".$archive . ".gz", file_get_contents($archivetmp));
-					unlink($filename);
-				} else {
-					rename($filename, $archive);
-				}
+				rename ($filename, $archive);
 				$this->createLogFile($filename);
+				
+				// Do we need to zip the archive?
+				if ($this->useCompression) {
+					file_put_contents("compress.zlib://".$archive . ".gz", file_get_contents($archive));
+					unlink($archive);
+				}
 			}
 		}
 	}
