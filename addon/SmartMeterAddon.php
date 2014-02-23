@@ -3,13 +3,15 @@ class SmartMeterAddon {
 	private $adapter;
 	private $config;
 	private $deviceService;
+	private $deviceHistoryService;
 	private $liveSmartMeterService;
 	private $addon = "smartMeter";
 	private $install = false;
 	
 	function __construct() {
 		$this->adapter = PDODataAdapter::getInstance();
-		$this->deviceService = new DeviceHistoryService();
+		$this->deviceService = new DeviceService();
+		$this->deviceHistoryService = new DeviceHistoryService();
 		$this->liveSmartMeterService = new LiveSmartMeterService();
 		$this->historySmartMeterService = new HistorySmartMeterService();
 		$this->config = Session::getConfig();
@@ -23,6 +25,7 @@ class SmartMeterAddon {
 
 	function __destruct() {
 		$this->liveSmartMeterService = null;
+		$this->deviceHistoryService = null;
 		$this->deviceService = null;
 		$this->config = null;
 		$this->adapter = null;
