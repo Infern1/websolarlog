@@ -79,7 +79,7 @@ class SmartMeterAgent extends AbstractAgent {
 		$this->serial->confFlowControl("none");
 		
 		// switch to raw mode
-		$this->serial->_exec("stty -F " . $this->serial->_device . " raw");
+		$this->serial->_exec("stty -F " . $this->serial->_device . " raw istrip");
 	}
 
 	function getData($ip) {
