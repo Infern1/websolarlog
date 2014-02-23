@@ -46,6 +46,8 @@ class LoggerAddon {
 		$logPath = Common::getRootPath() . "/log";
 		$fileName = $logPath . "/wsl.log";
 		
+		$this->checkLogFile($fileName);
+		
 		// Check if the log directory is available
 		if (!is_dir($logPath)) {
 			if (!mkdir($logPath)) {
@@ -66,6 +68,37 @@ class LoggerAddon {
 			fwrite($fh, $logmsg);
 			fclose($fh);
 		}
+	}
+	
+	private $maxLogFileSize = 1; // MB
+	private $useCompression = true;
+	
+	private function checkLogFile($filename) {
+		// Check if log file exists
+		if (!file_exists($filename)) {
+			$this->createLogFile($filename);
+			return;
+		}
+		
+		// Check if max log file size is enabled
+		if ($this->maxLogFileSize > 1) {
+			$sizeOfFile = filesize($filename) / pow(1024, 2); // MB
+			if ($sizeOfFile > $maxLogFileSize) {
+				$archive = $filename . "." . date("Ymd.His");
+				if ($this->useCompression) {
+					file_put_contents("compress.zlib://".$archive . ".gz", file_get_contents($filename));
+					unlink($filename);
+				} else {
+					rename($filename, $archive);
+				}
+				$this->createLogFile($filename);
+			}
+		}
+	}
+	
+	private function createLogFile($filename) {
+		touch($filename);
+		chmod($filename, 0766);
 	}
 }
 ?>
