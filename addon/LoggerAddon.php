@@ -83,7 +83,7 @@ class LoggerAddon {
 		// Check if max log file size is enabled
 		if ($this->maxLogFileSize > 0) {
 			$sizeOfFile = filesize($filename) / pow(1024, 2); // MB
-			if ($sizeOfFile > $maxLogFileSize) {
+			if ($sizeOfFile > $this->maxLogFileSize) {
 				$archive = $filename . "." . date("Ymd.His");
 				if ($this->useCompression) {
 					rename ($filename, $archivetmp);
