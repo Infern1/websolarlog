@@ -375,7 +375,10 @@ class Session
     	$hookHandler->add("checkEnergy", "EnergyCheckAddon.checkEnergy");
 
     	// TwitterAddon
-    	$hookHandler->add("onInverterShutdown", "TwitterAddon.sendTweet"); 
+    	$hookHandler->add("onInverterShutdown", "TwitterAddon.sendTweet");
+    	
+    	//send last record to PVoutput
+    	$hookHandler->add("onInverterShutdown", "PvOutputAddon.onJob");
     	
     	// Statistics
     	$hookHandler->add("onFastJob", "CacheAddon.averagePower");
