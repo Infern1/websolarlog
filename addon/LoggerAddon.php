@@ -44,7 +44,7 @@ class LoggerAddon {
 	
 	private function write2file($level, $message) {
 		$logPath = Common::getRootPath() . "/log";
-		$fileName = $logPath . "/" . $level . ".log";
+		$fileName = $logPath . "/wsl.log";
 		
 		// Check if the log directory is available
 		if (!is_dir($logPath)) {
@@ -59,7 +59,7 @@ class LoggerAddon {
 		}
 		
 		$message = str_replace("\n", " ", $message);
-		$logmsg = date("Ymd His") . "\t" . $message . "\n";
+		$logmsg = date("Ymd His") . "\t" . $level . "\t" . $message . "\n";
 		
 		$fh = fopen($fileName, "a+");
 		if ($fh) {
