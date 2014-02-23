@@ -129,12 +129,14 @@ class PvOutputAddon {
 	}
 	
 	public function onShutdown(){
-		$date = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
-		$bean = R::findLast('history', ' time > :time ',array(':time'=>$date));
+		$date = Util::getBeginEndDate('day', 1);
+		$bean = R::findLast('history', ' time > :time ',array(':time'=>$date[":beginDate"]));
+		print_r($bean);
 		$object = new History();
 		$object->id = $bean['id'];
-		$object->pvoutput = 1;
-		$this->history->save($object);
+		$object->pvoutputSend = 1;
+		print_r($bean);
+		print_r($this->history->save($object));
 		
 		$this->onJob(null);
 	}
