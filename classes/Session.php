@@ -378,7 +378,7 @@ class Session
     	$hookHandler->add("onInverterShutdown", "TwitterAddon.sendTweet");
     	
     	//send last record to PVoutput
-    	$hookHandler->add("onInverterShutdown", "PvOutputAddon.onJob");
+    	$hookHandler->add("onInverterShutdown", "PvOutputAddon.onShutdown");
     	
     	// Statistics
     	$hookHandler->add("onFastJob", "CacheAddon.averagePower");

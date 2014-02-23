@@ -128,6 +128,17 @@ class PvOutputAddon {
 		}
 	}
 	
+	public function onShutdown(){
+		$date = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+		$bean = R::findLast('history', ' time > :time ',array(':time'=>$date));
+		$object = new History();
+		$object->id = $bean['id'];
+		$object->pvoutput = 1;
+		$this->history->save($object);
+		
+		$this->onJob(null);
+	}
+	
 	private function getUnsendHistory($deviceId) {
 		$date = mktime(0, 0, 0, date('m'), date('d')-13, date('Y'));
 		$parameters = array( ':time' => $date,':deviceId'=>$deviceId);
