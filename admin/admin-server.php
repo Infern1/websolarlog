@@ -1046,7 +1046,10 @@ switch ($settingstype) {
 		}
 		$data['config'] = $config; 
 		break;
-		
+	case 'testPVoutputShutdown':
+		$pvOutputAddon = new PvOutputAddon();
+		$pvOutputAddon->onShutdown();
+		break;
 	case 'getPeriodFilter':
 		$dayData = new DayDataResult();
 		$options = array();
