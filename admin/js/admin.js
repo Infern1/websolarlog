@@ -1460,7 +1460,6 @@ function init_PVOutputData(date,deviceId){
             					}
             				});
             				$('#devicenum option').each(function(){
-            					console.log(';'+$(this).val());
             					if($(this).val() == deviceId){
             						$(this).attr("selected","selected");
             					}
