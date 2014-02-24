@@ -256,7 +256,7 @@
 	
 	
 	Handlebars.registerHelper("PvOutputDataRow", function (context){
-		// we want to send this record to PvOutput;
+		// we want to send this record to pvoutputSend;
 		var row = null;
 		var img = null;
 		var sendStatus = null;
@@ -264,33 +264,43 @@
 		var timeSend = null;
 		var result = null;
 
-		if(context.pvoutput == 1){
-			//we wanted to send it and PVoutput return a 
-			if(context.pvoutputSend == 1){
-				var img = '<img src="images/accept.png">';
-				var sendStatus = "true";
-				var time = moment(context.time*1000).format("DD-MM-YY HH:mm:ss");
+		//we wanted to send it
+		if(context.pvoutputSend == 1){
+			var sendStatus = "true";
+			var time = moment(context.time*1000).format("DD-MM-YY HH:mm:ss");
+			
+			// PVoutput recieved it!
+			if(context.pvoutput == 1){
+				var img = '<img src="images/accept.png" title="pvoutputsend='+context.pvoutputSend +';pvoutput='+context.pvoutput+';timesend='+context.pvoutputSendTime+';">';
 				if(context.pvoutputSendTime>0){
 					var timeSend = moment(context.pvoutputSendTime*1000).format("DD-MM-YY HH:mm:ss");
 				}else{
 					var timeSend = "unknown";
 				}
 				var result = "recieved by PVo";
-			}else{
-				var img = '<img src="images/exclamation.png">';
-				var sendStatus = "false";
-				var time = moment(context.time*1000).format("DD-MM-YY HH:mm:ss");
+				
+			}else if(context.pvoutput == 0){
+				var img = '<img src="images/exclamation.png" title="pvoutputsend='+context.pvoutputSend+';pvoutput='+context.pvoutput+';timesend='+context.pvoutputSendTime+';">';
 				if(context.pvoutputSendTime>0){
 					var timeSend = moment(context.pvoutputSendTime*1000).format("DD-MM-YY HH:mm:ss");
 				}else{
 					var timeSend = "unknown";
 				}
 				var result = "NOT recieved by PVo";
+			}else{
+				var img = '<img src="images/exclamation.png" title="pvoutputsend='+context.pvoutputSend+';pvoutput='+context.pvoutput+';timesend='+context.pvoutputSendTime+';">';
+				if(context.pvoutputSendTime>0){
+					var timeSend = moment(context.pvoutputSendTime*1000).format("DD-MM-YY HH:mm:ss");
+				}else{
+					var timeSend = "unknown";
+				}
+				var result = "unknown";
 			}
 		}
-		// we do not want to send this record to PvOutput
-		if(context.pvoutput == 0 || context.pvoutput === undefined){
-			var sendStatus = "false";
+		
+		// we do not want to send this record to pvoutputSend
+		if(context.pvoutputSend == 0 || context.pvoutputSend === undefined){
+			var sendStatus = "Not a sendable record.";
 			var time = moment(context.time*1000).format("DD-MM-YY HH:mm:ss");
 			if(context.pvoutputSendTime>0){
 				var timeSend = moment(context.pvoutputSendTime*1000).format("DD-MM-YY HH:mm:ss");
@@ -298,12 +308,13 @@
 				var timeSend = '<span title="sendTime not yet implemented">unknown</span>';
 			}
 			
-			if(context.pvoutputSend == 1){
-				var img = '<img src="images/exclamation.png">';
-				var result = "Tried to send non sendable record";
-			}else if(context.pvoutputSend == 0){
-				var img = '<img src="images/accept.png">';
-				var result = "Not a sendable record.";
+			// it is recieved!
+			if(context.pvoutput == 1){
+				var img = '<img src="images/exclamation.png" title="pvoutputsend='+context.pvoutputSend+';pvoutput='+context.pvoutput+';timesend='+context.pvoutputSendTime+';">';
+				var result = "PVoutput recieved a non sendable record";
+			}else if(context.pvoutput == 0){
+				var img = '<img src="images/accept.png" title="pvoutputsend='+context.pvoutputSend+';pvoutput='+context.pvoutput+';timesend='+context.pvoutputSendTime+';">';
+				var result = "Non sendable record which is not send :)";
 			}
 		}
 		var row = ''+
