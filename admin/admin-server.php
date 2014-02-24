@@ -1048,7 +1048,8 @@ switch ($settingstype) {
 		break;
 	case 'testPVoutputShutdown':
 		$pvOutputAddon = new PvOutputAddon();
-		$pvOutputAddon->onShutdown();
+		
+		$pvOutputAddon->onShutdown(array('a',Session::getConfig()->devices[0]));
 		break;
 	case 'getPeriodFilter':
 		$dayData = new DayDataResult();

@@ -128,16 +128,32 @@ class PvOutputAddon {
 		}
 	}
 	
-	public function onShutdown(){
-		$date = Util::getBeginEndDate('day', 1);
-		$bean = R::findLast('history', ' time > :time ',array(':time'=>$date[":beginDate"]));
-		print_r($bean);
-		$object = new History();
-		$object->id = $bean['id'];
-		$object->pvoutputSend = 1;
-		print_r($bean);
-		print_r($this->history->save($object));
+	//
+	public function onShutdown($args){
+		// get args
+		$hookname = $args[0];
+		$device = $args[1];
 		
+		// get timestamps for today
+		$date = Util::getBeginEndDate('day', 1);
+		// define parameters
+		$parameters = array(":time"=>$date['beginDate'],":deviceId"=>$device->id);
+		
+		// get the last record of the history table for today and this device
+		$bean = R::getAll("SELECT * FROM history WHERE time >= :time AND deviceId = :deviceId ORDER BY id DESC limit 1;",$parameters);
+		// move from multidimension to none.
+		$bean = $bean[0];
+		
+		//create history object
+		$object = new History();
+		// set the ID of the bean for the object
+		$object->id = $bean['id'];
+		// set the object to be sendable
+		$object->pvoutputSend = 1;
+		// save the object to the table.
+		$this->history->save($object);
+		
+		// now run the job and sent the record we just set as sendable
 		$this->onJob(null);
 	}
 	
