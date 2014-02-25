@@ -54,7 +54,7 @@ class PvOutputAddon {
 				$v5 = $this->weather->PVoutputWeatherData($timestamp);//v5	Temperature	No	decimal	celsius	23.4	r2
 				
 				//When the sun is NOT down OR if the sun is down and we want to "sendDataWholeDay":
-				if(Util::isSunDown()==false || (Util::isSunDown()==true && $sendDataWholeDay == true)){
+				if(Util::isSunDown(1800)==false || (Util::isSunDown(1800)==true && $sendDataWholeDay == true)){
 					
 					$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
 				
@@ -269,11 +269,13 @@ class PvOutputAddon {
 		$timestamps = Util::getBeginEndDate('day', 1,$date);
 		
 		$parameters = array( ':beginDate' => $timestamps['beginDate'],':endDate' => $timestamps['endDate'],':deviceId'=>$deviceId);
-		$sql = 'select * from history WHERE deviceId = :deviceId AND time > :beginDate AND time < :endDate  ORDER BY time desc';
+		
+		
+		$sql = 'SELECT * FROM history WHERE deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY id DESC';
+		
 		$beans =  R::getAll($sql,
 				$parameters
 		);
-		//return $beans = array("parameters"=>$parameters,"beans"=>$beans,"sql"=>$sql,"date"=>$date);
 		return array("beans"=>$beans,"date"=>$date,"deviceName"=>$device->name,"recordCount"=>count($beans));
 	}
 	
