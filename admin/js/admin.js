@@ -2052,7 +2052,8 @@ function startUpdaterMonitor(updateNotice, button) {
             		 var html = template({'data' : data });
             		 $('#updaterMonitor').html(html);
             		 
-            		 if (data.state != 'busy') {
+            		 if (data.state !== 'busy') {
+            			 console.log("Update ready, clear the interval!");
             			 clearInterval(refreshIntervalId);
             			 if (updateNotice.pnotify_remove) updateNotice.pnotify_remove();
             			 button.attr('disabled', false);
