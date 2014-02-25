@@ -110,6 +110,9 @@
     <a href="#social">This device is no member of the WSL team</a>{{infoTooltip title=":( This device is no member of our great team.... <br>Go to the Social tab and add this device to the team :) "}}
     {{/if}}
     <br/>
+        <label for="pvoutputEnabled">Send SmartMeter with device:</label>
+    {{checkboxWithHidden 'sendSmartMeterData' data.inverter.sendSmartMeterData}}<br />
+    
     <label for="pvoutputSystemId">PVoutput data status:</label><input type="text" value="dd-mm-yyyy" id="pvoutputDataDate" name="pvoutputDataDate"> 
     <input type="button" id="buttonPVoutputData" value="Show PVoutput data">
     </div>

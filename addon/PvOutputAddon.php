@@ -38,7 +38,7 @@ class PvOutputAddon {
 				}
 				
 				$smartMeter = $this->metering->PVoutputSmartMeterData($timestamp);
-				if($smartMeter['energy'] > 0 && $smartMeter['power'] > 0){
+				if($smartMeter['energy'] > 0 && $smartMeter['power'] > 0 && $device->sendSmartMeterData){
 					$v3 = $smartMeter['energy'];//v3	Energy Consumption	No	number	watt hours	10000	r1
 					$v4 = $smartMeter['power'];//v4	Power Consumption	No	number	watts	2000	r1
 					

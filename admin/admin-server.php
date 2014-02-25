@@ -243,7 +243,13 @@ switch ($settingstype) {
 		
 
 		$data['inverter'] = $deviceService->load($deviceId);
-		//var_dump($data['inverter']);
+		
+		// force backward compatibility.
+		if($data['inverter']->sendSmartMeterData==null){
+			$data['inverter']->sendSmartMeterData =true;
+			$data['inverter']->sendSmartMeterDataOverrule = true;
+		}
+		
 		// if we don't have a SMA-BT-WSL device, we don't want to use "special" config file and reset comAdress.
 
 		if ($deviceId == -1) {
@@ -489,6 +495,8 @@ switch ($settingstype) {
 		$device->pvoutputApikey = Common::getValue("pvoutputApikey");
 		$device->pvoutputSystemId = Common::getValue("pvoutputSystemId");
 		$device->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
+		$device->sendSmartMeterData = Common::getValue("sendSmartMeterData");
+		
 		$device->refreshTime = (Common::getValue("refreshTime")< 2) ? 2 : Common::getValue("refreshTime");
 		$device->historyRate = (Common::getValue("historyRate")<60) ? 60 : Common::getValue("historyRate");
 		$device->active = Common::getValue("deviceActive");

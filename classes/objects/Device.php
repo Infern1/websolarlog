@@ -21,6 +21,7 @@ class Device {
     public $pvoutputApikey;
     public $pvoutputSystemId;
     public $pvoutputWSLTeamMember;
+    public $sendSmartMeterData;
     public $state;
     public $refreshTime;
     public $historyRate;
@@ -61,6 +62,7 @@ class Device {
         $this->state = 0;
         $this->historyRate = 300;
         $this->refreshTime = 2;
+        $this->sendSmartMeterData = true;
     }
 
     function getApi(Config $config) {
