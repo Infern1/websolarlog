@@ -138,7 +138,8 @@ class WeatherService {
 			$beaufort = Util::beaufortScale((float)$bean['wind_speed']);
 			$lastBean = end($beans);
 
-
+			$today = Util::getBeginEndDate('today', 1);
+			
 			
 			$return = array(
 					"weatherSamples"=>$i,
@@ -150,7 +151,7 @@ class WeatherService {
 					"currentTemp"=>round($lastBean['temp'],1),
 					"currentWindChill"=>Util::getWindChill((float)$lastBean['wind_speed'],(float)round($lastBean['temp'],1)),
 					"countTemp"=>$countTemp,
-					"sunInfo"=>date_sun_info(Util::getBeginEndDate('today', 1)['beginDate'],$this->config->latitude,$this->config->longitude),
+					"sunInfo"=>date_sun_info($today['beginDate'],$this->config->latitude,$this->config->longitude),
 					"minTemp"=>round($lastBean['temp_min'],1),
 					"maxTemp"=>round($lastBean['temp_max'],1),
 					"degreeDays"=>$degreeDays,
