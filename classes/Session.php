@@ -128,6 +128,9 @@ class Session
      * @return Config
      */
     public static function getConfig($reload=false,$usedb=true) {
+    	if(!$_SESSION['logId'.$_SESSION['logId']]['startTime']){
+    		$_SESSION['logId'.$_SESSION['logId']]['startTime'] = microtime(true);
+    	}
     	if (!$usedb) {
     		$config = new Config();
     		// Get dbase settings
