@@ -2053,7 +2053,6 @@ function startUpdaterMonitor(updateNotice, button) {
             		 $('#updaterMonitor').html(html);
             		 
             		 if (data.state !== 'busy') {
-            			 console.log("Update ready, clear the interval!");
             			 clearInterval(refreshIntervalId);
             			 if (updateNotice.pnotify_remove) updateNotice.pnotify_remove();
             			 button.attr('disabled', false);
