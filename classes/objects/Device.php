@@ -94,7 +94,7 @@ class Device {
     	if ($this->deviceApi == "SoladinSolget") {
 	    	$api = new SoladinSolget($config->soladinSolgetpath, $this->comAddress, $config->comDebug);
 	    }
-	    if ($this->deviceApi == "deltaSolivia") {
+	    if ($this->deviceApi == "DeltaSolivia") {
 	    	$api = new DeltaSolivia($config->deltaSoliviapath, $this->comAddress, $config->comDebug);
 	    }
 	     
