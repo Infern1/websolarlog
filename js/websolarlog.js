@@ -96,8 +96,7 @@ function ajaxAbort(xhr) {
 	}
 }
 
-function generatePanelClearSky(result, roofOrientation, roofPitch, panelPower,
-		date) {
+function generatePanelClearSky(result, roofOrientation, roofPitch, panelPower,date) {
 	var gl_date = dateConverter(date, "year+''+month+''+day");
 	var longitude = result.slimConfig.long;
 	var latitude = result.slimConfig.lat;
@@ -107,19 +106,21 @@ function generatePanelClearSky(result, roofOrientation, roofPitch, panelPower,
 	var skydome_coeff = 1;
 	var Wp_panels = panelPower;
 	var timezone = result.timezoneOffset;
-	init_astrocalc(gl_date, longitude, latitude, pv_az, pv_roof, pv_temp_coeff,
-			timezone);
+	init_astrocalc(gl_date, longitude, latitude, pv_az, pv_roof, pv_temp_coeff, timezone);
 
+	// timezone correction
+	now=new Date();
+	ofst=now.getTimezoneOffset()/60;
+	correctTimeZoneDiffs = ofst + result.timezoneOffset;
+	// /timezone correction
+	
 	var coeff = 1000 * 60 * 5;
-	var sunrise = new Date((result.sunInfo.sunrise - 1000) * 1000); // or use
-																	// any other
-																	// date
+	var sunrise = new Date(((result.sunInfo.sunrise - 1000)+(correctTimeZoneDiffs*3600)) * 1000); // or use any other date
+	
 	var sunriseRounded = Math.round(sunrise.getTime() / coeff) * coeff;
 
-	var sunset = new Date(result.sunInfo.sunset * 1000); // or use any other
-															// date
-	var sunsetRounded = (Math.round(sunset.getTime() / coeff) * coeff) + coeff
-			* 6;
+	var sunset = new Date((result.sunInfo.sunset+(correctTimeZoneDiffs*3600)) * 1000); // or use any other date
+	var sunsetRounded = (Math.round(sunset.getTime() / coeff) * coeff) + coeff * 6;
 	var maxPower = [];
 	var totalPower = 0;
 	for ( var i = sunriseRounded; i <= sunsetRounded; i = i + coeff) {
@@ -137,8 +138,7 @@ function generatePanelClearSky(result, roofOrientation, roofPitch, panelPower,
 		}
 		var coor = azimuthhight(timeStringToFloat(hours + ':' + minutes));
 		maxPowerTime.push(i, Math.round(coor.tot_en / 1000 * Wp_panels));
-		totalPower = totalPower
-				+ Math.round((coor.tot_en / 1000 * Wp_panels) / 12);
+		totalPower = totalPower + Math.round((coor.tot_en / 1000 * Wp_panels) / 12);
 		maxPower.push(maxPowerTime);
 	}
 
@@ -1063,7 +1063,6 @@ var WSL = {
 									callback(images);
 								}
 							};
-							console.log(sources[src]);
 							images[src].src = sources[src];
 						}
 					}
@@ -1840,9 +1839,18 @@ var WSL = {
 								}
 							}
 
+							
+							
+							
+							// timezone correction
+							now=new Date();
+							ofst=now.getTimezoneOffset()/60;
+							correctTimeZoneDiffs = ofst + result.timezoneOffset;
+							// /timezone correction
+							
 							graphOptions.axes = newAxes;
-							graphOptions.axes.xaxis.min = result.timestamp.beginDate * 1000;
-							graphOptions.axes.xaxis.max = result.timestamp.endDate * 1000;
+							graphOptions.axes.xaxis.min = (result.timestamp.beginDate + (correctTimeZoneDiffs*3600)) * 1000;
+							graphOptions.axes.xaxis.max = (result.timestamp.endDate + (correctTimeZoneDiffs*3600)) * 1000;
 							graphOptions.series = result.series;
 						}
 
