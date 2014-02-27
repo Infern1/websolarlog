@@ -992,6 +992,14 @@ var WSL = {
 					});
 					$(html).prependTo(divId);
 
+
+					// timezone correction
+					now=new Date();
+					ofst=now.getTimezoneOffset()/60;
+					correctTimeZoneDiffs = ofst + data.timezoneOffset;
+					// /timezone correction
+					
+					
 					var cId = data.total.weather.conditionId;
 					var sunDown = data.total.sunDown;
 
@@ -1109,8 +1117,7 @@ var WSL = {
 						// then draw the image back and up
 						context.drawImage(images.arrow, -20, -20, width,height);
 
-						// save the context's co-ordinate system before
-						// we screw with it
+						// save the context's co-ordinate system before we screw with it
 						context.restore();
 
 						context.save();
@@ -1132,15 +1139,23 @@ var WSL = {
 						context.fillText('Temp', 120, 42, 75);
 						context.fillText(data.total.weather.currentTemp + '°', 120, 55, 60);
 						
+						
+						
 						context.fillText('Sun', 213, 42, 75);
-						var date = new Date(data.total.weather.sunrise*1000);
+						
+						// sun rise :)
+						var date = new Date((data.total.weather.sunrise+(correctTimeZoneDiffs * 3600))*1000);
 						context.fillText('rise:' , 213, 51, 60);
 						context.fillText(("0"+date.getHours()).slice(-2)+':'+ ("0"+date.getMinutes()).slice(-2) , 243, 51, 60);
-						var date = new Date(data.total.weather.transit*1000);
+						
+						// sun transit :|
+						var date = new Date((data.total.weather.transit+(correctTimeZoneDiffs * 3600))*1000);
 						context.fillText('transit:' , 213, 62, 60);
 						context.fillText(("0"+date.getHours()).slice(-2)+':'+ ("0"+date.getMinutes()).slice(-2), 243, 62, 60);
+						
+						// sun set :( 
+						var date = new Date((data.total.weather.sunset+(correctTimeZoneDiffs * 3600))*1000);
 						context.fillText('set:' , 213, 73, 60);
-						var date = new Date(data.total.weather.sunset*1000);
 						context.fillText(("0"+date.getHours()).slice(-2)+':'+ ("0"+date.getMinutes()).slice(-2) , 243, 73, 60);
 						
 						
