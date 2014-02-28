@@ -1798,7 +1798,7 @@ var WSL = {
 
 								for (values in result.dataPoints[line]) {
 									json.push([
-												result.dataPoints[line][values][0] * 1000,
+												new Date(result.dataPoints[line][values][0]*1000),
 												result.dataPoints[line][values][1] ]);
 								}
 								seriesData.push(json);
