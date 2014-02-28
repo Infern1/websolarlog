@@ -33,6 +33,7 @@
 	<script type="text/javascript" src="js/moment-2.4.0.min.js"></script>
 	<script type="text/javascript" src="js/handlebars-1.3.js"></script>
 	<script type="text/javascript" src="js/helpers.js"></script>
+	<script type="text/javascript" src="js/suncalc.js"></script>
 	<script type="text/javascript" src="js/jquery.jqplot-1.0.8r1250.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.json2.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.barRenderer.min.js"></script>

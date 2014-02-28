@@ -42,6 +42,7 @@ return array(
 		'js3'=>array(
 				'//websolarlog/js/moment-2.4.0.min.js',
 				'//websolarlog/js/helpers.js',
+				'//websolarlog/js/suncalc.js',
 				'//websolarlog/js/jqplot_plugins/jqplot.json2.min.js',
 				'//websolarlog/js/jqplot_plugins/jqplot.barRenderer.min.js',
 				'//websolarlog/js/jqplot_plugins/jqplot.canvasTextRenderer.min.js',

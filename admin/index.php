@@ -26,6 +26,7 @@ session_start();
 <script type="text/javascript" src="../js/jquery.pnotify-1.2.0.min.js"></script>
 <script type="text/javascript" src="../js/handlebars-1.3.js"></script>
 <script type="text/javascript" src="../js/helpers.js"></script>
+<script type="text/javascript" src="../js/suncalc.js"></script>
 <script type="text/javascript" src="../js/websolarlog.js"></script>
 <script type="text/javascript" src="js/admin.js"></script>
 <script type="text/javascript" src="../js/SlickGrid/slick.core.js"></script>
