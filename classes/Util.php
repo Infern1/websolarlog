@@ -410,7 +410,9 @@ class Util {
 	 * 
 	 * @param float $windSpeed
 	 */
-	public static function beaufortScale(float $windSpeed){
+	public static function beaufortScale($windSpeed){
+		$windSpeed = (float)$windSpeed;
+		
 		if($windSpeed >= 0 && $windSpeed <= 0.2){
 			return $beaufort = 0;	
 		}elseif($windSpeed > 0.2 && $windSpeed <= 1.5){
