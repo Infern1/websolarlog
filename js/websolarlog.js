@@ -108,19 +108,20 @@ function generatePanelClearSky(result, roofOrientation, roofPitch, panelPower,da
 	var timezone = result.timezoneOffset;
 	init_astrocalc(gl_date, longitude, latitude, pv_az, pv_roof, pv_temp_coeff, timezone);
 
+
 	// timezone correction
 	now=new Date();
 	ofst=now.getTimezoneOffset()/60;
-	correctTimeZoneDiffs = ofst + result.timezoneOffset;
-	// /timezone correction
+	correctTimeZoneDiffs = 24-(ofst + result.timezoneOffset);
 	
 	var coeff = 1000 * 60 * 5;
-	var sunrise = new Date(((result.sunInfo.sunrise - 1000)+(correctTimeZoneDiffs*3600)) * 1000); // or use any other date
+	var sunrise = new Date(((result.sunInfo.sunrise - 1000)-(correctTimeZoneDiffs*3600)) * 1000); // or use any other date
 	
 	var sunriseRounded = Math.round(sunrise.getTime() / coeff) * coeff;
 
-	var sunset = new Date((result.sunInfo.sunset+(correctTimeZoneDiffs*3600)) * 1000); // or use any other date
+	var sunset = new Date((result.sunInfo.sunset-(correctTimeZoneDiffs*3600)) * 1000); // or use any other date
 	var sunsetRounded = (Math.round(sunset.getTime() / coeff) * coeff) + coeff * 6;
+	
 	var maxPower = [];
 	var totalPower = 0;
 	for ( var i = sunriseRounded; i <= sunsetRounded; i = i + coeff) {
@@ -1780,7 +1781,13 @@ var WSL = {
 					var clearSkySeriesObject = {};
 					var json = [];
 					var newJsonSeries = [];
-
+					
+					
+					// timezone correction
+					now=new Date();
+					ofst=now.getTimezoneOffset()/60;
+					correctTimeZoneDiffs = 24-(ofst + result.timezoneOffset);
+					
 					if (result) {
 						if (result) {
 							
@@ -1797,9 +1804,12 @@ var WSL = {
 								var json = [];
 
 								for (values in result.dataPoints[line]) {
+									//console.log(new Date(result.dataPoints[line][values][0]*1000));
+									//console.log(new Date((result.dataPoints[line][values][0] - (correctTimeZoneDiffs*3600)) * 1000));
 									json.push([
-												new Date(result.dataPoints[line][values][0]*1000),
-												result.dataPoints[line][values][1] ]);
+												new Date((result.dataPoints[line][values][0] - (correctTimeZoneDiffs*3600)) * 1000),
+												result.dataPoints[line][values][1]
+											]);
 								}
 								seriesData.push(json);
 
@@ -1856,16 +1866,14 @@ var WSL = {
 
 							
 							
-							
-							// timezone correction
-							now=new Date();
-							ofst=now.getTimezoneOffset()/60;
-							correctTimeZoneDiffs = ofst + result.timezoneOffset;
-							// /timezone correction
-							
 							graphOptions.axes = newAxes;
-							graphOptions.axes.xaxis.min = (result.timestamp.beginDate + (correctTimeZoneDiffs*3600)) * 1000;
-							graphOptions.axes.xaxis.max = (result.timestamp.endDate + (correctTimeZoneDiffs*3600)) * 1000;
+							/////////////////////////////////
+							graphOptions.axes.xaxis.min = 
+								new Date((result.timestamp.beginDate -(correctTimeZoneDiffs*3600)) * 1000);
+							/////////////////////////////////
+							graphOptions.axes.xaxis.max = 
+								new Date((result.timestamp.endDate -(correctTimeZoneDiffs*3600)) * 1000);
+							/////////////////////////////////
 							graphOptions.series = result.series;
 						}
 
