@@ -1807,7 +1807,7 @@ var WSL = {
 									//console.log(new Date(result.dataPoints[line][values][0]*1000));
 									//console.log(new Date((result.dataPoints[line][values][0] - (correctTimeZoneDiffs*3600)) * 1000));
 									json.push([
-												(result.dataPoints[line][values][0] - (correctTimeZoneDiffs*3600)) * 1000),
+												(result.dataPoints[line][values][0] - (correctTimeZoneDiffs*3600)) * 1000,
 												result.dataPoints[line][values][1]
 											]);
 								}
