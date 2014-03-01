@@ -107,6 +107,7 @@ class WeatherService {
 			
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.beforeFind.DeviceId='.$device->id] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			
+			
 			// from findAll(return beans) to getAll(return array)
 			$beans =  R::findAll('weather', ' WHERE deviceId = :deviceId AND time > :beginDate AND time < :endDate ',
 					array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
@@ -123,6 +124,9 @@ class WeatherService {
 				$sumWindSpeed += (float)$bean['wind_speed'];
 				$i++;
 			}
+			
+			
+			
 			$degreeDays = round($degreeDays/$i,2);
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterTempAdd'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			
@@ -138,6 +142,8 @@ class WeatherService {
 			$beaufort = Util::beaufortScale((float)$bean['wind_speed']);
 			$lastBean = end($beans);
 
+			$currentWindChill = (is_array($lastBean)) ? Util::getWindChill((float)$lastBean['wind_speed'],(float)round($lastBean['temp'],1)) : 0;
+			
 			$today = Util::getBeginEndDate('today', 1);
 			
 			
@@ -149,9 +155,9 @@ class WeatherService {
 					"avgWindSpeed"=>round($avgWind,1),
 					"avgWindChill"=>Util::getWindChill((float)round($avgWind,1),(float)round($lastBean['temp'],1)),
 					"currentTemp"=>round($lastBean['temp'],1),
-					"currentWindChill"=>Util::getWindChill((float)$lastBean['wind_speed'],(float)round($lastBean['temp'],1)),
+					"currentWindChill"=>$currentWindChill,
 					"countTemp"=>$countTemp,
-					"sunInfo"=>date_sun_info($today['beginDate'],$this->config->latitude,$this->config->longitude),
+					"sunInfo"=>date_sun_info($today["beginDate"],$this->config->latitude,$this->config->longitude),
 					"minTemp"=>round($lastBean['temp_min'],1),
 					"maxTemp"=>round($lastBean['temp_max'],1),
 					"degreeDays"=>$degreeDays,
@@ -165,7 +171,6 @@ class WeatherService {
 					"clouds" =>$lastBean['clouds']
 			);
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.return'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-							
 			return $return; 
 		}else{
 			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.noRelevantDevice'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
