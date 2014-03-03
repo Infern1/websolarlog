@@ -37,6 +37,9 @@ class PvOutputAddon {
 				// Grid voltage
 				$v6 = 0;//v6	Voltage	No	decimal	volts	210.7	r2
 				
+				//reset bools
+				$sendData = false;
+				$sendDataWholeDay = false;
 				
 				// Fill in the values for the found live values
 				if(count($live)>=1){
@@ -47,6 +50,10 @@ class PvOutputAddon {
 					$v1 = $live->KWHT;//v1	Energy Generation	No1	number	watt hours	10000	r1
 					$v2 = $live->GP;//v2	Power Generation	No	number	watts	2000	r1
 					$v6 = $live->GV;//v6	Voltage	No	decimal	volts	210.7	r2
+					//let PVoutputSendData() send the data.
+					$sendData = true;
+					
+					//we do not want to send the whole day.
 					$sendDataWholeDay = false;
 				}
 				
@@ -58,6 +65,9 @@ class PvOutputAddon {
 					HookHandler::getInstance()->fire("onDebug", "----We have smartMeter Data!");
 					$v3 = $smartMeter['energy'];//v3	Energy Consumption	No	number	watt hours	10000	r1
 					$v4 = $smartMeter['power'];//v4	Power Consumption	No	number	watts	2000	r1
+
+					//let PVoutputSendData() send the data. 
+					$sendData = true;
 					
 					//we get SmartMeter data so we want to send this data day and night.
 					$sendDataWholeDay = true;
@@ -76,7 +86,7 @@ class PvOutputAddon {
 					
 					HookHandler::getInstance()->fire("onDebug", "-----Attemp to send data to PVoutput!");
 					
-					$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
+					$result = $this->PVoutputSendData($device, $date, $sendData,$time, $v1, $v2, $v6, $v5, $v3, $v4);
 				
 					if(count($live)>=1){
 						$object = new History();
@@ -191,52 +201,67 @@ class PvOutputAddon {
 		return $beans;
 	}
 
-	
-	private function sendStatus(Device $device, $date, $time, $KWHDtot, $GPtot, $GV, $temp, $smartMeterEnergy=0, $smartMeterPower=0) {
+	/**
+	 * 
+	 * @param Device $device
+	 * @param unknown $date
+	 * @param unknown $sendData
+	 * @param unknown $time
+	 * @param unknown $KWHDtot
+	 * @param unknown $GPtot
+	 * @param unknown $GV
+	 * @param unknown $temp
+	 * @param number $smartMeterEnergy
+	 * @param number $smartMeterPower
+	 * @return Ambigous <multitype:boolean, boolean, multitype:boolean unknown , multitype:boolean mixed >|boolean
+	 */
+	private function PVoutputSendData(Device $device, $date, $sendData, $time, $KWHDtot, $GPtot, $GV, $temp, $smartMeterEnergy=0, $smartMeterPower=0) {
 		$headerInfo = array();
 		$vars = array();
-		try {
-
-			$vars['d'] = $date;
-			$vars['t'] = $time;
-			
-			// Production
-			if($KWHDtot > 0){
-				$vars['v1'] = ($KWHDtot * 1000);
+		if($sendData){
+			try {
+	
+				$vars['d'] = $date;
+				$vars['t'] = $time;
+				
+				// Production
+				if($KWHDtot > 0){
+					$vars['v1'] = ($KWHDtot * 1000);
+				}
+				// Production
+				if($GPtot > 0){
+					$vars['v2'] = $GPtot;
+				}
+				// Production
+				if($GV>0){
+					$vars['v6'] = $GV;
+				}
+				
+				// SmartMeter
+				if($smartMeterEnergy>0){
+					$vars['v3'] = $smartMeterEnergy;
+				}
+				// SmartMeter
+				if($smartMeterPower>0){
+					$vars['v4'] = $smartMeterPower;
+				}
+				// Weather
+				if($temp){
+					$vars['v5'] = number_format($temp, 2);
+				}
+				$vars['c1'] = '1';
+	
+				// header info
+				$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
+				$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: " . $device->pvoutputSystemId;
+				
+				//$pvoutput = shell_exec('curl -d "d='.$now.'" -d "t='.$time.'" -d "c1=0" -d "v1='.$KWHDtot.'" -d "v2='.$GPtot.'" -d "v5='.$INVT.'" -d "v6='.$GV.'" -H "X-Pvoutput-Apikey: '.$APIKEY.'" -H "X-Pvoutput-SystemId: '.$SYSID.'" http://pvoutput.org/service/r2/addstatus.jsp &');
+				$url = "http://pvoutput.org/service/r2/addstatus.jsp";
+				$result = $this->PVoutputCurl($url,$vars,$headerInfo,true);
+				return $result;
+			} catch (Exception $e) {
+				HookHandler::getInstance()->fire("onError","PVoutput::SendStatus".$e->getMessage());
 			}
-			// Production
-			if($GPtot > 0){
-				$vars['v2'] = $GPtot;
-			}
-			// Production
-			if($GV>0){
-				$vars['v6'] = $GV;
-			}
-			
-			// SmartMeter
-			if($smartMeterEnergy>0){
-				$vars['v3'] = $smartMeterEnergy;
-			}
-			// SmartMeter
-			if($smartMeterPower>0){
-				$vars['v4'] = $smartMeterPower;
-			}
-			// Weather
-			if($temp){
-				$vars['v5'] = number_format($temp, 2);
-			}
-			$vars['c1'] = '1';
-
-			// header info
-			$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
-			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: " . $device->pvoutputSystemId;
-			
-			//$pvoutput = shell_exec('curl -d "d='.$now.'" -d "t='.$time.'" -d "c1=0" -d "v1='.$KWHDtot.'" -d "v2='.$GPtot.'" -d "v5='.$INVT.'" -d "v6='.$GV.'" -H "X-Pvoutput-Apikey: '.$APIKEY.'" -H "X-Pvoutput-SystemId: '.$SYSID.'" http://pvoutput.org/service/r2/addstatus.jsp &');
-			$url = "http://pvoutput.org/service/r2/addstatus.jsp";
-			$result = $this->PVoutputCurl($url,$vars,$headerInfo,true);
-			return $result;
-		} catch (Exception $e) {
-			HookHandler::getInstance()->fire("onError","PVoutput::SendStatus".$e->getMessage());
 		}
 		return false;	
 	}
