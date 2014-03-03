@@ -13,21 +13,34 @@ class PvOutputAddon {
 	 * @param mixed $args
 	 */
 	public function onJob($args) {
+		HookHandler::getInstance()->fire("onDebug", "-Run PVoutputAddonJob with the following args:".print_r($args,true));
 		foreach ($this->config->devices as $device){
+			HookHandler::getInstance()->fire("onDebug", "--Foreach Device in config. Current device:".print_r($device,true));
 			if ($device->pvoutputEnabled AND $device->active) {
-
+				HookHandler::getInstance()->fire("onDebug", "--Foreach Device in config. Current device:".print_r($device,true));
 				$live = $this->getUnsendHistory($device->id);
 
+				HookHandler::getInstance()->fire("onDebug", "---Show getUnsendHistory:".print_r($live,true));
 				// Set the defaults
 				$date = date("Ymd", time());
 				$time = date("H:i", time());
 				$timestamp = time();
-				$v1 = 0;
-				$v2 = 0;
-				$v6 = 0;
+				
+				// solar data
+				$v1 = 0;//v1	Energy Generation	No1	number	watt hours	10000	r1
+				$v2 = 0;//v2	Power Generation	No	number	watts	2000	r1
+				
+				//smartMeter data
+				$v3 = 0;//v3	Energy Consumption	No	number	watt hours	10000	r1
+				$v4 = 0;//v4	Power Consumption	No	number	watts	2000	r1
+				
+				// Grid voltage
+				$v6 = 0;//v6	Voltage	No	decimal	volts	210.7	r2
+				
 				
 				// Fill in the values for the found live values
 				if(count($live)>=1){
+					HookHandler::getInstance()->fire("onDebug", "----We have a Live record!");
 					$date = date("Ymd", $live->time);
 					$time = date("H:i", $live->time);
 					$timestamp = $live->time;
@@ -42,12 +55,14 @@ class PvOutputAddon {
 					$device->sendSmartMeterData == true;
 				}
 				if($smartMeter['energy'] > 0 && $smartMeter['power'] > 0 && $device->sendSmartMeterData){
+					HookHandler::getInstance()->fire("onDebug", "----We have smartMeter Data!");
 					$v3 = $smartMeter['energy'];//v3	Energy Consumption	No	number	watt hours	10000	r1
 					$v4 = $smartMeter['power'];//v4	Power Consumption	No	number	watts	2000	r1
 					
 					//we get SmartMeter data so we want to send this data day and night.
 					$sendDataWholeDay = true;
 				}else{
+					HookHandler::getInstance()->fire("onDebug", "----We DO NOT smartMeter Data!");
 					//we get NO SmartMeter data so we don't want to send this data day and night.
 					$v3 = 0;//v3	Energy Consumption	No	number	watt hours	10000	r1
 					$v4 = 0;//v4	Power Consumption	No	number	watts	2000	r1
@@ -58,6 +73,8 @@ class PvOutputAddon {
 				
 				//When the sun is NOT down OR if the sun is down and we want to "sendDataWholeDay":
 				if(Util::isSunDown(1800)==false || (Util::isSunDown(1800)==true && $sendDataWholeDay == true)){
+					
+					HookHandler::getInstance()->fire("onDebug", "-----Attemp to send data to PVoutput!");
 					
 					$result = $this->sendStatus($device, $date, $time, $v1, $v2, $v6, $v5, $v3, $v4);
 				
@@ -124,7 +141,10 @@ class PvOutputAddon {
 							$this->history->save($object);
 						}
 					}else{
-						HookHandler::getInstance()->fire("onDebug", "http_code:unknown:".print_r($result,true));
+						$object->pvoutput = 0;
+						$object->pvoutputErrorMessage = 'unknown error....';
+						$this->history->save($object);
+						HookHandler::getInstance()->fire("onDebug", "http_code:unknown....');
 					}
 				}
 			}
