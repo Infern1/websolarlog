@@ -144,7 +144,7 @@ class PvOutputAddon {
 						$object->pvoutput = 0;
 						$object->pvoutputErrorMessage = 'unknown error....';
 						$this->history->save($object);
-						HookHandler::getInstance()->fire("onDebug", "http_code:unknown....');
+						HookHandler::getInstance()->fire("onDebug", "http_code:unknown....");
 					}
 				}
 			}
