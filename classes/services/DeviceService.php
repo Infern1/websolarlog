@@ -187,7 +187,9 @@ class DeviceService {
 		$bObject->pvoutputApikey = $object->pvoutputApikey;
 		$bObject->pvoutputSystemId = $object->pvoutputSystemId;
 		$bObject->pvoutputWSLTeamMember = $object->pvoutputWSLTeamMember;
-		$bObject->sendSmartMeterData = $object->sendSmartMeterData;
+		$bObject->sendSmartMeterData = ($object->sendSmartMeterData != "") ? $object->sendSmartMeterData : true;
+		$bObject->pvoutputAutoJoinTeam = ($object->pvoutputAutoJoinTeam != "") ? $object->pvoutputAutoJoinTeam : true;
+		
 		$bObject->state = $object->state;
 		$bObject->refreshTime = (isset($object->refreshTime) && $object->refreshTime != "") ? $object->refreshTime : $bObject->refreshTime;
 		$bObject->historyRate = (isset($object->historyRate) && $object->historyRate != "") ? $object->historyRate : $bObject->historyRate;
@@ -232,7 +234,9 @@ class DeviceService {
 		$object->pvoutputApikey = $bObject->pvoutputApikey;
 		$object->pvoutputSystemId = $bObject->pvoutputSystemId;
 		$object->pvoutputWSLTeamMember = $bObject->pvoutputWSLTeamMember;
-		$object->sendSmartMeterData = $bObject->sendSmartMeterData;
+		$object->sendSmartMeterData = ($bObject->sendSmartMeterData != "") ? $bObject->sendSmartMeterData : $object->sendSmartMeterData;
+		$object->pvoutputAutoJoinTeam = ($bObject->pvoutputAutoJoinTeam != "") ? $bObject->pvoutputAutoJoinTeam : $object->pvoutputAutoJoinTeam;
+		
 		$object->state = $bObject->state;
 		$object->refreshTime = (isset($bObject->refreshTime) && $bObject->refreshTime != "") ? $bObject->refreshTime : $object->refreshTime;
 		$object->historyRate = (isset($bObject->historyRate) && $bObject->historyRate != "") ? $bObject->historyRate : $object->historyRate;

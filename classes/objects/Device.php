@@ -21,6 +21,7 @@ class Device {
     public $pvoutputApikey;
     public $pvoutputSystemId;
     public $pvoutputWSLTeamMember;
+    public $pvoutputAutoJoinTeam;
     public $sendSmartMeterData;
     public $state;
     public $refreshTime;
@@ -56,13 +57,14 @@ class Device {
         $this->comAddress = '2';
         $this->comLog = false;
         $this->syncTime = false;
-        $this->pvoutputWSLTeamMember=false;
+        $this->pvoutputWSLTeamMember = false;
         $this->pvoutputEnabled = false;
         $this->panels = array();
         $this->state = 0;
         $this->historyRate = 300;
         $this->refreshTime = 2;
         $this->sendSmartMeterData = true;
+        $this->pvoutputAutoJoinTeam = true;
     }
 
     function getApi(Config $config) {

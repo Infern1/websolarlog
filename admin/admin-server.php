@@ -244,10 +244,16 @@ switch ($settingstype) {
 
 		$data['inverter'] = $deviceService->load($deviceId);
 		
-		// force backward compatibility.
+		// "fake" user GUI
 		if($data['inverter']->sendSmartMeterData==null){
-			$data['inverter']->sendSmartMeterData =true;
+			$data['inverter']->sendSmartMeterData = true;
 			$data['inverter']->sendSmartMeterDataOverrule = true;
+		}
+		
+		// "fake" user GUI
+		if($data['inverter']->pvoutputAutoJoinTeam==null){
+			$data['inverter']->pvoutputAutoJoinTeam = true;
+			$data['inverter']->pvoutputAutoJoinTeamOverrule = true;
 		}
 		
 		// if we don't have a SMA-BT-WSL device, we don't want to use "special" config file and reset comAdress.
@@ -495,6 +501,7 @@ switch ($settingstype) {
 		$device->pvoutputApikey = Common::getValue("pvoutputApikey");
 		$device->pvoutputSystemId = Common::getValue("pvoutputSystemId");
 		$device->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
+		$device->pvoutputAutoJoinTeam =  Common::getValue("pvoutputAutoJoinTeam");
 		$device->sendSmartMeterData = Common::getValue("sendSmartMeterData");
 		
 		$device->refreshTime = (Common::getValue("refreshTime")< 2) ? 2 : Common::getValue("refreshTime");
@@ -1058,6 +1065,14 @@ switch ($settingstype) {
 		$pvOutputAddon = new PvOutputAddon();
 		
 		$pvOutputAddon->onShutdown(array('a',Session::getConfig()->devices[0]));
+		break;
+	case 'doSQLFileBackup':
+		ini_set('memory_limit', '1024M');
+		// require the plugin
+		require_once('../classes/RedBeanPHPPlugins/RedBeanWSLBackup.php');
+		
+		R::performWSLBackup("../backup");
+		
 		break;
 	case 'getPeriodFilter':
 		$dayData = new DayDataResult();

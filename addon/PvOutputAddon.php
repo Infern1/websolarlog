@@ -305,7 +305,7 @@ class PvOutputAddon {
 	
 	public function getTeamStatusFromDB($device) {
 		$bean = R::load('inverter',$device->id);
-	
+
 		$device = new Device();
 		$device->id = $bean->id;
 		$device->name = $bean->name;
@@ -378,8 +378,27 @@ class PvOutputAddon {
 		}
 	}
 	
+	
+	
+	/**
+	 * 
+	 * Let devices that are active and PVoutput is configured, join the WSL team :)
+	 * 
+	 */
+	public function joinAllDevicesToTeam(){
+		
+		foreach ($this->config->devices as $device){
+			if($device->active && !$device->pvoutputApikey && !$device->pvoutputSystemId && $device->pvoutputAutoJoinTeam){
+				$this->joinTeam($device);
+			}
+		}
+	}
 
-
+	/**
+	 * 
+	 * @param unknown $device
+	 * @return Ambigous <boolean, multitype:boolean unknown , multitype:boolean mixed >
+	 */
 	public function leaveTeam($device){
 		$headerInfo = array();
 		try {
@@ -396,6 +415,14 @@ class PvOutputAddon {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param unknown $url
+	 * @param unknown $vars
+	 * @param unknown $headerInfo
+	 * @param string $returnOutput
+	 * @return multitype:boolean mixed |boolean
+	 */
 	private function PVoutputCurl($url,$vars,$headerInfo,$returnOutput=false){
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_POST, count($vars));
