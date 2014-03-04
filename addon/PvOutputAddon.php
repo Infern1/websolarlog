@@ -411,9 +411,9 @@ class PvOutputAddon {
 	 * 
 	 */
 	public function joinAllDevicesToTeam(){
-		
 		foreach ($this->config->devices as $device){
-			if($device->active && !$device->pvoutputApikey && !$device->pvoutputSystemId && $device->pvoutputAutoJoinTeam){
+			// if device==active, pvoutputEnabled==enabled, pvoutputApikey existst, pvoutputSystemId exists, pvoutputAutoJoinTeam true
+			if($device->active && $device->pvoutputEnabled && $device->pvoutputApikey && $device->pvoutputSystemId && $device->pvoutputAutoJoinTeam){
 				$this->joinTeam($device);
 			}
 		}
