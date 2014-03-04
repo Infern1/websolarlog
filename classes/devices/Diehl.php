@@ -18,7 +18,7 @@ Class Diehl implements DeviceApi {
     
     public static function getCurlCh() { 	
     	if (gettype(self::$curlCh) != 'resource') {
-    		HookHandler::getInstance()->fire("onDebug", "Diehl :: Creating curl resource");
+    		//HookHandler::getInstance()->fire("onDebug", "Diehl :: Creating curl resource");
     		
     		$cookieFile = Common::getRootPath() . "/log/diehl_cookies.txt";
     		
