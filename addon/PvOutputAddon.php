@@ -1,11 +1,23 @@
 <?php
 class PvOutputAddon {
+	private $getPVoutputSystemURL;
+	private $getPVoutputAddStatusURL;
+	private $getPVoutputGetTeamURL;
+	private $getPVoutputJoinTeamURL;
+	private $getPVoutputLeaveTeamURL;
+
 	
 	function __construct(){
 		$this->config = Session::getConfig(); 
 		$this->weather = new WeatherService();
 		$this->metering = new HistorySmartMeterService();
 		$this->history = new HistoryService();
+		
+		$this->getPVoutputSystemURL = 		"http://pvoutput.org/service/r2/getsystem.jsp";
+		$this->getPVoutputAddStatusURL = 	"http://pvoutput.org/service/r2/addstatus.jsp";
+		$this->getPVoutputGetTeamURL = 		"http://pvoutput.org/service/r2/getteam.jsp";
+		$this->getPVoutputJoinTeamURL = 	"http://pvoutput.org/service/r2/jointeam.jsp";
+		$this->getPVoutputLeaveTeamURL = 	"http://pvoutput.org/service/r2/leaveteam.jsp";
 	}
 	
 	/**
@@ -256,8 +268,8 @@ class PvOutputAddon {
 				$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: " . $device->pvoutputSystemId;
 				
 				//$pvoutput = shell_exec('curl -d "d='.$now.'" -d "t='.$time.'" -d "c1=0" -d "v1='.$KWHDtot.'" -d "v2='.$GPtot.'" -d "v5='.$INVT.'" -d "v6='.$GV.'" -H "X-Pvoutput-Apikey: '.$APIKEY.'" -H "X-Pvoutput-SystemId: '.$SYSID.'" http://pvoutput.org/service/r2/addstatus.jsp &');
-				$url = "http://pvoutput.org/service/r2/addstatus.jsp";
-				$result = $this->PVoutputCurl($url,$vars,$headerInfo,true);
+				
+				$result = $this->PVoutputCurl($this->getPVoutputAddStatusURL,$vars,$headerInfo,true);
 				return $result;
 			} catch (Exception $e) {
 				HookHandler::getInstance()->fire("onError","PVoutput::SendStatus".$e->getMessage());
@@ -284,26 +296,30 @@ class PvOutputAddon {
 			// header info
 			$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
 			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: ".$device->pvoutputSystemId;
-			$url = "http://pvoutput.org/service/r2/getsystem.jsp";
-			$result = $this->PVoutputCurl($url,$vars,$headerInfo,true);
-
+			
+			//pvoutput getsystem url
+			
+			$result = $this->PVoutputCurl($this->getPVoutputSystemURL,$vars,$headerInfo,true);
+			
+			
+			// find or dispense an inverter bean
+			$bean = R::findOrDispense('inverter',$device->id);
+			
 			if($result['info']['http_code']==200){
+				
 				$team = explode(';',$result['response']);
 				$pos = strpos($team[count($team)-2], '602');
 				if($pos!==false){
-					$pvoutputWSLTeamMember =true;
+					$bean->pvoutputWSLTeamMember = true;
 				}else{
-					$pvoutputWSLTeamMember=false;
+					$bean->pvoutputWSLTeamMember = false;
 				}
-				
-				$bean = R::load('inverter',$device->id);
-				if (!$bean){
-					$bean = R::dispense('inverter');
-				}
-				$bean->pvoutputWSLTeamMember = $pvoutputWSLTeamMember;
+
 				//Store the bean
 				$id = R::store($bean);
 			}else{
+				$bean->pvoutputWSLTeamMember = false;
+				R::store($bean);
 				return null;
 			}
 		}catch (Exception $e){
@@ -352,8 +368,8 @@ class PvOutputAddon {
 			// header info
 			$headerInfo['hAPI'] = "X-Pvoutput-Apikey: MyReadOnlyKey";//ReadOnlyKey
 			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: 7856";//
-			$url = "http://pvoutput.org/service/r2/getteam.jsp";
-			$result = $this->PVoutputCurl($url,$vars,$headerInfo,true);
+
+			$result = $this->PVoutputCurl($this->getPVoutputGetTeamURL,$vars,$headerInfo,true);
 			if($result['info']['http_code']==200){
 				$team = explode(';',$result['response']);
 				if($team[4]>1000000){
@@ -388,14 +404,16 @@ class PvOutputAddon {
 	public function joinTeam($device){
 		$headerInfo = array();
 		try {
+			
 			$vars = array(
 					'tid' => 602, // TeamID WebSolarLog
 			);
+			
 			// header info
 			$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
 			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: ".$device->pvoutputSystemId;
-			$url = "http://pvoutput.org/service/r2/jointeam.jsp";
-			$result = $this->PVoutputCurl($url,$vars,$headerInfo,true);
+			$result = $this->PVoutputCurl($this->PVoutputJoinTeamURL,$vars,$headerInfo,true);
+			
 			$this->saveTeamStateFromPVoutputToDB($device);
 			return $result;
 		}catch (Exception $e){
@@ -413,7 +431,7 @@ class PvOutputAddon {
 	public function joinAllDevicesToTeam(){
 		foreach ($this->config->devices as $device){
 			// if device==active, pvoutputEnabled==enabled, pvoutputApikey existst, pvoutputSystemId exists, pvoutputAutoJoinTeam true
-			if($device->active && $device->pvoutputEnabled && $device->pvoutputApikey && $device->pvoutputSystemId && $device->pvoutputAutoJoinTeam){
+			if($device->active && $device->pvoutputEnabled && $device->pvoutputApikey && $device->pvoutputSystemId && $device->pvoutputAutoJoinTeam && (!$device->pvoutputWSLTeamMember || $device->pvoutputWSLTeamMember==false)){
 				$this->joinTeam($device);
 			}
 		}
@@ -433,8 +451,7 @@ class PvOutputAddon {
 			// header info
 			$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
 			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: ".$device->pvoutputSystemId;
-			$url = "http://pvoutput.org/service/r2/leaveteam.jsp";
-			return $this->PVoutputCurl($url,$vars,$headerInfo,true);
+			return $this->PVoutputCurl($this->getPVoutputLeaveTeamURL,$vars,$headerInfo,true);
 		}catch (Exception $e){
 			HookHandler::getInstance()->fire("onError", $e->getMessage());
 		}
