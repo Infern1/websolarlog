@@ -47,8 +47,8 @@ $slowJobUpdateRate = 60 * 60; // Every hour
 $slowJobStartTime = Util::createTimeForWholeInterval($slowJobUpdateRate);
 QueueServer::getInstance()->add(new QueueItem($slowJobStartTime, "HookHandler.fireFromQueue", array("onSlowJob"), true, $slowJobUpdateRate));
 
-// PVoutput every 5 minutes
-QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(120), "PVoutputRest.addStatus","", true, 120));
+// PVoutput every 2,5 minutes 
+QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(150), "PvOutputAddon.onJob","", true, 150));
 
 // This one is needed for the cron script only !!! (More then 60 seconds, else we could mis an history record)
 QueueServer::getInstance()->add(new QueueItem(time() + 70, "Common.exitCronProcess", "", false, 0, false));
