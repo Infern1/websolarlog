@@ -271,7 +271,7 @@
 			
 			// PVoutput recieved it!
 			if(context.pvoutput == 1){
-				var img = '<img src="images/accept.png" title="pvoutputsend='+context.pvoutputSend +';pvoutput='+context.pvoutput+';timesend='+context.pvoutputSendTime+';">';
+				var img = "<img src=\"images/accept.png\" title=\"pvoutputsend="+context.pvoutputSend +";pvoutput="+context.pvoutput+";timesend="+context.pvoutputSendTime+";\">";
 				if(context.pvoutputSendTime>0){
 					var timeSend = moment(context.pvoutputSendTime*1000).format("DD-MM-YY HH:mm:ss");
 				}else{
@@ -280,7 +280,7 @@
 				var result = "recieved by PVo";
 				
 			}else if(context.pvoutput == 0){
-				var img = '<img src="images/exclamation.png" title="pvoutputsend='+context.pvoutputSend+';pvoutput='+context.pvoutput+';timesend='+context.pvoutputSendTime+';">';
+				var img = "<img src=\"images/exclamation.png\" class=\"tooltip\" title=\"pvoutputsend="+context.pvoutputSend+";pvoutput="+context.pvoutput+";timesend="+context.pvoutputSendTime+";\">";
 				if(context.pvoutputSendTime>0){
 					var timeSend = moment(context.pvoutputSendTime*1000).format("DD-MM-YY HH:mm:ss");
 				}else{
@@ -288,7 +288,7 @@
 				}
 				var result = "NOT recieved by PVo";
 			}else{
-				var img = '<img src="images/exclamation.png" title="pvoutputsend='+context.pvoutputSend+';pvoutput='+context.pvoutput+';timesend='+context.pvoutputSendTime+';">';
+				var img = "<img src=\"images/exclamation.png\" class=\"tooltip\" title=\"pvoutputsend="+context.pvoutputSend+";pvoutput="+context.pvoutput+";timesend="+context.pvoutputSendTime+";\">";
 				if(context.pvoutputSendTime>0){
 					var timeSend = moment(context.pvoutputSendTime*1000).format("DD-MM-YY HH:mm:ss");
 				}else{
@@ -310,19 +310,26 @@
 			
 			// it is recieved!
 			if(context.pvoutput == 1){
-				var img = '<img src="images/exclamation.png" title="pvoutputsend='+context.pvoutputSend+';pvoutput='+context.pvoutput+';timesend='+context.pvoutputSendTime+';">';
+				var img = "<img src=\"images/exclamation.png\" class=\"tooltip\" title=\"pvoutputsend='+context.pvoutputSend+';pvoutput='+context.pvoutput+';timesend='+context.pvoutputSendTime+';\">";
 				var result = "PVoutput recieved a non sendable record";
 			}else if(context.pvoutput == 0){
-				var img = '<img src="images/accept.png" title="pvoutputsend='+context.pvoutputSend+';pvoutput='+context.pvoutput+';timesend='+context.pvoutputSendTime+';">';
+				var img = "<img src=\"images/accept.png\" class=\"tooltip\" title=\"pvoutputsend='+context.pvoutputSend+';pvoutput='+context.pvoutput+';timesend='+context.pvoutputSendTime+';\">";
 				var result = "Non sendable record which is not send :)";
 			}
 		}
+		
+		if(context.pvoutputErrorMessage != 0){
+			var info = "<img src=\"images/information.png\" class=\"tooltip\" title=\""+context.pvoutputErrorMessage+"\"/>";
+		}else{
+			var info = "";
+		}
+		
 		var row = ''+
 		'<div class="column span-7">'+time+'</div>'+
 		'<div class="column span-5">'+sendStatus+'</div>'+
 		'<div class="column span-7">'+result+'</div>'+
 		'<div class="column span-7">'+timeSend+'</div>'+
-		'<div class="column span-1">'+img+'</div>';
+		'<div class="column span-2">'+img+''+info+'</div>';
 		return new Handlebars.SafeString(row);
 	})
 	
