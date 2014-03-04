@@ -501,7 +501,7 @@ switch ($settingstype) {
 		$device->pvoutputApikey = Common::getValue("pvoutputApikey");
 		$device->pvoutputSystemId = Common::getValue("pvoutputSystemId");
 		$device->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
-		$device->pvoutputAutoJoinTeam =  Common::getValue("pvoutputAutoJoinTeam");
+		$device->pvoutputAutoJoinTeam =  Common::getValue("pvoutputAutoJoinTeam",'null');
 		$device->sendSmartMeterData = Common::getValue("sendSmartMeterData");
 		
 		$device->refreshTime = (Common::getValue("refreshTime")< 2) ? 2 : Common::getValue("refreshTime");
@@ -1061,11 +1061,6 @@ switch ($settingstype) {
 		}
 		$data['config'] = $config; 
 		break;
-	case 'testPVoutputShutdown':
-		$pvOutputAddon = new PvOutputAddon();
-		
-		$pvOutputAddon->onShutdown(array('a',Session::getConfig()->devices[0]));
-		break;
 	case 'doSQLFileBackup':
 		ini_set('memory_limit', '1024M');
 		// require the plugin
@@ -1102,6 +1097,10 @@ switch ($settingstype) {
 		$data['lang'] = $lang;
 		$data['options'] = $options;
 		$data['dayData'] = $dayData;
+		break;
+	case 'testPVoutputAddStatus':
+		$PVoutputAddon = new PvOutputAddon();
+		$PVoutputAddon->onJob();
 		break;
 	case 'invoiceInfo':
 		$bill = new Bill();
