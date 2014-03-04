@@ -1,6 +1,6 @@
 <?php
 class PvOutputAddon {
-	private $getPVoutputSystemURL;
+	private $getPVoutputGetSystemURL;
 	private $getPVoutputAddStatusURL;
 	private $getPVoutputGetTeamURL;
 	private $getPVoutputJoinTeamURL;
@@ -13,12 +13,15 @@ class PvOutputAddon {
 		$this->metering = new HistorySmartMeterService();
 		$this->history = new HistoryService();
 		
-		$this->getPVoutputSystemURL = 		"http://pvoutput.org/service/r2/getsystem.jsp";
+		// set PVoutput URL
+		$this->getPVoutputGetSystemURL = 	"http://pvoutput.org/service/r2/getsystem.jsp";
 		$this->getPVoutputAddStatusURL = 	"http://pvoutput.org/service/r2/addstatus.jsp";
 		$this->getPVoutputGetTeamURL = 		"http://pvoutput.org/service/r2/getteam.jsp";
 		$this->getPVoutputJoinTeamURL = 	"http://pvoutput.org/service/r2/jointeam.jsp";
 		$this->getPVoutputLeaveTeamURL = 	"http://pvoutput.org/service/r2/leaveteam.jsp";
+		
 	}
+	
 	
 	/**
 	 * Start the job
@@ -28,7 +31,8 @@ class PvOutputAddon {
 		HookHandler::getInstance()->fire("onDebug", "-Run PVoutputAddonJob with the following args:".print_r($args,true));
 		foreach ($this->config->devices as $device){
 			HookHandler::getInstance()->fire("onDebug", "--Foreach Device in config. Current device:".print_r($device,true));
-			if ($device->pvoutputEnabled AND $device->active) {
+			
+			if ($device->pvoutputEnabled && $device->active) {
 				HookHandler::getInstance()->fire("onDebug", "--Foreach Device in config. Current device:".print_r($device,true));
 				$live = $this->getUnsendHistory($device->id);
 
@@ -266,9 +270,7 @@ class PvOutputAddon {
 				// header info
 				$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
 				$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: " . $device->pvoutputSystemId;
-				
-				//$pvoutput = shell_exec('curl -d "d='.$now.'" -d "t='.$time.'" -d "c1=0" -d "v1='.$KWHDtot.'" -d "v2='.$GPtot.'" -d "v5='.$INVT.'" -d "v6='.$GV.'" -H "X-Pvoutput-Apikey: '.$APIKEY.'" -H "X-Pvoutput-SystemId: '.$SYSID.'" http://pvoutput.org/service/r2/addstatus.jsp &');
-				
+
 				$result = $this->PVoutputCurl($this->getPVoutputAddStatusURL,$vars,$headerInfo,true);
 				return $result;
 			} catch (Exception $e) {
@@ -299,7 +301,7 @@ class PvOutputAddon {
 			
 			//pvoutput getsystem url
 			
-			$result = $this->PVoutputCurl($this->getPVoutputSystemURL,$vars,$headerInfo,true);
+			$result = $this->PVoutputCurl($this->getPVoutputGetSystemURL,$vars,$headerInfo,true);
 			
 			
 			// find or dispense an inverter bean
