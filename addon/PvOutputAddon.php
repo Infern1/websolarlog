@@ -308,7 +308,6 @@ class PvOutputAddon {
 			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: ".$device->pvoutputSystemId;
 			
 			//pvoutput getsystem url
-			
 			$result = $this->PVoutputCurl($this->getPVoutputGetSystemURL,$vars,$headerInfo,true);
 			
 
@@ -317,25 +316,25 @@ class PvOutputAddon {
 				$bean = R::dispense('inverter');
 			}
 			
-			if($result['info']['http_code']==200){
+		if($result['info']['http_code']==200){
+				
 				$team = explode(';',$result['response']);
-				
 				$pos = strpos($team[count($team)-2], '602');
-				
 				if($pos!==false){
-					
-					$bean->pvoutputWSLTeamMember = true;
+					$pvoutputWSLTeamMember =true;
 				}else{
-					
-					$bean->pvoutputWSLTeamMember = false;
+					$pvoutputWSLTeamMember=false;
 				}
-
+				
+				$bean = R::load('inverter',$device->id);
+				if (!$bean){
+					$bean = R::dispense('inverter');
+				}
+				$bean->pvoutputWSLTeamMember = $pvoutputWSLTeamMember;
 				//Store the bean
-				R::store($bean);
+				$id = R::store($bean);
 			}else{
-				$bean->pvoutputWSLTeamMember = false;
-				//Store the bean
-				R::store($bean);
+				return null;
 			}
 		}catch (Exception $e){
 			HookHandler::getInstance()->fire("onError", "PVoutput::saveTeamStateFromPVoutputToDB ".$e->getMessage());
@@ -416,7 +415,7 @@ class PvOutputAddon {
 	}
 
 
-	public function joinTeam($device){
+	public function joinTeam(Device $device){
 		$headerInfo = array();
 		try {
 			
@@ -427,9 +426,10 @@ class PvOutputAddon {
 			// header info
 			$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
 			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: ".$device->pvoutputSystemId;
-			$result = $this->PVoutputCurl($this->PVoutputJoinTeamURL,$vars,$headerInfo,true);
+			$result = $this->PVoutputCurl($this->getPVoutputJoinTeamURL,$vars,$headerInfo,true);
 			
 			$this->saveTeamStateFromPVoutputToDB($device);
+			
 			return $result;
 		}catch (Exception $e){
 			HookHandler::getInstance()->fire("onError", $e->getMessage());
@@ -491,9 +491,11 @@ class PvOutputAddon {
 		curl_setopt($ch, CURLOPT_TIMEOUT, 60); // Transmission timeout in seconds
 		$response = curl_exec($ch);
 		$info = curl_getinfo($ch);
+		
 		$httpResponse = curl_getinfo($ch,CURLINFO_HEADER_OUT);
 		curl_close($ch);
-
+		
+		
 		if ($info['http_code'] == "200") {
 			if($returnOutput){
 				return array('result'=>true,'response'=> $response,'info'=>$info);
