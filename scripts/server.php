@@ -73,7 +73,7 @@ QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(3
 QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(3600), "JanitorRest.clean", "", true, 3600));
 
 // PVoutput every 2,5 minutes 
-QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(100), "PvOutputAddon.onJob","", true, 100));
+QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(75), "PvOutputAddon.onJob","", true, 75));
 
 // PVoutput Join WSL Team every day@00:15 and repeat it every 12 hours
 $PVoutputJoinTeamUpdateRate = 12 * 60 * 60;
