@@ -1709,7 +1709,8 @@ class PDODataAdapter {
 				$oDevice = 	array();
 				
 				// if sun is down AND voltage of string1 is 0, then we are down.
-				if(Util::isSunDown(900)){
+				// start running 300 sec (5 min) before/after sun up/down.
+				if(Util::isSunDown(-300)){
 					$live = new Live();
 					$live->name = $device->name;
 					$live->status = 'offline';
