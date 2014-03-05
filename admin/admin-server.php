@@ -106,21 +106,12 @@ switch ($settingstype) {
 			$device = $config->getDeviceConfig($deviceId);
 			if($device->pvoutputApikey){
 				$result = $pvOutputAddon->joinTeam($device);
-				//var_dump($result);
-				if($result['info']['http_code']==200){
-					//var_dump($result['response']);
-					$pvOutputAddon->saveTeamStateFromPVoutputToDB($device);
-					$team = $result;
-				}else{
-					$pvOutputAddon->saveTeamStateFromPVoutputToDB($device);
-					$team = $result;
-				}
 			}
 		}else{
 			$team['response'] = 'no team supplied';
 		}
 		$data['id'] = $deviceId;
-		$data['team']= $team;
+		$data['team']= $result;
 		break;
 	case "leavePVoTeam":
 		$pvOutputAddon = new PvOutputAddon();
@@ -130,20 +121,13 @@ switch ($settingstype) {
 			$device = $config->getDeviceConfig($deviceId);
 			if($device->pvoutputApikey){
 				$result = $pvOutputAddon->leaveTeam($device);
-				if($result['info']['http_code']==200){
-					//var_dump($result['response']);
-					$pvOutputAddon->saveTeamStateFromPVoutputToDB($device);
-					$team = $result;
-				}else{
-					$pvOutputAddon->saveTeamStateFromPVoutputToDB($device);
-					$team = $result;
-				}
+				
 			}
 		}else{
 			$team['response'] = 'no team supplied';
 		}
 		$data['id'] = $deviceId;
-		$data['team']= $team;
+		$data['team']= $result;
 		break;
 	case "saveTeamStatus":
 		$pvOutputAddon = new PvOutputAddon();
@@ -1098,9 +1082,21 @@ switch ($settingstype) {
 		$data['options'] = $options;
 		$data['dayData'] = $dayData;
 		break;
-	case 'testPVoutputAddStatus':
+	case 'forcePVoutputAddStatus':
 		$PVoutputAddon = new PvOutputAddon();
-		$PVoutputAddon->onJob();
+		$submits=0;
+		if(Util::isSunDown()==true){
+			for ($i = 0; $i <= 3; $i++) {
+				if($PVoutputAddon->onJob()){
+					$submits++;
+				}							
+			}
+			$data['submits'] = $submits;
+			$data['result']=true;
+		}else{
+			$data['submits'] = 0;
+			$data['result']=false;			
+		}
 		break;
 	case 'invoiceInfo':
 		$bill = new Bill();
