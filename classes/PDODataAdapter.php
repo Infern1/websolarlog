@@ -1798,7 +1798,7 @@ class PDODataAdapter {
 						
 					$avgPower = $this->readCache("","index","live",$device->id,"trend");
 					$live->trendImage = $avgPower[0]['value'];
-					$live->trend = _($live->trendImage).'aa';
+					$live->trend = _($live->trendImage);
 				}
 
 				$oDevice["id"] = $liveBean['INV'];
