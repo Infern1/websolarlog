@@ -198,14 +198,28 @@ class PvOutputAddon {
 		$this->onJob(null);
 	}
 	
+	/**
+	 * 
+	 * returns Today data or else History data (if its there)
+	 * 
+	 * @param unknown $deviceId
+	 * @return Ambigous <RedBean_OODBBean, NULL, mixed>
+	 */
 	private function getUnsendHistory($deviceId) {
-		$date = mktime(0, 0, 0, date('m'), date('d')-13, date('Y'));
-		$parameters = array( ':time' => $date,':deviceId'=>$deviceId);
-		$beans =  R::findOne(
-				'history',
-				' deviceId = :deviceId AND time > :time AND (pvoutput is null or pvoutput = "" or pvoutput = 0) AND pvoutputSend = 1 order by time ASC limit 1',
-				$parameters
-		);
+		$table = 'history';
+		$query = ' deviceId = :deviceId AND time > :time AND (pvoutput is null or pvoutput = "" or pvoutput = 0) AND pvoutputSend = 1 order by time ASC limit 1 ';
+		$today = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+		$thirteenDaysEarlier = mktime(0, 0, 0, date('m'), date('d')-13, date('Y'));
+		
+		// first try to send data of today!
+		$parameters = array( ':time' => $today,':deviceId'=>$deviceId);
+		$beans =  R::findOne($table,$query,$parameters);
+		
+		// when we have no today data, we send history data!
+		if(count($beans)==0){
+			$parameters = array( ':time' => $thirteenDaysEarlier,':deviceId'=>$deviceId);
+			$beans =  R::findOne($table,$query,$parameters);
+		}
 		return $beans;
 	}
 
@@ -297,29 +311,34 @@ class PvOutputAddon {
 			
 			$result = $this->PVoutputCurl($this->getPVoutputGetSystemURL,$vars,$headerInfo,true);
 			
-			
-			// find or dispense an inverter bean
-			$bean = R::findOrDispense('inverter',$device->id);
+
+			$bean = R::load('inverter',$device->id);
+			if (!$bean){
+				$bean = R::dispense('inverter');
+			}
 			
 			if($result['info']['http_code']==200){
-				
 				$team = explode(';',$result['response']);
+				
 				$pos = strpos($team[count($team)-2], '602');
+				
 				if($pos!==false){
+					
 					$bean->pvoutputWSLTeamMember = true;
 				}else{
+					
 					$bean->pvoutputWSLTeamMember = false;
 				}
 
 				//Store the bean
-				$id = R::store($bean);
+				R::store($bean);
 			}else{
 				$bean->pvoutputWSLTeamMember = false;
+				//Store the bean
 				R::store($bean);
-				return null;
 			}
 		}catch (Exception $e){
-			HookHandler::getInstance()->fire("onError", "PVoutput::saveTeamStateFromPVoutputToDB".$e->getMessage());
+			HookHandler::getInstance()->fire("onError", "PVoutput::saveTeamStateFromPVoutputToDB ".$e->getMessage());
 		}
 	}
 	
