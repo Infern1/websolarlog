@@ -231,6 +231,8 @@ class Common
         $mail->From = $config->emailFrom;
         $emails = explode(';', $config->emailTo);
         
+        
+        
         foreach($emails as $email) {
         
         	$mail->AddAddress($email);
@@ -253,6 +255,7 @@ class Common
         $mail->WordWrap = 50;
 
         if(!$mail->Send()) {
+        	HookHandler::getInstance()->fire("onError","SendEmail error: ".print_r($mail->ErrorInfo,true));
             return $mail->ErrorInfo;
         } else {
             return true;
