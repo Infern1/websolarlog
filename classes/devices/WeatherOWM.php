@@ -41,35 +41,41 @@ Class WeatherOWM implements DeviceApi {
 		
 		$latlng = "&lat=" . $this->lat . "&lon=" . $this->lon;
 		$result = json_decode($this->call($url . $latlng));
-		$weather = new Weather();
-		$weather->deviceId = -1;
-		$weather->time = time();
-		$weather->temp = $result->list[0]->main->temp - 273.15;
-		$weather->temp_min = $result->list[0]->main->temp_min - 273.15;
-		$weather->temp_max = $result->list[0]->main->temp_max - 273.15;
-		$weather->pressure = $result->list[0]->main->pressure;
-		$weather->humidity = $result->list[0]->main->humidity;
-		$weather->conditionId = $result->list[0]->weather[0]->id;
-		if(isset($result->list[0]->rain)){
-			if(isset($result->list[0]->rain->{'1h'})){
-				$weather->rain1h = $result->list[0]->rain->{'1h'};
+		// lets check if we have received data
+		if(count($result)>0){
+			
+			$weather = new Weather();
+			$weather->deviceId = -1;
+			$weather->time = time();
+			$weather->temp = $result->list[0]->main->temp - 273.15;
+			$weather->temp_min = $result->list[0]->main->temp_min - 273.15;
+			$weather->temp_max = $result->list[0]->main->temp_max - 273.15;
+			$weather->pressure = $result->list[0]->main->pressure;
+			$weather->humidity = $result->list[0]->main->humidity;
+			$weather->conditionId = $result->list[0]->weather[0]->id;
+			if(isset($result->list[0]->rain)){
+				if(isset($result->list[0]->rain->{'1h'})){
+					$weather->rain1h = $result->list[0]->rain->{'1h'};
+				}
+				if(isset($result->list[0]->rain->{'3h'})){
+					$weather->rain3h = $result->list[0]->rain->{'3h'};
+				}
 			}
-			if(isset($result->list[0]->rain->{'3h'})){
-				$weather->rain3h = $result->list[0]->rain->{'3h'};
+			if(isset($result->list[0]->clouds)){
+				$weather->clouds = $result->list[0]->clouds->all;
 			}
-		}
-		if(isset($result->list[0]->clouds)){
-			$weather->clouds = $result->list[0]->clouds->all;
-		}
-		$weather->wind_speed = $result->list[0]->wind->speed;
-		$weather->wind_direction = $result->list[0]->wind->deg;
-		
-		if ($weather->temp == -273.15) {
-			// probably invalid response, return null
+			$weather->wind_speed = $result->list[0]->wind->speed;
+			$weather->wind_direction = $result->list[0]->wind->deg;
+			
+			if ($weather->temp == -273.15) {
+				// probably invalid response, return null
+				return null;
+			}
+			
+			return $weather;
+		}else{
 			return null;
 		}
-		
-		return $weather;
 	}
 	
 	public function getLiveData() {
