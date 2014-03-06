@@ -95,11 +95,11 @@ class WeatherService {
 	}
 	
 	public function onSummary($args) {
-		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.start.DeviceId='.$device->id] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-		
 		$device = $args[1];
 		$date = $args[2];
-			
+		
+		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.start.DeviceId='.$device->id] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
+		
 		if($device->deviceApi == "Open-Weather-Map"){
 	
 			(!$date)? $date = date('d-m-Y') : $date = $date;
@@ -118,6 +118,7 @@ class WeatherService {
 			$temp = 0;
 			$degreeDays = 0;
 			$sumWindSpeed = 0;
+			$sumTemp = 0;
 			
 			foreach($beans as $bean){
 				$sumTemp += (float)$bean['temp'];
@@ -125,6 +126,7 @@ class WeatherService {
 				$i++;
 			}
 			
+			$countTemp = count($beans);
 			
 			
 			$degreeDays = round($degreeDays/$i,2);
