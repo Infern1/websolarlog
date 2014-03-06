@@ -75,10 +75,11 @@ QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(3
 // PVoutput every 2,5 minutes 
 QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(75), "PvOutputAddon.onJob","", true, 75));
 
-// PVoutput Join WSL Team every day@00:15 and repeat it every 12 hours
-$PVoutputJoinTeamUpdateRate = 12 * 60 * 60;
+// PVoutput Join WSL Team every day@00:15 and repeat it every 6 hours
+$PVoutputJoinTeamUpdateRate = 6 * 60 * 60;
 $PVoutputJoinTeamStartTime = Util::createOnceADayJob("00", "15"); // Only run at 00:15
 QueueServer::getInstance()->add(new QueueItem($PVoutputJoinTeamStartTime, "PvOutputAddon.joinAllDevicesToTeam","", true, $PVoutputJoinTeamUpdateRate));
+
 
 // run Janitor DBcheck every day@01:00 
 $checkDataBaseStartTime = Util::createOnceADayJob("01", "00"); // Only run at night

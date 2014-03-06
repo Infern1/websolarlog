@@ -297,47 +297,48 @@ class PvOutputAddon {
 	 */
 	public function saveTeamStateFromPVoutputToDB($device){
 		$headerInfo = array();
-		try {
-			$vars = array(
-				'teams' => 1,
-				'donations'=>1,
-				'tariffs'=>1,
-			);
-			// header info
-			$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
-			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: ".$device->pvoutputSystemId;
-			
-			//pvoutput getsystem url
-			$result = $this->PVoutputCurl($this->getPVoutputGetSystemURL,$vars,$headerInfo,true);
-			
-
-			$bean = R::load('inverter',$device->id);
-			if (!$bean){
-				$bean = R::dispense('inverter');
-			}
-			
-		if($result['info']['http_code']==200){
+		if($device->id){
+			try {
+				$vars = array(
+						'teams' => 1,	// return team codes (602== TeamWebSolarLog)
+						'donations'=>1,	// return if user did a donation
+						'tariffs'=>1	// return the energy tarifss
+						
+				);
 				
-				$team = explode(';',$result['response']);
-				$pos = strpos($team[count($team)-2], '602');
-				if($pos!==false){
-					$pvoutputWSLTeamMember =true;
-				}else{
-					$pvoutputWSLTeamMember=false;
-				}
+				// header info
+				$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
+				$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: ".$device->pvoutputSystemId;
 				
+				//pvoutput getsystem url
+				$result = $this->PVoutputCurl($this->getPVoutputGetSystemURL,$vars,$headerInfo,true);
+	
 				$bean = R::load('inverter',$device->id);
-				if (!$bean){
-					$bean = R::dispense('inverter');
+				
+				if($result['info']['http_code']==200){
+					$team = explode(';',$result['response']);
+					$pos = strpos($team[count($team)-2], '602');
+					if($pos!==false){
+						$bean->pvoutputWSLTeamMember = true;
+					}else{
+						$bean->pvoutputWSLTeamMember = false;
+					}
+					
+					//Store the bean
+					$id = R::store($bean);
+				}else{
+					$bean->pvoutputWSLTeamMember = false;
+	
+					//Store the bean
+					$id = R::store($bean);
+					return null;
 				}
-				$bean->pvoutputWSLTeamMember = $pvoutputWSLTeamMember;
-				//Store the bean
-				$id = R::store($bean);
-			}else{
-				return null;
+			}catch (Exception $e){
+				HookHandler::getInstance()->fire("onError", "PVoutput::saveTeamStateFromPVoutputToDB ".$e->getMessage());
 			}
-		}catch (Exception $e){
-			HookHandler::getInstance()->fire("onError", "PVoutput::saveTeamStateFromPVoutputToDB ".$e->getMessage());
+		}else{
+			HookHandler::getInstance()->fire("onError", "PVoutput::saveTeamStateFromPVoutputToDB No Device Given");
+			return null;
 		}
 	}
 	
@@ -345,15 +346,12 @@ class PvOutputAddon {
 		$device = $this->config->getDeviceConfig($deviceId);
 		// get timestamps for the dates begin and end.
 		$timestamps = Util::getBeginEndDate('day', 1,$date);
-		
+
 		$parameters = array( ':beginDate' => $timestamps['beginDate'],':endDate' => $timestamps['endDate'],':deviceId'=>$deviceId);
-		
-		
+
 		$sql = 'SELECT * FROM history WHERE deviceId = :deviceId AND time > :beginDate AND time < :endDate ORDER BY id DESC';
-		
-		$beans =  R::getAll($sql,
-				$parameters
-		);
+
+		$beans =  R::getAll($sql,$parameters);
 		return array("beans"=>$beans,"date"=>$date,"deviceName"=>$device->name,"recordCount"=>count($beans));
 	}
 	
@@ -444,7 +442,8 @@ class PvOutputAddon {
 	 * 
 	 */
 	public function joinAllDevicesToTeam(){
-		foreach ($this->config->devices as $device){
+		foreach (session::getConfig()->devices as $device){
+			
 			// if device==active, pvoutputEnabled==enabled, pvoutputApikey existst, pvoutputSystemId exists, pvoutputAutoJoinTeam true
 			if($device->active && $device->pvoutputEnabled && $device->pvoutputApikey && $device->pvoutputSystemId && $device->pvoutputAutoJoinTeam && (!$device->pvoutputWSLTeamMember || $device->pvoutputWSLTeamMember==false)){
 				$this->joinTeam($device);
@@ -466,7 +465,10 @@ class PvOutputAddon {
 			// header info
 			$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
 			$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: ".$device->pvoutputSystemId;
-			return $this->PVoutputCurl($this->getPVoutputLeaveTeamURL,$vars,$headerInfo,true);
+			$result = $this->PVoutputCurl($this->getPVoutputLeaveTeamURL,$vars,$headerInfo,true);
+			$this->saveTeamStateFromPVoutputToDB($device);
+			
+			return $result;
 		}catch (Exception $e){
 			HookHandler::getInstance()->fire("onError", $e->getMessage());
 		}
