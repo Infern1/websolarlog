@@ -1245,13 +1245,14 @@ class PDODataAdapter {
 				$beans[$i]['cumExp'] = number_format($cumExp,0,',','');
 			}
 			
-
-			// append months 9-12 to 5-8
+			
+			$lastMonth = end($beans);
+			// append months 5-8 to 9-12 
 			for ($i = count($beans)+1; $i <= 12; $i++) {
 				$expected = $invExp[count($beans)];
-				
+
 				$cumExp += $expected;
-				$cumKWH += $beans[$i]['KWH'];
+				$cumKWH = $lastMonth['cumKWH'];
 				array_push($beans, array(
 						"KWH"			=>(int)0,
 						"time"			=> (int)strtotime(date("01-".($i)."-".date("Y",strtotime($startDate)))),
