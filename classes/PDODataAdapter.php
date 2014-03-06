@@ -1208,7 +1208,10 @@ class PDODataAdapter {
 				"KWH"=>(int)0,
 				"monthNumber"=>($unshiftMonths-$i),
 				"Exp" => number_format(0,0,',',''),
-				"cumExp"=>number_format(0,0,',','')
+				"cumExp"=>number_format(0,0,',',''),
+				"cumDiff"=>0,
+				"Diff"=>0,
+				"cumKWH"=>0,
 				)
 				);
 			}
@@ -1451,10 +1454,10 @@ class PDODataAdapter {
 					floatval($bean['KWH']),
 					"1-".date("m-Y",$bean['time']),
 					floatval($bean['Exp']),
-					floatval($bean['Diff']),
+					floatval($bean['Diff']),//
 					floatval($bean['cumExp']),
-					floatval($bean['cumKWH']),
-					floatval($bean['cumDiff']),
+					floatval($bean['cumKWH']),//
+					floatval($bean['cumDiff']),//
 					$bean['time']
 			);
 		}
