@@ -39,7 +39,7 @@ class EventService {
 	 * @param number $limit
 	 * @return multitype:Event
 	 */
-	public function getArrayByDeviceAndType(Device $device, $type, $limit=20) {
+	public function getArrayByDeviceAndType($device, $type, $limit=20) {
 	
 		$bObjects =  R::find( self::$tbl,
 				' INV = :deviceId and  lower(Type) =  lower(:type) ORDER BY time DESC LIMIT :limit',
