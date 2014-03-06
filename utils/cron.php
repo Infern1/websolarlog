@@ -53,6 +53,11 @@ QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(7
 // This one is needed for the cron script only !!! (More then 60 seconds, else we could mis an history record)
 QueueServer::getInstance()->add(new QueueItem(time() + 70, "Common.exitCronProcess", "", false, 0, false));
 
+// PVoutput Join WSL Team every day@00:15 and repeat it every 12 hours
+$PVoutputJoinTeamUpdateRate = 12 * 60 * 60;
+$PVoutputJoinTeamStartTime = Util::createOnceADayJob("00", "15"); // Only run at 00:15
+QueueServer::getInstance()->add(new QueueItem($PVoutputJoinTeamStartTime, "PvOutputAddon.joinAllDevicesToTeam","", true, $PVoutputJoinTeamUpdateRate));
+
 // Start the queue server
 QueueServer::getInstance()->start();
 
