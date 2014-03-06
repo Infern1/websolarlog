@@ -200,7 +200,7 @@
     
 
 	Handlebars.registerHelper("infoTooltip", function(context,block) {
-		return new Handlebars.SafeString("<img src=\"images/information.png\" class=\"tooltip\" title=\""+context.hash.title+"\"/>");
+		return new Handlebars.SafeString("<span><img src=\"images/information.png\" class=\"tooltip positioning\" title=\""+context.hash.title+"\"/></span>");
 	});
     
 	
