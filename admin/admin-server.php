@@ -121,7 +121,7 @@ switch ($settingstype) {
 			$device = $config->getDeviceConfig($deviceId);
 			if($device->pvoutputApikey){
 				$result = $pvOutputAddon->leaveTeam($device);
-				
+				$pvOutputAddon->saveTeamStateFromPVoutputToDB($device);
 			}
 		}else{
 			$team['response'] = 'no team supplied';
