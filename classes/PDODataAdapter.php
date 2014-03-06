@@ -1184,6 +1184,7 @@ class PDODataAdapter {
 			$lastMonth = date("n",$beans[count($beans)-1]['time']);
 			$device = $this->deviceService->load($invtnum);
 			$cumExp = 0;
+			$cumKWH = 0;
 
 			$expected = $device->expectedkwh;
 			$invExp[0] = ($expected/100)*$device->expectedJAN;
