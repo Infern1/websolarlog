@@ -48,19 +48,10 @@ $slowJobStartTime = Util::createTimeForWholeInterval($slowJobUpdateRate);
 QueueServer::getInstance()->add(new QueueItem($slowJobStartTime, "HookHandler.fireFromQueue", array("onSlowJob"), true, $slowJobUpdateRate));
 
 // PVoutput every 2,5 minutes 
-QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(75), "PvOutputAddon.onJob","", true, 75));
+QueueServer::getInstance()->add(new QueueItem(time() + 20, "PvOutputAddon.onJob","", true, 70));
 
-// PVoutput Join WSL Team every day@00:15 and repeat it every 6 hours
-$PVoutputJoinTeamUpdateRate = 6 * 60 * 60;
-$PVoutputJoinTeamStartTime = Util::createOnceADayJob("00", "15"); // Only run at 00:15
-QueueServer::getInstance()->add(new QueueItem($PVoutputJoinTeamStartTime, "PvOutputAddon.joinAllDevicesToTeam","", true, $PVoutputJoinTeamUpdateRate));
-
-
-//
 // This one is needed for the cron script only !!! (More then 60 seconds, else we could mis an history record)
 QueueServer::getInstance()->add(new QueueItem(time() + 70, "Common.exitCronProcess", "", false, 0, false));
-//
-//
 
 // Start the queue server
 QueueServer::getInstance()->start();
