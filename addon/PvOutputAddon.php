@@ -95,6 +95,8 @@ class PvOutputAddon {
 
 				$v5 = $this->weather->PVoutputWeatherData($timestamp);//v5	Temperature	No	decimal	celsius	23.4	r2
 				
+				$object = new History();
+				
 				//When the sun is NOT down OR if the sun is down and we want to "sendDataWholeDay":
 				if(Util::isSunDown(-1800)==false || (Util::isSunDown(-1800)==true && $sendDataWholeDay == true)){
 					HookHandler::getInstance()->fire("onDebug","The sun is up for '".$device->name." so we may/need send data");
@@ -108,7 +110,7 @@ class PvOutputAddon {
 					
 					if(count($live)>=1){
 						HookHandler::getInstance()->fire("onDebug","Again we got live data for '".$device->name."");
-						$object = new History();
+						
 						
 						$object->id = $live->id;
 						$object->INV = $live->INV;
