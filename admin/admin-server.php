@@ -1365,8 +1365,14 @@ function diagnostics($adapter,$config) {
 	$configURL = 'http://'.$config->url.((substr($config->url, -1)=='/') ? '' : '/');
 	$basePath = Session::getBasePath().((substr(Session::getBasePath(), -1)=='/') ? '' : '/');
 	
-	$result['logs'][] = array('url' => $configURL.'log/debug.log','location' => $basePath.'log/debug.log', 'name' => 'Debug');
-	$result['logs'][] = array('url' => $configURL.'log/error.log','location' => $basePath.'log/error.log', 'name' => 'Error');
+	// old files 
+	//$result['logs'][] = array('url' => $configURL.'log/debug.log','location' => $basePath.'log/debug.log', 'name' => 'Debug');
+	//$result['logs'][] = array('url' => $configURL.'log/error.log','location' => $basePath.'log/error.log', 'name' => 'Error');
+	// /old files
+	
+	// new logfile
+	$result['logs'][] = array('url' => $configURL.'log/wsl.log','location' => $basePath.'log/wsl.log', 'name' => 'wsl');
+	
 	$PidFilename = $basePath.'scripts/server.php.pid';
 	
 	$result['currentTime']=time();
@@ -1374,7 +1380,7 @@ function diagnostics($adapter,$config) {
 		$stat = stat($PidFilename);
 		$result['pid']['exists']=true;
 		$result['pid']['timeDiff'] = time()-$stat['atime'];
-		if($result['pid']['timeDiff'] >= 65){
+		if($result['pid']['timeDiff'] >= 75){
 			$result['pid']['WSLRunningState']=false;
 		}else{ 
 			$result['pid']['WSLRunningState']=true;
