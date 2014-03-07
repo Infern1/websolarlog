@@ -50,11 +50,7 @@
 		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">{{data.lang.subscriptTrees}}</span>
 		<br>
 		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink">
-		{{#if_gt data.total.householdTrees compare=0}}
-		{{data.total.householdTrees}}
-		{{else}}
-		0
-		{{/if_gt}}
+		{{data.total.trees}}
 		</a><br>
 	</div>
 </div>

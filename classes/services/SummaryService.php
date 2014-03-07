@@ -118,13 +118,18 @@ class SummaryService {
 			
 			if($total['householdTrees']>=0){
 				$lang['subscriptTrees'] = _('needed');
-				$total['householdTrees'] = abs($total['householdTrees']);
+				$total['trees'] = abs($total['householdTrees']);
 			}else{
 				$lang['subscriptTrees'] = _('compensated');
 			}
+		}else{
+			$total['trees'] = $total['householdTrees'] = round(($total['production']['CO2avoid'])/($this->config->co2CompensationTree/1000),0);
 		}
 		
 		$total['co2CompensationTree'] = $this->config->co2CompensationTree;
+		
+		
+		
 		if($total['weather']['degreeDays']>0 and is_array($total['weather'])){
 			$total['degreeDays'] = round(($total['weather']['degreeDays']),2);
 			if(array_key_exists('metering',$total)){
