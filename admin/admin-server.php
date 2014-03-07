@@ -1402,11 +1402,14 @@ function diagnostics($adapter,$config) {
 	if ($result['db']['sqlEngine'] == 'sqlite') {
 		$SDBFilename = Session::getBasePath().'/database/wsl.sdb';
 		$result['dbRights'] = Util::file_perms($SDBFilename);
+		
+		
 		if (file_exists($SDBFilename)) {
 			$stat = stat($SDBFilename);
 			$result['db']['exists']=true;
+			$result['db']['margin'] = 70;
 			$result['db']['timeDiff'] = time()-$stat['ctime'];
-			($result['db']['timeDiff'] >= 30) ? $result['db']['dbChanged']=false : $result['db']['dbChanged']=true;
+			($result['db']['timeDiff'] >= $result['db']['margin']) ? $result['db']['dbChanged']=false : $result['db']['dbChanged']=true;
 		
 			$result['db']['atime']=$stat['atime'];
 			$result['db']['mtime']=$stat['mtime'];

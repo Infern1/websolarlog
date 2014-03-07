@@ -58,7 +58,7 @@ or atleast check the running state with:<br>
     	<strong>Is the DB changing?</strong><br>
 		<label>Currenttime:</label>{{timestampDateFormat data.test.currentTime format="DD-MM-YYYY HH:mm:ss "}}<br />
 		<label>last change:</label>{{timestampDateFormat data.test.db.ctime format="DD-MM-YYYY HH:mm:ss "}}<br />
-		<label>DB changed(<10 sec):</label>{{#if data.test.db.dbChanged}}Within the last 10 sec.{{else}}Longer then 10 sec. ago.{{/if}}<br />
+		<label>DB changed(<{{data.test.db.margin}} sec):</label>{{#if data.test.db.dbChanged}}Within the {{data.test.db.margin}} sec.{{else}}Longer then {{data.test.db.margin}} sec. ago.{{/if}}<br />
 		{{#if data.test.db.dbChanged}}
     	<font style="color:#4B8902">This is good.<br>
     	It looks like the WebSolarLog process is running.<br>
