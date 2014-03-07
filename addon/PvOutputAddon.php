@@ -258,8 +258,9 @@ class PvOutputAddon {
 	private function PVoutputSendData($device, $date, $sendData, $time, $KWHDtot, $GPtot, $GV, $temp, $smartMeterEnergy=0, $smartMeterPower=0) {
 		$headerInfo = array();
 		$vars = array();
-		
+		HookHandler::getInstance()->fire("onDebug","We are in the section that sends the data");
 		if($sendData){
+			HookHandler::getInstance()->fire("onDebug","We are in 'sendData'");
 			try {
 	
 				$vars['d'] = $date;
@@ -500,6 +501,7 @@ class PvOutputAddon {
 	 * @return multitype:boolean mixed |boolean
 	 */
 	private function PVoutputCurl($url,$vars,$headerInfo,$returnOutput=false){
+		HookHandler::getInstance()->fire("onDebug","We are in the PVoCurl function");
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_POST, count($vars));
 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($vars));
@@ -516,12 +518,14 @@ class PvOutputAddon {
 		
 		
 		if ($info['http_code'] == "200") {
+			HookHandler::getInstance()->fire("onDebug","Curl return 200");
 			if($returnOutput){
 				return array('result'=>true,'response'=> $response,'info'=>$info);
 			}else{
 				return true;
 			}
 		}else{
+			HookHandler::getInstance()->fire("onDebug","Curl returned something else then 200");
 			if($returnOutput){
 				return array('result'=>false,'response'=> $response,'info'=>$info);
 			}else{
