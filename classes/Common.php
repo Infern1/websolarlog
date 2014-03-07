@@ -258,6 +258,7 @@ class Common
         	HookHandler::getInstance()->fire("onError","SendEmail error: ".print_r($mail->ErrorInfo,true));
             return $mail->ErrorInfo;
         } else {
+        	HookHandler::getInstance()->fire("onError","SendEmail; Everything looks ok!");
             return true;
         }
         

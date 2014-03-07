@@ -25,11 +25,15 @@ class MailAddon {
 	public function onInverterShutdown($args) {
 		$hookname = $args[0];
 		$device = $args[1];
+		HookHandler::getInstance()->fire("onDebug","End day Report:: Inverter Shutdown");
 		if (Session::getConfig()->emailReports) {
+			HookHandler::getInstance()->fire("onDebug","End day Report:: Config says; you may send!");
 			$title = "WSL :: Shutdown " . $device->name;
 			$body = $this->createReport($device);
 			
 			Common::sendMail($title, $body, Session::getConfig());		
+		}else{
+			HookHandler::getInstance()->fire("onDebug","End day Report:: Config says; you may NOT send!");
 		}
 	}
 	
