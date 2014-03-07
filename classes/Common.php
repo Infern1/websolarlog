@@ -219,49 +219,46 @@ class Common
      * @return string|boolean
      */
     public static function sendMail($subject, $body, $config) {
-    	
-        $mail = new PHPMailer();
-        // $mail->SMTPDebug = true; Use this for testing only
-
-        $mail->IsSMTP();  // telling the class to use SMTP
-        $mail->IsHTML(true);
-        $mail->Host = $config->smtpServer;
-        $mail->Port = $config->smtpPort;
-        $mail->FromName = $config->emailFromName;
-        $mail->From = $config->emailFrom;
-        $emails = explode(';', $config->emailTo);
-        
-        
-        
-        foreach($emails as $email) {
-        
-        	$mail->AddAddress($email);
-        
-        }
-        
-
-        if ($config->smtpUser && $config->smtpPassword) {
-            $mail->SMTPAuth = true;
-            $mail->Username = $config->smtpUser;
-            $mail->Password = $config->smtpPassword;
-        }
-
-        if (trim($config->smtpSecurity) != "" && trim($config->smtpSecurity != "none")) {
-            $mail->SMTPSecure = $config->smtpSecurity;
-        }
-
-        $mail->Subject  = $subject;
-        $mail->Body     = $body;
-        $mail->WordWrap = 50;
-
-        if(!$mail->Send()) {
-        	HookHandler::getInstance()->fire("onError","SendEmail error: ".print_r($mail->ErrorInfo,true));
-            return $mail->ErrorInfo;
-        } else {
-        	HookHandler::getInstance()->fire("onError","SendEmail; Everything looks ok!");
-            return true;
-        }
-        
+    	try {
+	        $mail = new PHPMailer();
+	        // $mail->SMTPDebug = true; Use this for testing only
+	
+	        $mail->IsSMTP();  // telling the class to use SMTP
+	        $mail->IsHTML(true);
+	        $mail->Host = $config->smtpServer;
+	        $mail->Port = $config->smtpPort;
+	        $mail->FromName = $config->emailFromName;
+	        $mail->From = $config->emailFrom;
+	        $emails = explode(';', $config->emailTo);
+	        
+	        foreach($emails as $email) {
+	        	$mail->AddAddress($email);
+	        }
+	
+	        if ($config->smtpUser && $config->smtpPassword) {
+	            $mail->SMTPAuth = true;
+	            $mail->Username = $config->smtpUser;
+	            $mail->Password = $config->smtpPassword;
+	        }
+	
+	        if (trim($config->smtpSecurity) != "" && trim($config->smtpSecurity != "none")) {
+	            $mail->SMTPSecure = $config->smtpSecurity;
+	        }
+	
+	        $mail->Subject  = $subject;
+	        $mail->Body     = $body;
+	        $mail->WordWrap = 50;
+	
+	        if(!$mail->Send()) {
+	        	HookHandler::getInstance()->fire("onError","SendEmail error: ".print_r($mail->ErrorInfo,true));
+	            return $mail->ErrorInfo;
+	        } else {
+	        	HookHandler::getInstance()->fire("onError","SendEmail; Everything looks ok!");
+	            return true;
+	        }
+    	} catch (Exception $e) {
+    		return $e->getMessage();	
+    	}
     }
 
 
