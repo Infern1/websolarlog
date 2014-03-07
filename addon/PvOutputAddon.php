@@ -27,7 +27,7 @@ class PvOutputAddon {
 	 * Start the job
 	 * @param mixed $args
 	 */
-	public function onJob($args) {
+	public function onJob() {
 		$debug = array();
 		foreach ($this->config->devices as $device){
 			if ($device->pvoutputEnabled && $device->active) {
@@ -237,7 +237,7 @@ class PvOutputAddon {
 	 * @param number $smartMeterPower
 	 * @return Ambigous <multitype:boolean, boolean, multitype:boolean unknown , multitype:boolean mixed >|boolean
 	 */
-	private function PVoutputSendData(Device $device, $date, $sendData, $time, $KWHDtot, $GPtot, $GV, $temp, $smartMeterEnergy=0, $smartMeterPower=0) {
+	private function PVoutputSendData($device, $date, $sendData, $time, $KWHDtot, $GPtot, $GV, $temp, $smartMeterEnergy=0, $smartMeterPower=0) {
 		$headerInfo = array();
 		$vars = array();
 		
@@ -442,8 +442,7 @@ class PvOutputAddon {
 	 * 
 	 */
 	public function joinAllDevicesToTeam(){
-		foreach (session::getConfig()->devices as $device){
-			
+		foreach (session::getConfig()->devices as $device){			
 			// if device==active, pvoutputEnabled==enabled, pvoutputApikey existst, pvoutputSystemId exists, pvoutputAutoJoinTeam true
 			if($device->active && $device->pvoutputEnabled && $device->pvoutputApikey && $device->pvoutputSystemId && $device->pvoutputAutoJoinTeam && (!$device->pvoutputWSLTeamMember || $device->pvoutputWSLTeamMember==false)){
 				$this->joinTeam($device);

@@ -80,11 +80,9 @@ $(window).focus(function() {
 	}
 	windowState = true;
 });
-
 function getWindowsState() {
 	return windowState;
 }
-
 function ajaxAbort(xhr) {
 	// set current time
 	currentTime = (new Date()).getTime();

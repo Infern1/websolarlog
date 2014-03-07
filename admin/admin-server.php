@@ -1082,22 +1082,6 @@ switch ($settingstype) {
 		$data['options'] = $options;
 		$data['dayData'] = $dayData;
 		break;
-	case 'forcePVoutputAddStatus':
-		$PVoutputAddon = new PvOutputAddon();
-		$submits=0;
-		if(Util::isSunDown()==true){
-			for ($i = 0; $i <= 3; $i++) {
-				if($PVoutputAddon->onJob()){
-					$submits++;
-				}							
-			}
-			$data['submits'] = $submits;
-			$data['result']=true;
-		}else{
-			$data['submits'] = 0;
-			$data['result']=false;			
-		}
-		break;
 	case 'invoiceInfo':
 		$bill = new Bill();
 		$splitDate = explode("-",$config->invoiceDate);
