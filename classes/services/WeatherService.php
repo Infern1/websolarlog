@@ -150,6 +150,7 @@ class WeatherService {
 			
 			
 			$return = array(
+					"time"=>$lastBean['time'],
 					"weatherSamples"=>$i,
 					"beaufort"=>$beaufort,
 					"avgBeaufort"=>$avgBeaufort,
