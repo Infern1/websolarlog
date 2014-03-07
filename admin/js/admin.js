@@ -1985,11 +1985,21 @@ function init_update(experimental,beta,scrollTo) {
                                     text: 'The update is ready.',
                                     type: 'success'
                                 });
+                                
+                                // WSL does some kind of "soft-restart"
                                 $.pnotify({
                                     title: 'WebSolarLog performs a soft-restart',
                                     text: 'It could take 5-10 min. before all changes are visible.<br>Please be patient.',
                                     type: 'info'
                                 });
+                                
+                                // warn user to clean his browser cache to prevent stange behavior
+                                window.setTimeout($.pnotify({
+                                    title: 'Clean browser cache',
+                                    text: 'WSL heavy use Javascript and to prevent stange behavior we advice to clean/remove the local browser cache.<br>Mostly this could be found in the settings of the browser.',
+                                    type: 'warning'
+                                }),1500);
+                                
                             	var experimental = $('#chkExperimental').is(':checked');
                             	var beta = $('#chkBeta').is(':checked');
                             	init_update(experimental,beta);
