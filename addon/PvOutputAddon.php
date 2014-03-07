@@ -161,26 +161,26 @@ class PvOutputAddon {
 								HookHandler::getInstance()->fire("onDebug","PVo return a good and solid 200!! We are happy :) ");
 								$object->pvoutput = 1;
 								$this->history->save($object);
-								return true;
+								//return true;
 						}elseif ($result['info']['http_code'] == "400") {
 								HookHandler::getInstance()->fire("onDebug","PVo return a bad 400!! something went wrong... ".print_r($result,true));
 								$object->pvoutput = 2;
 								$object->pvoutputErrorMessage = $result['response'];
 								$this->history->save($object);
-								return false;
+								//return false;
 						}else{
 							HookHandler::getInstance()->fire("onDebug","PVo return something we do not understand... something went wrong... ".print_r($result,true));
 							$object->pvoutput = 0;
 							$object->pvoutputErrorMessage = $result['response'];
 							$this->history->save($object);
-							return false;
+							//return false;
 						}
 					}else{
 						HookHandler::getInstance()->fire("onDebug","PVo return something we do not understand... something went wrong... ".print_r($result,true));
 						$object->pvoutput = 0;
 						$object->pvoutputErrorMessage = 'unknown error....';
 						$this->history->save($object);
-						return false;
+						//return false;
 					}
 				}
 			}
