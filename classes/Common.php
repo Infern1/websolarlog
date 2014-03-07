@@ -212,6 +212,10 @@ class Common
         return true;
     }
 
+    private static $last_mail_count = 0 ;
+    private static $last_mail_subject = "";
+    private static $last_mail_time = 0;
+    
     /**
      * Sends out an email with the given settings
      * @param string $subject
@@ -248,6 +252,27 @@ class Common
 	        $mail->Subject  = $subject;
 	        $mail->Body     = $body;
 	        $mail->WordWrap = 50;
+	        
+	        // Reset if last mail was longer then 30 seconds a go
+	        if (time() - self::$last_mail_time > 30) {
+	        	self::$last_mail_count = 0;
+	        }
+	        
+	        // Check if it is a loop
+	        if (self::$last_mail_subject === $subject) {
+	        	self::$last_mail_count++;
+	        	HookHandler::getInstance()->fire("onDebug","mail loop detected count=" . self::$last_mail_count);
+	        } else {
+	        	self::$last_mail_subject = $subject;
+	        	self::$last_mail_count = 0;
+	        }
+	        self::$last_mail_time = time();
+
+	        
+	        if (self::$last_mail_count > 5) {
+	        	HookHandler::getInstance()->fire("onDebug","mail blocked more then 5 times withing 30 seconds");
+	        	return "mail blocked more then 5 times withing 30 seconds";
+	        }
 	
 	        if(!$mail->Send()) {
 	        	HookHandler::getInstance()->fire("onError","SendEmail error: ".print_r($mail->ErrorInfo,true));
