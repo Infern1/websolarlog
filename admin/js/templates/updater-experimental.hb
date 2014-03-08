@@ -12,7 +12,7 @@ WebSolarLog Group:<br>New communication manager is now active</a>
 <br>
 <br>
 <br>
-Only click the button below when you understand the Beta/Trunk risks!<br>
+Only click the button below if you understand the Beta/Trunk risks!<br>
 ================================
 <button id="understand">I understand and want to &#x00A;see the update options!</button>
 <br>
