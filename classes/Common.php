@@ -275,10 +275,9 @@ class Common
 	        }
 	
 	        if(!$mail->Send()) {
-	        	HookHandler::getInstance()->fire("onError","SendEmail error: ".print_r($mail->ErrorInfo,true));
+	        	//HookHandler::getInstance()->fire("onError","SendEmail error: ".print_r($mail->ErrorInfo,true));
 	            return $mail->ErrorInfo;
 	        } else {
-	        	HookHandler::getInstance()->fire("onError","SendEmail; Everything looks ok!");
 	            return true;
 	        }
     	} catch (Exception $e) {
