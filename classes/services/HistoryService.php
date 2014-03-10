@@ -10,7 +10,11 @@ class HistoryService {
 	public function save(History $object) {
 		$bObject = ($object->id > 0) ? R::load(self::$tbl, $object->id) : R::dispense(self::$tbl);
 		$bObject = $this->toBean($object, $bObject);
-		$object->id = R::store($bObject);
+		if($bObject->deviceId){
+			$object->id = R::store($bObject);
+		}else{
+			HookHandler::getInstance()->fire("onDebug","We tried to save a bean with no DeviceId. DebugInfo:".get_parent_class($object));
+		}
 		return $object;
 	}
 
