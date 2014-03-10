@@ -8,7 +8,7 @@ class HistoryService {
 	
 
 	public function janitorDbCheck() {
-		HookHandler::getInstance()->fire("onDebug", "HistorySmartMeterService janitor DB Check");
+		HookHandler::getInstance()->fire("onDebug", "HistoryService janitor DB Check");
 		// We reasonly discovered a bug which created NULL records in the history table, so we need to delete these records.
 		R::exec("DELETE FROM 'history' WHERE deviceId is null");
 	}
