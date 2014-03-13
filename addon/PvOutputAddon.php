@@ -28,12 +28,12 @@ class PvOutputAddon {
 	 * @param mixed $args
 	 */
 	public function onJob() {
-		HookHandler::getInstance()->fire("onDebug","Let do some PVoutput 'magic'...");
+		HookHandler::getInstance()->fire("onDebug",__METHOD__."::Let do some PVoutput 'magic'...");
 		$debug = array();
 		foreach ($this->config->devices as $device){
-			HookHandler::getInstance()->fire("onDebug","starting with device".$device->name);
+			HookHandler::getInstance()->fire("onDebug",__METHOD__."::starting with device".$device->name);
 			if ($device->pvoutputEnabled && $device->active) {
-				HookHandler::getInstance()->fire("onDebug","Device '".$device->name."' itself is enabled and has pvoutput turned on.");
+				HookHandler::getInstance()->fire("onDebug",__METHOD__."::Device '".$device->name."' itself is enabled and has pvoutput turned on.");
 				$live = $this->getUnsendHistory($device->id);
 				
 				// Set the defaults
@@ -58,7 +58,7 @@ class PvOutputAddon {
 				
 				// Fill in the values for the found live values
 				if(count($live)>=1){
-					HookHandler::getInstance()->fire("onDebug","We got a live record for '".$device->name."");
+					HookHandler::getInstance()->fire("onDebug",__METHOD__."::We got a live record for '".$device->name."");
 					$date = date("Ymd", $live->time);
 					$time = date("H:i", $live->time);
 					$timestamp = $live->time;
@@ -86,7 +86,7 @@ class PvOutputAddon {
 					//we get SmartMeter data so we want to send this data day and night.
 					$sendDataWholeDay = true;
 				}else{
-					HookHandler::getInstance()->fire("onDebug","We got no smartmeter data for '".$device->name."");
+					HookHandler::getInstance()->fire("onDebug",__METHOD__."::We got no smartmeter data for '".$device->name."");
 					//we get NO SmartMeter data so we don't want to send this data day and night.
 					$v3 = 0;//v3	Energy Consumption	No	number	watt hours	10000	r1
 					$v4 = 0;//v4	Power Consumption	No	number	watts	2000	r1
@@ -97,19 +97,19 @@ class PvOutputAddon {
 				
 				//When the sun is NOT down OR if the sun is down and we want to "sendDataWholeDay":
 				if(Util::isSunDown(-1800)==false || (Util::isSunDown(-1800)==true && $sendDataWholeDay == true)){
-					HookHandler::getInstance()->fire("onDebug","The sun is up for '".$device->name." so we may/need send data");
+					HookHandler::getInstance()->fire("onDebug",__METHOD__."::The sun is up for '".$device->name." so we may/need send data");
 					$result = $this->PVoutputSendData($device, $date, $sendData,$time, $v1, $v2, $v6, $v5, $v3, $v4);
 					
 					if($result){
-						HookHandler::getInstance()->fire("onDebug","Looks like we send data for '".$device->name."".print_r($result,true));
+						HookHandler::getInstance()->fire("onDebug",__METHOD__."::Looks like we send data for '".$device->name."".print_r($result,true));
 					}else{
-						HookHandler::getInstance()->fire("onDebug","did something went wrong with sending the data?");
+						HookHandler::getInstance()->fire("onDebug",__METHOD__."::did something went wrong with sending the data?");
 					}
 					
 					
 					
 					if(count($live)>=1){
-						HookHandler::getInstance()->fire("onDebug","Again we got live data for '".$device->name."");
+						HookHandler::getInstance()->fire("onDebug",__METHOD__."::Again we got live data for '".$device->name."");
 						
 						$object = new History();
 						
@@ -161,25 +161,25 @@ class PvOutputAddon {
 						$object->pvoutputSendTime = time();
 						
 						if ($result['info']['http_code'] == "200") {
-								HookHandler::getInstance()->fire("onDebug","PVo return a good and solid 200!! We are happy :) ");
+								HookHandler::getInstance()->fire("onDebug",__METHOD__."::PVo return a good and solid 200!! We are happy :) ");
 								$object->pvoutput = 1;
 								$this->history->save($object);
 								//return true;
 						}elseif ($result['info']['http_code'] == "400") {
-								HookHandler::getInstance()->fire("onDebug","PVo return a bad 400!! something went wrong... ".print_r($result,true));
+								HookHandler::getInstance()->fire("onDebug",__METHOD__."::PVo return a bad 400!! something went wrong... ".print_r($result,true));
 								$object->pvoutput = 2;
 								$object->pvoutputErrorMessage = $result['response'];
 								$this->history->save($object);
 								//return false;
 						}else{
-							HookHandler::getInstance()->fire("onDebug","PVo return something we do not understand... something went wrong... ".print_r($result,true));
+							HookHandler::getInstance()->fire("onDebug",__METHOD__."::PVo return something we do not understand... something went wrong... ".print_r($result,true));
 							$object->pvoutput = 0;
 							$object->pvoutputErrorMessage = $result['response'];
 							$this->history->save($object);
 							//return false;
 						}
 					}else{
-						HookHandler::getInstance()->fire("onDebug","PVo return something we do not understand... something went wrong... ".print_r($result,true));
+						HookHandler::getInstance()->fire("onDebug",__METHOD__."::PVo return something we do not understand... something went wrong... ".print_r($result,true));
 						//$object->pvoutput = 0;
 						//$object->pvoutputErrorMessage = 'unknown error....';
 						//$this->history->save($object);
@@ -261,9 +261,9 @@ class PvOutputAddon {
 	private function PVoutputSendData($device, $date, $sendData, $time, $KWHDtot, $GPtot, $GV, $temp, $smartMeterEnergy=0, $smartMeterPower=0) {
 		$headerInfo = array();
 		$vars = array();
-		HookHandler::getInstance()->fire("onDebug","We are in the section that sends the data");
+		HookHandler::getInstance()->fire("onDebug",__METHOD__."::We are in the section that sends the data");
 		if($sendData){
-			HookHandler::getInstance()->fire("onDebug","We are in 'sendData'");
+			HookHandler::getInstance()->fire("onDebug",__METHOD__."::We are in 'sendData'");
 			try {
 	
 				$vars['d'] = $date;
@@ -504,7 +504,7 @@ class PvOutputAddon {
 	 * @return multitype:boolean mixed |boolean
 	 */
 	private function PVoutputCurl($url,$vars,$headerInfo,$returnOutput=false){
-		HookHandler::getInstance()->fire("onDebug","We are in the PVoCurl function");
+		HookHandler::getInstance()->fire("onDebug",__METHOD__."::We are in the PVoCurl function");
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_POST, count($vars));
 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($vars));
@@ -521,14 +521,14 @@ class PvOutputAddon {
 		
 		
 		if ($info['http_code'] == "200") {
-			HookHandler::getInstance()->fire("onDebug","Curl return 200");
+			HookHandler::getInstance()->fire("onDebug",__METHOD__."::Curl return 200");
 			if($returnOutput){
 				return array('result'=>true,'response'=> $response,'info'=>$info);
 			}else{
 				return true;
 			}
 		}else{
-			HookHandler::getInstance()->fire("onDebug","Curl returned something else then 200");
+			HookHandler::getInstance()->fire("onDebug",__METHOD__."::Curl returned something else then 200");
 			if($returnOutput){
 				return array('result'=>false,'response'=> $response,'info'=>$info);
 			}else{

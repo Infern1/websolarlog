@@ -223,7 +223,7 @@ class Common
      * @return string|boolean
      */
     public static function sendMail($subject, $body, $config) {
-    	HookHandler::getInstance()->fire("onDebug","Starting with function sendMail()");
+    	HookHandler::getInstance()->fire("onDebug",__METHOD__."::Starting with function sendMail()");
     	try {
 	        $mail = new PHPMailer();
 	        // $mail->SMTPDebug = true; Use this for testing only
@@ -262,7 +262,7 @@ class Common
 	        // Check if it is a loop
 	        if (self::$last_mail_subject === $subject) {
 	        	self::$last_mail_count++;
-	        	HookHandler::getInstance()->fire("onDebug","mail loop detected count=" . self::$last_mail_count);
+	        	HookHandler::getInstance()->fire("onDebug",__METHOD__."::mail loop detected count=" . self::$last_mail_count);
 	        } else {
 	        	self::$last_mail_subject = $subject;
 	        	self::$last_mail_count = 0;
@@ -271,19 +271,19 @@ class Common
 
 	        
 	        if (self::$last_mail_count > 5) {
-	        	HookHandler::getInstance()->fire("onDebug","mail blocked more then 5 times withing 30 seconds");
+	        	HookHandler::getInstance()->fire("onDebug",__METHOD__."::mail blocked more then 5 times withing 30 seconds");
 	        	return "mail blocked more then 5 times withing 30 seconds";
 	        }
 	
 	        if(!$mail->Send()) {
-	        	HookHandler::getInstance()->fire("onDebug","SendEmail error: ".print_r($mail->ErrorInfo,true));
+	        	HookHandler::getInstance()->fire("onDebug",__METHOD__."::SendEmail error: ".print_r($mail->ErrorInfo,true));
 	            return $mail->ErrorInfo;
 	        } else {
-	        	HookHandler::getInstance()->fire("onDebug","SendEmail success!");
+	        	HookHandler::getInstance()->fire("onDebug",__METHOD__."::SendEmail success!");
 	            return true;
 	        }
     	} catch (Exception $e) {
-    		HookHandler::getInstance()->fire("onDebug","SendEmail Exception".print_r($e->getMessage(),true));
+    		HookHandler::getInstance()->fire("onDebug",__METHOD__."::SendEmail Exception".print_r($e->getMessage(),true));
     		return $e->getMessage();	
     	}
     }
