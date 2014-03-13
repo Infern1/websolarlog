@@ -122,7 +122,7 @@
 			{{#each data.slimConfig.devices}}
 				{{#unless_eq this.events.info compare=null}}
 					<div class="column span-4 first">{{this.name}}</div>
-					<div class="column span-4" title="{{timestampDateFormat this.events.info.time format="H:mm:ss"}}">{{timestampDateFormat this.events.info.time format="DD MMM YYYY"}}</div>
+					<div class="column span-4" title="{{timestampDateFormat this.events.info.time format="HH:mm:ss"}}">{{timestampDateFormat this.events.info.time format="DD MMM YYYY"}}</div>
 					<div class="column span-11 last">{{this.events.info.eventHTML}}</div>
 				{{/unless_eq}}
 			{{/each}}
@@ -198,7 +198,7 @@
 						<tbody>
 							{{#each this.events.notice}}
 							<tr>
-								<td style="white-space: nowrap;" title="{{timestampDateFormat this.time format="H:mm:ss"}}">{{timestampDateFormat this.time format="DD MMM YYYY"}}</td>
+								<td style="white-space: nowrap;" title="{{timestampDateFormat this.time format="HH:mm:ss"}}">{{timestampDateFormat this.time format="DD MMM YYYY"}}</td>
 								<td>{{this.eventHTML}}</td>
 							</tr>
 							{{/each}}
@@ -233,7 +233,7 @@
 						<tbody>
 							{{#each this.events.alarm}}
 							<tr>
-								<td style="white-space: nowrap;" title="{{timestampDateFormat this.time format="H:mm:ss"}}">{{timestampDateFormat this.time format="DD MMM YYYY"}}</td>
+								<td style="white-space: nowrap;" title="{{timestampDateFormat this.time format="HH:mm:ss"}}">{{timestampDateFormat this.time format="DD MMM YYYY"}}</td>
 								<td>{{this.eventHTML}}</td>
 							</tr>
 							{{/each}}
