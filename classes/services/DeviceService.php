@@ -239,6 +239,13 @@ class DeviceService {
 		$object->refreshTime = (isset($bObject->refreshTime) && $bObject->refreshTime != "") ? $bObject->refreshTime : $object->refreshTime;
 		$object->historyRate = (isset($bObject->historyRate) && $bObject->historyRate != "") ? $bObject->historyRate : $object->historyRate;
 		
+
+		// prevent fast polling on OWM API
+		if($object->deviceApi == "Open-Weather-Map"){
+			$object->refreshTime = 900; // force 900sec(15min) to prevent fast data polling on the OWM API
+			$object->historyRate = 900; // force 900sec(15min) to prevent fast data polling on the OWM API
+		}
+		
 		// retrieve by panelService
 		$object->panels = $this->panelService->getArrayByDevice($object);
 		$object->plantpower = 0;
