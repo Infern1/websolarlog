@@ -42,7 +42,7 @@ Class WeatherOWM implements DeviceApi {
 		$latlng = "&lat=" . $this->lat . "&lon=" . $this->lon;
 		$result = json_decode($this->call($url . $latlng));
 		// lets check if we have received data
-		if(count($result)>0){
+		if(is_array($result->list)){
 			
 			$weather = new Weather();
 			$weather->deviceId = -1;
@@ -74,6 +74,7 @@ Class WeatherOWM implements DeviceApi {
 			
 			return $weather;
 		}else{
+			HookHandler::getInstance()->fire("onDebug","Looks like we didn't receive useful data from OWM::".print_r($result,true));
 			return null;
 		}
 	}
