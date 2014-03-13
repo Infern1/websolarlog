@@ -58,6 +58,7 @@
     <div class="all create_new metering production deviceApi">
     <label for="comAddress">(RS485/IP) address:</label><input type="text" name="comAddress" value="{{data.inverter.comAddress}}" /> {{infoTooltip title="RS485: 1-255<br>IP: v4 of v6 address"}}<br />
     </div>
+    <div class="all create_new metering production deviceApi">
     <div class="span-8 first">
     <br>
     <label for="liveRate" style="float:left;">Live poll Rate:</label>
@@ -65,7 +66,7 @@
     <div class="span-14 last" >
     <br>
     <div>
-    <div id="sliderLiveRate" class="span-20"></div><br>
+    <div id="sliderLiveRate"  class="span-20"></div><br>
     <input type="text" name="refreshTime" id="refreshTime" value="{{data.inverter.refreshTime}}" />
      {{infoTooltip title="How often should this device be queried for live data thats shown on the frontend?<br>2 - 60 seconds<br>
     For devices with a slow connection, such as BlueTooth, we recommend a value >=8 seconds.<br>A smaller value could result in a WSL or Device hang."}}    
@@ -84,6 +85,7 @@
     Small value will result in a detailed graph with more spikes.<br>
     Big value will result in a less detaild and flatten/smoother graph."}}<br />
     </div></div>    
+    </div>
     <hr>
     <div class="all production logcomm">
     <label for="comLog">Log comm:</label>
