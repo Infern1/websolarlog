@@ -223,6 +223,7 @@ class Common
      * @return string|boolean
      */
     public static function sendMail($subject, $body, $config) {
+    	HookHandler::getInstance()->fire("onDebug","Starting with function sendMail()");
     	try {
 	        $mail = new PHPMailer();
 	        // $mail->SMTPDebug = true; Use this for testing only
@@ -275,12 +276,14 @@ class Common
 	        }
 	
 	        if(!$mail->Send()) {
-	        	//HookHandler::getInstance()->fire("onError","SendEmail error: ".print_r($mail->ErrorInfo,true));
+	        	HookHandler::getInstance()->fire("onDebug","SendEmail error: ".print_r($mail->ErrorInfo,true));
 	            return $mail->ErrorInfo;
 	        } else {
+	        	HookHandler::getInstance()->fire("onDebug","SendEmail success!");
 	            return true;
 	        }
     	} catch (Exception $e) {
+    		HookHandler::getInstance()->fire("onDebug","SendEmail Exception".print_r($e->getMessage(),true));
     		return $e->getMessage();	
     	}
     }

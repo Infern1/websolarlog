@@ -1710,6 +1710,8 @@ class PDODataAdapter {
 
 		foreach ($config->devices as $device){			
 			if($device->type=="production"){
+				// TODO
+				// We probably do not want to run this query, because its also in the "else" below so we do this dubble
 				$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
 				$oDevice = 	array();
 				
@@ -1806,7 +1808,7 @@ class PDODataAdapter {
 					$live->trend = _($live->trendImage);
 				}
 
-				$oDevice["id"] = $liveBean['INV'];
+				$oDevice["id"] = $device->id;
 				$oDevice["currentTime"] = time();
 				$oDevice["live"] = $live;
 
