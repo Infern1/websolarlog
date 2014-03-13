@@ -1033,6 +1033,14 @@ switch ($settingstype) {
 		$beans = R::getAll('sqlite_master',"WHERE  tbl_name == ':tableName'",array(":type"=>'index',":tableName"=>'history'));
 		var_dump($beans);	
 		break;
+	case 'getHistoryDataPowerOne':
+		foreach ($config->devices as $device){
+			if ($device->deviceApi == "AURORA") {
+				$powerOne = new Aurora($device->path, $device->address, $device->debug);
+				$powerOne->getHistoryData();
+			}
+		}
+		break;
 	case 'getConfig':
 		// check if WSLConfig.json exists in the php tmp directory
 		if(file_exists(sys_get_temp_dir()."/WSLConfig.json")){
