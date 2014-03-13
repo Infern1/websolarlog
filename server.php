@@ -1,23 +1,8 @@
 <?php
 define('checkaccess', TRUE);
 // clear old session logs
-if(isset($_SESSION['logId'])){
-	$_SESSION['logId'.$_SESSION['logId']] = null;
-	$_SESSION['logId'.$_SESSION['logId']] = array();
-}
-//create new session logId
-$logId = rand(100, 99999);
-//set logId for session
-$_SESSION['logId'] = $logId;
-//create startTime for this logId
-$_SESSION['logId'.$_SESSION['logId']]['startTime'] = microtime(true);
 
 require 'classes/classloader.php';
-$_SESSION['logId'.$_SESSION['logId']][]['server.afterClassLoader'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-
-
-$_SESSION['logId'.$_SESSION['logId']][]['server.afterLightInit'] =   (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-
 
 try {
 	$data = array();
@@ -673,43 +658,7 @@ try {
 			break;
 	}
 	
-	// create the Log and SlowLog array
-	if(is_array($_SESSION['logId'.$_SESSION['logId']])){
-		foreach ($_SESSION['logId'.$_SESSION['logId']] as $values) {
-			if(is_array($values)){
-				foreach($values  as $key=>$value){
-					//echo $value;
-			        if(isset($backupValue)){
-			        	$diff = $value - $backupValue;
-			            if($diff> 0.5){
-			            	$logSlow[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff);
-			            }
-			        }else{
-			                $diff = 0;
-			        }
 
-			        $backupKey = $key;
-			        $backupValue = $value;
-			         
-			        if(($value - $backupValue) < 0.0001){
-			        	$diff = 0.0001;
-			        }
-			  		$log[]= array("logId"=>$_SESSION['logId'],"key"=>$key,"value"=>$value,"diff"=>$diff);
-
-				}
-			}
-		}
-	}
-	// total time for the API run:
-	$_SESSION['logId'.$_SESSION['logId']][]['server.endTime'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-	
-	$log[]= array("logId"=>$_SESSION['logId'],"key"=>"server.endTime","value"=>microtime(true),"diff"=>(microtime(true)-$_SESSION['logId'.$_SESSION['logId']]['startTime']),"diffText"=>"");
-	
-	$_SESSION['logId'.$_SESSION['logId']] = null;
-	if(isset($_GET['log'])){
-		$data['log'] = $log;
-		$data['logSlow'] = $logSlow;
-	}
 	echo json_encode($data);
 } catch (Exception $e) {
 	// get ErrorMessage

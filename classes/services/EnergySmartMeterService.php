@@ -60,7 +60,6 @@ class EnergySmartMeterService {
 	}
 	
 	public function onSummary($args){
-		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.startxxxxx'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 		$device = $args[1];
 		$date = $args[2];
 		
@@ -76,8 +75,6 @@ class EnergySmartMeterService {
 			$data['CO2avoid'] =  ($energy->KWH*$this->config->co2kwh)/1000;
 			$data['trees'] =  $energy->KWH*$this->config->co2CompensationTree;
 			
-			
-			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.return'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			return $data;
 		}else{
 			return;
@@ -102,10 +99,7 @@ class EnergySmartMeterService {
 	 * @return Array of Energy
 	 */
 	public function getEnergyListByDevice(Device $device) {
-		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.start'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-		
 		$bObjects = R::find( self::$tbl, ' INV = :deviceId ORDER BY time', array("deviceId"=>$device->id));
-		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterFind'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 		
 		$objects = array();
 		foreach ($bObjects as $bObject) {

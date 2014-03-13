@@ -245,7 +245,6 @@ class SmartMeterAddon {
 					' deviceId = :deviceId AND time >= :beginDate AND  time <= :endDate ',
 					$parameters
 			);
-			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterFind'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			
 			$find = reset ( $finds );
 			
@@ -598,17 +597,13 @@ class SmartMeterAddon {
 	 * @return array($beginDate, $endDate);
 	 */
 	// Hook fired with ("GraphDayPoints",$deviceId,$startDate,$type,$hiddenSeries);
-	public function GraphDayPoints($args){
-		$_SESSION['logId'.$_SESSION['logId']][]['SmartMeterAddon::GraphDayPoints start'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-		
+	public function GraphDayPoints($args){		
 		if($args[1]->deviceApi == 'DutchSmartMeter'){
 			(strtolower($args[3]) == 'today')?$type='day':$type=$args[3];
 			$graphDataService = new GraphDataService();
 			$graph = $this->readTablesPeriodValues($args[1], 'historySmartMeter', $type, $args[2]);
-			$_SESSION['logId'.$_SESSION['logId']][]['SmartMeterAddon::GraphDayPoints readTablesPeriodValues'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			
 			$graph = $this->beansToGraphPoints($graph,$args[2],$args[4]);
-			$_SESSION['logId'.$_SESSION['logId']][]['SmartMeterAddon::GraphDayPoints beansToGraphPoints'] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 				
 			return $graph;
 		}

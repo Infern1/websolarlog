@@ -1,16 +1,7 @@
 <?php
 error_reporting(E_ALL);
 // clear old session logs
-if(isset($_SESSION['logId'])){
-	$_SESSION['logId'.$_SESSION['logId']] = null;
-	$_SESSION['logId'.$_SESSION['logId']] = array();
-}
-//create new session logId
-$logId = rand(100, 99999);
-//set logId for session
-$_SESSION['logId'] = $logId;
-//create startTime for this logId
-$_SESSION['logId'.$_SESSION['logId']]['startTime'] = microtime(true);
+
 
 $docRoot = dirname(dirname(__FILE__));
 require_once $docRoot . '/classes/classloader.php';

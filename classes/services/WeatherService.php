@@ -98,21 +98,16 @@ class WeatherService {
 		$device = $args[1];
 		$date = $args[2];
 		
-		$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.start.DeviceId='.$device->id] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
-		
 		if($device->deviceApi == "Open-Weather-Map"){
 	
 			(!$date)? $date = date('d-m-Y') : $date = $date;
 			$beginEndDate = Util::getBeginEndDate('day', 1,$date);
-			
-			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.beforeFind.DeviceId='.$device->id] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			
 			
 			// from findAll(return beans) to getAll(return array)
 			$beans =  R::findAll('weather', ' WHERE deviceId = :deviceId AND time > :beginDate AND time < :endDate ',
 					array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 			);
-			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterFind.DeviceId='.$device->id] = (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 		
 			$i=0;
 			$temp = 0;
@@ -130,7 +125,6 @@ class WeatherService {
 			
 			
 			$degreeDays = round($degreeDays/$i,2);
-			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.afterTempAdd'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			
 			$avgTemp = round($sumTemp/$i,2);
 			$avgWind = round($sumWindSpeed/$i,2);
@@ -173,10 +167,8 @@ class WeatherService {
 					"rain3h" =>($lastBean['rain3h']==0)? 0 : $lastBean['rain3h'],
 					"clouds" =>$lastBean['clouds']
 			);
-			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.return'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			return $return; 
 		}else{
-			$_SESSION['logId'.$_SESSION['logId']][][__METHOD__.'.noRelevantDevice'] =  (microtime(true) - $_SESSION['logId'.$_SESSION['logId']]['startTime']);
 			return;
 		}
 	}
