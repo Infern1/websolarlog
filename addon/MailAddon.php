@@ -26,11 +26,12 @@ class MailAddon {
 		$hookname = $args[0];
 		$device = $args[1];
 		HookHandler::getInstance()->fire("onDebug",__METHOD__."::End day Report:: Inverter Shutdown");
+		HookHandler::getInstance()->fire("onDebug",__METHOD__."::End day Report::args::".print_r($args,true));
 		if (Session::getConfig()->emailReports) {
 			HookHandler::getInstance()->fire("onDebug",__METHOD__."::End day Report:: Config says; you may send!");
-			$title = "WSL :: Shutdown " . $device->name;
+			$title = "WSL :: Shutdown inverter " . $device->name;
 			$body = $this->createReport($device);
-			
+
 			Common::sendMail($title, $body, Session::getConfig());		
 		}else{
 			HookHandler::getInstance()->fire("onDebug",__METHOD__."::End day Report:: Config says; you may NOT send!");

@@ -752,6 +752,11 @@ switch ($settingstype) {
 		}
 
 		break;
+	case 'send-shutdownEmail':
+		$mailAddon = new MailAddon();
+		var_dump($config->devices[2]);
+		$mailAddon->onInverterShutdown(array('test',$config->devices[2]));	
+		break;
 	case "getAllPlugs":
 		$plugwise = new PlugwiseStretchAddon();
 		if($config->plugwiseStrech20ID && $config->plugwiseStrech20IP){
