@@ -1053,6 +1053,12 @@ switch ($settingstype) {
 		R::performWSLBackup("../backup");
 		
 		break;
+		
+	case 'ampyTesting':
+		$ampySmartMeter = new SmartMeterAmpyRemote(Common::getValue('path'), Common::getValue('address'), Common::getValue('debug'));
+		$data = $ampySmartMeter->getData();
+		var_dump($data);
+		break;
 	case 'getPeriodFilter':
 		$dayData = new DayDataResult();
 		$options = array();
