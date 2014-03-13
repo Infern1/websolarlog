@@ -1708,7 +1708,7 @@ class PDODataAdapter {
 			if($device->type=="production"){
 				// TODO
 				// We probably do not want to run this query, because its also in the "else" below so we do this dubble
-				$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
+				//$liveBean =  R::findOne('live',' INV = :INV ', array(':INV'=>$device->id));
 				$oDevice = 	array();
 				
 				// if sun is down AND voltage of string1 is 0, then we are down.
