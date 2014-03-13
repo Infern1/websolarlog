@@ -1,7 +1,7 @@
 <?php 
 
 Class WeatherOWM implements DeviceApi {
-	private $weatherUrl = "http://openweathermap.org/data/2.5/find?units=metrics&cnt=1&mode=json";
+	private $weatherUrl = "http://api.openweathermap.org/data/2.5/find?units=metrics&cnt=1&mode=json";
 	private $lat;
 	private $lon;
 	
