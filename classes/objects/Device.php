@@ -87,8 +87,11 @@ class Device {
 	    if ($this->deviceApi == "DutchSmartMeter") {
 	    	$api = new SmartMeter($config->smartmeterpath, $this->comAddress, $config->comDebug);
 	    }
-    	if ($this->deviceApi == "DutchSmartMeterRemote") {
+        	if ($this->deviceApi == "DutchSmartMeterRemote") {
 	    	$api = new SmartMeterRemote($config->smartmeterpath, $this->comAddress, $config->comDebug);
+	    }
+	    if ($this->deviceApi == "SmartMeterAmpyRemote") {
+	    	$api = new SmartMeterAmpyRemote($config->smartmeterpath, $this->comAddress, $config->comDebug);
 	    }
     	if ($this->deviceApi == "Mastervolt") {
 	    	$api = new MasterVolt($config->mastervoltpath, $this->comAddress, $config->comDebug);

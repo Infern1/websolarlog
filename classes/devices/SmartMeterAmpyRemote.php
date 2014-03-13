@@ -64,7 +64,7 @@ Class SmartMeterAmpyRemote implements DeviceApi {
     	//echo "\r\ngetLiveData\r\n";
     	$data = explode("\n",$this->getData());
     	//echo "\r\ndata:".var_dump($data)."\r\n";
-    	return SmartMeterAmpyConverter::toLiveSmartMeter($data);
+    	return SmartMeterAmpyRemoteConverter::toLiveSmartMeter($data);
     }
 
     public function getInfo() {

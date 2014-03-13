@@ -103,7 +103,7 @@ class DeviceService {
 				array('value'=>'Diehl-ethernet','type'=>'production','name'=>'Diehl Ethernet'),
 				array('value'=>'DutchSmartMeter','type'=>'metering','name'=>'Dutch Smart Meter'),
 				array('value'=>'DutchSmartMeterRemote','type'=>'metering','name'=>'Dutch Smart Meter Remote'),
-				array('value'=>'SmartMeterAmpy','type'=>'metering','name'=>'Smart Meter Ampy'),
+				array('value'=>'SmartMeterAmpyRemote','type'=>'metering','name'=>'Smart Meter Ampy Remote'),
 				array('value'=>'KostalPiko','type'=>'production','name'=>'Kostal Piko'),
 				array('value'=>'MasterVolt','type'=>'production','name'=>'MasterVolt'),
 				array('value'=>'SoladinSolget','type'=>'production','name'=>'SoladinSolget'),
@@ -242,8 +242,8 @@ class DeviceService {
 
 		// prevent fast polling on OWM API
 		if($object->deviceApi == "Open-Weather-Map"){
-			$object->refreshTime = 900; // force 900sec(15min) to prevent fast data polling on the OWM API
-			$object->historyRate = 900; // force 900sec(15min) to prevent fast data polling on the OWM API
+			$object->refreshTime = 600; // force 600sec(10min) to prevent fast data polling on the OWM API
+			$object->historyRate = 600; // force 600sec(10min) to prevent fast data polling on the OWM API
 		}
 		
 		// retrieve by panelService
