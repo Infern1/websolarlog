@@ -94,7 +94,8 @@ Class WeatherOWM implements DeviceApi {
     	$result = false;
     	$data = $this->getData();
     	//check to see if we have a integer value for data->time and its bigger then 1
-    	if (is_int($data->time) and $data->time > 1) {
+
+    	if (is_array($data->list)) {
     		$result = true;
     	}
     	
