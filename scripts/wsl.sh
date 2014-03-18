@@ -27,6 +27,14 @@ is_running(){
         if [ "$?" -eq "1" ]
         then
           return
+	else
+		FOUND=`find $PIDFOLDER -name "$PHPSCRIPTNAME".pid -newermt '2 minute ago'`
+		if [ "$FOUND" == "" ]
+		then
+	                kill -9 `$CAT $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` 2> /dev/null
+			rm -f $PIDFOLDER"/"$PHPSCRIPTNAME".pid"
+			return
+		fi
         fi
 
         RESULT="YES"
@@ -60,8 +68,17 @@ start)
 stop)
      if [ "$RESULT" = 'YES' ]
      then
-        kill `$CAT $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` 2> /dev/null
-        rm -f $PIDFOLDER"/"$PHPSCRIPTNAME".pid"
+        kill -9 `$CAT $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` 2> /dev/null
+#	sleep 3
+	#ps awux |grep -v grep | grep `$CAT $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` > /dev/null
+	kill -0 `$CAT $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` 2> /dev/null
+	if [ "$?" -eq "1" ]
+	then
+        	rm -f $PIDFOLDER"/"$PHPSCRIPTNAME".pid"
+	else
+		kill -9 `$CAT $PIDFOLDER"/"$PHPSCRIPTNAME".pid"` 2> /dev/null
+		rm -f $PIDFOLDER"/"$PHPSCRIPTNAME".pid"
+	fi
      else
         echo "WebSolarLog is not running"
      fi
