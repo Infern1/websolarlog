@@ -1,9 +1,11 @@
 <?php
 class HistoryService {
 	public static $tbl = "history";
+	public static $config;
 	
 	function __construct() {
 		HookHandler::getInstance()->add("onJanitorDbCheck", "HistoryService.janitorDbCheck");
+		self::$config = Session::getConfig(); 
 	}
 	
 
@@ -21,14 +23,75 @@ class HistoryService {
 	public function save(History $object) {
 		$bObject = ($object->id > 0) ? R::load(self::$tbl, $object->id) : R::dispense(self::$tbl);
 		$bObject = $this->toBean($object, $bObject);
+
 		if($bObject->deviceId){
+			// try to fix a late start with adding a dummy record
+			$this->fixLateStartAddDummyRecord($bObject);
+			
+			// store history object to This table
 			$object->id = R::store($bObject);
 		}else{
 			HookHandler::getInstance()->fire("onDebug","We tried to save a bean with no DeviceId. DebugInfo:".get_parent_class($object));
 		}
 		return $object;
 	}
+	
+	/**
+	 * 
+	 * Add a dummy record so the graph and daily figures could be fixed.
+	 * 
+	 * @param Device $bObject
+	 */
+	public function fixLateStartAddDummyRecord($bObject){
+		// get last saved history item
+		$lastHistoryItem = $this->getLastHistory($bObject);
+			
+		// get today begin/end timestamps
+		$todayTimestamp = Util::getBeginEndDate('today',1);
+			
+		// get today suninfo
+		$sunInfo = date_sun_info( $todayTimestamp['beginDate'] , self::$config->latitude, self::$config->longitude );
+		
+		/*
+		 * here we do 2 checks;
+		* 1. is current KWHT - last['KWHT'] > 0
+		* 2. is sunrise timestamp - last['time'] > 21600 (6 hours) (we
+		* 3. check if the day of the last record AND today are different
+		* if these checks are good;
+		* we are probably started later with logging and so make a dummy record to fix the graph and daily production
+		*/
+		if((
+				($bObject->KWHT - $lastHistoryItem['KWHT']) > 0) AND 
+				(($sunInfo['sunrise'] - $lastHistoryItem['time']) > 21600) AND 
+				(date('z',$sunInfo['sunrise']) != date('z',$lastHistoryItem['time']))
+		){
+			//  write to logging that we are trying to "fix" some things
+			HookHandler::getInstance()->fire("onDebug","It looks like we started this morning to late, so lets 'fix' that by adding a dummy record");
+			
+			// get a valid history bean
+			$bObjectFix = R::dispense(self::$tbl);
+		
+			// set the deviceId of the bean to the current deviceId
+			$bObjectFix->deviceId = $bObject->deviceId;
+			$bObjectFix->INV = $bObject->deviceId;
+		
+			// set bean->time to sunrise minus half an hour to be sure that its the first records for today
+			$bObjectFix->time = ($sunInfo['sunrise']-1800);
+		
+			// set the KWHT of the bean to the last known KWHT value
+			$bObjectFix->KWHT = $lastHistoryItem['KWHT'];
+		
+			// store the Fix bean/record
+			$object->id = R::store($bObjectFix);
+		}
+	}
 
+	public function getLastHistory($device){
+
+		$bean = R::getAll('select * from '.self::$tbl.' WHERE deviceId = :deviceId ORDER BY id DESC LIMIT 1',array(":deviceId"=>$device->deviceId));
+		return $bean[0];
+	}
+	
 	/**
 	 * Load an object from the database
 	 * @param int $id
