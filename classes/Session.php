@@ -140,11 +140,11 @@ class Session
     
     public static function writeConfig2FileSystem(){
     	$config = self::getConfig(true,true);
-    	$config->smtpPassword=null;
+    	/*$config->smtpPassword=null;
     	$config->smtpUser=null;
     	$config->smtpServer=null;
     	$config->smtpSecurity=null;
-    	$config->smtpPort=null;
+    	$config->smtpPort=null;*/
     	$i=0;
 
     	// write to configfile that it is a filesystem config 
