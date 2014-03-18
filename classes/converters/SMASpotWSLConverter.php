@@ -157,9 +157,22 @@ class SMASpotWSLConverter
     			$result = trim($splitLine[1]);
     			break;
 	   		case 'SMASpotDateTime':
-	   			//$splitLine= preg_split("/ /",$line);
+	   			// default value;
+	   			$result = time();
+	   			
+				// split on "D-M-Y h:i:s"
 	   	    	preg_match('/(\d{2})\/(\d{2})\/(\d{4}) (\d{2})\:(\d{2})\:(\d{2})/i', $line, $matches,0);
-	   	    	$result =  Util::getTimestampOfDate($matches[4],$matches[5],$matches[6],$matches[1],$matches[2],$matches[3]);
+	   	    	// check if the format matched
+	   	    	if(count($matches)>0){
+	   	    		// it looks like we have a match, so lets create a timestamp
+	   	    		$result =  Util::getTimestampOfDate($matches[4],$matches[5],$matches[6],$matches[1],$matches[2],$matches[3]);
+	   	    	}else{
+	   	    		// it look liks we do NOT have a match... lets try the following;
+	   	    		// split on "Y-M-D h:i:s"
+	   	    		preg_match('/(\d{4})\-(\d{2})\-(\d{2}) (\d{2})\:(\d{2})\:(\d{2})/i', $line, $matches,0);
+	   	    		$result =  Util::getTimestampOfDate($matches[4],$matches[5],$matches[6],$matches[1],$matches[2],$matches[3]);	   	    		
+	   	    	}
+	   	    	
 	   			break;
     	}
     	return $result; 
