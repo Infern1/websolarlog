@@ -178,12 +178,6 @@ class PvOutputAddon {
 							$this->history->save($object);
 							//return false;
 						}
-					}else{
-						HookHandler::getInstance()->fire("onDebug",__METHOD__."::PVo return something we do not understand... something went wrong... ".print_r($result,true));
-						//$object->pvoutput = 0;
-						//$object->pvoutputErrorMessage = 'unknown error....';
-						//$this->history->save($object);
-						//return false;
 					}
 				}
 			}
