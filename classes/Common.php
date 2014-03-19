@@ -249,7 +249,7 @@ class Common
 	        if (trim($config->smtpSecurity) != "" && trim($config->smtpSecurity != "none")) {
 	            $mail->SMTPSecure = $config->smtpSecurity;
 	        }
-	
+	        
 	        $mail->Subject  = $subject;
 	        $mail->Body     = $body;
 	        $mail->WordWrap = 50;
@@ -279,7 +279,6 @@ class Common
 	        	HookHandler::getInstance()->fire("onDebug",__METHOD__."::SendEmail error: ".print_r($mail->ErrorInfo,true));
 	            return $mail->ErrorInfo;
 	        } else {
-	        	HookHandler::getInstance()->fire("onDebug",__METHOD__."::SendEmail success!");
 	            return true;
 	        }
     	} catch (Exception $e) {
