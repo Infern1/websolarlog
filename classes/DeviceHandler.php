@@ -7,7 +7,13 @@ class DeviceHandler {
 		if ($device->active) {
 			switch ($device->type) {
 				case "production":
-					ProductionDeviceHandler::handleLive($item, $device);
+					/*
+					 * prevent polling on sunset
+					 * This stops polling 30 min. after sunset and start polling again 30 min before sunrise
+					 */
+					if(Util::isSunDown(-1800)==false){
+						ProductionDeviceHandler::handleLive($item, $device);
+					}
 					break;
 				case "metering":
 					MeteringDeviceHandler::handleLive($item, $device);
