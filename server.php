@@ -263,10 +263,10 @@ try {
 			$dayData->data = $lines->points;
 			$dayData->success = true;
 			$lang = array();
-			$lang['cumPowerW'] = _('Energy (Wh)');
-			$lang['avgPowerW'] = _('avg. Power (W)');
-			$lang['harvested'] = _('harvested (kW)');
-			$lang['cumulative'] = _('cumulative (kW)');
+			$lang['cumPowerW'] = _('Energy').' (Wh)';
+			$lang['avgPowerW'] = _('avg. Power').' (W)';
+			$lang['harvested'] = _('harvested').' (kW)';
+			$lang['cumulative'] = _('cumulative').' (kW)';
 			$lang['generated'] = _('generated');
 			$lang['max'] = _('max');
 
