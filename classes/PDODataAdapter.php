@@ -1235,12 +1235,13 @@ class PDODataAdapter {
 					$expected = $invExp[$beans[$i]['monthNumber']-1];
 				}
 
+				$cumExp += $expected;
+				$cumKWH += $beans[$i]['KWH'];
+				
 				$beans[$i]['Exp'] = number_format($expected,0,',','');
 				$beans[$i]['cumDiff'] = number_format($cumKWH-$cumExp,0,',','');
 				$beans[$i]['Diff'] = number_format($beans[$i]['KWH']-$beans[$i]['Exp'],0,',','');
 				
-				$cumExp += $expected;
-				$cumKWH += $beans[$i]['KWH'];
 				$beans[$i]['cumKWH'] = number_format($cumKWH,0,',','');
 				$beans[$i]['cumExp'] = number_format($cumExp,0,',','');
 			}
