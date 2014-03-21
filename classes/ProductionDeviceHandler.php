@@ -7,8 +7,13 @@ class ProductionDeviceHandler {
 		
 		$live = null;
 		try {
+			/*
+			 * prevent polling on sunset
+			* This stops polling 30 min. after sunset and start polling again 30 min before sunrise
+			*/
 			// Retrieve the device data
-			$live = $api->getLiveData();
+			$live = (Util::isSunDown(-1800)==false) ? $api->getLiveData() : null;
+			
 			if ($live == null) {
 				if ($device->state == 1) {
 					// No valid live data returned
@@ -25,7 +30,11 @@ class ProductionDeviceHandler {
 		
 		// Set some variables
 		$live->deviceId = $device->id;
-		$live->INV = $device->id; // Needs to be replaced with deviceId in future
+		
+		// TODO 
+		// Needs to be replaced with deviceId in future
+		$live->INV = $device->id;
+		 
 		$live->time = $item->time;
 		$live->SDTE = date("Ymd-H:i:s", $item->time);
 		
