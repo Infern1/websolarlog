@@ -12,7 +12,6 @@ try {
 		$data['configType'] = 'json';
 		$config = json_decode(file_get_contents(sys_get_temp_dir()."/WSLConfig.json"));
 	}else{
-	
 		$data['configType'] = 'db';
 		$config = Session::getConfig();
 	}
@@ -41,8 +40,6 @@ try {
 	$type = Common::getValue('type', 0);
 	$date = Common::getValue('date', 0);
 	$year = Common::getValue('year', 0);
-
-	
 	
 	switch ($method) {
 		case 'getTabs':
@@ -201,6 +198,9 @@ try {
 			$data['slimConfig'] = $slimConfig;
 			$data['serverUptime'] = $serverUptime;
 			break;
+		/*
+		 * TODO
+		 * Not used anymore, so we could delete it!?
 		case 'getGraphDayPoints':
 			$lines = array();
 			$lines['graph'] = null;
@@ -256,6 +256,7 @@ try {
 			$data['lang'] = $lang;
 			$data['dayData'] = $dayData;
 			break;
+		*/
 		case 'getGraphPoints':
 			$lines = $dataAdapter->getGraphPoint(0, $type, $date);
 			$dayData = new DayDataResult();
@@ -264,8 +265,8 @@ try {
 			$lang = array();
 			$lang['cumPowerW'] = _('Energy (Wh)');
 			$lang['avgPowerW'] = _('avg. Power (W)');
-			$lang['harvested'] = _('harvested (W)');
-			$lang['cumulative'] = _('cumulative (W)');
+			$lang['harvested'] = _('harvested (kW)');
+			$lang['cumulative'] = _('cumulative (kW)');
 			$lang['generated'] = _('generated');
 			$lang['max'] = _('max');
 
