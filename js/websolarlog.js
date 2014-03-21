@@ -2179,10 +2179,12 @@ var WSL = {
 									"diff" : data[3],
 									"cumExp" : data[4],
 									"cumHar" : data[5],
-									"cumDiff" : data[6]
+									"cumDiff" : data[6],
+									"cumDiffTest" : data[5] - data [4]
 								};
 								dataTable.push([ item ]);
 							}
+							console.log(dataTable);
 							var html = template({
 								'data' : dataTable,
 								'lang' : result.lang
@@ -2356,84 +2358,22 @@ var WSL = {
 					}
 					var lang = result.lang;
 					var graphOptions = {
-						series : [ {
-							yaxis : 'yaxis'
-						}, // 0 1
-						{
-							yaxis : 'y2axis'
-						},// 1 2
-						{
-							yaxis : 'y3axis'
-						},// 2 3
-						{
-							yaxis : 'y4axis'
-						},// 3 4
-						{
-							yaxis : 'yaxis'
-						}, // 0 5
-						{
-							yaxis : 'y2axis'
-						},// 1 6
-						{
-							yaxis : 'y4axis'
-						},// 2 7
-
-						{
-							yaxis : 'yaxis'
-						}, // 0 8
-						{
-							yaxis : 'y2axis'
-						},// 1 9
-						{
-							yaxis : 'y3axis'
-						},// 2 10
-
-						{
-							yaxis : 'yaxis'
-						}, // 4 11
-						{
-							yaxis : 'y2axis'
-						},// 5 12
-						{
-							yaxis : 'y3axis'
-						},// 6 13
-						{
-							yaxis : 'y5axis'
-						},// 7 14
-						{
-							yaxis : 'yaxis'
-						}, // 4 15
-						{
-							yaxis : 'y2axis'
-						},// 5 16
-						{
-							yaxis : 'y3axis'
-						},// 6 17
-						{
-							yaxis : 'y5axis'
-						},// 7 18
-						{
-							yaxis : 'yaxis'
-						}, // 8 19
-						{
-							yaxis : 'y2axis'
-						},// 9 20
-						{
-							yaxis : 'y3axis'
-						},// 10 21
-						{
-							yaxis : 'y5axis'
-						},// 11 22
-						{
-							yaxis : 'y7axis'
-						},// 12 23
-						{
-							yaxis : 'y6axis'
-						},// 13 24
-						{
-							yaxis : 'y6axis'
-						} // 14 25
-						],
+							series : [ {yaxis : 'yaxis'},// 0
+										{yaxis : 'y2axis'},// 1
+										{yaxis : 'y3axis'},// 2
+										{yaxis : 'y4axis'},// 3
+										{yaxis : 'yaxis'},// 4
+										{yaxis : 'y2axis'},// 5
+										{yaxis : 'y3axis'},// 6
+										{yaxis : 'y5axis'},// 7
+										{yaxis : 'yaxis'},// 8
+										{yaxis : 'y2axis'},// 9
+										{yaxis : 'y3axis'},// 10
+										{yaxis : 'y5axis'},// 11
+										{yaxis : 'y7axis'},// 12
+										{yaxis : 'y6axis'},// 13
+										{yaxis : 'y6axis'} // 13
+										],
 						axesDefaults : {
 							useSeriesColor : true
 						},
@@ -2563,14 +2503,14 @@ var WSL = {
 					graphOptions.axes.y4axis.max = maxFRQ + ((maxFRQ / 100) * 5);
 
 					var maxRatio = result.dayData.max.Ratio;
-					(!maxRatio) ? maxRatio = 10 : maxRatio = maxRatio;
+					(!maxRatio) ? maxRatio = 100 : maxRatio = maxRatio;
 					graphOptions.axes.y5axis.max = maxRatio + ((maxRatio / 100) * 5);
 
 					var maxT = result.dayData.max.T;
 					graphOptions.axes.y6axis.max = maxT+ ((maxT / 100) * 5);
 
 					var maxEFF = result.dayData.max.EFF;
-					(!maxEFF) ? maxEFF = 10 : maxEFF = maxEFF;
+					(!maxEFF) ? maxEFF = 100 : maxEFF = maxEFF;
 					graphOptions.axes.y7axis.max = maxEFF+ ((maxEFF / 100) * 5);
 
 					switches = result.dayData.switches;
