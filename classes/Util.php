@@ -125,7 +125,7 @@ class Util {
      * @param date $startDate ("d-m-Y") ("31-12-1900"), when no date given, the date of today is used.
      * @param str $type options are: (to)day, yesterday,week,month,year
      * @param int $count multiplies the day's,weeks,months,year
-     * @return array($beginDate, $endDate);
+     * @return array('beginDate'=>int, 'endDate'=>int, 'days'=>int);
      */
     public static function getBeginEndDate($type, $count,$startDate=null){
     	if(!$startDate){
