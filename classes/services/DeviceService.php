@@ -87,7 +87,7 @@ class DeviceService {
 	 * @param int $deviceId
 	 * @param int $mode
 	 */
-	public function setTestMode($deviceId,$mode=0){
+	public function setTestMode($deviceId,$mode=false){
 		//load device
 		$device = $this->load($deviceId);
 		

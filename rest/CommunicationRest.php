@@ -90,6 +90,13 @@ class CommunicationRest {
 				$communicationId = $request[2];
 			}
 		}		
+
+		/*
+		 * Set device testMode "on"
+		 */
+		$deviceService = new DeviceService();
+		$deviceService->setTestMode($deviceId,true);
+		
 		
 		$item = new QueueItem(time(), "DeviceHandler.handleTest", "deviceId=".$deviceId."|"."communicationId=".$communicationId, false, 0, true);
 		QueueServer::addItemToDatabase($item);
