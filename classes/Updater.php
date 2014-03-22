@@ -97,13 +97,18 @@ class Updater {
      */
     public static function copyToLive() {
         // We dont want to copy everything, so specify which dirs we dont want
-        $skipDirs = Array( "data", "database", "scripts", "tmp", "log", "systemPhotos");
+        $skipDirs = Array( "data", "database", "scripts", "tmp", "log");
         $source = self::$basepath . "/export/";
         $target = "../";
 
         foreach (scandir($source) as $file) {
             // Skip files we can read and the dot(dot) folders
             if (!is_readable($source.$file) || $file == '.' || $file == '..') continue;
+            
+            if(!is_dir($source.$file)){
+            	Common::checkPath($target . $file);
+            }
+            
             if (is_dir($source.$file) && !in_array($file, $skipDirs) ) {
                 // Remove the target dir before updating it
                 Common::rrmdir($target . $file);
