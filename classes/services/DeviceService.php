@@ -82,6 +82,22 @@ class DeviceService {
 		}
 		return $objects;
 	}
+	/**
+	 * 
+	 * @param int $deviceId
+	 * @param int $mode
+	 */
+	public function setTestMode($deviceId,$mode=0){
+		//load device
+		$device = $this->load($deviceId);
+		
+		//set testMode
+		$device->testMode = $mode;
+		
+		//save device
+		$this->save($device);
+		return true;
+	}
 
 	/**
 	 * Retrieves all active devices

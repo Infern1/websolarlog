@@ -12,7 +12,7 @@ class ProductionDeviceHandler {
 			* This stops polling 30 min. after sunset and start polling again 30 min before sunrise
 			*/
 			// Retrieve the device data
-			$live = (Util::isSunDown(-1800)==false) ? $api->getLiveData() : null;
+			$live = (Util::isSunDown(-1800)==false || $device->testMode==true) ? $api->getLiveData() : null;
 			
 			if ($live == null) {
 				if ($device->state == 1) {

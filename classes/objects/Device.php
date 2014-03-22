@@ -27,6 +27,7 @@ class Device {
     public $refreshTime;
     public $historyRate;
     public $active;
+    public $testMode;
 
     public $expectedJAN;
     public $expectedFEB;

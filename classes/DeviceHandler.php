@@ -161,6 +161,13 @@ class DeviceHandler {
 		$communication->lastTestData = $result["testData"];
 		$communication->lastTestSettings = $communication->toJson();
 		$communicationService->save($communication);
+		
+		/*
+		 * Set device testMode "off"
+		 */
+		$deviceService = new DeviceService();
+		$deviceService->setTestMode($params["deviceId"],false);
+		
 	}
 
 	/**
