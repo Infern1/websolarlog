@@ -1739,20 +1739,6 @@ function init_yields() {
     		init_yields();
     	});
     	
-    	$('.btnYieldDayAdd').bind('click', function(){
-    		$('#yieldsAddDialog').dialog( "open" );
-    		
-    		$('#btn_yield_add').unbind('click');
-    		$('#btn_yield_add').bind('click', function(){
-    			saveData =	{ "time" : $('#yield_add_time').val(),
-						"deviceId" : deviceId,
-						"newKWH" : $('#yield_add_kwh').val()
-					};
-				WSL.connect.postJSON('admin-server.php?s=yield_addEnergy', saveData, function(result){});
-				$('#yieldsAddDialog').dialog( "close" );
-    		});
-    	});
-    	
     	$('.btnYieldMonth').bind('click', function(){
     		var btnYieldMonth = $(this);
     		var year = btnYieldMonth.closest("ul").attr('data-year-id');
@@ -1798,13 +1784,36 @@ function init_yields() {
                                 text: 'You\'re changes have been saved.',
                             	type: 'success'
                             }); 
+    						WSL.connect.getJSON('admin-server.php?s=yield_getEnergyList&deviceId='+deviceId, function(result) {
+        				    	var monthData = result.data[year][month];
+        				    	content.html(WSL.template.get('yields', {year: year, month: month, data: monthData}));
+        				    });
     					}
     				});
-    				
-    				
     				$('#yieldsEditDialog').dialog( "close" );
     			});
     		});
+    		
+        	$('.btnYieldDayAdd').bind('click',content,function(){
+        		$('#yieldsAddDialog').dialog( "open" );
+        		$('#btn_yield_add').unbind('click');
+        		$('#btn_yield_add').bind('click', function(){
+        			saveData =	{ "time" : $('#yield_add_time').val(),
+    						"deviceId" : deviceId,
+    						"newKWH" : $('#yield_add_kwh').val()
+    					};
+    				WSL.connect.postJSON('admin-server.php?s=yield_addEnergy', saveData, function(result){
+    					WSL.connect.getJSON('admin-server.php?s=yield_getEnergyList&deviceId='+deviceId, function(result) {
+    				    	var monthData = result.data[year][month];
+    				    	content.html(WSL.template.get('yields', {year: year, month: month, data: monthData}));
+    				    });
+    				});
+    				$('#yieldsAddDialog').dialog( "close" );
+    				
+        		});
+        	});
+    		
+    		
     	});
     });
 }
