@@ -12,7 +12,7 @@ class SystemPhotosService {
 	 * @return fotos
 	 */
 	public function loadSystemPhotos() {
-		$photoDir = 'images/systemPhotos/';
+		$photoDir = 'systemPhotos/';
 		$photos = scandir($photoDir);
 		
 		foreach ($photos as $photo){
