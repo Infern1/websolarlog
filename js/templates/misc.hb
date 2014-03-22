@@ -167,6 +167,11 @@
 			<div class="column span-4">{{this.roofOrientation}}°/{{this.roofPitch}}°</div>
 		</div>
 		{{/each}}
+		<br><br><br><br>
+		<b>Photo's</b>
+		<div class="column span-19">
+		<a href="systemPhotos.php">Go to system photos</a>
+		</div>
  	</div>
  </div>
 {{/if_eq}}

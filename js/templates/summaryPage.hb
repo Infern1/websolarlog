@@ -11,7 +11,9 @@
 				{{data.total.production.KWH}} kWh generated, which equals 
 				<span title="{{data.total.costkwh}} * {{data.total.production.KWH}} = {{data.total.production.costs}}"> {{data.total.production.costs}}</span><br>
 				
-				The generated kWh's equals {{data.total.production.CO2avoid}} kg avoided CO2.			
+				The generated kWh's equals {{data.total.production.CO2avoid}} kg avoided CO2.<br>
+				<br>
+				<a href="systemPhotos.php">system photo's</a><br>		
 			</div>
 			<div class="span-14 last summaryblock">
 				{{#if_gt data.total.weather.pressure compare=0}}

@@ -1372,7 +1372,26 @@ var WSL = {
 			});
 		ajaxReady();
 	},
-
+	init_systemPhotos : function(divId){
+		WSL.api.systemPhotos(function(data) {
+			$.ajax({
+				url : 'js/templates/systemPhotos.hb',
+				beforeSend : function(xhr) {
+					if (getWindowsState() == false) {
+						ajaxAbort(xhr);
+					}
+				},
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+						'data' : data
+					});
+					$(divId).before(html);
+					
+				}
+			})
+		});
+	},
 	init_summaryPage : function(divId) {
 		var html = '<div id="mainSummary" style="margin-bottom:5px;"></div>';
 		$(html).prependTo(divId);
@@ -2909,6 +2928,10 @@ WSL.api.mainSummary = function(date, success) {
 
 WSL.api.summaryPage = function(date, success) {
 	WSL.connect.getJSON('api.php/Summary/' + date, success);
+};
+
+WSL.api.systemPhotos = function(success) {
+	WSL.connect.getJSON('api.php/SystemPhotos/', success);
 };
 
 WSL.api.getMenu = function(success) {
