@@ -17,7 +17,7 @@ class SystemPhotosService {
 		
 		foreach ($photos as $photo){
 			$path_parts = pathinfo($photo);
-			if(in_array($path_parts['extension'],array('jpg','jpeg','png'))){
+			if(in_array(strtolower($path_parts['extension']),array('jpg','jpeg','png'))){
 				$path_parts['dirname'] = $photoDir;
 				$path_parts['fileTitle'] = str_replace('-', ' ', $path_parts['filename']);
 				$validImages['systemPhotos'][] = $path_parts;
