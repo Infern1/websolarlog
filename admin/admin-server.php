@@ -41,7 +41,7 @@ switch ($settingstype) {
 		$data['googleAnalytics'] = $config->googleAnalytics;
 		$data['piwikServerUrl'] = $config->piwikServerUrl;
 		$data['piwikSiteId'] = $config->piwikSiteId;
-		
+		$data['cacheInputRate'] = $config->cacheInputRate;
 		// social
 		$user_id=1;
 		$type='Twitter';
@@ -433,6 +433,7 @@ switch ($settingstype) {
 		$config->googleAnalytics = Common::getValue("googleAnalytics");
 		$config->piwikServerUrl = Common::getValue("piwikServerUrl");
 		$config->piwikSiteId = Common::getValue("piwikSiteId");
+		$config->cacheInputRate = Common::getValue("cacheInputRate");
 		$adapter->writeConfig($config);
 		break;
 	case 'save-communication':

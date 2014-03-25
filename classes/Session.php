@@ -353,8 +353,8 @@ class Session
     	$hookHandler->add("onInverterShutdown", "PvOutputAddon.onShutdown");
     	
     	// Statistics
-    	$hookHandler->add("onFastJob", "CacheAddon.averagePower");
-    	$hookHandler->add("onFastJob", "CacheAddon.EnergyValues");
+    	$hookHandler->add("onCacheJob", "CacheAddon.averagePower");
+    	$hookHandler->add("onCacheJob", "CacheAddon.EnergyValues");
     }
 }
 ?>

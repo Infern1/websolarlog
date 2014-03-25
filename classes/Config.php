@@ -90,6 +90,7 @@ class Config
     public $googleAnalytics;
     public $piwikServerUrl;
     public $piwikSiteId;
+    public $cacheInputRate;
     
     public $hybridAuth;
     

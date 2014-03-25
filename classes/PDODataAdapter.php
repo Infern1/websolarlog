@@ -298,7 +298,8 @@ class PDODataAdapter {
 		$bean->googleAnalytics = $config->googleAnalytics;
 		$bean->piwikServerUrl = $config->piwikServerUrl;
 		$bean->piwikSiteId = $config->piwikSiteId;
-
+		$bean->cacheInputRate = $config->cacheInputRate;
+		
 		$bean->adminpasswd = $config->adminpasswd;
 
 		$bean->pauseWorker = $config->pauseWorker;
@@ -402,7 +403,9 @@ class PDODataAdapter {
 			$config->googleAnalytics = $bean->googleAnalytics;
 			$config->piwikServerUrl = $bean->piwikServerUrl;
 			$config->piwikSiteId = $bean->piwikSiteId;
-
+			
+			$config->cacheInputRate =$bean->cacheInputRate;
+			
 			$config->adminpasswd = ($bean->adminpasswd != "") ? $bean->adminpasswd : $config->adminpasswd;
 
 			$config->pauseWorker = ($bean->pauseWorker != "") ? $bean->pauseWorker : $config->pauseWorker;
@@ -1595,6 +1598,7 @@ class PDODataAdapter {
 
 		return $list;
 	}
+	
 	/**
 	 *
 	 * @param string $group

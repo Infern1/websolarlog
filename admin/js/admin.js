@@ -777,6 +777,25 @@ function init_advanced() {
                 
                 $('#content').html(html);
                 
+                
+            	
+                $( "#sliderCacheRate" ).slider({
+                    min: 60,
+                    max: 600,
+                    step: 1,
+                    slide: function( event, ui ) {
+                      $( "#cacheInputRate" ).val( ui.value );
+                    }
+                  });
+                  // setter
+                
+
+              	$( "#sliderCacheRate" ).slider( "option", "value", $( "#cacheInputRate" ).val() );
+
+              	$( "#cacheInputRate" ).on('keyup',function(){
+              		$( "#sliderCacheRate" ).slider( "option", "value", $(this).val() );
+              	});
+                
                 $('#btnAdvancedSubmit').bind('click', function(){
                 	checkCheckboxesHiddenFields();
                 	var data = $(this).parent().parent().serialize();

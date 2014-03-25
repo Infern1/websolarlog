@@ -70,6 +70,12 @@
     <label for="phpMinify">PHP minify:</label>{{checkboxWithHidden 'phpMinify' data.phpMinify}} minify requests and sources<br />
     Fpr best performance make sure that the /websolarlog/PHPMinify/tmp is writable for the webserver.
     <hr>
+    <label for="cacheRate" style="float:left;">Cache update Rate:</label>
+    <br>
+    <div id="sliderCacheRate" class="span-20"></div><br>
+    <input type="text" name="cacheInputRate" id="cacheInputRate" value="{{data.cacheInputRate}}" />secs.
+     {{infoTooltip title=""}}<br />
+    <hr>
     configure stat-tools:<br />
     <label for="googleAnalytics">Google Analytics:</label><input type="text" name="googleAnalytics" value="{{data.googleAnalytics}}" />(XX-00000000-0)<br />
     <label for="piwikServerUrl">Piwik server url:</label><input type="text" name="piwikServerUrl" value="{{data.piwikServerUrl}}" /><br />
