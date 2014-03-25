@@ -34,6 +34,12 @@ foreach (Session::getConfig()->devices as $device) {
 	QueueServer::getInstance()->add(new QueueItem($historyDataStartTime, "DeviceHandler.handleDeviceHistory", array($device), true, $historyDataUpdateRate));
 }
 
+//special job for running the cache totals
+$cacheInputRate = Session::getConfig()->cacheInputRate;
+$cacheJobUpdateRate = (empty($cacheInputRate) OR $cacheInputRate < 60) ? 60 : $cacheInputRate; // prevent faster interval then 60sec.
+$cacheStartTime = Util::createTimeForWholeInterval($cacheJobUpdateRate);
+QueueServer::getInstance()->add(new QueueItem($cacheStartTime, "HookHandler.fireFromQueue", array("onCacheJob"), true, $cacheJobUpdateRate));
+
 
 $fastJobUpdateRate = 60; // Every minute
 $fastJobStartTime = Util::createTimeForWholeInterval($fastJobUpdateRate);
