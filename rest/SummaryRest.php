@@ -24,7 +24,13 @@ class SummaryRest {
 	 */
 	public function GET($request, $options) {
 		$date = $request[1];
+		if($request[1] == "totals"){
+		return $this->summaryService->totalProductionSummary();
+		}else{
 		return $this->summaryService->load($date);
+		}
+		
+		
 	
 	}
 		

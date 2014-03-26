@@ -20,10 +20,63 @@ class SummaryService {
 	}
 	*/
 
-	
-	public static function testen($value,$key){
-		echo $value;
+	public function totalProductionSummary(){
+		$timestamps['today'] = Util::getBeginEndDate('day', 1);
+		$timestamps['yesterday'] = Util::getBeginEndDate('yesterday', 1);
+		$timestamps['month'] = Util::getBeginEndDate('month', 1);
+		$timestamps['year'] = Util::getBeginEndDate('year', 1);
+		$timestamps['overall'] =   array('beginDate'=>strtotime('2-1-2000'), 'endDate'=>time()+1000);
+		
+		/*
+		 *
+		*/
+		foreach (session::getConfig()->devices as $device){
+			if($device->type == "production"){
+				$producesSince = explode("-", $device->producesSince);
+				$timestamps['productionYear'] = array('beginDate'=>strtotime($producesSince[0]."-".$producesSince[1]."-".(date("Y")-1)), 'endDate'=>strtotime($producesSince[0]."-".$producesSince[1]."-".date("Y")));
+				
+				$b = array('today', 'yesterday', 'month', 'year', 'productionYear', 'overall'); // rule indicating new key order
+				$c = array();
+				foreach($b as $index) {
+					$newTimstamps[$index] = $timestamps[$index];
+				}
+				$timestamps = $newTimstamps;
+				
+				foreach ($timestamps as $key=>$value){
+					
+					$query = "SELECT deviceId,KWHT,KWH FROM energy WHERE (deviceId = :deviceId OR inv = :deviceId) AND time >= :beginDate AND time <= :endDate ";
+					$parameters = array(
+									':deviceId'=>$device->id,
+									':beginDate'=>$value['beginDate'],
+									':endDate'=>$value['endDate']
+							);
+					
+					$beans =  R::getAll($query,$parameters);
+					
+					if(is_array($beans)){
+						$first = reset($beans);
+						$last = end($beans);
+
+						$data[$device->id][$key]['days'] = count($beans);
+						if(stristr($key,'day')){
+							$data[$device->id][$key]['diff'] = number_format($beans[0]['KWH'], 3, ',', '');
+						}else{
+							$data[$device->id][$key]['diff'] = number_format($last['KWHT'] - $first['KWHT'], 3, ',', '');
+						}
+						$data[$device->id][$key]['avg'] = number_format(($last['KWHT'] - $first['KWHT'])/count($beans), 3, ',', '');;
+						$data[$device->id][$key]['kwhkwp'] = number_format($last['KWHT'] - $first['KWHT']/($device->plantpower/1000), 3, ',', '');;
+					}else{
+						$data[$device->id][$key]['days']='0,000';
+						$data[$device->id][$key]['avg']='0,000';
+						$data[$device->id][$key]['diff']='0,000';
+					}
+				}
+			}
+		}
+		return $data;
 	}
+	
+
 	/**
 	 * Load an object from the database
 	 * @param int $id
