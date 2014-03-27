@@ -30,27 +30,32 @@ class SummaryService {
 		/*
 		 *
 		*/
-		foreach (session::getConfig()->devices as $device){
+		$deviceCount=0;
+		$devices = session::getConfig()->devices;
+
+		//var_dump($devices);
+		foreach ($devices as $device){
 			if($device->type == "production"){
+				$deviceCount++;
 				$producesSince = explode("-", $device->producesSince);
 				$timestamps['productionYear'] = array('beginDate'=>strtotime($producesSince[0]."-".$producesSince[1]."-".(date("Y")-1)), 'endDate'=>strtotime($producesSince[0]."-".$producesSince[1]."-".date("Y")));
 				
-				$b = array('today', 'yesterday', 'month', 'year', 'productionYear', 'overall'); // rule indicating new key order
-				$c = array();
-				foreach($b as $index) {
+				//re-order timestamps
+				$prevertOrder = array('today', 'yesterday', 'month', 'year', 'productionYear', 'overall'); // rule indicating new key order
+				foreach($prevertOrder as $index) {
 					$newTimstamps[$index] = $timestamps[$index];
 				}
 				$timestamps = $newTimstamps;
 				
 				foreach ($timestamps as $key=>$value){
 					
+					// the query with parameter slots
 					$query = "SELECT deviceId,KWHT,KWH FROM energy WHERE (deviceId = :deviceId OR inv = :deviceId) AND time >= :beginDate AND time <= :endDate ";
-					$parameters = array(
-									':deviceId'=>$device->id,
-									':beginDate'=>$value['beginDate'],
-									':endDate'=>$value['endDate']
-							);
 					
+					// query parameters
+					$parameters = array(':deviceId'=>$device->id,':beginDate'=>$value['beginDate'],':endDate'=>$value['endDate']);
+					
+					// run the query with the parameters 
 					$beans =  R::getAll($query,$parameters);
 					
 					if(is_array($beans)){
@@ -59,20 +64,39 @@ class SummaryService {
 
 						$data[$device->id][$key]['days'] = count($beans);
 						if(stristr($key,'day')){
-							$data[$device->id][$key]['diff'] = number_format($beans[0]['KWH'], 3, ',', '');
+							$data[$device->id][$key]['diff'] = round($beans[0]['KWH'],4);
 						}else{
-							$data[$device->id][$key]['diff'] = number_format($last['KWHT'] - $first['KWHT'], 3, ',', '');
+							$data[$device->id][$key]['diff'] = round(($last['KWHT'] - $first['KWHT']),4);
 						}
-						$data[$device->id][$key]['avg'] = number_format(($last['KWHT'] - $first['KWHT'])/count($beans), 3, ',', '');;
-						$data[$device->id][$key]['kwhkwp'] = number_format($last['KWHT'] - $first['KWHT']/($device->plantpower/1000), 3, ',', '');;
+						$data[$device->id][$key]['avg'] = round((($last['KWHT'] - $first['KWHT'])/count($beans)),4);
+						$data[$device->id][$key]['kwhkwp'] = round((($last['KWHT'] - $first['KWHT'])/($device->plantpower/1000)),4);
+						// create totals
+						if(!$data['total'][$key]['diff']){
+							$data['total'][$key]['diff']=0;
+						}
+						$data['total'][$key]['diff'] = ($data['total'][$key]['diff']+round($data[$device->id][$key]['diff'],4));
 					}else{
-						$data[$device->id][$key]['days']='0,000';
-						$data[$device->id][$key]['avg']='0,000';
-						$data[$device->id][$key]['diff']='0,000';
+						$data[$device->id][$key]['days']='0.0000';
+						$data[$device->id][$key]['avg']='0.0000';
+						$data[$device->id][$key]['diff']='0.0000';
 					}
 				}
 			}
 		}
+		
+		/*
+		$data[3] = $data[4];
+		$deviceCount++;
+		foreach ($data as $keyDeviceData=>$valueDeviceData){
+			foreach ($valueDeviceData as $keyPeriodes=>$valuePeriodes){
+				foreach ($valuePeriodes as $keyPeriode=>$valuePeriode){
+					$data['total'][$keyPeriodes][$keyPeriode] =($data['total'][$keyPeriodes][$keyPeriode]+$valuePeriode); 
+				}
+				$data['total'][$keyPeriodes][$keyPeriode] = ($data['total'][$keyPeriodes][$keyPeriode]/2);
+			}
+			
+		}
+		*/
 		return $data;
 	}
 	
