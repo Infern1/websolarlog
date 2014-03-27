@@ -72,7 +72,9 @@ class TwitterAddon {
 	}
 	
 	function sendTweet($args){
-		$device = $args;
+		$hookname = $args[0];
+		$device = $args[1];
+
 		$summaryService = new SummaryService();
 		HookHandler::getInstance()->fire("onDebug", 'Fire(sendTwitter)');
 		if($this->hybridauth_session_data){
