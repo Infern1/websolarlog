@@ -71,16 +71,21 @@ class TwitterAddon {
 		$twitter->logout();
 	}
 	
-	function sendTweet(){
+	function sendTweet($args){
+		$device = $args;
+		$summaryService = new SummaryService();
 		HookHandler::getInstance()->fire("onDebug", 'Fire(sendTwitter)');
 		if($this->hybridauth_session_data){
 			HookHandler::getInstance()->fire("onDebug", 'Found session data, lets try to Tweet');
 			$data = $this->hybridauth->restoreSessionData( $this->hybridauth_session_data['hybridauth_session'] );
 			try{
 				$twitter = $this->hybridauth->getAdapter( "Twitter" );
-				$indexValues = $this->adapter->readPageIndexData();
+				
+				// get actual totals
+				$totals = $summaryService->totalProductionSummary();
+				
 				$url = Common::getShortUrl($this->config->url);
-				$twitter->setUserStatus("Today we generated ". $indexValues['summary']['today']['todayAvgKwh-0']." kWh. Check out: " . $url . " #SunCounter" );
+				$twitter->setUserStatus("Today my ".$device->name." inverter generated ". $totals[$device->id]['today']['diff']." kWh. Check out: " . $url . " #SunCounter" );
 				$twitter->logout();
 				$data['message']=print_r($indexValues, true);
 				$data['tweetSend']=1;
