@@ -2,7 +2,7 @@
   <fieldset>
     <legend>Twitter</legend>
     <label for="Twitter">Twitter:</label><input type="text" name="Twitter" value="{{data.social.TwitterDisplayName}}" disabled="disabled"/>
-    <span id="attachTwitter">
+    <span id="twitter">
 	{{#if_eq data.social.TwitterAttached compare="1"}}
 		<br />
 		<div class="column span-6" >
