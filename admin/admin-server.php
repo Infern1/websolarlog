@@ -23,12 +23,12 @@ switch ($settingstype) {
 		$data['costkwh'] = $config->costkwh;
 		$data['costGas'] = $config->costGas;
 		$data['costWater'] = $config->costWater;
-		
+
 		$data['aurorapath'] = $config->aurorapath;
 		$data['mastervoltpath'] = $config->mastervoltpath;
 		$data['soladinSolgetpath'] = $config->soladinSolgetpath;
 		$data['deltaSoliviapath'] = $config->deltaSoliviapath;
-		
+
 		$data['smagetpath'] = $config->smagetpath;
 		$data['smaspotpath'] = $config->smaspotpath;
 		$data['smaspotWSLpath'] = $config->smaspotWSLpath;
@@ -57,16 +57,16 @@ switch ($settingstype) {
 			$social->TwitterAttached = 0;
 			$data['social'] = $social;
 		}
-		
-		
+
+
 		break;
 	case 'social':
-		
+
 		// social
 		$user_id=1;
 		$type='Twitter';
 		$twitter = $adapter->get_hybridauth_session($user_id,$type);
-	
+
 		if($twitter){
 			$social = new Social();
 			$social->TwitterAttached = (strlen($twitter['displayName'])>0) ? 1 : 0;
@@ -82,7 +82,7 @@ switch ($settingstype) {
 		$lang = array();
 		$lang['teamName'] 			= ucfirst(_("team"))." "._("name");
 		$lang['energyGenerated']	= ucfirst(_("energy"))." "._("generated");
-		
+
 		$lang['energyAverage'] 		= ucfirst(_("energy"))." "._("average");
 		$lang['description']	 	= ucfirst(_("description"));
 		$lang['numberOfSystems'] 	= ucfirst(_("number"))." "._("of")." "._("Systems");
@@ -91,12 +91,12 @@ switch ($settingstype) {
 		$lang['outputs'] 			= ucfirst(_("outputs"));
 		$lang['inverter'] 			= ucfirst(_("inverter"));
 		$data['lang'] = $lang;
-		
+
 		$pvOutputAddon = new PvOutputAddon();
 		$team = $pvOutputAddon->getTeamFiguresFromPVoutput();
 		$data['devices'][] =array('pvOutputTeams' => $team);
 
-		
+
 		break;
 	case "joinPVoTeam":
 		$pvOutputAddon = new PvOutputAddon();
@@ -168,10 +168,10 @@ switch ($settingstype) {
 		$data['devices'] = $result;
 		break;
 	case 'communication';
-		$data['comPort'] = $config->comPort;
-		$data['comOptions'] = $config->comOptions;
-		$data['comDebug'] = $config->comDebug;
-		break;
+	$data['comPort'] = $config->comPort;
+	$data['comOptions'] = $config->comOptions;
+	$data['comDebug'] = $config->comDebug;
+	break;
 	case 'email':
 		$data['emailFromName'] = $config->emailFromName;
 		$data['emailFrom'] = $config->emailFrom;
@@ -224,22 +224,22 @@ switch ($settingstype) {
 		$data['SMAspotDevices'] = 0;
 		$deviceService = new DeviceService();
 		$data['supportedDevices'] = $deviceService->getSupportedDevices();
-		
+
 
 		$data['inverter'] = $deviceService->load($deviceId);
-		
+
 		// "fake" user GUI
 		if($data['inverter']->sendSmartMeterData==null){
 			$data['inverter']->sendSmartMeterData = true;
 			$data['inverter']->sendSmartMeterDataOverrule = true;
 		}
-		
+
 		// "fake" user GUI
 		if($data['inverter']->pvoutputAutoJoinTeam==null){
 			$data['inverter']->pvoutputAutoJoinTeam = true;
 			$data['inverter']->pvoutputAutoJoinTeamOverrule = true;
 		}
-		
+
 		// if we don't have a SMA-BT-WSL device, we don't want to use "special" config file and reset comAdress.
 
 		if ($deviceId == -1) {
@@ -289,7 +289,7 @@ switch ($settingstype) {
 		$config->checkNewTrunk = Common::getValue('chkNewTrunk');
 		$adapter->writeConfig($config);
 		$data['result']= true;
-		
+
 		break;
 	case 'updater-getversions':
 		$experimental = (Common::getValue("experimental", 'false') === 'true') ? true : false;
@@ -317,7 +317,7 @@ switch ($settingstype) {
 		$revision = $versioninfo[1];
 		$releaseTime = $versioninfo[2];
 		$releaseDescription = $versioninfo[3];
-		
+
 		if ($version === "none") {
 			HookHandler::getInstance()->fire("onInfo", "Update error: No version selected");
 			updaterJsonFile("error", "No Version selected", 1);
@@ -350,7 +350,7 @@ switch ($settingstype) {
 			$data['result'] = false;
 			break;
 		}
-		
+
 		// Copy the files
 		updaterJsonFile("busy", "applying update", 50);
 		HookHandler::getInstance()->fire("onInfo", "Update info: Removing old files and copy new files.");
@@ -363,16 +363,16 @@ switch ($settingstype) {
 		$config->version_release_time = $releaseTime;
 		$config->version_update_time = time();
 		$config->version_release_description = $releaseDescription;
-		
+
 		$adapter->writeConfig($config);
-		
+
 		HookHandler::getInstance()->fire("onInfo", "Update ready: " . $version . " (" . $revision . ")");
 		updaterJsonFile("ready", "Update ready", 100);
 		$data['result'] = true;
-		
+
 		// We want an restart off the queue server
 		Common::createRestartQueueItem();
-		
+
 		break;
 	case 'isLogin':
 		$data['result'] = Session::isLogin();
@@ -416,7 +416,7 @@ switch ($settingstype) {
 		$config->costkwh = Common::getValue("costkwh");
 		$config->costGas = Common::getValue("costGas");
 		$config->costWater = Common::getValue("costWater");
-		
+
 		$config->aurorapath =Common::getValue("aurorapath");
 		$config->mastervoltpath =Common::getValue("mastervoltpath");
 		$config->soladinSolgetpath =Common::getValue("soladinSolgetpath");
@@ -461,7 +461,7 @@ switch ($settingstype) {
 	case 'save-device':
 		$deviceService = new DeviceService();
 		$device = new Device();
-		
+
 		$id = Common::getValue("id", -1);
 
 		if ($id > 0) {
@@ -478,7 +478,7 @@ switch ($settingstype) {
 		$device->plantpower = Common::getValue("plantpower");
 		$device->deviceApi = Common::getValue("deviceApi");
 		$device->type = Common::getValue("deviceType");
-		$device->communicationId = Common::getValue("communicationId"); 
+		$device->communicationId = Common::getValue("communicationId");
 		$device->comAddress = Common::getValue("comAddress");
 		$device->comLog = Common::getValue("comLog");
 		$device->syncTime = Common::getValue("syncTime");
@@ -488,7 +488,7 @@ switch ($settingstype) {
 		$device->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
 		$device->pvoutputAutoJoinTeam =  Common::getValue("pvoutputAutoJoinTeam",'null');
 		$device->sendSmartMeterData = Common::getValue("sendSmartMeterData");
-		
+
 		$device->refreshTime = (Common::getValue("refreshTime")< 2) ? 2 : Common::getValue("refreshTime");
 		$device->historyRate = (Common::getValue("historyRate")<60) ? 60 : Common::getValue("historyRate");
 		$device->active = Common::getValue("deviceActive");
@@ -496,7 +496,7 @@ switch ($settingstype) {
 		break;
 	case 'save-panel':
 		$panelService = new PanelService();
-		
+
 		$id = Common::getValue("id");
 		$panel = new Panel();
 		if ($id > 0) {
@@ -531,7 +531,7 @@ switch ($settingstype) {
 			$device->expectedOCT = Common::getValue("octPER");
 			$device->expectedNOV = Common::getValue("novPER");
 			$device->expectedDEC = Common::getValue("decPER");
-			
+				
 			$deviceService->save($device);
 		}
 		break;
@@ -572,20 +572,20 @@ switch ($settingstype) {
 		$hybridTwitter->detachTwitter();
 		break;
 	case 'sendTweet':
-		$hybridTwitter = new TwitterAddon();
-		$hybridTwitter->sendTweet();
-		
+		foreach (session::getConfig()->devices as $device){
+			$hybridTwitter = new TwitterAddon();
+			$hybridTwitter->sendTweet(array("adminserver::sendTweet",$device));
+		}
 		break;
 	case 'attachFacebook':
 		$hybridFacebook = new FacebookAddon();
 		$hybridFacebook->attachFacebook();
-	
+
 		break;
-	
 	case 'detachFacebook':
 		$hybridFacebook = new FacebookAddon();
 		$hybridFacebook->detachFacebook();
-	
+
 		break;
 	case 'sendFacebook':
 		$hybridFacebook = new FacebookAddon();
@@ -612,16 +612,16 @@ switch ($settingstype) {
 		$dropbox = new Dropbox;
 
 		/* not needed till we can switch DB-engines
-		$dbName = explode('/',$config->dbHost);
+		 $dbName = explode('/',$config->dbHost);
 		$dbName = explode('.',$dbName[count($dbName)-1]);
 		$backupFileName = $dbName[0].'_'.date('Ymd').''.date('His').'.backup';
 		*/
-		
+
 		$dbName = 'wsl';
 		$backupFileName = $dbName.'_'.date('Ymd').''.date('His').'.backup';
-		
+
 		$dbPath = '../database/'.$dbName.'.sdb';
-		
+
 		$data['dropboxResponse']= $dropbox->dropbox->putFile($dbPath, $backupFileName);
 
 		$path = $dropbox->dropbox->media($data['dropboxResponse']['body']->path);
@@ -653,63 +653,63 @@ switch ($settingstype) {
 		break;
 	case 'dropboxSyncFiles':
 		try {
-	
-		// get Dropbox things
-		$dropbox = new Dropbox;
-			
-		//get all the dropbox files
-		$meta = $dropbox->dropbox->metaData();
 
-		$data['success'] = true;
-		//we only need the file content
-		$data['files'] = $meta['body']->contents;
-		// reverse the order (last added file to 0-key of array)
-		$data['files'] = array_reverse($data['files']);
+			// get Dropbox things
+			$dropbox = new Dropbox;
+				
+			//get all the dropbox files
+			$meta = $dropbox->dropbox->metaData();
 
-		//init
-		$totalBackupSize = 0;
-		$i=0;
+			$data['success'] = true;
+			//we only need the file content
+			$data['files'] = $meta['body']->contents;
+			// reverse the order (last added file to 0-key of array)
+			$data['files'] = array_reverse($data['files']);
 
-		// walkthrough the dropbox files
-		foreach ($data['files'] as $file) {
+			//init
+			$totalBackupSize = 0;
+			$i=0;
+
+			// walkthrough the dropbox files
+			foreach ($data['files'] as $file) {
 				//echo str_replace("/","",$file->path);
 				$fileMedia = $dropbox->dropbox->media($file->path);
 
-			// set fullPath to the files array
+				// set fullPath to the files array
 
-			//$file->client_mtime = "Tue, 04 Dec 2012 13:00:59 +0000";
-			// explode client_mtime
-			$exDateTime = explode(' ',$file->client_mtime);
-			// re-org timeformat
-			$client_mtime = $exDateTime[2].' '.$exDateTime[1].' '.$exDateTime[3].' '.$exDateTime[4];
-			//make timestamp and generate new timesting
-			$dateTime = strtotime($client_mtime);
-				
+				//$file->client_mtime = "Tue, 04 Dec 2012 13:00:59 +0000";
+				// explode client_mtime
+				$exDateTime = explode(' ',$file->client_mtime);
+				// re-org timeformat
+				$client_mtime = $exDateTime[2].' '.$exDateTime[1].' '.$exDateTime[3].' '.$exDateTime[4];
+				//make timestamp and generate new timesting
+				$dateTime = strtotime($client_mtime);
+
 				$dropbboxFile = array(
 						'client_mtime' => $dateTime,
 						'path' => $file->path,
 						'fullPath' => $fileMedia['body']->url,
 						'id' => $i,
 						'num' => $i+1,
-						'bytes' => $file->bytes				
+						'bytes' => $file->bytes
 				);
 				//var_dump($dropbboxFile);
-			//lets see if we need to save the file to the database.
+				//lets see if we need to save the file to the database.
 				$adapter->dropboxSaveFile($dropbboxFile);
-			// sum the filesizes for some nice figures
-			$totalBackupSize += $file->bytes;
+				// sum the filesizes for some nice figures
+				$totalBackupSize += $file->bytes;
 				$data['files'][] = $dropbboxFile;
-			$i++;
-		}
-		$data['totalBackups'] = $i+1;
-		$data['totalBackupSize'] = number_format($totalBackupSize/1000000,2,'.',''); // Bytes -> MegaByte
-		$data['avarageBackupSize'] = number_format((totalBackupSize/($i+1))/1000000,2,'.',''); // Bytes -> MegaByte
-			
-		// sync dropbox-files with database records (remove file from DB if the are not in dropbox-file-array)
-		$adapter->dropboxCheckActive($data['files']);
-		$data['files'] = null;
-		$data =$adapter->dropboxGetFilesFromDB();
-		$data['success'] = true;
+				$i++;
+			}
+			$data['totalBackups'] = $i+1;
+			$data['totalBackupSize'] = number_format($totalBackupSize/1000000,2,'.',''); // Bytes -> MegaByte
+			$data['avarageBackupSize'] = number_format((totalBackupSize/($i+1))/1000000,2,'.',''); // Bytes -> MegaByte
+				
+			// sync dropbox-files with database records (remove file from DB if the are not in dropbox-file-array)
+			$adapter->dropboxCheckActive($data['files']);
+			$data['files'] = null;
+			$data =$adapter->dropboxGetFilesFromDB();
+			$data['success'] = true;
 		} catch (Exception $e) {
 			//echo $e->getMessage();
 			$data['message'] = $e->getMessage();
@@ -756,7 +756,7 @@ switch ($settingstype) {
 	case 'send-shutdownEmail':
 		$mailAddon = new MailAddon();
 		var_dump($config->devices[2]);
-		$mailAddon->onInverterShutdown(array('test',$config->devices[2]));	
+		$mailAddon->onInverterShutdown(array('test',$config->devices[2]));
 		break;
 	case "getAllPlugs":
 		$plugwise = new PlugwiseStretchAddon();
@@ -769,21 +769,21 @@ switch ($settingstype) {
 		}else{
 			$data['plugwise'] = false;
 		}
-		
+
 		break;
 	case "switchPowerState":
 		$plugwise = new PlugwiseStretchAddon();
-		
+
 		$plug = new PlugwisePlug();
 		$plug->powerState = Common::getValue('newPowerState',null);
 		$plug->applianceID = Common::getValue('applianceID',null);
-		
+
 		$data['plugs'] = $plugwise->switchPowerState($plug);
 		break;
 	case "syncPlugs":
 		$plugwise = new PlugwiseStretchAddon();
 		$data['plugs'] = $plugwise->syncPlugsWithDB();
-		break;	
+		break;
 	case "getPlugsWatts":
 		$plugwise = new PlugwiseStretchAddon();
 		$data['plugs'] = $plugwise->getPlugsWatts();
@@ -795,10 +795,10 @@ switch ($settingstype) {
 		$plug->name = Common::getValue('name');
 		$plug->applianceID = Common::getValue('id');
 		$plug->updateName = true;
-		
+
 		$plugwise->SavePlugwisePlug($plug);
 		$data['result'] = true;
-		break;	
+		break;
 	case 'current-trunk-version':
 		$versions = Updater::getVersions(true);
 		foreach ($versions as $key => $version){
@@ -815,32 +815,32 @@ switch ($settingstype) {
 		$graphService = new GraphService();
 		$data['graphs'] = $graphService->loadDaily();
 		break;
-	/*case 'getGraphObject':
-		$graph = new Graph();
+		/*case 'getGraphObject':
+		 $graph = new Graph();
 
 		$getGraphAxes = HookHandler::getInstance()->fire("getGraphAxes","SmartMeterAddon.getAxes");
 		//var_dump($getGraphAxes);
 		$graph->axes = $graph->getGraphAxes();
 		$graph->series = $graph->getGraphSeries();
-		
+
 		$data['graphObject'] = $graph;
 		break;*/
 	case 'dbm_getTables':
 		$data['tables'] = R::$writer->getTables();
 		break;
-		
+
 	case 'dbm_getTableData':
 		$tableName = Common::getValue("tableName", null);
 		if ($tableName) {
 			$db_columns = array();
 			$columns = R::$writer->getColumns($tableName);
 			foreach ($columns as $columnname=>$columntype) {
-				// Which editor do we need?				
+				// Which editor do we need?
 				$editor = "Slick.Editors.Text";
 				if ($columntype == "INTEGER") {
 					$editor = "Slick.Editors.Integer"; // only full Integers (no decimals!)
 				}
-				
+
 				$db_column = array();
 				$db_column['id'] = $columnname;
 				$db_column['name'] = $columnname;
@@ -848,7 +848,7 @@ switch ($settingstype) {
 				$db_column['editor'] = $editor;
 				$db_column['toolTip'] = $columntype;
 				$db_columns[] = $db_column;
-}
+			}
 
 			$data['dbname'] = $tableName;
 			$data['columns'] = $db_columns;
@@ -858,11 +858,11 @@ switch ($settingstype) {
 	case 'dbm_saveTableData':
 		$tableName=Common::getValue("tableName");
 		$id=Common::getValue('id');
-		
-		
+
+
 		$oBean = R::load($tableName, $id);
 		// TODO If not id quit
-		
+
 		// Use the values send and save
 		foreach($_POST as $key => $val) {
 			if ($key == "id") {
@@ -881,18 +881,18 @@ switch ($settingstype) {
 		$deviceService = new DeviceService();
 		$deviceHistoryService = new DeviceHistoryService();
 		$energyService = new EnergyService();
-		
+
 		$device = $deviceService->load(Common::getValue('deviceId'));
-		
+
 		$result = array();
-		
+
 		// Set the data from the energyList
 		$energyList = $energyService->getEnergyListByDevice($device);
 		foreach ($energyList as $energy) {
 			$year = (int) date("Y", $energy->time);
 			$month = (int) date("m", $energy->time);
 			$day = (int) date("d", $energy->time);
-			
+				
 			if (!isset($result[$year])) {
 				$result[$year] = array();
 			}
@@ -901,17 +901,17 @@ switch ($settingstype) {
 			}
 			if (!isset($result[$year][$month][$day])) {
 				$result[$year][$month][$day] = array();
-			}			
-			
-			$result[$year][$month][$day]["energy"] = $energy; 
+			}
+				
+			$result[$year][$month][$day]["energy"] = $energy;
 		}
-		
+
 		$deviceHistoryList = $deviceHistoryService->getArrayByDevice($device);
 		foreach ($deviceHistoryList as $deviceHistory) {
 			$year = (int) date("Y", $deviceHistory->time);
 			$month = (int) date("m", $deviceHistory->time);
 			$day = (int) date("d", $deviceHistory->time);
-			
+				
 			if (!array_key_exists($year, $result)) {
 				$result[$year] = array();
 			}
@@ -921,9 +921,9 @@ switch ($settingstype) {
 			if (!array_key_exists($day, $result[$year][$month])) {
 				$result[$year][$month][$day] = array();
 			}
-			$result[$year][$month][$day]["deviceHistory"] = $deviceHistory; 
+			$result[$year][$month][$day]["deviceHistory"] = $deviceHistory;
 		}
-		
+
 		$data['data'] = $result;
 		break;
 	case 'yield_addEnergy':
@@ -931,7 +931,7 @@ switch ($settingstype) {
 		$time = strtotime($sdte . " 01:00:00");
 		$deviceId = Common::getValue('deviceId');
 		$newKWH = Common::getValue('newKWH');
-		
+
 		// Update the energy if it is available
 		$energyService = new EnergyService();
 		$energy = new Energy();
@@ -941,14 +941,14 @@ switch ($settingstype) {
 		$energy->time = $time;
 		$energy->KWH = $newKWH;
 		$energyService->save($energy);
-		
+
 		$data['success'] = true;
 		break;
 	case 'yield_saveEnergy':
 		$energyId = Common::getValue('energyId');
 		$deviceHistoryId = Common::getValue('deviceHistoryId');
 		$newKWH = Common::getValue('newKWH');
-		
+
 		// Update the deviceHistory if it is available
 		$deviceHistoryService = new DeviceHistoryService();
 		$deviceHistory = $deviceHistoryService->load($deviceHistoryId);
@@ -956,7 +956,7 @@ switch ($settingstype) {
 			$deviceHistory->processed = true;
 			$deviceHistoryService->save($deviceHistory);
 		}
-		
+
 		// Update the energy if it is available
 		$energyService = new EnergyService();
 		$energy = $energyService->load($energyId);
@@ -967,28 +967,28 @@ switch ($settingstype) {
 		}
 		$energy->KWH = $newKWH;
 		$energyService->save($energy);
-		
+
 		$data['success'] = true;
 		break;
 	case 'save-invoiceDate':
-		
+
 		$splitDate = explode("-",Common::getValue("date"));
-		
+
 		if(count($splitDate)==3){
 			$invoiceStartDate = $splitDate[0]."-".$splitDate[1]."-".$splitDate[2];
 			$config->invoiceDate = $invoiceStartDate;
 			$adapter->writeConfig($config);
 		}
-		
+
 		break;
 	case 'importOldCommunicationSettings':
 		$deviceService = new DeviceService();
 		$communicationService = new CommunicationService();
-		
+
 		foreach ($deviceService->getAllDevices() as $device) {
 			$communication = new Communication();
 			$communication->name = "comm." . $device->name;
-			
+				
 			if ($device->deviceApi == "AURORA") {
 				$communication->uri = $config->aurorapath;
 			}
@@ -1017,7 +1017,7 @@ switch ($settingstype) {
 				$communication->uri = $config->mastervoltpath;
 			}
 			if ($device->deviceApi == "SoladinSolget") {
-				$communication->uri = $config->soladinSolgetpath;				
+				$communication->uri = $config->soladinSolgetpath;
 			}
 			if ($device->deviceApi == "DeltaSolivia") {
 				$communication->uri = $config->deltaSoliviapath;
@@ -1028,17 +1028,17 @@ switch ($settingstype) {
 			if ($device->deviceApi == "KostalPiko") {
 				$communication->uri = $config->kostalpikopath;
 			}
-			
+				
 			$savedobject = $communicationService->save($communication);
-			
+				
 			$device->communicationId = $savedobject->id;
 			$deviceService->save($device);
 		}
-		
+
 		break;
 	case 'ReorganizeIndexes':
 		$beans = R::getAll('sqlite_master',"WHERE  tbl_name == ':tableName'",array(":type"=>'index',":tableName"=>'history'));
-		var_dump($beans);	
+		var_dump($beans);
 		break;
 	case 'getHistoryDataPowerOne':
 		foreach ($config->devices as $device){
@@ -1058,17 +1058,17 @@ switch ($settingstype) {
 			$data['configType'] = 'db';
 			$config = Session::getConfig();
 		}
-		$data['config'] = $config; 
+		$data['config'] = $config;
 		break;
 	case 'doSQLFileBackup':
 		ini_set('memory_limit', '1024M');
 		// require the plugin
 		require_once('../classes/RedBeanPHPPlugins/RedBeanWSLBackup.php');
-		
+
 		R::performWSLBackup("../backup");
-		
+
 		break;
-		
+
 	case 'ampyTesting':
 		$ampySmartMeter = new SmartMeterAmpyRemote(Common::getValue('path'), Common::getValue('address'), Common::getValue('debug'));
 		$data = $ampySmartMeter->getData();
@@ -1106,21 +1106,21 @@ switch ($settingstype) {
 	case 'invoiceInfo':
 		$bill = new Bill();
 		$splitDate = explode("-",$config->invoiceDate);
-		
+
 		$data['invoiceStartDate'] = $config->invoiceDate;
 		$data['invoiceEndDate'] = $splitDate[0]."-".$splitDate[1]."-".($splitDate[2]+1);
-		
+
 		$bill->startDate = strtotime($data['invoiceStartDate']);
 		$bill->endDate = strtotime($data['invoiceEndDate']);
 		$bill->deviceId = Common::getValue('deviceId');
 		$util = new Util();
 		$energySmartMeter = new EnergySmartMeterService();
 		$invoiceDataTemp = $energySmartMeter->getInvoiceData(2, ($bill->startDate-86400), $bill->endDate);
-		
+
 		foreach($invoiceDataTemp as $day){
 			$invoiceData[] = $day;
 		}
-		
+
 		$days = array();
 		$temp = array();
 		$month = array();
@@ -1129,10 +1129,10 @@ switch ($settingstype) {
 
 		$temp['highUsageTTotal'] = 0;
 		$temp['highUsageTTotalCosts'] = 0;
-		
+
 		$temp['highReturnTTotal'] = 0;
 		$temp['highReturnTTotalCosts'] = 0;
-		
+
 		$temp['lowReturnTTotal'] = 0;
 		$temp['lowReturnTTotalCosts'] = 0;
 
@@ -1148,10 +1148,10 @@ switch ($settingstype) {
 				$days[$i]['date'] = date("d-m-y",$invoiceData[$i]['time'] );
 				$days[$i]['month'] = date("m",$invoiceData[$i]['time'] );
 				$days[$i]['year'] = date("y",$invoiceData[$i]['time'] );
-				
-				// if we have a gap of +/- 1,5 day in the data, we mark it red... 
+
+				// if we have a gap of +/- 1,5 day in the data, we mark it red...
 				(($invoiceData[$i]['time'] - $invoiceData[$i-1]['time']) > 130000) ?	$days[$i]['backgroundColor'] = '#ff0000' : $days[$i]['backgroundColor'] = '#ffffff';
-				
+
 				if($i == 1){
 					$days[$i]['lowUsageT'] = ($invoiceData[$i]['lowUsageT'] - $invoiceData[$i-1]['lowUsageT'])/1000;
 					$temp['lowUsageTTotal'] += $days[$i]['lowUsageT'];
@@ -1183,7 +1183,7 @@ switch ($settingstype) {
 						$days[$i]['lowUsageT'] = 0;
 						$temp['lowUsageTTotal'] += $days[$i]['lowUsageT'];
 						$month[$days[$i]['year'].$days[$i]['month']]['lowUsageT'] += $days[$i]['lowUsageT'];
-						$days[$i]['lowUsageTCosts'] = $config->moneySign." ".($days[$i]['lowUsageT'] * $config->costkwh)/100;	
+						$days[$i]['lowUsageTCosts'] = $config->moneySign." ".($days[$i]['lowUsageT'] * $config->costkwh)/100;
 					}else{
 						$days[$i]['lowUsageT'] = ($invoiceData[$i]['lowUsageT'] - $invoiceData[$i-1]['lowUsageT'])/1000;
 						$temp['lowUsageTTotal'] += $days[$i]['lowUsageT'];
@@ -1202,7 +1202,7 @@ switch ($settingstype) {
 						$month[$days[$i]['year'].$days[$i]['month']]['highUsageT'] += $days[$i]['highUsageT'];
 						$days[$i]['highUsageTCosts'] = $config->moneySign." ".($days[$i]['highUsageT'] * $config->costkwh)/100;
 					}
-					
+						
 
 					if( (int)$invoiceData[$i-1]['gasUsageT'] <= (int)$invoiceData[$i]['gasUsageT'] ){
 						$gasUsageTTemp = ((int)$invoiceData[$i]['gasUsageT'] - (int)$invoiceData[$i-1]['gasUsageT'])/1000;
@@ -1248,62 +1248,62 @@ switch ($settingstype) {
 
 		$totals['gasUsageTTotal'] = round($temp['gasUsageTTotal'],2);
 		$totals['gasUsageTTotalCosts'] = $config->moneySign." ".round(($temp['gasUsageTTotal'] * $config->costGas)/100,2);
-		
-		
+
+
 		/*
-		 * 
-		 */
+		 *
+		*/
 		$totals['lowUsageTTotal'] = round($temp['lowUsageTTotal'],0);
 		$totals['lowUsageTTotalCosts'] = $config->moneySign." ".round(($temp['lowUsageTTotal'] * $config->costkwh)/100,0);
 
 		$totals['highUsageTTotal'] = round($temp['highUsageTTotal'],0);
 		$totals['highUsageTTotalCosts'] = $config->moneySign." ".round(($temp['highUsageTTotal'] * $config->costkwh)/100,0);
-		
-		
+
+
 		/*
 		 * Usage/Return
-		 */
+		*/
 		$totals['usageTTotal'] = round($temp['lowUsageTTotal'] + $temp['highUsageTTotal'],0);
 		$totals['usageTTotalCosts'] = $config->moneySign." ".round(($totals['usageTTotal'] * $config->costkwh)/100,0);
-		
+
 		$totals['returnTTotal'] = round($temp['lowReturnTTotal'] + $temp['highReturnTTotal'],0);
 		$totals['returnTTotalCosts'] = $config->moneySign." ".round(($totals['returnTTotal'] * $config->costkwh)/100,0);
-		 
+			
 		$totals['diffReturnUsageTTotal'] = round($totals['usageTTotal']  - $totals['returnTTotal'],0);
 		$totals['diffReturnUsageTTotalCosts'] = $config->moneySign." ".round(($totals['diffReturnUsageTTotal'] * $config->costkwh)/100,0);
 
 		/*
 		 * ===========================================
-		 */
+		*/
 		$totals['highReturnTTotal'] = round($temp['highReturnTTotal'],0);
 		$totals['highReturnTTotalCosts'] = $config->moneySign." ".round(($totals['highReturnTTotal'] * $config->costkwh)/100,0);
-		
+
 		$totals['lowReturnTTotal'] = round($temp['lowReturnTTotal'],0);
 		$totals['lowReturnTTotalCosts'] = $config->moneySign." ".round(($totals['lowReturnTTotal'] * $config->costkwh)/100,0);
-		
+
 		$totals['diffReturnUsage'] = $totals['lowReturnTTotal'] - $totals['highReturnTTotal'];
 		$totals['diffReturnUsageCosts'] = $config->moneySign." ".round(($totals['diffReturnUsage'] * $config->costkwh)/100,0);
 
 		/*
 		 * ===========================================
 		*/
-		
+
 		$totals['diffHigh'] = round($totals['highUsageTTotal'] - $totals['highReturnTTotal'],0);
 		$totals['diffHighCosts'] = $config->moneySign." ".round(($totals['diffHigh'] * $config->costkwh)/100,0);
-		
+
 		$totals['diffLow'] = round($totals['lowUsageTTotal'] - $totals['lowReturnTTotal'],0);
 		$totals['diffLowCosts'] = $config->moneySign." ".round(($totals['diffLow'] * $config->costkwh)/100,0);
-		
+
 		$totals['diffHighLowTotal'] = round($totals['diffHigh'] + $totals['diffLow'],0);
 		$totals['diffHighLowTotalCosts'] = $config->moneySign." ".round(($totals['diffHighLowTotal'] * $config->costkwh)/100,0);
-		
-		
+
+
 		$totals['highReturnTTotalCosts'] = $config->moneySign." ".round(($temp['highReturnTTotal'] * $config->costkwh)/100,0);
 		$totals['lowReturnTTotalCosts'] = $config->moneySign." ".round(($temp['lowReturnTTotal'] * $config->costkwh)/100,0);
 
 		$data['costkwh']= round($config->costkwh/100,4);
 		$data['costGas']= round($config->costGas/100,4);
-		
+
 		$firstDataRow = reset($invoiceData);
 		$lastDataRow = end($invoiceData);
 
@@ -1316,7 +1316,7 @@ switch ($settingstype) {
 		$data['months'] = $month;
 		$data['success'] = true;
 		break;
-		
+
 }
 
 if(Session::isLogin()){
@@ -1324,7 +1324,7 @@ if(Session::isLogin()){
 }
 
 if(isset($pass) && $pass){
-	$data['pass']=$pass;	
+	$data['pass']=$pass;
 }
 
 // Set headers for JSON response
