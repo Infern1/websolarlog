@@ -70,45 +70,46 @@ class Device {
 
     function getApi(Config $config) {
     	$api = null;
-        if ($this->deviceApi == "AURORA") {
+    	$deviceApi = strtoupper($this->deviceApi);
+        if ($deviceApi == "AURORA") {
             $api = new Aurora($config->aurorapath, $this->comAddress, $config->comDebug);
         }
-    	if ($this->deviceApi == "SMA-RS485") {
+    	if ($deviceApi == "SMA-RS485") {
 	    	$api = new Sma($config->smagetpath, $this->comAddress, $config->comDebug);
 	    }
-    	if ($this->deviceApi == "SMA-BT") {
+    	if ($deviceApi == "SMA-BT") {
 	    	$api = new SMABlueTooth($config->smaspotpath, $this->comAddress, $config->comDebug);
 	    }
-    	if ($this->deviceApi == "SMA-BT-WSL") {
+    	if ($deviceApi == "SMA-BT-WSL") {
 	    	$api = new SMASpotWSL($config->smaspotWSLpath, $this->comAddress, $config->comDebug);
 	    }
-	    if ($this->deviceApi == "Diehl-ethernet") {
+	    if ($deviceApi == "DIEHL-ETHERNET") {
 	    	$api = new Diehl($config->smagetpath, $this->comAddress, $config->comDebug);
 	    }
-	    if ($this->deviceApi == "DutchSmartMeter") {
+	    if ($deviceApi == "DUTCHSMARTMETER") {
 	    	$api = new SmartMeter($config->smartmeterpath, $this->comAddress, $config->comDebug);
 	    }
-        	if ($this->deviceApi == "DutchSmartMeterRemote") {
+        if ($deviceApi == "DUTCHSMARTMETERREMOTE") {
 	    	$api = new SmartMeterRemote($config->smartmeterpath, $this->comAddress, $config->comDebug);
 	    }
-	    if ($this->deviceApi == "SmartMeterAmpyRemote") {
+	    if ($deviceApi == "SMARTMETERAMPYREMOTE") {
 	    	$api = new SmartMeterAmpyRemote($config->smartmeterpath, $this->comAddress, $config->comDebug);
 	    }
-    	if ($this->deviceApi == "Mastervolt") {
+    	if ($deviceApi ==  "MASTERVOLT") {
 	    	$api = new MasterVolt($config->mastervoltpath, $this->comAddress, $config->comDebug);
 	    }
-    	if ($this->deviceApi == "SoladinSolget") {
+    	if ($deviceApi == "SOLADINSOLGET") {
 	    	$api = new SoladinSolget($config->soladinSolgetpath, $this->comAddress, $config->comDebug);
 	    }
-	    if ($this->deviceApi == "DeltaSolivia") {
+	    if ($deviceApi == "DELTASOLIVIA") {
 	    	$api = new DeltaSolivia($config->deltaSoliviapath, $this->comAddress, $config->comDebug);
 	    }
 	     
 	    
-    	if ($this->deviceApi == "Open-Weather-Map") {
+    	if ($deviceApi == "OPEN-WEATHER-MAP") {
 	    	$api = new WeatherOWM($config->latitude, $config->longitude);
 	    }
-    	if ($this->deviceApi == "KostalPiko") {
+    	if ($deviceApi == "KOSTALPIKO") {
 	    	$api = new KostalPiko($config->kostalpikopath, $this->comAddress, $config->comDebug);
 	    }
 
@@ -122,5 +123,4 @@ class Device {
 	    return $api;
     }
 }
-
 ?>
