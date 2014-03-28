@@ -572,9 +572,13 @@ switch ($settingstype) {
 		$hybridTwitter->detachTwitter();
 		break;
 	case 'sendTweet':
+		// get all devices
 		foreach (session::getConfig()->devices as $device){
-			$hybridTwitter = new TwitterAddon();
-			$hybridTwitter->sendTweet(array("adminserver::sendTweet",$device));
+			// only send for production devices
+			if($device->type == "production"){
+				$hybridTwitter = new TwitterAddon();
+				$hybridTwitter->sendTweet(array("adminserver::sendTweet",$device));
+			}
 		}
 		break;
 	case 'attachFacebook':
