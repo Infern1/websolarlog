@@ -581,21 +581,6 @@ switch ($settingstype) {
 			}
 		}
 		break;
-	case 'attachFacebook':
-		$hybridFacebook = new FacebookAddon();
-		$hybridFacebook->attachFacebook();
-
-		break;
-	case 'detachFacebook':
-		$hybridFacebook = new FacebookAddon();
-		$hybridFacebook->detachFacebook();
-
-		break;
-	case 'sendFacebook':
-		$hybridFacebook = new FacebookAddon();
-		$hybridFacebook->sendFacebook();
-		break;
-
 	case 'attachDropbox':
 		// getting back from Dropbox with the UID and oauth_token as $_get values
 		if((Common::getValue('uid')) && (Common::getValue('oauth_token'))){
