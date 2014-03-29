@@ -53,7 +53,7 @@
 	</div>
 </div>
 <div class="column span">
-	<div class="span" style="text-align:center;" title="{{timestampDateFormat data.total.weather.time format="d-M-YYYY H:mm:ss"}}">{{data.lang.weather}}:</div>
+	<div class="span" style="text-align:center;" title="{{timestampDateFormat data.total.weather.time format="DD-MM-YYYY H:mm:ss"}}">{{data.lang.weather}}:</div>
 	<div class="cl"></div>
 	<div class="column span-14 verticalLine">
 		<canvas id="layer1" style="z-index: 0;"></canvas>
