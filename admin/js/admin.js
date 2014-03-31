@@ -1821,6 +1821,7 @@ function init_yields() {
                                 text: 'You\'re changes have been saved.',
                             	type: 'success'
                             });
+    						$('#btn_yield_save').attr('disabled', false);
     						$('#yieldsEditDialog').dialog( "close" );
     					}else{
     						//something went wrong...
