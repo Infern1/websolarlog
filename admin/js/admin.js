@@ -1791,7 +1791,9 @@ function init_yields() {
 
     			$('#btn_yield_save').unbind('click');
     			$('#btn_yield_save').bind('click', function(){
-
+    				// disable save button
+    				$('#btn_yield_save').attr('disabled', true);
+    				
                     var notify = $.pnotify({
                             title: 'Saving... please wait',
                             text: 'Trying to save your changes.',
@@ -1821,15 +1823,20 @@ function init_yields() {
                             });
     						$('#yieldsEditDialog').dialog( "close" );
     					}else{
+    						//something went wrong...
+    						
     						//remove the notification
     						notify.pnotify_remove();
-    						
+    						//enable save button
+    						$('#btn_yield_save').attr('disabled', false);
+    	    				
+    						//display an error message
     						$.pnotify({
                                 title: 'Error',
                                 text: 'We could not save your settings.',
                             	type: 'error'
                             });
-    						$('#yieldsEditDialog').dialog( "close" );
+    						
     					}
     				});
     			});
