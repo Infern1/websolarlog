@@ -835,11 +835,13 @@ function init_social(){
                 deviceStatuses();
 
                 $('#sendTweet').bind('click', function(){
+               	 	console.log('aaa');
                  	$.pnotify({
                  		title: 'Twitter',
                  		text: 'Sending Tweet'
                  	});
-                	 $.getJSON('admin-server.php?s=sendTweet', function(data) {
+                	$.getJSON('admin-server.php?s=sendTweet', function(data) {
+                	
 	                	 if(data.tweetSend==1){
 	                      	$.pnotify({
 	                     		title: 'Twitter',
@@ -857,6 +859,7 @@ function init_social(){
                 });
 
                 $('#detachTwitter').bind('click', function(){
+                	console.log('bbb');
                  	$.pnotify({
                  		title: 'Twitter',
                  		text: 'Disconnect twitter'
@@ -880,6 +883,7 @@ function init_social(){
                 });
 
                 $('#attachTwitter').bind('click', function(){
+                	console.log('ccc');
                  	$.pnotify({
                  		title: 'Twitter',
                  		text: 'attach Twitter'
@@ -1768,6 +1772,7 @@ function init_yields() {
     		content.html(WSL.template.get('yields', {year: year, month: month, data: monthData}));
     		
     		$('.btnYieldDayEdit').bind('click', function(){
+    			var click = $(this);
     			var day = $(this).attr('data-day');
     			var energyId = $(this).attr('data-energy-id');
     			
@@ -1786,11 +1791,18 @@ function init_yields() {
 
     			$('#btn_yield_save').unbind('click');
     			$('#btn_yield_save').bind('click', function(){
+
+                    var notify = $.pnotify({
+                            title: 'Saving... please wait',
+                            text: 'Trying to save your changes.',
+                            type: 'warning'
+                        });   				
+                    
     				saveData =	{ 	"energyId" : energyId,
     								"deviceHistoryId" : ( yieldsData[year][month][day]['deviceHistory'] === undefined) ? 0 : yieldsData[year][month][day]['deviceHistory']['id'],
     								"newKWH" : $('#yield_new_kwh').val()
     							};
-    				//console.log(saveData);
+    				
     				WSL.connect.postJSON('admin-server.php?s=yield_saveEnergy', saveData, function(result){
     					if (result.success) {
     						if (yieldsData[year][month][day]['energy'] === undefined) {
@@ -1798,21 +1810,30 @@ function init_yields() {
     						}
     						yieldsData[year][month][day]['energy']['KWH'] = $('#yield_new_kwh').val();
     						btnYieldMonth.trigger('click');
+    						
+    						//remove the notification
+    						notify.pnotify_remove();
+    						
     						$.pnotify({
                                 title: 'Success',
                                 text: 'You\'re changes have been saved.',
                             	type: 'success'
-                            }); 
-    						WSL.connect.getJSON('admin-server.php?s=yield_getEnergyList&deviceId='+deviceId, function(result) {
-        				    	var monthData = result.data[year][month];
-        				    	content.html(WSL.template.get('yields', {year: year, month: month, data: monthData}));
-        				    });
+                            });
+    						$('#yieldsEditDialog').dialog( "close" );
+    					}else{
+    						//remove the notification
+    						notify.pnotify_remove();
+    						
+    						$.pnotify({
+                                title: 'Error',
+                                text: 'We could not save your settings.',
+                            	type: 'error'
+                            });
+    						$('#yieldsEditDialog').dialog( "close" );
     					}
     				});
-    				$('#yieldsEditDialog').dialog( "close" );
     			});
     		});
-    		
         	$('.btnYieldDayAdd').bind('click',content,function(){
         		$('#yieldsAddDialog').dialog( "open" );
         		$('#btn_yield_add').unbind('click');
@@ -1828,11 +1849,8 @@ function init_yields() {
     				    });
     				});
     				$('#yieldsAddDialog').dialog( "close" );
-    				
         		});
         	});
-    		
-    		
     	});
     });
 }
