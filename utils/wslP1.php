@@ -58,8 +58,8 @@ abstract class AbstractAgent {
 
 class SmartMeterAgent extends AbstractAgent {
 	private $serialPort;
-	
 	private $serial;
+	private $max_script_time = 20; // The application is only allowed to run for 20 seconds
 	
 	public function start($serialPort) {
 		$this->serialPort = $serialPort;
@@ -85,6 +85,7 @@ class SmartMeterAgent extends AbstractAgent {
 	function getData($ip) {
 		$read = "";
 		$isStart = false;
+		$startTime = time();
 		while(true) {
 			if (!$isStart) {
 				$read = "";
@@ -97,6 +98,9 @@ class SmartMeterAgent extends AbstractAgent {
 			if ($isStart && strstr($read, '!')) {
 				$isStart = false;
 				return $read;
+			}
+			if(time() - $startTime > $this->max_script_time) {
+				exit("Error: Max script time reached (" . $this->max_script_time . ")");
 			}
 		}
 	}
