@@ -31,7 +31,7 @@ class SmartMeterConverter
 		}
 
 		// Check if we have an valid last line
-		if (empty($lastLine) || substr($firstLine, 0, 1) != "!") {
+		if (empty($lastLine) || substr($lastLine, 0, 1) != "!") {
 			throw new ConverterException("SmartMeter :: Invalid last line:\r\n".print_r($lines,true));
 		}
 
