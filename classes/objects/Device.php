@@ -95,8 +95,11 @@ class Device {
 	    if ($deviceApi == "SMARTMETERAMPYREMOTE") {
 	    	$api = new SmartMeterAmpyRemote($config->smartmeterpath, $this->comAddress, $config->comDebug);
 	    }
-    	if ($deviceApi ==  "MASTERVOLT") {
-	    	$api = new MasterVolt($config->mastervoltpath, $this->comAddress, $config->comDebug);
+    	if ($deviceApi == "OMNIK") {
+            $api = new Omnik($config->omnikpath, $this->comAddress, $config->comDebug);
+        }
+        if ($deviceApi == "MASTERVOLT") {
+            $api = new MasterVolt($config->mastervoltpath, $this->comAddress, $config->comDebug);
 	    }
     	if ($deviceApi == "SOLADINSOLGET") {
 	    	$api = new SoladinSolget($config->soladinSolgetpath, $this->comAddress, $config->comDebug);
