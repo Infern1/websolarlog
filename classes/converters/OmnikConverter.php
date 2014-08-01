@@ -26,29 +26,41 @@ class OmnikConverter {
 
         // Temperature (BOOT)
         if (!empty($data[1]) && $data[1] != "-1") {
+            echo("data1=" . $data[1]);
             $live->BOOT = $data[1];
         }
 
         // VPV1, VPV2, VPV3 => Voltages
-        if (!empty($data[2]) && $data[4] != "-1") {
+        if (!empty($data[2]) && $data[2] != "-1") {
             $live->I1V = $data[2];
         }
-        if (!empty($data[3]) && $data[4] != "-1") {
+        if (!empty($data[3]) && $data[3] != "-1") {
             $live->I2V = $data[3];
         }
         if (!empty($data[4]) && $data[4] != "-1") {
             $live->I3V = $data[4];
         }
 
-        // IPV1, IPV2, IPV3 => Power
+        // IPV1, IPV2, IPV3 => AMPERE
         if (!empty($data[5]) && $data[5] != "-1") {
-            $live->I1P = $data[5];
+            $live->I1A = $data[5];
         }
         if (!empty($data[6]) && $data[6] != "-1") {
-            $live->I2P = $data[6];
+            $live->I2A = $data[6];
         }
         if (!empty($data[7]) && $data[7] != "-1") {
-            $live->I3P = $data[7];
+            $live->I3A = $data[7];
+        }
+
+        // Calucate P
+        if (!empty($live->I1V) && !empty($live->I1A)) {
+            $live->I1P = $live->I1V * $live->I1A;
+        }
+        if (!empty($live->I2V) && !empty($live->I2A)) {
+            $live->I2P = $live->I2V * $live->I2A;
+        }
+        if (!empty($live->I3V) && !empty($live->I3A)) {
+            $live->I3P = $live->I3V * $live->I3A;
         }
 
         // GRID Power, IAC1,IAC2,IAC3
@@ -94,34 +106,6 @@ class OmnikConverter {
             $live->KWHT = $data[21];
         }
 
-
-        // TODO
-        //if (!empty($data[2])) {
-        //    $live->I1A = $data[2];
-        //}
-        //if (!empty($data[5])) {
-        //    $live->I2A = $data[5];
-        //}
-
-        if (!empty ($data[8])) {
-            $live->GA = $data[8];
-        }
-        if (!empty ($data[9])) {
-            $live->GP = $data[9];
-        }
-        if (!empty ($data[10])) {
-            $live->FRQ = $data[10];
-        }
-        if (!empty ($data[11])) {
-            $live->EFF = $data[11];
-        }
-        if (!empty ($data[12])) {
-            $live->INVT = $data[12];
-        }
-        if (!empty ($data[13])) {
-            $live->BOOT = $data[13];
-        }
-        
         // This line is only valid if GP and KWHT are filled with data
         if (empty($live->KWHT) || empty($live->GP)) {
         	return null;
