@@ -26,7 +26,6 @@ class OmnikConverter {
 
         // Temperature (BOOT)
         if (!empty($data[1]) && $data[1] != "-1") {
-            echo("data1=" . $data[1]);
             $live->BOOT = $data[1];
         }
 
