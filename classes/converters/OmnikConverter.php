@@ -24,6 +24,11 @@ class OmnikConverter {
         $live->type = 'production';
         $live->time = time();
 
+        // Temperature (BOOT)
+        if (!empty($data[1]) && $data[1] != "-1") {
+            $live->BOOT = $data[1];
+        }
+
         // VPV1, VPV2, VPV3 => Voltages
         if (!empty($data[2]) && $data[4] != "-1") {
             $live->I1V = $data[2];
@@ -46,17 +51,58 @@ class OmnikConverter {
             $live->I3P = $data[7];
         }
 
+        // GRID Power, IAC1,IAC2,IAC3
+        if (!empty($data[8]) && $data[8] != "-1") {
+            $live->GA = $data[8];
+        }
+        if (!empty($data[9]) && $data[9] != "-1") {
+            $live->GA2 = $data[9];
+        }
+        if (!empty($data[10]) && $data[10] != "-1") {
+            $live->GA3 = $data[10];
+        }
+
+        // GRID Voltages, VAC1,VAC2,VAC3
+        if (!empty($data[11]) && $data[11] != "-1") {
+            $live->GV = $data[11];
+        }
+        if (!empty($data[12]) && $data[12] != "-1") {
+            $live->GV2 = $data[12];
+        }
+        if (!empty($data[13]) && $data[13] != "-1") {
+            $live->GV3 = $data[13];
+        }
+
+        // GRID Ampere, PAC1, PAC2, PAC3
+        if (!empty($data[15]) && $data[15] != "-1") {
+            $live->GP = $data[15];
+        }
+        if (!empty($data[17]) && $data[17] != "-1") {
+            $live->GP2 = $data[17];
+        }
+        if (!empty($data[19]) && $data[19] != "-1") {
+            $live->GP3 = $data[19];
+        }
+
+        // GRID Freq, FAC1 (FAC2 ,FAC3, are not supported);
+        if (!empty($data[14]) && $data[14] != "-1") {
+            $live->FRQ = $data[14];
+        }
+
+        // KWHT from inverter
+        if (!empty($data[21])) {
+            $live->KWHT = $data[21];
+        }
+
 
         // TODO
-        if (!empty($data[2])) {
-            $live->I1A = $data[2];
-        }
-        if (!empty($data[5])) {
-            $live->I2A = $data[5];
-        }
-        if (!empty ($data[7])) {
-            $live->GV = $data[7];
-        }
+        //if (!empty($data[2])) {
+        //    $live->I1A = $data[2];
+        //}
+        //if (!empty($data[5])) {
+        //    $live->I2A = $data[5];
+        //}
+
         if (!empty ($data[8])) {
             $live->GA = $data[8];
         }
@@ -74,9 +120,6 @@ class OmnikConverter {
         }
         if (!empty ($data[13])) {
             $live->BOOT = $data[13];
-        }
-        if (!empty ($data[19])) {
-            $live->KWHT = $data[19];
         }
         
         // This line is only valid if GP and KWHT are filled with data
