@@ -27,6 +27,7 @@ Solar inverters:<br>
 	<li>SMA (SMA-get RS485)</li>
 	<li>SMA (SMA-spot BlueTooth)</li>
 	<li>Soladin (Solget,TESTING)</li>
+	<li>Omnik (TESTING)</li>
 </ul>
 <br>
 Metering devices:<br>
