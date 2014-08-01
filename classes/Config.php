@@ -199,8 +199,8 @@ class Config
 	}
 	
 	public function getDeviceConfig($deviceId) {
-		foreach ($this->devices as $device) {
-			if ($device->id == $deviceId) {
+		foreach ($this->allDevices as $device) {
+            if ($device->id == $deviceId) {
 				return $device;
 			}
 		}
