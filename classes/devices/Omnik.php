@@ -85,11 +85,12 @@ Class Omnik implements DeviceApi {
     private function execute($options) {
     	$cmd = "";
     	if ($this->useCommunication === true) {
-    		$cmd = $this->communication->uri . ' -n' . $this->device->comAddress . ' ' . $this->communication->optional . ' ' . $options . ' ' . $this->communication->port;
-    	} else {
-    		$cmd = $this->PATH . ' -n' . $this->ADR . ' ' . $options;
-    	}
-    	
+            $cmd = $this->communication->uri . ' ' . $options . ' ' . $this->communication->optional;
+        } else {
+    		// Old way not supported
+        }
+        // remove the slashes from the line below to see the command line in the log/wsl.log
+        // HookHandler::getInstance()->fire("onInfo", "Running command: " . $cmd);
         return shell_exec($cmd);
     }
 
