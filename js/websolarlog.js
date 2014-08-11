@@ -28,6 +28,13 @@ $(function() {
 	}
 });
 
+Date.prototype.yyyymmdd = function() {
+    var yyyy = this.getFullYear().toString();
+    var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
+    var dd = this.getDate().toString();
+    return yyyy + (mm[1] ? mm : "0" + mm[0]) + (dd[1] ? dd : "0" + dd[0]); // padding
+};
+
 /**
  * 
  * @param theArray
@@ -2302,7 +2309,7 @@ var WSL = {
 			var deviceSelect = $('#devicenum');
 			$('#pickerPeriod, #datepicker, #devicenum').bind('change',function() {
 				var date = new Date(datePicker.datepicker('getDate'));
-				WSL.createDetailsGraph(deviceSelect.val(), divId, date);
+				WSL.createDetailsGraph(deviceSelect.val(), divId, date.yyyymmdd());
 			});
 
 			$('#next').unbind('click');
@@ -2350,9 +2357,9 @@ var WSL = {
 		});
 	},
 
-	createDetailsGraph : function(devicenum, divId, date) {
+	createDetailsGraph: function(devicenum, divId, date) {
 		$.ajax({
-			url : "server.php?method=getDetailsGraph&devicenum="+ devicenum + "&date=" + date,
+			url: "server.php?method=getDetailsGraph&devicenum=" + devicenum + "&date=" + date,
 			method : 'GET',
 			dataType : 'json',
 			beforeSend : function(xhr) {
