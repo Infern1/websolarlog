@@ -41,11 +41,13 @@ class LiveRest {
 					$totalsProduction["GP"] = $totalsProduction["GP"] + $live->GP;
 					$totalsProduction["GP2"] = $totalsProduction["GP2"] + $live->GP2;
 					$totalsProduction["GP3"] = $totalsProduction["GP3"] + $live->GP3;
+					$overallProduction = $overallProduction + $live->GP + $live->GP2 + $live->GP3;
 					break;
 				case "metering":
 					$live = $this->liveSmartMeterService->getLiveByDevice($device);
 					$totalsMetering["devices"] = $totalsMetering["devices"] + 1;
 					$totalsMetering["liveEnergy"] = $totalsMetering["liveEnergy"] + $live->liveEnergy;
+					$overallMetering = $overallMetering +$totalsMetering["liveEnergy"]; 
 					break;
 				case "weather":
 					$live = $this->weatherService->getLastWeather($device);					
@@ -54,7 +56,7 @@ class LiveRest {
 			$result[] = array("type"=>$type, "id"=>$device->id, "name"=>$device->name, "data"=>$live);
 		}
 		
-		$result["totals"] = array("production"=>$totalsProduction, "metering"=>$totalsMetering);
+		$result["totals"] = array("production"=>$totalsProduction, "metering"=>$totalsMetering, "overallUsage" =>($overallProduction+$overallMetering));
 		return $result;
 	}
 	
