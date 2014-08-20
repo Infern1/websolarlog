@@ -1,5 +1,13 @@
 <?php
 Class SoladinSolget implements DeviceApi {
+	///////////////////////////////////////////////////
+	//
+	//  Name:	solget
+	//  url:	http://www.solget.nl/download.htm
+	//  author: Marcel Reinieren
+	//
+	///////////////////////////////////////////////////
+	
     private $ADR;
     private $DEBUG;
     private $PATH;

@@ -1,5 +1,14 @@
 <?php
 Class Sma implements DeviceApi {
+
+	///////////////////////////////////////////////////
+	//
+	//  Name:	SMA-get
+	//  url:	https://code.google.com/p/sma-get/
+	//  author:	Roland Breedveld
+	//
+	///////////////////////////////////////////////////
+	
     private $ADR;
     private $DEBUG;
     private $PATH;

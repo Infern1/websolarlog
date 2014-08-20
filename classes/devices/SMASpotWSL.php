@@ -1,5 +1,14 @@
 <?php
 Class SMASpotWSL implements DeviceApi {
+	
+	///////////////////////////////////////////////////
+	//
+	//  Name:	SBFspot
+	//  url:	https://sbfspot.codeplex.com/
+	//  author: SBF
+	//
+	///////////////////////////////////////////////////
+	
     private $ADR;
     private $DEBUG;
     private $PATH;

@@ -1,5 +1,15 @@
 <?php
 Class MasterVolt implements DeviceApi {
+	
+	///////////////////////////////////////////////////
+	//
+	//  Name:	solget2MV
+	//  url:	https://sourceforge.net/projects/solgetmv2wsl/
+	//  author: Timo Busch
+	//
+	///////////////////////////////////////////////////
+	
+	
     private $ADR;
     private $DEBUG;
     private $PATH;

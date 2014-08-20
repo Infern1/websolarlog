@@ -1,5 +1,14 @@
 <?php
 Class Aurora implements DeviceApi {
+
+	///////////////////////////////////////////////////
+	//
+	//  Name:	Aurora
+	//  url:	http://www.curtronics.com/Solar/AuroraData.html
+	//  author: Curt Blanke
+	//
+	///////////////////////////////////////////////////
+	
     private $ADR;
     private $DEBUG;
     private $PATH;

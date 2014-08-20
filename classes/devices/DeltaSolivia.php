@@ -1,5 +1,16 @@
 <?php
 Class DeltaSolivia implements DeviceApi {
+	
+	///////////////////////////////////////////////////
+	//
+	//  Name:	DeltaPVOutput
+	//  url:	https://github.com/stik79/DeltaPVOutput
+	//  author: stik79
+	//
+	///////////////////////////////////////////////////
+	
+	
+	
     private $ADR;
     private $DEBUG;
     private $PATH;

@@ -1,6 +1,13 @@
 <?php
 Class Omnik implements DeviceApi {
-
+	
+	///////////////////////////////////////////////////
+	//
+	//  Name:	Omnik
+	//  url:	https://github.com/micromys/Omnik
+	//
+	///////////////////////////////////////////////////
+	
     private $ADR;
     private $DEBUG;
     private $PATH;

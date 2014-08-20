@@ -1,5 +1,14 @@
 <?php
 Class SmartMeterAmpyRemote implements DeviceApi {
+
+	///////////////////////////////////////////////////
+	//
+	//  Name:	no additional software required
+	//  url:	--
+	//  author: --
+	//
+	///////////////////////////////////////////////////
+	
     private $ADR;
     private $DEBUG;
     private $PATH;
