@@ -173,7 +173,7 @@
 	/**
 	 * Convert Month number into month name 1 = januari .. 12 = december.  
 	 */
-	var monthNames = ['januari', 'februari', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+	var monthNames = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
 	Handlebars.registerHelper('monthName', function(context, block) {
 		return monthNames[context-1];
 	});
