@@ -10,8 +10,8 @@
 		{{#each this}}
 		<div class="tr1">
 			<div class="column span-4 first">{{this.date}}</div>
-			<div class="column span-5" style="text-align:right;">{{this.harvested}}</div>
-			<div class="column span-5" style="text-align:right;">{{this.displayKWH}}</div>
+			<div class="column span-5" style="text-align:right;">{{toFixed value=this.harvested fixed=2}}</div>
+			<div class="column span-5" style="text-align:right;">{{toFixed value=this.displayKWH fixed=2}}</div>
 			<div class="cl"></div>
 		</div>
 		{{/each}}
@@ -26,8 +26,9 @@
 		{{#each this}}
 		<div class="tr2">
 			<div class="column span-4 first" >{{this.date}}</div>
-			<div class="column span-5" style="text-align:right;">{{this.harvested}}</div>
-			<div class="column span-5 last" style="text-align:right;">{{this.displayKWH}}</div>
+			
+			<div class="column span-5" style="text-align:right;">{{toFixed value=this.harvested fixed=2}}</div>
+			<div class="column span-5 last" style="text-align:right;">{{toFixed value=this.displayKWH fixed=2}}</div>
 			<div class="cl"></div>
 		</div>
 		{{/each}}
@@ -39,8 +40,8 @@
 	<div class="cl"></div>
 	{{#each diff}}
 		<div class="tr3">
-			<div class="column span-5" style="text-align:right;color:{{this.diffHarvestedColor}}">{{this.diffDailyCalc}}</div>
-			<div class="column span-5" style="text-align:right;color:{{this.diffColor}}">{{this.diffCumCalc}}</div>
+			<div class="column span-5" style="text-align:right;color:{{this.diffHarvestedColor}}">{{toFixed value=this.diffDailyCalc fixed=2}}</div>
+			<div class="column span-5" style="text-align:right;color:{{this.diffColor}}">{{toFixed value=this.diffCumCalc fixed=2}}</div>
 			<div class="cl"></div>
 		</div>
 	{{/each}}

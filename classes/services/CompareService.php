@@ -121,9 +121,9 @@ class CompareService {
 				$expectedBeans[$ii]['KWH'] = 0;
 			}
 			$expectedBeans[$i]['time'] = strtotime(date("Y")."/".$month."/".$iCompareDay);
-			$expectedBeans[$i]['KWH'] =  (float)number_format($expectedBeans[$ii]['KWH']+$expectedKwhPerDay,2,'.','');
-			$expectedBeans[$i]['displayKWH'] =  sprintf("%01.2f",(float)$expectedBeans[$ii]['KWH']+(float)$expectedKwhPerDay);
-			$expectedBeans[$i]['harvested'] = (float)number_format((float)$expectedKwhPerDay,2,'.','');
+			$expectedBeans[$i]['KWH'] =  (float)$expectedBeans[$ii]['KWH']+$expectedKwhPerDay;
+			$expectedBeans[$i]['displayKWH'] =  (float)$expectedBeans[$ii]['KWH']+(float)$expectedKwhPerDay;
+			$expectedBeans[$i]['harvested'] = (float)$expectedKwhPerDay;
 		}
 		return $expectedBeans;
 	}
@@ -134,24 +134,26 @@ class CompareService {
 		$expectedCount = count($expectedBeans);
 		if($whichCount>=$expectedCount){
 			for ($i = 0; $i < $whichCount; $i++) {
+				
 				$diffCumCalc = $whichBeans[$i]['KWH']-$expectedBeans[$i]['KWH'];
 				$diffDailyCalc = $whichBeans[$i]['harvested']-$expectedBeans[$i]['harvested'];
 	
 				$diffcolor = self::rangeBetweenColor($diffCumCalc, $expectedBeans[0]['KWH']);
 				$diffHarvestedDayColor = self::rangeBetweenColor($diffDailyCalc, round($expectedBeans[0]['KWH']*0.2,2));
 	
-				$diff[] = array("diffCumCalc"=>sprintf("%01.2f",(float)$diffCumCalc),"diffDailyCalc"=>$diffDailyCalc,'diffColor'=>$diffcolor,'diffHarvestedColor'=>$diffHarvestedDayColor);
+				$diff[] = array("diffCumCalc"=>(float)$diffCumCalc,"diffDailyCalc"=>$diffDailyCalc,'diffColor'=>$diffcolor,'diffHarvestedColor'=>$diffHarvestedDayColor);
 			}
 		}else{
 			for ($i = 0; $i < $expectedCount; $i++) {
 				if (isset($whichBeans[$i]) && isset($expectedBeans[$i])) {
+					
 					$diffCumCalc = $whichBeans[$i]['KWH']-$expectedBeans[$i]['KWH'];
 					$diffDailyCalc = $whichBeans[$i]['harvested']-$expectedBeans[$i]['harvested'];
 	
 					$diffcolor = self::rangeBetweenColor($diffCumCalc, $expectedBeans[0]['KWH']);
 					$diffHarvestedDayColor = self::rangeBetweenColor($diffDailyCalc, round($expectedBeans[0]['KWH']*0.2,2));
 	
-					$diff[] = array("diffCumCalc"=>sprintf("%01.2f",(float)$diffCumCalc),"diffDailyCalc"=>$diffDailyCalc,'diffColor'=>$diffcolor,'diffHarvestedColor'=>$diffHarvestedDayColor);
+					$diff[] = array("diffCumCalc"=>(float)$diffCumCalc,"diffDailyCalc"=>$diffDailyCalc,'diffColor'=>$diffcolor,'diffHarvestedColor'=>$diffHarvestedDayColor);
 				}
 			}
 	
@@ -213,8 +215,8 @@ class CompareService {
 					// before the first data day
 					$line[$counter]['time'] = strtotime($year."/".$month."/".($counter+1));
 					$line[$counter]['KWH'] = (float)0;
-					$line[$counter]['harvested'] =  sprintf("%01.2f",(float)0);
-					$line[$counter]['displayKWH'] =  sprintf("%01.2f",(float)0);
+					$line[$counter]['harvested'] =  (float)0;
+					$line[$counter]['displayKWH'] =  (float)0;
 				}else{
 					// after the last data day
 					$line[$counter]['time'] = strtotime($year."/".$month."/".($counter+1));
@@ -258,15 +260,15 @@ class CompareService {
 				$Energy['index'] = date("d",$energyBean['time'])-1;
 				$Energy['date'] = date("Y-m-d",$energyBean['time']);
 				$Energy['INV'] =  $energyBean['INV'];
-				$Energy['KWHKWP'] = number_format($energyBean['KWH'] / ($invConfig->plantpower/1000),2,',','');
-				$Energy['harvested'] = number_format((float)$energyBean['KWH'],2,'.','');
-				$Energy['KWH'] += number_format((float)$energyBean['KWH'],2,'.','');
+				$Energy['KWHKWP'] = $energyBean['KWH'] / ($invConfig->plantpower/1000);
+				$Energy['harvested'] = (float)$energyBean['KWH'];
+				$Energy['KWH'] += (float)$energyBean['KWH'];
 	
 				$cum +=$energyBean['KWH'];
-				$Energy['displayKWH'] = sprintf("%01.2f",(float)$cum);
+				$Energy['displayKWH'] = (float)$cum;
 				$Energy['CO2'] =Formulas::CO2kWh($energyBean['KWH'],$config->co2kwh);
 				$Energy['time'] = strtotime(date("Y-m-d",$energyBean['time']));
-				$Energy['KWHT'] = number_format($energyBean['KWHT'],2,',','');
+				$Energy['KWHT'] = $energyBean['KWHT'];
 				$KWHT += $energyBean['KWH'];
 			}
 			$energy[] = $Energy;
