@@ -285,6 +285,16 @@ switch ($settingstype) {
 	case 'logout':
 		Session::logout();
 		break;
+	case 'getMessages':
+		$curlSession = curl_init();
+		curl_setopt($curlSession, CURLOPT_URL, "http://www.websolarlog.com/json/messages.php");
+		curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);
+		curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
+		
+		$message = json_decode(curl_exec($curlSession));
+		curl_close($curlSession);
+
+		$data['message'] = $message;
 	case 'save-checkNewTrunk':
 		$config->checkNewTrunk = Common::getValue('chkNewTrunk');
 		$adapter->writeConfig($config);

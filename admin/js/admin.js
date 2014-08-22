@@ -129,6 +129,22 @@ function checkUpgradeMessage() {
 			WSL.notify.show_bar_top('info', 'Upgrade message', data.message);
 		}
 	});
+	
+	
+	WSL.connect.getJSON('admin-server.php?s=getMessages', function(data) {
+        $.ajax({
+       	url : 'js/templates/comMessages.hb',
+           success : function(source) { 
+               var template = Handlebars.compile(source);
+               var html = template({
+                   'data' : data
+               });
+               
+               $('#comMessages').html(html);
+           },
+           dataType : 'text'
+        });
+	});
 }
 
 var originalPerc=new Array(2,5,7,10,12,14,14,12,10,7,5,2);

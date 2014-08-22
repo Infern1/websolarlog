@@ -80,9 +80,7 @@ session_start();
 					<!-- Content -->
 					<header>
 						<h1 id="site-title">WSL :: Configuration</h1>
-						<font color="#ff0000;">Recently we made a high impact change on the way WSL is configured to communicate with external devices. Please see Admin::Communication and this forum post for more info:</font>
-<a href="https://groups.google.com/d/msg/websolarlog/OFzkDKLSvcM/YKnpGmxGo_4J" target="_blank">
-WebSolarLog Group: New communication manager is now active</a>
+						<div id="comMessages"></div>
 					</header>
 					<div id="content">
     					<header>
