@@ -73,7 +73,6 @@ class HistoryService {
 		
 			// set the deviceId of the bean to the current deviceId
 			$bObjectFix->deviceId = $bObject->deviceId;
-			$bObjectFix->INV = $bObject->deviceId;
 		
 			// set bean->time to sunrise minus half an hour to be sure that its the first records for today
 			$bObjectFix->time = ($sunInfo['sunrise']-1800);
@@ -135,8 +134,7 @@ class HistoryService {
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 	
 		$bObjects =  R::find( self::$tbl,
-				' INV = :deviceId AND time > :beginDate AND  time < :endDate ORDER BY time',
-				array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
+				' deviceId = :deviceId AND time > :beginDate AND  time < :endDate ORDER BY time', array(':deviceId'=>$device->id,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 		
 		$objects = array();
@@ -147,7 +145,6 @@ class HistoryService {
 	}
 	
 	private function toBean($object, $bObject) {
-		$bObject->INV = $object->INV;
 		$bObject->deviceId = $object->deviceId;
 		$bObject->SDTE = $object->SDTE;
 		$bObject->time = $object->time;
@@ -201,7 +198,6 @@ class HistoryService {
 			return $object;
 		}
 		$object->id = $bObject->id;
-		$object->INV = $bObject->INV;
 		$object->deviceId = $bObject->deviceId;
 		$object->SDTE = $bObject->SDTE;
 		$object->time = $bObject->time;

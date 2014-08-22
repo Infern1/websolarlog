@@ -30,12 +30,7 @@ class ProductionDeviceHandler {
 		
 		// Set some variables
 		$live->deviceId = $device->id;
-		
-		// TODO 
-		// Needs to be replaced with deviceId in future
-		$live->INV = $device->id;
-		 
-		$live->time = $item->time;
+        $live->time = $item->time;
 		$live->SDTE = date("Ymd-H:i:s", $item->time);
 		
 		// Calculate IP

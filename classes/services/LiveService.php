@@ -45,8 +45,8 @@ class LiveService {
 	 * @return Live
 	 */
 	public function getLiveByDevice(Device $device) {
-		$bObject = R::findOne( self::$tbl, ' INV = :deviceId ORDER BY time DESC LIMIT 1', array("deviceId"=>$device->id));
-		if (!$bObject) {
+		$bObject = R::findOne(self::$tbl, ' deviceId = :deviceId ORDER BY time DESC LIMIT 1', array("deviceId" => $device->id));
+        if (!$bObject) {
 			HookHandler::getInstance()->fire("onDebug", "Could not find live record for device id=" . $device->id);
 			return null;
 		}
@@ -59,7 +59,6 @@ class LiveService {
 	}
 	
 	private function toBean($object, $bObject) {
-		$bObject->INV = $object->INV;
 		$bObject->deviceId = $object->deviceId;
 		$bObject->I1V = $object->I1V;
 		$bObject->I1A = $object->I1A;
@@ -107,7 +106,6 @@ class LiveService {
 			return $object;
 		}
 		$object->id = $bObject->id;
-		$object->INV = $bObject->INV;
 		$object->deviceId = $bObject->deviceId;
 		$object->I1V = $bObject->I1V;
 		$object->I1A = $bObject->I1A;

@@ -64,7 +64,6 @@ class CoreAddon {
 		// Only add history when the device is live
 		if ($device->state == 1) {
 			$history = $live->toHistory();
-			$history->INV = $device->id;
 			$history->deviceId = $device->id;
 			$history->time = $timestamp;
 			$history->pvoutputSend = $this->historyService->CheckPVoutputSend($device->id);
@@ -102,7 +101,6 @@ class CoreAddon {
 		$energy = new Energy();
 		$energy->SDTE = $first->SDTE;
 		$energy->time = $timestamp;
-		$energy->INV = $device->id;
 		$energy->deviceId = $device->id;
 		$energy->KWH = $production;
 		$energy->KWHT = $productionEnd;

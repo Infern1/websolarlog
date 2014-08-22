@@ -9,24 +9,14 @@ Class SMABlueTooth implements DeviceApi {
 	//
 	///////////////////////////////////////////////////
 	
-    private $ADR;
-    private $DEBUG;
-    private $PATH;
-
+    private $debug;
     private $device;
     private $communication;
-    private $useCommunication = false;
     
-    function __construct($path, $address, $debug) {
-        $this->ADR = $address;
-        $this->DEBUG = $debug;
-        $this->PATH = $path;
-    }
-    
-    function setCommunication(Communication $communication, Device $device) {
-    	$this->communication = $communication;
+    function __construct(Communication $communication, Device $device, $debug = false) {
+        $this->communication = $communication;
     	$this->device = $device;
-    	$this->useCommunication = true;
+        $this->debug = $debug;
     }
     
     /**
@@ -37,8 +27,8 @@ Class SMABlueTooth implements DeviceApi {
     }
     
     public function getAlarms() {
-    	if ($this->DEBUG) {
-    		return "W2223424".rand(0,9);
+    	if ($this->debug) {
+            return "W2223424".rand(0,9);
     	} else {
     		return $this->execute('');
     	}
@@ -46,8 +36,7 @@ Class SMABlueTooth implements DeviceApi {
     }
 
     public function getData() {
-        if ($this->DEBUG) {
-            //return $this->execute('-b -c -T ' . $this->COMOPTION . ' -d0 -e 2>'. Util::getErrorFile($this->INVTNUM));
+        if ($this->debug) {
             return "SMAspot V2.0.4
 Yet another tool to read power production of SMA solar inverters
 (c) 2012-2013, SBF (http://code.google.com/p/sma-spot)
@@ -125,7 +114,7 @@ Done.";
     }
 
     public function getInfo() {
-        if ($this->DEBUG) {
+        if ($this->debug) {
             return "SMA XXXXXX.XXXXXXXX";
         } else {
            return $this->execute('-i');
@@ -152,13 +141,7 @@ Done.";
     }
 
     private function execute($options) {
-    	$cmd = "";
-    	if ($this->useCommunication === true) {
-    		$cmd = $this->communication->uri . ' ' . $options;
-    	} else {
-    		$cmd = $this->PATH . ' ' . $options;
-    	}
-    	
+        $cmd = $this->communication->uri . ' ' . $options;
         return shell_exec($cmd);
     }
 

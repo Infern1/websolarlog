@@ -78,18 +78,19 @@ class Util {
     * @param unknown $month
     * @param unknown $year
     */
-    public static function getTimestampOfDate($hour=0,$minute=0,$second=0,$day,$month,$year) {
-    	return mktime($hour,$minute,$second, $month, $day, $year);
+    public static function getTimestampOfDate($hour, $minute, $second, $day, $month, $year) {
+        return mktime($hour,$minute,$second, $month, $day, $year);
     }
 
     /**
      * get Last Day Of Month
-     * @param int $invtnum
-     * @param int $limit
+     * @param int $day
+     * @param int $month
+     * @param int $year
      * @return bean object
      */
-    public static function getLastDayOfMonth($day,$month,$year) {
-    	return strtotime(date('Y-m-t', mktime(0, 0, 0, $month, 1, $year)));
+    public static function getLastDayOfMonth($day, $month, $year) {
+        return strtotime(date('Y-m-t', mktime(0, 0, 0, $month, 1, $year)));
     }
 
 	/**
@@ -97,7 +98,6 @@ class Util {
  	* @param int $ts 
  	*/
     public static function getStartAndEndOfWeek($ts) {
-
     	$start = (date('w', $ts) == 0) ? $ts : strtotime('last monday', $ts);
     	return array(strtotime(date('Y-m-d', $start)),strtotime(date('Y-m-d', strtotime('next sunday', $start))));
     }

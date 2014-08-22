@@ -47,8 +47,7 @@ class Device {
     /**
      * Constructor
      */
-    function __construct()
-    {
+    function __construct() {
         $this->id = -1;
         $this->name = "";
         $this->description = "";
@@ -69,61 +68,44 @@ class Device {
     }
 
     function getApi(Config $config) {
-    	$api = null;
-    	$deviceApi = strtoupper($this->deviceApi);
-        if ($deviceApi == "AURORA") {
-            $api = new Aurora($config->aurorapath, $this->comAddress, $config->comDebug);
-        }
-    	if ($deviceApi == "SMA-RS485") {
-	    	$api = new Sma($config->smagetpath, $this->comAddress, $config->comDebug);
-	    }
-    	if ($deviceApi == "SMA-BT") {
-	    	$api = new SMABlueTooth($config->smaspotpath, $this->comAddress, $config->comDebug);
-	    }
-    	if ($deviceApi == "SMA-BT-WSL") {
-	    	$api = new SMASpotWSL($config->smaspotWSLpath, $this->comAddress, $config->comDebug);
-	    }
-	    if ($deviceApi == "DIEHL-ETHERNET") {
-	    	$api = new Diehl($config->smagetpath, $this->comAddress, $config->comDebug);
-	    }
-	    if ($deviceApi == "DUTCHSMARTMETER") {
-	    	$api = new SmartMeter($config->smartmeterpath, $this->comAddress, $config->comDebug);
-	    }
-        if ($deviceApi == "DUTCHSMARTMETERREMOTE") {
-	    	$api = new SmartMeterRemote($config->smartmeterpath, $this->comAddress, $config->comDebug);
-	    }
-	    if ($deviceApi == "SMARTMETERAMPYREMOTE") {
-	    	$api = new SmartMeterAmpyRemote($config->smartmeterpath, $this->comAddress, $config->comDebug);
-	    }
-    	if ($deviceApi == "OMNIK") {
-            $api = new Omnik($config->omnikpath, $this->comAddress, $config->comDebug);
-        }
-        if ($deviceApi == "MASTERVOLT") {
-            $api = new MasterVolt($config->mastervoltpath, $this->comAddress, $config->comDebug);
-	    }
-    	if ($deviceApi == "SOLADINSOLGET") {
-	    	$api = new SoladinSolget($config->soladinSolgetpath, $this->comAddress, $config->comDebug);
-	    }
-	    if ($deviceApi == "DELTASOLIVIA") {
-	    	$api = new DeltaSolivia($config->deltaSoliviapath, $this->comAddress, $config->comDebug);
-	    }
-	     
-	    
-    	if ($deviceApi == "OPEN-WEATHER-MAP") {
-	    	$api = new WeatherOWM($config->latitude, $config->longitude);
-	    }
-    	if ($deviceApi == "KOSTALPIKO") {
-	    	$api = new KostalPiko($config->kostalpikopath, $this->comAddress, $config->comDebug);
-	    }
+        $communicationService = new CommunicationService();
+        $communication = $communicationService->load($this->communicationId);
 
-	    // Do we want to use the new communication?
-	    if ($config->useNewCommunication){
-		    $communicationService = new CommunicationService();
-		    $communication = $communicationService->load($this->communicationId);
-		    $api->setCommunication($communication, $this);
-	    }
-	    
-	    return $api;
+        switch (strtoupper($this->deviceApi)) {
+            case "AURORA":
+                return new Aurora($communication, $this, $config->comDebug);
+            case "SMA-RS485":
+                return new Sma($communication, $this, $config->comDebug);
+            case "SMA-BT":
+                return new SMABlueTooth($communication, $this, $config->comDebug);
+            case "SMA-BT-WSL":
+                return new SMASpotWSL($communication, $this, $config->comDebug);
+            case "DIEHL-ETHERNET":
+                return new Diehl($communication, $this, $config->comDebug);
+            case "DUTCHSMARTMETER":
+                return new SmartMeter($communication, $this, $config->comDebug);
+            case "DUTCHSMARTMETERREMOTE":
+                return new SmartMeterRemote($communication, $this, $config->comDebug);
+            case "SMARTMETERAMPYREMOTE":
+                return new SmartMeterAmpyRemote($communication, $this, $config->comDebug);
+            case "OMNIK":
+                return new Omnik($communication, $this, $config->comDebug);
+            case "MASTERVOLT":
+                return new MasterVolt($communication, $this, $config->comDebug);
+            case "SOLADINSOLGET":
+                return new SoladinSolget($communication, $this, $config->comDebug);
+            case "DELTASOLIVIA":
+                return new DeltaSolivia($communication, $this, $config->comDebug);
+            case "OPEN-WEATHER-MAP":
+                $api = new WeatherOWM($communication, $this, $config->comDebug);
+                $api->setLatLon($config->latitude, $config->longitude); // TODO :: set as communication options???
+                return $api;
+            case "KOSTALPIKO":
+                return new KostalPiko($communication, $this, $config->comDebug);
+        }
+
+        HookHandler::getInstance()->fire("onError", "We should never got here, could not load class for API: " . $this->deviceApi);
+        return null;
     }
 }
 ?>

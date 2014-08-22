@@ -10,24 +10,14 @@ Class MasterVolt implements DeviceApi {
 	///////////////////////////////////////////////////
 	
 	
-    private $ADR;
-    private $DEBUG;
-    private $PATH;
-
+    private $debug;
     private $device;
     private $communication;
-    private $useCommunication = false;
     
-    function __construct($path, $address, $debug) {
-        $this->ADR = $address;
-        $this->DEBUG = $debug;
-        $this->PATH = $path;
-    }
-    
-    function setCommunication(Communication $communication, Device $device) {
-    	$this->communication = $communication;
+    function __construct(Communication $communication, Device $device, $debug = false) {
+        $this->communication = $communication;
     	$this->device = $device;
-    	$this->useCommunication = true;
+        $this->debug = $debug;
     }
     
     /**
@@ -38,8 +28,8 @@ Class MasterVolt implements DeviceApi {
     }
 
     public function getAlarms() {
-    	if ($this->DEBUG) {
-    		return "W2223424".rand(0,9);
+    	if ($this->debug) {
+            return "W2223424".rand(0,9);
     	} else {
             echo("GetAlarms Mastervolt\n");
     		return $this->execute('-A -Y 10');
@@ -48,8 +38,7 @@ Class MasterVolt implements DeviceApi {
     }
 
     public function getData() {
-        if ($this->DEBUG) {
-            //return $this->execute('-b -c -T ' . $this->COMOPTION . ' -d0 -e 2>'. Util::getErrorFile($this->INVTNUM));
+        if ($this->debug) {
             return "451 1,38 622 233 2,55 580 50,00 42 13,33 748 NoError";
         } else {
             //echo("GetData Mastervolt\n");
@@ -64,7 +53,7 @@ Class MasterVolt implements DeviceApi {
     }
 
     public function getInfo() {
-        if ($this->DEBUG) {
+        if ($this->debug) {
             return "PowerOne XXXXXX.XXXXXXXX";
         } else {
             return "Mastervolt";
@@ -95,13 +84,8 @@ Class MasterVolt implements DeviceApi {
     }
 
     private function execute($options) {
-    	$cmd = "";
-    	if ($this->useCommunication === true) {
-    		$cmd = $this->communication->uri . ' ' . $this->device->comAddress . ' ' . $this->communication->optional . ' ' . $options . ' ' . $this->communication->port;
-    	} else {
-	        $cmd = $this->PATH." ".$this->ADR ;
-    	}
-    	
+        $cmd = $this->communication->uri . ' ' . $this->device->comAddress . ' ' . $this->communication->optional . ' ' . $options . ' ' . $this->communication->port;
+
         $proc=proc_open($cmd,
         		array(
         				array("pipe","r"),
@@ -110,8 +94,8 @@ Class MasterVolt implements DeviceApi {
         		),
         		$pipes);
         $stdout = stream_get_contents($pipes[1]);
-        $stderr = stream_get_contents($pipes[2]);
-        
+        //$stderr = stream_get_contents($pipes[2]);
+
         proc_close($proc);
         
         return trim($stdout);

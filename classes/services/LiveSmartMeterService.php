@@ -37,8 +37,8 @@ class LiveSmartMeterService {
 	 * @return LiveSmartMeter
 	 */
 	public function getLiveByDevice(Device $device) {
-		$bObject = R::findOne( self::$tbl, ' invtnum = :deviceId ORDER BY time DESC LIMIT 1', array("deviceId"=>$device->id));
-		return $this->toObject($bObject);
+		$bObject = R::findOne(self::$tbl, ' deviceId = :deviceId ORDER BY time DESC LIMIT 1', array("deviceId" => $device->id));
+        return $this->toObject($bObject);
 	}
 	
 	public function janitorDbCheck() {
@@ -48,7 +48,6 @@ class LiveSmartMeterService {
 	
 	private function toBean($object, $bObject) {
 		$bObject->time = $object->time;
-		$bObject->invtnum = $object->invtnum;
 		$bObject->deviceId = $object->deviceId;
 		$bObject->gasUsage = $object->gasUsage;
 		$bObject->liveGas = $object->liveGas;
@@ -66,7 +65,6 @@ class LiveSmartMeterService {
 		if (isset($bObject)) {
 			$object->id = $bObject->id;
 			$object->time = $bObject->time;
-			$object->invtnum = $bObject->invtnum;
 			$object->deviceId = $bObject->deviceId;
 			$object->gasUsage = $bObject->gasUsage;
 			$object->liveGas = $bObject->liveGas;

@@ -6,7 +6,6 @@ class EnergyService {
 	function __construct() {
 		HookHandler::getInstance()->add("onJanitorDbCheck", "EnergyService.janitorDbCheck");
 		$this->config = Session::getConfig();
-		
 	}
 	
 	/**
@@ -42,8 +41,7 @@ class EnergyService {
 	 */
 	public function addOrUpdateEnergyByDeviceAndTime(Energy $energy, $time) {
 		$beginEndDate = Util::getBeginEndDate('day', 1, $time);
-		$bean =  R::findOne( self::$tbl, ' INV = :deviceId AND time > :beginDate AND time < :endDate ',
-				array(':deviceId'=>$energy->deviceId, ':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
+		$bean = R::findOne(self::$tbl, ' deviceId = :deviceId AND time > :beginDate AND time < :endDate ', array(':deviceId'=>$energy->deviceId, ':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 	
 		if (!$bean){
@@ -97,8 +95,8 @@ class EnergyService {
 	 * @return Array of Energy
 	 */
 	public function getEnergyListByDevice(Device $device) {
-		$bObjects = R::find( self::$tbl, ' INV = :deviceId ORDER BY time', array("deviceId"=>$device->id));
-		$objects = array();
+		$bObjects = R::find(self::$tbl, ' deviceId = :deviceId ORDER BY time', array("deviceId" => $device->id));
+        $objects = array();
 		foreach ($bObjects as $bObject) {
 			$objects[] = $this->toObject($bObject);
 		}
@@ -114,12 +112,8 @@ class EnergyService {
 	public function getEnergyByDeviceAndTime(Device $device, $time) {
 		$beginEndDate = Util::getBeginEndDate('day', 1,$time);
 
-		
-		$bean =  R::findOne( self::$tbl, ' INV = :deviceId AND time > :beginDate AND time < :endDate LIMIT 1 ',
-				array(':deviceId'=>$device->id, ':beginDate'=>$beginEndDate['beginDate']+60,':endDate'=>$beginEndDate['endDate']-60)
-		);
+		$bean = R::findOne(self::$tbl, ' deviceId = :deviceId AND time > :beginDate AND time < :endDate LIMIT 1 ', array(':deviceId'=>$device->id, ':beginDate'=>$beginEndDate['beginDate']+60,':endDate'=>$beginEndDate['endDate']-60)	);
 	
-
 		if (!$bean){
 			return null;
 		}
@@ -129,13 +123,24 @@ class EnergyService {
 	
 	public function janitorDbCheck() {
 		HookHandler::getInstance()->fire("onDebug", "EnergyService janitor DB Check");
-		
-		// Delete empty rows
+
+        // Get an HistorySmartMeter and save it, to make sure al fields are available in the database
+        $bObject = R::findOne(self::$tbl, ' 1=1 LIMIT 1');
+        if ($bObject) {
+            $object = $this->toObject($bObject);
+            R::store($this->toBean($object, $bObject));
+            HookHandler::getInstance()->fire("onDebug", "Updated Energy");
+        } else {
+            HookHandler::getInstance()->fire("onDebug", "Energy object not found");
+        }
+
+        R::exec("UPDATE Energy SET deviceId = INV WHERE INV is not NULL");
+
+        // Delete empty rows
 		R::exec("DELETE FROM Energy WHERE kwh=0 AND kwht is null;");
 	}
 	
 	private function toBean($object, $bObject) {
-		$bObject->INV = $object->INV;
 		$bObject->deviceId = $object->deviceId;
 		$bObject->SDTE = $object->SDTE;
 		$bObject->time = $object->time;
@@ -150,7 +155,6 @@ class EnergyService {
 		$object = new Energy();
 		if (isset($bObject)) {
 			$object->id = $bObject->id;
-			$object->INV = $bObject->INV;
 			$object->deviceId = $bObject->deviceId;
 			$object->SDTE = $bObject->SDTE;
 			$object->time = $bObject->time;

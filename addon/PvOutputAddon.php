@@ -114,7 +114,6 @@ class PvOutputAddon {
 						$object = new History();
 						
 						$object->id = $live->id;
-						$object->INV = $live->INV;
 						$object->deviceId = $live->deviceId;
 						$object->SDTE = $live->SDTE;
 						$object->time = $live->time;

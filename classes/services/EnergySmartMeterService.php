@@ -42,10 +42,7 @@ class EnergySmartMeterService {
 	 */
 	public function addOrUpdateEnergyByDeviceAndTime(Energy $energy, $time) {
 		$beginEndDate = Util::getBeginEndDate('day', 1, $time);
-		$bean =  R::findOne( self::$tbl, ' INV = :deviceId AND time > :beginDate AND time < :endDate ',
-				array(':deviceId'=>$energy->deviceId, ':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
-		);
-	
+		$bean = R::findOne(self::$tbl, ' deviceId = :deviceId AND time > :beginDate AND time < :endDate ', array(':deviceId'=>$energy->deviceId, ':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		if (!$bean){
 			$bean = R::dispense(self::$tbl);
 		}
@@ -99,9 +96,9 @@ class EnergySmartMeterService {
 	 * @return Array of Energy
 	 */
 	public function getEnergyListByDevice(Device $device) {
-		$bObjects = R::find( self::$tbl, ' INV = :deviceId ORDER BY time', array("deviceId"=>$device->id));
-		
-		$objects = array();
+		$bObjects = R::find(self::$tbl, ' deviceId = :deviceId ORDER BY time', array("deviceId" => $device->id));
+
+        $objects = array();
 		foreach ($bObjects as $bObject) {
 			$objects[] = $this->toObject($bObject);
 		}
@@ -145,7 +142,6 @@ class EnergySmartMeterService {
 	}
 	
 	private function toBean($object, $bObject) {
-		$bObject->INV = $object->INV;
 		$bObject->deviceId = $object->deviceId;
 		$bObject->SDTE = $object->SDTE;
 		$bObject->time = $object->time;
@@ -160,7 +156,6 @@ class EnergySmartMeterService {
 		$object = new Energy();
 		if (isset($bObject)) {
 			$object->id = $bObject->id;
-			$object->INV = $bObject->INV;
 			$object->deviceId = $bObject->deviceId;
 			$object->SDTE = $bObject->SDTE;
 			$object->time = $bObject->time;

@@ -9,25 +9,14 @@ Class SmartMeterAmpyRemote implements DeviceApi {
 	//
 	///////////////////////////////////////////////////
 	
-    private $ADR;
-    private $DEBUG;
-    private $PATH;
-
+    private $debug;
     private $device;
     private $communication;
-    private $useCommunication = false;
     
-    function __construct($path, $address, $debug) {
-        $this->ADR = $address;
-        $this->DEBUG = $debug;
-        $this->PATH = $path;
-    }
-    
-    
-    function setCommunication(Communication $communication, Device $device) {
-    	$this->communication = $communication;
-    	$this->device = $device;
-    	$this->useCommunication = true;
+    function __construct(Communication $communication, Device $device, $debug = false) {
+        $this->communication = $communication;
+        $this->device = $device;
+        $this->debug = $debug;
     }
     
     /**
@@ -42,8 +31,7 @@ Class SmartMeterAmpyRemote implements DeviceApi {
     }
 
     public function getData() {
-        if ($this->DEBUG) {
-            //return $this->execute('-b -c -T ' . $this->COMOPTION . ' -d0 -e 2>'. Util::getErrorFile($this->INVTNUM));
+        if ($this->debug) {
             return '/XMX5XMXABCE000024595
 
 0-0:96.1.1(22222222222222222222222222222222)
@@ -100,26 +88,11 @@ Class SmartMeterAmpyRemote implements DeviceApi {
     }
 
     private function execute() {
-    	$server = "127.0.0.1";
-    	$port = 8080;
-    	$timeout = 15;
-    	if ($this->useCommunication === true) {
-    		$server = $this->communication->uri;
-    		$port = $this->communication->port;
-    		$timeout = $this->communication->timeout;
-    	} else {
-	    	$address = explode(":", $this->ADR);
-			if (count($address) != 2) {
-				$error = "Error: wrong address given " . $address;
-	    		HookHandler::getInstance()->fire("onError", $error);
-				return;
-			}
-    		
-	    	$server = $address[0];
-	    	$port = $address[1];
-    	}
-    	
-    	$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        $server = $this->communication->uri;
+        $port = $this->communication->port;
+        $timeout = $this->communication->timeout;
+
+        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
     	if ($socket < 0) {
     		HookHandler::getInstance()->fire("onError", "Could not create socket: " . socket_strerror(socket_last_error($socket)));
     		return;

@@ -95,17 +95,17 @@ class CompareService {
 	}
 	
 	
-	public static function expectedMonthProduction($invtnum,$month,$year=0){
-		$config = Session::getConfig();
+	public static function expectedMonthProduction($deviceId, $month, $year = 0) {
+        $config = Session::getConfig();
 	
 		($year < 1970) ? $year = date("Y") : $year = $year;
 			
 		$expectedMonthDays =  cal_days_in_month(CAL_GREGORIAN, $month, $year);
 		$expectedMonthString = 'expected'.strtoupper(date('M', strtotime($month."/01/".$year)));
-		$expectedPerc = $config->getDeviceConfig($invtnum)->$expectedMonthString;
-		$expectedkwhYear = $config->getDeviceConfig($invtnum)->expectedkwh;
-	
-		// calculate month kWh = (year/100*month perc)
+		$expectedPerc = $config->getDeviceConfig($deviceId)->$expectedMonthString;
+        $expectedkwhYear = $config->getDeviceConfig($deviceId)->expectedkwh;
+
+        // calculate month kWh = (year/100*month perc)
 		$expectedKWhMonth = ($expectedkwhYear / 100)*$expectedPerc;
 	
 		// calculate daily expected, based on month day (28,29,30,31 days)
@@ -181,13 +181,13 @@ class CompareService {
 	
 	
 	/**
-	 *
-	 * @param unknown $month
-	 * @param unknown $year
+	 * @param int deviceId
+	 * @param int $month
+	 * @param int $year
 	 * @return multitype:NULL unknown
 	 */
-	public static function getCompareBeans($invtnum, $month,$year){
-		$dataService = new PDODataAdapter();
+	public static function getCompareBeans($deviceId, $month, $year) {
+        $dataService = new PDODataAdapter();
 		// init
 		$counter = 0;
 		$dataDays = 0;
@@ -195,8 +195,8 @@ class CompareService {
 		$getCompareBeans = array();
 	
 		// get beans for month and year
-		$beans = self::readEnergyValues($invtnum, 'month', 1, $year."-".$month."-1");
-		// lose one array
+		$beans = self::readEnergyValues($deviceId, 'month', 1, $year . "-" . $month . "-1");
+        // lose one array
 		$beans = $beans[0];
 		foreach ($beans as $bean) {
 			$newBeans[strtotime(date("Y-m-d",$bean['time']))] = $bean;
@@ -235,32 +235,32 @@ class CompareService {
 
 	/**
 	 * read Energy Values
-	 * @param int $invtnum
+	 * @param int $deviceId
 	 * @param str $type can be: today, week, month, year
 	 * @param int $count
 	 * @param date $startDate
 	 * @param str $maxType
 	 *
 	 */
-	public function readEnergyValues($invtnum, $type, $count, $startDate){
-		//$deviceService = new DeviceService();
+	public function readEnergyValues($deviceId, $type, $count, $startDate) {
+        //$deviceService = new DeviceService();
 		$config = Session::getConfig();
-		$energyBeans = self::readTablesPeriodValues($invtnum, "energy", $type,$startDate);
-		$Energy = array();
+		$energyBeans = self::readTablesPeriodValues($deviceId, "energy", $type, $startDate);
+        $Energy = array();
 	
 		$Energy['KWH'] = 0;
 		$KWHT = 0;
 		$cum = 0;
 		$deviceService = new DeviceService();
-		$invConfig = $deviceService->load($invtnum);
-		foreach ($energyBeans as $energyBean){
+		$invConfig = $deviceService->load($deviceId);
+        foreach ($energyBeans as $energyBean){
 			
 			if($invConfig->id > 0){
 				$energyBean['KWH'] = (float)$energyBean['KWH'];
 				$Energy['index'] = date("d",$energyBean['time'])-1;
 				$Energy['date'] = date("Y-m-d",$energyBean['time']);
-				$Energy['INV'] =  $energyBean['INV'];
-				$Energy['KWHKWP'] = $energyBean['KWH'] / ($invConfig->plantpower/1000);
+				$Energy['deviceId'] = $energyBean['deviceId'];
+                $Energy['KWHKWP'] = $energyBean['KWH'] / ($invConfig->plantpower/1000);
 				$Energy['harvested'] = (float)$energyBean['KWH'];
 				$Energy['KWH'] += (float)$energyBean['KWH'];
 	
@@ -283,19 +283,19 @@ class CompareService {
 	 * @Param string $type
 	 * @Param date $startDate
 	 */
-	public static function readTablesPeriodValues($invtnum, $table, $type, $startDate){
-		$count = 0;
+	public static function readTablesPeriodValues($deviceId, $table, $type, $startDate) {
+        $count = 0;
 	
 		// get the begin and end date/time
 		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
 	
-		if ($invtnum > 0){
-			$energyBeans = R::getAll("
+		if ($deviceId > 0) {
+            $energyBeans = R::getAll("
 					SELECT *
 					FROM ".$table."
-					WHERE INV = :INV AND time > :beginDate AND  time < :endDate
-					ORDER BY time",array(':INV'=>$invtnum,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
-		}else{
+					WHERE deviceId= :deviceId AND time > :beginDate AND  time < :endDate
+					ORDER BY time", array(':deviceId' => $deviceId, ':beginDate' => $beginEndDate['beginDate'], ':endDate' => $beginEndDate['endDate']));
+        }else{
 			$energyBeans = R::getAll("
 					SELECT *
 					FROM ".$table."

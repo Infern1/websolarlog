@@ -82,11 +82,11 @@ class GraphDataService {
 
 	/**
 	 *
-	 * @param unknown $invtnum
-	 * @param unknown $table
+	 * @param Device $device
+	 * @param String $table
 	 * @param unknown $type
-	 * @param unknown $startDate
-	 * @return unknown
+	 * @param Date $startDate
+	 * @return
 	 */
 
 	public static function readTablesPeriodValues($device, $table, $type, $startDate){
@@ -97,10 +97,10 @@ class GraphDataService {
 		$energyBeans = R::getAll("
 				SELECT *
 				FROM history
-				WHERE time > :beginDate AND  time < :endDate AND inv = :inv ORDER BY id",
-				array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'], ':inv'=>$device->id));
+				WHERE time > :beginDate AND  time < :endDate AND deviceId = :deviceId
+                ORDER BY id", array(':beginDate' => $beginEndDate['beginDate'], ':endDate' => $beginEndDate['endDate'], ':deviceId' => $device->id));
 
-		//see if we have atleast 1 bean, else we make one :)
+        //see if we have atleast 1 bean, else we make one :)
 		(!$energyBeans) ? $energyBeans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $energyBeans = $energyBeans;
 
 		return array('device'=>$device,'beans'=>$energyBeans);
@@ -108,7 +108,6 @@ class GraphDataService {
 
 
 	private function toBean($object, $bObject) {
-		$bObject->INV = $object->INV;
 		$bObject->deviceId = $object->deviceId;
 		$bObject->SDTE = $object->SDTE;
 		$bObject->time = $object->time;
@@ -157,7 +156,6 @@ class GraphDataService {
 	private function toObject($bObject) {
 		$object = new History();
 		$object->id = $bObject->id;
-		$object->INV = $bObject->INV;
 		$object->deviceId = $bObject->deviceId;
 		$object->SDTE = $bObject->SDTE;
 		$object->time = $bObject->time;

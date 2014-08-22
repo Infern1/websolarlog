@@ -9,24 +9,14 @@ Class KostalPiko implements DeviceApi {
 	//
 	///////////////////////////////////////////////////
 	
-    private $ADR;
-    private $DEBUG;
-    private $PATH;
-
+    private $debug;
     private $device;
     private $communication;
-    private $useCommunication = false;
     
-    function __construct($path, $address, $debug) {
-        $this->ADR = $address;
-        $this->DEBUG = $debug;
-        $this->PATH = $path;
-    }
-    
-    function setCommunication(Communication $communication, Device $device) {
-    	$this->communication = $communication;
+    function __construct(Communication $communication, Device $device, $debug = false) {
+        $this->communication = $communication;
     	$this->device = $device;
-    	$this->useCommunication = true;
+        $this->debug = $debug;
     }
     
     /**
@@ -37,8 +27,8 @@ Class KostalPiko implements DeviceApi {
     }
 
     public function getAlarms() {
-    	if ($this->DEBUG) {
-    		return "W2223424".rand(0,9);
+    	if ($this->debug) {
+            return "W2223424".rand(0,9);
     	} else {
     		return $this->execute('-A -Y 10');
     	}
@@ -46,7 +36,7 @@ Class KostalPiko implements DeviceApi {
     }
 
     public function getData() {
-        if ($this->DEBUG) {
+        if ($this->debug) {
             return "0PRO,Piko,1,1.3.0,20130730
 1TIM,2013-07-30T13:22:35.801768,17419h59m39s,8411h39m19s
 2INF,90xxxKBNxxxxx,Piko_name,192.168.1.10,81,1,PIKO 8.3,2,3
@@ -92,7 +82,7 @@ Class KostalPiko implements DeviceApi {
     }
 
     public function getInfo() {
-        if ($this->DEBUG) {
+        if ($this->debug) {
             return "PowerOne XXXXXX.XXXXXXXX";
         } else {
            return $this->execute('-p -n -f -g -m -v -Y 10');
@@ -141,14 +131,8 @@ Class KostalPiko implements DeviceApi {
     
 
     private function execute($options) {
-    	$cmd = "";
-    	if ($this->useCommunication === true) {
-    		$cmd = $this->communication->uri . ' ' . $this->communication->optional . ' ' . $options . ' ';
-    	} else {
-    		$cmd = $this->PATH . ' ' . $options;
-    	}
-    	
-    	$exec = shell_exec($cmd);
+        $cmd = $this->communication->uri . ' ' . $this->communication->optional . ' ' . $options . ' ';
+        $exec = shell_exec($cmd);
     	HookHandler::getInstance()->fire("onDebug", print_r($exec,true));
 		return $exec;
     }

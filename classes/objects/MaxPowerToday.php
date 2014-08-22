@@ -1,6 +1,6 @@
 <?php
 class MaxPowerToday {
-	public $INV;
+	public $deviceId;
     public $SDTE;
     public $time;
     public $GP;

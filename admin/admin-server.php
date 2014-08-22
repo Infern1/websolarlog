@@ -924,7 +924,6 @@ switch ($settingstype) {
 		// Update the energy if it is available
 		$energyService = new EnergyService();
 		$energy = new Energy();
-		$energy->INV = $deviceId;
 		$energy->deviceId = $deviceId;
 		$energy->SDTE = $sdte;
 		$energy->time = $time;
@@ -951,7 +950,6 @@ switch ($settingstype) {
 		$energy = $energyService->load($energyId);
 		if ($energy->id != $energyId || $energy->id < 1) {
 			$energy->time = $deviceHistory->time;
-			$energy->INV = $deviceHistory->deviceId;
 			$energy->deviceId = $deviceHistory->deviceId;
 		}
 		$energy->KWH = $newKWH;

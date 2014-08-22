@@ -2,7 +2,6 @@
 class HistorySmartMeter {
 	public $id;
 	public $time;
-	public $invtnum;
 	public $deviceId;
 	public $gasusage;
 	public $highUsage;

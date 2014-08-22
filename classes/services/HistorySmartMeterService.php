@@ -78,15 +78,14 @@ class HistorySmartMeterService {
 			R::store($this->toBean($object, $bObject));
 			HookHandler::getInstance()->fire("onDebug", "Updated HistorySmartMeter");
 		} else {
-			HookHandler::getInstance()->fire("onDebug", "HistorySmartMeter object not found");			
+            HookHandler::getInstance()->fire("onDebug", "HistorySmartMeter object not found");			
 		}
 
-		R::exec("UPDATE historySmartMeter SET deviceId = invtnum");
-	}
+		R::exec("UPDATE historySmartMeter SET deviceId = invtnum WHERE invtnum is not NULL");
+    }
 	
 	private function toBean($object, $bObject) {
 		$bObject->time = $object->time;
-		$bObject->invtnum = $object->invtnum;
 		$bObject->deviceId = $object->deviceId;
 		$bObject->gasUsage = $object->gasUsage;
 		$bObject->highReturn = $object->highReturn;
@@ -103,7 +102,6 @@ class HistorySmartMeterService {
 		if (isset($bObject)) {
 			$object->id = $bObject->id;
 			$object->time = $bObject->time;
-			$object->invtnum = $bObject->invtnum;
 			$object->deviceId = $bObject->deviceId;
 			$object->gasUsage = $bObject->gasUsage;
 			$object->highReturn = $bObject->highReturn;

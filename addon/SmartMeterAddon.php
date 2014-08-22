@@ -123,8 +123,8 @@ class SmartMeterAddon {
 		// Set the new values and save it
 		$energy = new EnergySmartMeter();
 		$energy->time = $args[2];
-		$energy->INV = $device->id;
-		$energy->gasUsage = $gasUsage;
+		$energy->deviceId = $device->id;
+        $energy->gasUsage = $gasUsage;
 		$energy->highReturn = $highReturn;
 		$energy->lowReturn = $lowReturn;
 		$energy->highUsage = $highUsage;
@@ -176,13 +176,10 @@ class SmartMeterAddon {
 	 * @param string date
 	 */
 	public function addSmartMeterHistory($deviceId, LiveSmartMeter $live,$timestamp) {
- 	
-		
 		$bean = R::dispense('historySmartMeter');
 
 		// check if we have a "valid" Bean to store.
 		$bean->deviceId = $deviceId;
-		$bean->invtnum = $deviceId;
 		$bean->gasUsage = $live->gasUsage;
 		$bean->highReturn = $live->highReturn;
 		$bean->lowReturn = $live->lowReturn;
@@ -356,7 +353,6 @@ class SmartMeterAddon {
 		}
 
 		$bean->deviceId = $deviceId;
-		$bean->invtnum = $deviceId;
 		$bean->gasUsageT = $energy->gasUsageT;
 		$bean->highReturnT = $energy->highReturnT;
 		$bean->lowReturnT = $energy->lowReturnT;

@@ -9,25 +9,14 @@ Class SmartMeter implements DeviceApi {
 	//
 	///////////////////////////////////////////////////
 	
-    private $ADR;
-    private $DEBUG;
-    private $PATH;
-    
+    private $debug;
     private $device;
     private $communication;
-    private $useCommunication = false;
 
-    function __construct($path, $address, $debug) {
-        $this->ADR = $address;
-        $this->DEBUG = $debug;
-        $this->PATH = $path;
-        $this->useCommunication = false;
-    }
-    
-    function setCommunication(Communication $communication, Device $device) {
-    	$this->communication = $communication;
-    	$this->device = $device;
-    	$this->useCommunication = true;
+    function __construct(Communication $communication, Device $device, $debug = false) {
+        $this->communication = $communication;
+        $this->device = $device;
+        $this->debug = $debug;
     }
     
     /**
@@ -42,8 +31,7 @@ Class SmartMeter implements DeviceApi {
     }
 
     public function getData() {
-        if ($this->DEBUG) {
-            //return $this->execute('-b -c -T ' . $this->COMOPTION . ' -d0 -e 2>'. Util::getErrorFile($this->INVTNUM));
+        if ($this->debug) {
             return '/XMX5XMXABCE000024595
 
 0-0:96.1.1(22222222222222222222222222222222)
@@ -98,13 +86,8 @@ Class SmartMeter implements DeviceApi {
     }
 
     private function execute() {
-		$uri = "";
-		if ($this->useCommunication === true) {
-			$uri = $this->communication->uri . " " . $this->communication->port;
-		} else {
-			$uri = $this->PATH;
-		}
-    	
+        $uri = $this->communication->uri . " " . $this->communication->port;
+
         // Check for dangerous programs
   		$badAppString = "rm,cat,tail,reboot,halt,shutdown,fdisk,mkfs,sh,cp,mv,dd";      
     	$badApp = explode(",",$badAppString);

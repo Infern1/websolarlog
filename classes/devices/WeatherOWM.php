@@ -8,27 +8,28 @@ Class WeatherOWM implements DeviceApi {
 	//  url:	--
 	//  author: --
 	//
+    //  weatherUrl example = http://api.openweathermap.org/data/2.5/find?units=metrics&cnt=1&mode=json
+    //
 	///////////////////////////////////////////////////
 		
-	private $weatherUrl = "http://api.openweathermap.org/data/2.5/find?units=metrics&cnt=1&mode=json";
 	private $lat;
 	private $lon;
-	
-	private $device;
+
+    private $debug;
+    private $device;
 	private $communication;
-	private $useCommunication = false;
 	
-	function __construct($lat, $lon) {
-		$this->lat = $lat;
-		$this->lon = $lon;
-	}
-	
-    function setCommunication(Communication $communication, Device $device) {
-    	$this->communication = $communication;
-    	$this->device = $device;
-    	$this->useCommunication = true;
+    function __construct(Communication $communication, Device $device, $debug = false) {
+        $this->communication = $communication;
+        $this->device = $device;
+        $this->debug = $debug;
     }
-    
+
+    public function setLatLon($lat, $lon) {
+        $this->lat = $lat;
+        $this->lon = $lon;
+    }
+
     /**
      * @see DeviceApi::getState()
      */
@@ -43,15 +44,8 @@ Class WeatherOWM implements DeviceApi {
 	public function getData() {
 		HookHandler::getInstance()->fire("onDebug",__METHOD__."::Lets start with gathering weather data from OWM");
 		
-		$url = "";
-		if ($this->useCommunication === true) {
-			$url = $this->communication->uri;
-		} else {
-			$url = $this->weatherUrl;
-		}
-		
-		$latlng = "&lat=" . $this->lat . "&lon=" . $this->lon;
-		$result = json_decode($this->call($url . $latlng));
+        $url = $this->communication->uri . "&lat=" . $this->lat . "&lon=" . $this->lon;
+        $result = json_decode($this->call($url));
 		// lets check if we have received data
 		if(count($result->list)>0){
 			
@@ -124,7 +118,8 @@ Class WeatherOWM implements DeviceApi {
 			$ch = curl_init($url);
 			curl_setopt($ch, CURLOPT_HEADER, 0);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			$result = curl_exec($ch);
+            curl_setopt($ch, CURLOPT_TIMEOUT, $this->communication->timeout);
+            $result = curl_exec($ch);
 			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
 			if ($httpCode == "200") {

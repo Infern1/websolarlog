@@ -9,20 +9,16 @@ Class Diehl implements DeviceApi {
 	//
 	///////////////////////////////////////////////////
 		
-    private $ADR;
-    private $DEBUG;
-    private $PATH;
 
     private static $curlCh;
-    
+    private $debug;
     private $device;
     private $communication;
-    private $useCommunication = false;
-    
-    function setCommunication(Communication $communication, Device $device) {
-    	$this->communication = $communication;
+
+    function __construct(Communication $communication, Device $device, $debug = false) {
+        $this->communication = $communication;
     	$this->device = $device;
-    	$this->useCommunication = true;
+        $this->debug = $debug;
     }
     
     public static function getCurlCh() { 	
@@ -34,8 +30,8 @@ Class Diehl implements DeviceApi {
     		self::$curlCh = curl_init();
     		curl_setopt(self::$curlCh, CURLOPT_HEADER, 0);
     		curl_setopt(self::$curlCh, CURLOPT_CONNECTTIMEOUT, 30);
-    		curl_setopt(self::$curlCh, CURLOPT_TIMEOUT, 60);
-    		curl_setopt(self::$curlCh, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
+    		curl_setopt(self::$curlCh, CURLOPT_TIMEOUT, $this->communication->timeout);
+            curl_setopt(self::$curlCh, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
     		curl_setopt(self::$curlCh, CURLOPT_RETURNTRANSFER, 1);
     		curl_setopt(self::$curlCh, CURLOPT_SSL_VERIFYPEER, 0);
     		curl_setopt(self::$curlCh, CURLOPT_FOLLOWLOCATION, 1);
@@ -369,17 +365,6 @@ Class Diehl implements DeviceApi {
 			
 			
      */
-    /**
-     * 
-     * @param unknown $path
-     * @param unknown $address
-     * @param unknown $debug
-     */
-    function __construct($path, $address, $debug) {
-        $this->ADR = $address;
-        $this->DEBUG = $debug;
-        $this->PATH = $path;
-    }
     
     /**
      * We use the getState to get the Diehl operation mode (online,offline,stanby,etc)
@@ -392,8 +377,8 @@ Class Diehl implements DeviceApi {
     }
 
     public function getAlarms() {
-    	if ($this->DEBUG) {
-    		return "";
+    	if ($this->debug) {
+            return "";
     	} else {
     		// At this moment we can't process the Event response from the Diehl
     		//$jsonRequest = '{"jsonrpc":"2.0","method":"GetEventPage","params":[1,"2013-02-21 23:59:59",1,14],"id":0}:';
@@ -403,8 +388,8 @@ Class Diehl implements DeviceApi {
     }
 
     public function getData() {
-        if ($this->DEBUG) {
-        	// JSON return
+        if ($this->debug) {
+            // JSON return
             return '{"jsonrpc":"2.0","result":[{"path":"eNEXUS_0043[s:17,t:1]","value":"11394"}, 
             {"path":"eNEXUS_0063[s:17,t:1]","value":"394"}, {"path":"eNEXUS_0049[s:17,t:1]","value":"394"}, 
             {"path":"eNEXUS_0050[s:17,t:1]","value":"3537"}, {"path":"eNEXUS_0065[s:17,t:1]","value":"139"}, 
@@ -439,8 +424,8 @@ Class Diehl implements DeviceApi {
     }
 
     public function getInfo() {
-        if ($this->DEBUG) {
-           return "PowerOne XXXXXX.XXXXXXXX";
+        if ($this->debug) {
+            return "PowerOne XXXXXX.XXXXXXXX";
         } else {
            return $this->execute('-p -n -f -g -m -v -Y 10');
         }
@@ -465,20 +450,13 @@ Class Diehl implements DeviceApi {
     }
 
     private function execute($options) {
-    	$url = "";
-    	if ($this->useCommunication === true) {
-    		$url = $this->communication->uri . "/rpc/GetPowerLog";
-    	} else {
-    		$url = "http://".$this->ADR."/rpc/GetPowerLog";
-    	}
-    	
-    	$ch = Diehl::getCurlCh();
-		curl_setopt($ch, CURLOPT_URL, "http://".$this->ADR."/rpc/GetPowerLog");
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-    	if ($this->useCommunication === true) {
-			curl_setopt($ch, CURLOPT_TIMEOUT, $this->communication->timeout);
-    	}
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $options);
+        $url = $this->communication->uri . "/rpc/GetPowerLog";
+
+        $ch = Diehl::getCurlCh();
+		curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->communication->timeout);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $options);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 		    'Content-Type: application/json',
 		    'Content-Length: ' . strlen($options))

@@ -13,7 +13,6 @@ class Event {
     public $eventHTML;
 
     function __construct($deviceId, $date, $type, $event) {
-        $this->INV = $deviceId;
         $this->deviceId = $deviceId;
         $this->SDTE = date("Ymd H:i:s", $date);
         $this->time = $date;

@@ -2,7 +2,6 @@
 class LiveSmartMeter {
 	public $id;
 	public $time;
-	public $invtnum;
 	public $deviceId;
 	public $status;
 	public $name;

@@ -14,7 +14,6 @@ class MeteringDeviceHandler {
 		
 		// Fill some extra variables
 		$live->time = $item->time;
-		$live->invtnum = $device->id;
 		$live->deviceId = $device->id;
 		
 		// Fire the hook

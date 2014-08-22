@@ -56,7 +56,6 @@ class Live {
 	 */
 	public function toHistory() {
 		$history = new History();
-		$history->INV = $this->INV;
 		$history->deviceId = $this->deviceId;
 		$history->SDTE = $this->SDTE;
 		$history->time = $this->time;

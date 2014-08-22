@@ -9,30 +9,18 @@ Class DeltaSolivia implements DeviceApi {
 	//
 	///////////////////////////////////////////////////
 	
-	
-	
-    private $ADR;
-    private $DEBUG;
-    private $PATH;
-    
+    private $debug;
     private $device;
     private $communication;
-    private $useCommunication = false;
     private $SCRIPT_PATH;
 
+    function __construct(Communication $communication, Device $device, $debug = false) {
+        $this->communication = $communication;
+        $this->device = $device;
+        $this->debug = $debug;
 
-    function __construct($path, $address, $debug) {
-        $this->ADR = $address;
-        $this->DEBUG = $debug;
-        $this->PATH = $path;
-        $this->useCommunication = false;
-        $this->SCRIPT_PATH = dirname(__FILE__).DIRECTORY_SEPARATOR.'DeltaSoliviaPy'.DIRECTORY_SEPARATOR.'DeltaPVOutput.py';
-    }
-    
-    function setCommunication(Communication $communication, Device $device) {
-    	$this->communication = $communication;
-    	$this->device = $device;
-    	$this->useCommunication = true;
+        // TODO :: Below line should be set in uri
+        $this->SCRIPT_PATH = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'DeltaSoliviaPy' . DIRECTORY_SEPARATOR . 'DeltaPVOutput.py';
     }
     
     /**
@@ -43,8 +31,8 @@ Class DeltaSolivia implements DeviceApi {
     }
 
     public function getAlarms() {
-    	if ($this->DEBUG) {
-    		return "W2223424".rand(0,9);
+    	if ($this->debug) {
+            return "W2223424".rand(0,9);
     	} else {
     		 return $this->execute('getalarms');
     	}
@@ -52,8 +40,7 @@ Class DeltaSolivia implements DeviceApi {
     }
 
     public function getData() {
-        if ($this->DEBUG) {
-            //return $this->execute('-b -c -T ' . $this->COMOPTION . ' -d0 -e 2>'. Util::getErrorFile($this->INVTNUM));
+        if ($this->debug) {
             return date("Ymd")."-11:11:11 233.188904 6.021501 1404.147217 234.981598 5.776632 1357.402222 242.095657 10.767704 2585.816406 59.966419 93.636436 68.472496 41.846001 3.230 8441.378 0.000 8384.237 12519.938 14584.0 84 236.659 OK";
         } else {
             return trim($this->execute('getdata'));
@@ -66,7 +53,7 @@ Class DeltaSolivia implements DeviceApi {
     }
 
     public function getInfo() {
-        if ($this->DEBUG) {
+        if ($this->debug) {
             return "PowerOne XXXXXX.XXXXXXXX";
         } else {
            return $this->execute('getinfo');
@@ -100,12 +87,7 @@ Class DeltaSolivia implements DeviceApi {
     }
 
     private function execute($options) {
-        $cmd = "";
-        if ($this->useCommunication === true) {
-         $cmd = 'python '.$this->SCRIPT_PATH.' '.$options.' '.$this->communication->port.' '.$this->device->comAddress;
-        } else {
-         $cmd = 'python '.$this->SCRIPT_PATH.' '.$options.' '.$this->PATH.' '.$this->ADR;
-        }
+        $cmd = 'python '.$this->SCRIPT_PATH.' '.$options.' '.$this->communication->port.' '.$this->device->comAddress;
         
         //echo $cmd;
         $proc=proc_open($cmd,
@@ -116,7 +98,7 @@ Class DeltaSolivia implements DeviceApi {
                         ),
                         $pipes);
         $stdout = stream_get_contents($pipes[1]);
-        $stderr = stream_get_contents($pipes[2]);
+        //$stderr = stream_get_contents($pipes[2]);
         //echo $stdout;
         proc_close($proc);
         return trim($stdout);

@@ -42,8 +42,7 @@ class EventService {
 	public function getArrayByDeviceAndType($device, $type, $limit=20) {
 	
 		$bObjects =  R::find( self::$tbl,
-				' INV = :deviceId and  lower(Type) =  lower(:type) ORDER BY time DESC LIMIT :limit',
-				array(':deviceId'=>$device->id,':type'=>$type, ':limit'=>$limit)
+				' deviceId = :deviceId and  lower(Type) =  lower(:type) ORDER BY time DESC LIMIT :limit', array(':deviceId'=>$device->id,':type'=>$type, ':limit'=>$limit)
 		);
 	
 		$objects = array();
@@ -54,7 +53,6 @@ class EventService {
 	}
 	
 	private function toBean($object, $bObject) {
-		$bObject->INV = $object->INV;
 		$bObject->deviceId = $object->deviceId;
 		$bObject->SDTE = $object->SDTE;
 		$bObject->time = $object->time;
@@ -70,7 +68,6 @@ class EventService {
 			return $object;
 		}
 		$object->id = $bObject->id;
-		$object->INV = $bObject->INV;
 		$object->deviceId = $bObject->deviceId;
 		$object->SDTE = $bObject->SDTE;
 		$object->time = $bObject->time;

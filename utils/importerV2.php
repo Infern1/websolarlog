@@ -150,7 +150,6 @@ class ImporterDevice {
 					$energy->deviceId = $this->device->id;
 					$energy->SDTE = $lineParts[0];
 					$energy->time = $date;
-					$energy->INV = $this->device->id;
 					$energy->KWH = $kwh;
 					$energy->KWHT = -1;
 					$energy->co2 = Formulas::CO2kWh($kwh, Session::getConfig()->co2kwh);
@@ -185,7 +184,6 @@ class ImporterDevice {
 					
 					$history = new History();
 					$history->deviceId = $this->device->id;
-					$history->INV = $this->device->id;
 					$history->SDTE = date("Ymd-H:i:s",$date);
 					$history->time = $date;
 					$history->dayNum = date("z", $history->time) + 1;

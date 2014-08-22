@@ -10,45 +10,44 @@ $adapter = PDODataAdapter::getInstance();
 $config = Session::getConfig();
 
 // Get values from url
-$inverterId = Common::getValue("inverterId", 1);
+$deviceId = Common::getValue("inverterId", 1);
 
 
-$dataPath = "../data/invt" . $inverterId . "/";
+$dataPath = "../data/invt" . $deviceId . "/";
 
 // Read daily data
 $dailyPath = $dataPath . "csv/";
 foreach (scandir($dailyPath) as $file) {
     if (is_file($dailyPath.$file))  {
-        importDailyFile($dailyPath . $file, $inverterId, $adapter);
+        importDailyFile($dailyPath . $file, $deviceId, $adapter);
     }
 }
 
 // Reay energy data
 $energyPath = $dataPath . "production/";
 foreach (scandir($energyPath) as $file) {
-	echo $energyPath."".$file." ".$inverterId;
+	echo $energyPath."".$file." ".$deviceId;
     if (is_file($energyPath.$file) && Common::startsWith($file, "energy"))  {
-        importEnergyFile($energyPath . $file, $inverterId, $adapter);
+        importEnergyFile($energyPath . $file, $deviceId, $adapter);
     }
 }
 
-function importDailyFile($src, $inverterId, PDODataAdapter $adapter) {
-	$historyService = new HistoryService();
+function importDailyFile($src, $deviceId, PDODataAdapter $adapter) {
+    $historyService = new HistoryService();
 	
     // Read all lines
     $lines = file($src);
     R::begin();
     foreach ($lines as $line) {
     	$live = parseCsvToLive(trim($line, "\n"));
-    	$live->INV = $inverterId;
-    	$live->deviceId = $inverterId;
-    	$historyService->save($live->toHistory());
+    	$live->deviceId = $deviceId;
+        $historyService->save($live->toHistory());
     }
     R::commit();
 }
 
-function importEnergyFile($src, $inverterId, PDODataAdapter $adapter) {
-	$energyService = new EnergyService();
+function importEnergyFile($src, $deviceId, PDODataAdapter $adapter) {
+    $energyService = new EnergyService();
 	
     // Read all lines
     $lines = file($src);
@@ -56,7 +55,7 @@ function importEnergyFile($src, $inverterId, PDODataAdapter $adapter) {
     R::begin();
     $kwht = 0; // this only works if you have one file!
     foreach ($lines as $line) {
-        $energy = parseCsvToEnergy($inverterId, trim($line, "\n"));
+        $energy = parseCsvToEnergy($deviceId, trim($line, "\n"));
         $kwht += $energy->KWH;
         $energy->KWHT = $kwht;
         $energyService->save($energy);
@@ -98,14 +97,13 @@ function parseCsvToLive($csv) {
     return $live;
 }
 
-function parseCsvToEnergy($inverterId, $csv) {
+function parseCsvToEnergy($deviceId, $csv) {
     // Convert comma to dot
     $csv = str_replace(",", ".", $csv);
     $fields = explode(";", $csv);
 
     $energy = new Energy();
-    $energy->INV = $inverterId;
-    $energy->deviceId = $inverterId;
+    $energy->deviceId = $deviceId;
     $energy->SDTE = $fields[0] . "-05:00:00";
     $energy->time = Util::getUTCdate($fields[0] . "-05:00:00");
     $energy->KWH = $fields[1];
