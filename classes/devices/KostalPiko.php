@@ -27,12 +27,14 @@ Class KostalPiko implements DeviceApi {
     }
 
     public function getAlarms() {
-    	if ($this->debug) {
-            return "W2223424".rand(0,9);
-    	} else {
-    		return $this->execute('-A -Y 10');
-    	}
-
+        if ($this->DEBUG) {
+                return "W2223424".rand(0,9);
+        } else {
+                $output = $this->execute(' -s -q');
+                $alarm = explode('\n', $output);               
+                return $alarm[1];
+        }
+ 
     }
 
     public function getData() {
@@ -82,10 +84,10 @@ Class KostalPiko implements DeviceApi {
     }
 
     public function getInfo() {
-        if ($this->debug) {
-            return "PowerOne XXXXXX.XXXXXXXX";
+        if ($this->DEBUG) {
+            return "KostalPiko XXXXXX.XXXXXXXX";
         } else {
-           return $this->execute('-p -n -f -g -m -v -Y 10');
+           return $this->execute(' -a');
         }
     }
 
