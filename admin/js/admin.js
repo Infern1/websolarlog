@@ -80,8 +80,8 @@ $(function()
             	// else always load the general function
             	init_general(); // First admin item
             }
-            
             checkUpgradeMessage();
+            
         } else {
             $.ajax({
                 url : 'js/templates/login.hb',
@@ -141,6 +141,18 @@ function checkUpgradeMessage() {
                });
                
                $('#comMessages').html(html);
+               
+               $('.hideMessage').bind('click', function(){
+                var id = $(this).attr('id').split("_")[1];
+                currentCommunicationId = id;
+                window.location.hash = shortcutFunction+"-"+id;
+               
+                   WSL.connect.getJSON('admin-server.php?s=hideMessage&id='+id, function(data){
+                	checkUpgradeMessage();
+                });
+                
+               })
+                
            },
            dataType : 'text'
         });

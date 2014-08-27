@@ -291,10 +291,25 @@ switch ($settingstype) {
 		curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);
 		curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, true);
 		
-		$message = json_decode(curl_exec($curlSession));
+		$messages = json_decode(curl_exec($curlSession));
 		curl_close($curlSession);
-
-		$data['message'] = $message;
+                
+                $adminMessageService = new AdminMessageService();
+                if (json_last_error() === JSON_ERROR_NONE) { 
+                    foreach($messages as $message){
+                        $adminMessageService->saveNewAdminMessage($message);
+                    }
+                }else{ 
+                    echo "no JSON";
+                }
+                
+                
+		$data['message'] = $adminMessageService->getAdminMessages();
+            break;
+        case 'hideMessage':
+            $adminMessageService = new AdminMessageService();
+            $adminMessageService->hideAdminMessage(Common::getValue('id'));
+            break;
 	case 'save-checkNewTrunk':
 		$config->checkNewTrunk = Common::getValue('chkNewTrunk');
 		$adapter->writeConfig($config);
