@@ -74,7 +74,9 @@ class AdminMessageService {
         public function getAllAdminMessages() {
 		$messages = R::findAll(self::$tbl, ' ORDER BY time DESC');
                 foreach($messages as $message){
-                    $newMessages[] = $this->toObject($message);
+                    $message = $this->toObject($message);
+                    $message->halfYearAgo = (time()-15552000);
+                    $newMessages[] = $message;
                 }
 		return $newMessages;
 	}
@@ -105,6 +107,7 @@ class AdminMessageService {
 		$object->message = $bObject->message;
 		$object->title = $bObject->title;
 		$object->time = $bObject->time;
+                $object->active = $bObject->active;
 		return $object;
 	}
 }
