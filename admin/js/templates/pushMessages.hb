@@ -10,6 +10,6 @@
 <div class="column span-7">{{timestampDateFormat this.time format="HH:mm:ss"}}</div>
 <div class="column span-7">{{this.title}}</div><br>
 <div class="column span-25">{{this.message}}</div>
-<br>
+<hr>
 {{/data.messages}}
 </div>
