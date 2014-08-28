@@ -1151,7 +1151,7 @@ function checkCheckboxesHiddenFields(){
 
 function init_pushMessages(){
  
-    WSL.connect.getJSON('admin-server.php?s=getAllMessages()', function(data) {
+    WSL.connect.getJSON('admin-server.php?s=getAllMessages', function(data) {
         $.ajax({
        	url : 'js/templates/pushMessages.hb',
            success : function(source) { 
@@ -1164,6 +1164,7 @@ function init_pushMessages(){
            dataType : 'text'
         });
     });
+    
 }
 
 function init_devices(selected_inverterId) {

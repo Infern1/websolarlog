@@ -64,13 +64,22 @@ class AdminMessageService {
 	 * @return Live
 	 */
 	public function getAdminMessages($active=1) {
-		$messages = R::find(self::$tbl, 'time >= :timeHalfYearAgo and time <= :time and active >= :active ORDER BY time DESC',array(':timeHalfYearAgo'=>(time()-15552000),':time'=>time(),':active'=>$active));
+		$messages = R::find(self::$tbl, 'time >= :timeHalfYearAgo and time <= :time and active = :active ORDER BY time DESC',array(':timeHalfYearAgo'=>(time()-15552000),':time'=>time(),':active'=>$active));
+                foreach($messages as $message){
+                    $newMessages[] = $this->toObject($message);
+                }
+		return $newMessages;
+   	}
+
+        public function getAllAdminMessages() {
+		$messages = R::find(self::$tbl, ' ORDER BY time DESC');
                 foreach($messages as $message){
                     $newMessages[] = $this->toObject($message);
                 }
 		return $newMessages;
 	}
 	
+
 
 	public function janitorDbCheck() {
 		HookHandler::getInstance()->fire("onDebug", "AdminMessageService janitor DB Check");
