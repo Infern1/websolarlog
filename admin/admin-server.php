@@ -285,7 +285,7 @@ switch ($settingstype) {
 	case 'logout':
 		Session::logout();
 		break;
-	case 'getMessages':
+	case 'getActiveMessages':
 		$curlSession = curl_init();
 		curl_setopt($curlSession, CURLOPT_URL, "http://www.websolarlog.com/json/messages.php");
 		curl_setopt($curlSession, CURLOPT_BINARYTRANSFER, true);
@@ -305,6 +305,10 @@ switch ($settingstype) {
                 
                 
 		$data['message'] = $adminMessageService->getAdminMessages();
+            break;
+        case 'getAllMessages':
+                $adminMessageService = new AdminMessageService();
+                $data['message'] = $adminMessageService->getAdminMessages(0);
             break;
         case 'hideMessage':
             $adminMessageService = new AdminMessageService();

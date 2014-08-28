@@ -131,7 +131,7 @@ function checkUpgradeMessage() {
 	});
 	
 	
-	WSL.connect.getJSON('admin-server.php?s=getMessages', function(data) {
+	WSL.connect.getJSON('admin-server.php?s=getActiveMessages', function(data) {
         $.ajax({
        	url : 'js/templates/comMessages.hb',
            success : function(source) { 
@@ -1041,6 +1041,11 @@ function init_general() {
     				var data = $(this).parent().parent().serialize();
     				init_invoice(data);
                 });
+                
+                $('#pushMessages').bind('click', function(){
+                    init_pushMessages();
+                });
+                
                 // prevent comma in latitude value
                 $("input[name=latitude]").bind('keyup',function(){
                 	$("input[name=latitude]").val($("input[name=latitude]").val().replace(/,/g,"."));
@@ -1102,7 +1107,8 @@ function init_general() {
                     	}
                     });
                 });
-
+                
+                
                 // We don't want to first show the below block, so load it after the communication data
                 $.ajax({
             		url : 'js/templates/security.hb',
@@ -1132,6 +1138,8 @@ function init_general() {
 }
 
 
+
+
 function checkCheckboxesHiddenFields(){
 	
 	$('input:hidden').each(function () {
@@ -1141,6 +1149,22 @@ function checkCheckboxesHiddenFields(){
 	});
 }
 
+function init_pushMessages(){
+ 
+    WSL.connect.getJSON('admin-server.php?s=getAllMessages()', function(data) {
+        $.ajax({
+       	url : 'js/templates/pushMessages.hb',
+           success : function(source) { 
+               var template = Handlebars.compile(source);
+               var html = template({
+                   'data' : data
+               });
+               $('#content').html(html);                
+           },
+           dataType : 'text'
+        });
+    });
+}
 
 function init_devices(selected_inverterId) {
 	setTitle("Devices");

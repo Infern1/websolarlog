@@ -65,3 +65,7 @@
   </form>
   </fieldset>
   {{/if_gt}}
+<fieldset>
+<legend>Push messages</legend>
+<a href="#" id="pushMessages">Click here for all received push messages.</a>
+</fieldset>
