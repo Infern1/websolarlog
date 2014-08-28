@@ -1,6 +1,7 @@
 <?php
 class AdminMessageService {
 	public static $tbl = "adminMessage";
+        public static $minusSeconds = 7776000; //7776000 == 90 days
 	
 	function __construct() {
 		HookHandler::getInstance()->add("onJanitorDbCheck", "AdminMessageService.janitorDbCheck");
@@ -64,7 +65,7 @@ class AdminMessageService {
 	 * @return Live
 	 */
 	public function getAdminMessages($active=1) {
-		$messages = R::find(self::$tbl, 'time >= :timeHalfYearAgo and time <= :time and active = :active ORDER BY time DESC',array(':timeHalfYearAgo'=>(time()-15552000),':time'=>time(),':active'=>$active));
+		$messages = R::find(self::$tbl, 'time >= :timeHalfYearAgo and time <= :time and active = :active ORDER BY time DESC',array(':timeHalfYearAgo'=>(time()-self::$minusSecons),':time'=>time(),':active'=>$active));
                 foreach($messages as $message){
                     $newMessages[] = $this->toObject($message);
                 }
@@ -75,7 +76,7 @@ class AdminMessageService {
 		$messages = R::findAll(self::$tbl, ' ORDER BY time DESC');
                 foreach($messages as $message){
                     $message = $this->toObject($message);
-                    $message->halfYearAgo = (time()-15552000);
+                    $message->halfYearAgo = (time()-self::$minusSeconds);
                     $newMessages[] = $message;
                 }
 		return $newMessages;
