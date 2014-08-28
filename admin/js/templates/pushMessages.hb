@@ -9,7 +9,10 @@
 {{#data.messages}}
 <div class="column span-7">{{timestampDateFormat this.time format="DD-MM-YYYY HH:mm:ss"}}</div>
 <div class="column span-7">{{this.title}}</div><br>
-<div class="column span-25">- <div class="column span-23">{{this.message}}</div></div>
+<div class="column span-25">
+    <div class="column span-1>-</div>
+    <div class="column span-23">{{this.message}}</div>
+</div>
 <hr>
 {{/data.messages}}
 </div>
