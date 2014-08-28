@@ -308,7 +308,7 @@ switch ($settingstype) {
             break;
         case 'getAllMessages':
                 $adminMessageService = new AdminMessageService();
-                $data['message'] = $adminMessageService->getAllAdminMessages(0);
+                $data['messages'] = $adminMessageService->getAllAdminMessages(0);
             break;
         case 'hideMessage':
             $adminMessageService = new AdminMessageService();

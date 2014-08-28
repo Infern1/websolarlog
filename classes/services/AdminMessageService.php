@@ -72,7 +72,7 @@ class AdminMessageService {
    	}
 
         public function getAllAdminMessages() {
-		$messages = R::find(self::$tbl, ' ORDER BY time DESC');
+		$messages = R::findAll(self::$tbl, ' ORDER BY time DESC');
                 foreach($messages as $message){
                     $newMessages[] = $this->toObject($message);
                 }
