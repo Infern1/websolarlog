@@ -1958,7 +1958,7 @@ var WSL = {
 						// make graph title
 						//
 						/**/
-						if($(result.meta).hasOwnProperty('KWH')){
+						if(result.meta.hasOwnProperty('KWH')){
 							var graphTitle = '<div class="my-jqplot-title" style="position:absolute;text-align:center;padding-top: 1px;width:100%">'
 								+ result.lang.generated+ ': '
 								+ result.meta.KWH.cumPower+ ' '
