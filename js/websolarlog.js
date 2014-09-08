@@ -778,13 +778,14 @@ var WSL = {
 	init_PageIndexLiveValues : function(divId) {
 		// initialize languages selector on the given div
 		ajaxStart();
-
+                
 		if (getWindowsState() == false) {
-			WSL.api.getPageIndexBlurLiveValues(function(data) {
-				document.title = '(' + data.sumInverters.totalSystemACP + ' W) WebSolarLog';
+			WSL.api.getPageIndexLiveValues(function(data) {
+				document.title = '(' + data.totals.production.GPOverall + ' W) WebSolarLog';
 			});
 		} else {
 			WSL.api.getPageIndexLiveValues(function(data) {
+                            //console.log(data);
 				GP = data.maxGauges / 10;
 				gaugeGPOptions = {
 					title : data.lang.ACPower,
@@ -860,21 +861,21 @@ var WSL = {
 
 				$('#gaugeGP').empty();
 				gaugeGP = $.jqplot('gaugeGP', [ [ 0.1 ] ], gaugeGPOptions);
-				gaugeGP.series[0].data = [ [ 'W', data.sumInverters.totalSystemACP ] ];
-				gaugeGP.series[0].label = data.sumInverters.totalSystemACP;
-				document.title = '(' + data.sumInverters.totalSystemACP + ' W) WebSolarLog';
+				gaugeGP.series[0].data = [ [ 'W', data.totals.production.GPOverall ] ];
+				gaugeGP.series[0].label = data.totals.production.GPOverall;
+				document.title = '(' + data.totals.production.GPOverall + ' W) WebSolarLog';
 				gaugeGP.replot();
 
 				$('#gaugeIP').empty();
 				gaugeIP = $.jqplot('gaugeIP', [ [ 0.1 ] ], gaugeIPOptions);
-				gaugeIP.series[0].data = [ [ 'W', data.sumInverters.totalSystemIP ] ];
-				gaugeIP.series[0].label = data.sumInverters.totalSystemIP;
+				gaugeIP.series[0].data = [ [ 'W', data.totals.production.IPOverall ] ];
+				gaugeIP.series[0].label = data.totals.production.IPOverall;
 				gaugeIP.replot();
 
 				$('#gaugeEFF').empty();
 				gaugeEFF = $.jqplot('gaugeEFF', [ [ 0.1 ] ], gaugeEFFOptions);
-				gaugeEFF.series[0].data = [ [ 'W', data.sumInverters.EFF ] ];
-				gaugeEFF.series[0].label = data.sumInverters.EFF + ' %';
+				gaugeEFF.series[0].data = [ [ 'W', data.totals.production.EFFOverall ] ];
+				gaugeEFF.series[0].label = data.totals.production.EFFTotal + ' %';
 				gaugeEFF.replot();
 
 				ajaxReady();
@@ -2210,7 +2211,7 @@ var WSL = {
 								};
 								dataTable.push([ item ]);
 							}
-							console.log(dataTable);
+							//console.log(dataTable);
 							var html = template({
 								'data' : dataTable,
 								'lang' : result.lang
@@ -2890,7 +2891,7 @@ WSL.api.getPageIndexBlurLiveValues = function(success) {
 };
 
 WSL.api.getPageIndexLiveValues = function(success) {
-	WSL.connect.getJSON('server.php?method=getPageIndexLiveValues', success);
+	WSL.connect.getJSON('api.php/Live', success);
 };
 
 WSL.api.getPageTodayValues = function(success) {

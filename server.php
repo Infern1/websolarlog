@@ -593,6 +593,7 @@ try {
 			$data['devices'] = $indexValues['devices'];
 			$data['maxGauges'] = $gaugeMaxPower;
 			$data['sumInverters'] = $indexValues['sum'];
+                        $data['overallUsage'] = ($overallProduction+$overallMetering);
 			break;
 		case 'getPageIndexBlurLiveValues':
 			$indexValues = $dataAdapter->readPageIndexLiveValues($config);

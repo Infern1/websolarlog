@@ -3,6 +3,7 @@ class LiveRest {
 	private $weatherService;
 	private $liveService;
 	private $liveSmartMeterService;
+        private $dataAdapter;
 	
 	/**
 	 * Constructor
@@ -11,6 +12,7 @@ class LiveRest {
 		$this->weatherService = new WeatherService();
 		$this->liveService = new LiveService();
 		$this->liveSmartMeterService = new LiveSmartMeterService();
+                $this->dataAdapter = new PDODataAdapter();
 	}
 	
 	/**
@@ -37,17 +39,35 @@ class LiveRest {
 			switch ($type) {
 				case "production":
 					$live = $this->liveService->getLiveByDevice($device);
+                                        foreach ($live as $key => $value){
+                                            $live->$key = round($value,0);
+                                        }
 					$totalsProduction["devices"] = $totalsProduction["devices"] + 1;
 					$totalsProduction["GP"] = $totalsProduction["GP"] + $live->GP;
 					$totalsProduction["GP2"] = $totalsProduction["GP2"] + $live->GP2;
 					$totalsProduction["GP3"] = $totalsProduction["GP3"] + $live->GP3;
-					$overallProduction = $overallProduction + $live->GP + $live->GP2 + $live->GP3;
+                                        $live->GPTotal = round($live->GP + $live->GP2 + $live->GP3,0);
+                                        $totalsProduction["GPOverall"] = round($totalsProduction["GPOverall"] + $live->GP + $live->GP2 + $live->GP3,0);
+                                        
+                                        $live->IPTotal = round($live->I1P + $live->I2P + $live->I3P,0);
+                                        $totalsProduction["IPOverall"] = round($totalsProduction["IPOverall"] + $live->I1P + $live->I2P + $live->I3P,0);
+                                        
+                                        $avgPower = $this->dataAdapter->readCache("","index","live",$device->id,"trend");
+					$live->trendImage = $avgPower[0]['value'];
+					$live->trend = _($live->trendImage);
+                                        
+                                        if(Util::isSunDown(-300)){
+                                            $live->status = 'offline';
+                                        }else{
+                                            $live->status = 'online';
+                                        }
+                                        
 					break;
 				case "metering":
 					$live = $this->liveSmartMeterService->getLiveByDevice($device);
 					$totalsMetering["devices"] = $totalsMetering["devices"] + 1;
 					$totalsMetering["liveEnergy"] = $totalsMetering["liveEnergy"] + $live->liveEnergy;
-					$overallMetering = $overallMetering +$totalsMetering["liveEnergy"]; 
+					$totalsMetering["meteringOverall"] = round($totalsMetering["meteringOverall"] +$totalsMetering["liveEnergy"],2); 
 					break;
 				case "weather":
 					$live = $this->weatherService->getLastWeather($device);					
@@ -55,8 +75,22 @@ class LiveRest {
 			}
 			$result[] = array("type"=>$type, "id"=>$device->id, "name"=>$device->name, "data"=>$live);
 		}
-		
-		$result["totals"] = array("production"=>$totalsProduction, "metering"=>$totalsMetering, "overallUsage" =>($overallProduction+$overallMetering));
+                
+                $totalsProduction['EFFTotal'] = round((($totalsProduction["GPOverall"] / $totalsProduction["IPOverall"]) * 100),2);
+                
+                // Get Gauge Max
+		$avgGP = $this->dataAdapter->getAvgPower(Session::getConfig());
+		($avgGP['recent']<=0) ? $avgGPRecent = 1 : $avgGPRecent = $avgGP['recent'];
+		$gaugeMaxPower = ceil( ( ($avgGPRecent*1.1)+100) / 100 ) * 100;
+		$result['maxGauges'] = $gaugeMaxPower;
+                
+		$lang = array();
+                $lang['DCPower'] = _("DC Power");
+		$lang['ACPower'] = _("AC Power");
+                $lang['Efficiency'] = _("Efficiency");
+                
+		$result["totals"] = array("production"=>$totalsProduction, "metering"=>$totalsMetering, "overallUsage" =>($totalsProduction["GPOverall"]+$totalsMetering["meteringOverall"]));
+                $result["lang"] = $lang;
 		return $result;
 	}
 	
