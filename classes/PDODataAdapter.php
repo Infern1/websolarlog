@@ -283,6 +283,7 @@ class PDODataAdapter {
 		$bean->costWater = $config->costWater;
 		$bean->moneySign = $config->moneySign;
 
+
 		$bean->googleAnalytics = $config->googleAnalytics;
 		$bean->piwikServerUrl = $config->piwikServerUrl;
 		$bean->piwikSiteId = $config->piwikSiteId;
@@ -381,6 +382,7 @@ class PDODataAdapter {
 			
 			$config->allDevices = $this->deviceService->getAllDevices();
 			
+                        $config->veraDevices = $bean->veraDevices;
 			// looks like we don't use this anymore.
 			//$config->inverters = $config->devices; // @Deprecated
 			
@@ -427,19 +429,24 @@ class PDODataAdapter {
 
 		// get the begin and end date/time
 		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
-		
+                
+                foreach($config->devices as $device){
+                    if($device->type=="production"){
+                        $deviceCount++;              
+                    }
+                }
 		if ($deviceId > 0) {
             $energyBeans = R::getAll("
 					SELECT *
 					FROM " . $table . "
 					WHERE deviceId = :deviceId AND time > :beginDate AND  time < :endDate
-					ORDER BY time LIMIT " . $beginEndDate['days'] . ";", array(':deviceId' => $deviceId, ':beginDate' => $beginEndDate['beginDate'], ':endDate' => $beginEndDate['endDate']));
+					ORDER BY time LIMIT " . ($beginEndDate['days']*$deviceCount) . ";", array(':deviceId' => $deviceId, ':beginDate' => $beginEndDate['beginDate'], ':endDate' => $beginEndDate['endDate']));
         }else{
 			$energyBeans = R::getAll("
 					SELECT *
 					FROM ".$table."
 					WHERE time > :beginDate AND  time < :endDate
-					ORDER BY time LIMIT ". $beginEndDate['days'].";",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
+					ORDER BY time LIMIT ". ($beginEndDate['days']*$deviceCount).";",array(':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 		}
 		//see if we have atleast 1 bean, else we make one :)
 		(!$energyBeans) ? $energyBeans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $energyBeans = $energyBeans;
@@ -1347,7 +1354,7 @@ class PDODataAdapter {
 
 
 		$beans = $this->readTablesPeriodValues($deviceId, $table, $type, $startDate);
-        if(strtolower($table) == "history"){
+                if(strtolower($table) == "history"){
 			// NO history bean? Create a dummy bean...
 			(!$beans) ? $beans[0] = array('time'=>time(),'KWH'=>0,'KWHT'=>0) : $beans = $beans;
 			return $this->DayBeansToGraphPoints($beans);
