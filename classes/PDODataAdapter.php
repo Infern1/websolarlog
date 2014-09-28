@@ -283,7 +283,8 @@ class PDODataAdapter {
 		$bean->costWater = $config->costWater;
 		$bean->moneySign = $config->moneySign;
 
-
+                $bean->veraDevices = $config->veraDevices;
+                
 		$bean->googleAnalytics = $config->googleAnalytics;
 		$bean->piwikServerUrl = $config->piwikServerUrl;
 		$bean->piwikSiteId = $config->piwikSiteId;
@@ -429,6 +430,7 @@ class PDODataAdapter {
 
 		// get the begin and end date/time
 		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
+                $config = Session::getConfig();
                 
                 foreach($config->devices as $device){
                     if($device->type=="production"){
