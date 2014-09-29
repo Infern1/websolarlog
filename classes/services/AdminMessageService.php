@@ -65,7 +65,7 @@ class AdminMessageService {
 	 * @return Live
 	 */
 	public function getAdminMessages($active=1) {
-		$messages = R::find(self::$tbl, 'time >= :timeHalfYearAgo and time <= :time and active = :active ORDER BY time DESC',array(':timeHalfYearAgo'=>(time()-self::$minusSecons),':time'=>time(),':active'=>$active));
+		$messages = R::find(self::$tbl, 'time >= :timeHalfYearAgo and time <= :time and active = :active ORDER BY time DESC',array(':timeHalfYearAgo'=>(time()-self::$minusSeconds),':time'=>time(),':active'=>$active));
                 foreach($messages as $message){
                     $newMessages[] = $this->toObject($message);
                 }
