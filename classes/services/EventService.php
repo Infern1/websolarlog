@@ -101,6 +101,9 @@ class EventService {
 		
 		// Delete Info events older the 1 week;
 		R::exec('DELETE FROM Event WHERE Type="Info" AND time < ' . strtotime("-1 week"));
+                
+                // Set deviceId 
+                R::exec("UPDATE Event SET deviceId = INV WHERE INV is not NULL");
 	}
 }
 ?>
