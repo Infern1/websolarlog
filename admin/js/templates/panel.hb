@@ -1,7 +1,7 @@
 <form>
   <input type="hidden" name="s" value="save-panel" />
   <input type="hidden" name="id" value="{{data.panel.id}}" />
-  <input type="hidden" name="inverterId" value="{{data.panel.inverterId}}" />
+  <input type="hidden" name="deviceId" value="{{data.panel.deviceId}}" />
   <fieldset>
     <legend>New Panel/String</legend>
     <label for="description">description:</label><input type="text" name="description" value="{{data.panel.description}}" />{{infoTooltip title="example: SolarPanel 265Wp 123-32/23+"}}<br />

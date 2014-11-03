@@ -1,6 +1,6 @@
 <form>
   <input type="hidden" name="s" value="save-pvoutput" />
-  <input type="hidden" name="id" value="{{data.inverterid}}" />  
+  <input type="hidden" name="id" value="{{data.deviceId}}" />  
   <fieldset>
     <legend>Communication</legend>
     <label for="pvoEnabled">Enabled:</label>

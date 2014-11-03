@@ -125,7 +125,7 @@
         	<button type="button" id="btnDeviceSubmit">Save</button>
         </div>
         <div class="span-6 last">
-        	{{checkboxWithHidden 'removeDevice' '' inverterId}}&nbsp;remove this device<br />
+        	{{checkboxWithHidden 'removeDevice' '' deviceId}}&nbsp;remove this device<br />
         </div>
     
   </fieldset>
@@ -141,7 +141,7 @@
     <form>
       <input type="hidden" name="s" value="save-panel" />   
       <input type="hidden" name="id" value="{{this.id}}" />   
-      <input type="hidden" name="inverterId" value="{{this.inverterId}}" />   
+      <input type="hidden" name="deviceId" value="{{this.deviceId}}" />   
       <fieldset>
     <legend>Panel/String: {{humanIndexKey int=@index}}</legend>
         <label for="description">Description:</label><input type="text" name="description" value="{{this.description}}" /> {{infoTooltip title="example: SolarPanel 265Wp 123-32/23+"}}<br />   

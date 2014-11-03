@@ -263,7 +263,7 @@ switch ($settingstype) {
 		$panelService = new PanelService();
 		if ($id == -1) {
 			$panel = new Panel();
-			$panel->inverterId = $_GET['inverterId'];
+			$panel->deviceId = $_GET['deviceId'];
 		} else {
 			$panel = $panelService->load($id);
 		}
@@ -532,7 +532,7 @@ switch ($settingstype) {
 			// get the current data
 			$panel = $panelService->load($id);
 		}
-		$panel->inverterId = Common::getValue("inverterId");
+		$panel->deviceId = Common::getValue("deviceId");
 		$panel->description = Common::getValue("description");
 		$panel->roofOrientation = Common::getValue("roofOrientation");
 		$panel->roofPitch = Common::getValue("roofPitch");

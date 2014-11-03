@@ -169,7 +169,7 @@ var Month=new Array('jan','feb','mar','apr','may','jun','jul','aug','sep','oct',
 function init_KWHcalc(inv_data){
 	if(inv_data.inverter!=null){
 	    var data = [];
-	    data['inverterId'] = $('input[name="id"]').val();
+	    data['deviceId'] = $('input[name="id"]').val();
 	    data['month_perc'] = [];
 	    var newPerc = [];
 	    
@@ -224,11 +224,11 @@ function init_KWHcalc(inv_data){
 	            $("#totalKWHProd").val($('input[name="expectedkwh"]').val()).trigger("keyup");
 	            
 	            $('#btnExpectationSubmit').bind('click', function(){
-	                var inverterId = $('input[name="id"]').val();
+	                var deviceId = $('input[name="id"]').val();
 	                checkCheckboxesHiddenFields();
 	                var data = $('#expectationFormId').serialize();
 	                $.post('admin-server.php', data, function(){
-	                    init_devices(inverterId);                        
+	                    init_devices(deviceId);                        
 	                    $.pnotify({
 	                        title: 'Saved',
 	                        text: 'You\'re changes have been saved.',
@@ -1167,7 +1167,7 @@ function init_pushMessages(){
     
 }
 
-function init_devices(selected_inverterId) {
+function init_devices(selected_deviceId) {
 	setTitle("Devices");
 	$.getJSON('admin-server.php?s=inverters', function(data) {
         $.ajax({
@@ -1179,8 +1179,8 @@ function init_devices(selected_inverterId) {
                 });
                 $('#sidebar').html(html);
 
-                if (selected_inverterId) {
-                    load_device(selected_inverterId);
+                if (selected_deviceId) {
+                    load_device(selected_deviceId);
                 } else {
                     $('#content').html("<br /><h2>Choose or create an inverter on the right side --></h2>");                    
                 }
@@ -1193,10 +1193,10 @@ function init_devices(selected_inverterId) {
                 
                 $('.inverter_select').bind("click",function(){
                     var button = $(this);
-                    var inverterId = button.attr('id').split("_")[1];
-                    window.location.hash = shortcutFunction+"-"+inverterId;
+                    var deviceId = button.attr('id').split("_")[1];
+                    window.location.hash = shortcutFunction+"-"+deviceId;
 
-                    load_device(inverterId);
+                    load_device(deviceId);
                 });
                 
                 $('#new_device').bind("click",function(){
@@ -1267,7 +1267,7 @@ function init_graphs(selected_graphId) {
 
 
 
-function showAlertOverlay($this,inverterId,typeName) {
+function showAlertOverlay($this,deviceId,typeName) {
 	
 	var thisId = $this.val();
 	if(typeName == 'Panel'){
@@ -1314,8 +1314,8 @@ function showAlertOverlay($this,inverterId,typeName) {
 				        text: typeName+' removed!',
 				        type: 'success'                                    
 					});     
-					if(typeName == 'Panel'){
-						load_device(inverterId);
+					if(typeName === 'Panel'){
+						load_device(deviceId);
 					}else{
 						init_devices();
 						window.location.hash = '#devices';
@@ -1359,7 +1359,7 @@ function load_device(deviceId,deviceApi,deviceType) {
 			inv_data.inverter.type = deviceType; 
 		}
 		
-		$('#content').html(WSL.template.get('device', { 'inverterId' : deviceId, 'data' : inv_data }));
+		$('#content').html(WSL.template.get('device', { 'deviceId' : deviceId, 'data' : inv_data }));
 
 		$('#pvoutputDataDate').val(new moment().format("DD-MM-YYYY"));
 		
@@ -1466,7 +1466,7 @@ function load_device(deviceId,deviceApi,deviceType) {
         $('.panel_submit').bind('click', handle_panel_submit);
 
         $('#btnNewPanel').bind('click', function(){
-        	WSL.connect.getJSON('admin-server.php?s=panel&id=-1&inverterId='+deviceId, function(data) {
+        	WSL.connect.getJSON('admin-server.php?s=panel&id=-1&deviceId='+deviceId, function(data) {
         		$('#new_panels').html(WSL.template.get('panel', { 'data' : data }));
             	$('.panel_submit').unbind('click');
             	$('.panel_submit').bind('click', handle_panel_submit);

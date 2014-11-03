@@ -2,7 +2,7 @@
    <legend>System Expectation</legend>
 	<div>
         <input type="hidden" name="s" value="save_expectation" />
-        <input type="hidden" name="id" value="{{data.inverterId}}" />
+        <input type="hidden" name="id" value="{{data.deviceId}}" />
         Below you can enter the kWh predition through a year.<Br>
         <br>
         What is the kWh predicted for this system?<br>
