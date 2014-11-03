@@ -3,11 +3,9 @@
 class PanelService {
 
     public static $tbl = "panel";
-    private $config;
 
     function __construct() {
         HookHandler::getInstance()->add("onJanitorDbCheck", "PanelService.janitorDbCheck");
-        $this->config = Session::getConfig();
     }
 
     /**

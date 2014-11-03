@@ -50,15 +50,15 @@ class Session
     	 * Below we intialize some device to make sure the dbcheck hooks are registerd
     	 * When hooks are loaded from the database, this should be removed and fixed		
     	 */
-    	$deviceService = new DeviceService();
-        $panelService = new PanelService();
-    	$energyService = new EnergyService();
-    	$graphService  = new GraphService();
-    	$liveService = new LiveService();
-    	$liveSmartMeterService = new LiveSmartMeterService();
-    	$weatherService = new WeatherService();
-    	$historySmartMeterService = new HistorySmartMeterService();
-        $maxPowerTodayService = new MaxPowerTodayService();
+    	new DeviceService();
+        new PanelService();
+    	new EnergyService();
+    	new GraphService();
+    	new LiveService();
+    	new LiveSmartMeterService();
+    	new WeatherService();
+    	new HistorySmartMeterService();
+        new MaxPowerTodayService();
     }
     
     public static function initializeLight() {
