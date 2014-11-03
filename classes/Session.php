@@ -57,6 +57,7 @@ class Session
     	$liveSmartMeterService = new LiveSmartMeterService();
     	$weatherService = new WeatherService();
     	$historySmartMeterService = new HistorySmartMeterService();
+        $maxPowerTodayService = new MaxPowerTodayService();
     }
     
     public static function initializeLight() {
