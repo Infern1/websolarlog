@@ -51,6 +51,7 @@ class Session
     	 * When hooks are loaded from the database, this should be removed and fixed		
     	 */
     	$deviceService = new DeviceService();
+        $panelService = new PanelService();
     	$energyService = new EnergyService();
     	$graphService  = new GraphService();
     	$liveService = new LiveService();
