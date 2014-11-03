@@ -53,6 +53,7 @@ class Session
     	new DeviceService();
         new PanelService();
     	new EnergyService();
+    	new EnergySmartMeterService();
     	new GraphService();
     	new LiveService();
     	new LiveSmartMeterService();
