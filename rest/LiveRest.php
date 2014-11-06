@@ -31,8 +31,8 @@ class LiveRest {
 	public function GET($request, $options) {
 		$result = array();
 		
-		$totalsProduction = array("devices"=>0,"GP"=>0,"GP2"=>0,"GP3"=>0);
-		$totalsMetering = array("devices"=>0,"liveEnergy"=>0);
+		$totalsProduction = array("devices"=>0,"GP"=>0,"GP2"=>0,"GP3"=>0, "GPOverall"=>0,"IPOverall"=>0);
+		$totalsMetering = array("devices"=>0,"liveEnergy"=>0, "meteringOverall"=>0);
 		foreach (Session::getConfig()->devices as $device) {
 			$type = $device->type;
 			$live = null;
