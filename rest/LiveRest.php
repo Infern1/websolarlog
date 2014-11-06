@@ -39,6 +39,10 @@ class LiveRest {
 			switch ($type) {
 				case "production":
 					$live = $this->liveService->getLiveByDevice($device);
+                                        if ($live === null){
+                                            // No live record return, probably after an restart;
+                                            break;
+                                        } 
                                         foreach ($live as $key => $value){
                                             $live->$key = round($value,0);
                                         }
