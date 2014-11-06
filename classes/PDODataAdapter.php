@@ -426,8 +426,9 @@ class PDODataAdapter {
 	 * @Param date $startDate
 	 */
 	public function readTablesPeriodValues($deviceId, $table, $type, $startDate) {
-        $count = 0;
-
+            $count = 0;
+            $deviceCount = 0;
+            
 		// get the begin and end date/time
 		$beginEndDate = Util::getBeginEndDate($type, $count,$startDate);
                 $config = Session::getConfig();
