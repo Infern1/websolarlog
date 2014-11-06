@@ -32,9 +32,9 @@ class AdminMessageService {
                 $object->active = 1;
                 // only save if its not in the DB
                 $this->save($object);
+                return $object;
             }
-
-            return $object;
+            return null;
 	}
 
 	/**
