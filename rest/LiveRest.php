@@ -31,7 +31,7 @@ class LiveRest {
 	public function GET($request, $options) {
 		$result = array();
 		
-		$totalsProduction = array("devices"=>0,"GP"=>0,"GP2"=>0,"GP3"=>0, "GPOverall"=>0,"IPOverall"=>0);
+		$totalsProduction = array("devices"=>0,"GP"=>0,"GP2"=>0,"GP3"=>0, "GPOverall"=>0,"IPOverall"=>0,"gridV"=>0);
 		$totalsMetering = array("devices"=>0,"liveEnergy"=>0, "meteringOverall"=>0);
 		foreach (Session::getConfig()->devices as $device) {
 			$type = $device->type;
@@ -50,6 +50,8 @@ class LiveRest {
 					$totalsProduction["GP"] = $totalsProduction["GP"] + $live->GP;
 					$totalsProduction["GP2"] = $totalsProduction["GP2"] + $live->GP2;
 					$totalsProduction["GP3"] = $totalsProduction["GP3"] + $live->GP3;
+                                        $totalsProduction["gridV"] = $live->GV;
+                                        
                                         $live->GPTotal = round($live->GP + $live->GP2 + $live->GP3,0);
                                         $totalsProduction["GPOverall"] = round($totalsProduction["GPOverall"] + $live->GP + $live->GP2 + $live->GP3,0);
                                         
@@ -92,6 +94,7 @@ class LiveRest {
                 $lang['DCPower'] = _("DC Power");
 		$lang['ACPower'] = _("AC Power");
                 $lang['Efficiency'] = _("Efficiency");
+                $lang['usage'] 	= _("Usage");
                 
 		$result["totals"] = array("production"=>$totalsProduction, "metering"=>$totalsMetering, "overallUsage" =>($totalsProduction["GPOverall"]+$totalsMetering["meteringOverall"]));
                 $result["lang"] = $lang;
