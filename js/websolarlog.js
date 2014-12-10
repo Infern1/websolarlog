@@ -623,6 +623,7 @@ function populateTabs() {
 var gaugeGP;
 var gaugeIP;
 var gaugeEFF;
+var gaugeUsage;
 var graphProductionSettings = new Object();
 
 var graphProductionSettings = function() {
@@ -775,16 +776,37 @@ var WSL = {
 		});
 	},
 
+
+        init_liveDataContainers : function(divId){
+            WSL.api.init_PageLiveValues(function(data) {
+            $.ajax({
+				url : 'js/templates/liveDataContainers.hb',
+				beforeSend : function(xhr) {
+					if (getWindowsState() == false) {
+						ajaxAbort(xhr);
+					}
+				},
+				success : function(source) {
+					var template = Handlebars.compile(source);
+					var html = template({
+                                            'lang' : data.lang
+                                        });
+					$(divId).before(html);
+				}
+			})
+            })
+                        
+        },
 	init_PageIndexLiveValues : function(divId) {
 		// initialize languages selector on the given div
 		ajaxStart();
                 
 		if (getWindowsState() == false) {
-			WSL.api.getPageIndexLiveValues(function(data) {
+			WSL.api.getAPILive(function(data) {
 				document.title = '(' + data.totals.production.GPOverall + ' W) WebSolarLog';
 			});
 		} else {
-			WSL.api.getPageIndexLiveValues(function(data) {
+			WSL.api.getAPILive(function(data) {
                             //console.log(data);
 				GP = data.maxGauges / 10;
 				gaugeGPOptions = {
@@ -843,6 +865,26 @@ var WSL = {
 						}
 					}
 				};
+                                
+                                USAGE = 10000 / 10;
+				gaugeUsageOptions = {
+					title : data.lang.usage,
+					grid : {
+						background : '#FFF'
+					},
+					seriesDefaults : {
+						renderer : $.jqplot.MeterGaugeRenderer,
+						rendererOptions : {
+							min : 0,
+							max : USAGE * 10,
+							padding : 0,
+							intervals : [ USAGE, USAGE * 2, USAGE * 3, USAGE * 4, USAGE * 5, USAGE * 6, USAGE * 7, USAGE * 8, USAGE * 9, USAGE * 10 ],
+							intervalColors : [ '#F9FFFB', '#EAFFEF', '#CAFFD8',
+									'#B5FFC8', '#A3FEBA', '#8BFEA8', '#72FE95',
+									'#4BFE78', '#0AFE47', '#01F33E' ]
+						}
+					}
+				};
 				delete data;
 
 				$(divId).html(WSL.template.get('liveInverters', {
@@ -857,6 +899,9 @@ var WSL = {
 				}
 				if (gaugeIP) {
 					gaugeIP.destroy();
+				}
+                                if (gaugeUsage) {
+					gaugeUsage.destroy();
 				}
 
 				$('#gaugeGP').empty();
@@ -877,6 +922,13 @@ var WSL = {
 				gaugeEFF.series[0].data = [ [ 'W', data.totals.production.EFFOverall ] ];
 				gaugeEFF.series[0].label = data.totals.production.EFFTotal + ' %';
 				gaugeEFF.replot();
+
+				$('#gaugeUsage').empty();
+				gaugeUsage = $.jqplot('gaugeUsage', [ [ 0.1 ] ], gaugeUsageOptions);
+				gaugeUsage.series[0].data = [ [ 'W', data.totals.overallUsage ] ];
+				gaugeUsage.series[0].label = data.totals.overallUsage + ' W';
+				gaugeUsage.replot();
+
 
 				ajaxReady();
 			});
@@ -1256,15 +1308,6 @@ var WSL = {
 					$('#weather').html(this.data.temp + ' &deg;C');
 				}
 			});
-		});
-	},
-
-	init_PageLiveValues : function(divId) {
-		WSL.api.init_PageLiveValues(function(data) {
-			$(divId).html(WSL.template.get("liveValues", {
-				'data' : '',
-				'lang' : data.lang
-			}));
 		});
 	},
 
@@ -2755,30 +2798,10 @@ var WSL = {
 								var object = result.dayData.data.compare[line];
 								dataDay1.push([ parseFloat(object[0] * 1000),
 										object[2], object[3] ]);
-								var item = {
-									"timestamp" : parseFloat(object[0] * 1000),
-									"har" : object[2],
-									"date" : object[1],
-									"displayKWH" : object[3],
-									"harvested" : object[4],
-								};
+								
 								compareTable.push([ item ]);
 							}
-							for (line in result.dayData.data.which) {
-								var object = result.dayData.data.which[line];
-								dataDay2.push([ parseFloat(object[0] * 1000),object[2], object[3] ]);
-								dataDay3.push([ parseFloat(object[0] * 1000),parseFloat(object[4]) ]);
-								dailykWh.push(parseFloat(object[4]));
-								var item = {
-									"timestamp" : parseFloat(object[0] * 1000),
-									"har" : object[2],
-									"date" : object[1],
-									"displayKWH" : object[3],
-									"harvested" : object[4],
-								};
-
-								whichTable.push([ item ]);
-							}
+							
 
 							$("#content").append('<div id="compareGraph"></div>');
 							$('#content').append('<div id="compareFigures"></div>');
@@ -2890,7 +2913,7 @@ WSL.api.getPageIndexBlurLiveValues = function(success) {
 	WSL.connect.getJSONOnBlur('server.php?method=getPageIndexBlurLiveValues',success);
 };
 
-WSL.api.getPageIndexLiveValues = function(success) {
+WSL.api.getAPILive = function(success) {
 	WSL.connect.getJSON('api.php/Live', success);
 };
 

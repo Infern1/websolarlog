@@ -1,3 +1,7 @@
+<style>
+.column{margin-right: 3px;}
+</style>
+
 <div>We give NO guarantees for the figures, calculations, data etc. below. :) <br></div>
 The data below is calculated over the period;<br>
 <div class="column span-3">From:</div><div class="column span-5">{{data.invoiceStartDate}}</div><br>
@@ -49,30 +53,28 @@ The data below is calculated over the period;<br>
 <div class="column span-1">=</div>
 <div class="column span-3" title="{{data.totals.returnTTotal}} * {{data.moneySign}} {{data.costkwh}}= {{data.totals.returnTTotalCosts}}">{{data.totals.returnTTotal}} -</div><br>
 
-<div class="column span-4">&nbsp;</div>
-<div class="column span-4">&nbsp;</div>
+<div class="column span-4">verbruik per dag:{{data.salderingAverageUsageDay}}</div>
+<div class="column span-4">gemiddeld dag verbruik:{{data.avarageDailyUsage}}</div>
 <div class="column span-1">&nbsp;</div>
 <div class="column span-3">&nbsp;</div>
 <div class="column span-1">&nbsp;</div>
 <div class="column span-3" title="{{data.totals.diffReturnUsageTTotal}} * {{data.moneySign}} {{data.costkwh}}= {{data.totals.diffReturnUsageTTotalCosts}}" style="border-top:1px solid #000000;">{{data.totals.diffReturnUsageTTotal}}</div>
 <br>
-<div class="column span-28">
-	<div class="column span-5">Time</div>
-	<div class="column span-4">Gas</div>
-	<div class="column span-3">low Return</div>
-	<div class="column span-4">high Return</div>
-	<div class="column span-3">low Usage</div>
-	<div class="column span-4">high Usage</div>
-</div>
-<br>
+
 {{#each data.days}}
-<div class="column span-28" style="background-color:{{this.backgroundColor}}">
+{{invoiceHeader @key}}
+<div class="column span-40" style="background-color:{{this.backgroundColor}}">
   <div class="column span-5" title="({{this.time}})">{{timestampDateFormat this.time format="DD-MM-YYYY "}}&nbsp;</div>
-  <div class="column span-4" style="background-color:#9CB3FF;text-align:right;">{{toFixed value=this.gasUsageTDay fixed=3}}&nbsp;</div>
+  <div class="column span-3" style="background-color:#9CB3FF;text-align:right;">{{toFixed value=this.gasUsageTDay fixed=3}}&nbsp;</div>
   <div class="column span-3" style="background-color:#70FF69;text-align:right;">{{toFixed value=this.lowReturnT fixed=3}}&nbsp;</div>
   <div class="column span-4" style="background-color:#70FF69;text-align:right;">{{toFixed value=this.highReturnT fixed=3}}&nbsp;</div>
   <div class="column span-3" style="background-color:#FF7D7D;text-align:right;">{{toFixed value=this.lowUsageT fixed=3}}&nbsp;</div>
   <div class="column span-4" style="background-color:#FF7D7D;text-align:right;">{{toFixed value=this.highUsageT fixed=3}}&nbsp;</div>
+  <div class="column span-4" style="background-color:#8bc32b;text-align:right;">{{toFixed value=this.production fixed=3}}&nbsp;</div>
+  <div class="column span-4" style="background-color:#8bc32b;text-align:right;">{{toFixed value=this.usedProductionT fixed=3}}&nbsp;</div>
+<div class="column span-4" style="background-color:#8bc32b;text-align:right;">{{toFixed value=this.houseUsageT fixed=3}}&nbsp;</div>
+<div class="column span-4" style="background-color:#8bc32b;text-align:right;">{{toFixed value=this.saldering fixed=3}}&nbsp;</div>
+
 </div><br>
 {{/each}}
 

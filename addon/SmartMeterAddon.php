@@ -148,7 +148,7 @@ class SmartMeterAddon {
 	public function onLiveSmartMeterData($args) {
 		$device = $args[1];
 		$live = $args[2];
-		
+		HookHandler::getInstance()->fire("onDebug", "SmartMeterAddon args".print_r($args));
 		if ($device == null) {
 			HookHandler::getInstance()->fire("onError", "CoreAddon::onLiveSmartMeterData() device == null");
 			return;
@@ -165,7 +165,7 @@ class SmartMeterAddon {
 		}
 		
 		$this->liveSmartMeterService->save($live);
-
+                HookHandler::getInstance()->fire("onDebug", "SmartMeterAddon::OnLiveData".print_r($live));
 		HookHandler::getInstance()->fire("newLiveData", $device, $live);
 	}
 

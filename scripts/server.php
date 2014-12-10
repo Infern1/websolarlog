@@ -71,6 +71,9 @@ QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(3
 // PVoutput every 2,5 minutes 
 QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(75), "PvOutputAddon.onJob","", true, 75));
 
+// Get kWh data from Vera(Z-wave) devices 
+QueueServer::getInstance()->add(new QueueItem(Util::createTimeForWholeInterval(600), "GetVeraDeviceService.onJob","", true, 600));
+
 // PVoutput Join WSL Team every day@00:15 and repeat it every 6 hours
 $PVoutputJoinTeamUpdateRate = 6 * 60 * 60;
 $PVoutputJoinTeamStartTime = Util::createOnceADayJob("00", "15"); // Only run at 00:15

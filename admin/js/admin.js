@@ -263,115 +263,165 @@ function init_menu() {
     $(".btnSocial").bind('click', function() { init_social(); });
     $(".btnUpdate").bind('click', function() { init_update(); });
     $(".btnBackup").bind('click', function() { init_backup(); });
-    $(".btnPlugwise").bind('click', function() { init_plugwise(); });
+    $(".btnDomotica").bind('click', function() { init_domotica(); });
     $(".btnDataMaintenance").bind('click', function() { init_dataMaintenance(); });
 }
 
-function init_plugwise(){
+function init_domotica(){
 	WSL.checkURL();
-	setTitle("Plugwise");
+	setTitle("Domotica");
 	$('#sidebar').html("");
 
-	$.getJSON('admin-server.php?s=getAllPlugs', function(data) {
+	$.getJSON('admin-server.php?s=getDomoticaData', function(data) {
         $.ajax({
         	async: true,
-        	url : 'js/templates/plugwiseAllPlugs.hb',
-            success : function(source) { 
-                var template = Handlebars.compile(source);
-                var html = template({
-                    'data' : data
-                });
-                $('#content').html(html);
-                
-                var getAllPlugs = window.setInterval(function(){
-                	if ($('#site-title').text().toLowerCase().indexOf("plugwise") >= 0){
-	                	$.getJSON('admin-server.php?s=getAllPlugs', function(data) {
-	                		for (var key in data.plugs) {
-	                		   var obj = data.plugs[key];
-	                		   if ( $("#"+obj.applianceID+'-W').html() != (obj.currentPowerUsage+" W")){
-	                			   $("#"+obj.applianceID+'-W').effect( "highlight" ,1000);
-	                		   }
-	                		   $("#"+obj.applianceID+'-W').html(obj.currentPowerUsage+' W');                			   
-	                		}
-	                	});
-                	}else{
-                		clearInterval(getAllPlugs);
-                		var getAllPlugs = null;
-                	}
-                }, 7000);
-            	
-                /*
-                 * Catch click to sync all plug-data(actual power usage, switch state) from Stretch with WSL-database
-                 */
-                $("#btnSyncPlugs").bind('click', function() {
-                	var data = "s=syncPlugs";
-                	$.post('admin-server.php', data, function(data){
-                        if (data.result == true) {
-                        	console.log('ready, true');
-                            $.pnotify({
-                                title: 'Login',
-                                text: 'Succesfully logged in.',
-                                type: 'success'
-                            });
-                        } else {
-                            $.pnotify({
-                                title: 'Login',
-                                text: 'Failed to log in. Please retry!',
-                                type: 'error'
-                            });
-                        }
+        	url : 'js/templates/domoticaGraph.hb',
+                success : function(source) { 
+                    var template = Handlebars.compile(source);
+                    var html = template({
+                        'data' : data
                     });
-            	});
-            	
-                $("div.editme").click(function() {
-            		var id = $(this).attr('id');
-            		if ($("#"+id).children('input').length == 0) {
-            			var inputbox = "<input type='text' class='column span-3' id=\"input-"+id+"\" class='inputbox' value=\""+$("#"+id).text()+"\">";
-            			$("#"+id).html(inputbox);
-            			$("#input-"+id).focus();
-            			
-            			$("#input-"+id).keydown(function(e) {
-            			    if (e.keyCode == 9) {  //tab pressed
-            			    	$(this).blur();  	
-		            			e.preventDefault(); // stops its action
-            			    }
-            			})
-            			$("#input-"+id).blur(function() {
-            				var value = $("#input-"+id).val();
-            				$("#"+id).html(value);
-            				if($("#"+id).html() == value){
-            	                $.post('admin-server.php?s=plugwiseUpdatePlug',{id: id,name: value} , function(){
-                                    $.pnotify({
-                                        title: 'Plug name saved',
-                                        text: 'Name "'+value+'" saved',
-                                        type: 'success'
-                                    });
-            	                });            				
-            				}
-            			});
-            			
-            		}
-            	});
-                $("div.switchPlug").click(function() {
-                var id = $(this).attr('id');
-                var applianceID = $(this).attr('id').split('-')[0];
-                var newPowerState = $(this).attr('id').split('-')[1];
-                var oldPowerState = (newPowerState == 'on') ? 'off' : 'on';
-                $('#'+id).html('Switching....');
-               	$.get('admin-server.php?s=switchPowerState',{ applianceID: applianceID , newPowerState: newPowerState },function(data){
-                        $.pnotify({
-                            title: 'Plug name saved',
-                            text: 'Switch power state to: "'+newPowerState+'"',
-                            type: 'success'
-                        });
-                        $('#'+id).html('Switch' + ' ' + oldPowerState);
-                        $('#'+id).attr('id',  applianceID + '-' + oldPowerState);
-	                });
-                });
+                    $('#content').html(html);
+                    
+                    var dataset = [];
+                    var oldDeviceId = 0;
+                    var deviceSubset = [];
+                    for (line in data.data) {
+			var object = data.data[line];
+                        if(object.deviceId !== oldDeviceId && oldDeviceId > 0 ){
+                            dataset.push(deviceSubset);
+                            deviceSubset = null;
+                            deviceSubset = [];
+                        }
+                        deviceSubset.push([ parseFloat(object.time * 1000),object.kwh, object.kwht, object.name ]);
+                        
+                        oldDeviceId = object.deviceId;
+                    }
+                    console.log(dataset);
+                    var graphOptions = {
+			series : [ {
+				label : 'aaa',
+				yaxis : 'y2axis',
+				renderer : $.jqplot.BarRenderer
+			}, {
+				label : 'aaa',
+				xaxis : 'xaxis',
+				renderer : $.jqplot.LineRenderer
+			}, {
+				label : 'aaa',
+				xaxis : 'x2axis',
+				renderer : $.jqplot.LineRenderer
+			} ],
+			axesDefaults : {
+				useSeriesColor : true,
+				tickRenderer : $.jqplot.CanvasAxisTickRenderer,
+				tickOptions : {
+					angle : -30,
+					fontSize : '10pt'
+				}
+			},
+			legend : {
+				show : true,
+				location : 's',
+				placement : 'outsideGrid',
+				renderer : $.jqplot.EnhancedLegendRenderer,
+				rendererOptions : {
+					seriesToggle : 'normal',
+					numberRows : 1,
+				}
+			},
+			seriesDefaults : {
+				rendererOptions : {
+					barMargin : 10,
+					barWidth : 10
+				},
+				pointLabels : {
+					show : false
+				},
+			},
+			axes : {
+				xaxis : {
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+					renderer : $.jqplot.DateAxisRenderer,
+					angle : -30,
+					tickOptions : {
+						formatString : '%d-%m'
+					}
+				},
+				x2axis : {
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+					renderer : $.jqplot.DateAxisRenderer,
+					angle : -30,
+					tickOptions : {
+						formatString : '%d-%m'
+					}
+				},
+				yaxis : {
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+					tickOptions : {
+						formatString : '%d kWh'
+					},
+					angle : -30,
+				},
+				y2axis : {
+					labelRenderer : $.jqplot.CanvasAxisLabelRenderer,
+					tickOptions : {
+						formatString : '%d kWh'
+					},
+					angle : -30,
+				},
+			},
+			canvasOverlay : {
+				show : true,
+				objects : [ {
+					horizontalLine : {
+						name : 'test',
+						yaxis : 'y2axis',
+						lineWidth : 3,
+						color : 'rgb(0, 125,0)',
+						shadow : false
+					}
+				}, ]
+			},
+			cursor : {
+				zoom : true,
+				show : true,
+			},
+			highlighter : {
+				tooltipContentEditor : tooltipCompareEditor,
+				show : true
+			}
+		};
+                graphOptions.axes.x2axis.label = $("#whichMonth option:selected").text()+ ' '+ $("#whichYear option:selected").text();
+                graphOptions.axes.xaxis.label = $("#compareMonth option:selected").text()+ ' '+ $("#compareYear option:selected").text();
+
+                graphOptions.series[0].label = 'day';
+                graphOptions.series[1].label = $("#whichMonth option:selected").text()+ ' '+ $("#whichYear option:selected").text();
+                graphOptions.series[2].label = $("#compareMonth option:selected").text()+ ' '+ $("#compareYear option:selected").text();
+
+                whichLength = result.dayData.data.which.length - 1;
+                graphOptions.axes.xaxis.min = result.dayData.data.which[0][0] * 1000;
+                graphOptions.axes.xaxis.max = result.dayData.data.which[whichLength][0] * 1000;
+
+                compareLength = result.dayData.data.compare.length - 1;
+                graphOptions.axes.x2axis.min = result.dayData.data.compare[0][0] * 1000;
+                graphOptions.axes.x2axis.max = result.dayData.data.compare[compareLength][0] * 1000;
+
+                graphOptions.axes.yaxis.min = 0;
+                graphOptions.axes.y2axis.min = 0;
+
+                var maxDailykWh = Math.max.apply(null, dailykWh);
+
+                graphOptions.axes.y2axis.max = Math.round(maxDailykWh * parseFloat(1.10));
+
+                handle = $.jqplot("domoticaGraphContainer", [ dataset ], graphOptions);
+                graphOptions.canvasOverlay.objects[0].horizontalLine.y = dataDay1[0][1];
+                handle.replot(graphOptions);
+                
             },
             dataType : 'text'
         })
-	 });
+    });
 }
 
 

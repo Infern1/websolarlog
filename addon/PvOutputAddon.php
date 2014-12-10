@@ -98,6 +98,9 @@ class PvOutputAddon {
 				//When the sun is NOT down OR if the sun is down and we want to "sendDataWholeDay":
 				if(Util::isSunDown(-1800)==false || (Util::isSunDown(-1800)==true && $sendDataWholeDay == true)){
 					HookHandler::getInstance()->fire("onDebug",__METHOD__."::The sun is up for '".$device->name." so we may/need send data");
+                                        
+                                        $PVoutputSendData = array("device"=>$device,"date"=>$date,"sendData"=>$sendData,"time"=>$time,"v1"=>$v1,"v2"=>$v2,"v6"=>$v6,"v5"=>$v5,"v3"=>$v3,"v4"=>$v4);
+                                        HookHandler::getInstance()->fire("onDebug",__METHOD__."::Lets send this to PVo for device '".$device->name." :: ".print_r($PVoutputSendData,true));
 					$result = $this->PVoutputSendData($device, $date, $sendData,$time, $v1, $v2, $v6, $v5, $v3, $v4);
 					
 					if($result){
@@ -225,14 +228,15 @@ class PvOutputAddon {
 		$today = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
 		$thirteenDaysEarlier = mktime(0, 0, 0, date('m'), date('d')-13, date('Y'));
 		
+                
 		// first try to send data of today!
 		$parameters = array( ':time' => $today,':deviceId'=>$deviceId);
 		$beans =  R::findOne($table,$query,$parameters);
-		
+                
 		// when we have no today data, we send history data!
 		if(count($beans)==0){
-			$parameters = array( ':time' => $thirteenDaysEarlier,':deviceId'=>$deviceId);
-			$beans =  R::findOne($table,$query,$parameters);
+			$parameters2 = array( ':time' => $thirteenDaysEarlier,':deviceId'=>$deviceId);
+			$beans =  R::findOne($table,$query,$parameters2);
 		}
 		return $beans;
 	}

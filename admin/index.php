@@ -34,6 +34,20 @@ session_start();
 <script type="text/javascript" src="../js/SlickGrid/slick.formatters.js"></script>
 <script type="text/javascript" src="../js/SlickGrid/slick.editors.js"></script>
 <script type="text/javascript" src="../js/SlickGrid/slick.dataview.js"></script>
+<script type="text/javascript" src="../js/jquery.jqplot-1.0.8r1250.min.js"></script>
+<script type="text/javascript" src="../js/jqplot_plugins/jqplot.json2.min.js"></script>
+<script type="text/javascript" src="../js/jqplot_plugins/jqplot.barRenderer.min.js"></script>
+<script type="text/javascript" src="../js/jqplot_plugins/jqplot.canvasTextRenderer.min.js"></script>
+<script type="text/javascript" src="../js/jqplot_plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+<script type="text/javascript" src="../js/jqplot_plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+<script type="text/javascript" src="../js/jqplot_plugins/jqplot.canvasOverlay.min.js"></script>
+<script type="text/javascript" src="../js/jqplot_plugins/jqplot.dateAxisRenderer.min.js"></script>
+<script type="text/javascript" src="../js/jqplot_plugins/jqplot.meterGaugeRenderer.min.js"></script>
+<script type="text/javascript" src="../js/jqplot_plugins/jqplot.cursor.min.js"></script>
+<script type="text/javascript" src="../js/jqplot_plugins/jqplot.trendline.min.js"></script>
+<script type="text/javascript" src="../js/jqplot_plugins/jqplot.pointLabels.min.js"></script>
+<script type="text/javascript" src="../js/jqplot_plugins/jqplot.highlighter.min.js"></script>
+<script type="text/javascript" src="../js/jqplot_plugins/jqplot.enhancedLegendRenderer.min.js"></script>
 </head>
 <body>
 	<!-- Wrapper -->
@@ -66,7 +80,7 @@ session_start();
 					<!-- <li><a href="#tariff" id="btnTariff">Tariff</a></li>-->
 					<li><a href="#update" class="btnUpdate">Update</a></li>
 					<li><a href="#backup" class="btnBackup">Backup</a></li>
-					<li id="LiPlugwise"><a href="#plugwise" class="btnPlugwise">Plugwise</a></li>
+                                        <li><a href="#domotica" class="btnDomotica">Domotica</a></li>
 					<!-- li><a href="#DataMaintenance" id="btnDataMaintenance">DBM</a></li -->
 					<li class="nav-end"><a href="#diagnostics" class="btnDiagnostics">Diagnostics</a></li>
 				</ul>

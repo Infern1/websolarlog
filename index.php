@@ -12,8 +12,6 @@ if(file_exists(sys_get_temp_dir()."/WSLConfig.json")){
 	$config = Session::getConfig();
 }
 
-		
-
 require_once("template/" .  $config->template . "/header.php");
 require_once("template/" .  $config->template . "/index.php");
 ?>
@@ -21,25 +19,30 @@ require_once("template/" .  $config->template . "/index.php");
 <input type="hidden" id="frontendLiveInterval" value="<?php echo $config->frontendLiveInterval*1000;?>"/>
 <script type="text/javascript">
     // Make sure the page is loaded
-	$(function(){
-		WSL.init_mainSummary("#main-middle");
-		WSL.init_tabs("index",0, "#main-middle",
-			function(){
-				$('#graphReady').on("change",function(){
-					if($('#graphReady').val() == 'true'){			
-						window.setTimeout(function(){WSL.init_PageLiveValues("#content",function(){indexLiveInverters});},400);
-						window.setTimeout(function(){WSL.init_PageIndexTotalValues("#sidebar",function(){sidebar});},800);
-						window.setTimeout(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");},1200);
-						
-						$('#graphTodayContent canvas').ready(function(){
-							window.setInterval(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");}, $('#frontendLiveInterval').val());
-						});
-						analyticsJSCodeBlock();
-		    		}		    		
-				})
-    		}
-		)	
-	});
+    $(function(){
+            $("#content").css("width","100%");
+            WSL.init_mainSummary("#main-middle");
+            WSL.init_liveDataContainers("#content");
+            WSL.init_tabs("index",0, "#main-middle",
+                    function(){
+                            $('#graphReady').on("change",function(){
+                                    
+                                    if($('#graphReady').val() == 'true'){	
+                                       
+                                        
+                                        //window.setTimeout(function(){WSL.init_PageLiveValues("#graphGauges",function(){indexLiveInverters});},400);
+                                        window.setTimeout(function(){WSL.init_PageIndexTotalValues("#overallValues",function(){sidebar});},400);
+                                        window.setTimeout(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");},800);
+
+                                        $('#graphTodayContent canvas').ready(function(){
+                                                window.setInterval(function(){WSL.init_PageIndexLiveValues("#indexLiveInverters");}, $('#frontendLiveInterval').val());
+                                        });
+                                        analyticsJSCodeBlock();
+                                    }		    		
+                            })
+            }
+            )	
+    });
 </script>
 <!-- END Wrapper -->
 </body>

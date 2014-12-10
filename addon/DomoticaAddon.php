@@ -1,5 +1,5 @@
 <?php
-class PlugwiseStretchAddon {
+class DomoticaAddon {
 	private $stretchID;
 	private $stretchIP;
 	
@@ -11,39 +11,14 @@ class PlugwiseStretchAddon {
 	}
 	
 	public function onJob(){
-		if($this->stretchID && $this->stretchIP){
-			if (filter_var($this->stretchIP, FILTER_VALIDATE_IP)) {
-				$this->getPlugsWatts();
-			}	
-		}
+
 	}
 	
-	public function getAllPlugwisePlugs() {
-		$live = new LiveService();
-		$smartMeterLive = new LiveSmartMeterService();
+	public function getAllData() {
+		//$domotica = new DomoticaService();
 		
-		$beans =  R::find('plugwise_plugs');
-		
-		$data['plugs'] = $beans;
-		$plugsUsage = 0;
-		foreach($beans as $bean){
-			$plugsUsage += (float)$bean['currentPowerUsage'];
-		}
-		
-		foreach ($this->config->devices as $device){
-		if($device->type=="metering"){
-				$meter= $smartMeterLive->getLiveByDevice($device);
-			}
-			if($device->type=="production"){
-				$production= $live->getLiveByDevice($device);
-			}
-		}
-		$data['plugsUsage'] = $plugsUsage;
-		$data['live']['liveUsageW'] =  ((int)$meter->liveUsage > 0) ? (int)$meter->liveUsage : (int)0;
-		$data['live']['gridV'] =  ((int)$production->GV > 0) ? (int)$production->GV : (int)0;
-		$data['live']['GA'] = round((float)($data['live']['liveUsageW'] / $data['live']['gridV']),2);
-		$data['live']['GAlimit'] = (int)20; 
-		return $data;
+		$beans =  R::getAll('SELECT deviceId,name,kwh,kwht,time from GetVeraDevice where name != "" order by deviceId,time');
+		return $beans;
 	}
 	
 

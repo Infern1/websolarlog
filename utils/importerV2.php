@@ -31,8 +31,16 @@ if(defined('STDIN') ) {
 $begin = time();
 ImporterLog::info("Starting import V2");
 $importer = new Importer(Common::getRootPath() . "/data/", $force);
-$importer->init();
-$importer->start();
+
+// usage:
+// http://path/to/websolarlog/utils/importerV2.php?mapping=3,invt1;4,invt2
+
+if($_GET['mapping']==null){
+    $importer->init();
+    $importer->start();
+}else{
+    $importer->startMappings($_GET['mapping']);
+}
 ImporterLog::info("Takes " . (time()-$begin) . " seconds");
 
 class Importer {
@@ -49,6 +57,7 @@ class Importer {
 	}
 	
 	public function init() {
+           
 		if ($this->force) {
 			ImporterLog::info("Force modus is activated!");
 		}
@@ -93,13 +102,31 @@ class Importer {
 		// Get the config and save it, so we are sure we have an config in the database
 		$config = Session::getConfig();
 		PDODataAdapter::getInstance()->writeConfig($config);
-	}
-	
+            
+        }
+        
 	public function start() {
 		$devices = $this->deviceService->getAllDevices();
 		foreach ($devices as $device) {
 			$importerDevice = new ImporterDevice($this->path, $device, $this->force);
 			$importerDevice->start();
+		} 
+	}
+                
+	public function startMappings($mapping) {
+		$mappings = explode(";", $mapping);
+                foreach ($mappings as $map){
+                    $mapExplode = explode(",", $map);
+                    // 0 = WebSolarLog device id
+                    // 1 = 123Solar deviceName
+                    $devices[] = $this->deviceService->load($mapExplode[0]);
+                    $solarDevices[] = $mapExplode[1];
+                }
+                $i = 0;
+		foreach ($devices as $device) {
+			$importerDevice = new ImporterDevice($this->path, $device, $this->force,$solarDevices[$i]);
+			$importerDevice->start();
+                        $i++;
 		} 
 	}
 }
@@ -112,10 +139,16 @@ class ImporterDevice {
 	private $basePath;
 	
 	
-	function __construct($path, Device $device, $force) {
+	function __construct($path, Device $device, $force, $solarDevice=null) {
 		$this->device = $device;
 		$this->force = $force;
-		$this->basePath = $path . $this->device->name . "/";
+                $this->solarDevice = $solarDevice;
+                
+                if($this->solarDevice != null){
+                    $this->basePath = $path . $this->solarDevice . "/";
+                }else{
+                    $this->basePath = $path . $this->device->name . "/";
+                }
 		$this->deviceService = new DeviceService();
 	}
 	

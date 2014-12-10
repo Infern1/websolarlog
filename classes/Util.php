@@ -128,12 +128,13 @@ class Util {
      * @return array('beginDate'=>int, 'endDate'=>int, 'days'=>int);
      */
     public static function getBeginEndDate($type, $count,$startDate=null){
-    	if(!$startDate){
-    		$startDate = date("d-m-Y");
-    	}
-    	
-    	// Make de StartDate a timestamp
-    	$startDate = strtotime($startDate);
+
+            if(!$startDate){
+                    $startDate = date("d-m-Y");
+            }
+
+            // Make de StartDate a timestamp
+            $startDate = strtotime($startDate);
 
 
 	    	switch (strtolower($type)) {

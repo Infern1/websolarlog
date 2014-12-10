@@ -347,7 +347,7 @@ class GraphService {
 			
 			foreach($config->devices as $device){
 				$hookReturn = HookHandler::getInstance()->fire("GraphDayPoints",$device,$options['date'],$options['type'],$disabledSeries);
-				if(is_object($hookReturn)){
+                                if(is_object($hookReturn)){
 					$graphHook = array_merge_recursive($graphHook,(array)$hookReturn);
 				}
 			}

@@ -64,11 +64,14 @@ class EnergyService {
 		if($device->type == "production"){
 
 			$energy = self::getEnergyByDeviceAndTime($device,$date);
-			$data = array();
-			$data['KWH'] 	  =  $energy->KWH;
-			$data['costs'] 	  =  ($energy->KWH*$this->config->costkwh)/100;
-			$data['CO2avoid'] =  ($energy->KWH*$this->config->co2kwh)/1000;
-			$data['trees'] =  $energy->KWH*$this->config->co2CompensationTree;
+                        $data = array();
+                        
+                        if($energy !=null){
+                            $data['KWH'] 	  =  $energy->KWH;
+                            $data['costs'] 	  =  ($energy->KWH*$this->config->costkwh)/100;
+                            $data['CO2avoid'] =  ($energy->KWH*$this->config->co2kwh)/1000;
+                            $data['trees']    =  $energy->KWH*$this->config->co2CompensationTree;
+                        }
 			
 
 			return $data;
@@ -120,23 +123,45 @@ class EnergyService {
 	
 		return $this->toObject($bean);
 	}
+        
+	/**
+	 * get the Energy for an device
+	 * @param Device $energy
+	 * @param $time
+	 * @return $energy
+	 */
+	public function getEnergyByTimeSumProduction($time) {
+            
+            $beginEndDate = Util::getBeginEndDate('day', 1,$time);
+            
+            //print_r($beginEndDate);
+            $query = "SELECT SUM(KWH) as production FROM ".self::$tbl." WHERE time > ".($beginEndDate['beginDate']-120)." AND time < ".($beginEndDate['endDate']+120)." ;";
+  
+            $bean = R::getAll($query);
+            
+            if (!$bean){
+                    return null;
+            }
+
+            return $bean;
+	}
 	
 	public function janitorDbCheck() {
 		HookHandler::getInstance()->fire("onDebug", "EnergyService janitor DB Check");
 
-        // Get an HistorySmartMeter and save it, to make sure al fields are available in the database
-        $bObject = R::findOne(self::$tbl, ' 1=1 LIMIT 1');
-        if ($bObject) {
-            $object = $this->toObject($bObject);
-            R::store($this->toBean($object, $bObject));
-            HookHandler::getInstance()->fire("onDebug", "Updated Energy");
-        } else {
-            HookHandler::getInstance()->fire("onDebug", "Energy object not found");
-        }
+                // Get an HistorySmartMeter and save it, to make sure al fields are available in the database
+                $bObject = R::findOne(self::$tbl, ' 1=1 LIMIT 1');
+                if ($bObject) {
+                    $object = $this->toObject($bObject);
+                    R::store($this->toBean($object, $bObject));
+                    HookHandler::getInstance()->fire("onDebug", "Updated Energy");
+                } else {
+                    HookHandler::getInstance()->fire("onDebug", "Energy object not found");
+                }
 
-        R::exec("UPDATE Energy SET deviceId = INV WHERE INV is not NULL");
+                R::exec("UPDATE Energy SET deviceId = INV WHERE INV is not NULL");
 
-        // Delete empty rows
+                // Delete empty rows
 		R::exec("DELETE FROM Energy WHERE kwh=0 AND kwht is null;");
 	}
 	

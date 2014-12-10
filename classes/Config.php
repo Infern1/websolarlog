@@ -46,6 +46,7 @@ class Config
     public $upgradeMessage;
     public $upgradeMessageShow;
     
+    public $veraDevices;
     /**
      * @deprecated
      */
@@ -200,9 +201,9 @@ class Config
 	
 	public function getDeviceConfig($deviceId) {
 		foreach ($this->allDevices as $device) {
-            if ($device->id == $deviceId) {
+                    if ($device->id == $deviceId) {
 				return $device;
-			}
+                    }
 		}
 	}	
 

@@ -565,6 +565,7 @@ try {
 			$lang['overall'] 		= _("overall");
 			$lang['inv'] 			= _("Inv.");
 			$lang['grid'] 		= _("grid");
+                        
 			$lang['time'] 			= _("Time");
 			$lang['inverter'] 		= _("Inverter");
 			$lang['power'] 			= _("Power");
@@ -585,6 +586,8 @@ try {
 			$lang['DCPower'] = _("DC Power");
 			$lang['ACPower'] = _("AC Power");
 			$lang['Efficiency'] = _("Efficiency");
+                        $lang['usage'] = _("Usage");
+                        $lang['bla'] 		= "xxxxxx";
 			// Get Gauge Max
 			$avgGP = $dataAdapter->getAvgPower($config);
 			($avgGP['recent']<=0) ? $avgGPRecent = 1 : $avgGPRecent = $avgGP['recent'];

@@ -254,7 +254,27 @@
 		return new Handlebars.SafeString(value);
 	})
 	
-	
+	Handlebars.registerHelper("invoiceHeader", function (context){
+            console.log(context +" "+(context % 20));
+            var multiple = (context % 20);
+            var header = "";
+            if(multiple==0 || context == 1){
+                var header = 
+                    "<div class=\"column span-40\">"+
+                    "<div class=\"column span-5\">Time</div>"+
+                    "<div class=\"column span-3\">Gas</div>"+
+                    "<div class=\"column span-3\">low Return</div>"+
+                    "<div class=\"column span-4\">high Return</div>"+
+                    "<div class=\"column span-3\">low Usage</div>"+
+                    "<div class=\"column span-4\">high Usage</div>"+
+                    "<div class=\"column span-4\">Production</div>"+
+                    "<div class=\"column span-4\">used Prod.</div>"+
+                    "<div class=\"column span-4\">total usage</div>"+
+                    "<div class=\"column span-4\">saldering</div></div><br>";
+            }
+            return new Handlebars.SafeString(header);
+        })
+        
 	Handlebars.registerHelper("PvOutputDataRow", function (context){
 		// we want to send this record to pvoutputSend;
 		var row = null;
