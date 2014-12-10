@@ -153,7 +153,13 @@ class DeviceHandler {
 		$device = Session::getConfig()->getDeviceConfig($params["deviceId"]);
 		
 		$api = $device->getApi(Session::getConfig());
-		$api->setCommunication($communication, $device);
+                
+                //
+                // No idea what the idea is behind the line below, 
+                // but it managed to crash to queueserver and therefore communicationtests were not working.
+                // 
+		//$api->setCommunication($communication, $device);
+                
 		$result = $api->doCommunicationTest();
 		
 		$communication->lastTestTime = time();
