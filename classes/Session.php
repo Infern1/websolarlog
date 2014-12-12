@@ -340,9 +340,6 @@ class Session
     	
     	$hookHandler->add("onPVoutputAddStatus", "PvOutputAddon.onJob");
 
-    	//plugwise update 
-    	$hookHandler->add("onFastJob", "PlugwiseStretchAddon.onJob");
-    	
     	//write config as a JSON config file to filesystem
     	$hookHandler->add("onFastJob", "Session.writeConfig2FileSystem");
     	
