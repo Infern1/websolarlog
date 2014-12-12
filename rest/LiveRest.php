@@ -81,9 +81,9 @@ class LiveRest {
 			}
 			$result[] = array("type"=>$type, "id"=>$device->id, "name"=>$device->name, "data"=>$live);
 		}
-                
-                $totalsProduction['EFFTotal'] = round((($totalsProduction["GPOverall"] / $totalsProduction["IPOverall"]) * 100),2);
-                
+                if($totalsProduction["IPOverall"]>0 and $totalsProduction["GPOverall"]>0){
+                    $totalsProduction['EFFTotal'] = round((($totalsProduction["GPOverall"] / $totalsProduction["IPOverall"]) * 100),2);
+                }
                 // Get Gauge Max
 		$avgGP = $this->dataAdapter->getAvgPower(Session::getConfig());
 		($avgGP['recent']<=0) ? $avgGPRecent = 1 : $avgGPRecent = $avgGP['recent'];
