@@ -56,10 +56,15 @@ class GetVeraDeviceService {
 			$bean = R::dispense(self::$tbl);
 		}
                 if($beanYesterday['KWHT']!='' and $bean['KWHT']!=''){
-                    $veraDevice->KWH = sprintf("%0.3f",$bean['KWHT'] - $beanYesterday['KWHT']);
+                    if((float)$bean['KWHT'] < (float)$beanYesterday['KWHT']){
+                        $veraDevice->KWH = sprintf("%0.3f",$bean['KWHT']);
+                    }else{
+                        $veraDevice->KWH = sprintf("%0.3f",$bean['KWHT'] - $beanYesterday['KWHT']);
+                    }
                 }
                 
 		$bean = $this->toBean($veraDevice, $bean);
+                
 		// Only save record if there is something
 		if (!empty($veraDevice->KWHT)) {
 			$veraDevice->id = R::store($bean);
