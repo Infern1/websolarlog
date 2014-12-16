@@ -125,6 +125,7 @@ class DeviceService {
             array('value' => 'Open-Weather-Map', 'type' => 'weather', 'name' => 'Open Weather Map'),
             array('value' => 'SMA-RS485', 'type' => 'production', 'name' => 'SMA RS485'),
             array('value' => 'SMA-BT-WSL', 'type' => 'production', 'name' => 'SMA-spot-2.0.6 BlueTooth'),
+            array('value' => 'Growatt', 'type' => 'production', 'name' => 'Growatt'),
             array('value' => 'OMNIK', 'type' => 'production', 'name' => 'Omnik')
         );
     }
