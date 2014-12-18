@@ -83,6 +83,8 @@ class LiveRest {
 		}
                 if($totalsProduction["IPOverall"]>0 and $totalsProduction["GPOverall"]>0){
                     $totalsProduction['EFFTotal'] = round((($totalsProduction["GPOverall"] / $totalsProduction["IPOverall"]) * 100),2);
+                }else{
+                    $totalsProduction['EFFTotal'] = round(0,2);
                 }
                 // Get Gauge Max
 		$avgGP = $this->dataAdapter->getAvgPower(Session::getConfig());
