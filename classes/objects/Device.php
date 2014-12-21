@@ -90,6 +90,8 @@ class Device {
                 return new SmartMeterAmpyRemote($communication, $this, $config->comDebug);
             case "OMNIK":
                 return new Omnik($communication, $this, $config->comDebug);
+            case "GROWATT":
+                return new Omnik($communication, $this, $config->comDebug);
             case "MASTERVOLT":
                 return new MasterVolt($communication, $this, $config->comDebug);
             case "SOLADINSOLGET":
