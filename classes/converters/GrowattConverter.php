@@ -78,13 +78,16 @@ class GrowattConverter
         // Check if the input line is valid
         if ($inputLine == null || trim($inputLine) == "") {
             echo("Input from Converter is null");
+            HookHandler::getInstance()->fire("onDebug","Growatt no input data from inverter....");
             return null;
         }
 
         // Split on a serie of spaces (not one)
         preg_match("/(?<=\[).*?(?=])/", $inputLine, $data);
         $data = explode(", ",$data[0]);
-
+        
+        HookHandler::getInstance()->fire("onDebug","Growatt print exploded data;".print_r($data,true));
+        
         $live = new Live();
         $live->type = 'production';
 
@@ -135,8 +138,8 @@ class GrowattConverter
         
         //data not given by converter is set to 0
        	$live->BOOT = 0;
-        
-        
+        HookHandler::getInstance()->fire("onDebug","Print Live:");
+        HookHandler::getInstance()->fire("onDebug",print_r($live,true));
 
         return $live;
     }

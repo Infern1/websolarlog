@@ -54,12 +54,17 @@ Onbekend 19421.0
 Temp_inverter 24.8
 Onbekend 3612.0";
         } else {
+                HookHandler::getInstance()->fire("onDebug",__METHOD__);
         	return trim($this->execute());
         }
     }
     
     public function getLiveData() {
+        HookHandler::getInstance()->fire("onDebug","Growatt in getLiveData, before ->getData");
     	$data = $this->getData();
+        HookHandler::getInstance()->fire("onDebug","Growatt in getLiveData, after ->getData");
+        HookHandler::getInstance()->fire("onDebug",print_r($data,true));
+        
     	return GrowattConverter::toLive($data);
     }
 
