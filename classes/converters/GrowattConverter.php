@@ -129,7 +129,7 @@ class GrowattConverter
             $live->INVT = self::liveLineToValues($data[31]/10,"float");
         }
         if (!empty ($data[28])) {
-            $live->KWHT = self::liveLineToValues($data[28]/10,"float");
+            $live->KWHT = self::liveLineToValues($data[28]*100,"float");
         }
         if(!empty ($data[6])){
             $live->EFF = self::liveLineToValues((($live->GP/$live->I1P)*100),"float");
