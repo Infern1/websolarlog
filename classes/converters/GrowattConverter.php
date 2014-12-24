@@ -114,7 +114,7 @@ class GrowattConverter
         $live->I2V = 0;
         $live->I2A = 0;
         if (!empty ($data[16])) {
-            $live->GV = self::liveLineToValues($data[16]/10,"float");
+            $live->GV = self::liveLineToValues($data[13]/10,"float");
         }
         if (!empty ($data[14])) {
             $live->GA = self::liveLineToValues($data[14]/10,"float");
