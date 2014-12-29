@@ -79,7 +79,8 @@ Class SmartMeterRemote implements DeviceApi {
 
     public function doCommunicationTest() {
         $result = false;
-        $data = $this->getData();
+        $data[0] = $this->getData();
+        $data[1] = SmartMeterConverter::toLiveSmartMeter($data[0]);
         if ($data) {
             $result = true;
         }
