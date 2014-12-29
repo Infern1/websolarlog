@@ -39,6 +39,8 @@ class SmartMeterConverter
 		$live = new LiveSmartMeter();
 
 		// Go through all lines to fetch the data
+                $counter = 0;
+                
 		foreach ($lines as $line) {
 			$data = trim($line);
 			$lineType = explode("(", $data)[0];
@@ -65,14 +67,17 @@ class SmartMeterConverter
 				case "1-0:2.7.0": // Current return
 					$live->liveReturn = Util::telegramStringLineToInterUsage($data,"kW");
 					break;
-				default:
-					// Current Gas usage
-					//$data = trim($data, "\r"); // Strip off the carriage return given by the ISKRA
-					if(substr($data, 0, 1)=="(" && substr($data, -1)==")"){
-						$live->gasUsage = Util::telegramStringLineToInterUsage($data,"m3");
-					}
+                                    
+                                case "0-1:24.2.1": // DMSR 4.0 Gas usage
+                                        $live->gasUsage = Util::telegramStringLineToInterUsage($data,"m3DSMR40");
+					break;
+                                case "0-1:24.3.0":
+                                        $element = $counter+1; //DSMR 2.0 gas is on the next line
+                                        $data = $lines[$element];
+                                        $live->gasUsage = Util::telegramStringLineToInterUsage($data,"m3DSMR20");
 					break;
 			}
+                    $counter++;
 		}
 		
 		return $live;

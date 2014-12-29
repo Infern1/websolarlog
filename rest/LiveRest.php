@@ -41,7 +41,18 @@ class LiveRest {
 					$live = $this->liveService->getLiveByDevice($device);
                                         if ($live === null){
                                             // No live record return, probably after an restart;
-                                            break;
+                                            $live = array(
+                                                "GP"=>0,
+                                                "GP2"=>0,
+                                                "GP3"=>0, 
+                                                "I1P"=>0,
+                                                "I2P"=>0,
+                                                "I3P"=>0,
+                                                "GV"=>0,
+                                                "trendImage"=>"equal",
+                                                "trend"=>_("equal")
+                                                );
+                                            //break;
                                         } 
                                         foreach ($live as $key => $value){
                                             $live->$key = round($value,0);
