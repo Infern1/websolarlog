@@ -74,7 +74,7 @@ class SmartMeterAgent extends AbstractAgent {
 		
 		$this->serial->confBaudRate(115200);
 		$this->serial->confParity("none");
-		$this->serial->confCharacterLength(7);
+		$this->serial->confCharacterLength(8);
 		$this->serial->confStopBits(1);
 		$this->serial->confFlowControl("none");
 		
