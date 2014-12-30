@@ -78,13 +78,17 @@ Class SmartMeterAmpyRemote implements DeviceApi {
         // not supported
     }
     
+    
     public function doCommunicationTest() {
-    	$result = false;
-    	$data = $this->getData();
-    	if ($data) {
-    		$result = true;
-    	}
-    	return array("result"=>$result, "testData"=>$data);
+        $result = false;
+        
+        $data['RawResponse'] = $this->getData();        
+        $data['LiveObject'] = SmartMeterConverter::toLiveSmartMeter(explode("\n", $data['RawResponse']));
+
+        if ($data) {
+            $result = true;
+        }
+        return array("result" => $result, "testData" => print_r($data,true));
     }
 
     private function execute() {
