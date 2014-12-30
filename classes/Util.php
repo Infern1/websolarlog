@@ -247,7 +247,8 @@ class Util {
     }
     
     public static function telegramStringLineToInterUsage($string,$input){
-    	$pattern = "/\((.*)\)/";
+    	$pattern = "/\((.*?)\)/";
+        
     	preg_match_all($pattern,$string,$match);
     	$value="";
     	if($input=="kWh"){
@@ -263,7 +264,7 @@ class Util {
     		$value = ltrim($value[0],0);
     	}
         if($input=="m3DSMR40"){
-    		$value = str_replace("*m3","",str_replace(".","",str_replace("(","",$match[1])));
+    		$value = str_replace("*m3","",str_replace(".","",str_replace("(","",$match[2])));
     		$value = ltrim($value[0],0);
     	}
     
