@@ -6,6 +6,18 @@ require "php_serial.class.php";
  * @author Martin Diphoorn
  */
 
+
+/**
+ * 
+ * The following settings seems to work for Dutch "smartmeters" with DSMR 4.0
+ * 
+ * BaudRate         = 115200;
+ * Parity           = none;
+ * CharacterLength  = 8;
+ * StopBits         = 1;
+ * FlowControl      = none;
+ */
+
 // Set the port the agent is listening
 $listen_host = 0; // 0 = binding to all ip's
 $listen_port = 9090;

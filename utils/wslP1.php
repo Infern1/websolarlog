@@ -6,6 +6,17 @@ require "php_serial.class.php";
  * @author Martin Diphoorn
  */
 
+ /**
+ * 
+ * The following settings seems to work for Dutch "smartmeters" with DSMR >=2.0 <= 3.9 (earlier then 4.0)
+ * 
+ * BaudRate         = 9600;
+ * Parity           = even;
+ * CharacterLength  = 7;
+ * StopBits         = 1;
+ * FlowControl      = none;
+ */
+
 // Set the port the agent is listening
 $listen_host = 0; // 0 = binding to all ip's
 $listen_port = 9090;
@@ -71,7 +82,7 @@ class SmartMeterAgent extends AbstractAgent {
 		$this->serial = new phpSerial;
 		
 		$this->serial->deviceSet($this->serialPort);
-		
+                
 		$this->serial->confBaudRate(9600);
 		$this->serial->confParity("even");
 		$this->serial->confCharacterLength(7);
