@@ -275,7 +275,6 @@ class Util {
     		$value = ltrim($value[0],0);
     	}
         if($input=="m3DSMR40"){
-                print_r($match,true);
     		$value = str_replace("*m3","",str_replace(".","",$match[1][1]));
     		$value = ltrim($value,0);
     	}
