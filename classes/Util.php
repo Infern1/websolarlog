@@ -278,7 +278,6 @@ class Util {
     		$value = str_replace("*m3","",str_replace(".","",str_replace("(","",$match[1][1])));
     		$value = ltrim($value[0],0);
     	}
-    
     	return $value;
     }
     
