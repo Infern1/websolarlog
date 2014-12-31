@@ -101,7 +101,7 @@ class CommunicationRest {
 		$item = new QueueItem(time(), "DeviceHandler.handleTest", "deviceId=".$deviceId."|"."communicationId=".$communicationId, false, 0, true);
 		QueueServer::addItemToDatabase($item);
 		
-		return array("results"=>"added,".date('Y-m-d h:i:s', time()), "communicationId"=>$communicationId, "deviceId"=>$deviceId);
+		return array("results"=>"<b>added:</b> ".date('Y-m-d H:i:s', time()), "communicationId"=>$communicationId, "deviceId"=>$deviceId);
 	}
 }
 ?>
