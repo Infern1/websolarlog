@@ -54,17 +54,12 @@ Onbekend 19421.0
 Temp_inverter 24.8
 Onbekend 3612.0";
         } else {
-                HookHandler::getInstance()->fire("onDebug",__METHOD__);
         	return trim($this->execute());
         }
     }
     
     public function getLiveData() {
-        HookHandler::getInstance()->fire("onDebug","Growatt in getLiveData, before ->getData");
     	$data = $this->getData();
-        HookHandler::getInstance()->fire("onDebug","Growatt in getLiveData, after ->getData");
-        HookHandler::getInstance()->fire("onDebug",print_r($data,true));
-        
     	return GrowattConverter::toLive($data);
     }
 
@@ -78,7 +73,6 @@ Onbekend 3612.0";
 
     public function getHistoryData() {
     	// Try to retrieve the data of the last 366 days
-        echo("GetHistoryData Growatt\n");
         return "No History Data"; 
     }
 
@@ -87,14 +81,17 @@ Onbekend 3612.0";
     }
     
     public function doCommunicationTest() {
-		$result = false;
-    	$data = $this->getData();
-    	if ($data) {
-    		$result = true;
-    	}
-    	return array("result"=>$result, "testData"=>$data);
-    }
+        $result = false;
+        
+        $data['RawResponse'] = $this->getData();        
+        $data['LiveObject'] = GrowattConverter::toLive($data['RawResponse']);
 
+        if ($data) {
+            $result = true;
+        }
+        return array("result" => $result, "testData" => print_r($data,true));
+    }
+    
     private function execute($options) {
         $cmd = $this->communication->uri . ' ' . $this->device->comAddress . ' ' . $this->communication->optional . ' ' . $options . ' ' . $this->communication->port;
         $proc=proc_open($cmd,
