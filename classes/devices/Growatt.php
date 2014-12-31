@@ -83,7 +83,7 @@ Onbekend 3612.0";
     public function doCommunicationTest() {
         $result = false;
         
-        $data['RawResponse'] = $this->execute();        
+        $data['RawResponse'] = $this->getData();        
         $data['LiveObject'] = GrowattConverter::toLive($data['RawResponse']);
 
         if ($data) {
