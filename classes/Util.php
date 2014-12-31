@@ -256,8 +256,19 @@ class Util {
     		$value = ltrim($value[0],0);
     	}
     	if($input=="kW"){
-    		$value = str_replace("*kW","",str_replace(".","",$match[1]));
-    		$value = $value[0]."0";
+            // <DSMR4.0 reports actual usage as
+            // (0000.23*kW) == 230W
+            //  DSMR4.0  reports actual usage as
+            // (0000.230*kW) == 230W
+            // so for <DSMR4.0 we need to correct it by adding a trailing 0
+            
+            $explodedMatch = explode(".",$match[1]);
+            if(strlen($explodedMatch[1])<2){
+                $match[1] = $explodedMatch[0].".".$explodedMatch[1]."0";
+            }
+
+            $value = str_replace("*kW","",str_replace(".","",$match[1]));
+            $value = $value[0]."0";
     	}
     	if($input=="m3DSMR20"){
     		$value = str_replace("m3","",str_replace(".","",$match[1]));
