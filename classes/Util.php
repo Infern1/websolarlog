@@ -268,14 +268,14 @@ class Util {
             }
 
             $value = str_replace("*kW","",str_replace(".","",$match[1]));
-            $value = $value[0]."0";
+            $value = ltrim($value[0],0);
     	}
     	if($input=="m3DSMR20"){
     		$value = str_replace("m3","",str_replace(".","",$match[1]));
     		$value = ltrim($value[0],0);
     	}
         if($input=="m3DSMR40"){
-    		$value = str_replace("*m3","",str_replace(".","",str_replace("(","",$match[1])));
+    		$value = str_replace("*m3","",str_replace(".","",str_replace("(","",$match[2])));
     		$value = ltrim($value[0],0);
     	}
     
