@@ -86,13 +86,16 @@ Class Aurora implements DeviceApi {
     }
     
     public function doCommunicationTest() {
-    	$result = false;
-    	$data = $this->execute('-se -Y10');
-    	if ($data) {
-    		$result = true;
-    	}
-    	 
-    	return array("result"=>$result, "testData"=>$data);
+        $result = false;
+        
+        $data['RawResponse'] = $this->getData();        
+        $data['LiveObject'] = AuroraConverter::toLive($data['RawResponse']);
+
+        if ($data) {
+            $result = true;
+        }
+
+        return array("result" => $result, "testData" => print_r($data,true));
     }
 
     private function execute($options) {
