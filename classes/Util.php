@@ -263,7 +263,7 @@ class Util {
             // so for <DSMR4.0 we need to correct it by adding a trailing 0
             
             $explodedMatch = explode(".",$match[1]);
-            if(strlen($explodedMatch[1])<2){
+            if(strlen($explodedMatch[1])==2){
                 $match[1] = $explodedMatch[0].".".$explodedMatch[1]."0";
             }
 
