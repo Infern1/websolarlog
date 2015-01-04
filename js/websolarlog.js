@@ -2798,9 +2798,31 @@ var WSL = {
 								var object = result.dayData.data.compare[line];
 								dataDay1.push([ parseFloat(object[0] * 1000),
 										object[2], object[3] ]);
-								
+								var item = {
+									"timestamp" : parseFloat(object[0] * 1000),
+									"har" : object[2],
+									"date" : object[1],
+									"displayKWH" : object[3],
+									"harvested" : object[4],
+								};
 								compareTable.push([ item ]);
 							}
+							for (line in result.dayData.data.which) {
+								var object = result.dayData.data.which[line];
+								dataDay2.push([ parseFloat(object[0] * 1000),object[2], object[3] ]);
+								dataDay3.push([ parseFloat(object[0] * 1000),parseFloat(object[4]) ]);
+								dailykWh.push(parseFloat(object[4]));
+								var item = {
+									"timestamp" : parseFloat(object[0] * 1000),
+									"har" : object[2],
+									"date" : object[1],
+									"displayKWH" : object[3],
+									"harvested" : object[4],
+								};
+
+								whichTable.push([ item ]);
+							}
+
 							
 
 							$("#content").append('<div id="compareGraph"></div>');
