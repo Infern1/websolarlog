@@ -23,8 +23,8 @@ class GetVeraDeviceService {
         public function onJob() {
             $devicesId = explode(",",$this->config->veraDevices);
             foreach ($devicesId as $deviceId){
-                $kwh = (float)$this->call("http://192.168.1.108:3480/data_request?id=variableget&DeviceNum=".$deviceId."&serviceId=urn:micasaverde-com:serviceId:EnergyMetering1&Variable=KWH");    
-                $name = $this->call("http://192.168.1.108:3480/data_request?id=variableget&DeviceNum=".$deviceId."&Variable=name");
+                $kwh = (float)$this->call("http://".$this->config->veraIP.":3480/data_request?id=variableget&DeviceNum=".$deviceId."&serviceId=urn:micasaverde-com:serviceId:EnergyMetering1&Variable=KWH");    
+                $name = $this->call("http://".$this->config->veraIP.":3480/data_request?id=variableget&DeviceNum=".$deviceId."&Variable=name");
                 
                 if(is_int($kwh) || is_float($kwh)){
                     $device = new veraDevice();

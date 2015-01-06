@@ -47,6 +47,7 @@ class Config
     public $upgradeMessageShow;
     
     public $veraDevices;
+    public $veraIP;
     /**
      * @deprecated
      */

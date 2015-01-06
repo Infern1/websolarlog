@@ -284,6 +284,8 @@ class PDODataAdapter {
 		$bean->moneySign = $config->moneySign;
 
                 $bean->veraDevices = $config->veraDevices;
+                $bean->veraIP = $config->veraIP;
+                
                 
 		$bean->googleAnalytics = $config->googleAnalytics;
 		$bean->piwikServerUrl = $config->piwikServerUrl;
@@ -384,6 +386,7 @@ class PDODataAdapter {
 			$config->allDevices = $this->deviceService->getAllDevices();
 			
                         $config->veraDevices = $bean->veraDevices;
+                        $config->veraIP = $bean->veraIP;
 			// looks like we don't use this anymore.
 			//$config->inverters = $config->devices; // @Deprecated
 			
