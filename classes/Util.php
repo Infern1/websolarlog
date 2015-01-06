@@ -249,26 +249,43 @@ class Util {
     public static function telegramStringLineToInterUsage($string,$input){
     	$pattern = "/\((.*?)\)/";
         
+        // for debugging:
+        //$string = "1-0:1.7.0(0000.230*kW)";
+        
     	preg_match_all($pattern,$string,$match);
     	$value="";
     	if($input=="kWh"){
     		$value = str_replace("*kWh","",str_replace(".","",$match[1]));
     		$value = ltrim($value[0],0);
     	}
+        
     	if($input=="kW"){
             // <DSMR4.0 reports actual usage as
-            // (0000.23*kW) == 230W
+            // (0000.23*kW)  == 230W
             //  DSMR4.0  reports actual usage as
             // (0000.230*kW) == 230W
             // so for <DSMR4.0 we need to correct it by adding a trailing 0
-            
-            $explodedMatch = explode(".",$match[1]);
-            if(strlen($explodedMatch[1])==2){
-                $match[1] = $explodedMatch[0].".".$explodedMatch[1]."0";
+
+            if(isset($match[1][0])){
+                $explodedMatch = explode(".",$match[1][0]);
+            }else{
+                $explodedMatch = explode(".",$match[1]);
             }
 
-            $value = str_replace("*kW","",str_replace(".","",$match[1]));
-            $value = ltrim($value[0],0);
+            $explodedMatch[1] = str_replace("*kW","",$explodedMatch[1]);
+
+            if(strlen($explodedMatch[1])==2){
+                $match[1] = implode($explodedMatch)."0";
+            }else{
+                $match[1] = implode($explodedMatch);
+            }
+
+            $value = str_replace(".","",$match[1]);
+            $value = ltrim($value,0);
+            if($value==""){
+                $value = 0;
+            }
+            HookHandler::getInstance()->fire("onDebug", __METHOD__."::".print_r($value,true));
     	}
         
     	if($input=="m3DSMR20"){
