@@ -253,9 +253,13 @@
 		var value = parseFloat(context.hash.value).toFixed(context.hash.fixed).replace(".",",");
 		return new Handlebars.SafeString(value);
 	})
+        
+        Handlebars.registerHelper("kWhValue", function (context,block){
+		var value = parseFloat(context.hash.value).toFixed(3).replace(".",",");
+		return new Handlebars.SafeString(value+' kWh');
+	})
 	
 	Handlebars.registerHelper("invoiceHeader", function (context){
-            console.log(context +" "+(context % 20));
             var multiple = (context % 20);
             var header = "";
             if(multiple==0 || context == 1){
