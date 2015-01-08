@@ -43,12 +43,28 @@ class GetVeraDeviceService {
 	 * @return $energy
 	 */
 	public function addOrUpdateEnergyByDeviceAndTime(veraDevice $veraDevice) {
+                
                 $veraDevice->time = time();
 		$beginEndYesterday = Util::getBeginEndDate('yesterday', 1);
 		$beanYesterday = R::findOne(self::$tbl, ' deviceId = :deviceId AND time > :beginDate AND time < :endDate ', array(':deviceId'=>$veraDevice->deviceId, ':beginDate'=>$beginEndYesterday['beginDate'],':endDate'=>$beginEndYesterday['endDate']));
+                
+                // is there an Yesterday records else find the most recent old record.
                 if(!$beanYesterday){
                     $beanYesterday = R::findOne(self::$tbl, ' deviceId = :deviceId and time < :endDate order by time DESC limit 1 ', array(':deviceId'=>$veraDevice->deviceId,':endDate'=>$beginEndYesterday['endDate']));
                 }
+                
+                // if there no old record, then this is probably the first run and we need to make and "reference" point 
+                if(!$beanYesterday){
+                    // we have an VeraDevice object, so change the time to yesterdag
+                    $veraDevice->time= $beginEndYesterday['beginDate'] + (60*60);
+                    // dispence an bean
+                    $bean = R::dispense(self::$tbl);
+                    // convert VerDevice object to bean
+                    $bean = $this->toBean($veraDevice, $bean);
+                    // save the yesterday bean :)
+                    R::store($bean);
+                }
+                
                 $beginEndDate = Util::getBeginEndDate('day', 1);
 		$bean = R::findOne(self::$tbl, ' deviceId = :deviceId AND time > :beginDate AND time < :endDate ', array(':deviceId'=>$veraDevice->deviceId, ':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate']));
 	
