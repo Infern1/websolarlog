@@ -55,12 +55,13 @@ class GetVeraDeviceService {
                 
                 // if there no old record, then this is probably the first run and we need to make and "reference" point 
                 if(!$beanYesterday){
-                    // we have an VeraDevice object, so change the time to yesterdag
-                    $veraDevice->time= $beginEndYesterday['beginDate'] + (60*60);
                     // dispence an bean
                     $bean = R::dispense(self::$tbl);
                     // convert VerDevice object to bean
                     $bean = $this->toBean($veraDevice, $bean);
+                    // set bean team on yesterday
+                    $bean->KWH = 0;
+                    $bean->time = $beginEndYesterday['beginDate'] + (60*60);
                     // save the yesterday bean :)
                     R::store($bean);
                 }
@@ -71,6 +72,8 @@ class GetVeraDeviceService {
 		if (!$bean){
 			$bean = R::dispense(self::$tbl);
 		}
+                $veraDevice->KWH = sprintf("%0.3f",0);
+                
                 if($beanYesterday['KWHT']!='' and $bean['KWHT']!=''){
                     if((float)$bean['KWHT'] < (float)$beanYesterday['KWHT']){
                         $veraDevice->KWH = sprintf("%0.3f",$bean['KWHT']);
@@ -78,7 +81,7 @@ class GetVeraDeviceService {
                         $veraDevice->KWH = sprintf("%0.3f",$bean['KWHT'] - $beanYesterday['KWHT']);
                     }
                 }
-                
+
 		$bean = $this->toBean($veraDevice, $bean);
                 
 		// Only save record if there is something
