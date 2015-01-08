@@ -80,6 +80,10 @@ $PVoutputJoinTeamStartTime = Util::createOnceADayJob("00", "15"); // Only run at
 QueueServer::getInstance()->add(new QueueItem($PVoutputJoinTeamStartTime, "PvOutputAddon.joinAllDevicesToTeam","", true, $PVoutputJoinTeamUpdateRate));
 
 
+$minderGasStartTime = Util::createOnceADayJob("00", "15"); // Only run at 00:15
+QueueServer::getInstance()->add(new QueueItem($minderGasStartTime, "minderGasService.minderGasCurl","", true, 24 * 60 * 60));
+
+
 // run Janitor DBcheck every day@01:00 
 $checkDataBaseStartTime = Util::createOnceADayJob("01", "00"); // Only run at night
 QueueServer::getInstance()->add(new QueueItem($checkDataBaseStartTime, "JanitorRest.DbCheck", "", true, 24 * 60 * 60));

@@ -205,6 +205,8 @@ class DeviceService {
         $bObject->sendSmartMeterData = ($object->sendSmartMeterData != "") ? $object->sendSmartMeterData : true;
         $bObject->pvoutputAutoJoinTeam = ($object->pvoutputAutoJoinTeam != "") ? $object->pvoutputAutoJoinTeam : true;
 
+        $bObject->minderGasAPIToken = $object->minderGasAPIToken;
+        
         $bObject->state = $object->state;
         $bObject->testMode = $object->testMode;
         $bObject->refreshTime = (isset($object->refreshTime) && $object->refreshTime != "") ? $object->refreshTime : $bObject->refreshTime;
@@ -253,6 +255,8 @@ class DeviceService {
         $object->sendSmartMeterData = ($bObject->sendSmartMeterData != "") ? $bObject->sendSmartMeterData : $object->sendSmartMeterData;
         $object->pvoutputAutoJoinTeam = ($bObject->pvoutputAutoJoinTeam != "") ? $bObject->pvoutputAutoJoinTeam : $object->pvoutputAutoJoinTeam;
 
+        $object->minderGasAPIToken = $bObject->minderGasAPIToken;
+        
         $object->state = $bObject->state;
         $object->testMode = $bObject->testMode;
         $object->refreshTime = (isset($bObject->refreshTime) && $bObject->refreshTime != "") ? $bObject->refreshTime : $object->refreshTime;

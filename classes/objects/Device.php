@@ -22,6 +22,7 @@ class Device {
     public $pvoutputSystemId;
     public $pvoutputWSLTeamMember;
     public $pvoutputAutoJoinTeam;
+    public $minderGasAPIToken;
     public $sendSmartMeterData;
     public $state;
     public $refreshTime;

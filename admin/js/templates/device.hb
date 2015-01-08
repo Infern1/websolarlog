@@ -96,7 +96,11 @@
     {{checkboxWithHidden 'syncTime' data.inverter.syncTime}}<br>
     <hr>
     </div>   
-	
+<div class="all create_new new metering"> 
+    MinderGas.nl:<br/>
+    <label for="minderGasAPIToken">API token:</label><input type="text" name="minderGasAPIToken" value="{{data.inverter.minderGasAPIToken}}" /> {{infoTooltip title="Fillout the API token from MinderGas.nl. Here you could (request) an token: https://mindergas.nl/member/api"}}<br />
+</div>
+
 	<div class="all production pvoutput"> 
     <a name="pvoutput"/>
     PVoutput config for this inverter;<br>

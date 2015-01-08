@@ -513,6 +513,7 @@ switch ($settingstype) {
 		$device->syncTime = Common::getValue("syncTime");
 		$device->pvoutputEnabled = Common::getValue("pvoutputEnabled",'null');
 		$device->pvoutputApikey = Common::getValue("pvoutputApikey");
+                $device->minderGasAPIToken = Common::getValue("minderGasAPIToken");
 		$device->pvoutputSystemId = Common::getValue("pvoutputSystemId");
 		$device->pvoutputWSLTeamMember = Common::getValue("pvoutputWSLTeamMember");
 		$device->pvoutputAutoJoinTeam =  Common::getValue("pvoutputAutoJoinTeam",'null');
