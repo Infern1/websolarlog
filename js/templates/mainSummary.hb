@@ -6,31 +6,31 @@
 	<div class="column span-5 verticalLine" style="font-size: 25px;text-align:center;">
 		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">{{data.lang.generated}}</span><br>
 		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink"
-		{{#if_gt data.total.totalUsagekWh compare=0}}
+		{{#unless_eq data.total.totalUsagekWh compare=null}}
 		title="Today you used " 
 		{{else}}
 		title=""
-		{{/if_gt}}
+		{{/unless_eq}}
 		>{{data.total.production.KWH}}</a><br>
 		<span style="font-size:10px;text-align:center;position:relative;top:-7px;">(kWh)</span>
 		<br>
 	</div>
-	{{#if_gt data.total.metering.returnKWH compare=0}}
+	{{#unless_eq data.total.metering.returnKWH compare=null}}
 	<div class="column span-5 verticalLine" style="font-size: 25px;text-align:center;">
 		<span style="font-size:10px;text-align:center;position:relative;top:-5px;">{{data.lang.used}}</span><br>
 		<a href="summary.php" style="position:relative;top:-2px;" class="summaryLink"
-		{{#if_gt data.total.totalUsagekWh compare=0}}
+		{{#unless_eq data.total.totalUsagekWh compare=null}}
 		title="Today you used " 
 		{{else}}
 		title=""
-		{{/if_gt}}
+		{{/unless_eq}}
 		>{{data.total.totalUsagekWh}}</a><br>
 		<span style="font-size:10px;text-align:center;position:relative;top:-7px;">(kWh)</span>
 		<br>
 	</div>
-	{{/if_gt}}
+	{{/unless_eq}}
 </div>
-{{#if_gt data.total.metering.gasUsage compare=0}}
+{{#unless_eq data.total.metering.gasUsage compare=null}}
 <div class="column span">
 	<div class="span" style="text-align:center;">Gas:</div>
 	<div class="cl"></div>
@@ -41,7 +41,7 @@
 		<span style="font-size:10px;text-align:center;position:relative;top:-7px;">(m3)</span>
 	</div>
 </div>
-{{/if_gt}}
+{{/unless_eq}}
 
 <div class="column span">
 	<div class="span" style="text-align:center;">{{data.lang.trees}}:</div>
