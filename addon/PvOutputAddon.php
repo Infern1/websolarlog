@@ -93,7 +93,7 @@ class PvOutputAddon {
 					$sendDataWholeDay = false;
 				}
 
-				$v5 = $this->weather->PVoutputWeatherData($timestamp);//v5	Temperature	No	decimal	celsius	23.4	r2
+				$v5 = round($this->weather->PVoutputWeatherData($timestamp),2);//v5	Temperature	No	decimal	celsius	23.4	r2
 				
 				//When the sun is NOT down OR if the sun is down and we want to "sendDataWholeDay":
 				if(Util::isSunDown(-1800)==false || (Util::isSunDown(-1800)==true && $sendDataWholeDay == true)){
@@ -296,6 +296,7 @@ class PvOutputAddon {
 				// header info
 				$headerInfo['hAPI'] = "X-Pvoutput-Apikey: " . $device->pvoutputApikey;
 				$headerInfo['hSYSTEM'] = "X-Pvoutput-SystemId: " . $device->pvoutputSystemId;
+                                $headerInfo['contentType'] = "Content-Type: application/x-www-form-urlencoded";
 
 				$result = $this->PVoutputCurl($this->getPVoutputAddStatusURL,$vars,$headerInfo,true);
 				
@@ -508,7 +509,7 @@ class PvOutputAddon {
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headerInfo);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 4); // Connection timeout in seconds
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // Connection timeout in seconds
 		curl_setopt($ch, CURLOPT_TIMEOUT, 60); // Transmission timeout in seconds
 		$response = curl_exec($ch);
 		$info = curl_getinfo($ch);
@@ -520,14 +521,14 @@ class PvOutputAddon {
 		if ($info['http_code'] == "200") {
 			HookHandler::getInstance()->fire("onDebug",__METHOD__."::Curl return 200");
 			if($returnOutput){
-				return array('result'=>true,'response'=> $response,'info'=>$info);
+				return array('result'=>true,'response'=> $response,'info'=>$info,'vars'=>$vars);
 			}else{
 				return true;
 			}
 		}else{
 			HookHandler::getInstance()->fire("onDebug",__METHOD__."::Curl returned something else then 200");
 			if($returnOutput){
-				return array('result'=>false,'response'=> $response,'info'=>$info);
+				return array('result'=>false,'response'=> $response,'info'=>$info,'vars'=>$vars);
 			}else{
 				return false;
 			}
