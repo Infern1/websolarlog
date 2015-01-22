@@ -52,9 +52,9 @@ Class WeatherOWM implements DeviceApi {
 			$weather = new Weather();
 			$weather->deviceId = -1;
 			$weather->time = time();
-			$weather->temp = $result->list[0]->main->temp - 273.15;
-			$weather->temp_min = $result->list[0]->main->temp_min - 273.15;
-			$weather->temp_max = $result->list[0]->main->temp_max - 273.15;
+			$weather->temp =     round($result->list[0]->main->temp - 273.15,2);
+			$weather->temp_min = round($result->list[0]->main->temp_min - 273.15,2);
+			$weather->temp_max = round($result->list[0]->main->temp_max - 273.15,2);
 			$weather->pressure = $result->list[0]->main->pressure;
 			$weather->humidity = $result->list[0]->main->humidity;
 			$weather->conditionId = $result->list[0]->weather[0]->id;
