@@ -779,7 +779,8 @@ switch ($settingstype) {
 		break;
 	case "getDomoticaData":
 		$domotica = new DomoticaAddon();
-		$data['devices'] = $domotica->getAllData();
+		$data['devices'] = $domotica->getAlldevices();
+                $data['data'] = $domotica->getAllData();
 		break;
 	case "switchPowerState":
 		$plugwise = new PlugwiseStretchAddon();

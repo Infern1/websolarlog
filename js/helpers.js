@@ -356,5 +356,82 @@
 		'<div class="column span-2">'+img+''+info+'</div>';
 		return new Handlebars.SafeString(row);
 	})
+        
+        
+        Handlebars.registerHelper("DomoticaRow", function (context){
+            var rows = '<table border="0" cellspacing="0" cellpadding="0"><thead>'+
+                    '<th class="column span-8 tableHeader" style="font-size:11px;">Name</th>'+
+                    '<th class="column span-4 tableHeader" style="font-size:11px;">Day Usage</th>'+
+                    '<th class="column span-4 tableHeader" style="font-size:11px;">Month Usage</th>'+
+                    '<th class="column span-4 tableHeader" style="font-size:11px;">Month Avg.</th>'+
+                    '<th class="column span-4 tableHeader" style="font-size:11px;">Year Usage</th>'+
+                    '<th class="column span-4 tableHeader" style="font-size:11px;">Year Avg.</th>'+
+                    '<th class="column span-4 tableHeader" style="font-size:11px;"><p class="small">Overall Usage</p></th>'+
+                    '<th class="column span-4 tableHeader" style="font-size:11px;">Overall Avg.</th></thead><tbody>';
+                    
+            
+		$.each( context.devices, function( key, type ) {
+                    var currentDeviceId = type.deviceId;
+                    
+		rows = rows + '<tr class="tr1"><td class="column span-8 borderRight" id="name_'+type.deviceId+'">'+type.name+'</td>';
+                
+                DayCount = 0;
+                $.each( context.data.today, function( key, type ) {
+                    if(currentDeviceId ==type.deviceId){
+                       rows = rows + '<td class="column span-4 borderRight">'+parseFloat(type.KWHUsage).toFixed(3).replace(".",",")+'</td>';
+                       DayCount = DayCount + 1;
+                    }
+                });
+                if(DayCount==0){
+                    rows = rows + '<td class="column span-4 borderRight"> - </td>';
+                }
+                
+                MonthCount =0;
+                $.each( context.data.month, function( key, type ) {
+                    if(currentDeviceId ==type.deviceId){
+                       rows = rows + '<td class="column span-4">'+parseFloat(type.KWHUsage).toFixed(3).replace(".",",")+'</td>';
+                       rows = rows + '<td class="column span-4 borderRight">'+parseFloat(type.KWHAvg).toFixed(3).replace(".",",")+'</td>';
+                       MonthCount = MonthCount+1;
+                    }
+                });
+                if(MonthCount==0){
+                    rows = rows + '<td class="column span-4"> - </td>';
+                    rows = rows + '<td class="column span-4 borderRight"> - </td>';
+                }
+                
+                YearCount =0;
+                $.each( context.data.year, function( key, type ) {
+                    if(currentDeviceId ==type.deviceId){
+                       rows = rows + '<td class="column span-4">'+parseFloat(type.KWHUsage).toFixed(3).replace(".",",")+'</td>';
+                       rows = rows + '<td class="column span-4 borderRight">'+parseFloat(type.KWHAvg).toFixed(3).replace(".",",")+'</td>';
+                       YearCount = YearCount+1;
+                    }
+		
+                });
+                if(YearCount==0){
+                    rows = rows + '<td class="column span-4"> - </td>';
+                    rows = rows + '<td class="column span-4 borderRight"> - </td>';
+                }
+                
+                
+                OverallCount =0;
+                $.each( context.data.overall, function( key, type ) {
+                    if(currentDeviceId ==type.deviceId){
+                       rows = rows + '<td class="column span-4">'+parseFloat(type.KWHUsage).toFixed(3).replace(".",",")+'</td>';
+                       rows = rows + '<td class="column span-4 last">'+parseFloat(type.KWHAvg).toFixed(3).replace(".",",")+'</td>';
+                       OverallCount = OverallCount+1;
+                    }
+		
+                });
+                if(OverallCount==0){
+                    rows = rows + '<td class="column span-4"> - </td>';
+                    rows = rows + '<td class="column span-4 last"> - </td>';
+                }
+                rows = rows +'</tr>';
 	
+            });
+            rows = rows +'</tbody>';
+            return new Handlebars.SafeString(rows);
+	})
+        
 }));

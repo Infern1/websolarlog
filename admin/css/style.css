@@ -131,3 +131,6 @@ span.read-more a { font-family: Tahoma, arial, sans-serif; font-weight: bold; co
 #navigation_sticky ul li.nav-end a:hover { background-position: right -52px; }
 
 .shell_sticky { width: 940px; margin: 0 auto; }
+
+
+.borderRight {border-right: #ccc solid 1px;}

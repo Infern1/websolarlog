@@ -270,8 +270,12 @@ function init_menu() {
 function init_domotica(){
 	WSL.checkURL();
 	setTitle("Domotica");
-	$('#sidebar').html("");
-
+	window.location.hash = '#domotica';
+	
+	$('#sidebar').remove();
+    var content = $('#content');
+    content.html('<div id="c_general"><h1> Domotica</h1><form><fieldset><div id="json" name="domotica">Loading Data...</div></fieldset></div>').css("width",850); // Clear old data
+    
 	$.getJSON('admin-server.php?s=getDomoticaData', function(data) {
         $.ajax({
         	async: true,
@@ -281,7 +285,8 @@ function init_domotica(){
                     var html = template({
                         'data' : data
                     });
-                    $('#content').html(html);
+                    var deviceData = data;
+                    $('#json').html(html);
                     
             },
             dataType : 'text'
