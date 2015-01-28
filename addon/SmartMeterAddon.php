@@ -35,7 +35,6 @@ class SmartMeterAddon {
 	
 	public function installGraph(){
 		if($this->install==true){
-			HookHandler::getInstance()->fire("onDebug", "install SmartMeter");
 			$graph = R::dispense('graph');
 	
 			$graph->series = self::defaultSeries();
@@ -122,9 +121,9 @@ class SmartMeterAddon {
 
 		// Set the new values and save it
 		$energy = new EnergySmartMeter();
-		$energy->time = $args[2];
+		$energy->time = $args[2]+10;
 		$energy->deviceId = $device->id;
-        $energy->gasUsage = $gasUsage;
+                $energy->gasUsage = $gasUsage;
 		$energy->highReturn = $highReturn;
 		$energy->lowReturn = $lowReturn;
 		$energy->highUsage = $highUsage;
@@ -148,7 +147,6 @@ class SmartMeterAddon {
 	public function onLiveSmartMeterData($args) {
 		$device = $args[1];
 		$live = $args[2];
-		HookHandler::getInstance()->fire("onDebug", "SmartMeterAddon args".print_r($args));
 		if ($device == null) {
 			HookHandler::getInstance()->fire("onError", "CoreAddon::onLiveSmartMeterData() device == null");
 			return;
@@ -165,7 +163,6 @@ class SmartMeterAddon {
 		}
 		
 		$this->liveSmartMeterService->save($live);
-                HookHandler::getInstance()->fire("onDebug", "SmartMeterAddon::OnLiveData".print_r($live));
 		HookHandler::getInstance()->fire("newLiveData", $device, $live);
 	}
 
@@ -295,7 +292,7 @@ class SmartMeterAddon {
 		$beginEndDate = Util::getBeginEndDate('day', 1,$date);
 
 		$bean =  R::find( 'historySmartMeter',
-				' deviceId = :deviceId AND time > :beginDate AND  time < :endDate order by time',
+				' deviceId = :deviceId AND time >= :beginDate AND  time <= :endDate order by time',
 				array(':deviceId'=>$deviceId,':beginDate'=>$beginEndDate['beginDate'],':endDate'=>$beginEndDate['endDate'])
 		);
 		return $bean;
@@ -323,7 +320,7 @@ class SmartMeterAddon {
 	/**
 	 * write the max power today to the file
 	 * @param int $deviceId
-	 * @param MaxPowerToday $mpt
+	 * @param EnergySmartMeter $energy
 	 */
 	public function addSmartMeterEnergy($deviceId, EnergySmartMeter $energy) {
 		$date = date('d-m-Y');
