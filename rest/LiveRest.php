@@ -109,7 +109,16 @@ class LiveRest {
                 $lang['Efficiency'] = _("Efficiency");
                 $lang['usage'] 	= _("Usage");
                 
-		$result["totals"] = array("production"=>$totalsProduction, "metering"=>$totalsMetering, "overallUsage" =>($totalsProduction["GPOverall"]+$totalsMetering["meteringOverall"]));
+                if($totalsMetering["meteringOverall"]>0){
+                    $overallUsage = $totalsProduction["GPOverall"]+$totalsMetering["meteringOverall"];
+                }else{
+                    $overallUsage = 0;
+                }
+                
+		$result["totals"] = array(
+                    "production"=>$totalsProduction, 
+                    "metering"=>$totalsMetering, 
+                    "overallUsage" =>$overallUsage);
                 $result["lang"] = $lang;
 		return $result;
 	}
