@@ -172,7 +172,22 @@ class Util {
     	
     	return array("beginDate"=>$beginDate,"endDate"=>$endDate,"days"=>$days);
     }
-
+    
+    public static function createDayNum($timestamp){
+        $dayNum = date("z", $timestamp);
+        $yearNum = date("Y", $timestamp);
+        
+        if($dayNum<1){
+            return $yearNum."000";
+        }elseif($dayNum<10){
+            return $yearNum."00".$dayNum;
+        }elseif($dayNum<100){
+            return $yearNum."0".$dayNum;
+        }else{
+            return $yearNum.$dayNum;
+        }
+    }
+    
     public static function formatPower($value,$decimals){
     	return ($value>1000) ? round(($value/1000),$decimals)." kWh": round($value,$decimals)." W";
     }
@@ -257,6 +272,9 @@ class Util {
     	if($input=="kWh"){
     		$value = str_replace("*kWh","",str_replace(".","",$match[1]));
     		$value = ltrim($value[0],0);
+                if($value==""){
+                    $value = 0;
+                }
     	}
         
     	if($input=="kW"){
@@ -285,7 +303,7 @@ class Util {
             if($value==""){
                 $value = 0;
             }
-            HookHandler::getInstance()->fire("onDebug", __METHOD__."::".print_r($value,true));
+            //HookHandler::getInstance()->fire("onDebug", __METHOD__."::".print_r($value,true));
     	}
         
     	if($input=="m3DSMR20"){
