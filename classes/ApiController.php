@@ -42,8 +42,21 @@ class ApiController
 	 */
 	public function route() {
 		$method = $_SERVER['REQUEST_METHOD'];
+    if(!empty($_SERVER['PATH_INFO'])){
 		$request = (isset($_SERVER['PATH_INFO'])) ? explode("/", trim($_SERVER['PATH_INFO'], "/")) : "";
+    } else {
+     $url=strtok($_SERVER["REQUEST_URI"],'?');
+       $request = (isset($_SERVER['REQUEST_URI'])) ? explode("/", trim($url, "/")) : "";
 		
+    }
+    /*echo "request: \n";
+    print_r($request);
+    echo "<br>";*/
+    $new_req = array_shift($request);
+    $new_req = array_shift($request);
+    /*print_r($request);
+    echo "url $url ";
+    print_r($_SERVER);*/
 		return $this->routeRequest($method, $request);
 	}
 	
